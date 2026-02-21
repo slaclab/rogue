@@ -4,18 +4,15 @@
 StreamWriter Device Class
 =========================
 
-StreamWriter is a subclass of :ref:`Data Writer <pyrogue_tree_node_device_datawriter>`.
+:py:class:`pyrogue.utilities.fileio.StreamWriter` is a concrete
+:ref:`DataWriter <pyrogue_tree_node_device_datawriter>` implementation for
+recording one or more stream channels to file.
 
-* Pyrogue Device wrapper around rogue::utilities::fileio::StreamWriter
-* Exposes StreamWriter methods as Variables and Commands
-* Streamwriter allows multiple streams to be written to a single data file
+Key points:
 
-   * A header identifies each file record, its channel # and Frame flags
-
-* :code:`getChannel(id)`
-
-   * Function to expose a slave interface which can be connected to a stream Master
-   * Id value is placed in file record header to identify stream
+* supports channelized writing via :py:meth:`getChannel`
+* can emit configuration/status frames at open/close
+* supports options such as raw mode and error-frame handling
 
 StreamWriter Class Documentation
 ================================

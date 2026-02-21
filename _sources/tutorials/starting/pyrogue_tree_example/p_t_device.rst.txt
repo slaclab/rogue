@@ -82,7 +82,7 @@ Creating a Custom Pyrogue Device
 
         self.add(pr.RemoteCommand(
             name         = 'FpgaReload',
-            description  = 'Optional Reload the FPGA from the attached PROM',
+            description  = 'Reload the FPGA from the attached PROM (if supported)',
             offset       = 0x104,
             bitSize      = 1,
             bitOffset    = 0x00,
@@ -107,7 +107,7 @@ Creating a Custom Pyrogue Device
 
         self.add(pr.RemoteVariable(
             name         = 'UserReset',
-            description  = 'Optional User Reset',
+            description  = 'User Reset (if supported)',
             offset       = 0x10C,
             bitSize      = 1,
             bitOffset    = 0x00,
@@ -127,7 +127,7 @@ Creating a Custom Pyrogue Device
 
         self.addRemoteVariables(
             name         = 'UserConstants',
-            description  = 'Optional user input values',
+            description  = 'User input values (if supported)',
             offset       = 0x400,
             bitSize      = 32,
             bitOffset    = 0x00,

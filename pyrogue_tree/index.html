@@ -6,15 +6,16 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PyRogue Tree &mdash; Rogue v6.8.1 documentation</title>
+  <title>PyRogue Tree &mdash; Rogue v6.8.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=f9c5c301" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=7511b455"></script>
+      <script src="../_static/documentation_options.js?v=42e93e3f"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -53,9 +54,11 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">PyRogue Tree</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="node/index.html">Node</a></li>
 <li class="toctree-l2"><a class="reference internal" href="node/root/index.html">Root</a></li>
+<li class="toctree-l2"><a class="reference internal" href="node/root/poll_queue.html">PollQueue</a></li>
 <li class="toctree-l2"><a class="reference internal" href="node/device/index.html">Device</a></li>
 <li class="toctree-l2"><a class="reference internal" href="node/command/index.html">Command</a></li>
 <li class="toctree-l2"><a class="reference internal" href="node/variable/index.html">Variable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model/index.html">Model API</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../interfaces/index.html">Interfaces</a></li>
@@ -103,39 +106,55 @@ Elements within the tree are exposed to outside systems via the various <a class
 <p class="caption" role="heading"><span class="caption-text">Node Class Types</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="node/index.html">Node</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="node/block/index.html">Block</a></li>
+<li class="toctree-l2"><a class="reference internal" href="node/groups.html">Groups</a></li>
 <li class="toctree-l2"><a class="reference internal" href="node/index.html#node-class-description">Node Class Description</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="node/root/index.html">Root</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="node/root/index.html#key-attributes">Key Attributes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="node/root/index.html#key-methods">Key Methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="node/root/index.html#lifecycle-start-stop-and-rootattached">Lifecycle: <code class="docutils literal notranslate"><span class="pre">start()</span></code>, <code class="docutils literal notranslate"><span class="pre">stop()</span></code>, and <code class="docutils literal notranslate"><span class="pre">_rootAttached()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="node/root/index.html#temporarily-blocking-polling">Temporarily Blocking Polling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="node/root/index.html#zmqserver-interface">ZmqServer Interface</a></li>
 <li class="toctree-l2"><a class="reference internal" href="node/root/index.html#yaml-file-configuration">Yaml File Configuration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="node/root/index.html#included-command-objects">Included Command Objects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="node/root/index.html#included-variable-objects">Included Variable Objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="node/root/index.html#root-class-documentation">Root Class Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="node/root/poll_queue.html">PollQueue</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="node/root/poll_queue.html#what-it-does">What it does</a></li>
+<li class="toctree-l2"><a class="reference internal" href="node/root/poll_queue.html#block-level-scheduling-behavior">Block-Level Scheduling Behavior</a></li>
+<li class="toctree-l2"><a class="reference internal" href="node/root/poll_queue.html#control-and-lifecycle">Control and Lifecycle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="node/root/poll_queue.html#usage-examples">Usage Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="node/root/poll_queue.html#pollqueue-class-documentation">PollQueue Class Documentation</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="node/device/index.html">Device</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="node/device/index.html#device-definition">Device Definition</a></li>
 <li class="toctree-l2"><a class="reference internal" href="node/device/index.html#special-device-subclasses">Special Device Subclasses</a></li>
-<li class="toctree-l2"><a class="reference internal" href="node/device/index.html#custom-device-classes">Custom Device Classes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="node/device/index.html#device-class-documentation">Device Class Documentation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="node/device/index.html#python-device-example">Python Device Example</a></li>
-<li class="toctree-l2"><a class="reference internal" href="node/device/index.html#c-device-example">C++ Device Example</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="node/command/index.html">Command</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="node/command/index.html#basecommand">BaseCommand</a></li>
-<li class="toctree-l2"><a class="reference internal" href="node/command/index.html#python-command-example">Python Command Example</a></li>
-<li class="toctree-l2"><a class="reference internal" href="node/command/index.html#c-command-example">C++ Command Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="node/command/index.html#command-types">Command types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="node/command/index.html#subtypes">Subtypes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="node/command/index.html#basecommand-class-documentation">BaseCommand Class Documentation</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="node/variable/index.html">Variable</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="node/variable/link_variable/index.html">LinkVariable</a></li>
-<li class="toctree-l2"><a class="reference internal" href="node/variable/local_variable/index.html">LocalVariable</a></li>
-<li class="toctree-l2"><a class="reference internal" href="node/variable/remote_variable/index.html">RemoteVariable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="node/variable/index.html#variable-types">Variable Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="node/variable/index.html#when-to-use-each-type">When to use each type</a></li>
+<li class="toctree-l2"><a class="reference internal" href="node/variable/index.html#common-attributes-and-behavior">Common attributes and behavior</a></li>
+<li class="toctree-l2"><a class="reference internal" href="node/variable/index.html#implementation-boundary-python-and-c">Implementation Boundary (Python and C++)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="node/variable/index.html#basevariable-class-documentation">BaseVariable Class Documentation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="node/variable/index.html#python-variable-example">Python Variable Example</a></li>
-<li class="toctree-l2"><a class="reference internal" href="node/variable/index.html#c-variable-example">C++ Variable Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="model/index.html">Model API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="model/index.html#utility-functions">Utility Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model/index.html#base-model">Base Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model/index.html#common-built-in-models">Common Built-in Models</a></li>
 </ul>
 </li>
 </ul>

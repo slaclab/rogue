@@ -6,15 +6,16 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Creating a Custom Pyrogue Device &mdash; Rogue v6.8.1 documentation</title>
+  <title>Creating a Custom Pyrogue Device &mdash; Rogue v6.8.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=f9c5c301" />
 
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=7511b455"></script>
+      <script src="../../../_static/documentation_options.js?v=42e93e3f"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -175,7 +176,7 @@
 
     <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteCommand</span><span class="p">(</span>
         <span class="n">name</span>         <span class="o">=</span> <span class="s1">&#39;FpgaReload&#39;</span><span class="p">,</span>
-        <span class="n">description</span>  <span class="o">=</span> <span class="s1">&#39;Optional Reload the FPGA from the attached PROM&#39;</span><span class="p">,</span>
+        <span class="n">description</span>  <span class="o">=</span> <span class="s1">&#39;Reload the FPGA from the attached PROM (if supported)&#39;</span><span class="p">,</span>
         <span class="n">offset</span>       <span class="o">=</span> <span class="mh">0x104</span><span class="p">,</span>
         <span class="n">bitSize</span>      <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
         <span class="n">bitOffset</span>    <span class="o">=</span> <span class="mh">0x00</span><span class="p">,</span>
@@ -200,7 +201,7 @@
 
     <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
         <span class="n">name</span>         <span class="o">=</span> <span class="s1">&#39;UserReset&#39;</span><span class="p">,</span>
-        <span class="n">description</span>  <span class="o">=</span> <span class="s1">&#39;Optional User Reset&#39;</span><span class="p">,</span>
+        <span class="n">description</span>  <span class="o">=</span> <span class="s1">&#39;User Reset (if supported)&#39;</span><span class="p">,</span>
         <span class="n">offset</span>       <span class="o">=</span> <span class="mh">0x10C</span><span class="p">,</span>
         <span class="n">bitSize</span>      <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
         <span class="n">bitOffset</span>    <span class="o">=</span> <span class="mh">0x00</span><span class="p">,</span>
@@ -220,7 +221,7 @@
 
     <span class="bp">self</span><span class="o">.</span><span class="n">addRemoteVariables</span><span class="p">(</span>
         <span class="n">name</span>         <span class="o">=</span> <span class="s1">&#39;UserConstants&#39;</span><span class="p">,</span>
-        <span class="n">description</span>  <span class="o">=</span> <span class="s1">&#39;Optional user input values&#39;</span><span class="p">,</span>
+        <span class="n">description</span>  <span class="o">=</span> <span class="s1">&#39;User input values (if supported)&#39;</span><span class="p">,</span>
         <span class="n">offset</span>       <span class="o">=</span> <span class="mh">0x400</span><span class="p">,</span>
         <span class="n">bitSize</span>      <span class="o">=</span> <span class="mi">32</span><span class="p">,</span>
         <span class="n">bitOffset</span>    <span class="o">=</span> <span class="mh">0x00</span><span class="p">,</span>

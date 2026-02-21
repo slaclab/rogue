@@ -4,30 +4,45 @@
 RunControl Device Class
 =======================
 
-* :py:class:`pyrogue.RunControl` is a sub-class of :py:class:`pyrogue.Device` which serves as the base class for application specific run control.
+:py:class:`pyrogue.RunControl` is a :py:class:`pyrogue.Device` subclass for
+software-driven run state management.
 
-   * Can be used as is for most software driven data acquisition
-   * Can be sub-classed for more complex hardware and external run control
+Use it directly for most software-driven data acquisition, or subclass it for
+more complex hardware-integrated and external run-control workflows.
 
-* The RunControl object is created the following way:
+It provides built-in fields such as:
+
+* ``runState`` (for example ``Stopped`` / ``Running``)
+* ``runRate`` (iteration frequency)
+* ``runCount`` (loop counter)
+* optional ``cmd`` callback executed each run loop iteration
+
+Construction
+------------
+``RunControl`` is typically created as:
 
 .. code-block:: python
 
-   Rc = pyrogue.RunControl(name, description, 
-                           hidden=True, rates, states, cmd)
+   rc = pyrogue.RunControl(
+       name='RunControl',
+       description='Application run controller',
+       hidden=True,
+       rates={1: '1 Hz', 10: '10 Hz'},
+       states={0: 'Stopped', 1: 'Running'},
+       cmd=myRunCommand,
+   )
 
-* Parameters:
+Parameters
+----------
+Key constructor parameters:
 
-   * Hidden is normally True since RunControl does not appear in the normal GUI tree, instead it is represented in a special window.
-   * rates: A dictionary of rates and associated keys. The keys are application specific and represent the run rate in hz in the default class. The defaults rates are:
-
-      * rates={1:'1 Hz', 10:'10 Hz'}
-
-   * states: A dictionary of states and associated keys. The keys are application specific. The default rates are:
-
-      * states={0:'Stopped', 1:'Running'}
-
-   * cmd: Is the command to execute at each iteration when using the default software driven run() method. This can either be a pointer to a python function or pyrogue Command.
+* ``hidden``: Normally ``True`` so RunControl appears in a dedicated run-control
+  view instead of the normal tree display.
+* ``rates``: Dictionary mapping application-specific rate keys to labels.
+  In the default implementation, keys represent loop rates in Hz.
+* ``states``: Dictionary mapping application-specific state keys to labels.
+* ``cmd``: Callable executed at each iteration in the default software-driven
+  run loop. This can be a Python function reference or a PyRogue command.
 
 RunControl Class Documentation
 ==============================

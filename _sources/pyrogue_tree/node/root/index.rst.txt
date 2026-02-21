@@ -4,62 +4,179 @@
 Root
 ====
 
-The Root class is the fundamental building block of the :ref:`pyrogue_tree`.
-The tree hierarchy starts with a root node.
+The :py:class:`pyrogue.Root` class is the top-level node in a PyRogue tree.
+It owns the application lifecycle, coordinates bulk read/write operations,
+manages background workers (poll and update), and provides APIs for YAML
+save/load and external listeners.
 
-The root node is the base of the tree and provides tree wide access methods
+For polling internals and usage patterns, see
+:ref:`pyrogue_tree_root_poll_queue`.
 
-* These methods are used to manage and update the system tree
-* In python, the root node class is created the following way:
+Most user applications define a subclass of ``pyrogue.Root`` and add devices
+inside ``__init__``.
 
-:code:`Root = pyrogue.Root(name='name', description='description')`
+In practice, ``Root`` is also where hardware connections are usually created and
+bound into the tree. A typical pattern is:
 
-* Root classes should be created a sub-class of Root
-
-.. code-block:: python
-
-   class EvalBoard(pyrogue.Root):
-      def __init__(self):
-         pyrogue.Root.__init__(self,name='evalBoard',description='Evaluation Board')
-
-* Hardware interfaces (pgp, rssi, udp) can be created and linked within the Root class :py:meth:`pyrogue.Root.init` method
-* Epics and pyro servers can be started within the root class :code:`init()` method
-
-* Typical top level file utilizing our previously created root class:
+* create a memory interface (for example AXI PCIe, TCP simulation, etc.)
+* register it with :py:meth:`pyrogue.Root.addInterface`
+* pass that interface as ``memBase`` when adding top-level devices
+* optionally add management/control interfaces (such as ZMQ) to the same root
 
 .. code-block:: python
 
-   if __name__ == "__main__":
-      evalBoard = EvalBoard()
-      appTop = PyQt4.QtGui.QApplication(sys.argv)
-      guiTop = pyrogue.gui.GuiTop(group='rogueTest')
-      guiTop.addTree(evalBoard)
-      appTop.exec_()
-      evalboard.stop()
+   import pyrogue as pr
+   import rogue
+   import pyrogue.interfaces
+   import axipcie
+
+   class EvalBoard(pr.Root):
+       def __init__(self, dev='/dev/datadev_0', sim=False, **kwargs):
+           super().__init__(name='EvalBoard', description='Evaluation board root', **kwargs)
+
+           # Create the memory-mapped hardware/simulation interface.
+           if sim:
+               self.memMap = rogue.interfaces.memory.TcpClient('localhost', 11000)
+           else:
+               self.memMap = rogue.hardware.axi.AxiMemMap(dev)
+
+           # Register memory interface with Root so tree transactions route correctly.
+           self.addInterface(self.memMap)
+
+           # Optional management API for GUIs/remote clients.
+           self.zmqServer = pyrogue.interfaces.ZmqServer(
+               root=self,
+               addr='127.0.0.1',
+               port=0,
+           )
+           self.addInterface(self.zmqServer)
+
+           # Add top-level devices and bind them to the same memory interface.
+           self.add(axipcie.AxiPcieCore(
+               offset=0x00000000,
+               memBase=self.memMap,
+               expand=True,
+           ))
 
 Key Attributes
 --------------
 
-Along with all other Node class parameters, the following are also included:
+Along with inherited :ref:`Node <pyrogue_tree_node>` attributes, root adds:
 
-* running: True/False flag indicating if the Root class is running :py:meth:`pyrogue.Root.start` has been called
+* ``running``: ``True`` when :py:meth:`pyrogue.Root.start` has been called.
+* system commands and variables that support whole-tree control
+  (see sections below).
 
 Key Methods
 -----------
 
 * :py:meth:`pyrogue.Root.start`
-
 * :py:meth:`pyrogue.Root.stop`
-
-   * Stop the root class and all of its associated background threads
-
 * :py:meth:`pyrogue.Root.addVarListener`
-
-   * Add a system level variable listener. See more in :ref:`Variable <pyrogue_tree_node_variable>`
-
 * :py:meth:`pyrogue.Root.getNode`
+* :py:meth:`pyrogue.Root.saveYaml`
+* :py:meth:`pyrogue.Root.loadYaml`
+* :py:meth:`pyrogue.Root.setYaml`
+* :py:meth:`pyrogue.Root.pollBlock`
 
-   * Return a node at the full path. Ex: :code:`evalBoard.AxiVersion.ScratchPad`
+``getNode`` resolves dotted paths such as ``EvalBoard.AxiVersion.ScratchPad``.
+
+Lifecycle: ``start()``, ``stop()``, and ``_rootAttached()``
+------------------------------------------------------------
+
+``Root`` owns the runtime lifecycle of the full tree.
+The call to :py:meth:`pyrogue.Root.start` is more than "start threads"; it
+finishes root attachment, final initialization, interface startup, optional
+initial read/write, and poll scheduling.
+
+What ``Root.start()`` does
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+When :py:meth:`pyrogue.Root.start` is called:
+
+#. Validates the root is not already running.
+#. Calls ``Root._rootAttached()`` to attach root/parent/path references for the
+   full tree and build device blocks.
+#. Calls ``_finishInit()`` recursively on all nodes.
+#. Validates block address overlap (per slave-id address space).
+#. Applies timeout settings to nodes/blocks.
+#. Starts background workers:
+
+   * update worker thread
+   * optional heartbeat thread
+
+#. Calls :py:meth:`pyrogue.Device._start` on the root device recursively.
+   This is where managed interfaces/protocols (added with
+   :py:meth:`pyrogue.Device.addInterface`) get their ``_start()`` callback.
+   See :ref:`pyrogue_tree_node_device_managed_interfaces`.
+#. Optionally performs initial full-tree read/write depending on root settings.
+#. Starts :py:class:`pyrogue.PollQueue` and applies ``PollEn``.
+
+What ``Root.stop()`` does
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+When :py:meth:`pyrogue.Root.stop` is called:
+
+#. Clears ``running`` and stops the update worker.
+#. Stops :py:class:`pyrogue.PollQueue`.
+#. Calls :py:meth:`pyrogue.Device._stop` recursively from the root.
+   This is where managed interfaces/protocols receive ``_stop()``.
+
+``_rootAttached()`` in root startup
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+``Root._rootAttached()`` sets:
+
+* root ``_parent`` to itself
+* root ``_root`` to itself
+* root ``_path`` to ``root.name``
+
+Then it recursively calls ``node._rootAttached(parent, root)`` across the tree.
+For each node this establishes parent/root/path/logger state before runtime
+operations begin. Device-level ``_rootAttached`` additionally builds local
+variable/block mappings and applies default overrides.
+
+``_finishInit()`` in root startup
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+After ``_rootAttached()``, :py:meth:`pyrogue.Root.start` calls
+``_finishInit()`` recursively across all nodes before worker threads and
+interfaces are started.
+
+``_finishInit()`` is the final tree-initialization stage used to complete
+node setup that depends on full tree attachment and resolved node references.
+At this point, every node has a valid parent/root/path context, so deferred
+initialization logic can run with complete hierarchy information.
+
+Temporarily Blocking Polling
+----------------------------
+
+Use :py:meth:`pyrogue.Root.pollBlock` when you need a short critical section
+that should not race with background poll reads.
+
+.. code-block:: python
+
+   with root.pollBlock():
+       root.MyDevice.SomeControl.set(1)
+       root.MyDevice.OtherControl.set(0)
+
+ZmqServer Interface
+-------------------
+
+:py:class:`pyrogue.interfaces.ZmqServer` exposes the root over a ZeroMQ control
+channel used by tools such as PyDM-based GUIs and external clients.
+
+Common initialization pattern in ``Root.__init__``:
+
+* create server: ``pyrogue.interfaces.ZmqServer(root=self, addr='127.0.0.1', port=0)``
+* add to root with :py:meth:`pyrogue.Root.addInterface`
+
+Notes:
+
+* ``port=0`` auto-selects the first available base port starting at ``9099``
+  (the server then uses ``base``, ``base+1``, and ``base+2``)
+* binding to ``127.0.0.1`` keeps the server local to the host
+* non-local deployments can bind to another interface/address as needed
 
 Yaml File Configuration
 -----------------------
@@ -67,40 +184,58 @@ Yaml File Configuration
 Saving and Restoring Configurations
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-System wide configurations and be saved to or restored from yaml strings using provided methods.
+System-wide state/configuration can be exported to YAML text/files and loaded
+back with:
 
 * :py:meth:`pyrogue.Node.getYaml` (Note: inherited from :py:class:`pyrogue.Node` class.)
 * :py:meth:`pyrogue.Root.setYaml`
+* :py:meth:`pyrogue.Root.saveYaml`
+* :py:meth:`pyrogue.Root.loadYaml`
+
+Built-in Groups
+^^^^^^^^^^^^^^^
+
+PyRogue root-level configuration/state commands use group filtering to include or exclude
+variables and commands from bulk operations.
+
+Common built-in group names:
+
+* ``NoConfig``: excluded from configuration save/load operations.
+* ``NoState``: excluded from state snapshot/export operations.
+* ``Hidden``: hidden from normal GUI views unless explicitly included.
+
+See :ref:`pyrogue_tree_node_groups` for full built-in group behavior and filtering semantics.
 
 Configuration Array Matching
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-In some cases there will be devices or variable that are part of an array, such as:
+YAML load supports node-array style matching and slicing.
+For example:
 
 * AmcCard[0] - DacEnable[0], DacEnable[1]
 * AmcCard[1] - DacEnable[0], DacEnable[1]
 * AmcCard[2] - DacEnable[0], DacEnable[1]
 
-In cases like this, Yaml configuration file can be setup to apply settings to multiple elements.
-Python list slicing indexes are used, as well as additional wildcards.
+Use Python-like slicing and wildcards:
 
-* To Enable Dac channel 0 in both AMCS:
+* Enable DAC channel 0 in all cards:
 
-   * AmcCard:DacEnable[0]: True
 
-* To Enable both DAC channels in AMC cards 1 and 2:
+  * ``AmcCard[:]:DacEnable[0]: True``
 
-   * AmcCard[1:3]: DacEnable: True
+* Enable both DAC channels in cards 1 and 2:
 
-* Example list splicing:
+  * ``AmcCard[1:3]: DacEnable: True``
 
-   * AmcCard[1:3] accesses AmcCards 1 & 2
-   * AmcCard[:2] accesses AmcCards 0 & 1
-   * AmcCard[:] accesses all AmcCards
+* List slicing behavior:
 
-* Example wildcard features:
+  * ``AmcCard[1:3]`` -> cards 1 and 2
+  * ``AmcCard[:2]`` -> cards 0 and 1
+  * ``AmcCard[:]`` -> all cards
 
-   * AmcCard = all cards
-   * AmcCard[*] = all cards
+* Wildcards:
+
+  * ``AmcCard`` -> all cards
+  * ``AmcCard[*]`` -> all cards
 
 Included Command Objects
 ------------------------
@@ -122,7 +257,6 @@ The following :py:class:`pyrogue.LocalCommand` objects are all created when the 
 * **GetYamlConfig**: Get configuration in YAML string.
 * **GetYamlState**: Get current state as YAML string.
 
-
 Included Variable Objects
 -------------------------
 The following :py:class:`pyrogue.LocalVariable` objects are all created when the Root node is created.
@@ -137,28 +271,8 @@ The following :py:class:`pyrogue.LocalVariable` objects are all created when the
 * **LocalTime**: Local time.
 * **PollEn**: Polling worker.
 
-C++ Root Example
-================
-
-Below is an example of creating a root device in C++.
-
-.. code-block:: c
-
-   #include <rogue/interfaces/memory/Constants.h>
-   #include <boost/thread.hpp>
-
-   // Create a subclass of a root 
-   class MyRoot : public rogue:: ... {
-      public:
-
-      protected:
-
-   };
-
-A few notes on the above examples ...
-
 Root Class Documentation
-========================
+------------------------
 
 .. autoclass:: pyrogue.Root
    :members:

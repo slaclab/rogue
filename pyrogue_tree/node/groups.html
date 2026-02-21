@@ -1,0 +1,226 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Groups &mdash; Rogue v6.8.2 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=f9c5c301" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=42e93e3f"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Root" href="root/index.html" />
+    <link rel="prev" title="Block" href="block/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../introduction/index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">PyRogue Tree</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Node</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="block/index.html">Block</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Groups</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#how-group-filtering-works">How group filtering works</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#built-in-group-names-and-behavior">Built-in group names and behavior</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#other-names-you-may-see">Other names you may see</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#best-practices">Best practices</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#node-class-description">Node Class Description</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="root/index.html">Root</a></li>
+<li class="toctree-l2"><a class="reference internal" href="root/poll_queue.html">PollQueue</a></li>
+<li class="toctree-l2"><a class="reference internal" href="device/index.html">Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="command/index.html">Command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="variable/index.html">Variable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../model/index.html">Model API</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../interfaces/index.html">Interfaces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../utilities/index.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../hardware/index.html">Hardware</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../protocols/index.html">Protocols</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../custom_module/index.html">Creating Custom Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pydm/index.html">Using the PyDM Gui</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../migration/index.html">Migration Notes</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">PyRogue Tree</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Node</a></li>
+      <li class="breadcrumb-item active">Groups</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/pyrogue_tree/node/groups.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="groups">
+<span id="pyrogue-tree-node-groups"></span><h1>Groups<a class="headerlink" href="#groups" title="Link to this heading"></a></h1>
+<p>PyRogue groups are string tags attached to each node (Device, Variable, Command, etc.).
+They are intentionally open-ended: users can define any custom group name and use it with
+<code class="docutils literal notranslate"><span class="pre">incGroups</span></code> / <code class="docutils literal notranslate"><span class="pre">excGroups</span></code> filters.</p>
+<section id="how-group-filtering-works">
+<h2>How group filtering works<a class="headerlink" href="#how-group-filtering-works" title="Link to this heading"></a></h2>
+<p>Most tree APIs that accept <code class="docutils literal notranslate"><span class="pre">incGroups</span></code> and <code class="docutils literal notranslate"><span class="pre">excGroups</span></code> use the same logic:</p>
+<ul class="simple">
+<li><p>include check passes when <code class="docutils literal notranslate"><span class="pre">incGroups</span></code> is empty, or the node is in at least one include group</p></li>
+<li><p>exclude check passes when <code class="docutils literal notranslate"><span class="pre">excGroups</span></code> is empty, or the node is in none of the exclude groups</p></li>
+<li><p>a node is processed only if both checks pass</p></li>
+</ul>
+</section>
+<section id="built-in-group-names-and-behavior">
+<h2>Built-in group names and behavior<a class="headerlink" href="#built-in-group-names-and-behavior" title="Link to this heading"></a></h2>
+<p>The following names have built-in meaning in the current PyRogue implementation:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Hidden</span></code></p>
+<ul>
+<li><p>Added automatically when <code class="docutils literal notranslate"><span class="pre">hidden=True</span></code> is used in node constructors.</p></li>
+<li><p>Used by GUI and helper defaults to hide nodes unless explicitly included.</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">NoConfig</span></code></p>
+<ul>
+<li><p>Excluded by root configuration APIs/commands such as <code class="docutils literal notranslate"><span class="pre">SaveConfig</span></code>, <code class="docutils literal notranslate"><span class="pre">LoadConfig</span></code>,
+<code class="docutils literal notranslate"><span class="pre">SetYamlConfig</span></code>, and <code class="docutils literal notranslate"><span class="pre">GetYamlConfig</span></code>.</p></li>
+<li><p>Use for runtime/status items that should not be persisted as configuration.</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">NoState</span></code></p>
+<ul>
+<li><p>Excluded by root state-export APIs/commands such as <code class="docutils literal notranslate"><span class="pre">SaveState</span></code> and <code class="docutils literal notranslate"><span class="pre">GetYamlState</span></code>.</p></li>
+<li><p>Use for values that should not be captured in state snapshots.</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">NoStream</span></code></p>
+<ul>
+<li><p>Excluded by default in variable streaming interfaces. E.g. pyrogue.interfaces.stream.Variable.</p></li>
+<li><p>Use for nodes that should not appear in stream output.</p></li>
+<li><p>Typically used to prevent Variable logging from being set to a StreamWriter.</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">NoSql</span></code></p>
+<ul>
+<li><p>Excluded by default in SQL logging interfaces.</p></li>
+<li><p>Use for nodes that should not be recorded in SQL logs.</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">NoServe</span></code></p>
+<ul>
+<li><p>Excluded from served remote node lists (for example ZMQ/virtual tree exposure).</p></li>
+<li><p>Use for nodes that should remain local-only and not be exposed remotely.</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Enable</span></code></p>
+<ul>
+<li><p>Used by the built-in EnableVariable class as a semantic label.</p></li>
+<li><p>This is a convention used by framework components, not a hard filter category by itself.</p></li>
+<li><p>Should not be used for any other purpose.</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="other-names-you-may-see">
+<h2>Other names you may see<a class="headerlink" href="#other-names-you-may-see" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">NoAlarm</span></code> appears in examples/tutorial content, but there is no core framework behavior
+tied to this name in the current codebase. Treat it as a project-level convention unless
+your application defines logic for it.</p></li>
+</ul>
+</section>
+<section id="best-practices">
+<h2>Best practices<a class="headerlink" href="#best-practices" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Keep built-in names for their existing semantics.</p></li>
+<li><p>Add project-specific groups for your own workflows (for example deployment phases, GUI views, ownership).</p></li>
+<li><p>Document custom groups near your root/device definitions so downstream users know how to filter them.</p></li>
+<li><p>Prefer <code class="docutils literal notranslate"><span class="pre">incGroups</span></code> / <code class="docutils literal notranslate"><span class="pre">excGroups</span></code> in bulk operations instead of ad-hoc per-node conditionals.</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="block/index.html" class="btn btn-neutral float-left" title="Block" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="root/index.html" class="btn btn-neutral float-right" title="Root" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

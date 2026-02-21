@@ -5,15 +5,16 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue.protocols.epicsV4 &mdash; Rogue v6.8.1 documentation</title>
+  <title>pyrogue.protocols.epicsV4 &mdash; Rogue v6.8.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=f9c5c301" />
 
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=7511b455"></script>
+      <script src="../../../_static/documentation_options.js?v=42e93e3f"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -105,6 +106,7 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
 
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">import</span><span class="w"> </span><span class="nn">p4p.server.thread</span>
@@ -122,7 +124,20 @@
         <span class="s2">&quot;Note: You may also need to ensure EPICS is set up on your system for P4P to work properly.&quot;</span>
     <span class="p">)</span>
 
-<span class="k">def</span><span class="w"> </span><span class="nf">EpicsConvStatus</span><span class="p">(</span><span class="n">varValue</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">EpicsConvStatus</span><span class="p">(</span><span class="n">varValue</span><span class="p">:</span> <span class="n">pyrogue</span><span class="o">.</span><span class="n">VariableValue</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert PyRogue variable status to EPICS alarm status code.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    varValue : object</span>
+<span class="sd">        PyRogue variable value with ``status`` attribute.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    int</span>
+<span class="sd">        EPICS alarm status code (0=no alarm, 3=HiHi, 4=High, 5=LoLo, 6=Low).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">varValue</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="s2">&quot;AlarmLoLo&quot;</span><span class="p">:</span>
         <span class="k">return</span> <span class="mi">5</span>  <span class="c1"># epicsAlarmLoLo</span>
     <span class="k">elif</span> <span class="n">varValue</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="s2">&quot;AlarmLow&quot;</span><span class="p">:</span>
@@ -135,7 +150,20 @@
         <span class="k">return</span> <span class="mi">0</span>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">EpicsConvSeverity</span><span class="p">(</span><span class="n">varValue</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">EpicsConvSeverity</span><span class="p">(</span><span class="n">varValue</span><span class="p">:</span> <span class="n">pyrogue</span><span class="o">.</span><span class="n">VariableValue</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert PyRogue variable severity to EPICS alarm severity code.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    varValue : object</span>
+<span class="sd">        PyRogue variable value with ``severity`` attribute.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    int</span>
+<span class="sd">        EPICS alarm severity code (0=no alarm, 1=minor, 2=major).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">varValue</span><span class="o">.</span><span class="n">severity</span> <span class="o">==</span> <span class="s2">&quot;AlarmMinor&quot;</span><span class="p">:</span>
         <span class="k">return</span> <span class="mi">1</span>  <span class="c1"># epicsSevMinor</span>
     <span class="k">elif</span> <span class="n">varValue</span><span class="o">.</span><span class="n">severity</span> <span class="o">==</span> <span class="s2">&quot;AlarmMajor&quot;</span><span class="p">:</span>
@@ -145,12 +173,25 @@
 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">EpicsPvHandler</span><span class="p">(</span><span class="n">p4p</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">thread</span><span class="o">.</span><span class="n">Handler</span><span class="p">):</span>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">valType</span><span class="p">,</span> <span class="n">var</span><span class="p">,</span> <span class="n">log</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Handler for EPICS PV put/get and RPC operations.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    valType : str</span>
+<span class="sd">        EPICS value type string (for example ``&#39;i&#39;``, ``&#39;f&#39;``, ``&#39;enum&#39;``).</span>
+<span class="sd">    var : pyrogue.BaseVariable</span>
+<span class="sd">        PyRogue variable/command bound to the PV.</span>
+<span class="sd">    log : object</span>
+<span class="sd">        Logger instance.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">valType</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">var</span><span class="p">:</span> <span class="n">pyrogue</span><span class="o">.</span><span class="n">BaseVariable</span><span class="p">,</span> <span class="n">log</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_valType</span> <span class="o">=</span> <span class="n">valType</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_var</span> <span class="o">=</span> <span class="n">var</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_log</span> <span class="o">=</span> <span class="n">log</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">put</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pv</span><span class="p">,</span> <span class="n">op</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">put</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pv</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">op</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle EPICS put requests for writable variables and commands.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_var</span><span class="o">.</span><span class="n">isVariable</span> <span class="ow">and</span> <span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_var</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;RW&#39;</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_var</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;WO&#39;</span><span class="p">):</span>
             <span class="k">try</span><span class="p">:</span>
@@ -174,7 +215,8 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">op</span><span class="o">.</span><span class="n">done</span><span class="p">(</span><span class="n">error</span><span class="o">=</span><span class="s1">&#39;Put Not Supported On This Variable&#39;</span><span class="p">)</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">rpc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pv</span><span class="p">,</span> <span class="n">op</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">rpc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pv</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">op</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle EPICS RPC requests for command-backed PVs.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_var</span><span class="o">.</span><span class="n">isCommand</span><span class="p">:</span>
             <span class="n">val</span> <span class="o">=</span> <span class="n">op</span><span class="o">.</span><span class="n">value</span><span class="p">()</span><span class="o">.</span><span class="n">query</span>
 
@@ -197,11 +239,13 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">op</span><span class="o">.</span><span class="n">done</span><span class="p">(</span><span class="n">error</span><span class="o">=</span><span class="s1">&#39;Rpc Not Supported On Variables&#39;</span><span class="p">)</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">onFirstConnect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pv</span><span class="p">):</span>  <span class="c1"># may be omitted</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">onFirstConnect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pv</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># may be omitted</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Called when the first client connects to the PV.&quot;&quot;&quot;</span>
         <span class="c1"># print(f&quot;PV First connect called pv={pv}&quot;)</span>
         <span class="k">pass</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">onLastDisconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pv</span><span class="p">):</span>  <span class="c1"># may be omitted</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">onLastDisconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pv</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># may be omitted</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Called when the last client disconnects from the PV.&quot;&quot;&quot;</span>
         <span class="c1"># print(f&quot;PV Last Disconnect called pv={pv}&quot;)</span>
         <span class="k">pass</span>
 
@@ -209,7 +253,21 @@
 <div class="viewcode-block" id="EpicsPvHolder">
 <a class="viewcode-back" href="../../../protocols/pyrogue/epicspvholder.html#pyrogue.protocols.epicsV4.EpicsPvHolder">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">EpicsPvHolder</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">provider</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">var</span><span class="p">,</span> <span class="n">log</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Holds and manages a single EPICS PV backed by a PyRogue variable.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    provider : object</span>
+<span class="sd">        P4P static provider to add the PV to.</span>
+<span class="sd">    name : str</span>
+<span class="sd">        EPICS PV name.</span>
+<span class="sd">    var : object</span>
+<span class="sd">        PyRogue variable/command to expose.</span>
+<span class="sd">    log : object</span>
+<span class="sd">        Logger instance.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">provider</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">var</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">log</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_var</span> <span class="o">=</span> <span class="n">var</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_log</span> <span class="o">=</span> <span class="n">log</span>
@@ -378,7 +436,8 @@
             <span class="c1"># Precision ?</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_pv</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">curr</span><span class="p">)</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_varUpdated</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_varUpdated</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Post updated variable values into the backing EPICS PV.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_valType</span> <span class="o">==</span> <span class="s1">&#39;enum&#39;</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_valType</span> <span class="o">==</span> <span class="s1">&#39;s&#39;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_pv</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">valueDisp</span><span class="p">)</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_valType</span> <span class="o">==</span> <span class="s1">&#39;ndarray&#39;</span><span class="p">:</span>
@@ -398,10 +457,35 @@
 <a class="viewcode-back" href="../../../protocols/pyrogue/epicspvserver.html#pyrogue.protocols.epicsV4.EpicsPvServer">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">EpicsPvServer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Class to contain an epics PV server</span>
+<span class="sd">    EPICS PV server that exposes PyRogue variables as EPICS process variables.</span>
+
+<span class="sd">    Uses P4P to serve variables from a PyRogue tree over the EPICS protocol.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    base : str</span>
+<span class="sd">        Base string prepended to PV names.</span>
+<span class="sd">    root : pyrogue.Root</span>
+<span class="sd">        PyRogue root node containing variables to expose.</span>
+<span class="sd">    incGroups : str | list[str] | None, optional</span>
+<span class="sd">        Include only variables in these groups.</span>
+<span class="sd">    excGroups : str | list[str] | None, optional</span>
+<span class="sd">        Exclude variables in these groups.</span>
+<span class="sd">    pvMap : dict[str, str] | None, optional</span>
+<span class="sd">        Explicit path-to-PV-name mapping.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">base</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="n">incGroups</span><span class="p">,</span> <span class="n">excGroups</span><span class="p">,</span> <span class="n">pvMap</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">base</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">root</span><span class="p">:</span> <span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="p">,</span>
+        <span class="n">incGroups</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">excGroups</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">pvMap</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">excGroups</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">excGroups</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;NoServe&#39;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_root</span> <span class="o">=</span> <span class="n">root</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_base</span> <span class="o">=</span> <span class="n">base</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_log</span> <span class="o">=</span> <span class="n">pyrogue</span><span class="o">.</span><span class="n">logInit</span><span class="p">(</span><span class="bp">cls</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
@@ -413,12 +497,13 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_provider</span> <span class="o">=</span> <span class="n">p4p</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">StaticProvider</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Stop the EPICS PV server.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_server</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-
+    <span class="k">def</span><span class="w"> </span><span class="nf">_start</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Start the EPICS PV server and register all variables.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_started</span><span class="p">:</span>
             <span class="k">return</span>
 
@@ -462,10 +547,31 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_server</span> <span class="o">=</span> <span class="n">p4p</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">Server</span><span class="p">(</span><span class="n">providers</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_provider</span><span class="p">])</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pvMap</span>
+<div class="viewcode-block" id="EpicsPvServer.list">
+<a class="viewcode-back" href="../../../protocols/pyrogue/epicspvserver.html#pyrogue.protocols.epicsV4.EpicsPvServer.list">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the PyRogue path to EPICS PV name mapping.</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">dump</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dict</span>
+<span class="sd">            Mapping of variable paths to EPICS PV names.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pvMap</span></div>
+
+
+<div class="viewcode-block" id="EpicsPvServer.dump">
+<a class="viewcode-back" href="../../../protocols/pyrogue/epicspvserver.html#pyrogue.protocols.epicsV4.EpicsPvServer.dump">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">dump</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Print or write the PV mapping to file.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        fname : str, optional</span>
+<span class="sd">            If provided, write mapping to this file; otherwise print to stdout.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">fname</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
@@ -476,6 +582,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pvMap</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> -&gt; </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">k</span><span class="p">))</span></div>
+</div>
 
 </pre></div>
 

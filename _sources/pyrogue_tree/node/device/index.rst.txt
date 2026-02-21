@@ -1,386 +1,249 @@
 .. _pyrogue_tree_node_device:
 
 ======
-Device 
+Device
 ======
 
 Device Definition
 =================
 
-A Device node is a container for Variable and Commands as well as other devices
+A :py:class:`pyrogue.Device` is the primary composition unit in a PyRogue tree.
+Devices can contain:
 
-* A Device class is a sub-class of rogue::interfaces::memory::Hub
+* child devices
+* variables (local, remote, link)
+* commands (local, remote)
 
-   * This allows it to serve as a memory master as well as act as a hub to other memory masters
-   * Variables (and their connected Blocks) associated with hardware will have an offset relative to the Device base address and will use the Device's linked memory::Slave when performing register accesses
-   * Added Devices which are not already associated with a memory Slave interface will inherit the base Device's base address and Slave interface
-   * A Device can have it's own direct link to a memory Slave which is not related to parent.
+Most user-facing hardware abstractions are implemented as ``Device`` subclasses.
+At runtime, a device also participates in memory routing behavior through the
+Rogue memory hub stack.
+
+.. code-block:: python
+
+   import pyrogue as pr
+
+   class MyDevice(pr.Device):
+       def __init__(self, **kwargs):
+           super().__init__(description='Example device', **kwargs)
+           self.add(pr.LocalVariable(name='Mode', mode='RW', value=0))
+           self.add(pr.LocalCommand(name='Reset', function=self._reset))
+
+       def _reset(self):
+           pass
 
 Key Attributes
 --------------
-* Devices have the following attributes, in addition to all inherited from Node:
 
-   * offset, address, memBase, enabled
-   * enabled acts as an on/off switch for invidual devices within the tree.
+In addition to inherited :ref:`Node <pyrogue_tree_node>` attributes, common
+device-level attributes include:
+
+* ``offset`` / ``address``
+* ``memBase``
+* ``enable``
+
+The ``enable`` variable allows tree-level logic to disable a full device subtree
+for hardware access while keeping node metadata available.
+
+Relationship to Hub
+-------------------
+
+Conceptually, a device behaves as a hub in the memory routing stack:
+
+* variable/block transactions are addressed relative to the device base
+* child devices can inherit base/memory routing from parent devices
+* a child device can also be attached to an independent memory path when needed
 
 Key Methods
 -----------
-* Sub-Devices, Variables and Commands are added using the :py:meth:`add() <pyrogue.Device.add>` method
-* A special device-specific :py:meth:`addRemoteVariables <pyrogue.Device.addRemoteVariables>` method allows the creation of RemoteVariable arrays
-* Hide or Unhide all variables with :py:meth:`hideVariables() <pyrogue.Device.hideVariables>`
-* Optional override behavior for when a system-wide hardreset is generated - :py:meth:`hardReset() <pyrogue.Device.hardReset>`
-* Optional override for countReset - :py:meth:`countReset() <pyrogue.Device.countReset>`
+
+Commonly used methods:
+
+* :py:meth:`pyrogue.Device.add`
+* :py:meth:`pyrogue.Device.addRemoteVariables`
+* :py:meth:`pyrogue.Device.hideVariables`
+* :py:meth:`pyrogue.Device.initialize`
+* :py:meth:`pyrogue.Device.hardReset`
+* :py:meth:`pyrogue.Device.countReset`
+* :py:meth:`pyrogue.Device.writeBlocks`
+* :py:meth:`pyrogue.Device.verifyBlocks`
+* :py:meth:`pyrogue.Device.readBlocks`
+* :py:meth:`pyrogue.Device.checkBlocks`
+
+.. _pyrogue_tree_node_device_managed_interfaces:
+
+Managed Interfaces: ``addInterface()`` and ``addProtocol()``
+-------------------------------------------------------------
+
+Devices can own stream/memory/protocol helper objects that need coordinated
+startup/shutdown with the device tree.
+
+Use :py:meth:`pyrogue.Device.addInterface` (or alias
+:py:meth:`pyrogue.Device.addProtocol`) to register:
+
+* Rogue memory or stream interface objects
+* protocol servers/clients
+* any custom object that implements ``_start()`` and/or ``_stop()``
+
+At runtime:
+
+* :py:meth:`pyrogue.Device._start` calls ``_start()`` on each managed object if
+  the method exists
+* :py:meth:`pyrogue.Device._stop` calls ``_stop()`` on each managed object if
+  the method exists
+* both then recurse to child devices
+
+This is why top-level interfaces are commonly added at root scope using
+``root.addInterface(...)`` (``Root`` is a ``Device`` subclass).
+
+Lifecycle Override Points for Subclasses
+----------------------------------------
+
+The following methods are intended override points when you need custom
+behavior around startup/shutdown or transaction sequencing.
+
+Start/Stop hooks
+^^^^^^^^^^^^^^^^
+
+* :py:meth:`pyrogue.Device._start`:
+  Called recursively from :py:meth:`pyrogue.Root.start`.
+  Typical use: open sockets/threads/resources, then call ``super()._start()``.
+* :py:meth:`pyrogue.Device._stop`:
+  Called recursively from :py:meth:`pyrogue.Root.stop`.
+  Typical use: stop custom resources and call ``super()._stop()`` to preserve
+  managed interface and child-device shutdown.
+* :py:meth:`pyrogue.Device._rootAttached`:
+  Called during root startup before ``_finishInit`` and before runtime threads.
+  Typical use: finalize path/root-dependent setup after calling
+  ``super()._rootAttached(parent, root)``.
+
+Operational hooks
+^^^^^^^^^^^^^^^^^
+
+* :py:meth:`pyrogue.Device.initialize`
+* :py:meth:`pyrogue.Device.hardReset`
+* :py:meth:`pyrogue.Device.countReset`
+* :py:meth:`pyrogue.Device.enableChanged`
+
+These are commonly overridden to implement device-specific control behavior.
+
+Read/write sequencing hooks
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+* :py:meth:`pyrogue.Device.writeBlocks`
+* :py:meth:`pyrogue.Device.verifyBlocks`
+* :py:meth:`pyrogue.Device.readBlocks`
+* :py:meth:`pyrogue.Device.checkBlocks`
+
+Override these when the default transaction ordering needs pre/post side
+effects or custom sequencing.
 
 Device Read/Write Operations
 ----------------------------
 
-When system wide config, write and read operations are generated the blocks in each Device are manipulated by the top level Root node
+Bulk config/read/write operations traverse the tree and issue block transactions
+through device block APIs.
 
-* In a bulk config the shadow values in each variable are written by issuing the :py:meth:`setDisp() <pyrogue.Variable.setDisp>` call of each variable with the value contained in the configuration file
+Typical write flow:
 
-   * A write() transaction in each block is then generated and added to the queue
-   * A verify() transaction in each block is then generated and added to the queue
-   * The system then waits for the previous two transactions in each block to complete and then checks the result. Updated variables are then notified.
+* update variable shadow value
+* enqueue write transaction
+* optionally enqueue verify transaction
+* check completion and publish updates
 
-* In a bulk read operation:
+Typical read flow:
 
-   * A read() transaction in each block is then generated and added to the queue
-   * The system then waits for the read transaction in each block to complete and then checks the result.
+* enqueue read transaction
+* check completion
+* return/publish updated values
 
-Similarly individual variable writes (from EPICS, a GUI or a script) will result in transactions occurring on each Block
+Implementation Boundary (Python and C++)
+----------------------------------------
 
-* A variable set(write=True) issues the following sequence:
+From a Python API perspective, you use ``pyrogue.Device`` methods such as
+``readBlocks`` and ``writeBlocks``.
 
-   * set() the value to the variable
-   * Issue a write to the associated Block
-   * Issue a verify to the associated Block
-   * Check the result of the transactions and generate updates.
+Under the hood, ``pyrogue.Device`` is built on the Rogue memory interface
+hub/master/slave stack. In particular, a device participates in memory routing
+as a Hub, and forwards block transactions toward downstream memory slaves.
 
-* A variable get(read=True) issues the following sequence:
+Where Hub fits in transaction flow
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-   * Issue a read from the associated block
-   * Check the result of the transaction
-   * Return the updated value and generate updates. 
+The C++ Hub implementation (``src/rogue/interfaces/memory/Hub.cpp``):
 
-* In some special Devices this above order may not work. Some Devices may require a special command sequence to be issued before and/or after each write or read transaction.
-* The Device class allows the user to override the Device level functions that are called during these read and write operations.
+* applies local address offset when forwarding transactions downstream
+* can split large transactions into sub-transactions based on downstream
+  max-access limits
+* allows custom transaction translation by overriding ``_doTransaction`` in
+  Python/C++ subclasses
+
+Conceptual transaction path:
+
+* variable operation -> block transaction -> device/hub routing ->
+  downstream slave access -> completion/check -> variable update notify
+
+For deeper memory-stack behavior, see:
+
+* :ref:`interfaces_memory_blocks`
+* :ref:`interfaces_memory_hub`
+* :ref:`interfaces_memory_hub_ex`
+* :ref:`interfaces_memory_classes`
 
 Custom Read/Write Operations
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-* Write Transaction - :py:meth:`writeBlocks() <pyrogue.Device.writeBlocks>`
-* Verify Transaction - :py:meth:`verifyBlocks() <pyrogue.Device.verifyBlocks>`
-* Read Transation - :py:meth:`readBlocks() <pyrogue.Device.readBlocks>`
-* Wait on the result of multiple transations - :py:meth:`checkBlocks() <pyrogue.Device.checkBlocks>`
+If a device needs sequencing around default block operations, override:
+
+* :py:meth:`pyrogue.Device.writeBlocks`
+* :py:meth:`pyrogue.Device.verifyBlocks`
+* :py:meth:`pyrogue.Device.readBlocks`
+* :py:meth:`pyrogue.Device.checkBlocks`
 
 .. code-block:: python
 
-   def writeBlocks(self, force=False, recurse=True, variable=None):
-      # Do something before transation
-      super(writeBlocks, self)(recurse=recurse, variable=variable)
-      # Do something after transation
+   class SequencedDevice(pyrogue.Device):
+       def writeBlocks(self, *, force=False, recurse=True, variable=None, checkEach=False, index=-1):
+           # Pre-transaction behavior
+           super().writeBlocks(
+               force=force,
+               recurse=recurse,
+               variable=variable,
+               checkEach=checkEach,
+               index=index,
+           )
+           # Post-transaction behavior
 
-   def verifyBlocks(self, recurse=True, variable=None):
-      # Do something before transation
-      super(verifyBlocks, self)(recurse=recurse, variable=variable)
-      # Do something after transation
-
-   def readBlocks(self, recurse=True, variable=None):
-      # Do something before transation
-      super(readBlocks, self)(recurse=recurse, variable=variable)
-      # Do something after transation
-
-   def checkBlocks(self, recurse=True, variable=None):
-      # Do something before transation
-      super(checkBlocks, self)(recurse=recurse, variable=variable)
-      # Do something after transation
-
-Raw Read/Write Device Calls
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
-*  In some cases the user will want to create a Device which accesses memory directly without exposing values through Variables
-
-   * Prom programming or reading DAC waveforms from a file
-
-* A Device can be created with an offset and size and access memory within its mapped space using _rawWrite and _rawRead calls
-
-   * Operations are usually triggered by a LocalCommand or LocalVariable within the device
-
-
-In the following, _rawWrite and _rawRead are blocking calls
-:code:`def _rawWrite(self, offset, data, base=pyrogue.UInt, stride=4, wordBitSize=32):`
-
-* offset : Offset in bytes from Device base address
-* data: data to write in the form of a single value or a list of values
-* base: base class indicating the type of value(s) being written
-* stride: the spacing between the value locations in bytes
-* wordBitSize: the size of each value in bits
-
-:code:`def _rawRead(self, offset, numWords=1, base=pyrogue.UInt, stride=4, wordBitSize=32, data=None):`
-
-* offset : Offset in bytes from Device base address
-* numWords: Number of values to read (if data=None)
-* base: base class indicating the type of value(s) being read
-* stride: the spacing between the value locations in bytes
-* wordBitSize: the size of each value in bits
-* data: optional list in which the read data values will be stored
-
-   * If data list is provided the number of values read is determined by the list length
 
 Device Command Decorators
 -------------------------
-* Two types of command decorators can be used in Device to create LocalCommands
 
-   * Decorators on class methods
-   * Decorators on functions created within :py:meth:`pyrogue.Device.init()`
-
-* Currently decorators can only be used to create LocalCommands
-
-   * This may be expanded to include RemoteCommands as well
-   * Can be detected as RemoteCommands when offset is passed in the decorator
-
-Class Method Decorator Example
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Device supports decorators that create :py:class:`pyrogue.LocalCommand` nodes.
+You can use decorators on local functions created in ``__init__``.
 
 .. code-block:: python
 
-   @pyrogue.command(order=1, name='readConfig', value='', description='Read config')
-   def _readConfig(self,arg):
-
-* The previous code is from the Root class which issues a readConfig from a file.
-* This decorator will create a LocalCommand named :code:`readConfig` and pass the :code:`_readConfig` method as the function
-* If name was not provided the LocalCommand would use the method name
-* Any decorator args are passed through to the LocalCommand creation
-* Because the method has the argument :code:`arg`, the LocalCommand will be configured to accept arguments. If it was not there arguments would be disabled.
-
-   * :code:`value=''` sets the arg type as string
-
-* The order arg in the decorator is used to control the order of the LocalCommand creation
-
-   * This command does not have an arg and value is not passed because it is not necessary
-
-.. code-block:: python
-
-   @pyrogue.command(order=6, name="readAll", description='Read all values')
-   def _read(self):
-
-Init Decorator Example
-^^^^^^^^^^^^^^^^^^^^^^
-
-The following code is from the Lmk04828 class.
-
-.. code-block:: python
-
-   def __init__(...):
-      ...
-      @self.command(description="Load the CodeLoader .MAC file",value='',)
-      def LoadCodeLoaderMacFile(arg):
-      ...
-
-* This decorator will create a LocalCommand named :code:`LocalCodeLoaderMacFile` and pass the decorated method as the function
-
-   * Alternative a name arg could be passed to the decorator to override the name
-
-* Any decorator args are passed through to the LocalCommand creation
-* Because the command has the argument arg, the LocalCommand will be configured to accept arguments. If it was not there arguments would be disabled.
-
-   * :code:`value=''` sets the arg type as string
+   @pyrogue.command(name='ReadConfig', value='', description='Load config file')
+   def _readConfig(self, arg):
+       self.root.loadYaml(name=arg, writeEach=False, modes=['RW', 'WO'])
 
 Special Device Subclasses
 =========================
 
-There are a few special device classes that you can utilize for your development.
-Click the following links for more information on the subclasses.
+There are several specialized device classes available:
 
 .. toctree::
    :maxdepth: 1
    :caption: Special Device Subtypes:
 
-   special_devices/memory_device
    special_devices/run_control
    special_devices/data_writer
    special_devices/data_receiver
    special_devices/prbsrx
    special_devices/prbstx
    special_devices/prbspair
+   special_devices/stream_reader
    special_devices/stream_writer
    special_devices/process
-
-Custom Device Classes
-=====================
-
-The following example references a class defined in `pyrogue/utilities/prbs.py <https://github.com/slaclab/rogue/blob/master/python/pyrogue/utilities/prbs.py>`.
-
-* This is a Device class which interfaces to an underlying c++ class which receives and checks prbs data
-
-   * Note the creation of LocalVariables which call the underlying c++ class method directly
-   * Note the countReset() method
-
-.. code-block:: python
-
-   class PrbsRx(pyrogue.Device):
-    """PRBS RX Wrapper"""
-
-    def __init__(self, *, width=None, checkPayload=True, taps=None, stream=None, **kwargs ):
-
-        pyrogue.Device.__init__(self, description='PRBS Software Receiver', **kwargs)
-        self._prbs = rogue.utilities.Prbs()
-
-        if width is not None:
-            self._prbs.setWidth(width)
-
-        if taps is not None:
-            self._prbs.setTaps(taps)
-
-        if stream is not None:
-            pyrogue.streamConnect(stream, self)
-
-        self.add(pyrogue.LocalVariable(name='rxEnable', description='RX Enable',
-                                       mode='RW', value=True,
-                                       localGet=lambda : self._prbs.getRxEnable(),
-                                       localSet=lambda value: self._prbs.setRxEnable(value)))
-
-        self.add(pyrogue.LocalVariable(name='rxErrors', description='RX Error Count',
-                                       mode='RO', pollInterval=1, value=0, typeStr='UInt32',
-                                       localGet=self._prbs.getRxErrors))
-
-        self.add(pyrogue.LocalVariable(name='rxCount', description='RX Count',
-                                       mode='RO', pollInterval=1, value=0, typeStr='UInt32',
-                                       localGet=self._prbs.getRxCount))
-
-        self.add(pyrogue.LocalVariable(name='rxBytes', description='RX Bytes',
-                                       mode='RO', pollInterval=1, value=0, typeStr='UInt32',
-                                       localGet=self._prbs.getRxBytes))
-
-        self.add(pyrogue.LocalVariable(name='rxRate', description='RX Rate', disp="{:.3e}",
-                                       mode='RO', pollInterval=1, value=0.0, units='Frames/s',
-                                       localGet=self._prbs.getRxRate))
-
-        self.add(pyrogue.LocalVariable(name='rxBw', description='RX BW', disp="{:.3e}",
-                                       mode='RO', pollInterval=1, value=0.0, units='Bytes/s',
-                                       localGet=self._prbs.getRxBw))
-
-        self.add(pyrogue.LocalVariable(name='checkPayload', description='Payload Check Enable',
-                                       mode='RW', value=checkPayload, localSet=self._plEnable))
-    def _plEnable(self,value,changed):
-        self._prbs.checkPayload(value)
-
-    def countReset(self):
-        self._prbs.resetCount()
-        super().countReset()
-
-    def _getStreamSlave(self):
-        return self._prbs
-
-    def __lshift__(self,other):
-        pyrogue.streamConnect(other,self)
-        return other
-
-    def setWidth(self,width):
-        self._prbs.setWidth(width)
-
-    def setTaps(self,taps):
-        self._prbs.setTaps(taps)
-
-Another custom device class from the same, PrbsTx, is as follows:
-
-* Note the genFrame LocalCommand which generates a call to the underlying c++ class
-
-   * It also gets the value of a pure local variable (txSize) which is passed as an arg to the c++ class
-
-* Note the txEnable variable which uses the changed arg to determine whether to start or stop a backup thread in the C++ class using enable and disable
-
-.. code-block:: python
-
-   class PrbsTx(pyrogue.Device):
-      """PRBS TX Wrapper"""
-
-      def __init__(self, *, sendCount=False, width=None, taps=None, stream=None, **kwargs ):
-
-         pyrogue.Device.__init__(self, description='PRBS Software Transmitter', **kwargs)
-         self._prbs = rogue.utilities.Prbs()
-
-         if width is not None:
-               self._prbs.setWidth(width)
-
-         if taps is not None:
-               self._prbs.setTaps(taps)
-
-         if stream is not None:
-               pyrogue.streamConnect(self, stream)
-
-         self._prbs.sendCount(sendCount)
-
-         self.add(pyrogue.LocalVariable(name='txSize', description='PRBS Frame Size', units='Bytes',
-                                          localSet=self._txSize, mode='RW', value=1024, typeStr='UInt32'))
-
-         self.add(pyrogue.LocalVariable(name='txPeriod', description='Tx Period In Microseconds', units='uS',
-                                          localSet=lambda value: self._prbs.setTxPeriod(value), localGet=lambda: self._prbs.getTxPeriod(), mode='RW', typeStr='UInt32'))
-
-         self.add(pyrogue.LocalVariable(name='txEnable', description='PRBS Run Enable', mode='RW',
-                                          value=False, localSet=self._txEnable))
-
-         self.add(pyrogue.LocalCommand(name='genFrame',description='Generate n frames',value=1,
-                                       function=self._genFrame))
-
-         self.add(pyrogue.LocalVariable(name='txErrors', description='TX Error Count', mode='RO', pollInterval = 1,
-                                          value=0, typeStr='UInt32', localGet=self._prbs.getTxErrors))
-
-         self.add(pyrogue.LocalVariable(name='txCount', description='TX Count', mode='RO', pollInterval = 1,
-                                          value=0, typeStr='UInt32', localGet=self._prbs.getTxCount))
-
-         self.add(pyrogue.LocalVariable(name='txBytes', description='TX Bytes', mode='RO', pollInterval = 1,
-                                          value=0, typeStr='UInt32', localGet=self._prbs.getTxBytes))
-         self.add(pyrogue.LocalVariable(name='genPayload', description='Payload Generate Enable',
-                                       mode='RW', value=True, localSet=self._plEnable))
-
-         self.add(pyrogue.LocalVariable(name='txRate', description='TX Rate',  disp="{:.3e}",
-                                       mode='RO', pollInterval=1, value=0.0, units='Frames/s',
-                                       localGet=self._prbs.getTxRate))
-
-        self.add(pyrogue.LocalVariable(name='txBw', description='TX BW',  disp="{:.3e}",
-                                       mode='RO', pollInterval=1, value=0.0, units='Bytes/s',
-                                       localGet=self._prbs.getTxBw))
-
-    def _plEnable(self,value,changed):
-        self._prbs.genPayload(value)
-
-    def countReset(self):
-        self._prbs.resetCount()
-        super().countReset()
-
-    def _genFrame(self,arg=1):
-        for i in range(arg):
-            self._prbs.genFrame(self.txSize.value())
-
-    def _txSize(self,value,changed):
-        if changed and int(self.txEnable.value()) == 1:
-            self._prbs.disable()
-            self._prbs.enable(value)
-
-    def _txEnable(self,value,changed):
-        if changed:
-            if int(value) == 0:
-                self._prbs.disable()
-            else:
-                self._prbs.enable(self.txSize.value())
-    def _getStreamMaster(self):
-        return self._prbs
-
-    def __rshift__(self,other):
-        pyrogue.streamConnect(self,other)
-        return other
-
-    def setWidth(self,width):
-        self._prbs.setWidth(width)
-
-    def setTaps(self,taps):
-        self._prbs.setTaps(taps)
-
-    def sendCount(self,en):
-        self._prbs.sendCount(en)
-
-    def _stop(self):
-        self._prbs.disable()
 
 Device Class Documentation
 ==========================
@@ -389,37 +252,3 @@ Device Class Documentation
    :members:
    :member-order: bysource
    :inherited-members:
-
-
-Python Device Example
-=====================
-
-Below is an example of creating a Device which ...
-
-.. code-block:: python
-
-    import pyrogue
-
-    # Create a subclass of a Device 
-    class MyDevice(...):
-
-C++ Device Example
-==================
-
-Below is an example of creating a Device class in C++.
-
-.. code-block:: c
-
-   #include <rogue/interfaces/memory/Constants.h>
-   #include <boost/thread.hpp>
-
-   // Create a subclass of a Device 
-   class MyDevice : public rogue:: ... {
-      public:
-
-      protected:
-
-   };
-
-A few notes on the above examples ...
-

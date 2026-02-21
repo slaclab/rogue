@@ -5,15 +5,16 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue.interfaces.stream._Variable &mdash; Rogue v6.8.1 documentation</title>
+  <title>pyrogue.interfaces.stream._Variable &mdash; Rogue v6.8.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css?v=f9c5c301" />
 
   
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=7511b455"></script>
+      <script src="../../../../_static/documentation_options.js?v=42e93e3f"></script>
       <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -100,12 +101,31 @@
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">rogue.interfaces.stream</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
+
 
 <div class="viewcode-block" id="Variable">
 <a class="viewcode-back" href="../../../../interfaces/pyrogue/memory_stream_variable.html#pyrogue.interfaces.stream.Variable">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Variable</span><span class="p">(</span><span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">Master</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Stream master that emits variable values as YAML frames.</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="n">incGroups</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">excGroups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;NoStream&#39;</span><span class="p">]):</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    root : pyrogue.Root</span>
+<span class="sd">        PyRogue root node to monitor.</span>
+<span class="sd">    incGroups : str | list[str] | None, optional</span>
+<span class="sd">        Groups to include in variable updates.</span>
+<span class="sd">    excGroups : str | list[str] | None, optional</span>
+<span class="sd">        Groups to exclude from variable updates.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">root</span><span class="p">:</span> <span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="p">,</span>
+        <span class="n">incGroups</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">excGroups</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;NoStream&#39;</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_updateList</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">root</span><span class="o">.</span><span class="n">addVarListener</span><span class="p">(</span><span class="n">func</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_varUpdate</span><span class="p">,</span> <span class="n">done</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_varDone</span><span class="p">,</span> <span class="n">incGroups</span><span class="o">=</span><span class="n">incGroups</span><span class="p">,</span> <span class="n">excGroups</span><span class="o">=</span><span class="n">excGroups</span><span class="p">)</span>
@@ -116,9 +136,9 @@
 
 <div class="viewcode-block" id="Variable.streamYaml">
 <a class="viewcode-back" href="../../../../interfaces/pyrogue/memory_stream_variable.html#pyrogue.interfaces.stream.Variable.streamYaml">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">streamYaml</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">streamYaml</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Generate a frame containing all variables values in yaml format.</span>
+<span class="sd">        Generate a frame containing all variable values in YAML format.</span>
 <span class="sd">        A hardware read is not generated before the frame is generated.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_sendYamlFrame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_root</span><span class="o">.</span><span class="n">getYaml</span><span class="p">(</span><span class="n">readFirst</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -128,15 +148,18 @@
                                                <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span></div>
 
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_varUpdate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_varUpdate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Queue a variable update for the next batch.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_updateList</span><span class="p">[</span><span class="n">path</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_varDone</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_varDone</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Flush queued updates and send as a YAML frame.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_updateList</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_sendYamlFrame</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">dataToYaml</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_updateList</span><span class="p">))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_updateList</span> <span class="o">=</span> <span class="p">{}</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_sendYamlFrame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">yml</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_sendYamlFrame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">yml</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Serialize YAML to a frame and send it.&quot;&quot;&quot;</span>
         <span class="n">b</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(</span><span class="n">yml</span><span class="p">,</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
         <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqFrame</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">b</span><span class="p">),</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">frame</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">b</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>

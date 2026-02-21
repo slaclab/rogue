@@ -4,23 +4,16 @@
 StreamReader Device Class
 =========================
 
-StreamReader is a Device Wrapper for :ref:`Data Writer <pyrogue_tree_node_device_datawriter>`.
+:py:class:`pyrogue.utilities.fileio.StreamReader` provides file-backed stream
+replay into a live stream graph.
 
-* Pyrogue Device wrapper around rogue::utilities::fileio::StreamWriter
-* Exposes StreamWriter methods as Variables and Commands
-* Streamwriter allows multiple streams to be written to a single data file
+It includes basic file controls and exposes a stream master interface so decoded
+frames can be connected to downstream consumers.
 
-   * A header identifies each file record, its channel # and Frame flags
-
-* :code:`getChannel(id)`
-
-   * Function to expose a slave interface which can be connected to a stream Master
-   * Id value is placed in file record header to identify stream
-
-StreamWriter Class Documentation
+StreamReader Class Documentation
 ================================
 
-.. autoclass:: pyrogue.utilities.fileio.StreamWriter
+.. autoclass:: pyrogue.utilities.fileio.StreamReader
    :members:
    :member-order: bysource
    :inherited-members:
