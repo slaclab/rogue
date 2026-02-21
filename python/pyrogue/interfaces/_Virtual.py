@@ -26,13 +26,13 @@ class VirtualProperty(object):
 
     Parameters
     ----------
-    node : pyrogue.VirtualNode
+    node : VirtualNode
         Virtual node instance owning this property.
     attr : str
         Attribute name to fetch from the remote.
     """
 
-    def __init__(self, node: pr.VirtualNode, attr: str) -> None:
+    def __init__(self, node: "VirtualNode", attr: str) -> None:
         self._attr = attr
         self._node = node
 
@@ -50,7 +50,7 @@ class VirtualMethod(object):
 
     Parameters
     ----------
-    node : pr.VirtualNode
+    node : VirtualNode
         Virtual node instance owning this method.
     attr : str
         Attribute name to invoke on the remote.
@@ -58,7 +58,7 @@ class VirtualMethod(object):
         Method metadata including ``args`` and ``kwargs``.
     """
 
-    def __init__(self, node: pr.VirtualNode, attr: str, info: dict[str, Any]) -> None:
+    def __init__(self, node: "VirtualNode", attr: str, info: dict[str, Any]) -> None:
         self._attr   = attr
         self._node   = node
         self._args   = info['args']
@@ -152,7 +152,7 @@ class VirtualNode(pr.Node):
         """Not supported; raises NodeError."""
         raise pr.NodeError('removeFromGroup not supported in VirtualNode')
 
-    def add(self, node: pr.VirtualNode) -> None:
+    def add(self, node: "VirtualNode") -> None:
         """Not supported; raises NodeError."""
         raise pr.NodeError('add not supported in VirtualNode')
 
@@ -173,7 +173,7 @@ class VirtualNode(pr.Node):
             self._loadNodes()
         return self._nodes
 
-    def node(self, name: str, load: bool = True) -> pr.VirtualNode | None:
+    def node(self, name: str, load: bool = True) -> "VirtualNode | None":
         """Return child node by name, optionally loading children first.
 
         Parameters
@@ -227,7 +227,7 @@ class VirtualNode(pr.Node):
                 self._nodes[k] = node
                 self._addArrayNode(node)
 
-    def _getNode(self, path: str, load: bool = True) -> pr.VirtualNode | None:
+    def _getNode(self, path: str, load: bool = True) -> "VirtualNode | None":
         """Resolve a dotted path to a node.
 
         Parameters
@@ -260,12 +260,12 @@ class VirtualNode(pr.Node):
 
         return obj
 
-    def isinstance(self, typ: type[pr.VirtualNode]) -> bool:
+    def isinstance(self, typ: type["VirtualNode"]) -> bool:
         """Check if this node's type string matches the given type."""
         cs = str(typ)
         return cs in self._bases
 
-    def _rootAttached(self, parent: pr.VirtualNode, root: pr.VirtualNode) -> None:
+    def _rootAttached(self, parent: "VirtualNode", root: "VirtualNode") -> None:
         """Not supported; raises NodeError."""
         raise pr.NodeError('_rootAttached not supported in VirtualNode')
 
@@ -487,7 +487,7 @@ class VirtualClient(rogue.interfaces.ZmqClient):
         self._monEnable = False
 
     @property
-    def root(self) -> pr.VirtualNode:
+    def root(self) -> "VirtualNode":
         """Return the connected virtual root node."""
         return self._root
 
