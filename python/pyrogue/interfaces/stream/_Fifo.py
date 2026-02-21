@@ -15,9 +15,38 @@
 
 import rogue
 import pyrogue
+from typing import Any
+
 
 class Fifo(pyrogue.Device):
-    def __init__(self, *, name, description='', maxDepth=0, trimSize=0, noCopy=False, **kwargs):
+    """Pyrogue Device wrapper for the rogue.interfaces.stream.Fifo class.
+
+    Parameters
+    ----------
+    name : str
+        Device name.
+    description : str, optional
+        Human-readable description.
+    maxDepth : int, optional
+        Maximum FIFO depth.
+    trimSize : int, optional
+        Trim size for frames.
+    noCopy : bool, optional
+        If ``True``, avoid copying frame data.
+    **kwargs : Any
+        Additional arguments passed to :class:`pyrogue.Device`.
+    """
+
+    def __init__(
+        self,
+        *,
+        name: str,
+        description: str = '',
+        maxDepth: int = 0,
+        trimSize: int = 0,
+        noCopy: bool = False,
+        **kwargs: Any,
+    ) -> None:
         pyrogue.Device.__init__(self, name=name, description=description, **kwargs)
         self._fifo = rogue.interfaces.stream.Fifo(maxDepth, trimSize, noCopy)
 
@@ -54,19 +83,24 @@ class Fifo(pyrogue.Device):
             description='Clear all counters',
             function=self._fifo.clearCnt))
 
-    def _getStreamSlave(self):
+    def _getStreamSlave(self) -> rogue.interfaces.stream.Slave:
+        """Return the underlying FIFO as a stream slave interface."""
         return self._fifo
 
-    def _getStreamMaster(self):
+    def _getStreamMaster(self) -> rogue.interfaces.stream.Master:
+        """Return the underlying FIFO as a stream master interface."""
         return self._fifo
 
-    def __lshift__(self,other):
-        pyrogue.streamConnect(other,self)
+    def __lshift__(self, other: rogue.interfaces.stream.Master) -> rogue.interfaces.stream.Master:
+        """Connect other -> self. Returns other."""
+        pyrogue.streamConnect(other, self)
         return other
 
-    def __rshift__(self,other):
-        pyrogue.streamConnect(self,other)
+    def __rshift__(self, other: rogue.interfaces.stream.Slave) -> rogue.interfaces.stream.Slave:
+        """Connect self -> other. Returns other."""
+        pyrogue.streamConnect(self, other)
         return other
 
-    def countReset(self):
+    def countReset(self) -> None:
+        """Clear all FIFO counters."""
         self._fifo.clearCnt()

@@ -42,6 +42,7 @@ extensions = ['sphinx.ext.autodoc',
     'sphinx.ext.viewcode',
     'sphinx.ext.githubpages',
     'sphinx.ext.napoleon',
+    'sphinx_autodoc_typehints',
     'sphinx_copybutton',
     'breathe']
 
@@ -76,7 +77,7 @@ release = rogue.Version.current()
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = None
+language = 'en'
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -107,6 +108,9 @@ html_theme = 'sphinx_rtd_theme'
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
+html_css_files = [
+    'custom.css',
+]
 
 # Custom sidebar templates, must be a dictionary that maps document names
 # to template names.
@@ -130,8 +134,17 @@ html_static_path = ['_static']
 htmlhelp_basename = 'Roguedoc'
 
 # -- Options for Sphinx Rendering -----------------------------------------
-# Sets typehints in both signature and description.
-autodoc_typehints = 'both'
+# Render type hints in the parameter description, not signatures.
+autodoc_typehints = 'description'
+# Keep class signatures in their original combined form.
+autodoc_class_signature = 'mixed'
+# Show parameter default values in the generated type/param description.
+typehints_defaults = 'comma'
+# Prefer modern union syntax (``T | None``) over ``Optional[T]`` in docs.
+always_use_bars_union = True
+# Keep napoleon output as :param: fields so typehints extension can enrich
+# a single parameter section without duplication.
+napoleon_use_param = True
 # Change class attribute rendering style
 napoleon_use_ivar = True
 

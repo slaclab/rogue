@@ -9,7 +9,7 @@
 # copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
-
+import pyrogue
 from pyrogue.interfaces._ZmqServer import *
 from pyrogue.interfaces._Virtual   import *
 from pyrogue.interfaces._SimpleClient import *
@@ -18,15 +18,32 @@ from pyrogue.interfaces._OsCommandMemorySlave import *
 
 import time
 import json
+from typing import Any
+
 
 # Common class for system log display
 class SystemLogMonitor(object):
+    """Monitor and display system log entries from variable updates.
 
-    def __init__(self,details):
+    Parameters
+    ----------
+    details : bool
+        If ``True``, print detailed log metadata and traceback entries.
+    """
+
+    def __init__(self, details: bool) -> None:
         self._details  = details
         self._logCount = 0
 
-    def processLogString(self, logstr):
+    def processLogString(self, logstr: str) -> None:
+        """
+        Parse and print new log entries from a JSON log string.
+
+        Parameters
+        ----------
+        logstr : str
+            JSON-encoded list of log entries.
+        """
         lst = json.loads(logstr)
 
         if len(lst) > self._logCount:
@@ -48,21 +65,56 @@ class SystemLogMonitor(object):
 
         self._logCount = len(lst)
 
-    def varUpdated(self, key, varVal):
+    def varUpdated(self, key: str, varVal: pyrogue.VariableValue) -> None:
+        """
+        Variable listener callback. Processes SystemLog variable updates.
+
+        Parameters
+        ----------
+        key : str
+            Variable path.
+        varVal : pr.VariableValue
+            Variable value containing log data.
+        """
         if 'SystemLog' in key:
             self.processLogString(varVal.value)
 
 
 # Common class for variable filtering and display
 class VariableMonitor(object):
-    def __init__(self,path):
+    """Monitor a specific variable and display its updates.
+
+    Parameters
+    ----------
+    path : str
+        Full path of the variable to monitor.
+    """
+
+    def __init__(self, path: str) -> None:
         self._path = path
 
-    def display(self,value):
+    def display(self, value: pyrogue.VariableValue) -> None:
+        """
+        Print the current variable value with timestamp.
+
+        Parameters
+        ----------
+        value : object
+            Variable value to display.
+        """
         print("{}: {} = {}".format(time.strftime("%Y-%m-%d %H:%M:%S %Z", time.localtime(time.time())), self._path, value))
 
-    def varUpdated(self, key, varVal):
+    def varUpdated(self, key: str, varVal: pyrogue.VariableValue) -> None:
+        """
+        Variable listener callback. Displays updates when the path matches.
+
+        Parameters
+        ----------
+        key : str
+            Variable path.
+        varVal : object
+            Variable value.
+        """
         if self._path == key:
             self.display(varVal.valueDisp)
-
 

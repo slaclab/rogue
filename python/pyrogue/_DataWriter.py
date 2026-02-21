@@ -12,27 +12,49 @@
 # copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
+from __future__ import annotations
+
 import datetime
+from typing import Any
+
 import pyrogue as pr
 
 
 class DataWriter(pr.Device):
-    """Special base class to control data files. TODO: Update comments"""
+    """Base class for constructing data writer devices.
 
-    def __init__(self, *, hidden=True, bufferSize=0, maxFileSize=0, **kwargs):
-        """
-        Initialize device class
+    Parameters
+    ----------
+    hidden : bool, optional (default = True)
+        If True, add the device to the ``Hidden`` group.
+    bufferSize : int, optional (default = 0)
+        File buffer size in bytes.
+    maxFileSize : int, optional (default = 0)
+        Maximum file size in bytes before rolling.
+    **kwargs : Any
+        Additional arguments forwarded to ``Device``.
+    """
+
+    def __init__(
+        self,
+        *,
+        hidden: bool = True,
+        bufferSize: int = 0,
+        maxFileSize: int = 0,
+        **kwargs: Any,
+    ) -> None:
+        """Initialize the data writer device.
+
         Parameters
         ----------
-        * :
-
-        hidden=True :
-
-        **kwargs :
-
-        Returns
-        -------
-
+        hidden : bool, optional
+            If ``True``, add the device to the ``Hidden`` group.
+        bufferSize : int, optional
+            File buffer size in bytes.
+        maxFileSize : int, optional
+            Maximum file size in bytes before rolling.
+        **kwargs : Any
+            Additional keyword arguments forwarded to :class:`pyrogue.Device`.
         """
 
         pr.Device.__init__(self,
@@ -123,75 +145,134 @@ class DataWriter(pr.Device):
             function=self._genFileName,
             description='Auto create data file name using data and time.'))
 
-    def _open(self):
-        """Open file. Override in sub-class"""
-        pass
+    def _open(self) -> None:
+        """Open the currently selected output file.
 
-    def _close(self):
-        """Close file. Override in sub-class"""
-        pass
-
-    def _isOpen(self):
-        """File open status. Override in sub-class"""
-        pass
-
-    def _setBufferSize(self,value):
+        Notes
+        -----
+        Override in subclasses.
         """
-        Set buffer size. Override in sub-class
+        pass
 
-        Parameters
-        ----------
-        value :
+    def _close(self) -> None:
+        """Close the current output file.
 
+        Notes
+        -----
+        Override in subclasses.
+        """
+        pass
+
+    def _isOpen(self) -> bool:
+        """Return file-open status.
 
         Returns
         -------
+        bool
+            ``True`` if a file is currently open, else ``False``.
 
+        Notes
+        -----
+        Override in subclasses.
         """
-        pass
+        return False
 
-    def _setMaxFileSize(self,value):
-        """
-        Set max file size. Override in sub-class
+    def _setBufferSize(self, value: int) -> None:
+        """Set file buffer size.
 
         Parameters
         ----------
-        value :
+        value : int
+            Buffer size in bytes.
 
-
-        Returns
-        -------
-
+        Notes
+        -----
+        Override in subclasses.
         """
         pass
 
-    def _getCurrentSize(self):
-        """get current file size. Override in sub-class"""
+    def _setMaxFileSize(self, value: int) -> None:
+        """Set maximum file size before rolling.
+
+        Parameters
+        ----------
+        value : int
+            Maximum file size in bytes. Non-zero enables file splitting.
+
+        Notes
+        -----
+        Override in subclasses.
+        """
+        pass
+
+    def _getCurrentSize(self) -> int:
+        """Return current output file size.
+
+        Returns
+        -------
+        int
+            Current file size in bytes.
+
+        Notes
+        -----
+        Override in subclasses.
+        """
         return 0
 
-    def _getTotalSize(self):
-        """get total file size. Override in sub-class"""
+    def _getTotalSize(self) -> int:
+        """Return total bytes written.
+
+        Returns
+        -------
+        int
+            Total number of bytes written across files.
+
+        Notes
+        -----
+        Override in subclasses.
+        """
         return 0
 
-    def _getBandwidth(self, dev=None, var=None):
-        """get instantaneous bandwidth. Override in sub-class"""
+    def _getBandwidth(self, dev: pr.Device | None = None, var: pr.Variable | None = None) -> float:
+        """Return instantaneous write bandwidth.
+
+        Parameters
+        ----------
+        dev : pyrogue.Device or None, optional
+            Optional callback context passed by LocalVariable polling.
+        var : pyrogue.Variable or None, optional
+            Optional callback context passed by LocalVariable polling.
+
+        Returns
+        -------
+        float
+            Instantaneous bandwidth in bytes/second.
+
+        Notes
+        -----
+        Override in subclasses.
+        """
         return 0.0
 
-    def _getFrameCount(self):
-        """get current file frame count. Override in sub-class"""
-        return 0
-
-    def _genFileName(self):
-        """
-        Auto create data file name based upon date and time.
-        Preserve file's location in path.
-
-        Parameters
-        ----------
+    def _getFrameCount(self) -> int:
+        """Return total frame count.
 
         Returns
         -------
+        int
+            Total number of frames written.
 
+        Notes
+        -----
+        Override in subclasses.
+        """
+        return 0
+
+    def _genFileName(self) -> None:
+        """Generate a timestamped output filename.
+
+        Generates ``data_%Y%m%d_%H%M%S.dat`` and preserves the directory part
+        of the current ``DataFile`` value, if present.
         """
         idx = self.DataFile.value().rfind('/')
 

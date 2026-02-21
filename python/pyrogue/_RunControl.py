@@ -12,42 +12,42 @@
 # copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
-import pyrogue as pr
+from __future__ import annotations
+
 import threading
 import time
+from typing import Any, Callable
+
+import pyrogue as pr
 
 
 class RunControl(pr.Device):
-    """
-    Special base class to control runs.
+    """Base class for software-driven run control.
 
-    Attributes
+    Parameters
     ----------
-    attr1 :
-        pr.Device
+    hidden : bool, optional (default = True)
+        Hide the device in the tree by default.
+    rates : dict, optional
+        Mapping of rate enum values to display labels.
+    states : dict, optional
+        Mapping of state enum values to display labels.
+    cmd : callable, optional
+        Optional callable invoked on each run loop iteration.
+    **kwargs : Any
+        Additional arguments forwarded to ``pyrogue.Device``.
     """
 
-    def __init__(self, *, hidden=True, rates=None, states=None, cmd=None, **kwargs):
-        """
-        Initialize device class - test
-
-        Parameters
-        ----------
-        param1 : *
-
-        param2 : hidden=True
-
-        param3 : rates=None
-
-        param4 : states=None
-
-        param5 : cmd=None
-
-        param6 : **kwargs
-
-        returns: none
-        ----------
-        """
+    def __init__(
+        self,
+        *,
+        hidden: bool = True,
+        rates: dict[int, str] | None = None,
+        states: dict[int, str] | None = None,
+        cmd: Callable[[], None] | None = None,
+        **kwargs: Any,
+    ) -> None:
+        """Initialize the run-control device."""
 
         if rates is None:
             rates={1:'1 Hz', 10:'10 Hz'}
@@ -89,21 +89,11 @@ class RunControl(pr.Device):
             pollInterval=1,
             description='Run Counter updated by run thread.'))
 
-    def _setRunState(self,value,changed):
-        """
-        Set run state. Re-implement in sub-class.
-        Enum of run states can also be overridden.
-        Underlying run control must update runCount variable.
+    def _setRunState(self, value: int, changed: bool) -> None:
+        """Handle run state changes.
 
-        Parameters
-        ----------
-        param1: self
-        param2: value
-        param3: changed
-
-        returns:
-        -------
-
+        Sub-classes may override this method to integrate with
+        external run-control hardware or software.
         """
         if changed:
             if self.runState.valueDisp() == 'Running':
@@ -115,28 +105,15 @@ class RunControl(pr.Device):
                 self._thread.join()
                 self._thread = None
 
-    def _setRunRate(self,value):
-        """
-        Set run rate. Re-implement in sub-class if necessary.
+    def _setRunRate(self, value: int) -> None:
+        """Set run rate.
 
-        Parameters
-        ----------
-        param1: self
-        param2: value
-
-        returns:
-        -------
-
+        Override in subclasses if additional behavior is required.
         """
         pass
 
-    def _run(self):
-        """
-        Parameters
-        ----------
-        param1: self
-        ----------
-        """
+    def _run(self) -> None:
+        """Run loop executed in a background thread."""
         #print("Thread start")
         self.runCount.set(0)
 

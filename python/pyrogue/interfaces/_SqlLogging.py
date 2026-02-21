@@ -18,11 +18,32 @@ import sqlalchemy
 import threading
 import queue
 import json
+from typing import Any
 
 
 class SqlLogger(object):
+    """Logs variable updates and system log entries to a SQL database.
 
-    def __init__(self, *, root, url, incGroups=None, excGroups=['NoSql']):
+    Parameters
+    ----------
+    root : pr.Root
+        PyRogue root node to monitor.
+    url : str
+        SQLAlchemy database URL.
+    incGroups : object, optional
+        Groups to include in variable updates.
+    excGroups : object, optional
+        Groups to exclude from variable updates.
+    """
+
+    def __init__(
+        self,
+        *,
+        root: pr.Root,
+        url: str,
+        incGroups: str | list[str] | None = None,
+        excGroups: str | list[str] | None = ['NoSql'],
+    ) -> None:
         self._log = pr.logInit(cls=self,name="SqlLogger",path=None)
         self._url = url
         self._engine = None
@@ -70,15 +91,25 @@ class SqlLogger(object):
         self._logTable.create(engine, checkfirst=True)
         self._engine = engine
 
-    def _stop(self):
+    def _stop(self) -> None:
+        """Stop the SQL logger worker thread and flush pending entries."""
         if not self._queue.empty():
             print("Waiting for sql logger to finish...")
         self._queue.put(None)
         self._thread.join()
         print('Sql logger stopped')
 
+    def insert_from_q(self, entry: tuple[str, Any], conn: sqlalchemy.Connection) -> None:
+        """
+        Insert a single queue entry into the database.
 
-    def insert_from_q(self, entry, conn):
+        Parameters
+        ----------
+        entry : tuple
+            (path, value) for variables or (path, log_data) for syslog.
+        conn : object
+            SQLAlchemy connection for the transaction.
+        """
 
         # Syslog
         if entry[0] == self._sysLogPath:
@@ -114,8 +145,8 @@ class SqlLogger(object):
 
         conn.execute(ins)
 
-
-    def _worker(self):
+    def _worker(self) -> None:
+        """Worker thread that processes queue entries and writes to the database."""
         while True:
             # Block and wait for a queue entry to arrive
             entry = self._queue.get()
@@ -154,13 +185,21 @@ class SqlLogger(object):
                 pr.logException(self._log,e)
                 self._log.error("Lost database connection to {}".format(self._url))
 
-    def _varUpdate(self, path, value):
+    def _varUpdate(self, path: str, value: Any) -> None:
+        """Queue a variable update for the worker to write to the database."""
         self._queue.put((path,value))
 
 
 class SqlReader(object):
+    """Read variable and syslog data from a SQL database.
 
-    def __init__(self, url):
+    Parameters
+    ----------
+    url : str
+        SQLAlchemy database URL.
+    """
+
+    def __init__(self, url: str) -> None:
         self._log = pr.logInit(cls=self,name="SqlReader",path=None)
         self._url = url
         self._engine = None
@@ -178,12 +217,12 @@ class SqlReader(object):
         self._logTable = sqlalchemy.Table('syslog', self._metadata, autoload=True)
         self._engine = engine
 
-    # Make this more useful
-    def getVariable(self):
+    def getVariable(self) -> None:
+        """Fetch and print all variable entries. Placeholder for future enhancement."""
         r = self._conn.execute(sqlalchemy.select([self._varTable]))
         print(r.fetchall())
 
-    # Make this more useful
-    def getSyslog(self, syslogData):
+    def getSyslog(self, syslogData: Any) -> None:
+        """Fetch and print syslog entries. Placeholder for future enhancement."""
         r = self._conn.execute(sqlalchemy.select([self._logTable]))
         print(r.fetchall())

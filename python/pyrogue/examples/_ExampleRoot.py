@@ -14,6 +14,7 @@
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 import pyrogue
+import pyrogue.interfaces.stream
 import pyrogue.interfaces.simulation
 import pyrogue.utilities.fileio
 import pyrogue.utilities.prbs
