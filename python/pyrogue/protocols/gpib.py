@@ -41,7 +41,7 @@ class GpibController(rogue.interfaces.memory.Slave):
         GPIB primary address of the device.
     gpibBoard : int, optional
         GPIB interface board number.
-    timeout : 
+    timeout : object, optional
         GPIB timeout constant.
         Possible Timeout Values:
             T1000s
@@ -81,7 +81,7 @@ class GpibController(rogue.interfaces.memory.Slave):
         self._workerThread.start()
         self._map = {}
 
-    def _addVariable(self, var: pr.RemoteVariable) -> None:
+    def _addVariable(self, var: pyrogue.RemoteVariable) -> None:
         """Register a variable for GPIB translation by offset."""
         self._map[var.offset] = var
 
