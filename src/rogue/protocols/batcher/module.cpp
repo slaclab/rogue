@@ -23,10 +23,15 @@
 
 #include <boost/python.hpp>
 
-#include "rogue/protocols/batcher/CoreV1.h"
 #include "rogue/protocols/batcher/Data.h"
+
+#include "rogue/protocols/batcher/CoreV1.h"
 #include "rogue/protocols/batcher/InverterV1.h"
 #include "rogue/protocols/batcher/SplitterV1.h"
+
+#include "rogue/protocols/batcher/CoreV2.h"
+#include "rogue/protocols/batcher/InverterV2.h"
+#include "rogue/protocols/batcher/SplitterV2.h"
 
 namespace bp = boost::python;
 
@@ -40,8 +45,13 @@ void rogue::protocols::batcher::setup_module() {
     // set the current scope to the new sub-module
     bp::scope io_scope = module;
 
-    rogue::protocols::batcher::CoreV1::setup_python();
     rogue::protocols::batcher::Data::setup_python();
+
+    rogue::protocols::batcher::CoreV1::setup_python();
     rogue::protocols::batcher::SplitterV1::setup_python();
     rogue::protocols::batcher::InverterV1::setup_python();
+
+    rogue::protocols::batcher::CoreV2::setup_python();
+    rogue::protocols::batcher::SplitterV2::setup_python();
+    rogue::protocols::batcher::InverterV2::setup_python();
 }
