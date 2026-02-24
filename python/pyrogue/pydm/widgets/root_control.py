@@ -17,17 +17,28 @@ from pydm.widgets.frame import PyDMFrame
 from pydm.widgets import PyDMPushButton, PyDMEnumComboBox
 from pyrogue.pydm.data_plugins.rogue_plugin import nodeFromAddress
 from qtpy.QtCore import Slot, Qt
-from qtpy.QtWidgets import QVBoxLayout, QHBoxLayout, QPushButton, QFileDialog, QGroupBox, QLineEdit, QFormLayout
+from qtpy.QtWidgets import QVBoxLayout, QHBoxLayout, QPushButton, QFileDialog, QGroupBox, QLineEdit, QFormLayout, QWidget
 from pyrogue.pydm.widgets import PyRogueLineEdit
 import datetime
 
 
 class RootControl(PyDMFrame):
-    def __init__(self, parent=None, init_channel=None):
+    """PyDM widget exposing common root control actions.
+
+    Parameters
+    ----------
+    parent : QWidget | None, optional
+        Parent Qt widget.
+    init_channel : str | None, optional
+        Initial Rogue channel address.
+    """
+
+    def __init__(self, parent: QWidget | None = None, init_channel: str | None = None) -> None:
         PyDMFrame.__init__(self, parent, init_channel)
         self._node = None
 
-    def connection_changed(self, connected):
+    def connection_changed(self, connected: bool) -> None:
+        """Build controls after first successful channel connection."""
         build = (self._node is None) and (self._connected != connected and connected is True)
         super(RootControl, self).connection_changed(connected)
 
@@ -159,7 +170,8 @@ class RootControl(PyDMFrame):
 
 
     @Slot(str)
-    def _loadConfigChanged(self,value):
+    def _loadConfigChanged(self, value: str) -> None:
+        """Update the load-config command argument from text entry."""
         self._loadConfigCmd.pressValue = value
         if not self._loadConfigValue.text():
             self._loadConfigCmd.setEnabled(False)
@@ -167,7 +179,8 @@ class RootControl(PyDMFrame):
             self._loadConfigCmd.setEnabled(True)
 
     @Slot()
-    def _loadConfigBrowse(self):
+    def _loadConfigBrowse(self) -> None:
+        """Open file browser and populate load-config path field."""
         dlg = QFileDialog()
 
         loadFile = dlg.getOpenFileNames(caption='Read config file', filter='Config Files(*.yml);;All Files(*.*)')
@@ -181,7 +194,8 @@ class RootControl(PyDMFrame):
             self._loadConfigCmd.setEnabled(True)
 
     @Slot(str)
-    def _saveConfigChanged(self,value):
+    def _saveConfigChanged(self, value: str) -> None:
+        """Update the save-config command argument from text entry."""
         self._saveConfigCmd.pressValue = value
         if not self._saveConfigValue.text():
             self._saveConfigCmd.setEnabled(False)
@@ -189,7 +203,8 @@ class RootControl(PyDMFrame):
             self._saveConfigCmd.setEnabled(True)
 
     @Slot()
-    def _saveConfigBrowse(self):
+    def _saveConfigBrowse(self) -> None:
+        """Open file browser and populate save-config path field."""
         dlg = QFileDialog()
         sug = datetime.datetime.now().strftime("config_%Y%m%d_%H%M%S.yml")
 
@@ -205,7 +220,8 @@ class RootControl(PyDMFrame):
 
 
     @Slot(str)
-    def _saveStateChanged(self,value):
+    def _saveStateChanged(self, value: str) -> None:
+        """Update the save-state command argument from text entry."""
         self._saveStateCmd.pressValue = value
         if not self._saveStateValue.text():
             self._saveStateCmd.setEnabled(False)
@@ -213,7 +229,8 @@ class RootControl(PyDMFrame):
             self._saveStateCmd.setEnabled(True)
 
     @Slot()
-    def _saveStateBrowse(self):
+    def _saveStateBrowse(self) -> None:
+        """Open file browser and populate save-state path field."""
         dlg = QFileDialog()
         sug = datetime.datetime.now().strftime("state_%Y%m%d_%H%M%S.yml.zip")
 

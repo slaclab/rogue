@@ -14,8 +14,11 @@
 #-----------------------------------------------------------------------------
 
 import logging
+from typing import Any
+
 from pydm.tools import ExternalTool
 from pydm.utilities.iconfont import IconFont
+from pydm.widgets.channel import PyDMChannel
 from qtpy.QtWidgets import QVBoxLayout, QDialog, QPushButton, QFormLayout, QLineEdit
 from qtpy.QtCore import Qt
 
@@ -27,15 +30,25 @@ logger = logging.getLogger(__name__)
 
 
 class NodeInformation(ExternalTool):
+    """PyDM tool for displaying read-only metadata about a selected node."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         icon = IconFont().icon("cogs")
         name = "Node Information"
         group = "Rogue"
         use_with_widgets = True
         ExternalTool.__init__(self, icon=icon, name=name, group=group, use_with_widgets=use_with_widgets)
 
-    def call(self, channels, sender):
+    def call(self, channels: list[PyDMChannel], sender: object) -> None:
+        """Display node information dialog for the selected channel.
+
+        Parameters
+        ----------
+        channels : list[PyDMChannel]
+            Channels associated with the invoking PyDM widget.
+        sender : object
+            Widget or window that triggered the tool.
+        """
         addr, port, path, mode, index = parseAddress(channels[0].address)
         self._client = VirtualClient(addr, port)
         node = self._client.root.getNode(path)
@@ -48,7 +61,8 @@ class NodeInformation(ExternalTool):
         elif node.isinstance(pyrogue.BaseCommand):
             self._command(node,channels[0])
 
-    def _variable(self, node, channel):
+    def _variable(self, node: pyrogue.BaseVariable, channel: PyDMChannel) -> None:
+        """Render variable metadata in a modal dialog."""
         attrs = ['name', 'path', 'description', 'hidden', 'groups', 'enum',
                  'typeStr', 'disp', 'precision', 'mode', 'units', 'minimum',
                  'maximum', 'lowWarning', 'lowAlarm', 'highWarning',
@@ -105,7 +119,8 @@ class NodeInformation(ExternalTool):
         msgBox.exec()
 
 
-    def _command(self, node, channel):
+    def _command(self, node: pyrogue.BaseCommand, channel: PyDMChannel) -> None:
+        """Render command metadata in a modal dialog."""
         attrs = ['name', 'path', 'description', 'hidden', 'groups', 'enum', 'typeStr', 'disp']
 
         if node.isinstance(pyrogue.RemoteCommand):
@@ -142,7 +157,8 @@ class NodeInformation(ExternalTool):
         msgBox.exec()
 
 
-    def _device(self, node, channel):
+    def _device(self, node: pyrogue.Device, channel: PyDMChannel) -> None:
+        """Render device metadata in a modal dialog."""
         attrs = ['name', 'path', 'description', 'hidden', 'groups']
 
         msgBox = QDialog()
@@ -175,13 +191,16 @@ class NodeInformation(ExternalTool):
 
         msgBox.exec()
 
-    def to_json(self):
+    def to_json(self) -> str:
+        """Return serialized tool configuration. (Empty string)"""
         return ""
 
-    def from_json(self, content):
+    def from_json(self, content: str) -> None:
+        """Load serialized tool configuration. (Does nothing)"""
         pass
 
-    def get_info(self):
+    def get_info(self) -> dict[str, object]:
+        """Return metadata for PyDM tool registration."""
         ret = ExternalTool.get_info(self)
         ret.update({'file': __file__})
         return ret
