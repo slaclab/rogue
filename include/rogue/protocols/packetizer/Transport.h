@@ -33,7 +33,10 @@ class Controller;
 
 /**
  * @brief Packetizer transport endpoint.
- * Bridges raw stream traffic to/from the packetizer controller. */
+ *
+ * @details
+ * Bridges raw stream traffic to/from the packetizer controller.
+ */
 class Transport : public rogue::interfaces::stream::Master, public rogue::interfaces::stream::Slave {
     //! Core module
     std::shared_ptr<rogue::protocols::packetizer::Controller> cntl_;
@@ -46,24 +49,30 @@ class Transport : public rogue::interfaces::stream::Master, public rogue::interf
     void runThread();
 
   public:
-    //! Class creation
+    /**
+     * @brief Creates a packetizer transport endpoint.
+     * @return Shared pointer to the created transport endpoint.
+     */
     static std::shared_ptr<rogue::protocols::packetizer::Transport> create();
 
-    //! Setup class in python
+    /** @brief Registers Python bindings for this class. */
     static void setup_python();
 
-    //! Creator
+    /** @brief Constructs a packetizer transport endpoint. */
     Transport();
 
-    //! Destructor
+    /** @brief Destroys the packetizer transport endpoint. */
     ~Transport();
 
-    //! Set Controller
+    /**
+     * @brief Attaches the packetizer controller.
+     * @param cntl Controller instance that handles packetizer protocol processing.
+     */
     void setController(std::shared_ptr<rogue::protocols::packetizer::Controller> cntl);
 
     /**
-     * Accept a frame from the upstream stream interface.
-     * @param[in] frame Input frame to decode and forward to controller logic.
+     * @brief Accepts a frame from the upstream stream interface.
+     * @param frame Input frame to decode and forward to controller logic.
      */
     void acceptFrame(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 };

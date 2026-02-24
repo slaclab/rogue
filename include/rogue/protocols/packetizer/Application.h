@@ -32,7 +32,12 @@ namespace packetizer {
 
 class Controller;
 
-//! Application Class
+/**
+ * @brief Packetizer application endpoint.
+ *
+ * @details
+ * Provides per-destination stream ingress/egress into the packetizer stack.
+ */
 class Application : public rogue::interfaces::stream::Master, public rogue::interfaces::stream::Slave {
     //! Core module
     std::shared_ptr<rogue::protocols::packetizer::Controller> cntl_;
@@ -51,40 +56,52 @@ class Application : public rogue::interfaces::stream::Master, public rogue::inte
     rogue::Queue<std::shared_ptr<rogue::interfaces::stream::Frame>> queue_;
 
   public:
-    //! Class creation
+    /**
+     * @brief Creates a packetizer application endpoint.
+     * @param id Destination/application ID.
+     * @return Shared pointer to the created application endpoint.
+     */
     static std::shared_ptr<rogue::protocols::packetizer::Application> create(uint8_t id);
 
-    //! Setup class in python
+    /** @brief Registers Python bindings for this class. */
     static void setup_python();
 
-    //! Creator
+    /**
+     * @brief Constructs a packetizer application endpoint.
+     * @param id Destination/application ID.
+     */
     explicit Application(uint8_t id);
 
-    //! Destructor
+    /** @brief Destroys the application endpoint. */
     ~Application();
 
-    //! Set Controller
+    /**
+     * @brief Attaches the packetizer controller.
+     * @param cntl Controller instance that handles packetizer state.
+     */
     void setController(std::shared_ptr<rogue::protocols::packetizer::Controller> cntl);
 
     /**
-     * Queue a frame for packetized transmission.
-     * @param[in] frame Frame to send through this application channel.
+     * @brief Queues a frame for packetized transmission.
+     * @param frame Frame to send through this application channel.
      */
     void pushFrame(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
     /**
-     * Allocate a frame for upstream writers.
+     * @brief Allocates a frame for upstream writers.
+     *
+     * @details
      * Called by the stream master side of this endpoint.
      *
-     * @param[in] size Minimum requested payload size in bytes.
-     * @param[in] zeroCopyEn True to allow zero-copy allocation when possible.
+     * @param size Minimum requested payload size in bytes.
+     * @param zeroCopyEn True to allow zero-copy allocation when possible.
      * @return Newly allocated frame.
      */
     std::shared_ptr<rogue::interfaces::stream::Frame> acceptReq(uint32_t size, bool zeroCopyEn);
 
     /**
-     * Accept a frame from upstream application logic.
-     * @param[in] frame Input frame to packetize.
+     * @brief Accepts a frame from upstream application logic.
+     * @param frame Input frame to packetize.
      */
     void acceptFrame(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 };

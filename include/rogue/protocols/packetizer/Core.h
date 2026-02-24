@@ -33,8 +33,10 @@ class Controller;
 
 /**
  * @brief Packetizer core wiring object.
+ *
+ * @details
  * Owns and connects transport, controller, and per-destination application
- *  endpoints for the packetizer v1 stack.
+ * endpoints for the packetizer v1 stack.
  */
 class Core {
     //! Transport module
@@ -47,40 +49,47 @@ class Core {
     std::shared_ptr<rogue::protocols::packetizer::Controller> cntl_;
 
   public:
-    //! Class creation
+    /**
+     * @brief Creates a packetizer core.
+     * @param enSsi Enable SSI framing behavior.
+     * @return Shared pointer to the created packetizer core.
+     */
     static std::shared_ptr<rogue::protocols::packetizer::Core> create(bool enSsi);
 
-    //! Setup class in python
+    /** @brief Registers Python bindings for this class. */
     static void setup_python();
 
-    //! Creator
+    /**
+     * @brief Constructs a packetizer core.
+     * @param enSsi Enable SSI framing behavior.
+     */
     explicit Core(bool enSsi);
 
+    /** @brief Destroys the packetizer core. */
+    ~Core();
+
     /**
-     * Destroy the packetizer core. */
-     *     ~Core();
-     *
-     *     /** Return the transport-facing endpoint.
+     * @brief Returns the transport-facing endpoint.
      * @return Shared transport interface.
      */
     std::shared_ptr<rogue::protocols::packetizer::Transport> transport();
 
     /**
-     * Return an application endpoint by destination ID.
-     * @param[in] dest Destination channel ID.
-     *  @return Shared application endpoint.
+     * @brief Returns an application endpoint by destination ID.
+     * @param dest Destination channel ID.
+     * @return Shared application endpoint.
      */
     std::shared_ptr<rogue::protocols::packetizer::Application> application(uint8_t dest);
 
     /**
-     * Return total dropped-frame count reported by the controller.
+     * @brief Returns total dropped-frame count reported by the controller.
      * @return Number of dropped frames.
      */
     uint32_t getDropCount();
 
     /**
-     * Set transmit timeout for internal controller operations.
-     * @param[in] timeout Timeout in microseconds.
+     * @brief Sets transmit timeout for internal controller operations.
+     * @param timeout Timeout in microseconds.
      */
     void setTimeout(uint32_t timeout);
 };

@@ -33,7 +33,10 @@ class Controller;
 
 /**
  * @brief RSSI application-side endpoint.
- * Provides stream ingress/egress for payload traffic through the RSSI stack. */
+ *
+ * @details
+ * Provides stream ingress/egress for payload traffic through the RSSI stack.
+ */
 class Application : public rogue::interfaces::stream::Master, public rogue::interfaces::stream::Slave {
     //! Core module
     std::shared_ptr<rogue::protocols::rssi::Controller> cntl_;
@@ -46,34 +49,42 @@ class Application : public rogue::interfaces::stream::Master, public rogue::inte
     void runThread();
 
   public:
-    //! Class creation
+    /**
+     * @brief Creates an RSSI application endpoint.
+     * @return Shared pointer to the created application endpoint.
+     */
     static std::shared_ptr<rogue::protocols::rssi::Application> create();
 
-    //! Setup class in python
+    /** @brief Registers Python bindings for this class. */
     static void setup_python();
 
-    //! Creator
+    /** @brief Constructs an RSSI application endpoint. */
     Application();
 
-    //! Destructor
+    /** @brief Destroys the application endpoint. */
     ~Application();
 
-    //! Setup links
+    /**
+     * @brief Attaches the RSSI controller.
+     * @param cntl Controller instance that owns protocol state.
+     */
     void setController(std::shared_ptr<rogue::protocols::rssi::Controller> cntl);
 
     /**
-     * Allocate a frame for upstream writers.
+     * @brief Allocates a frame for upstream writers.
+     *
+     * @details
      * Called by the stream master side of this endpoint.
      *
-     * @param[in] size Minimum requested payload size in bytes.
-     * @param[in] zeroCopyEn True to allow zero-copy allocation when possible.
+     * @param size Minimum requested payload size in bytes.
+     * @param zeroCopyEn True to allow zero-copy allocation when possible.
      * @return Newly allocated frame.
      */
     std::shared_ptr<rogue::interfaces::stream::Frame> acceptReq(uint32_t size, bool zeroCopyEn);
 
     /**
-     * Accept a frame from upstream application logic.
-     * @param[in] frame Input frame for RSSI transmission.
+     * @brief Accepts a frame from upstream application logic.
+     * @param frame Input frame for RSSI transmission.
      */
     void acceptFrame(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 };
