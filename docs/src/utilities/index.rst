@@ -15,4 +15,5 @@ file operations, PRBS transmit and receive as well as stream compression.
 
    fileio/index
    prbs/index
+   hls/index
    compression/index
