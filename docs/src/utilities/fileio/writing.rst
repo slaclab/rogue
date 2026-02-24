@@ -10,6 +10,9 @@ data file. The Channel 0 interface can be used to write frames which may have a 
 channel ID field value set. If this value is non-zero the Frame's channel ID will be used
 when writing the file.
 
+For the canonical on-disk record format (headers, flags/error encoding, raw mode,
+and split-file behavior), see :ref:`utilities_fileio_format`.
+
 The following code block describes how to create and connect a file writer in python:
 
 .. code-block:: python

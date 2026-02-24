@@ -16,12 +16,26 @@ import rogue.utilities
 import rogue.utilities.fileio
 import pyrogue
 import rogue
+from typing import Any
 
 
 class StreamReader(pyrogue.Device):
-    """Stream Reader Wrapper"""
+    """Wrapper ``pyrogue.Device`` around ``rogue.utilities.fileio.StreamReader``.
 
-    def __init__(self, **kwargs):
+    See Also
+    --------
+    :ref:`utilities_fileio_reader`
+        StreamReader utility documentation.
+    :ref:`utilities_fileio_format`
+        Canonical Rogue file record format consumed by StreamReader.
+
+    Parameters
+    ----------
+    **kwargs : Any
+        Additional keyword arguments forwarded to ``pyrogue.Device``.
+    """
+
+    def __init__(self, **kwargs: Any) -> None:
         pyrogue.Device.__init__(self, **kwargs)
         self._reader = rogue.utilities.fileio.StreamReader()
 
@@ -46,17 +60,23 @@ class StreamReader(pyrogue.Device):
             function=self._isOpen,
             description='Data file is open.'))
 
-    def _open(self):
+    def _open(self) -> None:
+        """Open the configured input file."""
         self._reader.open(self.DataFile.value())
 
-    def _close(self):
+    def _close(self) -> None:
+        """Close the current input file."""
         self._reader.close()
 
-    def _isOpen(self):
+    def _isOpen(self) -> bool:
+        """Return whether the reader has an open file."""
         return self._reader.isOpen()
 
-    def _getStreamMaster(self):
+    def _getStreamMaster(self) -> rogue.utilities.fileio.StreamReader:
+        """Return wrapped stream reader endpoint."""
         return self._reader
 
-    def __rshift__(self,other):
-        pyrogue.streamConnect(self,other)
+    def __rshift__(self, other: Any) -> Any:
+        """Connect this reader to ``other`` via stream API."""
+        pyrogue.streamConnect(self, other)
+        return other
