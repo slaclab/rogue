@@ -31,9 +31,11 @@ namespace utilities {
 
 /**
  * @brief PRBS generator/checker that can act as both stream master and slave.
+ *
+ * @details
  * The engine can transmit deterministic pseudo-random patterns and verify
- *  received patterns for bit-error testing. It supports one-shot frame
- *  generation and optional background transmit mode.
+ * received patterns for bit-error testing. It supports one-shot frame
+ * generation and optional background transmit mode.
  */
 class Prbs : public rogue::interfaces::stream::Slave, public rogue::interfaces::stream::Master {
     //! Max size
@@ -129,154 +131,166 @@ class Prbs : public rogue::interfaces::stream::Slave, public rogue::interfaces::
     static double updateTime(struct timeval* last);
 
   public:
-    //! Class creation
+    /**
+     * @brief Creates a PRBS generator/checker instance.
+     * @return Shared pointer to the created PRBS object.
+     */
     static std::shared_ptr<rogue::utilities::Prbs> create();
 
-    //! Setup class in python
+    /** @brief Registers Python bindings for this class. */
     static void setup_python();
 
-    //! Creator with default taps and size
+    /** @brief Constructs a PRBS instance with default taps and width. */
     Prbs();
 
-    //! Deconstructor
+    /** @brief Destroys the PRBS instance and stops background generation. */
     ~Prbs();
 
-    //! Set width
+    /**
+     * @brief Sets generator/checker data width.
+     * @param width Data width in bits.
+     */
     void setWidth(uint32_t width);
 
     /**
-     * Configure LFSR taps.
-     * @param[in] tapCnt Number of tap entries in \p taps.
-     *  @param[in] taps Pointer to tap index array.
+     * @brief Configures LFSR taps.
+     * @param tapCnt Number of tap entries in \p taps.
+     * @param taps Pointer to tap index array.
      */
     void setTaps(uint32_t tapCnt, uint8_t* taps);
 
 #ifndef NO_PYTHON
     /**
-     * Configure LFSR taps from a Python sequence.
-     * @param[in] p Python object containing tap values.
+     * @brief Configures LFSR taps from a Python sequence.
+     * @param p Python object containing tap values.
      */
     void setTapsPy(boost::python::object p);
 #endif
 
     /**
-     * Enable or disable transmission of sequence counters in payload.
-     * @param[in] state True to include counters in generated data.
+     * @brief Enables or disables transmission of sequence counters in payload.
+     * @param state True to include counters in generated data.
      */
     void sendCount(bool state);
 
     /**
-     * Generate and transmit one PRBS frame.
-     * @param[in] size Payload size in bytes.
+     * @brief Generates and transmits one PRBS frame.
+     * @param size Payload size in bytes.
      */
     void genFrame(uint32_t size);
 
     /**
-     * Enable periodic background frame generation.
-     * @param[in] size Payload size in bytes for generated frames.
+     * @brief Enables periodic background frame generation.
+     * @param size Payload size in bytes for generated frames.
      */
     void enable(uint32_t size);
 
-    //! Disable auto generation
+    /** @brief Disables periodic background frame generation. */
     void disable();
 
-    //! Get rx enable
+    /**
+     * @brief Returns whether RX checking is enabled.
+     * @return True when RX checking is enabled.
+     */
     bool getRxEnable();
 
     /**
-     * Enable or disable RX checking.
-     * @param[in] state True to validate incoming PRBS frames.
+     * @brief Enables or disables RX checking.
+     * @param state True to validate incoming PRBS frames.
      */
     void setRxEnable(bool);
 
     /**
-     * Return RX error count.
+     * @brief Returns RX error count.
      * @return Number of receive-side check failures.
      */
     uint32_t getRxErrors();
 
     /**
-     * Return RX frame count.
+     * @brief Returns RX frame count.
      * @return Number of received frames.
      */
     uint32_t getRxCount();
 
     /**
-     * Return RX byte count.
+     * @brief Returns RX byte count.
      * @return Total received payload bytes.
      */
     uint32_t getRxBytes();
 
     /**
-     * Return computed RX frame rate.
+     * @brief Returns computed RX frame rate.
      * @return Receive frame rate in frames/second.
      */
     double getRxRate();
 
     /**
-     * Return computed RX bandwidth.
+     * @brief Returns computed RX bandwidth.
      * @return Receive bandwidth in bytes/second.
      */
     double getRxBw();
 
     /**
-     * Return computed TX frame rate.
+     * @brief Returns computed TX frame rate.
      * @return Transmit frame rate in frames/second.
      */
     double getTxRate();
 
     /**
-     * Set background TX period.
-     * @param[in] txPeriod Period in microseconds between generated frames.
+     * @brief Sets background TX period.
+     * @param txPeriod Period in microseconds between generated frames.
      */
     void setTxPeriod(uint32_t);
 
     /**
-     * Return configured background TX period.
+     * @brief Returns configured background TX period.
      * @return TX period in microseconds.
      */
     uint32_t getTxPeriod();
 
     /**
-     * Return computed TX bandwidth.
+     * @brief Returns computed TX bandwidth.
      * @return Transmit bandwidth in bytes/second.
      */
     double getTxBw();
 
     /**
-     * Return TX error count.
+     * @brief Returns TX error count.
      * @return Number of transmit-side generation errors.
      */
     uint32_t getTxErrors();
 
     /**
-     * Return TX frame count.
+     * @brief Returns TX frame count.
      * @return Number of transmitted frames.
      */
     uint32_t getTxCount();
 
     /**
-     * Return TX byte count.
+     * @brief Returns TX byte count.
      * @return Total transmitted payload bytes.
      */
     uint32_t getTxBytes();
 
     /**
-     * Enable or disable payload checking.
-     * @param[in] state True to validate payload contents.
+     * @brief Enables or disables payload checking.
+     * @param state True to validate payload contents.
      */
     void checkPayload(bool state);
 
     /**
-     * Enable or disable payload generation.
-     * @param[in] state True to generate PRBS payload bytes.
+     * @brief Enables or disables payload generation.
+     * @param state True to generate PRBS payload bytes.
      */
     void genPayload(bool state);
 
-    //! Reset counters
+    /** @brief Resets RX/TX counters and statistics. */
     void resetCount();
 
-    //! Accept a frame from master
+    /**
+     * @brief Accepts a frame from an upstream master.
+     * @param frame Received stream frame.
+     */
     void acceptFrame(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 };
 

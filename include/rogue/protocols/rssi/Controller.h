@@ -39,8 +39,10 @@ class Header;
 
 /**
  * @brief RSSI protocol controller.
+ *
+ * @details
  * Implements connection state, flow control, retransmission, and parameter
- *  negotiation between RSSI application and transport endpoints.
+ * negotiation between RSSI application and transport endpoints.
  */
 class Controller : public rogue::EnableSharedFromThis<rogue::protocols::rssi::Controller> {
     //! Hard coded values
@@ -137,7 +139,14 @@ class Controller : public rogue::EnableSharedFromThis<rogue::protocols::rssi::Co
     struct timeval timeout_;
 
   public:
-    //! Class creation
+    /**
+     * @brief Factory method to create an RSSI controller. 
+     * @param segSize Initial local maximum segment size.
+     * @param tran Transport endpoint used for link traffic.
+     * @param app Application endpoint used for payload traffic.
+     * @param server True to run server-side handshake behavior.
+     * @return Shared pointer to the created controller.
+     */
     static std::shared_ptr<rogue::protocols::rssi::Controller> create(
         uint32_t segSize,
         std::shared_ptr<rogue::protocols::rssi::Transport> tran,
@@ -145,226 +154,233 @@ class Controller : public rogue::EnableSharedFromThis<rogue::protocols::rssi::Co
         bool server);
 
     /**
-     * Construct an RSSI controller.
-     * @param[in] segSize Initial local max segment size.
-     *  @param[in] tran Transport endpoint used for link traffic.
-     *  @param[in] app Application endpoint used for payload traffic.
-     *  @param[in] server True to run the server-side handshake behavior.
+     * @brief Constructs an RSSI controller.
+     * @param segSize Initial local max segment size.
+     * @param tran Transport endpoint used for link traffic.
+     * @param app Application endpoint used for payload traffic.
+     * @param server True to run the server-side handshake behavior.
      */
     Controller(uint32_t segSize,
                std::shared_ptr<rogue::protocols::rssi::Transport> tran,
                std::shared_ptr<rogue::protocols::rssi::Application> app,
                bool server);
 
-    //! Destructor
+    /** @brief Destroys the controller and stops background processing. */
     ~Controller();
 
-    //! Stop Queues
+    /** @brief Stops internal queues used by controller worker paths. */
     void stopQueue();
 
-    //! Transport frame allocation request
+    /**
+     * @brief Allocates a frame for transport-path transmission.
+     * @param size Minimum payload size in bytes.
+     * @return Allocated frame.
+     */
     std::shared_ptr<rogue::interfaces::stream::Frame> reqFrame(uint32_t size);
 
     /**
-     * Process a frame received from transport.
-     * @param[in] frame Input frame from transport endpoint.
+     * @brief Processes a frame received from transport.
+     * @param frame Input frame from transport endpoint.
      */
     void transportRx(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
     /**
-     * Get next frame to transmit from the application side.
+     * @brief Gets next frame to transmit from the application side.
      * @return Frame ready for transmit, or null when none is available.
      */
     std::shared_ptr<rogue::interfaces::stream::Frame> applicationTx();
 
     /**
-     * Process a frame received from the application side.
-     * @param[in] frame Input frame from application endpoint.
+     * @brief Processes a frame received from the application side.
+     * @param frame Input frame from application endpoint.
      */
     void applicationRx(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
     /**
-     * Return whether the RSSI link is in open state.
+     * @brief Returns whether the RSSI link is in open state.
      * @return True when connection state is open.
      */
     bool getOpen();
 
     /**
-     * Return link down transition counter.
+     * @brief Returns link down transition counter.
      * @return Number of times link entered down/closed state.
      */
     uint32_t getDownCount();
 
     /**
-     * Return dropped-frame counter.
+     * @brief Returns dropped-frame counter.
      * @return Number of dropped received frames.
      */
     uint32_t getDropCount();
 
     /**
-     * Return retransmit counter.
+     * @brief Returns retransmit counter.
      * @return Number of retransmitted frames.
      */
     uint32_t getRetranCount();
 
     /**
-     * Return local busy state.
+     * @brief Returns local busy state.
      * @return True when local endpoint is currently busy.
      */
     bool getLocBusy();
 
     /**
-     * Return local busy event counter.
+     * @brief Returns local busy event counter.
      * @return Number of local busy assertions.
      */
     uint32_t getLocBusyCnt();
 
     /**
-     * Return remote busy state.
+     * @brief Returns remote busy state.
      * @return True when remote endpoint reports busy.
      */
     bool getRemBusy();
 
     /**
-     * Return remote busy event counter.
+     * @brief Returns remote busy event counter.
      * @return Number of remote busy indications seen.
      */
     uint32_t getRemBusyCnt();
 
     /**
-     * Set local connection retry period.
-     * @param[in] val Retry period in microseconds.
+     * @brief Sets local connection retry period.
+     * @param val Retry period in microseconds.
      */
     void setLocTryPeriod(uint32_t val);
     /**
-     * Get local connection retry period.
+     * @brief Gets local connection retry period.
      * @return Retry period in microseconds.
      */
     uint32_t getLocTryPeriod();
 
     /**
-     * Set local max outstanding buffers parameter.
-     * @param[in] val Maximum outstanding buffers.
+     * @brief Sets local max outstanding buffers parameter.
+     * @param val Maximum outstanding buffers.
      */
     void setLocMaxBuffers(uint8_t val);
     /**
-     * Get local max outstanding buffers parameter.
+     * @brief Gets local max outstanding buffers parameter.
      * @return Maximum outstanding buffers.
      */
     uint8_t getLocMaxBuffers();
 
     /**
-     * Set local max segment size.
-     * @param[in] val Segment size in bytes.
+     * @brief Sets local max segment size.
+     * @param val Segment size in bytes.
      */
     void setLocMaxSegment(uint16_t val);
     /**
-     * Get local max segment size.
+     * @brief Gets local max segment size.
      * @return Segment size in bytes.
      */
     uint16_t getLocMaxSegment();
 
     /**
-     * Set local cumulative ACK timeout.
-     * @param[in] val Timeout in protocol time units.
+     * @brief Sets local cumulative ACK timeout.
+     * @param val Timeout in protocol time units.
      */
     void setLocCumAckTout(uint16_t val);
     /**
-     * Get local cumulative ACK timeout.
+     * @brief Gets local cumulative ACK timeout.
      * @return Timeout in protocol time units.
      */
     uint16_t getLocCumAckTout();
 
     /**
-     * Set local retransmit timeout.
-     * @param[in] val Timeout in protocol time units.
+     * @brief Sets local retransmit timeout.
+     * @param val Timeout in protocol time units.
      */
     void setLocRetranTout(uint16_t val);
     /**
-     * Get local retransmit timeout.
+     * @brief Gets local retransmit timeout.
      * @return Timeout in protocol time units.
      */
     uint16_t getLocRetranTout();
 
     /**
-     * Set local null-segment timeout.
-     * @param[in] val Timeout in protocol time units.
+     * @brief Sets local null-segment timeout.
+     * @param val Timeout in protocol time units.
      */
     void setLocNullTout(uint16_t val);
     /**
-     * Get local null-segment timeout.
+     * @brief Gets local null-segment timeout.
      * @return Timeout in protocol time units.
      */
     uint16_t getLocNullTout();
 
     /**
-     * Set local max retransmit count.
-     * @param[in] val Maximum retransmit attempts.
+     * @brief Sets local max retransmit count.
+     * @param val Maximum retransmit attempts.
      */
     void setLocMaxRetran(uint8_t val);
     /**
-     * Get local max retransmit count.
+     * @brief Gets local max retransmit count.
      * @return Maximum retransmit attempts.
      */
     uint8_t getLocMaxRetran();
 
     /**
-     * Set local max cumulative ACK interval.
-     * @param[in] val Maximum number of packets before cumulative ACK.
+     * @brief Sets local max cumulative ACK interval.
+     * @param val Maximum number of packets before cumulative ACK.
      */
     void setLocMaxCumAck(uint8_t val);
     /**
-     * Get local max cumulative ACK interval.
+     * @brief Gets local max cumulative ACK interval.
      * @return Maximum number of packets before cumulative ACK.
      */
     uint8_t getLocMaxCumAck();
 
     /**
-     * Get negotiated max outstanding buffers.
+     * @brief Gets negotiated max outstanding buffers.
      * @return Negotiated max outstanding buffers.
      */
     uint8_t curMaxBuffers();
     /**
-     * Get negotiated max segment size.
+     * @brief Gets negotiated max segment size.
      * @return Negotiated segment size in bytes.
      */
     uint16_t curMaxSegment();
     /**
-     * Get negotiated cumulative ACK timeout.
+     * @brief Gets negotiated cumulative ACK timeout.
      * @return Negotiated timeout in protocol time units.
      */
     uint16_t curCumAckTout();
     /**
-     * Get negotiated retransmit timeout.
+     * @brief Gets negotiated retransmit timeout.
      * @return Negotiated timeout in protocol time units.
      */
     uint16_t curRetranTout();
     /**
-     * Get negotiated null-segment timeout.
+     * @brief Gets negotiated null-segment timeout.
      * @return Negotiated timeout in protocol time units.
      */
     uint16_t curNullTout();
     /**
-     * Get negotiated max retransmit count.
+     * @brief Gets negotiated max retransmit count.
      * @return Negotiated max retransmit attempts.
      */
     uint8_t curMaxRetran();
     /**
-     * Get negotiated max cumulative ACK interval.
+     * @brief Gets negotiated max cumulative ACK interval.
      * @return Negotiated packets between cumulative ACKs.
      */
     uint8_t curMaxCumAck();
 
-    /** Reset runtime counters. */
+    /** @brief Resets runtime counters. */
     void resetCounters();
 
-    /** Set timeout in microseconds for frame transmits */
+    /**
+     * @brief Sets timeout in microseconds for frame transmits.
+     * @param timeout Timeout in microseconds.
+     */
     void setTimeout(uint32_t timeout);
 
-    /** Stop the RSSI connection and worker thread. */
+    /** @brief Stops the RSSI connection and worker thread. */
     void stop();
 
-    /** Start or restart RSSI connection establishment. */
+    /** @brief Starts or restarts RSSI connection establishment. */
     void start();
 
   private:

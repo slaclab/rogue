@@ -8,7 +8,7 @@
  * This file is part of the rogue software platform. It is subject to
  * the license terms in the LICENSE.txt file found in the top-level directory
  * of this distribution and at:
- *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ *  https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
  * No part of the rogue software platform, including this file, may be
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
@@ -34,30 +34,39 @@ class Controller;
 
 /**
  * @brief RSSI transport endpoint.
- * Bridges stream traffic between the RSSI controller and underlying link. */
+ *
+ * @details
+ * Bridges stream traffic between the RSSI controller and the underlying link.
+ */
 class Transport : public rogue::interfaces::stream::Master, public rogue::interfaces::stream::Slave {
     //! Core module
     std::shared_ptr<rogue::protocols::rssi::Controller> cntl_;
 
   public:
-    //! Class creation
+    /**
+     * @brief Creates a new transport endpoint instance.
+     * @return Shared pointer to the created transport endpoint.
+     */
     static std::shared_ptr<rogue::protocols::rssi::Transport> create();
 
-    //! Setup class in python
+    /** @brief Registers Python bindings for this class. */
     static void setup_python();
 
-    //! Creator
+    /** @brief Constructs a transport endpoint. */
     Transport();
 
-    //! Destructor
+    /** @brief Destroys the transport endpoint. */
     ~Transport();
 
-    //! Setup links
+    /**
+     * @brief Attaches the RSSI controller.
+     * @param cntl Controller instance that owns protocol state.
+     */
     void setController(std::shared_ptr<rogue::protocols::rssi::Controller> cntl);
 
     /**
-     * Accept a frame from the upstream stream interface.
-     * @param[in] frame Input frame to decode and forward to controller logic.
+     * @brief Accepts a frame from the upstream stream interface.
+     * @param frame Input frame to decode and forward to controller logic.
      */
     void acceptFrame(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 };

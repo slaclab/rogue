@@ -58,8 +58,10 @@ class StreamWriterChannel;
 
 /**
  * @brief Stream writer coordination class.
+ *
+ * @details
  * Coordinates channelized frame capture into a single file stream with
- *  optional banked framing metadata.
+ * optional banked framing metadata.
  */
 class StreamWriter : public rogue::EnableSharedFromThis<rogue::utilities::fileio::StreamWriter> {
     friend class StreamWriterChannel;
@@ -140,93 +142,102 @@ class StreamWriter : public rogue::EnableSharedFromThis<rogue::utilities::fileio
     virtual void writeFile(uint8_t channel, std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
   public:
-    //! Class creation
+    /**
+     * @brief Creates a stream writer instance.
+     * @return Shared pointer to the created writer.
+     */
     static std::shared_ptr<rogue::utilities::fileio::StreamWriter> create();
 
-    //! Setup class in python
+    /** @brief Registers Python bindings for this class. */
     static void setup_python();
 
-    //! Creator
+    /** @brief Constructs a stream writer. */
     StreamWriter();
 
-    //! Deconstructor
+    /** @brief Destroys the stream writer and closes open resources. */
     virtual ~StreamWriter();
 
-    //! Open a data file
+    /**
+     * @brief Opens a data file.
+     * @param file Output file path.
+     */
     void open(std::string file);
 
-    //! Close a data file
+    /** @brief Closes the currently open data file. */
     void close();
 
-    //! Get open status
+    /**
+     * @brief Returns whether a data file is open.
+     * @return True if a file is open.
+     */
     bool isOpen();
 
     /**
-     * Set raw output mode.
-     * @param[in] raw True to write raw frame payload only.
+     * @brief Sets raw output mode.
+     * @param raw True to write raw frame payload only.
      */
     void setRaw(bool raw);
 
     /**
-     * Get raw output mode state.
+     * @brief Gets raw output mode state.
      * @return True when raw output mode is enabled.
      */
     bool getRaw();
 
     /**
-     * Set write buffering size.
-     * @param[in] size Buffer size in bytes, 0 disables buffering.
+     * @brief Sets write buffering size.
+     * @param size Buffer size in bytes, 0 disables buffering.
      */
     void setBufferSize(uint32_t size);
 
     /**
-     * Set automatic file rollover size.
-     * @param[in] size Maximum file size in bytes, 0 for unlimited.
+     * @brief Sets automatic file rollover size.
+     * @param size Maximum file size in bytes, 0 for unlimited.
      */
     void setMaxSize(uint64_t size);
 
     /**
-     * Configure whether errored frames are dropped.
-     * @param[in] drop True to drop errored frames instead of writing them.
+     * @brief Configures whether errored frames are dropped.
+     * @param drop True to drop errored frames instead of writing them.
      */
     void setDropErrors(bool drop);
 
     /**
-     * Get or create a channel writer endpoint.
-     * @param[in] channel Channel ID.
-     *  @return Channel writer object bound to \p channel.
+     * @brief Gets or creates a channel writer endpoint.
+     * @param channel Channel ID.
+     * @return Channel writer object bound to \p channel.
      */
     std::shared_ptr<rogue::utilities::fileio::StreamWriterChannel> getChannel(uint8_t channel);
 
     /**
-     * Return cumulative bytes written across all files.
+     * @brief Returns cumulative bytes written across all files.
      * @return Total written bytes.
      */
     uint64_t getTotalSize();
 
     /**
-     * Return current output file size.
+     * @brief Returns current output file size.
      * @return Current file size in bytes.
      */
     uint64_t getCurrentSize();
 
     /**
-     * Return recent write bandwidth estimate.
+     * @brief Returns recent write bandwidth estimate.
      * @return Bandwidth in bytes per second.
      */
     double getBandwidth();
 
     /**
-     * Return number of frames written to current file session.
+     * @brief Returns number of frames written to the current file session.
      * @return Frame count.
      */
     uint32_t getFrameCount();
 
     /**
-     * Block until a target frame count is reached or timeout expires.
-     * @param[in] count Target frame count threshold.
-     *  @param[in] timeout Timeout in microseconds.
-     *  @return True if threshold reached before timeout.
+     * @brief Blocks until a target frame count is reached or timeout expires.
+     * @param count Target frame count threshold.
+     * @param timeout Timeout in microseconds.
+     * @return True if threshold reached before timeout.
      */
     bool waitFrameCount(uint32_t count, uint64_t timeout);
 };
