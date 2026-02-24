@@ -12,15 +12,30 @@
 # copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
-import pyrogue
 import math
 
+import pyrogue
 
-def exportRemoteVariable(variable,indent):
+
+def exportRemoteVariable(variable: pyrogue.RemoteVariable, indent: int) -> tuple[str, int]:
+    """Export a ``RemoteVariable`` into CPSW YAML text.
+
+    Parameters
+    ----------
+    variable : pyrogue.RemoteVariable
+        PyRogue remote variable instance.
+    indent : int
+        Number of leading spaces for generated YAML lines.
+
+    Returns
+    -------
+    tuple[str, int]
+        Generated YAML snippet and discovered byte size.
+    """
 
     if variable.ndType is not None or not ('Bool' in variable.typeStr or 'String' in variable.typeStr or 'Int' in variable.typeStr):
         print(f"Error: Found variable {variable.path} with unsupported type {variable.typeStr}, error exporting")
-        return ""
+        return "", 0
 
     #if len(variable.bitOffset) > 1:
     #    print(f"Warning: Splitting multiple bit offset variable {variable.path}")
@@ -68,10 +83,24 @@ def exportRemoteVariable(variable,indent):
             dat += " " * indent +  "    class: Enum\n"
             dat += " " * indent +  "    value: {}\n".format(int(k))
 
-    return dat,size
+    return dat, size
 
 
-def exportLinkVariable(variable, indent):
+def exportLinkVariable(variable: pyrogue.LinkVariable, indent: int) -> str:
+    """Export a placeholder block for an unsupported ``LinkVariable``.
+
+    Parameters
+    ----------
+    variable : pyrogue.LinkVariable
+        Link variable to describe in the generated placeholder comment block.
+    indent : int
+        Number of leading spaces for generated YAML lines.
+
+    Returns
+    -------
+    str
+        YAML comment block describing the unsupported link variable.
+    """
     dat  = " " * indent +  "#########################################################\n"
     dat += " " * indent +  "#Unsupported Link Variable\n"
     dat += " " * indent + f"#{variable.name}\n"
@@ -83,7 +112,21 @@ def exportLinkVariable(variable, indent):
     return dat
 
 
-def exportLocalVariable(variable, indent):
+def exportLocalVariable(variable: pyrogue.LocalVariable, indent: int) -> str:
+    """Export a placeholder block for an unsupported ``LocalVariable``.
+
+    Parameters
+    ----------
+    variable : pyrogue.LocalVariable
+        Local variable to describe in the generated placeholder comment block.
+    indent : int
+        Number of leading spaces for generated YAML lines.
+
+    Returns
+    -------
+    str
+        YAML comment block describing the unsupported local variable.
+    """
     dat  = " " * indent +  "#########################################################\n"
     dat += " " * indent +  "#Unsupported Local Variable\n"
     dat += " " * indent + f"#{variable.name}\n"
@@ -94,7 +137,21 @@ def exportLocalVariable(variable, indent):
     return dat
 
 
-def exportCommand(command, indent):
+def exportCommand(command: pyrogue.LocalCommand, indent: int) -> str:
+    """Export a placeholder block for an unsupported command node.
+
+    Parameters
+    ----------
+    command : pyrogue.LocalCommand
+        Command node to describe in the generated placeholder comment block.
+    indent : int
+        Number of leading spaces for generated YAML lines.
+
+    Returns
+    -------
+    str
+        YAML comment block describing the unsupported command node.
+    """
     dat  = " " * indent +  "#########################################################\n"
     dat += " " * indent +  "#Unsupported Command\n"
     dat += " " * indent + f"#{command.name}\n"
@@ -104,8 +161,26 @@ def exportCommand(command, indent):
     return dat
 
 
-def exportSubDevice(device, indent, deviceList, dataDir):
-    index,size = exportDevice(device, deviceList, dataDir)
+def exportSubDevice(device: pyrogue.Device, indent: int, deviceList: dict[str, list[str]], dataDir: str) -> tuple[str, str, int]:
+    """Export a child device and its reference include block.
+
+    Parameters
+    ----------
+    device : pyrogue.Device
+        Child device to export.
+    indent : int
+        Number of leading spaces for generated YAML lines.
+    deviceList : dict[str, list[str]]
+        Cache of generated class YAML bodies keyed by class name.
+    dataDir : str
+        Output directory for generated YAML files.
+
+    Returns
+    -------
+    tuple[str, str, int]
+        Child include YAML block, generated anchor name, and computed size.
+    """
+    index, size = exportDevice(device, deviceList, dataDir)
 
     if index > 0:
         dn = f"{device.__class__.__name__}_{index}"
@@ -119,11 +194,27 @@ def exportSubDevice(device, indent, deviceList, dataDir):
     dat += " " * indent + f"      offset: {device.offset:#x}\n"
 
     size += device.offset
-    return dat,dn,size
+    return dat, dn, size
 
 
-def exportDevice(device, deviceList, dataDir):
-    imp = []
+def exportDevice(device: pyrogue.Device, deviceList: dict[str, list[str]], dataDir: str) -> tuple[int, int]:
+    """Export a device tree into CPSW YAML files.
+
+    Parameters
+    ----------
+    device : pyrogue.Device
+        Root or child PyRogue device to export.
+    deviceList : dict[str, list[str]]
+        Cache of generated class YAML bodies keyed by class name.
+    dataDir : str
+        Output directory for generated YAML files.
+
+    Returns
+    -------
+    tuple[int, int]
+        Generated device-class index and discovered size.
+    """
+    imp: list[str] = []
     size = 0
     dat  = ""
 
@@ -133,7 +224,7 @@ def exportDevice(device, deviceList, dataDir):
         elif node.isinstance(pyrogue.LocalVariable):
             dat += exportLocalVariable(node,4)
         elif node.isinstance(pyrogue.RemoteVariable):
-            d,s = exportRemoteVariable(node,4)
+            d, s = exportRemoteVariable(node, 4)
             dat += d
             if s > size:
                 size = s
@@ -142,7 +233,7 @@ def exportDevice(device, deviceList, dataDir):
         elif node.isinstance(pyrogue.Command):
             dat += exportCommand(node,4)
         elif node.isinstance(pyrogue.Device):
-            ld,dn,s = exportSubDevice(node,4,deviceList, dataDir)
+            ld, dn, s = exportSubDevice(node, 4, deviceList, dataDir)
             dat += ld
             if s > size:
                 size = s
@@ -184,15 +275,24 @@ def exportDevice(device, deviceList, dataDir):
         elif deviceList[device.__class__.__name__][i] == ddat:
             break
 
-    with open(dataDir + "/" + tname + ".yaml","w") as f:
+    with open(dataDir + "/" + tname + ".yaml", "w") as f:
         f.write(ddat)
 
-    return i,size
+    return i, size
 
 
-def exportRoot(root,dataDir):
-    dlist = {}
+def exportRoot(root: pyrogue.Root, dataDir: str) -> None:
+    """Export all top-level devices from a PyRogue root node.
 
-    for k,node in root.nodes.items():
+    Parameters
+    ----------
+    root : pyrogue.Root
+        Root node containing top-level device children to export.
+    dataDir : str
+        Output directory for generated YAML files.
+    """
+    dlist: dict[str, list[str]] = {}
+
+    for _, node in root.nodes.items():
         if node.isinstance(pyrogue.Device):
-            exportDevice(node,dlist,dataDir)
+            exportDevice(node, dlist, dataDir)
