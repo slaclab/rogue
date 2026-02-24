@@ -14,10 +14,13 @@
 #-----------------------------------------------------------------------------
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, TYPE_CHECKING
 
 import pyrogue
 import rogue.utilities
+
+if TYPE_CHECKING:
+    import rogue.interfaces.stream as ris
 
 
 class PrbsRx(pyrogue.Device):
@@ -26,13 +29,21 @@ class PrbsRx(pyrogue.Device):
     Parameters
     ----------
     width : int, optional
-        PRBS data width. If ``None``, the Rogue default is used.
+        PRBS word width in bits. The underlying Rogue PRBS engine requires a
+        multiple of 32 bits. If ``None``, the C++ default is 32 bits.
     checkPayload : bool, optional (default = True)
         Enable payload checking when ``True``.
-    taps : int, optional
-        PRBS taps value. If ``None``, the Rogue default is used.
-    stream : object, optional
-        Optional stream to connect as the RX source.
+    taps : bytes-like, optional
+        LFSR feedback tap bit positions used by the PRBS generator/checker.
+        Provide a bytes-like sequence (for example ``bytes([1, 2, 6, 31])``)
+        where each entry is a tapped bit index in the PRBS state. If ``None``,
+        Rogue uses the C++ default taps ``[1, 2, 6, 31]``.
+        For a 32-bit state in Rogue's left-shift Fibonacci form, this means
+        ``new_bit0 = bit1 ^ bit2 ^ bit6 ^ bit31``, which corresponds to the
+        polynomial ``x^32 + x^7 + x^3 + x^2 + 1`` (equivalent forms may use
+        reciprocal indexing conventions).
+    stream : rogue.interfaces.stream.Master, optional
+        Optional stream endpoint to connect as the RX source upon initialization.
     **kwargs : Any
         Additional arguments forwarded to ``pyrogue.Device``.
     """
@@ -42,8 +53,8 @@ class PrbsRx(pyrogue.Device):
         *,
         width: int | None = None,
         checkPayload: bool = True,
-        taps: int | None = None,
-        stream: Any | None = None,
+        taps: bytes | bytearray | memoryview | None = None,
+        stream: ris.Master | None = None,
         **kwargs: Any,
     ) -> None:
         """Initialize a software PRBS receiver."""
@@ -107,11 +118,11 @@ class PrbsRx(pyrogue.Device):
         return other
 
     def setWidth(self, width: int) -> None:
-        """Set the PRBS width."""
+        """Set PRBS word width in bits (must be a multiple of 32)."""
         self._prbs.setWidth(width)
 
-    def setTaps(self, taps: int) -> None:
-        """Set the PRBS taps value."""
+    def setTaps(self, taps: bytes | bytearray | memoryview) -> None:
+        """Set LFSR feedback tap bit positions."""
         self._prbs.setTaps(taps)
 
 
@@ -123,11 +134,19 @@ class PrbsTx(pyrogue.Device):
     sendCount : bool, optional (default = False)
         Enable count transmission when ``True``.
     width : int, optional
-        PRBS data width. If ``None``, the Rogue default is used.
-    taps : int, optional
-        PRBS taps value. If ``None``, the Rogue default is used.
-    stream : object, optional
-        Optional stream to connect as the TX destination.
+        PRBS word width in bits. The underlying Rogue PRBS engine requires a
+        multiple of 32 bits. If ``None``, the C++ default is 32 bits.
+    taps : bytes-like, optional
+        LFSR feedback tap bit positions used by the PRBS generator/checker.
+        Provide a bytes-like sequence (for example ``bytes([1, 2, 6, 31])``)
+        where each entry is a tapped bit index in the PRBS state. If ``None``,
+        Rogue uses the C++ default taps ``[1, 2, 6, 31]``.
+        For a 32-bit state in Rogue's left-shift Fibonacci form, this means
+        ``new_bit0 = bit1 ^ bit2 ^ bit6 ^ bit31``, which corresponds to the
+        polynomial ``x^32 + x^7 + x^3 + x^2 + 1`` (equivalent forms may use
+        reciprocal indexing conventions).
+    stream : rogue.interfaces.stream.Slave, optional
+        Optional stream endpoint to connect as the TX destination.
     **kwargs : Any
         Additional arguments forwarded to ``pyrogue.Device``.
     """
@@ -137,8 +156,8 @@ class PrbsTx(pyrogue.Device):
         *,
         sendCount: bool = False,
         width: int | None = None,
-        taps: int | None = None,
-        stream: Any | None = None,
+        taps: bytes | bytearray | memoryview | None = None,
+        stream: ris.Slave | None = None,
         **kwargs: Any,
     ) -> None:
         """Initialize a software PRBS transmitter."""
@@ -227,11 +246,11 @@ class PrbsTx(pyrogue.Device):
         return other
 
     def setWidth(self, width: int) -> None:
-        """Set the PRBS width."""
+        """Set PRBS word width in bits (must be a multiple of 32)."""
         self._prbs.setWidth(width)
 
-    def setTaps(self, taps: int) -> None:
-        """Set the PRBS taps value."""
+    def setTaps(self, taps: bytes | bytearray | memoryview) -> None:
+        """Set LFSR feedback tap bit positions."""
         self._prbs.setTaps(taps)
 
     def sendCount(self, en: bool) -> None:
@@ -249,15 +268,23 @@ class PrbsPair(pyrogue.Device):
     Parameters
     ----------
     width : int, optional
-        PRBS data width. If ``None``, the Rogue default is used.
-    taps : int, optional
-        PRBS taps value. If ``None``, the Rogue default is used.
+        PRBS word width in bits. The underlying Rogue PRBS engine requires a
+        multiple of 32 bits. If ``None``, the C++ default is 32 bits.
+    taps : bytes-like, optional
+        LFSR feedback tap bit positions used by the PRBS generator/checker.
+        Provide a bytes-like sequence (for example ``bytes([1, 2, 6, 31])``)
+        where each entry is a tapped bit index in the PRBS state. If ``None``,
+        Rogue uses the C++ default taps ``[1, 2, 6, 31]``.
+        For a 32-bit state in Rogue's left-shift Fibonacci form, this means
+        ``new_bit0 = bit1 ^ bit2 ^ bit6 ^ bit31``, which corresponds to the
+        polynomial ``x^32 + x^7 + x^3 + x^2 + 1`` (equivalent forms may use
+        reciprocal indexing conventions).
     sendCount : bool, optional (default = False)
         Forward the TX count through the stream.
-    txStream : object, optional
-        Optional TX stream destination.
-    rxStream : object, optional
-        Optional RX stream source.
+    txStream : rogue.interfaces.stream.Master or rogue.interfaces.stream.Slave, optional
+        Optional TX stream endpoint.
+    rxStream : rogue.interfaces.stream.Master or rogue.interfaces.stream.Slave, optional
+        Optional RX stream endpoint.
     **kwargs : Any
         Additional arguments forwarded to ``pyrogue.Device``.
     """
@@ -265,24 +292,23 @@ class PrbsPair(pyrogue.Device):
     def __init__(
         self,
         width: int | None = None,
-        taps: int | None = None,
+        taps: bytes | bytearray | memoryview | None = None,
         sendCount: bool = False,
-        txStream: Any | None = None,
-        rxStream: Any | None = None,
+        txStream: ris.Master | ris.Slave | None = None,
+        rxStream: ris.Master | ris.Slave | None = None,
         **kwargs: Any,
     ) -> None:
-        """Initialize a PRBS TX/RX pair."""
-        super().__init__(self, **kwargs)
-        self.add(PrbsTx(width=width, taps=taps, stream=txStream))
-        self.add(PrbsRx(sendCount=sendCount, width=width, taps=taps, stream=rxStream))
+        super().__init__(**kwargs)
+        self.add(PrbsTx(sendCount=sendCount, width=width, taps=taps, stream=txStream))
+        self.add(PrbsRx(width=width, taps=taps, stream=rxStream))
 
     def setWidth(self, width: int) -> None:
-        """Set PRBS width on both devices."""
+        """Set PRBS word width in bits on both devices."""
         self.PrbsTx.setWidth(width)
         self.PrbsRx.setWidth(width)
 
-    def setTaps(self, taps: int) -> None:
-        """Set PRBS taps on both devices."""
+    def setTaps(self, taps: bytes | bytearray | memoryview) -> None:
+        """Set LFSR feedback tap bit positions on both devices."""
         self.PrbsTx.setTaps(taps)
         self.PrbsRx.setTaps(taps)
 
@@ -298,13 +324,16 @@ class PrbsPair(pyrogue.Device):
         """Return the stream slave endpoint."""
         return self.PrbsTx._getStreamSlave()
 
-    def __rshift__(self,other):
-        pyrogue.streamConnect(self,other)
+    def __rshift__(self, other: Any) -> Any:
+        """Connect this pair output to ``other``."""
+        pyrogue.streamConnect(self, other)
         return other
 
-    def __lshift__(self,other):
-        pyrogue.streamConnect(other,self)
+    def __lshift__(self, other: Any) -> Any:
+        """Connect ``other`` output to this pair input."""
+        pyrogue.streamConnect(other, self)
         return other
 
-    def __eq__(self,other):
-        pyrogue.streamConnectBiDir(other,self)
+    def __eq__(self, other: Any) -> None:
+        """Create a bidirectional stream connection to ``other``."""
+        pyrogue.streamConnectBiDir(other, self)
