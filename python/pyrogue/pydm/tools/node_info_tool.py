@@ -14,7 +14,6 @@
 #-----------------------------------------------------------------------------
 
 import logging
-from typing import Any
 
 from pydm.tools import ExternalTool
 from pydm.utilities.iconfont import IconFont
@@ -62,7 +61,15 @@ class NodeInformation(ExternalTool):
             self._command(node,channels[0])
 
     def _variable(self, node: pyrogue.BaseVariable, channel: PyDMChannel) -> None:
-        """Render variable metadata in a modal dialog."""
+        """Render variable metadata in a modal dialog.
+
+        Parameters
+        ----------
+        node : pyrogue.BaseVariable
+            Selected variable node.
+        channel : PyDMChannel
+            Triggering PyDM channel.
+        """
         attrs = ['name', 'path', 'description', 'hidden', 'groups', 'enum',
                  'typeStr', 'disp', 'precision', 'mode', 'units', 'minimum',
                  'maximum', 'lowWarning', 'lowAlarm', 'highWarning',
@@ -120,7 +127,15 @@ class NodeInformation(ExternalTool):
 
 
     def _command(self, node: pyrogue.BaseCommand, channel: PyDMChannel) -> None:
-        """Render command metadata in a modal dialog."""
+        """Render command metadata in a modal dialog.
+
+        Parameters
+        ----------
+        node : pyrogue.BaseCommand
+            Selected command node.
+        channel : PyDMChannel
+            Triggering PyDM channel.
+        """
         attrs = ['name', 'path', 'description', 'hidden', 'groups', 'enum', 'typeStr', 'disp']
 
         if node.isinstance(pyrogue.RemoteCommand):
@@ -158,7 +173,15 @@ class NodeInformation(ExternalTool):
 
 
     def _device(self, node: pyrogue.Device, channel: PyDMChannel) -> None:
-        """Render device metadata in a modal dialog."""
+        """Render device metadata in a modal dialog.
+
+        Parameters
+        ----------
+        node : pyrogue.Device
+            Selected device node.
+        channel : PyDMChannel
+            Triggering PyDM channel.
+        """
         attrs = ['name', 'path', 'description', 'hidden', 'groups']
 
         msgBox = QDialog()

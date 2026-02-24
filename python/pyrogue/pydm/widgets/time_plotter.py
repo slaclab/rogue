@@ -37,8 +37,34 @@ import random
 
 
 class DebugDev(QTreeWidgetItem):
+    """Tree item representing a device in the time-plot selection tree.
 
-    def __init__(self,main,*, path, top, parent, dev, noExpand):
+    Parameters
+    ----------
+    main : TimePlotter
+        Owning time-plotter widget.
+    path : str
+        Full Rogue node path for this device.
+    top : SelectionTree
+        Owning selection-tree widget.
+    parent : QTreeWidget | QTreeWidgetItem
+        Parent tree widget/item.
+    dev : pyrogue.Device
+        Backing Rogue device object.
+    noExpand : bool
+        If ``True``, delay child expansion until user expands the row.
+    """
+
+    def __init__(
+        self,
+        main: "TimePlotter",
+        *,
+        path: str,
+        top: "SelectionTree",
+        parent: QTreeWidget | QTreeWidgetItem,
+        dev: pyrogue.Device,
+        noExpand: bool,
+    ) -> None:
         QTreeWidgetItem.__init__(self,parent)
         self._main=main
         self._top      = top
@@ -75,7 +101,7 @@ class DebugDev(QTreeWidgetItem):
             self._dummy = QTreeWidgetItem(self) # One dummy item to add expand control
             self.setExpanded(False)
 
-    def _setup(self,noExpand):
+    def _setup(self, noExpand: bool) -> None:
 
         # Get dictionary of variables followed by commands
         lst = self._dev.variablesByGroup(incGroups=self._top._incGroups,
@@ -109,7 +135,7 @@ class DebugDev(QTreeWidgetItem):
             else:
                 DebugDev(main = self._main,path=self._path + '.' + val.name, top=self._top, parent=self, dev=val, noExpand=noExpand)
 
-    def _expand(self):
+    def _expand(self) -> None:
         if self._dummy is None:
             return
 
@@ -119,8 +145,23 @@ class DebugDev(QTreeWidgetItem):
 
 
 class DebugGroup(QTreeWidgetItem):
+    """Tree item representing a GUI group in the selection tree.
 
-    def __init__(self,main,*, path, top, parent, name):
+    Parameters
+    ----------
+    main : TimePlotter
+        Owning time-plotter widget.
+    path : str
+        Parent Rogue node path for this group.
+    top : SelectionTree
+        Owning selection-tree widget.
+    parent : QTreeWidgetItem
+        Parent tree item.
+    name : str
+        GUI group name.
+    """
+
+    def __init__(self, main: "TimePlotter", *, path: str, top: "SelectionTree", parent: QTreeWidgetItem, name: str) -> None:
         QTreeWidgetItem.__init__(self,parent)
         self._main = main
         self._top      = top
@@ -137,7 +178,7 @@ class DebugGroup(QTreeWidgetItem):
         self._dummy = QTreeWidgetItem(self) # One dummy item to add expand control
         self.setExpanded(False)
 
-    def _setup(self):
+    def _setup(self) -> None:
 
         # Create variables
         for n in self._list:
@@ -157,7 +198,7 @@ class DebugGroup(QTreeWidgetItem):
                             parent=self,
                             variable=n)
 
-    def _expand(self):
+    def _expand(self) -> None:
         if self._dummy is None:
             return
 
@@ -165,13 +206,36 @@ class DebugGroup(QTreeWidgetItem):
         self._dummy = None
         self._setup()
 
-    def addNode(self,node):
+    def addNode(self, node: pyrogue.Node) -> None:
         self._list.append(node)
 
 
 class DebugHolder(QTreeWidgetItem):
+    """Tree item representing a variable entry in the selection tree.
 
-    def __init__(self,main,*,path,top,parent,variable):
+    Parameters
+    ----------
+    main : TimePlotter
+        Owning time-plotter widget.
+    path : str
+        Full Rogue node path for this variable/command.
+    top : SelectionTree
+        Owning selection-tree widget.
+    parent : QTreeWidgetItem
+        Parent tree item.
+    variable : pyrogue.BaseVariable | pyrogue.BaseCommand
+        Backing Rogue variable/command object.
+    """
+
+    def __init__(
+        self,
+        main: "TimePlotter",
+        *,
+        path: str,
+        top: "SelectionTree",
+        parent: QTreeWidgetItem,
+        variable: pyrogue.BaseVariable | pyrogue.BaseCommand,
+    ) -> None:
         QTreeWidgetItem.__init__(self,parent)
         self._main   = main
         self._top    = top
@@ -244,7 +308,30 @@ class DebugHolder(QTreeWidgetItem):
 
 
 class SelectionTree(PyDMFrame):
-    def __init__(self, main, parent=None, init_channel=None, incGroups=None, excGroups=['Hidden']):
+    """Rogue node selection tree used by :class:`TimePlotter`.
+
+    Parameters
+    ----------
+    main : TimePlotter
+        Parent plotter widget coordinating add/remove actions.
+    parent : QWidget | None, optional
+        Parent Qt widget.
+    init_channel : str | None, optional
+        Initial Rogue channel address.
+    incGroups : list[str] | None, optional
+        Include filter for Rogue groups.
+    excGroups : list[str] | None, optional
+        Exclude filter for Rogue groups.
+    """
+
+    def __init__(
+        self,
+        main: "TimePlotter",
+        parent: QWidget | None = None,
+        init_channel: str | None = None,
+        incGroups: list[str] | None = None,
+        excGroups: list[str] | None = ['Hidden'],
+    ) -> None:
         PyDMFrame.__init__(self, parent, init_channel)
 
         self._main = main
@@ -257,7 +344,7 @@ class SelectionTree(PyDMFrame):
 
         self._colWidths = [250,50,150,50,50]
 
-    def connection_changed(self, connected):
+    def connection_changed(self, connected: bool) -> None:
 
         build = (self._node is None) and (self._connected != connected and connected is True)
         super(SelectionTree, self).connection_changed(connected)
@@ -297,7 +384,7 @@ class SelectionTree(PyDMFrame):
         self.setUpdatesEnabled(True)
 
     @Slot(QTreeWidgetItem)
-    def _expandCb(self,item):
+    def _expandCb(self, item: QTreeWidgetItem) -> None:
         self.setUpdatesEnabled(False)
         item._expand()
 
@@ -314,41 +401,53 @@ class SelectionTree(PyDMFrame):
         self.setUpdatesEnabled(True)
 
     @Property(str)
-    def incGroups(self):
+    def incGroups(self) -> str:
         if self._incGroups is None or len(self._incGroups) == 0:
             return ''
         else:
             return ','.join(self._incGroups)
 
     @incGroups.setter
-    def incGroups(self, value):
+    def incGroups(self, value: str) -> None:
         if value == '':
             self._incGroups = None
         else:
             self._incGroups = value.split(',')
 
     @Property(str)
-    def excGroups(self):
+    def excGroups(self) -> str:
         if self._excGroups is None or len(self._excGroups) == 0:
             return ''
         else:
             return ','.join(self._excGroups)
 
     @excGroups.setter
-    def excGroups(self, value):
+    def excGroups(self, value: str) -> None:
         if value == '':
             self._excGroups = None
         else:
             self._excGroups = value.split(',')
 
-    def eventFilter(self, obj, event):
+    def eventFilter(self, obj: object, event: QEvent) -> bool:
         if event.type() == QEvent.Wheel:
             return True
         else:
             return False
 
 class ToggleButton(QPushButton):
-    def __init__(self,main,state,path):
+    """Add/remove button with state-aware styling for selected plot channels.
+
+    Parameters
+    ----------
+    main : TimePlotter
+        Owning time-plotter widget.
+    state : bool
+        Initial toggle state.
+    path : str
+        Rogue node path represented by this button.
+    """
+
+    def __init__(self, main: "TimePlotter", state: bool, path: str) -> None:
         super().__init__()
         self._main = main
         self._state = state
@@ -360,7 +459,7 @@ class ToggleButton(QPushButton):
 
         self.setStyleSheet(self.styleSheet%self._main._addColor)
 
-    def toggle(self):
+    def toggle(self) -> None:
         if self._state is True:
             self.setText('Add')
             self._state = False
@@ -371,18 +470,28 @@ class ToggleButton(QPushButton):
             self.setStyleSheet(self.styleSheet%self._main._colorSelector.current_color())
 
 
-    def setStyle(self,color):
+    def setStyle(self, color: str) -> None:
         self.setStyleSheet(self.styleSheet%color)
 
 class TimePlotter(PyDMFrame):
-    def __init__(self, parent=None, init_channel=None):
+    """Widget combining variable selection tree and live time plots.
+
+    Parameters
+    ----------
+    parent : QWidget | None, optional
+        Parent Qt widget.
+    init_channel : str | None, optional
+        Initial Rogue channel address.
+    """
+
+    def __init__(self, parent: QWidget | None = None, init_channel: str | None = None) -> None:
         super().__init__(parent, init_channel)
         self._node = None
 
         self._addColor = '#dddddd'
         self._colorSelector = ColorSelector()
 
-    def connection_changed(self, connected):
+    def connection_changed(self, connected: bool) -> None:
 
         build = (self._node is None) and (self._connected != connected and connected is True)
         super(TimePlotter, self).connection_changed(connected)
@@ -393,7 +502,7 @@ class TimePlotter(PyDMFrame):
         self._node = nodeFromAddress(self.channel)
         self.setup_ui()
 
-    def setup_ui(self):
+    def setup_ui(self) -> None:
 
         vb = QVBoxLayout()
         self.setLayout(vb)
@@ -478,7 +587,7 @@ class TimePlotter(PyDMFrame):
 
         vb.addWidget(main_box)
 
-    def do_add(self,path):
+    def do_add(self, path: str) -> None:
         self.plots.addYChannel(y_channel=path,
                 color = self._colorSelector.take_color(path),
                 lineWidth = 5)
@@ -488,7 +597,7 @@ class TimePlotter(PyDMFrame):
         disp.setMaximumHeight(50)
         self.legend_layout.addWidget(disp)
 
-    def do_remove(self,path):
+    def do_remove(self, path: str) -> None:
         curve = self.plots.findCurve(path)
         self.plots.removeYChannel(curve)
         for widget in self.frm_legend.findChildren(QWidget):
@@ -496,7 +605,7 @@ class TimePlotter(PyDMFrame):
                 widget.setParent(None)
                 widget.deleteLater()
 
-    def do_setwidth(self):
+    def do_setwidth(self) -> None:
         text = self.width_edit.text()
 
         try:
@@ -505,19 +614,42 @@ class TimePlotter(PyDMFrame):
         except Exception:
             pass
 
-    def do_autoheight(self):
+    def do_autoheight(self) -> None:
         # self.plots.setAutoRangeY(True)
         # self.plots.autoRangeY = True
         self.plots.plotItem.enableAutoRange(ViewBox.YAxis, enable=True)
 
-    def minimumSizeHint(self):
+    def minimumSizeHint(self) -> QtCore.QSize:
         return QtCore.QSize(1500, 900)
 
-    def ui_filepath(self):
+    def ui_filepath(self) -> None:
         return None
 
 class LegendRow(Display):
-    def __init__(self, parent=None, args=[], macros=None,path=None,main=None):
+    """Legend row widget for one plotted channel.
+
+    Parameters
+    ----------
+    parent : QWidget | None, optional
+        Parent Qt widget.
+    args : list[str] | None, optional
+        Display argument list forwarded to :class:`pydm.Display`.
+    macros : dict[str, str] | None, optional
+        Macro substitutions forwarded to :class:`pydm.Display`.
+    path : str | None, optional
+        Rogue path of the plotted variable represented by this legend row.
+    main : TimePlotter | None, optional
+        Owning time-plotter widget.
+    """
+
+    def __init__(
+        self,
+        parent: QWidget | None = None,
+        args: list[str] | None = None,
+        macros: dict[str, str] | None = None,
+        path: str | None = None,
+        main: "TimePlotter" | None = None,
+    ) -> None:
         super(LegendRow, self).__init__(parent=parent, args=args, macros=None)
 
         self._path = path
@@ -528,7 +660,7 @@ class LegendRow(Display):
         self.setMaximumHeight(50)
         self.setup_ui()
 
-    def setup_ui(self):
+    def setup_ui(self) -> None:
 
         #setup main layout
         main_layout = QHBoxLayout()
@@ -556,18 +688,19 @@ class LegendRow(Display):
 
         self.setLayout(main_layout)
 
-    def ui_filepath(self):
+    def ui_filepath(self) -> None:
         # No UI file is being used
         return None
 
 class ColorSelector():
+    """Allocates reusable colors for plot channels."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self._colorList = ['#F94144', '#F3722C', '#F8961E', '#F9844A', '#F9C74F', '#90BE6D', '#43AA8B', '#4D908E', '#577590', '#277DA1','#f70a0a','#f75d0a','#f7a00a','#f7f30a','#98f70a','#1af70a','#0af7c0','#0accf7','#0a75f7','#0a1ef7','#710af7','#e70af7','#f70a71','#8a2d06','#838a06''#188a06','#188a06','#188a06']
         self._currentDict = {}
         self._currentColor = None
 
-    def take_color(self,channel):
+    def take_color(self, channel: str) -> str:
 
         if len(self._colorList) == 0:
             self._colorList.append(self.generate_new_color())
@@ -578,16 +711,16 @@ class ColorSelector():
         self._currentColor = color
         return color
 
-    def give_back_color(self,channel):
+    def give_back_color(self, channel: str) -> None:
 
         color = self.currentDict.pop(channel)
         self._colorList.append(color)
         random.shuffle(self._colorList)
 
-    def current_color(self):
+    def current_color(self) -> str | None:
 
         return self._currentColor
 
-    def generate_new_color(self):
+    def generate_new_color(self) -> str:
 
         return '#' + hex(random.randint(0x100000,0xffffff))[2:] #<----------Change this
