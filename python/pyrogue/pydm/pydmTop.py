@@ -14,7 +14,7 @@
 #-----------------------------------------------------------------------------
 import os
 from pydm import Display
-from qtpy.QtWidgets import (QVBoxLayout, QTabWidget)
+from qtpy.QtWidgets import (QVBoxLayout, QTabWidget, QWidget)
 
 from pyrogue.pydm.widgets import DebugTree
 from pyrogue.pydm.widgets import SystemWindow
@@ -23,8 +23,20 @@ Channel = 'rogue://0/root'
 
 
 class DefaultTop(Display):
-    def __init__(self, parent=None, args=[], macros=None):
-        super(DefaultTop, self).__init__(parent=parent, args=args, macros=None)
+    """Default top-level Rogue PyDM display.
+
+    Parameters
+    ----------
+    parent : QWidget | None, optional
+        Parent Qt widget.
+    args : list[str] | None, optional
+        Display argument list (for example ``sizeX=...`` and ``sizeY=...``).
+    macros : dict[str, str] | None, optional
+        PyDM macro substitutions forwarded to :class:`pydm.Display`.
+    """
+
+    def __init__(self, parent: QWidget | None = None, args: list[str] | None = None, macros: dict[str, str] | None = None) -> None:
+        super(DefaultTop, self).__init__(parent=parent, args=args, macros=macros)
 
         #self.setStyleSheet("*[dirty='true']\
         #                   {background-color: orange;}")
@@ -32,6 +44,9 @@ class DefaultTop(Display):
         self.sizeX  = None
         self.sizeY  = None
         self.title  = None
+
+        if args is None:
+            args = []
 
         for a in args:
             if 'sizeX=' in a:
@@ -70,6 +85,6 @@ class DefaultTop(Display):
 
         self.resize(self.sizeX, self.sizeY)
 
-    def ui_filepath(self):
-        # No UI file is being used
+    def ui_filepath(self) -> None:
+        """Return ``None`` because this display is code-constructed."""
         return None

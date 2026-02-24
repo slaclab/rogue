@@ -18,18 +18,33 @@ from pyrogue.pydm.widgets import TimePlotter
 
 from pydm import Display
 
-from qtpy.QtWidgets import QVBoxLayout
+from qtpy.QtWidgets import QVBoxLayout, QWidget
 
 
 Channel = 'rogue://0/root'
 
 class TimePlotTop(Display):
-    def __init__(self, parent=None, args=[], macros=None):
-        super().__init__(parent=parent, args=args, macros=None)
+    """Top-level PyDM display embedding the time-plotter widget.
+
+    Parameters
+    ----------
+    parent : QWidget | None, optional
+        Parent Qt widget.
+    args : list[str] | None, optional
+        Display argument list (for example ``sizeX=...`` and ``sizeY=...``).
+    macros : dict[str, str] | None, optional
+        PyDM macro substitutions forwarded to :class:`pydm.Display`.
+    """
+
+    def __init__(self, parent: QWidget | None = None, args: list[str] | None = None, macros: dict[str, str] | None = None) -> None:
+        super().__init__(parent=parent, args=args, macros=macros)
 
         self.sizeX  = None
         self.sizeY  = None
         self.title  = None
+
+        if args is None:
+            args = []
 
         for a in args:
             if 'sizeX=' in a:
@@ -58,6 +73,6 @@ class TimePlotTop(Display):
 
         self.resize(self.sizeX, self.sizeY)
 
-    def ui_filepath(self):
-        # No UI file is being used
+    def ui_filepath(self) -> None:
+        """Return ``None`` because this display is code-constructed."""
         return None
