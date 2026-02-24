@@ -16,7 +16,10 @@
 from dataclasses import dataclass
 import os
 import struct
+from typing import Any, Iterator
+
 import numpy
+import numpy.typing as npt
 import yaml
 import logging
 
@@ -26,28 +29,24 @@ RogueHeaderPack  = 'IHBB'
 # Default header as a named tuple
 @dataclass
 class RogueHeader:
-    size : int     # 4 Bytes, uint32, I
-    flags: int     # 2 bytes, uint16, H
-    error: int     # 1 bytes, uint8,  B
-    channel: int   # 1 bytes, uint8,  B
-
-""" Rogue Header data
+    """Rogue frame header.
 
     Attributes
     ----------
     size : int
-        Size of the record, minus the header
-
+        Payload size of the record in bytes (header-adjusted by this reader).
     flags : int
-        Frame flags for the record
-
+        Frame flags for the record.
     error : int
-        Error status for the record
-
+        Error status for the record.
     channel : int
-        Channel id for the record
+        Channel id for the record.
+    """
 
-"""
+    size : int     # 4 Bytes, uint32, I
+    flags: int     # 2 bytes, uint16, H
+    error: int     # 1 bytes, uint8,  B
+    channel: int   # 1 bytes, uint8,  B
 
 BatchHeaderSize  = 8
 BatchHeaderPack  = 'IBBBB'
@@ -55,37 +54,34 @@ BatchHeaderPack  = 'IBBBB'
 # Batcher Header
 @dataclass
 class BatchHeader:
+    """Batch sub-frame header.
+
+    Attributes
+    ----------
+    size : int
+        Sub-frame payload size in bytes.
+    tdest : int
+        TDEST value from AXI Stream frame metadata.
+    fUser : int
+        First USER value from AXI Stream frame metadata.
+    lUser : int
+        Last USER value from AXI Stream frame metadata.
+    width : int
+        Width of the batched data in bytes.
+    """
+
     size: int   # 4 Bytes, uint32, I
     tdest: int  # 1 Byte, uint8, B
     fUser: int  # 1 Byte, uint8, B
     lUser: int  # 1 Byte, uint8, B
     width: int  # 1 Byte, uint8, B
 
-
-""" Batcher Header data
-
-    Attributes
-    ----------
-    size: int
-        Sub frame size in bytes
-
-    tdest: int
-        TDEST value from AXI Stream Frame
-
-    fUser: int
-        First USER value from AXI Stream Frame
-
-    lUser: int
-        Last USER value from AXI Stream Frame
-
-    width : int
-        Width of the batched data in bytes
-
-"""
+DataArray = npt.NDArray[numpy.int8]
+Record = tuple[RogueHeader, DataArray]
+BatchRecord = tuple[RogueHeader, BatchHeader, DataArray]
 
 class FileReaderException(Exception):
-    """ File reader exception """
-    pass
+    """File reader exception."""
 
 
 class FileReader(object):
@@ -94,17 +90,16 @@ class FileReader(object):
 
     Parameters
     ----------
-    files : str or list
-        Filename or list of filenams to read data from
-
-    configChan : int
-        Channel id of configuration/status stream in the data file. Set to None to disable processing configuration.
-
-    log : obj
-        Logging object to use. If set to None a new logger will be created with the name "pyrogue.FileReader".
-
+    files : str or list[str]
+        Filename or list of filenames to read data from.
+    configChan : int | None
+        Channel id of configuration/status stream in the data file. Set to
+        ``None`` to disable configuration processing.
+    log : logging.Logger | None
+        Logger to use. If ``None``, a new logger with name
+        ``"pyrogue.FileReader"`` is created.
     batched : bool
-        Flag to indicate if data file contains batched data
+        Flag indicating if the data file contains batched data.
 
     Attributes
     ----------
@@ -114,11 +109,17 @@ class FileReader(object):
     totCount: int
         Total number of data records processed from
 
-    configDig: obj
-        Current configuration/status dictionary
+    configDict : dict[str, Any]
+        Current configuration/status dictionary.
     """
 
-    def __init__(self, files, configChan=None, log=None, batched=False):
+    def __init__(
+        self,
+        files: str | list[str],
+        configChan: int | None = None,
+        log: logging.Logger | None = None,
+        batched: bool = False,
+    ) -> None:
         self._configChan = configChan
         self._currFile   = None
         self._fileSize   = 0
@@ -144,7 +145,7 @@ class FileReader(object):
             if not os.access(fn,os.R_OK):
                 raise FileReaderException("Failed to read file {}".format(fn))
 
-    def _nextRecord(self):
+    def _nextRecord(self) -> bool:
         while True:
 
             # Hit end of file
@@ -178,18 +179,15 @@ class FileReader(object):
                 self._totCount += 1
                 return True
 
-    def records(self):
+    def records(self) -> Iterator[Record | BatchRecord]:
         """
-        Generator which returns (header, data) tuples
+        Yield data records from all configured files.
 
         Returns
         -------
-        RogueHeader, bytearray
-            (header, data) tuple where header is a dictionary and data is a byte array, for batched = False.
-
-        RogueHeader, BatchHeader, bytearray
-            (header, header, data) tuple where header are dictionaried and data is a byte array, for batched = True.
-
+        Iterator[Record | BatchRecord]
+            For ``batched=False``, yields ``(RogueHeader, numpy.ndarray[int8])``.
+            For ``batched=True``, yields ``(RogueHeader, BatchHeader, numpy.ndarray[int8])``.
         """
         self._config = {}
         self._currCount = 0
@@ -258,18 +256,21 @@ class FileReader(object):
         self._log.debug(f"Processed a total of {self._totCount} data records")
 
     @property
-    def currCount(self):
+    def currCount(self) -> int:
+        """Return number of records read from the current file."""
         return self._currCount
 
     @property
-    def totCount(self):
+    def totCount(self) -> int:
+        """Return total number of records read across all files."""
         return self._totCount
 
     @property
-    def configDict(self):
+    def configDict(self) -> dict[str, Any]:
+        """Return merged configuration/status dictionary."""
         return self._config
 
-    def configValue(self, path):
+    def configValue(self, path: str) -> Any:
         """
         Get a configuration or status value
 
@@ -300,7 +301,8 @@ class FileReader(object):
 
         return obj
 
-    def _updateConfig(self, new):
+    def _updateConfig(self, new: dict[str, Any]) -> None:
+        """Merge a status/config update dictionary into ``self._config``."""
         # Combination of dictUpdate and keyValueUpdate from pyrogue helpers
 
         for k,v in new.items():
@@ -317,8 +319,10 @@ class FileReader(object):
             else:
                 self._config[k] = v
 
-    def __enter__(self):
+    def __enter__(self) -> "FileReader":
+        """Return self for context-manager use."""
         return self
 
-    def __exit__(self, type, value, tb):
+    def __exit__(self, exc_type: Any, value: Any, tb: Any) -> None:
+        """No-op context-manager exit hook."""
         pass
