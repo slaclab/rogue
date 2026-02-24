@@ -14,12 +14,25 @@
 #-----------------------------------------------------------------------------
 from pydm.widgets import PyDMLabel
 from qtpy.QtCore import Qt
-from qtpy.QtWidgets import QHBoxLayout
+from qtpy.QtWidgets import QHBoxLayout, QWidget
 from pydm.widgets.base import str_types
 from pydm.widgets.display_format import parse_value_for_display
+import numpy as np
 
 class PyRogueLabel(PyDMLabel):
-    def __init__(self, parent, init_channel=None, show_units=True):
+    """PyDM label variant with optional engineering-unit display.
+
+    Parameters
+    ----------
+    parent : QWidget
+        Parent Qt widget.
+    init_channel : str | None, optional
+        Initial Rogue channel address.
+    show_units : bool, optional
+        If ``True``, display channel units in a dedicated unit label.
+    """
+
+    def __init__(self, parent: QWidget, init_channel: str | None = None, show_units: bool = True) -> None:
         super().__init__(parent, init_channel=init_channel)
 
         self._show_units = show_units
@@ -35,18 +48,19 @@ class PyRogueLabel(PyDMLabel):
         hbox.setContentsMargins(0, 0, 0, 0)
         self.setLayout(hbox)
 
-    def unit_changed(self, new_unit):
+    def unit_changed(self, new_unit: str) -> None:
+        """Update displayed engineering units."""
         if self._show_units:
             self._unitWidget.setText(new_unit)
 
-    def value_changed(self, new_value):
+    def value_changed(self, new_value: str | int | float | bool | np.ndarray) -> None:
         """
         Callback invoked when the Channel value is changed.
         Sets the value of new_value accordingly at the Label.
 
         Parameters
         ----------
-        new_value : str, int, float, bool or np.ndarray
+        new_value : str | int | float | bool | np.ndarray
             The new value from the channel. The type depends on the channel.
         """
         super(PyDMLabel, self).value_changed(new_value)
