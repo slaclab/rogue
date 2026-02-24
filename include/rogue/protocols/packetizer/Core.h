@@ -1,5 +1,5 @@
 /**
- * ----------------------------------------------------------------------------
+  * ----------------------------------------------------------------------------
  * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
@@ -31,7 +31,11 @@ class Transport;
 class Application;
 class Controller;
 
-//! Core Class
+/**
+ * @brief Packetizer core wiring object.
+ * Owns and connects transport, controller, and per-destination application
+ *  endpoints for the packetizer v1 stack.
+ */
 class Core {
     //! Transport module
     std::shared_ptr<rogue::protocols::packetizer::Transport> tran_;
@@ -52,19 +56,32 @@ class Core {
     //! Creator
     explicit Core(bool enSsi);
 
-    //! Destructor
-    ~Core();
-
-    //! Get transport interface
+    /**
+     * Destroy the packetizer core. */
+     *     ~Core();
+     *
+     *     /** Return the transport-facing endpoint.
+     * @return Shared transport interface.
+     */
     std::shared_ptr<rogue::protocols::packetizer::Transport> transport();
 
-    //! Application module
+    /**
+     * Return an application endpoint by destination ID.
+     * @param[in] dest Destination channel ID.
+     *  @return Shared application endpoint.
+     */
     std::shared_ptr<rogue::protocols::packetizer::Application> application(uint8_t dest);
 
-    //! Get drop count
+    /**
+     * Return total dropped-frame count reported by the controller.
+     * @return Number of dropped frames.
+     */
     uint32_t getDropCount();
 
-    //! Set timeout
+    /**
+     * Set transmit timeout for internal controller operations.
+     * @param[in] timeout Timeout in microseconds.
+     */
     void setTimeout(uint32_t timeout);
 };
 

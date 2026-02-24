@@ -1,5 +1,5 @@
 /**
- * ----------------------------------------------------------------------------
+  * ----------------------------------------------------------------------------
  * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
@@ -33,9 +33,13 @@ namespace rogue {
 namespace hardware {
 namespace axi {
 
-//! Storage class for shared memory buffers
+/** Storage class for shared memory buffers */
 class AxiStreamDmaShared {
   public:
+    /**
+     * Create shared DMA descriptor for a given device path.
+     * @param[in] path Device path, for example `/dev/datadev_0`.
+     */
     explicit AxiStreamDmaShared(std::string path);
 
     //! Shared FD
@@ -65,12 +69,12 @@ typedef std::shared_ptr<rogue::hardware::axi::AxiStreamDmaShared> AxiStreamDmaSh
 
 //! AXI Stream DMA Class
 /** This class provides a bridge between the Rogue stream interface and one
- * of the AES Stream Drivers device drivers. This bridge allows Rogue Frames
- * to be sent and received to PCIE Express boards (using the data_dev driver)
- * or Zynq ZXI4 FPGA fabrics (using the rce_stream driver). This interface
- * will allocate Frame and Buffer objects using memory mapped DMA buffers
- * or from a local memory pool when zero copy mode is disabled or a Frame
- * with is requested with the zero copy flag set to false.
+     * of the AES Stream Drivers device drivers. This bridge allows Rogue Frames
+     * to be sent and received to PCIE Express boards (using the data_dev driver)
+     * or Zynq ZXI4 FPGA fabrics (using the rce_stream driver). This interface
+     * will allocate Frame and Buffer objects using memory mapped DMA buffers
+     * or from a local memory pool when zero copy mode is disabled or a Frame
+     * with is requested with the zero copy flag set to false.
  */
 class AxiStreamDma : public rogue::interfaces::stream::Master, public rogue::interfaces::stream::Slave {
     //! Shared memory buffer tracking
@@ -130,15 +134,16 @@ class AxiStreamDma : public rogue::interfaces::stream::Master, public rogue::int
      * The SSI Enable flag determines if the hardware frame follows the SLAC Streaming
      * interface standard. This standard defines a SOF flag in the first user field
      * at bit 1 and and EOFE flag in the last user field bit 0.
-     * @param path Path to device. i.e /dev/datadev_0
-     * @param dest Destination index for dma transactions
-     * @param ssiEnable Enable SSI user fields
+     * @param[in] path Path to device. i.e /dev/datadev_0
+     * @param[in] dest Destination index for dma transactions
+     * @param[in] ssiEnable Enable SSI user fields
      * @return AxiStreamDma pointer (AxiStreamDmaPtr)
      */
     static std::shared_ptr<rogue::hardware::axi::AxiStreamDma> create(std::string path, uint32_t dest, bool ssiEnable);
 
-    //! Disable zero copy
-    /** By default the AxiStreamDma class attempts to take advantage of
+    /**
+     * Disable zero copy
+     * By default the AxiStreamDma class attempts to take advantage of
      * the zero copy mode of the lower level driver if supported. In zero
      * copy mode the Frame Buffer objects are mapped directly to the DMA
      * buffers allocated by the kernel. This allows for direct user space
@@ -148,14 +153,19 @@ class AxiStreamDma : public rogue::interfaces::stream::Master, public rogue::int
      * buffer. This call must be made before the first AxiStreamDma device is created.
      *
      * Exposed to python as zeroCopyDisable()
-     * @param path Path to device. i.e /dev/datadev_0
+     * @param[in] path Path to device. i.e /dev/datadev_0
      */
     static void zeroCopyDisable(std::string path);
 
-    // Setup class in python
-    static void setup_python();
-
-    // Class Creator
+    /**
+     * Register Python bindings for this class. */
+     *     static void setup_python();
+     *
+     *     /** Construct an AXI stream DMA bridge.
+     * @param[in] path Device path, for example `/dev/datadev_0`.
+     *  @param[in] dest Destination index used for DMA transactions.
+     *  @param[in] ssiEnable Enable SSI user-field handling.
+     */
     AxiStreamDma(std::string path, uint32_t dest, bool ssiEnable);
 
     // Destructor
@@ -171,23 +181,25 @@ class AxiStreamDma : public rogue::interfaces::stream::Master, public rogue::int
      * continue to wait for the driver.
      *
      * Exposed to python as SetTimeout()
-     * @param timeout Timeout value in microseconds
+     * @param[in] timeout Timeout value in microseconds
      */
     void setTimeout(uint32_t timeout);
 
-    //! Set driver debug level
-    /** This function forwards the passed level value as a debug
+    /**
+     * Set driver debug level
+     * This function forwards the passed level value as a debug
      * level to the lower level driver. Current drivers have a single
      * level of 1, but any positive value will enable debug. Debug
      * messages can be reviewed using the Linux command 'dmesg'
      *
      * Exposed to python as setDriverDebug()
-     * @param level Debug level, >= 1 enabled debug
+     * @param[in] level Debug level, >= 1 enabled debug
      */
     void setDriverDebug(uint32_t level);
 
-    //! Strobe ack line (hardware specific)
-    /** This method forwards an ack command to the lower
+    /**
+     * Strobe ack line (hardware specific)
+     * This method forwards an ack command to the lower
      * level driver. This is used in some cases to generate
      * a hardware strobe on the dma interface.
      *
@@ -195,62 +207,81 @@ class AxiStreamDma : public rogue::interfaces::stream::Master, public rogue::int
      */
     void dmaAck();
 
-    // Generate a Frame. Called from master
+    /**
+     * Allocate a frame for upstream writers.
+     * @param[in] size Minimum requested payload size in bytes.
+     *  @param[in] zeroCopyEn True to allow zero-copy allocation when possible.
+     *  @return Newly allocated frame.
+     */
     std::shared_ptr<rogue::interfaces::stream::Frame> acceptReq(uint32_t size, bool zeroCopyEn);
 
-    // Accept a frame from master
+    /**
+     * Accept a frame from upstream stream logic for DMA transmit.
+     * @param[in] frame Input frame to transmit.
+     */
     void acceptFrame(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
-    // Process Buffer Return
+    /**
+     * Return DMA-backed buffer memory after frame release.
+     * @param[in] data Buffer data pointer.
+     *  @param[in] meta Driver-specific metadata/index.
+     *  @param[in] rawSize Original allocated buffer size in bytes.
+     */
     void retBuffer(uint8_t* data, uint32_t meta, uint32_t rawSize);
 
-    //! Get the DMA Driver's Git Version
+    /**
+     * Get the DMA driver's Git version string.
+     * @return Git version string, empty on failure.
+     */
     std::string getGitVersion();
 
-    //! Get the DMA Driver's API Version
+    /**
+     * Get the DMA driver API version.
+     * @return Driver API version number.
+     */
     uint32_t getApiVersion();
 
-    //! Get the size of buffers (RX/TX)
+    /** Get the size of buffers (RX/TX) */
     uint32_t getBuffSize();
 
-    //! Get the number of RX buffers
+    /** Get the number of RX buffers */
     uint32_t getRxBuffCount();
 
-    //! Get RX buffer in User count
+    /** Get RX buffer in User count */
     uint32_t getRxBuffinUserCount();
 
-    //! Get RX buffer in HW count
+    /** Get RX buffer in HW count */
     uint32_t getRxBuffinHwCount();
 
-    //! Get RX buffer in Pre-HW Queue count
+    /** Get RX buffer in Pre-HW Queue count */
     uint32_t getRxBuffinPreHwQCount();
 
-    //! Get RX buffer in SW Queue count
+    /** Get RX buffer in SW Queue count */
     uint32_t getRxBuffinSwQCount();
 
-    //! Get RX buffer missing count
+    /** Get RX buffer missing count */
     uint32_t getRxBuffMissCount();
 
-    //! Get the number of TX buffers
+    /** Get the number of TX buffers */
     uint32_t getTxBuffCount();
 
-    //! Get TX buffer in User count
+    /** Get TX buffer in User count */
     uint32_t getTxBuffinUserCount();
 
-    //! Get TX buffer in HW count
+    /** Get TX buffer in HW count */
     uint32_t getTxBuffinHwCount();
 
-    //! Get TX buffer in Pre-HW Queue count
+    /** Get TX buffer in Pre-HW Queue count */
     uint32_t getTxBuffinPreHwQCount();
 
-    //! Get TX buffer in SW Queue count
+    /** Get TX buffer in SW Queue count */
     uint32_t getTxBuffinSwQCount();
 
-    //! Get TX buffer missing count
+    /** Get TX buffer missing count */
     uint32_t getTxBuffMissCount();
 };
 
-//! Alias for using shared pointer as AxiStreamDmaPtr
+/** Alias for using shared pointer as AxiStreamDmaPtr */
 typedef std::shared_ptr<rogue::hardware::axi::AxiStreamDma> AxiStreamDmaPtr;
 
 }  // namespace axi

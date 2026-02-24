@@ -1,5 +1,5 @@
 /**
- * ----------------------------------------------------------------------------
+  * ----------------------------------------------------------------------------
  * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
@@ -96,18 +96,19 @@ class Pool : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Pool>
      */
     uint32_t getAllocCount();
 
-    // Process a frame request
-    /* Method to service a frame request, called by the Master class through
-     * the reqFrame() method.
+    /**
+     * Service a frame allocation request from a master.
+     * Called by Master::reqFrame() to allocate a frame and one or more buffers.
      *
-     * size Minimum size for requested Frame, larger Frame may be allocated
-     * zeroCopyEn Flag which indicates if a zero copy mode Frame is allowed.
-     * Newly allocated Frame pointer (FramePtr)
+     * @param[in] size Minimum requested payload size in bytes.
+     * @param[in] zeroCopyEn True to allow zero-copy buffers when supported.
+     * @return Newly allocated frame.
      */
     virtual std::shared_ptr<rogue::interfaces::stream::Frame> acceptReq(uint32_t size, bool zeroCopyEn);
 
-    //! Method called to return Buffer data
-    /* This method is called by the Buffer desctructor in order to free
+    /**
+     * Method called to return Buffer data */
+     *     /* This method is called by the Buffer desctructor in order to free
      * the associated Buffer memory. May be overridden by a subclass to
      * change the way the buffer data is returned.
      *
@@ -128,24 +129,27 @@ class Pool : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Pool>
      */
     void setFixedSize(uint32_t size);
 
-    //! Get fixed size mode
-    /** Return state of fixed size mode.
+    /**
+     * Get fixed size mode
+     * Return state of fixed size mode.
      *
      * Exposed as getFixedSize() to Python
      * @return Fixed size value or 0 if not in fixed size mode
      */
     uint32_t getFixedSize();
 
-    //! Set buffer pool size
-    /** Set the buffer pool size.
+    /**
+     * Set buffer pool size
+     * Set the buffer pool size.
      *
      * Exposed as setPoolSize() to Python
-     * @param size Number of entries to keep in the pool
+     * @param[in] size Number of entries to keep in the pool
      */
     void setPoolSize(uint32_t size);
 
-    //! Get pool size
-    /** Return configured pool size
+    /**
+     * Get pool size
+     * Return configured pool size
      *
      * Exposed as getPoolSize() to Python
      * @return Pool size
@@ -153,8 +157,9 @@ class Pool : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Pool>
     uint32_t getPoolSize();
 
   protected:
-    //! Allocate and Create a Buffer
-    /** This method is the default Buffer allocator. The requested
+    /**
+     * Allocate and Create a Buffer
+     * This method is the default Buffer allocator. The requested
      * buffer is created from either a malloc call or fulling a free entry from
      * the memory pool if it is enabled. If fixed size is configured the
      * size parameter is ignored and a Buffer is returned with the fixed size
@@ -196,7 +201,7 @@ class Pool : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Pool>
     void decCounter(uint32_t alloc);
 };
 
-//! Alias for using shared pointer as PoolPtr
+/** Alias for using shared pointer as PoolPtr */
 typedef std::shared_ptr<rogue::interfaces::stream::Pool> PoolPtr;
 }  // namespace stream
 }  // namespace interfaces

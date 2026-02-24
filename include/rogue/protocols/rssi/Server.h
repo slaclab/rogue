@@ -1,5 +1,5 @@
 /**
- * ----------------------------------------------------------------------------
+  * ----------------------------------------------------------------------------
  * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
@@ -31,7 +31,11 @@ class Transport;
 class Application;
 class Controller;
 
-//! RSSI Server Class
+/**
+ * @brief RSSI server convenience wrapper.
+ * Bundles transport, application, and controller components for server-side
+ *  RSSI links.
+ */
 class Server {
     //! Transport module
     std::shared_ptr<rogue::protocols::rssi::Transport> tran_;
@@ -58,7 +62,10 @@ class Server {
     //! Get transport interface
     std::shared_ptr<rogue::protocols::rssi::Transport> transport();
 
-    //! Application module
+    /**
+     * Return application endpoint.
+     * @return Shared application interface.
+     */
     std::shared_ptr<rogue::protocols::rssi::Application> application();
 
     //! Get state
@@ -122,10 +129,10 @@ class Server {
     //! Set timeout in microseconds for frame transmits
     void setTimeout(uint32_t timeout);
 
-    //! Stop connection
+    /** Stop the RSSI connection. */
     void stop();
 
-    //! Start connection
+    /** Start or restart RSSI connection establishment. */
     void start();
 };
 

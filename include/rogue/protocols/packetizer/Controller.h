@@ -1,5 +1,5 @@
 /**
- * ----------------------------------------------------------------------------
+  * ----------------------------------------------------------------------------
  * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
@@ -35,7 +35,11 @@ class Application;
 class Transport;
 class Header;
 
-//! Packetizer Controller Class
+/**
+ * @brief Packetizer base controller.
+ * Shared controller logic for packetizer variants that route data between
+ *  one transport endpoint and multiple application endpoints.
+ */
 class Controller {
   protected:
     // parameters
@@ -66,7 +70,15 @@ class Controller {
     rogue::Queue<std::shared_ptr<rogue::interfaces::stream::Frame>> tranQueue_;
 
   public:
-    //! Creator
+    /**
+     * Construct a packetizer controller base.
+     * @param[in] tran Transport endpoint associated with this controller.
+     *  @param[in] app Pointer to application endpoint array indexed by destination.
+     *  @param[in] headSize Header bytes inserted per packet.
+     *  @param[in] tailSize Trailer bytes inserted per packet.
+     *  @param[in] alignSize Payload alignment requirement in bytes.
+     *  @param[in] enSsi Enable SSI framing behavior.
+     */
     Controller(std::shared_ptr<rogue::protocols::packetizer::Transport> tran,
                std::shared_ptr<rogue::protocols::packetizer::Application>* app,
                uint32_t headSize,
@@ -80,7 +92,10 @@ class Controller {
     //! Transport frame allocation request
     std::shared_ptr<rogue::interfaces::stream::Frame> reqFrame(uint32_t size);
 
-    //! Frame received at transport interface
+    /**
+     * Process a frame received from transport.
+     * @param[in] frame Input transport frame.
+     */
     virtual void transportRx(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
     //! Stop transmit queue
@@ -92,13 +107,23 @@ class Controller {
     //! Interface for transport transmitter thread
     std::shared_ptr<rogue::interfaces::stream::Frame> transportTx();
 
-    //! Frame received at application interface
+    /**
+     * Process a frame received from an application endpoint.
+     * @param[in] frame Input application frame.
+     *  @param[in] id Application destination identifier.
+     */
     virtual void applicationRx(std::shared_ptr<rogue::interfaces::stream::Frame> frame, uint8_t id);
 
-    //! Get drop count
+    /**
+     * Return dropped-frame counter.
+     * @return Number of dropped frames.
+     */
     uint32_t getDropCount();
 
-    //! Set timeout in microseconds for frame transmits
+    /**
+     * Set timeout in microseconds for frame transmits.
+     * @param[in] timeout Timeout value in microseconds.
+     */
     void setTimeout(uint32_t timeout);
 };
 

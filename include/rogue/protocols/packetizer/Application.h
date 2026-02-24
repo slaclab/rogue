@@ -1,5 +1,5 @@
 /**
- * ----------------------------------------------------------------------------
+  * ----------------------------------------------------------------------------
  * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
@@ -66,17 +66,26 @@ class Application : public rogue::interfaces::stream::Master, public rogue::inte
     //! Set Controller
     void setController(std::shared_ptr<rogue::protocols::packetizer::Controller> cntl);
 
-    //! Push frame for transmit
+    /**
+     * Queue a frame for packetized transmission.
+     * @param[in] frame Frame to send through this application channel.
+     */
     void pushFrame(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
-    //! Generate a Frame. Called from master
-    /*
-     * Pass total size required.
-     * Pass flag indicating if zero copy buffers are acceptable
+    /**
+     * Allocate a frame for upstream writers.
+     * Called by the stream master side of this endpoint.
+     *
+     * @param[in] size Minimum requested payload size in bytes.
+     * @param[in] zeroCopyEn True to allow zero-copy allocation when possible.
+     * @return Newly allocated frame.
      */
     std::shared_ptr<rogue::interfaces::stream::Frame> acceptReq(uint32_t size, bool zeroCopyEn);
 
-    //! Accept a frame from master
+    /**
+     * Accept a frame from upstream application logic.
+     * @param[in] frame Input frame to packetize.
+     */
     void acceptFrame(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 };
 

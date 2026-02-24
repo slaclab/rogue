@@ -1,5 +1,5 @@
 /**
- * ----------------------------------------------------------------------------
+  * ----------------------------------------------------------------------------
  * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
@@ -31,7 +31,9 @@ namespace rssi {
 
 class Controller;
 
-//! RSSI Application Class
+/**
+ * @brief RSSI application-side endpoint.
+ * Provides stream ingress/egress for payload traffic through the RSSI stack. */
 class Application : public rogue::interfaces::stream::Master, public rogue::interfaces::stream::Slave {
     //! Core module
     std::shared_ptr<rogue::protocols::rssi::Controller> cntl_;
@@ -59,14 +61,20 @@ class Application : public rogue::interfaces::stream::Master, public rogue::inte
     //! Setup links
     void setController(std::shared_ptr<rogue::protocols::rssi::Controller> cntl);
 
-    //! Generate a Frame. Called from master
-    /*
-     * Pass total size required.
-     * Pass flag indicating if zero copy buffers are acceptable
+    /**
+     * Allocate a frame for upstream writers.
+     * Called by the stream master side of this endpoint.
+     *
+     * @param[in] size Minimum requested payload size in bytes.
+     * @param[in] zeroCopyEn True to allow zero-copy allocation when possible.
+     * @return Newly allocated frame.
      */
     std::shared_ptr<rogue::interfaces::stream::Frame> acceptReq(uint32_t size, bool zeroCopyEn);
 
-    //! Accept a frame from master
+    /**
+     * Accept a frame from upstream application logic.
+     * @param[in] frame Input frame for RSSI transmission.
+     */
     void acceptFrame(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 };
 

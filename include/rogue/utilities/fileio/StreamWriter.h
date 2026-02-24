@@ -1,5 +1,5 @@
 /**
- * ----------------------------------------------------------------------------
+  * ----------------------------------------------------------------------------
  * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description :
@@ -56,7 +56,11 @@ namespace fileio {
 
 class StreamWriterChannel;
 
-//! Stream writer central class
+/**
+ * @brief Stream writer coordination class.
+ * Coordinates channelized frame capture into a single file stream with
+ *  optional banked framing metadata.
+ */
 class StreamWriter : public rogue::EnableSharedFromThis<rogue::utilities::fileio::StreamWriter> {
     friend class StreamWriterChannel;
 
@@ -157,37 +161,73 @@ class StreamWriter : public rogue::EnableSharedFromThis<rogue::utilities::fileio
     //! Get open status
     bool isOpen();
 
-    //! Set raw mode
+    /**
+     * Set raw output mode.
+     * @param[in] raw True to write raw frame payload only.
+     */
     void setRaw(bool raw);
 
-    //! Get raw mode flag
+    /**
+     * Get raw output mode state.
+     * @return True when raw output mode is enabled.
+     */
     bool getRaw();
 
-    //! Set buffering size, 0 to disable
+    /**
+     * Set write buffering size.
+     * @param[in] size Buffer size in bytes, 0 disables buffering.
+     */
     void setBufferSize(uint32_t size);
 
-    //! Set max file size, 0 for unlimited
+    /**
+     * Set automatic file rollover size.
+     * @param[in] size Maximum file size in bytes, 0 for unlimited.
+     */
     void setMaxSize(uint64_t size);
 
-    //! Set drop errors flag
+    /**
+     * Configure whether errored frames are dropped.
+     * @param[in] drop True to drop errored frames instead of writing them.
+     */
     void setDropErrors(bool drop);
 
-    //! Get a port
+    /**
+     * Get or create a channel writer endpoint.
+     * @param[in] channel Channel ID.
+     *  @return Channel writer object bound to \p channel.
+     */
     std::shared_ptr<rogue::utilities::fileio::StreamWriterChannel> getChannel(uint8_t channel);
 
-    //! Get total file size
+    /**
+     * Return cumulative bytes written across all files.
+     * @return Total written bytes.
+     */
     uint64_t getTotalSize();
 
-    //! Get current file size
+    /**
+     * Return current output file size.
+     * @return Current file size in bytes.
+     */
     uint64_t getCurrentSize();
 
-    //! Get instantaneous bandwidth in bytes per second
+    /**
+     * Return recent write bandwidth estimate.
+     * @return Bandwidth in bytes per second.
+     */
     double getBandwidth();
 
-    //! Get current frame count
+    /**
+     * Return number of frames written to current file session.
+     * @return Frame count.
+     */
     uint32_t getFrameCount();
 
-    //! Block until a frame count is reached
+    /**
+     * Block until a target frame count is reached or timeout expires.
+     * @param[in] count Target frame count threshold.
+     *  @param[in] timeout Timeout in microseconds.
+     *  @return True if threshold reached before timeout.
+     */
     bool waitFrameCount(uint32_t count, uint64_t timeout);
 };
 

@@ -1,5 +1,5 @@
 /**
- * ----------------------------------------------------------------------------
+  * ----------------------------------------------------------------------------
  * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
@@ -37,16 +37,27 @@ class Application;
 class Transport;
 class Header;
 
-//! Packetizer Controller Class
+/** Packetizer controller implementation for protocol v1. */
 class ControllerV1 : public Controller, public rogue::EnableSharedFromThis<rogue::protocols::packetizer::ControllerV1> {
   public:
-    //! Class creation
+    /**
+     * Create a packetizer v1 controller.
+     * @param[in] enSsi Enable SSI framing behavior.
+     *  @param[in] tran Transport endpoint attached to this controller.
+     *  @param[in] app Pointer to array of application endpoints indexed by destination.
+     *  @return Shared pointer to a new controller instance.
+     */
     static std::shared_ptr<rogue::protocols::packetizer::ControllerV1> create(
         bool enSsi,
         std::shared_ptr<rogue::protocols::packetizer::Transport> tran,
         std::shared_ptr<rogue::protocols::packetizer::Application>* app);
 
-    //! Creator
+    /**
+     * Construct a packetizer v1 controller.
+     * @param[in] enSsi Enable SSI framing behavior.
+     *  @param[in] tran Transport endpoint attached to this controller.
+     *  @param[in] app Pointer to array of application endpoints indexed by destination.
+     */
     ControllerV1(bool enSsi,
                  std::shared_ptr<rogue::protocols::packetizer::Transport> tran,
                  std::shared_ptr<rogue::protocols::packetizer::Application>* app);
@@ -57,7 +68,11 @@ class ControllerV1 : public Controller, public rogue::EnableSharedFromThis<rogue
     //! Frame received at transport interface
     void transportRx(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
-    //! Frame received at application interface
+    /**
+     * Process a frame received from one application endpoint.
+     * @param[in] frame Application frame to packetize.
+     *  @param[in] id Application/destination identifier.
+     */
     void applicationRx(std::shared_ptr<rogue::interfaces::stream::Frame> frame, uint8_t id);
 };
 

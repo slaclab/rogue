@@ -1,5 +1,5 @@
 /**
- * ----------------------------------------------------------------------------
+  * ----------------------------------------------------------------------------
  * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
@@ -38,8 +38,9 @@ namespace rogue {
 namespace interfaces {
 namespace memory {
 
-//! Memory interface Hub device
-/** The memory bus Hub serves as both a Slave and a Master for memory transactions. It
+/**
+ * @brief Memory interface Hub device
+ * The memory bus Hub serves as both a Slave and a Master for memory transactions. It
  * will accept a Transaction from an attached Master and pass it down to the next
  * level Slave or Hub device. It will apply its local offset address to the transaction
  * as it is passed down to the next level.
@@ -69,9 +70,9 @@ class Hub : public Master, public Slave {
     //! Class factory which returns a pointer to a Hub (HubPtr)
     /** Exposed to Python as rogue.interfaces.memory.Hub()
      *
-     * @param offset The offset of this Hub device
-     * @param min The min transaction size, 0 if not a virtual memory space root
-     * @param min The max transaction size, 0 if not a virtual memory space root
+     * @param[in] offset The offset of this Hub device
+     * @param[in] min The min transaction size, 0 if not a virtual memory space root
+     * @param[in] max The max transaction size, 0 if not a virtual memory space root
      */
     static std::shared_ptr<rogue::interfaces::memory::Hub> create(uint64_t offset, uint32_t min, uint32_t max);
 
@@ -143,7 +144,7 @@ class Hub : public Master, public Slave {
      * the local address offset. A Hub sub-class is allowed to override this method.
      *
      * Not exposed to Python
-     * @return Max transaction access size
+     * @return 64-bit address including this hub offset
      */
     uint64_t doAddress();
 
@@ -156,26 +157,47 @@ class Hub : public Master, public Slave {
      * document.
      *
      * Exposed to Python as _doTransaction()
-     * @param transaction Transaction pointer as TransactionPtr
+     * @param[in] transaction Transaction pointer as TransactionPtr
      */
     virtual void doTransaction(std::shared_ptr<rogue::interfaces::memory::Transaction> transaction);
 };
 
-//! Alias for using shared pointer as HubPtr
+/** Alias for using shared pointer as HubPtr */
 typedef std::shared_ptr<rogue::interfaces::memory::Hub> HubPtr;
 
 #ifndef NO_PYTHON
 
-// Memory Hub class, wrapper to enable python overload of virtual methods
+/**
+ * @brief Internal Boost.Python wrapper for `rogue::interfaces::memory::Hub`.
+ * Enables Python subclasses to override virtual transaction handling.
+ *
+ *  This wrapper is an internal binding adapter and not a primary C++ API surface.
+ *  It is registered by `setup_python()` under the base class name.
+ */
 class HubWrap : public rogue::interfaces::memory::Hub, public boost::python::wrapper<rogue::interfaces::memory::Hub> {
   public:
-    // Constructor
+    /**
+     * Construct a hub wrapper instance.
+     * @param[in] offset Local address offset applied by this hub.
+     *  @param[in] min Minimum transaction size for virtual-root mode.
+     *  @param[in] max Maximum transaction size for virtual-root mode.
+     */
     HubWrap(uint64_t offset, uint32_t min, uint32_t max);
 
-    // Post a transaction. Master will call this method with the access attributes.
+    /**
+     * Service a transaction request from an attached master.
+     * Invokes the Python override when provided.
+     *
+     * @param[in] transaction Transaction object to process.
+     */
     void doTransaction(std::shared_ptr<rogue::interfaces::memory::Transaction> transaction);
 
-    // Post a transaction. Master will call this method with the access attributes.
+    /**
+     * Call the base-class `doTransaction()` implementation.
+     * Used as the fallback when no Python override is present.
+     *
+     * @param[in] transaction Transaction object to process.
+     */
     void defDoTransaction(std::shared_ptr<rogue::interfaces::memory::Transaction> transaction);
 };
 

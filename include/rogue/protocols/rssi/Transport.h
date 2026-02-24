@@ -1,5 +1,5 @@
 /**
- * ----------------------------------------------------------------------------
+  * ----------------------------------------------------------------------------
  * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
@@ -32,7 +32,9 @@ namespace rssi {
 
 class Controller;
 
-//! RSSI Transport Class
+/**
+ * @brief RSSI transport endpoint.
+ * Bridges stream traffic between the RSSI controller and underlying link. */
 class Transport : public rogue::interfaces::stream::Master, public rogue::interfaces::stream::Slave {
     //! Core module
     std::shared_ptr<rogue::protocols::rssi::Controller> cntl_;
@@ -53,7 +55,10 @@ class Transport : public rogue::interfaces::stream::Master, public rogue::interf
     //! Setup links
     void setController(std::shared_ptr<rogue::protocols::rssi::Controller> cntl);
 
-    //! Accept a frame from master
+    /**
+     * Accept a frame from the upstream stream interface.
+     * @param[in] frame Input frame to decode and forward to controller logic.
+     */
     void acceptFrame(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 };
 

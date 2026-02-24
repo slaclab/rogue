@@ -1,5 +1,5 @@
 /**
- * ----------------------------------------------------------------------------
+  * ----------------------------------------------------------------------------
  * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description :
@@ -29,10 +29,11 @@
 namespace rogue {
 namespace utilities {
 
-//! PRBS master / slave class
-/*
- * Engine can be used as either a master or slave.
- * Internal thread can en enabled for auto frame generation
+/**
+ * @brief PRBS generator/checker that can act as both stream master and slave.
+ * The engine can transmit deterministic pseudo-random patterns and verify
+ *  received patterns for bit-error testing. It supports one-shot frame
+ *  generation and optional background transmit mode.
  */
 class Prbs : public rogue::interfaces::stream::Slave, public rogue::interfaces::stream::Master {
     //! Max size
@@ -143,21 +144,37 @@ class Prbs : public rogue::interfaces::stream::Slave, public rogue::interfaces::
     //! Set width
     void setWidth(uint32_t width);
 
-    //! Set taps
+    /**
+     * Configure LFSR taps.
+     * @param[in] tapCnt Number of tap entries in \p taps.
+     *  @param[in] taps Pointer to tap index array.
+     */
     void setTaps(uint32_t tapCnt, uint8_t* taps);
 
 #ifndef NO_PYTHON
-    //! Set taps, python
+    /**
+     * Configure LFSR taps from a Python sequence.
+     * @param[in] p Python object containing tap values.
+     */
     void setTapsPy(boost::python::object p);
 #endif
 
-    //! Send counter value
+    /**
+     * Enable or disable transmission of sequence counters in payload.
+     * @param[in] state True to include counters in generated data.
+     */
     void sendCount(bool state);
 
-    //! Generate a data frame
+    /**
+     * Generate and transmit one PRBS frame.
+     * @param[in] size Payload size in bytes.
+     */
     void genFrame(uint32_t size);
 
-    //! Auto run data generation
+    /**
+     * Enable periodic background frame generation.
+     * @param[in] size Payload size in bytes for generated frames.
+     */
     void enable(uint32_t size);
 
     //! Disable auto generation
@@ -166,49 +183,94 @@ class Prbs : public rogue::interfaces::stream::Slave, public rogue::interfaces::
     //! Get rx enable
     bool getRxEnable();
 
-    //! Set rx enable
+    /**
+     * Enable or disable RX checking.
+     * @param[in] state True to validate incoming PRBS frames.
+     */
     void setRxEnable(bool);
 
-    //! Get rx errors
+    /**
+     * Return RX error count.
+     * @return Number of receive-side check failures.
+     */
     uint32_t getRxErrors();
 
-    //! Get rx count
+    /**
+     * Return RX frame count.
+     * @return Number of received frames.
+     */
     uint32_t getRxCount();
 
-    //! Get rx total bytes
+    /**
+     * Return RX byte count.
+     * @return Total received payload bytes.
+     */
     uint32_t getRxBytes();
 
-    //! Get rx rate
+    /**
+     * Return computed RX frame rate.
+     * @return Receive frame rate in frames/second.
+     */
     double getRxRate();
 
-    //! Get rx bw
+    /**
+     * Return computed RX bandwidth.
+     * @return Receive bandwidth in bytes/second.
+     */
     double getRxBw();
 
-    //! Get tx rate
+    /**
+     * Return computed TX frame rate.
+     * @return Transmit frame rate in frames/second.
+     */
     double getTxRate();
 
-    //! Set tx rate period in micorseconds
+    /**
+     * Set background TX period.
+     * @param[in] txPeriod Period in microseconds between generated frames.
+     */
     void setTxPeriod(uint32_t);
 
-    //! Get tx rate limit
+    /**
+     * Return configured background TX period.
+     * @return TX period in microseconds.
+     */
     uint32_t getTxPeriod();
 
-    //! Get tx bw
+    /**
+     * Return computed TX bandwidth.
+     * @return Transmit bandwidth in bytes/second.
+     */
     double getTxBw();
 
-    //! Get tx errors
+    /**
+     * Return TX error count.
+     * @return Number of transmit-side generation errors.
+     */
     uint32_t getTxErrors();
 
-    //! Get tx count
+    /**
+     * Return TX frame count.
+     * @return Number of transmitted frames.
+     */
     uint32_t getTxCount();
 
-    //! Get tx total bytes
+    /**
+     * Return TX byte count.
+     * @return Total transmitted payload bytes.
+     */
     uint32_t getTxBytes();
 
-    //! Set check payload flag, default = true
+    /**
+     * Enable or disable payload checking.
+     * @param[in] state True to validate payload contents.
+     */
     void checkPayload(bool state);
 
-    //! Set check generate flag, default = true
+    /**
+     * Enable or disable payload generation.
+     * @param[in] state True to generate PRBS payload bytes.
+     */
     void genPayload(bool state);
 
     //! Reset counters

@@ -1,5 +1,5 @@
 /**
- * ----------------------------------------------------------------------------
+  * ----------------------------------------------------------------------------
  * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
@@ -39,10 +39,18 @@ namespace memory {
 class Block;
 class Variable;
 
-//! Alias for using shared pointer as VariablePtr
+/** Alias for using shared pointer as VariablePtr */
 typedef std::shared_ptr<rogue::interfaces::memory::Variable> VariablePtr;
 
-//! Memory interface Variable
+/**
+ * @brief Memory interface variable descriptor and accessor
+ * A Variable describes how one logical value is mapped into a memory Block.
+ *  It stores bit/byte layout metadata and exposes type-safe set/get helpers for
+ *  scalar and array-style access.
+ *
+ *  Most callers access Variable instances through shared pointers created by
+ *  create(). The owning Block performs the actual data marshaling and transport.
+ */
 class Variable {
     friend class Block;
 
@@ -241,23 +249,24 @@ class Variable {
     double (rogue::interfaces::memory::Block::*getFixed_)(rogue::interfaces::memory::Variable*, int32_t index);
 
   public:
-    //! Class factory which returns a pointer to a Variable (VariablePtr)
-    /** Exposed to Python as rogue.interfaces.memory.Variable()
+    /**
+     * Class factory which returns a pointer to a Variable (VariablePtr)
+     * Exposed to Python as rogue.interfaces.memory.Variable()
      *
-     * @param name Variable name
-     * @param mode Variable mode
-     * @param minimum Variable min value, 0 for none
-     * @param maximum Variable max value, 0 for none
-     * @param bitOffset Bit offset vector
-     * @param bitSize Bit size vector
-     * @param overlapEn Overlap enable flag
-     * @param verify Verify enable flag
-     * @param bulkOpEn Bulk read/write flag
-     * @param updateNotify Enable variable tree updates
-     * @param modelId Variable model ID
-     * @param byteReverse Byte reverse flag
-     * @param bitReverse Bit reverse flag
-     * @param bitPoint Bit point for fixed point values
+     * @param[in] name Variable name
+     * @param[in] mode Variable mode
+     * @param[in] minimum Variable min value, 0 for none
+     * @param[in] maximum Variable max value, 0 for none
+     * @param[in] bitOffset Bit offset vector
+     * @param[in] bitSize Bit size vector
+     * @param[in] overlapEn Overlap enable flag
+     * @param[in] verify Verify enable flag
+     * @param[in] bulkOpEn Bulk read/write flag
+     * @param[in] updateNotify Enable variable tree updates
+     * @param[in] modelId Variable model ID
+     * @param[in] byteReverse Byte reverse flag
+     * @param[in] bitReverse Bit reverse flag
+     * @param[in] bitPoint Bit point for fixed point values
      */
     static rogue::interfaces::memory::VariablePtr create(std::string name,
                                                          std::string mode,
@@ -279,10 +288,33 @@ class Variable {
                                                          uint32_t valueStride,
                                                          uint32_t retryCount);
 
-    // Setup class for use in python
-    static void setup_python();
-
-    // Create a Variable
+    /**
+     * Register Python bindings for this class. */
+     *     static void setup_python();
+     *
+     *     /** Construct a variable descriptor.
+     * Parameters mirror create() and are typically not used directly.
+     *
+     * @param[in] name Variable name.
+     * @param[in] mode Variable mode string.
+     * @param[in] minimum Minimum allowed value (range checking), 0 to disable.
+     * @param[in] maximum Maximum allowed value (range checking), 0 to disable.
+     * @param[in] offset Variable byte offset within the parent block.
+     * @param[in] bitOffset Bit offsets for one or more packed values.
+     * @param[in] bitSize Bit widths for one or more packed values.
+     * @param[in] overlapEn Allow overlap checks to be bypassed.
+     * @param[in] verify Enable readback verification on writes.
+     * @param[in] bulkOpEn Enable bulk operations when supported by the parent block.
+     * @param[in] updateNotify Enable update callbacks into the variable tree.
+     * @param[in] modelId Model identifier associated with this variable.
+     * @param[in] byteReverse Enable byte-order reversal.
+     * @param[in] bitReverse Enable bit-order reversal.
+     * @param[in] binPoint Binary point used for fixed-point conversion.
+     * @param[in] numValues Number of values represented by this variable.
+     * @param[in] valueBits Bit width per value.
+     * @param[in] valueStride Byte stride between values.
+     * @param[in] retryCount Number of retries for transport operations.
+     */
     Variable(std::string name,
              std::string mode,
              double minimum,
@@ -303,13 +335,22 @@ class Variable {
              uint32_t valueStride,
              uint32_t retryCount);
 
-    // Destroy
-    virtual ~Variable();
-
-    //! Shift offset down
+    /**
+     * Destroy the variable instance. */
+     *     virtual ~Variable();
+     *
+     *     /** Shift variable offset and packed bit fields downward.
+     * Used by Block to normalize local addressing.
+     *
+     * @param[in] shift Number of bits to shift down.
+     * @param[in] minSize Minimum alignment/size constraint in bits.
+     */
     void shiftOffsetDown(uint32_t shift, uint32_t minSize);
 
-    // Update path
+    /**
+     * Update the hierarchical path string for this variable.
+     * @param[in] path New full path in the variable tree.
+     */
     void updatePath(std::string path);
 
     //! Return the modelId of the variable
@@ -410,14 +451,22 @@ class Variable {
     //! Set byte array
     void setByteArray(uint8_t*, int32_t index = -1);
 
-    //! Get byte array
+    /**
+     * Get value into a raw byte array.
+     * @param[out] value Pointer to output byte buffer.
+     *  @param[in] index Value index, or -1 for the full variable.
+     */
     void getByteArray(uint8_t*, int32_t index = -1);
 
     /////////////////////////////////
     // C++ Uint
     /////////////////////////////////
 
-    //! Set unsigned int
+    /**
+     * Set an unsigned integer value.
+     * @param[in] value Input value.
+     *  @param[in] index Value index, or -1 for the full variable.
+     */
     void setUInt(uint64_t&, int32_t index = -1);
 
     //! Set unsigned int
@@ -549,13 +598,36 @@ class Variable {
 
 #ifndef NO_PYTHON
 
-// Stream slave class, wrapper to enable python overload of virtual methods
+/**
+ * @brief Internal Boost.Python wrapper for `rogue::interfaces::memory::Variable`.
+ * Enables Python subclasses to override variable-update behavior and bridge
+ *  Python value objects to/from the C++ variable storage representation.
+ *
+ *  This wrapper is an internal binding adapter and not a primary C++ API surface.
+ *  It is registered by `setup_python()` under the base class name.
+ */
 class VariableWrap : public rogue::interfaces::memory::Variable,
                      public boost::python::wrapper<rogue::interfaces::memory::Variable> {
     boost::python::object model_;
 
   public:
-    // Create a Variable
+    /**
+     * Construct a variable wrapper instance.
+     * @param[in] name Variable name.
+     *  @param[in] mode Variable mode string.
+     *  @param[in] minimum Minimum allowed value object.
+     *  @param[in] maximum Maximum allowed value object.
+     *  @param[in] offset Variable byte offset within the parent block.
+     *  @param[in] bitOffset Python object containing bit offset definition.
+     *  @param[in] bitSize Python object containing bit size definition.
+     *  @param[in] overlapEn Overlap enable flag.
+     *  @param[in] verify Verify enable flag.
+     *  @param[in] bulkOpEn Bulk operation enable flag.
+     *  @param[in] updateNotify Update notification enable flag.
+     *  @param[in] model Python model object used for conversion behavior.
+     *  @param[in] listData Python list metadata for list-style variables.
+     *  @param[in] retryCount Number of retries for transport operations.
+     */
     VariableWrap(std::string name,
                  std::string mode,
                  boost::python::object minimum,
@@ -571,44 +643,70 @@ class VariableWrap : public rogue::interfaces::memory::Variable,
                  boost::python::object listData,
                  uint32_t retryCount);
 
-    //! Update the bit offsets
+    /**
+     * Update the bit-offset definition from Python.
+     * @param[in] bitOffset Python object containing new bit offsets.
+     */
     void updateOffset(boost::python::object& bitOffset);
 
-    //! Set value from RemoteVariable
-    /** Set the internal shadow memory with the requested variable value
+    /**
+     * Set value from RemoteVariable
+     * Set the internal shadow memory with the requested variable value
      *
      * Exposed as set() method to Python
      *
-     * @param value   Variable value
-     * @param index   Index of value, -1 to set full list
+     * @param[in] value   Variable value
+     * @param[in] index   Index of value, -1 to set full list
      */
     void set(boost::python::object& value, int32_t index);
 
-    //! Get value from RemoteVariable
-    /** Copy the shadow memory value into the passed byte array.
+    /**
+     * Get value from RemoteVariable
+     * Copy the shadow memory value into the passed byte array.
      *
      * Exposed as get() method to Python
      *
-     * @param index   Index of value, -1 to get full list
+     * @param[in] index   Index of value, -1 to get full list
+     * @return Python object containing the requested value.
      */
     boost::python::object get(int32_t index);
 
-    //! To Bytes
+    /**
+     * Convert a Python value object to a byte representation.
+     * @param[in] value Python value to convert.
+     *  @return Python bytes-like object with serialized data.
+     */
     boost::python::object toBytes(boost::python::object& value);
 
-    //! From Bytes
+    /**
+     * Convert a byte representation to a Python value object.
+     * @param[in] value Python bytes-like object to decode.
+     *  @return Python object representing the decoded value.
+     */
     boost::python::object fromBytes(boost::python::object& value);
 
-    //! Queue update to python
+    /**
+     * Call the base-class `queueUpdate()` implementation.
+     * Used as the fallback when no Python override is present.
+     */
     void defQueueUpdate();
 
-    //! Queue update to python
+    /**
+     * Dispatch queue update callback.
+     * Invokes the Python override when provided.
+     */
     void queueUpdate();
 
-    //! Return bit offset
+    /**
+     * Return bit-offset configuration.
+     * @return Python object containing bit-offset values.
+     */
     boost::python::object bitOffset();
 
-    //! Return bit size array
+    /**
+     * Return bit-size configuration.
+     * @return Python object containing bit-size values.
+     */
     boost::python::object bitSize();
 };
 

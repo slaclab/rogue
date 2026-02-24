@@ -1,5 +1,5 @@
 /**
- * ----------------------------------------------------------------------------
+  * ----------------------------------------------------------------------------
  * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
@@ -31,7 +31,9 @@ namespace packetizer {
 
 class Controller;
 
-//! Transport Class
+/**
+ * @brief Packetizer transport endpoint.
+ * Bridges raw stream traffic to/from the packetizer controller. */
 class Transport : public rogue::interfaces::stream::Master, public rogue::interfaces::stream::Slave {
     //! Core module
     std::shared_ptr<rogue::protocols::packetizer::Controller> cntl_;
@@ -59,7 +61,10 @@ class Transport : public rogue::interfaces::stream::Master, public rogue::interf
     //! Set Controller
     void setController(std::shared_ptr<rogue::protocols::packetizer::Controller> cntl);
 
-    //! Accept a frame from master
+    /**
+     * Accept a frame from the upstream stream interface.
+     * @param[in] frame Input frame to decode and forward to controller logic.
+     */
     void acceptFrame(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 };
 

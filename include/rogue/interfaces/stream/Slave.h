@@ -1,5 +1,5 @@
 /**
- * ----------------------------------------------------------------------------
+  * ----------------------------------------------------------------------------
  * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
@@ -40,8 +40,9 @@ class Frame;
 class Buffer;
 class Master;
 
-//! Stream slave class
-/** The stream slave accepts stream data from a master. It also
+/**
+ * @brief Stream slave class
+ * The stream slave accepts stream data from a master. It also
  * can accept frame allocation requests through its Pool base class.
  * A Slave object can be attached to multiple Master objects.
  */
@@ -59,8 +60,9 @@ class Slave : public rogue::interfaces::stream::Pool,
     uint64_t frameBytes_;
 
   public:
-    //! Class factory which returns a pointer to a Slave (SlavePtr)
-    /** Create a new Slave
+    /**
+     * Class factory which returns a pointer to a Slave (SlavePtr)
+     * Create a new Slave
      *
      * Exposed as rogue.interfaces.stream.Slave() to Python
      */
@@ -84,29 +86,32 @@ class Slave : public rogue::interfaces::stream::Pool,
      */
     virtual void stop();
 
-    //! Set debug message size
-    /** This method enables debug messages when using the base Slave class
+    /**
+     * Set debug message size
+     * This method enables debug messages when using the base Slave class
      * attached as a primary or secondary Slave on a Master. Typically used
      * when attaching a base Slave object for debug purposes.
      *
      * Exposed as setDebug() to Python
-     * @param debug Maximum number of bytes to print in debug message.
-     * @param name Name to included in the debug messages.
+     * @param[in] debug Maximum number of bytes to print in debug message.
+     * @param[in] name Name to included in the debug messages.
      */
     void setDebug(uint32_t debug, std::string name);
 
-    //! Accept a frame from master
-    /** This method is called by the Master object to which this Slave is attached when
+    /**
+     * Accept a frame from master
+     * This method is called by the Master object to which this Slave is attached when
      * passing a Frame. By default this method will print debug information if enabled
      * and is typically re-implemented by a Slave sub-class.
      *
      * Re-implemented as _acceptFrame() in a Python subclass
-     * @param frame Frame pointer (FramePtr)
+     * @param[in] frame Frame pointer (FramePtr)
      */
     virtual void acceptFrame(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
-    //! Get frame counter
-    /** Returns the total frames received. Only valid if acceptFrame is not re-implemented
+    /**
+     * Get frame counter
+     * Returns the total frames received. Only valid if acceptFrame is not re-implemented
      * as a sub-class. Typically used when attaching a base Slave object for debug purposes.
      *
      * Exposed as getFrameCount() to Python
@@ -114,8 +119,9 @@ class Slave : public rogue::interfaces::stream::Pool,
      */
     uint64_t getFrameCount();
 
-    //! Get byte counter
-    /** Returns the total bytes received. Only valid if acceptFrame is not re-implemented
+    /**
+     * Get byte counter
+     * Returns the total bytes received. Only valid if acceptFrame is not re-implemented
      * as a sub-class. Typically used when attaching a base Slave object for debug purposes.
      *
      * Exposed as getByteCount() to Python
@@ -123,8 +129,9 @@ class Slave : public rogue::interfaces::stream::Pool,
      */
     uint64_t getByteCount();
 
-    //! Ensure frame is a single buffer
-    /** This method makes sure the passed frame is composed of a single buffer.
+    /**
+     * Ensure frame is a single buffer
+     * This method makes sure the passed frame is composed of a single buffer.
      *  If the reqNew flag is true and the passed frame is not a single buffer, a
      *  new frame will be requested and the frame data will be copied, with the passed
      *  frame pointer being updated. The return value will indicate if the frame is a
@@ -132,17 +139,18 @@ class Slave : public rogue::interfaces::stream::Pool,
      *  method is called.
      *
      * Not exposed to Python
-     * @param frame Reference to frame pointer (FramePtr)
-     * @param rewEn Flag to determine if a new frame should be requested
+     * @param[in] frame Reference to frame pointer (FramePtr)
+     * @param[in] rewEn Flag to determine if a new frame should be requested
      */
     bool ensureSingleBuffer(std::shared_ptr<rogue::interfaces::stream::Frame>& frame, bool reqEn);
 
-    // Process a local frame request
-    /* Method to service a local frame request
+    /**
+     * Service a local frame allocation request through this object's pool interface.
+     * This bypasses upstream links and allocates from the local Pool implementation.
      *
-     * size Minimum size for requested Frame, larger Frame may be allocated
-     * zeroCopyEn Flag which indicates if a zero copy mode Frame is allowed.
-     * Newly allocated Frame pointer (FramePtr)
+     * @param[in] size Minimum required frame payload size in bytes.
+     * @param[in] zeroCopyEn True to allow zero-copy buffer use when supported.
+     * @return Newly allocated frame pointer.
      */
     std::shared_ptr<rogue::interfaces::stream::Frame> reqLocalFrame(uint32_t size, bool zeroCopyEn);
 
@@ -158,19 +166,35 @@ class Slave : public rogue::interfaces::stream::Pool,
         std::shared_ptr<rogue::interfaces::stream::Master>& other);
 };
 
-//! Alias for using shared pointer as SlavePtr
+/** Alias for using shared pointer as SlavePtr */
 typedef std::shared_ptr<rogue::interfaces::stream::Slave> SlavePtr;
 
 #ifndef NO_PYTHON
 
-// Stream slave class, wrapper to enable python overload of virtual methods
+/**
+ * @brief Internal Boost.Python wrapper for `rogue::interfaces::stream::Slave`.
+ * Enables Python subclasses to override virtual methods.
+ *
+ *  This wrapper is an internal binding adapter and not a primary C++ API surface.
+ *  It is registered by `setup_python()` under the base class name.
+ */
 class SlaveWrap : public rogue::interfaces::stream::Slave,
                   public boost::python::wrapper<rogue::interfaces::stream::Slave> {
   public:
-    // Accept frame
+    /**
+     * Accept a frame from an upstream master.
+     * Invokes the Python override when provided.
+     *
+     * @param[in] frame Frame received from the stream path.
+     */
     void acceptFrame(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
-    // Default accept frame call
+    /**
+     * Call the base-class `acceptFrame()` implementation.
+     * Used as the fallback when no Python override is present.
+     *
+     * @param[in] frame Frame received from the stream path.
+     */
     void defAcceptFrame(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 };
 

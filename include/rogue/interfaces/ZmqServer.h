@@ -1,5 +1,5 @@
 /**
- * ----------------------------------------------------------------------------
+  * ----------------------------------------------------------------------------
  * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
@@ -31,7 +31,7 @@
 namespace rogue {
 namespace interfaces {
 
-//! Logging
+/** Logging */
 class ZmqServer {
     // Zeromq Context
     void* zmqCtx_;
@@ -91,12 +91,40 @@ class ZmqServerWrap : public rogue::interfaces::ZmqServer, public boost::python:
   public:
     ZmqServerWrap(std::string addr, uint16_t port);
 
+    /**
+     * Process a Python-object request message.
+     * Invokes the Python override when provided.
+     *
+     * @param[in] data Request payload as a Python object.
+     * @return Response payload as a Python object.
+     */
     boost::python::object doRequest(boost::python::object data);
 
+    /**
+     * Call the base-class `doRequest()` implementation.
+     * Used as the fallback when no Python override is present.
+     *
+     * @param[in] data Request payload as a Python object.
+     * @return Response payload as a Python object.
+     */
     boost::python::object defDoRequest(boost::python::object data);
 
+    /**
+     * Process a string request message.
+     * Invokes the Python override when provided.
+     *
+     * @param[in] data Request string payload.
+     * @return Response string payload.
+     */
     std::string doString(const std::string& data);
 
+    /**
+     * Call the base-class `doString()` implementation.
+     * Used as the fallback when no Python override is present.
+     *
+     * @param[in] data Request string payload.
+     * @return Response string payload.
+     */
     std::string defDoString(const std::string& data);
 };
 

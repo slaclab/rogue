@@ -1,5 +1,5 @@
 /**
- * ----------------------------------------------------------------------------
+  * ----------------------------------------------------------------------------
  * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
@@ -31,7 +31,7 @@
 namespace rogue {
 namespace interfaces {
 
-//! Logging
+/** Logging */
 class ZmqClient {
     // Zeromq Context
     void* zmqCtx_;
@@ -94,8 +94,20 @@ class ZmqClientWrap : public rogue::interfaces::ZmqClient, public boost::python:
   public:
     ZmqClientWrap(const std::string& addr, uint16_t port, bool doString);
 
+    /**
+     * Handle an update message from the background subscription path.
+     * Invokes the Python override when provided.
+     *
+     * @param[in] data Update payload as a Python object.
+     */
     void doUpdate(boost::python::object data);
 
+    /**
+     * Call the base-class `doUpdate()` implementation.
+     * Used as the fallback when no Python override is present.
+     *
+     * @param[in] data Update payload as a Python object.
+     */
     void defDoUpdate(boost::python::object data);
 };
 
