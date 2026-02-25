@@ -29,58 +29,79 @@ namespace memory {
 
 class Transaction;
 
-//! Transaction Lock
 /**
- * The TransactionLock is a container for holding a lock on Transaction data while accessing
- * that data. This lock ensures that Transaction is not destroyed when the Slave is updating
- * its data and result. This object is created by calling Transaction::lock().
+ * @brief Scoped lock wrapper for a memory transaction.
+ *
+ * @details
+ * Holds a lock on transaction data while client code accesses it. The lock prevents
+ * transaction destruction while a slave updates data and completion state. Instances
+ * are created via `Transaction::lock()`.
  */
 class TransactionLock {
     std::shared_ptr<rogue::interfaces::memory::Transaction> tran_;
     bool locked_;
 
   public:
-    // Class factory which returns a pointer to a TransactionLock (TransactionLockPtr)
+    /**
+     * @brief Creates a transaction lock wrapper.
+     *
+     * @param transaction Transaction to guard.
+     * @return Shared pointer to the created lock object.
+     */
     static std::shared_ptr<rogue::interfaces::memory::TransactionLock> create(
         std::shared_ptr<rogue::interfaces::memory::Transaction> transaction);
 
-    // Transaction lock constructor
+    /**
+     * @brief Constructs a lock wrapper for the provided transaction.
+     *
+     * @param transaction Transaction to guard.
+     */
     explicit TransactionLock(std::shared_ptr<rogue::interfaces::memory::Transaction> transaction);
 
-    // Setup class for use in python
+    /**
+     * @brief Registers this type with Python bindings.
+     */
     static void setup_python();
 
-    // Destroy and release the transaction lock
+    /**
+     * @brief Destroys the wrapper and releases any held lock.
+     */
     ~TransactionLock();
 
-    //! Lock associated Transaction if not locked
-    /** Exposed as lock() to Python
+    /**
+     * @brief Locks the associated transaction when not already locked.
+     *
+     * @details Exposed as `lock()` in Python.
      */
     void lock();
 
-    //! UnLock associated transaction if locked
-    /** Exposed as unlock() to Python
+    /**
+     * @brief Unlocks the associated transaction when currently locked.
+     *
+     * @details Exposed as `unlock()` in Python.
      */
     void unlock();
 
-    //! Enter method for python, does nothing
-    /** This exists only to support the
-     * with call in python.
+    /**
+     * @brief Python context-manager entry hook.
      *
-     * Exposed as __enter__() to Python
+     * @details
+     * Exists to support Python `with` usage. Exposed as `__enter__()` in Python.
      */
     void enter();
 
-    //! Exit method for python, does nothing
-    /** This exists only to support the
-     * with call in python.
+    /**
+     * @brief Python context-manager exit hook.
      *
-     * Exposed as __exit__() to Python
+     * @details
+     * Exists to support Python `with` usage. Exposed as `__exit__()` in Python.
      */
     void exit(void*, void*, void*);
 };
 
-//! Alias for using shared pointer as TransactionLockPtr
+/**
+ * @brief Shared pointer alias for `TransactionLock`.
+ */
 typedef std::shared_ptr<rogue::interfaces::memory::TransactionLock> TransactionLockPtr;
 
 }  // namespace memory

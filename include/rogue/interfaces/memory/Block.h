@@ -70,7 +70,29 @@ inline T py_object_convert(const boost::python::object& obj) {
 // Forward declaration
 class Variable;
 
-//! Memory interface Block device
+/**
+ * @brief Memory interface block device.
+ *
+ * @details
+ * Bridges higher-level variable access to lower-level memory transactions.
+ *
+ * A `Block` owns staged byte storage for a register region and one or more
+ * `Variable` objects that map bit fields into that storage. Typed access methods
+ * (`setUInt`, `getString`, `setFloat`, etc.) are not selected directly by users of
+ * `Block`; instead, each `Variable` binds to the appropriate `Block` method pair
+ * according to its model (`UInt`, `Int`, `Bool`, `String`, `Float`, `Double`,
+ * `Fixed`, `Bytes`, `PyFunc`) and width constraints.
+ *
+ * Conversion and transport are separated:
+ * - Conversion methods (`set*`/`get*`) pack/unpack values between native types and
+ *   staged bytes using variable metadata (bit offsets, bit widths, byte order,
+ *   list indexing/stride).
+ * - Transaction methods (`write`, `read`, `startTransaction`, `checkTransaction`)
+ *   move staged bytes to/from hardware and handle verify/retry/update behavior.
+ *
+ * Typical usage is through `Variable` APIs, which call the matching `Block`
+ * conversion method and then issue read/write transactions.
+ */
 class Block : public Master {
   protected:
     // Mutex
@@ -169,98 +191,118 @@ class Block : public Master {
     virtual void customClean();
 
   public:
-    //! Class factory which returns a pointer to a Block (BlockPtr)
-    /** Exposed to Python as rogue.interfaces.memory.Block()
+    /**
+     * @brief Creates a memory block.
      *
-     * @param offset  Memory offset of the Block
-     * @param size    Memory size (footprint) of the Block
+     * @details Exposed to Python as `rogue.interfaces.memory.Block()`.
+     *
+     * @param offset Memory offset of the block.
+     * @param size Memory size (footprint) of the block.
+     * @return Shared pointer to the created block.
      */
     static std::shared_ptr<rogue::interfaces::memory::Block> create(uint64_t offset, uint32_t size);
 
     // Setup class for use in python
     static void setup_python();
 
-    // Create a Block device with a given offset
+    /**
+     * @brief Constructs a block device with a given offset and size.
+     *
+     * @param offset Memory offset of the block.
+     * @param size Memory size (footprint) of the block.
+     */
     Block(uint64_t offset, uint32_t size);
 
     // Destroy the Block
     virtual ~Block();
 
-    //! Return the path of the block
-    /** Return the path of the block in the device tree
+    /**
+     * @brief Returns the path of the block in the device tree.
      *
-     * Exposed as path property to Python
-     * @return Full path of the block
+     * @details Exposed as `path` property in Python.
+     *
+     * @return Full path of the block.
      */
     std::string path();
 
-    //! Return the mode of the block
-    /** Return the mode of the block, the supported modes are
-     * "RW", "RO" and "WO"
+    /**
+     * @brief Returns the block access mode.
      *
-     * Exposed as mode property to Python
-     * @return Mode string
+     * @details Supported modes include `"RW"`, `"RO"`, and `"WO"`.
+     * Exposed as `mode` property in Python.
+     *
+     * @return Mode string.
      */
     std::string mode();
 
-    //! Return bulk enable flag
-    /** Return the bulk enable flag, indicating if this block should be included
-     * in bulk read and write operations.
+    /**
+     * @brief Returns whether this block participates in bulk operations.
      *
-     * Exposed as bulkOpEn property to Python
-     * @return bulk enable flag
+     * @details Exposed as `bulkOpEn` property in Python.
+     *
+     * @return Bulk-operation enable flag.
      */
     bool bulkOpEn();
 
-    //! Set enable state
-    /** Set the enable state
+    /**
+     * @brief Sets the block enable state.
      *
-     * Exposed as setEnable method to Python
+     * @details Exposed as `setEnable()` in Python.
+     *
+     * @param enable Set to `true` to enable block operations.
      */
     void setEnable(bool);
 
-    //! Set logging level for block
+    /**
+     * @brief Sets logging verbosity level for this block.
+     *
+     * @param level Logging level value.
+     */
     void setLogLevel(uint32_t level) {
         bLog_->setLevel(level);
     }
 
-    //! Get offset of this Block
-    /** Return the offset of this Block
+    /**
+     * @brief Returns the local offset of this block.
      *
-     * Exposed as offset property to Python
-     * @return 64-bit address offset
+     * @details Exposed as `offset` property in Python.
+     *
+     * @return 64-bit address offset.
      */
     uint64_t offset();
 
-    //! Get full address of this Block
-    /** Return the full address of this block, including the parent address plus
-     * the local offset.
+    /**
+     * @brief Returns the full address of this block.
      *
-     * Exposed as address property to Python
-     * @return 64-bit address
+     * @details
+     * Includes parent address plus local offset.
+     * Exposed as `address` property in Python.
+     *
+     * @return 64-bit address.
      */
     uint64_t address();
 
-    //! Get size of this block in bytes.
-    /** Return the size of this block in bytes.
+    /**
+     * @brief Returns block size in bytes.
      *
-     * Exposed as size property to Python
-     * @return 32-bit size
+     * @details Exposed as `size` property in Python.
+     *
+     * @return 32-bit block size.
      */
     uint32_t size();
 
-    //! Get block python transactions flag
+    /** @brief Returns whether Python transaction callbacks are blocked. */
     bool blockPyTrans();
 
   private:
-    //! Start a c++ transaction for this block, internal version
-    /** Start a c++ transaction with the passed type and access range
+    /**
+     * @brief Starts an internal C++ transaction for this block.
      *
-     * @param type    Transaction type
-     * @param forceWr Force write of non-stale block
-     * @param check   Flag to indicate if the transaction results should be immediately checked
-     * @param var     Variable associated with transaction
-     * @param index   Variable index for list variables, -1 for full variable
+     * @param type Transaction type.
+     * @param forceWr Forces write even when block is not stale.
+     * @param check Requests immediate result checking.
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
      */
     void intStartTransaction(uint32_t type,
                              bool forceWr,
@@ -269,14 +311,14 @@ class Block : public Master {
                              int32_t index);
 
   public:
-    //! Start a c++ transaction for this block
-    /** Start a c++ transaction with the passed type and access range
+    /**
+     * @brief Starts a C++ transaction for this block.
      *
-     * @param type    Transaction type
-     * @param forceWr Force write of non-stale block
-     * @param check   Flag to indicate if the transaction results should be immediately checked
-     * @param var     Variable associated with transaction
-     * @param index   Variable index for list variables, -1 for full variable
+     * @param type Transaction type.
+     * @param forceWr Forces write even when block is not stale.
+     * @param check Requests immediate result checking, meaning wait for the transaction to complete before returning.
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
      */
     void startTransaction(uint32_t type,
                           bool forceWr,
@@ -286,16 +328,16 @@ class Block : public Master {
 
 #ifndef NO_PYTHON
 
-    //! Start a transaction for this block, python version
-    /** Start a transaction with the passed type and access range
+    /**
+     * @brief Starts a block transaction from Python.
      *
-     * Exposed as startTransaction() method to Python
+     * @details Exposed as `startTransaction()` in Python.
      *
-     * @param type    Transaction type
-     * @param forceWr Force write of non-stale block
-     * @param check   Flag to indicate if the transaction results should be immediately checked
-     * @param var     Variable associated with transaction, None for block level
-     * @param index   Variable index for list variables, -1 for full variable
+     * @param type Transaction type.
+     * @param forceWr Forces write even when block is not stale.
+     * @param check Requests immediate result checking, meaning wait for the transaction to complete before returning.
+     * @param var Variable associated with transaction, or `None` for block scope.
+     * @param index Variable index for list variables, or `-1` for full variable.
      */
     void startTransactionPy(uint32_t type,
                             bool forceWr,
@@ -305,65 +347,81 @@ class Block : public Master {
 
 #endif
 
-    //! Check transaction result, C++ version without python update calls
-    /** Check transaction result, an exception is thrown if an error occured.
+    /**
+     * @brief Checks transaction result in C++ mode.
+     *
+     * @details Throws an exception if an error occurred.
      */
     bool checkTransaction();
 
 #ifndef NO_PYTHON
 
-    //! Check transaction result, python version with update calls
-    /** Check transaction result, an exception is thrown if an error occured.
+    /**
+     * @brief Checks transaction result.
      *
-     * Exposed as checkTransaction() method to Python
+     * @details
+     * Python version of `checkTransaction()`, with variable update calls.
+     * Throws an exception if an error occurred.
+     * Exposed as `checkTransaction()` in Python.
      */
     void checkTransactionPy();
 
 #endif
 
-    //! Issue write/verify/check sequence from c++
+    /**
+     * @brief Issues write/verify/check sequence from C++.
+     *
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     */
     void write(rogue::interfaces::memory::Variable* var, int32_t index = -1);
 
-    //! Issue read/check sequence from c++
+    /**
+     * @brief Issues read/check sequence from C++.
+     *
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     */
     void read(rogue::interfaces::memory::Variable* var, int32_t index = -1);
 
-    //! Add variables to block, C++ version
-    /** Add the passed list of variables to this block
+    /**
+     * @brief Adds variables to this block (C++ API).
      *
-     * Exposed as addVariables() method to Python
+     * @details Exposed as `addVariables()` in Python.
      *
-     * @param variables Variable list
+     * @param variables Variable list.
      */
     void addVariables(std::vector<std::shared_ptr<rogue::interfaces::memory::Variable>> variables);
 
 #ifndef NO_PYTHON
 
-    //! Add variables to block, Python version
-    /** Add the passed list of variables to this block
+    /**
+     * @brief Adds variables to this block (Python API).
      *
-     * @param variables Variable list
+     * @param variables Python list/iterable of variables.
      */
     void addVariablesPy(boost::python::object variables);
 
 #endif
 
-    //! Return a list of variables in this block, C++ version
+    /** @brief Returns the variable list associated with this block (C++ API). */
     std::vector<std::shared_ptr<rogue::interfaces::memory::Variable>> variables();
 
 #ifndef NO_PYTHON
 
-    //! Return a list of variables in the block, python version
-    /** Return the list of variables associated with this block
+    /**
+     * @brief Returns the variable list associated with this block (Python API).
      *
-     * Exposed as variables property to Python
+     * @details Exposed as `variables` property in Python.
      */
     boost::python::object variablesPy();
 
 #endif
 
-    //! Rate test function for perfmance tests
     /**
-     * Exposed as rateTest method to Python
+     * @brief Runs block rate-test helper for performance testing.
+     *
+     * @details Python: Exposed as `rateTest` to python users.
      */
     void rateTest();
 
@@ -373,10 +431,32 @@ class Block : public Master {
 
 #ifndef NO_PYTHON
 
-    // Set data using python function
+    /**
+     * @brief Sets variable data using a Python callback/value.
+     *
+     * @details
+     * Used for `PyFunc` variables and Python fallback paths for large-width
+     * integer variables where direct scalar conversion is not used.
+     * Calls model-specific `toBytes()` conversion before writing staged bytes.
+     *
+     * @param value Python source value.
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     */
     void setPyFunc(boost::python::object& value, rogue::interfaces::memory::Variable* var, int32_t index);
 
-    // Get data using python function
+    /**
+     * @brief Gets variable data using a Python callback/value conversion.
+     *
+     * @details
+     * Used for `PyFunc` variables and Python fallback paths for large-width
+     * integer variables where direct scalar conversion is not used.
+     * Reads staged bytes and calls model-specific `fromBytes()` conversion.
+     *
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     * @return Python object representing the variable value.
+     */
     boost::python::object getPyFunc(rogue::interfaces::memory::Variable* var, int32_t index);
 
 #endif
@@ -387,18 +467,58 @@ class Block : public Master {
 
 #ifndef NO_PYTHON
 
-    //! Set data using byte array, python version
+    /**
+     * @brief Sets variable data from Python byte-array-like input.
+     *
+     * @details
+     * Primary Python path for `Bytes` variables. Also used by some large-width
+     * numeric model paths when values are represented as raw bytes.
+     *
+     * @param value Python source buffer.
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     */
     void setByteArrayPy(boost::python::object& value, rogue::interfaces::memory::Variable* var, int32_t index);
 
-    //! Get data using byte array, python version
+    /**
+     * @brief Gets variable data as a Python byte-array-like object.
+     *
+     * @details
+     * Primary Python path for `Bytes` variables. Also used by some large-width
+     * numeric model paths when values are represented as raw bytes.
+     *
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     * @return Python object containing the variable bytes.
+     */
     boost::python::object getByteArrayPy(rogue::interfaces::memory::Variable* var, int32_t index);
 
 #endif
 
-    //! Set data using byte array, C++ Version
+    /**
+     * @brief Sets variable data from C++ byte array input.
+     *
+     * @details
+     * Primary C++ path for `Bytes` variables and width-overflow fallback path for
+     * numeric models that cannot be represented in native scalar types.
+     *
+     * @param value Source byte buffer.
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     */
     void setByteArray(const uint8_t* value, rogue::interfaces::memory::Variable* var, int32_t index);
 
-    //! Get data using byte array, C++ Version
+    /**
+     * @brief Gets variable data into a C++ byte array buffer.
+     *
+     * @details
+     * Primary C++ path for `Bytes` variables and width-overflow fallback path for
+     * numeric models that cannot be represented in native scalar types.
+     *
+     * @param value Destination byte buffer.
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     */
     void getByteArray(uint8_t* value, rogue::interfaces::memory::Variable* var, int32_t index);
 
     //////////////////////////////////////////
@@ -407,18 +527,58 @@ class Block : public Master {
 
 #ifndef NO_PYTHON
 
-    //! Set data using unsigned int, python version
+    /**
+     * @brief Sets unsigned-integer variable data from Python input.
+     *
+     * @details
+     * Python path for `UInt` variables when width is 64 bits or less.
+     * Supports scalar values and array/list updates for list variables.
+     *
+     * @param value Python source value.
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     */
     void setUIntPy(boost::python::object& value, rogue::interfaces::memory::Variable* var, int32_t index);
 
-    //! Get data using unsigned int, python version
+    /**
+     * @brief Gets unsigned-integer variable data as Python output.
+     *
+     * @details
+     * Python path for `UInt` variables when width is 64 bits or less.
+     * Returns either a scalar or an array/list-like object for list variables.
+     *
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     * @return Python object containing unsigned-integer value.
+     */
     boost::python::object getUIntPy(rogue::interfaces::memory::Variable* var, int32_t index);
 
 #endif
 
-    //! Set data using unsigned int, C++ Version
+    /**
+     * @brief Sets unsigned-integer variable data from C++ input.
+     *
+     * @details
+     * C++ path for `UInt` variables when width is 64 bits or less.
+     * Wider `UInt` values are handled through byte-array conversion paths.
+     *
+     * @param value Source unsigned-integer value.
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     */
     void setUInt(const uint64_t& value, rogue::interfaces::memory::Variable* var, int32_t index);
 
-    //! Get data using unsigned int, C++ Version
+    /**
+     * @brief Gets unsigned-integer variable data as C++ output.
+     *
+     * @details
+     * C++ path for `UInt` variables when width is 64 bits or less.
+     * Wider `UInt` values are handled through byte-array conversion paths.
+     *
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     * @return Unsigned-integer value.
+     */
     uint64_t getUInt(rogue::interfaces::memory::Variable* var, int32_t index);
 
     //////////////////////////////////////////
@@ -427,18 +587,58 @@ class Block : public Master {
 
 #ifndef NO_PYTHON
 
-    //! Set data using int, python version
+    /**
+     * @brief Sets signed-integer variable data from Python input.
+     *
+     * @details
+     * Python path for `Int` variables when width is 64 bits or less.
+     * Supports scalar values and array/list updates for list variables.
+     *
+     * @param value Python source value.
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     */
     void setIntPy(boost::python::object& value, rogue::interfaces::memory::Variable* var, int32_t index);
 
-    //! Get data using int, python version
+    /**
+     * @brief Gets signed-integer variable data as Python output.
+     *
+     * @details
+     * Python path for `Int` variables when width is 64 bits or less.
+     * Returns either a scalar or an array/list-like object for list variables.
+     *
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     * @return Python object containing signed-integer value.
+     */
     boost::python::object getIntPy(rogue::interfaces::memory::Variable* var, int32_t index);
 
 #endif
 
-    //! Set data using int, C++ Version
+    /**
+     * @brief Sets signed-integer variable data from C++ input.
+     *
+     * @details
+     * C++ path for `Int` variables when width is 64 bits or less.
+     * Wider `Int` values are handled through byte-array conversion paths.
+     *
+     * @param value Source signed-integer value.
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     */
     void setInt(const int64_t& value, rogue::interfaces::memory::Variable* var, int32_t index);
 
-    //! Get data using int, C++ Version
+    /**
+     * @brief Gets signed-integer variable data as C++ output.
+     *
+     * @details
+     * C++ path for `Int` variables when width is 64 bits or less.
+     * Wider `Int` values are handled through byte-array conversion paths.
+     *
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     * @return Signed-integer value.
+     */
     int64_t getInt(rogue::interfaces::memory::Variable* var, int32_t index);
 
     //////////////////////////////////////////
@@ -447,18 +647,50 @@ class Block : public Master {
 
 #ifndef NO_PYTHON
 
-    //! Set data using bool, python version
+    /**
+     * @brief Sets boolean variable data from Python input.
+     *
+     * @details Python path for `Bool` variables.
+     *
+     * @param value Python source value.
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     */
     void setBoolPy(boost::python::object& value, rogue::interfaces::memory::Variable* var, int32_t index);
 
-    //! Get data using bool, python version
+    /**
+     * @brief Gets boolean variable data as Python output.
+     *
+     * @details Python path for `Bool` variables.
+     *
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     * @return Python object containing boolean value.
+     */
     boost::python::object getBoolPy(rogue::interfaces::memory::Variable* var, int32_t index);
 
 #endif
 
-    //! Set data using bool, C++ Version
+    /**
+     * @brief Sets boolean variable data from C++ input.
+     *
+     * @details C++ path for `Bool` variables.
+     *
+     * @param value Source boolean value.
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     */
     void setBool(const bool& value, rogue::interfaces::memory::Variable* var, int32_t index);
 
-    //! Get data using bool, C++ Version
+    /**
+     * @brief Gets boolean variable data as C++ output.
+     *
+     * @details C++ path for `Bool` variables.
+     *
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     * @return Boolean value.
+     */
     bool getBool(rogue::interfaces::memory::Variable* var, int32_t index);
 
     //////////////////////////////////////////
@@ -467,24 +699,60 @@ class Block : public Master {
 
 #ifndef NO_PYTHON
 
-    //! Set data using String, python version
+    /**
+     * @brief Sets string variable data from Python input.
+     *
+     * @param value Python source value.
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     */
     void setStringPy(boost::python::object& value, rogue::interfaces::memory::Variable* var, int32_t index);
 
-    //! Get data using String, python version
+    /**
+     * @brief Gets string variable data as Python output.
+     *
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     * @return Python object containing string value.
+     */
     boost::python::object getStringPy(rogue::interfaces::memory::Variable* var, int32_t index);
 
 #endif
 
-    //! Set data using String, C++ Version
+    /**
+     * @brief Sets string variable data from C++ input.
+     *
+     * @param value Source string value.
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     */
     void setString(const std::string& value, rogue::interfaces::memory::Variable* var, int32_t index);
 
-    //! Get data using String, C++ Version
+    /**
+     * @brief Gets string variable data as C++ output.
+     *
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     * @return String value.
+     */
     std::string getString(rogue::interfaces::memory::Variable* var, int32_t index);
 
-    //! Get data into String, C++ Version
+    /**
+     * @brief Gets string variable data into an output string reference.
+     *
+     * @param var Variable associated with the transaction.
+     * @param valueRet Destination string reference.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     */
     void getString(rogue::interfaces::memory::Variable* var, std::string& valueRet, int32_t index);
 
-    //! Get data into String, C++ Version
+    /**
+     * @brief Alias to `getString(var, valueRet, index)`.
+     *
+     * @param var Variable associated with the transaction.
+     * @param valueRet Destination string reference.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     */
     void getValue(rogue::interfaces::memory::Variable* var, std::string& valueRet, int32_t index) {
         getString(var, valueRet, index);
     }
@@ -495,18 +763,42 @@ class Block : public Master {
 
 #ifndef NO_PYTHON
 
-    //! Set data using Float, python version
+    /**
+     * @brief Sets float variable data from Python input.
+     *
+     * @param value Python source value.
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     */
     void setFloatPy(boost::python::object& value, rogue::interfaces::memory::Variable* var, int32_t index);
 
-    //! Get data using Float, python version
+    /**
+     * @brief Gets float variable data as Python output.
+     *
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     * @return Python object containing float value.
+     */
     boost::python::object getFloatPy(rogue::interfaces::memory::Variable* var, int32_t index);
 
 #endif
 
-    //! Set data using Float, C++ Version
+    /**
+     * @brief Sets float variable data from C++ input.
+     *
+     * @param value Source float value.
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     */
     void setFloat(const float& value, rogue::interfaces::memory::Variable* var, int32_t index);
 
-    //! Get data using Float, C++ Version
+    /**
+     * @brief Gets float variable data as C++ output.
+     *
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     * @return Float value.
+     */
     float getFloat(rogue::interfaces::memory::Variable* var, int32_t index);
 
     //////////////////////////////////////////
@@ -515,18 +807,42 @@ class Block : public Master {
 
 #ifndef NO_PYTHON
 
-    //! Set data using Double, python version
+    /**
+     * @brief Sets double variable data from Python input.
+     *
+     * @param value Python source value.
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     */
     void setDoublePy(boost::python::object& value, rogue::interfaces::memory::Variable* var, int32_t index);
 
-    //! Get data using Double, python version
+    /**
+     * @brief Gets double variable data as Python output.
+     *
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     * @return Python object containing double value.
+     */
     boost::python::object getDoublePy(rogue::interfaces::memory::Variable* var, int32_t index);
 
 #endif
 
-    //! Set data using Double, C++ Version
+    /**
+     * @brief Sets double variable data from C++ input.
+     *
+     * @param value Source double value.
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     */
     void setDouble(const double& value, rogue::interfaces::memory::Variable* var, int32_t index);
 
-    //! Get data using Double, C++ Version
+    /**
+     * @brief Gets double variable data as C++ output.
+     *
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     * @return Double value.
+     */
     double getDouble(rogue::interfaces::memory::Variable* var, int32_t index);
 
     //////////////////////////////////////////
@@ -535,22 +851,46 @@ class Block : public Master {
 
 #ifndef NO_PYTHON
 
-    //! Set data using Fixed Point, Python version
+    /**
+     * @brief Sets fixed-point variable data from Python input.
+     *
+     * @param value Python source value.
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     */
     void setFixedPy(boost::python::object& value, rogue::interfaces::memory::Variable* var, int32_t index);
 
-    //! Get data using Fixed Point, Python version
+    /**
+     * @brief Gets fixed-point variable data as Python output.
+     *
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     * @return Python object containing fixed-point value.
+     */
     boost::python::object getFixedPy(rogue::interfaces::memory::Variable* var, int32_t index);
 
 #endif
 
-    //! Set data using Fixed Point, C++ Version
+    /**
+     * @brief Sets fixed-point variable data from C++ input.
+     *
+     * @param value Source fixed-point value.
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     */
     void setFixed(const double& value, rogue::interfaces::memory::Variable* var, int32_t index);
 
-    //! Get data using Fixed Point, C++ Version
+    /**
+     * @brief Gets fixed-point variable data as C++ output.
+     *
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     * @return Fixed-point value.
+     */
     double getFixed(rogue::interfaces::memory::Variable* var, int32_t index);
 };
 
-//! Alias for using shared pointer as BlockPtr
+/** @brief Shared pointer alias for `Block`. */
 typedef std::shared_ptr<rogue::interfaces::memory::Block> BlockPtr;
 
 }  // namespace memory

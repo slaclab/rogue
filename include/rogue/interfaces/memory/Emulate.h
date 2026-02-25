@@ -37,9 +37,12 @@ namespace rogue {
 namespace interfaces {
 namespace memory {
 
-//! Memory interface Emlator device
-/** This memory will respond to transactions, emilator hardware by responding to read
- * and write transactions.
+/**
+ * @brief Memory interface emulator device.
+ *
+ * @details
+ * Responds to memory read and write transactions and allocates backing memory on demand.
+ * This is primarily used for testing Rogue memory trees without hardware.
  */
 class Emulate : public Slave {
     // Map to store 4K address space chunks
@@ -52,32 +55,52 @@ class Emulate : public Slave {
     uint32_t totAlloc_;
     uint32_t totSize_;
 
-    //! Log
+    /**
+     * @brief Logger for emulator activity.
+     */
     std::shared_ptr<rogue::Logging> log_;
 
   public:
-    //! Class factory which returns a pointer to a Emulate (EmulatePtr)
-    /** Exposed to Python as rogue.interfaces.memory.Emualte()
+    /**
+     * @brief Creates an emulator device.
      *
-     * @param min The min transaction size, 0 if not a virtual memory space root
-     * @param min The max transaction size, 0 if not a virtual memory space root
+     * @details Exposed to Python as `rogue.interfaces.memory.Emulate()`.
+     *
+     * @param min Minimum transaction size in bytes, or `0` if not a virtual root.
+     * @param max Maximum transaction size in bytes, or `0` if not a virtual root.
+     * @return Shared pointer to the created emulator.
      */
     static std::shared_ptr<rogue::interfaces::memory::Emulate> create(uint32_t min, uint32_t max);
 
-    // Setup class for use in python
+    /**
+     * @brief Registers this type with Python bindings.
+     */
     static void setup_python();
 
-    // Create a Emulate device
+    /**
+     * @brief Constructs an emulator device.
+     *
+     * @param min Minimum transaction size in bytes, or `0` if not a virtual root.
+     * @param max Maximum transaction size in bytes, or `0` if not a virtual root.
+     */
     Emulate(uint32_t min, uint32_t max);
 
-    // Destroy the Emulate
+    /**
+     * @brief Destroys the emulator device.
+     */
     ~Emulate();
 
-    //! Handle the incoming memory transaction
+    /**
+     * @brief Handles an incoming memory transaction.
+     *
+     * @param transaction Transaction to execute against emulated memory.
+     */
     void doTransaction(std::shared_ptr<rogue::interfaces::memory::Transaction> transaction);
 };
 
-//! Alias for using shared pointer as EmulatePtr
+/**
+ * @brief Shared pointer alias for `Emulate`.
+ */
 typedef std::shared_ptr<rogue::interfaces::memory::Emulate> EmulatePtr;
 }  // namespace memory
 }  // namespace interfaces
