@@ -15,12 +15,22 @@
 
 from pydm.widgets.frame import PyDMFrame
 from pyrogue.pydm.data_plugins.rogue_plugin import nodeFromAddress
-from qtpy.QtWidgets import QVBoxLayout
+from qtpy.QtWidgets import QVBoxLayout, QWidget
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 
 class Plotter(PyDMFrame):
-    def __init__(self, parent=None, init_channel=None):
+    """PyDM widget that displays an incoming matplotlib figure published by a pyrogue Variable.
+
+    Parameters
+    ----------
+    parent : QWidget | None, optional
+        Parent Qt widget.
+    init_channel : str | None, optional
+        Initial Rogue channel address.
+    """
+
+    def __init__(self, parent: QWidget | None = None, init_channel: str | None = None) -> None:
         PyDMFrame.__init__(self, parent, init_channel)
 
         self._systemLog = None
@@ -28,7 +38,8 @@ class Plotter(PyDMFrame):
         self._canvas = None
         self._fig = None
 
-    def connection_changed(self, connected):
+    def connection_changed(self, connected: bool) -> None:
+        """Build the layout after the first successful channel connection."""
         build = (self._node is None) and (self._connected != connected and connected is True)
         super(Plotter, self).connection_changed(connected)
 
@@ -40,7 +51,8 @@ class Plotter(PyDMFrame):
         self._vb = QVBoxLayout()
         self.setLayout(self._vb)
 
-    def value_changed(self, new_val):
+    def value_changed(self, new_val: object) -> None:
+        """Replace the displayed plot with the latest figure object."""
         if self._canvas is not None:
             self._vb.removeWidget(self._canvas)
             self._vb.removeWidget(self._nav)

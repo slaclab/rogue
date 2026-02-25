@@ -11,6 +11,9 @@ written. Since multiple "channels" may have been used when writing the file, gen
 be tagged with a channel ID to match the channel value when written. A :ref:`interfaces_stream_filter`
 object can be used to direct the Frames based upon their channel IDs.
 
+For the canonical on-disk record format consumed by StreamReader, see
+:ref:`utilities_fileio_format`.
+
 There is also a python utilitiy for reading frames in python using a non-streaming method.
 
 The following code block describes how to create and connect a file reader in python:

@@ -18,14 +18,35 @@ import ast
 import logging
 from pydm.widgets import PyDMLineEdit, PyDMLabel
 from qtpy.QtCore import Property, Qt
-from qtpy.QtWidgets import QHBoxLayout
+from qtpy.QtGui import QFocusEvent
+from qtpy.QtWidgets import QHBoxLayout, QWidget
 from pydm.widgets.base import refresh_style, str_types
 from pydm.widgets.display_format import DisplayFormat, parse_value_for_display
 
 logger = logging.getLogger(__name__)
 
 class PyRogueLineEdit(PyDMLineEdit):
-    def __init__(self, parent, init_channel=None, show_units=True, read_only=False):
+    """PyDM line edit with Rogue-specific display and unit handling.
+
+    Parameters
+    ----------
+    parent : QWidget
+        Parent Qt widget.
+    init_channel : str | None, optional
+        Initial Rogue channel address.
+    show_units : bool, optional
+        If ``True``, display channel units in a dedicated unit label.
+    read_only : bool, optional
+        Unused compatibility parameter retained for legacy call sites.
+    """
+
+    def __init__(
+        self,
+        parent: QWidget,
+        init_channel: str | None = None,
+        show_units: bool = True,
+        read_only: bool = False,
+    ) -> None:
         super().__init__(parent, init_channel=init_channel)
 
         self._show_units = show_units
@@ -49,31 +70,36 @@ class PyRogueLineEdit(PyDMLineEdit):
         self.setLayout(hbox)
 
 
-    def text_edited(self):
+    def text_edited(self) -> None:
+        """Mark widget dirty when user edits text."""
         self._dirty = True
         refresh_style(self)
 
-    def focusOutEvent(self, event):
+    def focusOutEvent(self, event: QFocusEvent) -> None:
+        """Clear dirty state when focus leaves the widget."""
         self._dirty = False
         super(PyRogueLineEdit, self).focusOutEvent(event)
         refresh_style(self)
 
 
-    def check_enable_state(self):
+    def check_enable_state(self) -> None:
+        """Update read-only state based on channel write access."""
         status = self._write_access and self._connected
         self.setReadOnly(not status)
         refresh_style(self)
 
     @Property(bool)
-    def dirty(self):
+    def dirty(self) -> bool:
+        """Whether user-edited text is pending commit."""
         return self._dirty
 
-    def unit_changed(self, new_unit):
+    def unit_changed(self, new_unit: str) -> None:
+        """Update displayed units text."""
         super().unit_changed(new_unit)
         if self._show_units:
             self._unitWidget.setText(new_unit)
 
-    def send_value(self):
+    def send_value(self) -> None:
         """
         Emit a :attr:`send_value_signal` to update channel value.
 
@@ -133,7 +159,7 @@ class PyRogueLineEdit(PyDMLineEdit):
 
 
 
-    def set_display(self):
+    def set_display(self) -> None:
         """
         Set the text display of the PyDMLineEdit.
 

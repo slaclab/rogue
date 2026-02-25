@@ -19,30 +19,45 @@ import os
 import argparse
 import zipfile
 from collections import namedtuple
+from typing import Any
 from zipfile import ZipFile
 
 ##############################################################################
 # Supported types of rogue devices and variables                             #
 ##############################################################################
 # RemoteVariable type
-RemoteVariable = namedtuple('RemoteVariable', ['name', 'description', 'offset', 'bitSize', 'bitOffset', 'base',
-                                               'mode'], defaults=['VarName', 'description', 0x00000, 8, 0, 'pr.Int',
-                                                                  'RW'])
+RemoteVariable = namedtuple(
+    'RemoteVariable',
+    ['name', 'description', 'offset', 'bitSize', 'bitOffset', 'base', 'mode'],
+    defaults=['VarName', 'description', 0x00000, 8, 0, 'pr.Int', 'RW'],
+)
 
 # RemoteCommand type
-RemoteCommand = namedtuple('RemoteCommand', ['name', 'description', 'offset', 'bitSize', 'bitOffset', 'base',
-                                             'function'], defaults=['CmdName', 'description', 0x00000, 8, 0, 'pr.UInt',
-                                                                    'lambda cmd: cmd.post(1)'])
+RemoteCommand = namedtuple(
+    'RemoteCommand',
+    ['name', 'description', 'offset', 'bitSize', 'bitOffset', 'base', 'function'],
+    defaults=['CmdName', 'description', 0x00000, 8, 0, 'pr.UInt', 'lambda cmd: cmd.post(1)'],
+)
 
 # MemoryDevice type
-MemoryDevice = namedtuple('MemoryDevice', ['name', 'offset', 'size', 'wordBitSize', 'stride', 'base'],
-                          defaults=['DevName', 0x00000, 16, 8, 16, 'pr.Int'])
+MemoryDevice = namedtuple(
+    'MemoryDevice',
+    ['name', 'offset', 'size', 'wordBitSize', 'stride', 'base'],
+    defaults=['DevName', 0x00000, 16, 8, 16, 'pr.Int'],
+)
 ##############################################################################
 
 vartype = ''
 maxwidth = 64
 
-def parse():
+def parse() -> list[Any]:
+    """Parse an HLS register header archive into parameter tuples.
+
+    Returns
+    -------
+    list[Any]
+        List of namedtuple parameter records for the selected output type.
+    """
     # Get the path to the zip file
     zname = input('Enter the path to the zipfile: ')
 
@@ -178,19 +193,26 @@ def parse():
                 dname.remove(t)
                 dname = "_".join(dname)
 
-        if vartype is RemoteVariable.__name__:
+        if vartype == RemoteVariable.__name__:
             var = RemoteVariable(name=dname, description='remote variable', offset=addr, bitSize=width)
             params.append(var)
-        elif vartype is MemoryDevice.__name__:
+        elif vartype == MemoryDevice.__name__:
             var = MemoryDevice(name=dname, offset=addr, size=depth, wordBitSize=width)
             params.append(var)
-        elif vartype is RemoteCommand.__name__:
+        elif vartype == RemoteCommand.__name__:
             var = RemoteCommand(name=dname, description='remote command', offset=addr, bitSize=width)
             params.append(var)
 
     return params
 
-def write(parameters):
+def write(parameters: list[Any]) -> None:
+    """Write a generated ``application.py`` from parsed parameter records.
+
+    Parameters
+    ----------
+    parameters : list[Any]
+        Parsed records returned by :func:`parse`.
+    """
     with open('application.py', 'w+') as fhand:
 
         fhand.write('#-----------------------------------------------------------------------------\n')
@@ -214,7 +236,7 @@ def write(parameters):
 
         for param in parameters:
             print(param)
-            if vartype is RemoteVariable.__name__:
+            if vartype == RemoteVariable.__name__:
                 fhand.write('        pr.RemoteVariable(\n')
                 argline = \
                     '                        name=' + '\'' + param.name + '\'' + ',\n' + \
@@ -226,7 +248,7 @@ def write(parameters):
                     '                        mode=' + '\'' + str(param.mode) + '\'' + ',\n'
                 fhand.write(argline)
                 fhand.write('                       )\n\n')
-            elif vartype is MemoryDevice.__name__:
+            elif vartype == MemoryDevice.__name__:
                 fhand.write('        pr.MemoryDevice(\n')
                 argline = \
                     '                        name=' + '\'' + param.name + '\'' + ',\n' + \
@@ -237,7 +259,7 @@ def write(parameters):
                     '                        base=' + str(param.base) + ',\n'
                 fhand.write(argline)
                 fhand.write('                       )\n\n')
-            elif vartype is RemoteCommand.__name__:
+            elif vartype == RemoteCommand.__name__:
                 fhand.write('        self.add(pr.RemoteCommand(\n')
                 argline = \
                     '                        name=' + '\'' + param.name + '\'' + ',\n' + \
@@ -257,7 +279,8 @@ def write(parameters):
         fhand.write('        # Add and execute the relevant commands below\n')
         fhand.write('\n\n')
 
-def run():
+def run() -> None:
+    """Run CLI flow for parsing and generating Rogue application code."""
     # Read command line option (i.e. output type)
     parser = argparse.ArgumentParser(description='Specify type of output.')
     parser.add_argument('--remoteCommand', action='store_true', required=False, help='set up remote commands')

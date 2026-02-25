@@ -17,21 +17,38 @@ from pydm.widgets.frame import PyDMFrame
 from pydm.widgets import PyDMPushButton
 from pyrogue.pydm.data_plugins.rogue_plugin import nodeFromAddress
 from qtpy.QtCore import Qt
-from qtpy.QtWidgets import QVBoxLayout, QTreeWidgetItem, QTreeWidget, QGroupBox
+from qtpy.QtWidgets import QVBoxLayout, QTreeWidgetItem, QTreeWidget, QGroupBox, QWidget
 import json
 import time
 
 
 class SystemLog(PyDMFrame):
-    def __init__(self, parent=None, init_channel=None,
-                 title="System Log (20 most recent entries)"):
+    """Widget for displaying recent Rogue system log entries.
+
+    Parameters
+    ----------
+    parent : QWidget | None, optional
+        Parent Qt widget.
+    init_channel : str | None, optional
+        Initial Rogue channel address.
+    title : str, optional
+        Group box title shown above the log table.
+    """
+
+    def __init__(
+        self,
+        parent: QWidget | None = None,
+        init_channel: str | None = None,
+        title: str = "System Log (20 most recent entries)",
+    ) -> None:
         PyDMFrame.__init__(self, parent, init_channel)
 
         self._systemLog = None
         self._node = None
         self._title = title
 
-    def connection_changed(self, connected):
+    def connection_changed(self, connected: bool) -> None:
+        """Build log UI elements after first successful channel connection."""
         build = (self._node is None) and (self._connected != connected and connected is True)
         super(SystemLog, self).connection_changed(connected)
 
@@ -60,7 +77,8 @@ class SystemLog(PyDMFrame):
         self._pb = PyDMPushButton(label='Clear Log',pressValue=1,init_channel=self._path)
         vb.addWidget(self._pb)
 
-    def value_changed(self, new_val):
+    def value_changed(self, new_val: str) -> None:
+        """Render JSON log entries into the tree widget."""
         lst = json.loads(new_val)
 
         self._systemLog.clear()
