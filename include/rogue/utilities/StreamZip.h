@@ -28,25 +28,53 @@
 namespace rogue {
 namespace utilities {
 
-//! Stream compressor
+/**
+ * @brief Stream module that compresses frame payloads using bzip2.
+ *
+ * @details
+ * `StreamZip` consumes frames on its slave side, compresses the payload bytes,
+ * and forwards a new frame downstream from its master side. Frame metadata
+ * (channel, flags, error state) is preserved.
+ *
+ * Output frame allocation is requested via `reqFrame()`. The implementation
+ * starts with an output frame sized to the input payload and grows it if needed.
+ *
+ * Threading model:
+ * - `StreamZip` does not create an internal worker thread.
+ * - Compression runs synchronously in the caller thread that invokes
+ *   `acceptFrame()`.
+ * - A lock is taken on the input frame while payload buffers are read, so the
+ *   frame contents are stable during compression.
+ */
 class StreamZip : public rogue::interfaces::stream::Slave, public rogue::interfaces::stream::Master {
   public:
-    //! Class creation
+    /**
+     * @brief Creates a stream compressor instance.
+     * @return Shared pointer to the created compressor.
+     */
     static std::shared_ptr<rogue::utilities::StreamZip> create();
 
-    //! Setup class in python
+    /** @brief Registers Python bindings for this class. */
     static void setup_python();
 
-    //! Creator
+    /** @brief Constructs a stream compressor. */
     StreamZip();
 
-    //! Deconstructor
+    /** @brief Destroys stream compressor. */
     ~StreamZip();
 
-    //! Accept a frame from master
+    /**
+     * @brief Accepts a frame, compresses its payload, and forwards the result.
+     * @param frame Input frame to compress.
+     */
     void acceptFrame(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
-    //! Accept a new frame request
+    /**
+     * @brief Forwards frame-allocation requests upstream.
+     * @param size Requested payload size in bytes.
+     * @param zeroCopyEn `true` to request zero-copy buffer handling.
+     * @return Allocated frame from upstream master path.
+     */
     std::shared_ptr<rogue::interfaces::stream::Frame> acceptReq(uint32_t size, bool zeroCopyEn);
 };
 
