@@ -31,28 +31,42 @@
 namespace rogue {
 namespace interfaces {
 
-/** Logging */
+/**
+ * @brief ZeroMQ server for Rogue control, request/reply, and publish updates.
+ *
+ * @details
+ * `ZmqServer` exposes three sockets:
+ * - Publish socket on `basePort` for asynchronous update messages.
+ * - Binary request/reply socket on `basePort + 1`.
+ * - String request/reply socket on `basePort + 2`.
+ *
+ * `start()` binds sockets and launches worker threads for binary and string
+ * request handling. If constructed with `port == 0`, the server scans for an
+ * available base port starting at `9099` in increments of 4.
+ */
 class ZmqServer {
-    // Zeromq Context
+    // ZeroMQ context.
     void* zmqCtx_;
 
-    // Zeromq publish port
+    // ZeroMQ publish socket.
     void* zmqPub_;
 
-    // Zeromq response port
+    // ZeroMQ binary response socket.
     void* zmqRep_;
 
-    // Zeromq string response port
+    // ZeroMQ string response socket.
     void* zmqStr_;
 
+    // Request worker threads.
     std::thread* rThread_;
     std::thread* sThread_;
     bool threadEn_;
 
+    // Bind address and base port configuration.
     std::string addr_;
     uint16_t basePort_;
 
-    //! Log
+    // Logger instance.
     std::shared_ptr<rogue::Logging> log_;
 
     void runThread();
@@ -61,68 +75,115 @@ class ZmqServer {
     bool tryConnect();
 
   public:
+    /**
+     * @brief Creates a ZeroMQ server.
+     * @param addr Bind address/interface.
+     * @param port Base port. Use `0` for auto-allocation.
+     * @return Shared pointer to the created server.
+     */
     static std::shared_ptr<rogue::interfaces::ZmqServer> create(const std::string& addr, uint16_t port);
 
-    //! Setup class in python
+    /** @brief Registers Python bindings for this class. */
     static void setup_python();
 
+    /**
+     * @brief Constructs a ZeroMQ server.
+     * @param addr Bind address/interface.
+     * @param port Base port. Use `0` for auto-allocation.
+     */
     ZmqServer(const std::string& addr, uint16_t port);
+
+    /** @brief Destroys server and stops worker threads/sockets. */
     virtual ~ZmqServer();
 
 #ifndef NO_PYTHON
+    /**
+     * @brief Publishes an update payload on the publish socket.
+     * @param data Python object exposing a readable buffer.
+     */
     void publish(boost::python::object data);
 
+    /**
+     * @brief Handles one binary request payload.
+     * @param data Request payload as Python object.
+     * @return Response payload as Python object.
+     */
     virtual boost::python::object doRequest(boost::python::object data);
 #endif
 
+    /**
+     * @brief Handles one string request payload.
+     * @param data Request payload string.
+     * @return Response payload string.
+     */
     virtual std::string doString(const std::string& data);
 
+    /**
+     * @brief Returns currently bound base port.
+     * @return Base port number.
+     */
     uint16_t port();
 
+    /** @brief Stops server threads and closes sockets. */
     void stop();
+
+    /** @brief Starts server, binds sockets, and launches worker threads. */
     void start();
 };
 typedef std::shared_ptr<rogue::interfaces::ZmqServer> ZmqServerPtr;
 
 #ifndef NO_PYTHON
 
-//! Stream slave class, wrapper to enable python overload of virtual methods
+/**
+ * @brief Python-overridable wrapper for `ZmqServer`.
+ */
 class ZmqServerWrap : public rogue::interfaces::ZmqServer, public boost::python::wrapper<rogue::interfaces::ZmqServer> {
   public:
+    /**
+     * @brief Constructs wrapper server.
+     * @param addr Bind address/interface.
+     * @param port Base port. Use `0` for auto-allocation.
+     */
     ZmqServerWrap(std::string addr, uint16_t port);
 
     /**
-     * Process a Python-object request message.
-     * Invokes the Python override when provided.
-     *
-     * @param[in] data Request payload as a Python object.
+     * @brief Processes a Python-object request message.
+     * @details
+     * Invokes the overridden `_doRequest()` Python method when present. If no
+     * override is provided (or override dispatch falls through), the base-class
+     * `ZmqServer::doRequest()` implementation is used.
+     * @param data Request payload as a Python object.
      * @return Response payload as a Python object.
      */
     boost::python::object doRequest(boost::python::object data);
 
     /**
-     * Call the base-class `doRequest()` implementation.
-     * Used as the fallback when no Python override is present.
-     *
-     * @param[in] data Request payload as a Python object.
+     * @brief Calls base-class `doRequest()` implementation.
+     * @details
+     * Default Boost.Python fallback for `_doRequest()` when no Python override
+     * is provided.
+     * @param data Request payload as a Python object.
      * @return Response payload as a Python object.
      */
     boost::python::object defDoRequest(boost::python::object data);
 
     /**
-     * Process a string request message.
-     * Invokes the Python override when provided.
-     *
-     * @param[in] data Request string payload.
+     * @brief Processes a string request message.
+     * @details
+     * Invokes the overridden `_doString()` Python method when present. If no
+     * override is provided (or override dispatch falls through), the base-class
+     * `ZmqServer::doString()` implementation is used.
+     * @param data Request string payload.
      * @return Response string payload.
      */
     std::string doString(const std::string& data);
 
     /**
-     * Call the base-class `doString()` implementation.
-     * Used as the fallback when no Python override is present.
-     *
-     * @param[in] data Request string payload.
+     * @brief Calls base-class `doString()` implementation.
+     * @details
+     * Default Boost.Python fallback for `_doString()` when no Python override
+     * is provided.
+     * @param data Request string payload.
      * @return Response string payload.
      */
     std::string defDoString(const std::string& data);
