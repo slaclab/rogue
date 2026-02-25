@@ -32,58 +32,109 @@ namespace rogue {
 namespace protocols {
 namespace udp {
 
+/** @brief Jumbo-frame MTU in bytes (`9000`). */
 const uint32_t JumboMTU = 9000;
+/** @brief Standard Ethernet MTU in bytes (`1500`). */
 const uint32_t StdMTU   = 1500;
 
 // IPv4 Header = 20B, UDP Header = 8B
+/** @brief Combined IPv4 + UDP header size in bytes. */
 const uint32_t HdrSize = 20 + 8;
 
+/** @brief Maximum UDP payload for jumbo MTU (`9000 - 28 = 8972` bytes). */
 const uint32_t MaxJumboPayload = JumboMTU - HdrSize;
+/** @brief Maximum UDP payload for standard MTU (`1500 - 28 = 1472` bytes). */
 const uint32_t MaxStdPayload   = StdMTU - HdrSize;
 
-//! UDP Core
+/**
+ * @brief Shared UDP transport base for stream client/server endpoints.
+ *
+ * @details
+ * `Core` contains common socket and transport configuration used by UDP stream
+ * endpoints. It centralizes payload sizing (`jumbo` vs standard MTU), socket
+ * timeout configuration for transmit operations, receive-buffer sizing, and
+ * shared synchronization primitives used by derived classes.
+ *
+ * Concrete data-path behavior (background receive thread, stream callbacks, and
+ * socket lifecycle) is implemented by `udp::Client` and `udp::Server`.
+ */
 class Core {
   protected:
     std::shared_ptr<rogue::Logging> udpLog_;
 
-    //! Jumbo frames enables
+    // Jumbo-frame enable state.
     bool jumbo_;
 
-    //! Socket
+    // Socket descriptor.
     int32_t fd_;
 
-    //! Remote socket address
+    // Peer socket address.
     struct sockaddr_in remAddr_;
 
-    //! Timeout value
+    // Transmit select()/send timeout.
     struct timeval timeout_;
 
     std::thread* thread_;
     bool threadEn_;
 
-    //! mutex
+    // Synchronizes shared socket/address updates in derived classes.
     std::mutex udpMtx_;
 
   public:
-    //! Setup class in python
+    /** @brief Registers Python bindings for this class. */
     static void setup_python();
 
-    //! Creator
+    /**
+     * @brief Constructs shared UDP core state.
+     *
+     * @param jumbo `true` to use jumbo-payload sizing; `false` for standard MTU.
+     */
     explicit Core(bool jumbo);
 
-    //! Destructor
+    /** @brief Destroys the UDP core instance. */
     ~Core();
 
-    //! Stop the interface
+    /**
+     * @brief Stops the UDP interface.
+     *
+     * @details
+     * Derived classes provide socket/thread shutdown behavior.
+     */
     void stop();
 
-    //! Return max payload
+    /**
+     * @brief Returns maximum UDP payload size in bytes.
+     *
+     * @details
+     * Returns:
+     * - `8972` bytes when jumbo mode is enabled (`MTU 9000`).
+     * - `1472` bytes when jumbo mode is disabled (`MTU 1500`).
+     *
+     * @return Maximum payload size for configured MTU mode.
+     */
     uint32_t maxPayload();
 
-    //! Set number of expected incoming buffers
+    /**
+     * @brief Requests kernel UDP receive-buffer sizing by packet count.
+     *
+     * @details
+     * Computes `count * mtu` bytes and programs `SO_RCVBUF`. Returns `false`
+     * if the kernel effective receive buffer is smaller than requested.
+     *
+     * @param count Number of packets worth of RX buffering to request.
+     * @return `true` if effective buffer size meets/exceeds request.
+     */
     bool setRxBufferCount(uint32_t count);
 
-    //! Set timeout for frame transmits in microseconds
+    /**
+     * @brief Sets outbound transmit wait timeout.
+     *
+     * @details
+     * Timeout is specified in microseconds and converted to `timeval` for
+     * `select()`-based write readiness checks in derived endpoints.
+     *
+     * @param timeout Timeout in microseconds.
+     */
     void setTimeout(uint32_t timeout);
 };
 

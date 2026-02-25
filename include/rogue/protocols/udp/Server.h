@@ -36,39 +36,83 @@ namespace rogue {
 namespace protocols {
 namespace udp {
 
-//! PGP Card class
+/**
+ * @brief UDP stream endpoint that listens on a local UDP port.
+ *
+ * @details
+ * `Server` combines UDP transport (`udp::Core`) with Rogue stream interfaces:
+ * - `stream::Slave`: accepts outbound frames and transmits datagrams to the
+ *   most recently seen remote endpoint.
+ * - `stream::Master`: emits inbound datagrams as Rogue frames.
+ *
+ * A background receive thread listens on the bound UDP socket, forwards payloads
+ * as frames, and updates remote endpoint address when packets are received.
+ */
 class Server : public rogue::protocols::udp::Core,
                public rogue::interfaces::stream::Master,
                public rogue::interfaces::stream::Slave {
-    //! Local port number
+    // Bound local UDP port.
     uint16_t port_;
 
-    //! Local socket address
+    // Local bind socket address.
     struct sockaddr_in locAddr_;
 
-    //! Thread background
+    // Background receive thread entry point.
     void runThread(std::weak_ptr<int>);
 
   public:
-    //! Class creation
+    /**
+     * @brief Creates a UDP server endpoint.
+     *
+     * @param port Local UDP port to bind (0 requests dynamic port assignment).
+     * @param jumbo `true` for jumbo payload sizing; `false` for standard MTU.
+     * @return Shared pointer to the created server.
+     */
     static std::shared_ptr<rogue::protocols::udp::Server> create(uint16_t port, bool jumbo);
 
-    //! Setup class in python
+    /** @brief Registers Python bindings for this class. */
     static void setup_python();
 
-    //! Creator
+    /**
+     * @brief Constructs a UDP server endpoint.
+     *
+     * @details
+     * Creates and binds UDP socket, initializes frame pool sizing, and starts
+     * background receive thread. If `port == 0`, the OS-assigned port is queried
+     * and stored.
+     *
+     * @param port Local UDP port to bind (0 requests dynamic port assignment).
+     * @param jumbo `true` for jumbo payload sizing; `false` for standard MTU.
+     */
     Server(uint16_t port, bool jumbo);
 
-    //! Destructor
+    /** @brief Destroys the UDP server endpoint. */
     ~Server();
 
-    //! Stop the interface
+    /**
+     * @brief Stops the UDP server endpoint.
+     *
+     * @details
+     * Stops receive thread, joins thread, and closes socket.
+     */
     void stop();
 
-    //! Get port number
+    /**
+     * @brief Returns bound local UDP port number.
+     *
+     * @return Local UDP port.
+     */
     uint32_t getPort();
 
-    //! Accept a frame from master
+    /**
+     * @brief Accepts an outbound stream frame and transmits it as UDP datagrams.
+     *
+     * @details
+     * Datagrams are sent to the current remote endpoint address learned by the
+     * receive thread. Writes use `select()` with configured timeout.
+     *
+     * @param frame Outbound frame to transmit.
+     */
     void acceptFrame(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 };
 
