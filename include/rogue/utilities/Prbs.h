@@ -36,6 +36,14 @@ namespace utilities {
  * The engine can transmit deterministic pseudo-random patterns and verify
  * received patterns for bit-error testing. It supports one-shot frame
  * generation and optional background transmit mode.
+ *
+ * Threading model:
+ * - Receive checking executes synchronously in the thread calling
+ *   `acceptFrame()`.
+ * - Optional periodic transmit mode (`enable()`) runs in an internal TX thread
+ *   that repeatedly calls `genFrame()`.
+ * - Counters, LFSR state, and configuration shared between RX/TX paths are
+ *   protected by an internal mutex.
  */
 class Prbs : public rogue::interfaces::stream::Slave, public rogue::interfaces::stream::Master {
     //! Max size
@@ -181,11 +189,21 @@ class Prbs : public rogue::interfaces::stream::Slave, public rogue::interfaces::
 
     /**
      * @brief Enables periodic background frame generation.
+     *
+     * @details
+     * Starts an internal TX worker thread if one is not already running.
+     * Generated frames use the configured TX period from `setTxPeriod()`.
+     *
      * @param size Payload size in bytes for generated frames.
      */
     void enable(uint32_t size);
 
-    /** @brief Disables periodic background frame generation. */
+    /**
+     * @brief Disables periodic background frame generation.
+     *
+     * @details
+     * Stops and joins the internal TX worker thread started by `enable()`.
+     */
     void disable();
 
     /**
@@ -198,7 +216,7 @@ class Prbs : public rogue::interfaces::stream::Slave, public rogue::interfaces::
      * @brief Enables or disables RX checking.
      * @param state True to validate incoming PRBS frames.
      */
-    void setRxEnable(bool);
+    void setRxEnable(bool state);
 
     /**
      * @brief Returns RX error count.
@@ -240,7 +258,7 @@ class Prbs : public rogue::interfaces::stream::Slave, public rogue::interfaces::
      * @brief Sets background TX period.
      * @param txPeriod Period in microseconds between generated frames.
      */
-    void setTxPeriod(uint32_t);
+    void setTxPeriod(uint32_t txPeriod);
 
     /**
      * @brief Returns configured background TX period.

@@ -36,16 +36,27 @@ class Controller;
  *
  * @details
  * Bridges raw stream traffic to/from the packetizer controller.
+ *
+ * Threading model:
+ * - Inbound frames are handled synchronously by `acceptFrame()`, which forwards
+ *   each frame to `Controller::transportRx()`.
+ * - Outbound frames are produced by a dedicated background thread started in
+ *   `setController()`. That thread drains `Controller::transportTx()` and
+ *   forwards returned frames via `sendFrame()`.
+ *
+ * Lifetime contract:
+ * - `setController()` must be called before destruction so the TX queue thread
+ *   can be started/stopped against a valid controller.
  */
 class Transport : public rogue::interfaces::stream::Master, public rogue::interfaces::stream::Slave {
-    //! Core module
+    // Packetizer controller endpoint.
     std::shared_ptr<rogue::protocols::packetizer::Controller> cntl_;
 
-    // Transmission thread
+    // Outbound transport worker thread.
     std::thread* thread_;
     bool threadEn_;
 
-    //! Thread background
+    // Worker thread entry point.
     void runThread();
 
   public:
@@ -66,6 +77,11 @@ class Transport : public rogue::interfaces::stream::Master, public rogue::interf
 
     /**
      * @brief Attaches the packetizer controller.
+     *
+     * @details
+     * Stores the controller reference and starts the outbound worker thread
+     * that forwards controller-generated transport frames.
+     *
      * @param cntl Controller instance that handles packetizer protocol processing.
      */
     void setController(std::shared_ptr<rogue::protocols::packetizer::Controller> cntl);
