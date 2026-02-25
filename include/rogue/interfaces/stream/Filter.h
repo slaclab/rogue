@@ -30,13 +30,13 @@ namespace rogue {
 namespace interfaces {
 namespace stream {
 
-//! Stream Filter
-/** In some cases a Frame will have a non zero channel number. This can be the case
- * when reading data from a Data file using a StreamWReader object. This can also
- * occur when receiving data from a Batcher protocol Frame Splitter. The Filter allows
- * a Slave to be sure it only receives Frame data for a particular channel. The
- * Filter object has a configured channel number and a flag to determine if Frame
- * objects with a non-zero error field will be dropped.
+/**
+ * @brief Stream frame filter by channel and error state.
+ *
+ * @details
+ * Used when frames may carry non-zero channel numbers (for example from data-file
+ * readers or batcher splitters). The filter forwards only matching-channel frames
+ * and can optionally drop frames marked with errors.
  */
 class Filter : public rogue::interfaces::stream::Master, public rogue::interfaces::stream::Slave {
     std::shared_ptr<rogue::Logging> log_;
@@ -46,27 +46,38 @@ class Filter : public rogue::interfaces::stream::Master, public rogue::interface
     uint8_t channel_;
 
   public:
-    //! Create a Filter object and return as a FilterPtr
-    /** @param dropErrors Set to True to drop errored Frames
-     * @param channel Set channel number to allow through the filter.
-     * @return Filter object as a FilterPtr
+    /**
+     * @brief Creates a stream filter.
+     *
+     * @param dropErrors Set to `true` to drop frames with error flags.
+     * @param channel Channel number to allow through the filter.
+     * @return Shared pointer to the created filter.
      */
     static std::shared_ptr<rogue::interfaces::stream::Filter> create(bool dropErrors, uint8_t channel);
 
-    // Setup class for use in python
+    /** @brief Registers this type with Python bindings. */
     static void setup_python();
 
-    // Create a Filter object
+    /**
+     * @brief Constructs a stream filter.
+     *
+     * @param dropErrors Set to `true` to drop frames with error flags.
+     * @param channel Channel number to allow through the filter.
+     */
     Filter(bool dropErrors, uint8_t channel);
 
-    // Destroy the Filter
+    /** @brief Destroys the stream filter. */
     ~Filter();
 
-    // Receive frame from Master
+    /**
+     * @brief Receives a frame from upstream and applies filter rules.
+     *
+     * @param frame Frame to evaluate and potentially forward.
+     */
     void acceptFrame(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 };
 
-//! Alias for using shared pointer as FilterPtr
+/** @brief Shared pointer alias for `Filter`. */
 typedef std::shared_ptr<rogue::interfaces::stream::Filter> FilterPtr;
 }  // namespace stream
 }  // namespace interfaces

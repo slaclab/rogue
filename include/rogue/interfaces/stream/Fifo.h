@@ -31,19 +31,24 @@ namespace rogue {
 namespace interfaces {
 namespace stream {
 
-//! Stream Frame FIFO
-/** The stream Fifo object buffers Frame data as it is received from a
- * Master. It is then passed to the attached Slave objects in an independent
- * thread.
+/**
+ * @brief Stream frame FIFO.
  *
- * The Fifo can either store the original data or create a copy of the
- * data in a new Frame.
+ * @details
+ * Buffers incoming frames and forwards them to downstream slaves from a worker thread.
+ * For each accepted frame:
+ * - If `noCopy` is `true`, the original frame object is queued (no payload copy, no trim).
+ * - If `noCopy` is `false`, a new frame is allocated and payload bytes are copied.
+ * - In copy mode, `trimSize` can cap copied payload length.
  *
- * The copied data can be configured to be a fixed size to limit the amount of
- * data copied.
+ * Queue backpressure/drop behavior is controlled by `maxDepth`:
+ * - `maxDepth > 0`: once queue depth reaches `maxDepth`, new incoming frames are dropped.
+ * - `maxDepth == 0`: no busy/drop threshold is applied by this FIFO (queue can continue growing).
  *
- * The Fifo supports a maximum depth to be configured. After this depth is reached
- * new incoming Frame objects are dropped.
+ * Trim behavior:
+ * - `trimSize > 0` and `noCopy == false`: copied payload is limited to `min(payload, trimSize)`.
+ * - `trimSize == 0`: copied payload is not trimmed.
+ * - `noCopy == true`: `trimSize` is ignored.
  */
 class Fifo : public rogue::interfaces::stream::Master, public rogue::interfaces::stream::Slave {
     std::shared_ptr<rogue::Logging> log_;
@@ -67,38 +72,51 @@ class Fifo : public rogue::interfaces::stream::Master, public rogue::interfaces:
     void runThread();
 
   public:
-    //! Create a Fifo object and return as a FifoPtr
-    /** Exposed as rogue.interfaces.stream.Fifo() to Python
-     * @param maxDepth Set to a non-zero value to configured fixed size mode.
-     * @param trimSize Set to a non-zero value to limit the amount of data copied.
-     * @param noCopy Set to true to disable Frame copy
-     * @return Fifo object as a FifoPtr
+    /**
+     * @brief Creates a FIFO stream buffer.
+     *
+     * @details Exposed as `rogue.interfaces.stream.Fifo()` in Python.
+     *
+     * @param maxDepth Queue busy/drop threshold in frames. `0` disables threshold-based drops.
+     * @param trimSize Payload trim limit in copy mode. `0` disables trimming.
+     * @param noCopy Set to `true` to queue original frames; when `true`, `trimSize` is ignored.
+     * @return Shared pointer to the created FIFO.
      */
     static std::shared_ptr<rogue::interfaces::stream::Fifo> create(uint32_t maxDepth, uint32_t trimSize, bool noCopy);
 
-    // Setup class for use in python
+    /** @brief Registers this type with Python bindings. */
     static void setup_python();
 
-    // Create a Fifo object.
+    /**
+     * @brief Constructs a FIFO stream buffer.
+     *
+     * @param maxDepth Queue busy/drop threshold in frames. `0` disables threshold-based drops.
+     * @param trimSize Payload trim limit in copy mode. `0` disables trimming.
+     * @param noCopy Set to `true` to queue original frames; when `true`, `trimSize` is ignored.
+     */
     Fifo(uint32_t maxDepth, uint32_t trimSize, bool noCopy);
 
-    // Destroy the Fifo
+    /** @brief Destroys the FIFO and stops internal worker thread. */
     ~Fifo();
 
-    // Return the number of elements in the Fifo
+    /** @brief Returns current FIFO queue depth. */
     std::size_t size();
 
-    // Return the number of dropped frames
+    /** @brief Returns the total dropped-frame counter. */
     std::size_t dropCnt() const;
 
-    // Clear counters
+    /** @brief Clears FIFO counters (including dropped-frame count). */
     void clearCnt();
 
-    // Receive frame from Master
+    /**
+     * @brief Receives a frame from upstream and enqueues or drops it.
+     *
+     * @param frame Incoming frame.
+     */
     void acceptFrame(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 };
 
-//! Alias for using shared pointer as FifoPtr
+/** @brief Shared pointer alias for `Fifo`. */
 typedef std::shared_ptr<rogue::interfaces::stream::Fifo> FifoPtr;
 }  // namespace stream
 }  // namespace interfaces

@@ -174,7 +174,7 @@ class Slave : public rogue::interfaces::stream::Pool,
 
 #ifndef NO_PYTHON
 
-    //! Support << operator in python
+    /** @brief Supports `<<` operator usage from Python. */
     boost::python::object lshiftPy(boost::python::object p);
 
 #endif

@@ -33,8 +33,11 @@ namespace rogue {
 namespace interfaces {
 namespace stream {
 
-//! Stream TCP Bridge Core
-/** This class implements the core functionality of the TcpClient and TcpServer
+/**
+ * @brief Stream TCP bridge core implementation.
+ *
+ * @details
+ * This class implements the core functionality of the TcpClient and TcpServer
  * classes which implement a Rogue stream bridge over a TCP network. This core
  * can operation in either client or server mode. The TcpClient and TcpServer
  * classes are thin wrapper which define which mode flag to pass to this base
@@ -76,8 +79,11 @@ class TcpCore : public rogue::interfaces::stream::Master, public rogue::interfac
     std::mutex bridgeMtx_;
 
   public:
-    //! Create a TcpCore object and return as a TcpCorePtr
-    /**The creator takes an address, port and server mode flag. The passed
+    /**
+     * @brief Creates a TCP stream bridge core instance and return as TcpCorePtr.
+     *
+     * @details
+     * The creator takes an address, port and server mode flag. The passed
      * address can either be an IP address or hostname. When running in server
      * mode the address string defines which network interface the socket server
      * will listen on. A string of "*" results in all network interfaces being
@@ -85,34 +91,45 @@ class TcpCore : public rogue::interfaces::stream::Master, public rogue::interfac
      * base number of these two ports. A passed value of 8000 will result in both
      * 8000 and 8001 being used by this bridge.
      *
-     * Not exposed to Python
+     * Not exposed to Python.
+     *
      * @param addr Interface address for server, remote server address for client.
-     * @param port Base port number of use for connection.
-     * @param server Server flag. Set to True to run in server mode.
-     * @return TcpCore object as a TcpCorePtr
+     * @param port Base TCP port number.
+     * @param server Set to `true` to run in server mode.
+     * @return Shared pointer to the created bridge core.
      */
     static std::shared_ptr<rogue::interfaces::stream::TcpCore> create(const std::string& addr, uint16_t port, bool server);
 
-    // Setup class for use in python
+    /** @brief Registers this type with Python bindings. */
     static void setup_python();
 
-    // Create a TcpCore object
+    /**
+     * @brief Constructs a TCP stream bridge core.
+     *
+     * @param addr Local bind address in server mode, remote address in client mode.
+     * @param port Base TCP port number.
+     * @param server Set to `true` to run in server mode.
+     */
     TcpCore(const std::string& addr, uint16_t port, bool server);
 
-    // Destroy the TcpCore
+    /** @brief Destroys the bridge core and releases resources. */
     ~TcpCore();
 
-    // Close the connections
+    /** @brief Closes active bridge connections. */
     void close();
 
-    // Stop  the interface
+    /** @brief Stops the interface and worker thread. */
     void stop();
 
-    // Receive frame from Master
+    /**
+     * @brief Receives a frame from upstream and forwards over the TCP bridge.
+     *
+     * @param frame Incoming stream frame.
+     */
     void acceptFrame(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 };
 
-//! Alias for using shared pointer as TcpCorePtr
+/** @brief Shared pointer alias for `TcpCore`. */
 typedef std::shared_ptr<rogue::interfaces::stream::TcpCore> TcpCorePtr;
 
 }  // namespace stream
