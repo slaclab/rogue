@@ -32,10 +32,54 @@ namespace rogue {
 namespace protocols {
 namespace srp {
 
-//! SRP SrpV0
-/*
- * Serves as an interface between memory accesses and streams
- * carnying the SRP protocol.
+/**
+ * @brief SRP v0 bridge between Rogue memory transactions and stream frames.
+ *
+ * @details
+ * `SrpV0` sits between the memory interface (`memory::Slave`) and stream
+ * transport (`stream::Master`/`stream::Slave`). It serializes memory read/write
+ * transactions into SRP v0 request frames and decodes incoming SRP responses to
+ * complete transactions.
+ *
+ * SRP frames are stream transactions carried over a physical/link transport
+ * (for example DMA, TCP, or other Rogue stream backends) before arriving at an
+ * FPGA or ASIC endpoint that implements the SRP protocol for register access.
+ *
+ * Implementation behavior:
+ * - `doTransaction()` serializes each memory request into one SRPv0 frame and
+ *   transmits it immediately.
+ * - Non-posted transactions are registered in the base `memory::Slave`
+ *   in-flight transaction map (`addTransaction()`), keyed by transaction ID.
+ * - Multiple requests may be transmitted before any responses arrive, so
+ *   multiple transactions can be in flight concurrently.
+ * - `acceptFrame()` extracts the response ID and resolves it with
+ *   `getTransaction(id)`, so responses are matched by ID and may arrive out of
+ *   order without violating correctness.
+ *
+ * Threading/locking model:
+ * - In-flight map access is protected by the `memory::Slave` mutex.
+ * - Per-transaction payload/state access is protected by `TransactionLock`.
+ * - `doTransaction()` and `acceptFrame()` can be called from different runtime
+ *   contexts provided by the connected stream transport stack.
+ *
+ * Missing, late, or invalid responses:
+ * - Software wait timeout is enforced by the initiating `memory::Master`
+ *   transaction timeout (`Master::setTimeout()` in microseconds).
+ * - If no valid response arrives before timeout, the waiting side completes
+ *   with a timeout error.
+ * - If a late response arrives after timeout, it is treated as expired and
+ *   ignored.
+ * - If a response has unknown ID, malformed header/size, or hardware error
+ *   status in tail bits, the response is rejected. Hardware-status errors
+ *   complete the transaction with error immediately; malformed/unknown responses
+ *   typically leave the original transaction pending until software timeout.
+ *
+ * The class is typically connected in a bidirectional stream path where outgoing
+ * requests are emitted through the `stream::Master` side and incoming frames are
+ * received through `acceptFrame()`.
+ *
+ * Protocol reference:
+ * https://confluence.slac.stanford.edu/x/aRmVD
  */
 class SrpV0 : public rogue::interfaces::stream::Master,
               public rogue::interfaces::stream::Slave,
@@ -56,22 +100,42 @@ class SrpV0 : public rogue::interfaces::stream::Master,
                      bool tx);
 
   public:
-    //! Class creation
+    /**
+     * @brief Creates an SRP v0 interface instance.
+     * @return Shared pointer to the created `SrpV0`.
+     */
     static std::shared_ptr<rogue::protocols::srp::SrpV0> create();
 
-    //! Setup class in python
+    /** @brief Registers Python bindings for this class. */
     static void setup_python();
 
-    //! Creator
+    /** @brief Constructs an SRP v0 interface instance. */
     SrpV0();
 
-    //! Deconstructor
+    /** @brief Destroys the SRP v0 interface instance. */
     ~SrpV0();
 
-    //! Post a transaction. Master will call this method with the access attributes.
+    /**
+     * @brief Processes a memory transaction and emits SRP v0 request frame(s).
+     *
+     * @details
+     * Called by upstream memory masters. The transaction metadata and data payload
+     * are encoded into SRP v0 format and forwarded downstream through the stream
+     * master connection.
+     *
+     * @param tran Transaction to execute over SRP.
+     */
     void doTransaction(std::shared_ptr<rogue::interfaces::memory::Transaction> tran);
 
-    //! Accept a frame from master
+    /**
+     * @brief Accepts an incoming SRP v0 response frame.
+     *
+     * @details
+     * Decodes the frame, matches it to the corresponding outstanding transaction,
+     * and updates completion/error state.
+     *
+     * @param frame Received SRP stream frame.
+     */
     void acceptFrame(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 };
 
