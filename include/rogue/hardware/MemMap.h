@@ -34,18 +34,30 @@
 namespace rogue {
 namespace hardware {
 
-//! Raw Memory Map Class
-/** This class provides a bridge between the Rogue memory interface and
- * a standard Linux /dev/map interface.
+/**
+ * @brief Memory-slave bridge for direct `/dev/mem` mapped register access.
+ *
+ * @details
+ * `MemMap` maps a physical address range from Linux `/dev/mem` into user space
+ * and services Rogue memory transactions against that mapped region.
+ *
+ * Transaction flow:
+ * - `doTransaction()` enqueues requests from upstream memory masters.
+ * - A worker thread dequeues transactions and performs 32-bit word accesses.
+ * - Read/verify requests copy mapped values into transaction buffer.
+ * - Write/post requests copy transaction buffer values into mapped memory.
+ *
+ * This class is intended for environments where raw memory mapping is
+ * permitted and safe for the target platform.
  */
 class MemMap : public rogue::interfaces::memory::Slave {
-    //! MemMap file descriptor
+    // `/dev/mem` file descriptor.
     int32_t fd_;
 
-    //! Size
+    // Mapped region size in bytes.
     uint64_t size_;
 
-    //! Memory Mapped Pointer
+    // Base pointer of mapped memory region.
     volatile uint8_t* map_;
 
     // Logging
@@ -54,38 +66,57 @@ class MemMap : public rogue::interfaces::memory::Slave {
     std::thread* thread_;
     bool threadEn_;
 
-    //! Thread background
+    // Background worker thread entry point.
     void runThread();
 
     // Queue
     rogue::Queue<std::shared_ptr<rogue::interfaces::memory::Transaction>> queue_;
 
   public:
-    //! Class factory which returns a MemMapPtr to a newly created MemMap object
-    /** Exposed to Python as rogue.hardware.MemMap()
-     * @param base Base address to map
-     * @param size Size of address space to map
-     * @return MemMap pointer (MemMapPtr)
+    /**
+     * @brief Creates a raw memory-map bridge instance.
+     *
+     * @details
+     * Exposed to Python as `rogue.hardware.MemMap()`.
+     *
+     * @param base Physical base address to map.
+     * @param size Size of address space to map in bytes.
+     * @return Shared pointer to the created `MemMap`.
      */
     static std::shared_ptr<rogue::hardware::MemMap> create(uint64_t base, uint32_t size);
 
-    // Setup class for use in python
+    /** @brief Registers Python bindings for this class. */
     static void setup_python();
 
-    // Class Creator
+    /**
+     * @brief Constructs a raw memory-map bridge instance.
+     *
+     * @details
+     * Opens `/dev/mem`, maps the requested physical range, and starts worker
+     * thread for queued transaction processing.
+     *
+     * @param base Physical base address to map.
+     * @param size Size of address space to map in bytes.
+     */
     MemMap(uint64_t base, uint32_t size);
 
-    // Destructor
+    /** @brief Destroys the raw memory-map bridge instance. */
     ~MemMap();
 
-    // stop interface
+    /**
+     * @brief Stops worker thread, unmaps memory, and closes `/dev/mem`.
+     */
     void stop();
 
-    // Accept as transaction from the memory Master as defined in the Slave class.
+    /**
+     * @brief Queues a memory transaction for asynchronous mapped-memory access.
+     *
+     * @param tran Transaction received from upstream memory master.
+     */
     void doTransaction(std::shared_ptr<rogue::interfaces::memory::Transaction> tran);
 };
 
-//! Alias for using shared pointer as TcpClientPtr
+/** @brief Shared pointer alias for `MemMap`. */
 typedef std::shared_ptr<rogue::hardware::MemMap> MemMapPtr;
 
 }  // namespace hardware
