@@ -57,11 +57,21 @@ namespace fileio {
 class StreamWriterChannel;
 
 /**
- * @brief Stream writer coordination class.
+ * @brief Coordinates channelized frame capture into Rogue stream data files.
  *
  * @details
- * Coordinates channelized frame capture into a single file stream with
- * optional banked framing metadata.
+ * `StreamWriter` accepts frames through `StreamWriterChannel` instances and
+ * serializes them into a shared output file (or indexed file set when
+ * `setMaxSize()` is enabled).
+ *
+ * Default banked format:
+ * - 32-bit length word (bank payload length in bytes).
+ * - 32-bit header word: channel, frame error, and frame flags.
+ * - Raw frame payload bytes.
+ *
+ * Raw mode (`setRaw(true)`) bypasses bank headers and writes only payload
+ * bytes. This is useful for tools that expect a byte stream without Rogue
+ * framing metadata.
  */
 class StreamWriter : public rogue::EnableSharedFromThis<rogue::utilities::fileio::StreamWriter> {
     friend class StreamWriterChannel;
@@ -70,75 +80,75 @@ class StreamWriter : public rogue::EnableSharedFromThis<rogue::utilities::fileio
     // Log
     std::shared_ptr<rogue::Logging> log_;
 
-    //! File descriptor
+    // Active output file descriptor.
     int32_t fd_;
 
-    //! Base file name
+    // Base output file path.
     std::string baseName_;
 
-    //! Current file index
+    // True when writer is currently open for output.
     bool isOpen_;
 
-    //! Current file index
+    // Current file index for rollover mode.
     uint32_t fdIdx_;
 
-    //! Size limit for auto close and re-open when limit is exceeded, zero to disable
+    // Auto-rollover size limit in bytes. Zero disables rollover.
     uint64_t sizeLimit_;
 
-    //! Current file size in bytes
+    // Bytes written to current file.
     uint64_t currSize_;
 
-    //! Total file size in bytes
+    // Total bytes written across all files since open().
     uint64_t totSize_;
 
-    //! Buffering size to cache file writes, zero if disabled
+    // Write-buffer size in bytes. Zero disables buffering.
     uint32_t buffSize_;
 
-    //! Write buffer
+    // Write buffer storage.
     uint8_t* buffer_;
 
-    //! Write buffer count
+    // Number of bytes currently staged in write buffer.
     uint32_t currBuffer_;
 
-    //! Drop errors flag
+    // Drop frames with non-zero error field when true.
     bool dropErrors_;
 
-    //! File access lock
+    // Lock for writer state and counters.
     std::mutex mtx_;
 
-    //! Total number of frames in file
+    // Number of frames written since open().
     uint32_t frameCount_;
 
-    //! Bytes recorded in the last one second window
+    // Byte total in sliding one-second bandwidth window.
     uint64_t bandwidthBytes_;
 
-    //! Time tagged byte counts for bandwidth calculation
+    // Time-tagged write samples for bandwidth calculation.
     std::deque<std::pair<std::chrono::steady_clock::time_point, uint32_t>> bandwidthHistory_;
 
-    //! Internal method for file writing
+    // Writes bytes with optional staging buffer.
     void intWrite(void* data, uint32_t size);
 
-    //! Check file size for next write
+    // Applies max-size rollover checks before write.
     void checkSize(uint32_t size);
 
-    //! Flush file
+    // Flushes staged bytes to file descriptor.
     void flush();
 
-    //! Update bandwidth accounting
+    // Adds a write sample to bandwidth statistics.
     void recordBandwidth(uint32_t size);
 
-    //! Remove stale bandwidth samples
+    // Removes samples older than one second.
     void pruneBandwidth(std::chrono::steady_clock::time_point now);
 
-    //! Write raw data
+    // Writes payload-only format when true.
     bool raw_;
 
-    //! condition
+    // Condition variable for frame-count waiters.
     std::condition_variable cond_;
 
     std::map<uint32_t, std::shared_ptr<rogue::utilities::fileio::StreamWriterChannel>> channelMap_;
 
-    //! Write data to file. Called from StreamWriterChannel
+    // Writes one frame to file. Called by StreamWriterChannel.
     virtual void writeFile(uint8_t channel, std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
   public:
@@ -159,6 +169,12 @@ class StreamWriter : public rogue::EnableSharedFromThis<rogue::utilities::fileio
 
     /**
      * @brief Opens a data file.
+     *
+     * @details
+     * Resets counters and bandwidth history. If a max size is configured, the
+     * first opened file is `<file>.1` and rollover continues with `.2`, `.3`,
+     * etc.
+     *
      * @param file Output file path.
      */
     void open(std::string file);
@@ -174,6 +190,11 @@ class StreamWriter : public rogue::EnableSharedFromThis<rogue::utilities::fileio
 
     /**
      * @brief Sets raw output mode.
+     *
+     * @details
+     * - `false` (default): write banked Rogue format with length/header words.
+     * - `true`: write frame payload bytes only.
+     *
      * @param raw True to write raw frame payload only.
      */
     void setRaw(bool raw);
@@ -186,24 +207,43 @@ class StreamWriter : public rogue::EnableSharedFromThis<rogue::utilities::fileio
 
     /**
      * @brief Sets write buffering size.
+     *
+     * @details
+     * Changing size flushes pending data and reallocates internal buffer.
+     * A value of `0` disables staging and writes directly to the file.
+     *
      * @param size Buffer size in bytes, 0 disables buffering.
      */
     void setBufferSize(uint32_t size);
 
     /**
      * @brief Sets automatic file rollover size.
+     *
+     * @details
+     * When non-zero, writes are split into indexed files (`.1`, `.2`, ...),
+     * and rollover occurs before a write that would exceed the limit.
+     *
      * @param size Maximum file size in bytes, 0 for unlimited.
      */
     void setMaxSize(uint64_t size);
 
     /**
      * @brief Configures whether errored frames are dropped.
+     *
+     * @details
+     * When enabled, frames with non-zero `frame->getError()` are skipped.
+     *
      * @param drop True to drop errored frames instead of writing them.
      */
     void setDropErrors(bool drop);
 
     /**
      * @brief Gets or creates a channel writer endpoint.
+     *
+     * @details
+     * The returned `StreamWriterChannel` is a `stream::Slave` that routes
+     * frames into this writer with the specified channel ID.
+     *
      * @param channel Channel ID.
      * @return Channel writer object bound to \p channel.
      */
@@ -236,7 +276,7 @@ class StreamWriter : public rogue::EnableSharedFromThis<rogue::utilities::fileio
     /**
      * @brief Blocks until a target frame count is reached or timeout expires.
      * @param count Target frame count threshold.
-     * @param timeout Timeout in microseconds.
+     * @param timeout Timeout in microseconds. `0` waits indefinitely.
      * @return True if threshold reached before timeout.
      */
     bool waitFrameCount(uint32_t count, uint64_t timeout);

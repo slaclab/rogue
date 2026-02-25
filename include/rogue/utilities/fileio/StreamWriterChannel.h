@@ -33,48 +33,89 @@ namespace fileio {
 
 class StreamWriter;
 
-//! Stream writer central class
+/**
+ * @brief Stream sink that writes incoming frames into a tagged writer channel.
+ *
+ * @details
+ * `StreamWriterChannel` is a `stream::Slave` front end for `StreamWriter`.
+ * Each instance is bound to a channel/tag value used in the output file bank
+ * header. If constructed with `channel == 0`, the channel is taken from each
+ * incoming frame (`frame->getChannel()`); otherwise the configured channel is
+ * forced for all writes.
+ *
+ * The class also tracks how many frames have been accepted so callers can
+ * synchronize on data capture progress with `waitFrameCount()`.
+ */
 class StreamWriterChannel : public rogue::interfaces::stream::Slave {
-    //! Associated Stream Writer class
+    // Associated stream writer instance.
     std::shared_ptr<rogue::utilities::fileio::StreamWriter> writer_;
 
-    //! Channel information
+    // Fixed output channel, or 0 to use incoming frame channel.
     uint8_t channel_;
 
-    //! Number of frames received by channel
+    // Number of frames accepted by this channel.
     uint32_t frameCount_;
 
-    //! Lock for frameCount_
+    // Lock protecting frame counter and wait condition.
     std::mutex mtx_;
 
-    //! Condition variable for frameCount_ updates
+    // Condition signaled when frameCount_ changes.
     std::condition_variable cond_;
 
   public:
-    //! Class creation
+    /**
+     * @brief Creates a stream writer channel instance.
+     * @param writer Destination writer used to serialize frames.
+     * @param channel Output channel/tag. Use `0` to forward per-frame channel.
+     * @return Shared pointer to the created channel.
+     */
     static std::shared_ptr<rogue::utilities::fileio::StreamWriterChannel> create(
         std::shared_ptr<rogue::utilities::fileio::StreamWriter> writer,
         uint8_t channel);
 
-    //! Setup class in python
+    /** @brief Registers Python bindings for this class. */
     static void setup_python();
 
-    //! Creator
+    /**
+     * @brief Constructs a stream writer channel.
+     * @param writer Destination writer used to serialize frames.
+     * @param channel Output channel/tag. Use `0` to forward per-frame channel.
+     */
     StreamWriterChannel(std::shared_ptr<rogue::utilities::fileio::StreamWriter> writer, uint8_t channel);
 
-    //! Deconstructor
+    /** @brief Destroys stream writer channel. */
     ~StreamWriterChannel();
 
-    //! Accept a frame from master
+    /**
+     * @brief Accepts and writes one incoming frame.
+     *
+     * @details
+     * The method writes the frame through `StreamWriter`, increments the local
+     * accepted-frame counter, and wakes waiters in `waitFrameCount()`.
+     *
+     * @param frame Input frame to write.
+     */
     void acceptFrame(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
-    //! Get number of frames that have been accepted
+    /**
+     * @brief Returns the number of accepted frames.
+     * @return Accepted frame count.
+     */
     uint32_t getFrameCount();
 
-    //! Set the frame count to a specific value
+    /**
+     * @brief Sets the accepted-frame counter to a specific value.
+     * @param count New frame counter value.
+     */
     void setFrameCount(uint32_t count);
 
-    //! Block until a number of frames have been received
+    /**
+     * @brief Waits until at least `count` frames have been accepted.
+     *
+     * @param count Target accepted-frame count.
+     * @param timeout Timeout in microseconds. `0` waits indefinitely.
+     * @return `true` if `count` was reached before timeout, else `false`.
+     */
     bool waitFrameCount(uint32_t count, uint64_t timeout);
 };
 
