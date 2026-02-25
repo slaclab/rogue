@@ -31,11 +31,16 @@ namespace stream {
 class Frame;
 class Buffer;
 
-//! Frame iterator
-/** The FrameIterator class implements a C++ standard random access iterator
- * with a base type of uint8_t.
+/**
+ * @brief Random-access byte iterator across a `Frame` payload.
  *
- * This class is not available in Python.
+ * @details
+ * `FrameIterator` provides STL-style random-access semantics over frame payload
+ * bytes, even when payload storage spans multiple underlying buffers. It hides
+ * buffer boundary transitions and allows efficient copy operations with helper
+ * APIs (`toFrame`, `fromFrame`, `copyFrame`).
+ *
+ * This class is C++ only and is not exposed directly to Python.
  */
 class FrameIterator : public std::iterator<std::random_access_iterator_tag, uint8_t> {
     friend class Frame;
@@ -75,167 +80,271 @@ class FrameIterator : public std::iterator<std::random_access_iterator_tag, uint
     inline void decrement(int32_t diff);
 
   public:
-    //! Create an empty iterator for later assignment.
+    /** @brief Constructs an empty iterator for later assignment. */
     FrameIterator();
 
-    //! Copy assignment
-    /** Copy the state of another iterator into the current iterator.
+    /**
+     * @brief Copy-assigns iterator state.
+     *
+     * @param rhs Source iterator.
+     * @return Copy of the assigned iterator.
      */
     const rogue::interfaces::stream::FrameIterator operator=(const rogue::interfaces::stream::FrameIterator& rhs);
 
-    //! Get iterator marking the end of the current Buffer
-    /** The returned iterator is an end marker for the current buffer, and
+    /**
+     * @brief Returns iterator marking the end of the current buffer segment.
+     *
+     * @details
+     * The returned iterator is an end marker for the current buffer, and
      * possibly the end of the frame. If the current Buffer is followed by
      * another buffer containing valid data for a Read or available space for a write,
      * the returned iterator will mark the start of the next Buffer. Having this
      * iterator is useful when iterating through contiguous memory blocks for more
      * efficient data copying when using std::copy().
-     * @return Iterator marking the end of the current Buffer
+     *
+     * @return Iterator marking the end of the current buffer span.
      */
     rogue::interfaces::stream::FrameIterator endBuffer();
 
-    //! Get remaining bytes in current buffer
-    /** Similar to the endBuffer() call, this method returns the remaining bytes
-     * in the current Buffer.
-     * @return Remaining bytes in the current Buffer.
+    /**
+     * @brief Returns remaining bytes in the current buffer span.
+     *
+     * @details
+     * Similar to `endBuffer()`, this returns remaining bytes in the current
+     * underlying buffer region without crossing to the next one.
+     *
+     * @return Remaining bytes in the current buffer.
      */
     uint32_t remBuffer();
 
     //! De-reference
-    /** This allows data at the current iterator position to be accessed
+    /**
+     * @brief Dereferences iterator to current byte.
+     *
+     * @details
+     * This allows data at the current iterator position to be accessed
      * using a *it de-reference
+     *
+     * @return Reference to current byte.
      */
     uint8_t& operator*() const;
 
     // uint8_t * operator ->() const;
 
-    //! Return uint8_t pointer to current position
     /**
-     * @return uint8_t pointer to current position
+     * @brief Returns pointer to byte at current iterator position.
+     * @return Pointer to current byte location.
      */
     uint8_t* ptr() const;
 
-    //! De-reference by index
-    /** Returns the data value at the passed relative offset
-     * @param offset Relative offset to access
-     * @return Data value at passed offset
+    /**
+     * @brief Returns byte value at relative offset from current position.
+     *
+     * @param offset Relative offset to access.
+     * @return Data byte at passed offset.
      */
-    uint8_t operator[](const uint32_t) const;
+    uint8_t operator[](const uint32_t offset) const;
 
     //! Pre-increment the iterator position
-    /** Increment the current iterator position by a single location
+    /**
+     * @brief Prefix-increments iterator by one byte.
+     *
+     * @details
+     * Increment the current iterator position by a single location
      * and return a reference to the current iterator.
+     *
      * @return Reference to iterator at the new position.
      */
     const rogue::interfaces::stream::FrameIterator& operator++();
 
-    //! Post-increment the iterator position
-    /** Increment the current iterator position by a single location
+    //! Post-increment the iterator position.
+    /**
+     * @brief Postfix-increments iterator by one byte.
+     *
+     * @details
+     * Increment the current iterator position by a single location
      * and return a reference to the previous iterator position. This
      * results in a copy of the iterator being created before the increment.
+     *
      * @return Reference to iterator at the old position.
      */
     rogue::interfaces::stream::FrameIterator operator++(int);
 
     //! Pre-decrement the iterator position
-    /** Decrement the current iterator position by a single location
+    /**
+     * @brief Prefix-decrements iterator by one byte.
+     *
+     * @details
+     * Decrement the current iterator position by a single location
      * and return a reference to the current iterator.
+     *
      * @return Reference to iterator at the new position.
      */
     const rogue::interfaces::stream::FrameIterator& operator--();
 
-    //! Post-decrement the iterator position
-    /** Decrement the current iterator position by a single location
+    //! Post-decrement the iterator position.
+    /**
+     * @brief Postfix-decrements iterator by one byte.
+     *
+     * @details
+     * Decrement the current iterator position by a single location
      * and return a reference to the previous iterator position. This
      * results in a copy of the iterator being created before the decrement.
+     *
      * @return Reference to iterator at the old position.
      */
     rogue::interfaces::stream::FrameIterator operator--(int);
 
-    //! Not Equal
-    /** Compare this iterator to another iterator and return True if they are at
+    //! Not Equal.
+    /**
+     * @brief Compares two iterators for inequality.
+     *
+     * @details
+     * Compare this iterator to another iterator and return True if they are at
      * different positions.
+     *
+     * @param other Iterator to compare against.
      * @return True if the two iterators are not equal
      */
     bool operator!=(const rogue::interfaces::stream::FrameIterator& other) const;
 
-    //! Equal
-    /** Compare this iterator to another iterator and return True if they are
+    //! Equal.
+    /**
+     * @brief Compares two iterators for equality.
+     *
+     * @details
+     * Compare this iterator to another iterator and return True if they are
      * reference the same position within the Frame.
+     *
+     * @param other Iterator to compare against.
      * @return True if the two iterators are equal
      */
     bool operator==(const rogue::interfaces::stream::FrameIterator& other) const;
 
-    //! Less than
-    /** Compare this iterator to another iterator and return True if the local
+    //! Less than.
+    /**
+     * @brief Returns whether this iterator is before another iterator.
+     *
+     * @details
+     * Compare this iterator to another iterator and return True if the local
      * iterator (left of <) is less than the iterator being compare against.
+     *
+     * @param other Iterator to compare against.
      * @return True if the left iterator is less than the right.
      */
     bool operator<(const rogue::interfaces::stream::FrameIterator& other) const;
 
-    //! Greater than
-    /** Compare this iterator to another iterator and return True if the local
+    //! Greater than.
+    /**
+     * @brief Returns whether this iterator is after another iterator.
+     *
+     * @details
+     * Compare this iterator to another iterator and return True if the local
      * iterator (left of >) is greater than the iterator being compare against.
+     *
+     * @param other Iterator to compare against.
      * @return True if the left iterator is greater than the right.
      */
     bool operator>(const rogue::interfaces::stream::FrameIterator& other) const;
 
-    //! Less than or equal to
-    /** Compare this iterator to another iterator and return True if the local
+    //! Less than or equal to.
+    /**
+     * @brief Returns whether this iterator is before or equal to another iterator.
+     *
+     * @details
+     * Compare this iterator to another iterator and return True if the local
      * iterator (left of <=) is less than or equal to the iterator being compare against.
+     *
+     * @param other Iterator to compare against.
      * @return True if the left iterator is less than or equal to the right.
      */
     bool operator<=(const rogue::interfaces::stream::FrameIterator& other) const;
 
-    //! Greater than or equal to
-    /** Compare this iterator to another iterator and return True if the local
+    //! Greater than or equal to.
+    /**
+     * @brief Returns whether this iterator is after or equal to another iterator.
+     *
+     * @details
+     * Compare this iterator to another iterator and return True if the local
      * iterator (left of >=) is greater than or equal to the iterator being compare against.
+     *
+     * @param other Iterator to compare against.
      * @return True if the left iterator is greater than or equal to the right.
      */
     bool operator>=(const rogue::interfaces::stream::FrameIterator& other) const;
 
-    //! Increment by value
-    /** Create a new iterator and increment its position by the passed value.
+    //! Increment by value.
+    /**
+     * @brief Returns a new iterator offset forward by `add`.
+     *
+     * @details
+     * Create a new iterator and increment its position by the passed value.
+     *
      * @param add Positive or negative value to increment the current position by.
      * @return New iterator at the new position
      */
     rogue::interfaces::stream::FrameIterator operator+(const int32_t add) const;
 
-    //! Decrement by value
-    /** Create a new iterator and decrement its position by the passed value.
+    //! Decrement by value.
+    /**
+     * @brief Returns a new iterator offset backward by `sub`.
+     *
+     * @details
+     * Create a new iterator and decrement its position by the passed value.
+     *
      * @param sub Positive or negative value to decrement the current position by.
      * @return New iterator at the new position
      */
     rogue::interfaces::stream::FrameIterator operator-(const int32_t sub) const;
 
-    //! Subtract incrementers
-    /** Return the difference between the current incrementer position (left of -) and
+    //! Subtract incrementers.
+    /**
+     * @brief Returns byte-distance between two iterators.
+     *
+     * @details
+     * Return the difference between the current incrementer position (left of -) and
      * the compared incrementer position.
+     *
+     * @param other Iterator to compare against.
      * @return Different of the two positions as a int32_t
      */
     int32_t operator-(const rogue::interfaces::stream::FrameIterator& other) const;
 
     //! Increment by value
-    /** Increment the current iterator by the passed value
+    /**
+     * @brief In-place increments iterator by `add`.
+     *
+     * @details
+     * Increment the current iterator by the passed value.
+     *
      * @param add Positive or negative value to increment the current position by.
      * @return Reference to current iterator at the new position
      */
     rogue::interfaces::stream::FrameIterator& operator+=(const int32_t add);
 
     //! Decrement by value
-    /** Decrement the current iterator by the passed value
+    /**
+     * @brief In-place decrements iterator by `sub`.
+     *
+     * @details
+     * Decrement the current iterator by the passed value.
+     *
      * @param sub Positive or negative value to decrement the current position by.
      * @return Reference to current iterator at the new position
      */
     rogue::interfaces::stream::FrameIterator& operator-=(const int32_t sub);
 };
 
-//! Inline helper function to copy values to a frame iterator
-/** This helper function copies from the passed data pointer into the
+/**
+ * @brief Copies bytes from a source pointer into a frame iterator.
+ *
+ * @details
+ * This helper function copies from the passed data pointer into the
  * Frame at the iterator position. The iterator is incremented by the copy size.
- * @param iter FrameIterator at position to copy the data to
- * @param size The number of bytes to copy
- * @param src Pointer to data source
+ *
+ * @param iter FrameIterator at position to copy the data to.
+ * @param size Number of bytes to copy.
+ * @param src Pointer to source data.
  */
 static inline void toFrame(rogue::interfaces::stream::FrameIterator& iter, uint32_t size, void* src) {
     uint8_t* ptr = reinterpret_cast<uint8_t*>(src);
@@ -250,12 +359,16 @@ static inline void toFrame(rogue::interfaces::stream::FrameIterator& iter, uint3
     } while (size > 0 && csize > 0);
 }
 
-//! Inline helper function to copy values from a frame iterator
-/** This helper function copies data Frame at the iterator location
+/**
+ * @brief Copies bytes from a frame iterator to a destination pointer.
+ *
+ * @details
+ * This helper function copies data from the frame at the iterator location
  * into the passed data pointer. The iterator is updated by byte copy size.
- * @param iter FrameIterator at position to copy the data from
- * @param size The number of bytes to copy
- * @param dst Pointer to data destination
+ *
+ * @param iter FrameIterator at position to copy the data from.
+ * @param size Number of bytes to copy.
+ * @param dst Pointer to destination data.
  */
 static inline void fromFrame(rogue::interfaces::stream::FrameIterator& iter, uint32_t size, void* dst) {
     uint8_t* ptr = reinterpret_cast<uint8_t*>(dst);
@@ -270,13 +383,17 @@ static inline void fromFrame(rogue::interfaces::stream::FrameIterator& iter, uin
     } while (size > 0 && csize > 0);
 }
 
-//! Inline helper function to copy frame data between frames
-/** This helper function copies data from the source Frame at the iterator
+/**
+ * @brief Copies bytes between frame iterators.
+ *
+ * @details
+ * This helper function copies data from the source frame at the iterator
  * location into the dest frame at the iterator location. Both iterators are
  * updated by byte copy size.
- * @param srcIter FrameIterator at position to copy the data from
- * @param size The number of bytes to copy
- * @param dstIter FrameIterator at position to copy the data to
+ *
+ * @param srcIter FrameIterator at position to copy the data from.
+ * @param size Number of bytes to copy.
+ * @param dstIter FrameIterator at position to copy the data to.
  */
 static inline void copyFrame(rogue::interfaces::stream::FrameIterator& srcIter,
                              uint32_t size,
