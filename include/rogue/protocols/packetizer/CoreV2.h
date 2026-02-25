@@ -33,8 +33,10 @@ class ControllerV2;
 
 /**
  * @brief Packetizer v2 core wiring object.
+ *
+ * @details
  * Owns and connects transport, v2 controller, and per-destination application
- *  endpoints for the packetizer v2 stack.
+ * endpoints for the packetizer v2 stack.
  */
 class CoreV2 {
     //! Transport module
@@ -47,40 +49,51 @@ class CoreV2 {
     std::shared_ptr<rogue::protocols::packetizer::ControllerV2> cntl_;
 
   public:
-    //! Class creation
+    /**
+     * @brief Creates a packetizer v2 core.
+     * @param enIbCrc Enable inbound CRC checking.
+     * @param enObCrc Enable outbound CRC generation.
+     * @param enSsi Enable SSI framing behavior.
+     * @return Shared pointer to the created packetizer v2 core.
+     */
     static std::shared_ptr<rogue::protocols::packetizer::CoreV2> create(bool enIbCrc, bool enObCrc, bool enSsi);
 
-    //! Setup class in python
+    /** @brief Registers Python bindings for this class. */
     static void setup_python();
 
-    //! Creator
+    /**
+     * @brief Constructs a packetizer v2 core.
+     * @param enIbCrc Enable inbound CRC checking.
+     * @param enObCrc Enable outbound CRC generation.
+     * @param enSsi Enable SSI framing behavior.
+     */
     CoreV2(bool enIbCrc, bool enObCrc, bool enSsi);
 
+    /** @brief Destroys the packetizer v2 core. */
+    ~CoreV2();
+
     /**
-     * Destroy the packetizer v2 core. */
-     *     ~CoreV2();
-     *
-     *     /** Return the transport-facing endpoint.
+     * @brief Returns the transport-facing endpoint.
      * @return Shared transport interface.
      */
     std::shared_ptr<rogue::protocols::packetizer::Transport> transport();
 
     /**
-     * Return an application endpoint by destination ID.
-     * @param[in] dest Destination channel ID.
-     *  @return Shared application endpoint.
+     * @brief Returns an application endpoint by destination ID.
+     * @param dest Destination channel ID.
+     * @return Shared application endpoint.
      */
     std::shared_ptr<rogue::protocols::packetizer::Application> application(uint8_t dest);
 
     /**
-     * Return total dropped-frame count reported by the controller.
+     * @brief Returns total dropped-frame count reported by the controller.
      * @return Number of dropped frames.
      */
     uint32_t getDropCount();
 
     /**
-     * Set transmit timeout for internal controller operations.
-     * @param[in] timeout Timeout in microseconds.
+     * @brief Sets transmit timeout for internal controller operations.
+     * @param timeout Timeout in microseconds.
      */
     void setTimeout(uint32_t timeout);
 };

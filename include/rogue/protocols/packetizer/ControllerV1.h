@@ -37,15 +37,21 @@ class Application;
 class Transport;
 class Header;
 
-/** Packetizer controller implementation for protocol v1. */
+/**
+ * @brief Packetizer controller implementation for protocol v1.
+ *
+ * @details
+ * Implements packetizer v1 frame parsing and assembly between the transport
+ * endpoint and per-destination application endpoints.
+ */
 class ControllerV1 : public Controller, public rogue::EnableSharedFromThis<rogue::protocols::packetizer::ControllerV1> {
   public:
     /**
-     * Create a packetizer v1 controller.
-     * @param[in] enSsi Enable SSI framing behavior.
-     *  @param[in] tran Transport endpoint attached to this controller.
-     *  @param[in] app Pointer to array of application endpoints indexed by destination.
-     *  @return Shared pointer to a new controller instance.
+     * @brief Creates a packetizer v1 controller.
+     * @param enSsi Enable SSI framing behavior.
+     * @param tran Transport endpoint attached to this controller.
+     * @param app Pointer to array of application endpoints indexed by destination.
+     * @return Shared pointer to a new controller instance.
      */
     static std::shared_ptr<rogue::protocols::packetizer::ControllerV1> create(
         bool enSsi,
@@ -53,25 +59,28 @@ class ControllerV1 : public Controller, public rogue::EnableSharedFromThis<rogue
         std::shared_ptr<rogue::protocols::packetizer::Application>* app);
 
     /**
-     * Construct a packetizer v1 controller.
-     * @param[in] enSsi Enable SSI framing behavior.
-     *  @param[in] tran Transport endpoint attached to this controller.
-     *  @param[in] app Pointer to array of application endpoints indexed by destination.
+     * @brief Constructs a packetizer v1 controller.
+     * @param enSsi Enable SSI framing behavior.
+     * @param tran Transport endpoint attached to this controller.
+     * @param app Pointer to array of application endpoints indexed by destination.
      */
     ControllerV1(bool enSsi,
                  std::shared_ptr<rogue::protocols::packetizer::Transport> tran,
                  std::shared_ptr<rogue::protocols::packetizer::Application>* app);
 
-    //! Destructor
+    /** @brief Destroys the controller instance. */
     ~ControllerV1();
 
-    //! Frame received at transport interface
+    /**
+     * @brief Processes a frame received at the transport interface.
+     * @param frame Transport frame to decode and route.
+     */
     void transportRx(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
     /**
-     * Process a frame received from one application endpoint.
-     * @param[in] frame Application frame to packetize.
-     *  @param[in] id Application/destination identifier.
+     * @brief Processes a frame received from one application endpoint.
+     * @param frame Application frame to packetize.
+     * @param id Application/destination identifier.
      */
     void applicationRx(std::shared_ptr<rogue::interfaces::stream::Frame> frame, uint8_t id);
 };

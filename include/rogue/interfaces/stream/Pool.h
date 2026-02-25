@@ -34,8 +34,11 @@ namespace stream {
 class Frame;
 class Buffer;
 
-//! Stream pool class
-/** The stream Pool class is responsible for allocating and garbage collecting Frame
+/**
+ * @brief Stream pool class.
+ *
+ * @details
+ * The stream Pool class is responsible for allocating and garbage collecting Frame
  * objects and the Buffer objects they contain. The default mode is to allocate a
  * Frame with a single Buffer of the requested sized. Alternatively the Pool class
  * can operate in fixed buffer size mode. In this mode Buffer objects of a fixed
@@ -78,8 +81,11 @@ class Pool : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Pool>
     // Destroy the object
     virtual ~Pool();
 
-    //! Get allocated memory
-    /** Return the total bytes currently allocated. This value is incremented
+    /**
+     * @brief Returns total currently allocated bytes.
+     *
+     * @details
+     * This value is incremented
      * as buffers are allocated and decremented as buffers are freed.
      *
      * Exposed as getAllocBytes() to Python
@@ -87,8 +93,11 @@ class Pool : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Pool>
      */
     uint32_t getAllocBytes();
 
-    //! Get allocated buffer count
-    /** Return the total number of buffers currently allocated. This value is incremented
+    /**
+     * @brief Returns total currently allocated buffer count.
+     *
+     * @details
+     * This value is incremented
      * as buffers are allocated and decremented as buffers are freed.
      *
      * Exposed as getAllocCount() to Python
@@ -97,18 +106,22 @@ class Pool : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Pool>
     uint32_t getAllocCount();
 
     /**
-     * Service a frame allocation request from a master.
+     * @brief Services a frame allocation request from a master.
+     *
+     * @details
      * Called by Master::reqFrame() to allocate a frame and one or more buffers.
      *
-     * @param[in] size Minimum requested payload size in bytes.
-     * @param[in] zeroCopyEn True to allow zero-copy buffers when supported.
+     * @param size Minimum requested payload size in bytes.
+     * @param zeroCopyEn True to allow zero-copy buffers when supported.
      * @return Newly allocated frame.
      */
     virtual std::shared_ptr<rogue::interfaces::stream::Frame> acceptReq(uint32_t size, bool zeroCopyEn);
 
     /**
-     * Method called to return Buffer data */
-     *     /* This method is called by the Buffer desctructor in order to free
+     * @brief Returns buffer data to the allocator.
+     *
+     * @details
+     * This method is called by the Buffer destructor in order to free
      * the associated Buffer memory. May be overridden by a subclass to
      * change the way the buffer data is returned.
      *
@@ -121,8 +134,11 @@ class Pool : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Pool>
     // Setup class for use in python
     static void setup_python();
 
-    //! Set fixed size mode
-    /** This method puts the allocator into fixed size mode.
+    /**
+     * @brief Sets fixed-size mode.
+     *
+     * @details
+     * This method puts the allocator into fixed size mode.
      *
      * Exposed as setFixedSize() to Python
      * @param size Fixed size value.
@@ -139,11 +155,10 @@ class Pool : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Pool>
     uint32_t getFixedSize();
 
     /**
-     * Set buffer pool size
-     * Set the buffer pool size.
+     * @brief Sets buffer pool size.
      *
      * Exposed as setPoolSize() to Python
-     * @param[in] size Number of entries to keep in the pool
+     * @param size Number of entries to keep in the pool.
      */
     void setPoolSize(uint32_t size);
 
@@ -174,8 +189,11 @@ class Pool : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Pool>
      */
     std::shared_ptr<rogue::interfaces::stream::Buffer> allocBuffer(uint32_t size, uint32_t* total);
 
-    //! Create a Buffer with passed data block
-    /** This method is used to create a Buffer with a pre-allocated block of
+    /**
+     * @brief Creates a Buffer with a pre-allocated data block.
+     *
+     * @details
+     * This method is used to create a Buffer with a pre-allocated block of
      * memory. This can be used when the block of memory is allocated by a
      * hardware DMA driver. This method is protected to allow it to be called
      * by a sub-class of Pool.
@@ -192,8 +210,11 @@ class Pool : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Pool>
                                                                     uint32_t size,
                                                                     uint32_t alloc);
 
-    //! Decrement Allocation counter
-    /** Called in a sub-class to decrement the allocated byte count
+    /**
+     * @brief Decrements allocation counter.
+     *
+     * @details
+     * Called in a sub-class to decrement the allocated byte count
      *
      * Not exposed to Python
      * @param alloc Amount of memory be de-allocated.

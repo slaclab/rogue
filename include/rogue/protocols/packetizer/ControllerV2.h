@@ -39,8 +39,10 @@ class Header;
 
 /**
  * @brief Packetizer controller implementation for protocol v2.
+ *
+ * @details
  * Handles packet segmentation/reassembly and optional CRC processing between
- *  transport and application endpoints.
+ * transport and application endpoints.
  */
 class ControllerV2 : public Controller, public rogue::EnableSharedFromThis<rogue::protocols::packetizer::ControllerV2> {
     bool enIbCrc_;
@@ -48,13 +50,13 @@ class ControllerV2 : public Controller, public rogue::EnableSharedFromThis<rogue
 
   public:
     /**
-     * Create a packetizer v2 controller.
-     * @param[in] enIbCrc Enable inbound CRC verification.
-     *  @param[in] enObCrc Enable outbound CRC generation.
-     *  @param[in] enSsi Enable SSI framing behavior.
-     *  @param[in] tran Transport endpoint attached to this controller.
-     *  @param[in] app Pointer to array of application endpoints indexed by destination.
-     *  @return Shared pointer to a new controller instance.
+     * @brief Creates a packetizer v2 controller.
+     * @param enIbCrc Enable inbound CRC verification.
+     * @param enObCrc Enable outbound CRC generation.
+     * @param enSsi Enable SSI framing behavior.
+     * @param tran Transport endpoint attached to this controller.
+     * @param app Pointer to array of application endpoints indexed by destination.
+     * @return Shared pointer to a new controller instance.
      */
     static std::shared_ptr<rogue::protocols::packetizer::ControllerV2> create(
         bool enIbCrc,
@@ -64,12 +66,12 @@ class ControllerV2 : public Controller, public rogue::EnableSharedFromThis<rogue
         std::shared_ptr<rogue::protocols::packetizer::Application>* app);
 
     /**
-     * Construct a packetizer v2 controller.
-     * @param[in] enIbCrc Enable inbound CRC verification.
-     *  @param[in] enObCrc Enable outbound CRC generation.
-     *  @param[in] enSsi Enable SSI framing behavior.
-     *  @param[in] tran Transport endpoint attached to this controller.
-     *  @param[in] app Pointer to array of application endpoints indexed by destination.
+     * @brief Constructs a packetizer v2 controller.
+     * @param enIbCrc Enable inbound CRC verification.
+     * @param enObCrc Enable outbound CRC generation.
+     * @param enSsi Enable SSI framing behavior.
+     * @param tran Transport endpoint attached to this controller.
+     * @param app Pointer to array of application endpoints indexed by destination.
      */
     ControllerV2(bool enIbCrc,
                  bool enObCrc,
@@ -77,16 +79,19 @@ class ControllerV2 : public Controller, public rogue::EnableSharedFromThis<rogue
                  std::shared_ptr<rogue::protocols::packetizer::Transport> tran,
                  std::shared_ptr<rogue::protocols::packetizer::Application>* app);
 
-    //! Destructor
+    /** @brief Destroys the controller instance. */
     ~ControllerV2();
 
-    //! Frame received at transport interface
+    /**
+     * @brief Processes a frame received at the transport interface.
+     * @param frame Transport frame to decode and route.
+     */
     void transportRx(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
     /**
-     * Process a frame received from one application endpoint.
-     * @param[in] frame Application frame to packetize.
-     *  @param[in] id Application/destination identifier.
+     * @brief Processes a frame received from one application endpoint.
+     * @param frame Application frame to packetize.
+     * @param id Application/destination identifier.
      */
     void applicationRx(std::shared_ptr<rogue::interfaces::stream::Frame> frame, uint8_t id);
 };

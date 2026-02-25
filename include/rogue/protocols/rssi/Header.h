@@ -29,7 +29,13 @@ namespace rogue {
 namespace protocols {
 namespace rssi {
 
-//! PGP Card class
+/**
+ * @brief RSSI header container and codec.
+ *
+ * @details
+ * Wraps a stream frame and provides helpers for encoding, decoding, and
+ * validating RSSI header fields.
+ */
 class Header {
     //! Set 16-bit uint value
     inline void setUInt16(uint8_t* data, uint8_t byte, uint16_t value);
@@ -47,7 +53,7 @@ class Header {
     uint16_t compSum(uint8_t* data, uint8_t size);
 
   public:
-    //! Header Size
+    /** @brief Encoded RSSI header size in bytes. */
     static const int32_t HeaderSize = 8;
     static const uint32_t SynSize   = 24;
 
@@ -62,35 +68,57 @@ class Header {
     uint32_t count_;
 
   public:
-    //! Create
+    /**
+     * @brief Creates a header wrapper for an existing frame.
+     * @param frame Frame containing RSSI header bytes.
+     * @return Shared pointer to the created header wrapper.
+     */
     static std::shared_ptr<rogue::protocols::rssi::Header> create(
         std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
-    //! Creator
+    /**
+     * @brief Constructs a header wrapper for an existing frame.
+     * @param frame Frame containing RSSI header bytes.
+     */
     explicit Header(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
-    //! Destructor
+    /** @brief Destroys the header wrapper. */
     ~Header();
 
-    //! Get Frame
+    /**
+     * @brief Returns the underlying frame.
+     * @return Frame associated with this header object.
+     */
     std::shared_ptr<rogue::interfaces::stream::Frame> getFrame();
 
-    //! Verify header checksum. Also inits records.
+    /**
+     * @brief Verifies header checksum and initializes cached fields.
+     * @return True if the header checksum and format are valid.
+     */
     bool verify();
 
-    //! Update header with settings and update checksum
+    /** @brief Encodes current field values into the frame and updates checksum. */
     void update();
 
-    //! Get time
+    /**
+     * @brief Returns the last transmit timestamp.
+     * @return Reference to timestamp associated with this header.
+     */
     struct timeval& getTime();
 
-    //! Get Count
+    /**
+     * @brief Returns the transmit count.
+     * @return Transmit count associated with this header.
+     */
     uint32_t count();
 
-    //! Reset tx time
+    /** @brief Resets transmit timestamp to the current time. */
     void rstTime();
 
-    //! Dump message contents
+    /**
+     * @brief Returns a formatted string of header contents.
+     * @return Human-readable header dump.
+     */
     std::string dump();
 
     //! Syn flag
