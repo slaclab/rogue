@@ -26,7 +26,14 @@
 namespace rogue {
 namespace protocols {
 namespace xilinx {
-// XVC Server (top) class
+/**
+ * @brief TCP listener for XVC client connections.
+ *
+ * @details
+ * `XvcServer` owns the listening socket and accepts one sub-connection at a
+ * time. Each accepted client is serviced via `XvcConnection`, which performs
+ * XVC protocol parsing and delegates JTAG operations to `JtagDriver`.
+ */
 class XvcServer {
   private:
     int sd_;
@@ -34,10 +41,24 @@ class XvcServer {
     unsigned maxMsgSize_;
 
   public:
+    /**
+     * @brief Constructs an XVC TCP server listener.
+     *
+     * @param port Local TCP port to bind and listen on.
+     * @param drv Driver used by accepted connections.
+     * @param maxMsgSize Maximum protocol message/vector size in bytes.
+     */
     XvcServer(uint16_t port, JtagDriver* drv, unsigned maxMsgSize = 32768);
 
+    /**
+     * @brief Runs accept loop while thread enable flag is true.
+     *
+     * @param threadEn Run-control flag checked by loop.
+     * @param log Logger used for connection-level diagnostics.
+     */
     virtual void run(bool& threadEn, rogue::LoggingPtr log);
 
+    /** @brief Closes the listening socket and destroys server instance. */
     virtual ~XvcServer();
 };
 }  // namespace xilinx

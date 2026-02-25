@@ -30,7 +30,14 @@
 namespace rogue {
 namespace protocols {
 namespace xilinx {
-// Class managing a XVC tcp connection
+/**
+ * @brief Manages one TCP client connection speaking the XVC protocol.
+ *
+ * @details
+ * `XvcConnection` parses XVC commands (`getinfo`, `settck`, `shift`) from a
+ * connected socket, dispatches JTAG operations through `JtagDriver`, and sends
+ * protocol responses back to the TCP client.
+ */
 class XvcConnection {
     int sd_;
     JtagDriver* drv_;
@@ -51,24 +58,54 @@ class XvcConnection {
     uint64_t chunk_;
 
   public:
+    /**
+     * @brief Accepts and initializes a new XVC TCP sub-connection.
+     *
+     * @param sd Listening socket descriptor.
+     * @param drv Driver used to execute JTAG operations.
+     * @param maxVecLen_ Maximum vector length in bytes accepted from client.
+     */
     XvcConnection(int sd, JtagDriver* drv, uint64_t maxVecLen_ = 32768);
 
-    // fill rx buffer to 'n' octets (from TCP connection)
+    /**
+     * @brief Ensures at least `n` bytes are available in RX buffer.
+     *
+     * @param n Required number of bytes.
+     */
     virtual void fill(uint64_t n);
 
-    // send tx buffer to TCP connection
+    /**
+     * @brief Flushes pending TX buffer bytes to socket.
+     */
     virtual void flush();
 
-    // discard 'n' octets from rx buffer (mark as consumed)
+    /**
+     * @brief Marks `n` RX bytes as consumed.
+     *
+     * @param n Number of bytes to consume.
+     */
     virtual void bump(uint64_t n);
 
-    // (re)allocated buffers
+    /**
+     * @brief Allocates/reinitializes internal RX/TX buffers.
+     */
     virtual void allocBufs();
 
+    /**
+     * @brief Runs command processing loop for this connection.
+     */
     virtual void run();
 
+    /**
+     * @brief Reads up to `count` bytes with timeout.
+     *
+     * @param buf Destination buffer.
+     * @param count Maximum bytes to read.
+     * @return Number of bytes read, or `0` on timeout/no data.
+     */
     ssize_t readTo(void* buf, size_t count);
 
+    /** @brief Closes this XVC TCP sub-connection. */
     virtual ~XvcConnection();
 };
 }  // namespace xilinx

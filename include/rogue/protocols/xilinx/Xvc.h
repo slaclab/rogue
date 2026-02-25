@@ -39,8 +39,22 @@
 namespace rogue {
 namespace protocols {
 namespace xilinx {
+/** @brief Maximum supported argument count for XVC command parsing helpers. */
 const unsigned int kMaxArgs = 3;
 
+/**
+ * @brief Rogue XVC bridge between TCP XVC clients and Rogue stream transport.
+ *
+ * @details
+ * `Xvc` combines:
+ * - `JtagDriver` protocol logic for query/shift operations.
+ * - `stream::Master` to send request frames toward hardware transport.
+ * - `stream::Slave` to receive reply frames from hardware transport.
+ *
+ * A background thread runs an `XvcServer` TCP listener for Vivado XVC clients.
+ * Incoming XVC operations are translated to driver transfers (`xfer()`), which
+ * exchange Rogue frames with downstream transport endpoints.
+ */
 class Xvc : public rogue::interfaces::stream::Master,
             public rogue::interfaces::stream::Slave,
             public rogue::protocols::xilinx::JtagDriver {
@@ -53,40 +67,83 @@ class Xvc : public rogue::interfaces::stream::Master,
     // Log
     std::shared_ptr<rogue::Logging> log_;
 
-    //! Thread background
+    // Background server thread.
     std::thread* thread_;
     bool threadEn_;
 
     // Lock
     std::mutex mtx_;
 
-    // TCP server for Vivado client
+    // TCP server thread entry point for Vivado clients.
     void runThread();
 
   public:
-    //! Class creation
+    /**
+     * @brief Creates an XVC bridge instance.
+     *
+     * @param port TCP port used for local XVC server listener.
+     * @return Shared pointer to the created XVC instance.
+     */
     static std::shared_ptr<rogue::protocols::xilinx::Xvc> create(uint16_t port);
 
-    //! Setup class in python
+    /** @brief Registers Python bindings for this class. */
     static void setup_python();
 
-    //! Creator
+    /**
+     * @brief Constructs an XVC bridge instance.
+     *
+     * @param port TCP port used for local XVC server listener.
+     */
     explicit Xvc(uint16_t port);
 
-    //! Destructor
+    /** @brief Destroys the XVC bridge instance. */
     ~Xvc();
 
-    //! Start the interface
+    /**
+     * @brief Starts XVC server thread and enables bridge operation.
+     */
     void start();
 
-    //! Stop the interface
+    /**
+     * @brief Stops XVC server thread and drains frame queue.
+     */
     void stop();
 
-    // Receive frame
+    /**
+     * @brief Receives reply frame from downstream Rogue transport.
+     *
+     * @details
+     * Frames are queued for synchronous consumption by the active XVC transfer.
+     *
+     * @param frame Incoming frame from downstream transport.
+     */
     void acceptFrame(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
+    /**
+     * @brief Returns maximum vector size supported by this XVC bridge.
+     *
+     * @details
+     * Computed from configured MTU and current protocol word size.
+     *
+     * @return Maximum vector size in bytes.
+     */
     uint64_t getMaxVectorSize() final;
 
+    /**
+     * @brief Executes one protocol transfer over Rogue frame transport.
+     *
+     * @details
+     * Sends `txBuffer` as a Rogue frame, waits for a queued reply frame, then
+     * copies header/payload data into caller buffers.
+     *
+     * @param txBuffer Request transmit buffer.
+     * @param txBytes Number of request bytes.
+     * @param hdBuffer Reply header destination buffer.
+     * @param hdBytes Number of header bytes to copy.
+     * @param rxBuffer Reply payload destination buffer.
+     * @param rxBytes Maximum reply payload bytes accepted.
+     * @return Number of payload bytes received (implementation currently returns `0`).
+     */
     int xfer(uint8_t* txBuffer,
              unsigned txBytes,
              uint8_t* hdBuffer,

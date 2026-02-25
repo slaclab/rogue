@@ -40,35 +40,31 @@ using std::vector;
 namespace rogue {
 namespace protocols {
 namespace xilinx {
-// Driver for the AxisToJtag FW module; a transport-level
-// driver must derive from this and implement
-//
-//   - 'xfer()'.
-//   - 'getMaxVectorSize()'
-//
-// 'getMaxVectorSize()' must return the max. size of a single
-// JTAG vector (in bytes) the driver can support. Note that the
-// max. *message* size is bigger - it comprises two vectors and
-// a header word (depends on the word size the target FW was
-// built for).
-// E.g., A UDP transport might want to limit to less than the
-// ethernet MTU. See xvcDrvUdp.cc for an example...
-//
-// 'xfer()' must transmit the (opaque) message in 'txb' of size
-// 'txBytes' (which is guaranteed to be at most
-//
-//     2*maxVectorSize() + getWordSize()
-//
-// The method must then receive the reply from the target
-// and:
-//   - store the first 'hsize' bytes into 'hbuf'. If less than
-//     'hsize' were received then 'xfer' must throw and exception.
-//   - store the remainder of the message up to at most 'size'
-//     bytes into 'rbuf'.
-//   - return the number of actual bytes stored in 'rbuf'.
-//
-// If a timeout occurs then 'xfer' must throw a TimeoutErr().
-//
+/**
+ * @brief Base transport driver for the AxisToJtag firmware protocol.
+ *
+ * @details
+ * `JtagDriver` implements protocol framing, query/shift command handling,
+ * retry logic, and vector chunking for XVC/JTAG operations. Concrete transport
+ * drivers derive from this class and provide I/O primitives.
+ *
+ * Transport subclasses must implement:
+ * - `xfer()` to move opaque protocol messages to/from the target.
+ * - `getMaxVectorSize()` to report maximum JTAG vector bytes supported by the
+ *   transport.
+ *
+ * Message sizing:
+ * - Transport receives at most `2 * getMaxVectorSize() + getWordSize()` bytes
+ *   in one transfer request.
+ * - Protocol messages may contain two vectors plus protocol header.
+ *
+ * `xfer()` contract:
+ * - transmit `txBytes` from `txb`.
+ * - receive exactly `hsize` header bytes into `hdbuf` (or throw on short read).
+ * - receive up to `size` payload bytes into `rxb`.
+ * - return number of payload bytes written to `rxb`.
+ * - throw on timeout/error so retry/error handling can be applied by `xferRel()`.
+ */
 class JtagDriver {
   protected:
     //! Remote port number
@@ -163,61 +159,140 @@ class JtagDriver {
     virtual uint32_t getPeriodNs();
 
   public:
-    //! Class creation
+    /**
+     * @brief Creates a JTAG driver instance.
+     *
+     * @param port Transport/service port value associated with this driver.
+     * @return Shared pointer to the created driver.
+     */
     static std::shared_ptr<rogue::protocols::xilinx::JtagDriver> create(uint16_t port);
 
-    //! Setup class in python
+    /** @brief Registers Python bindings for this class. */
     static void setup_python();
 
+    /**
+     * @brief Constructs the JTAG driver base state.
+     *
+     * @param port Transport/service port value associated with this driver.
+     */
     explicit JtagDriver(uint16_t port);
 
-    // initialization after full construction
+    /**
+     * @brief Performs post-construction initialization.
+     *
+     * @details
+     * Base implementation performs target query to cache protocol parameters.
+     */
     virtual void init();
 
-    // virtual method to be implemented by transport-level driver;
-    // transmit txBytes from TX buffer (txb) and receive 'hsize' header
-    // bytes into hdbuf and up to 'size' bytes into rxb.
-    // RETURNS: number of payload bytes (w/o header).
+    /**
+     * @brief Transport-level transfer primitive implemented by subclass.
+     *
+     * @details
+     * Sends request bytes and receives reply header/payload for one protocol
+     * transaction.
+     *
+     * @param txb Request transmit buffer.
+     * @param txBytes Number of transmit bytes in `txb`.
+     * @param hdbuf Reply header destination buffer.
+     * @param hsize Number of reply header bytes expected.
+     * @param rxb Reply payload destination buffer.
+     * @param size Maximum payload bytes to store in `rxb`.
+     * @return Number of payload bytes received.
+     * @throws rogue::GeneralError On transport/protocol timeout or I/O error.
+     */
     virtual int xfer(uint8_t* txb, unsigned txBytes, uint8_t* hdbuf, unsigned hsize, uint8_t* rxb, unsigned size) {
         return 0;
     }
 
-    // Transfer with retry/timeout.
-    // 'txBytes' are transmitted from the TX buffer 'txb'.
-    // The message header is received into '*phdr', payload (of up to 'sizeBytes') into 'rxb'.
-    //
+    /**
+     * @brief Executes transfer with retry and protocol validation.
+     *
+     * @details
+     * Calls `xfer()` repeatedly up to retry limit, checks header/error fields,
+     * validates transaction ID where applicable, and returns payload length.
+     *
+     * @param txb Request transmit buffer.
+     * @param txBytes Number of transmit bytes in `txb`.
+     * @param phdr Optional destination for parsed reply header.
+     * @param rxb Reply payload destination buffer.
+     * @param sizeBytes Maximum payload bytes accepted in `rxb`.
+     * @return Number of payload bytes received.
+     * @throws rogue::GeneralError If retries are exhausted or protocol errors persist.
+     */
     virtual int xferRel(uint8_t* txb, unsigned txBytes, Header* phdr, uint8_t* rxb, unsigned sizeBytes);
 
-    // XVC query support; return the size of max. supported JTAG vector in bytes
-    //                    if 0 then no the target does not have memory and if
-    //                    there is reliable transport there is no limit to vector
-    //                    length.
+    /**
+     * @brief Queries target capabilities and caches protocol parameters.
+     *
+     * @details
+     * Updates cached word size, memory depth, and period information.
+     * If target reports no memory (`0`), streaming semantics apply.
+     *
+     * @return Maximum target-supported vector size in bytes (or `0` for streaming target).
+     */
     virtual uint64_t query();
 
-    // Max. vector size (in bytes) this driver supports - may be different
-    // from what the target supports and the minimum will be used...
-    // Note that this is a single vector (the message the driver
-    // must handle typically contains two vectors and a header, so
-    // the driver must consider this when computing the max. supported
-    // vector size)
+    /**
+     * @brief Returns transport-supported maximum vector size in bytes.
+     *
+     * @details
+     * This value is transport-specific and may differ from target capability.
+     * Effective runtime vector length is bounded by the minimum of transport and
+     * target limits.
+     *
+     * @return Maximum transport-supported vector size in bytes.
+     */
     virtual uint64_t getMaxVectorSize() {
         return 0;
     }
 
+    /**
+     * @brief Requests update of TCK period.
+     *
+     * @details
+     * Base behavior returns current period when `newPeriod == 0`; otherwise
+     * returns requested period if target period is unknown, or current cached
+     * period when fixed by target.
+     *
+     * @param newPeriod Requested period in nanoseconds.
+     * @return Effective period in nanoseconds.
+     */
     virtual uint32_t setPeriodNs(uint32_t newPeriod);
 
-    // send tms and tdi vectors of length numBits (each) and receive tdo
-    // little-endian (first send/received at lowest offset)
+    /**
+     * @brief Sends JTAG TMS/TDI vectors and receives TDO.
+     *
+     * @details
+     * Vectors are interpreted little-endian (first transmitted/received bits at
+     * lowest byte offsets). Large vectors are chunked according to target and
+     * transport capabilities.
+     *
+     * @param numBits Number of bits in each input vector.
+     * @param tms Pointer to TMS vector bytes.
+     * @param tdi Pointer to TDI vector bytes.
+     * @param tdo Pointer to output TDO vector bytes.
+     */
     virtual void sendVectors(uint64_t numBits, uint8_t* tms, uint8_t* tdi, uint8_t* tdo);
 
+    /**
+     * @brief Dumps cached driver/target information.
+     *
+     * @param f Output stream (`stdout` by default).
+     */
     virtual void dumpInfo(FILE* f = stdout);
 
-    // Return 'done_' flag
+    /**
+     * @brief Returns completion/shutdown flag.
+     *
+     * @return `true` when driver is marked done; otherwise `false`.
+     */
     bool isDone() {
         return this->done_;
     }
 };
 
+/** @brief Maximum temporary header buffer size in bytes. */
 static unsigned hdBufMax() {
     return 16;
 }
