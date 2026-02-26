@@ -48,3 +48,21 @@ Use the section class indexes for curated C++ APIs, grouped by namespace.
 * :doc:`/api/cpp/utilities/compression/index`
 * :doc:`/api/cpp/utilities/fileio/index`
 * :doc:`/api/cpp/utilities/prbs/index`
+
+.. toctree::
+   :hidden:
+   :maxdepth: 1
+
+   /api/cpp/hardware/axi/index
+   /api/cpp/hardware/raw/index
+   /api/cpp/interfaces/memory/index
+   /api/cpp/interfaces/stream/index
+   /api/cpp/protocols/batcher/index
+   /api/cpp/protocols/packetizer/index
+   /api/cpp/protocols/rssi/index
+   /api/cpp/protocols/srp/index
+   /api/cpp/protocols/udp/index
+   /api/cpp/protocols/xilinx/index
+   /api/cpp/utilities/compression/index
+   /api/cpp/utilities/fileio/index
+   /api/cpp/utilities/prbs/index
