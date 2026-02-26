@@ -22,5 +22,4 @@ is the destination of the Frame.
    usingFilter
    usingRateDrop
    debugStreams
-   classes/index
-
+   /api/cpp/interfaces/stream/index

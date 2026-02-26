@@ -13,4 +13,4 @@ when testing interfaces to hardware as well as software communication protocols.
 
    writing
    reading
-   classes/index
+   /api/cpp/utilities/prbs/index

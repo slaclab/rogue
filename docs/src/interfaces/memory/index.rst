@@ -25,4 +25,4 @@ into multiple downstream transactions, providing a mechanism for handling comple
    slave
    hub
    usingTcp
-   classes/index
+   /api/cpp/interfaces/memory/index

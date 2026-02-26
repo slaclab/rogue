@@ -34,19 +34,19 @@ Use the section class indexes for curated C++ APIs:
 .. toctree::
    :maxdepth: 2
 
-   /interfaces/stream/classes/index
-   /interfaces/memory/classes/index
-   /protocols/udp/classes/index
-   /protocols/rssi/classes/index
-   /protocols/srp/classes/index
-   /protocols/packetizer/classes/index
-   /protocols/batcher/classes/index
-   /protocols/xilinx/classes/index
-   /utilities/fileio/classes/index
-   /utilities/prbs/classes/index
-   /utilities/compression/classes/index
-   /hardware/axi/classes/index
-   /hardware/raw/classes/index
+   /api/cpp/interfaces/stream/index
+   /api/cpp/interfaces/memory/index
+   /api/cpp/protocols/udp/index
+   /api/cpp/protocols/rssi/index
+   /api/cpp/protocols/srp/index
+   /api/cpp/protocols/packetizer/index
+   /api/cpp/protocols/batcher/index
+   /api/cpp/protocols/xilinx/index
+   /api/cpp/utilities/fileio/index
+   /api/cpp/utilities/prbs/index
+   /api/cpp/utilities/compression/index
+   /api/cpp/hardware/axi/index
+   /api/cpp/hardware/raw/index
 
 Complete Doxygen Index
 ======================

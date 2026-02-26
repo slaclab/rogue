@@ -23,4 +23,4 @@ specifications are maintained externally:
    srpV0
    srpV3
    cmd
-   classes/index
+   /api/cpp/protocols/srp/index

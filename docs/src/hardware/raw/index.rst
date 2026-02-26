@@ -11,5 +11,4 @@ Raw Memory Mapping Description
    :caption: Raw Mapping:
 
    memory
-   classes/index
-
+   /api/cpp/hardware/raw/index

@@ -90,4 +90,4 @@ C++ splitter chain (v1)
    inverterV2
    splitterV1
    splitterV2
-   classes/index
+   /api/cpp/protocols/batcher/index

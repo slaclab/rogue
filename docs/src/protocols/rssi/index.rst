@@ -124,4 +124,4 @@ See also
 
    client
    server
-   classes/index
+   /api/cpp/protocols/rssi/index

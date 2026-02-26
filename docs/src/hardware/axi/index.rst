@@ -13,5 +13,4 @@ Generic AXI Hardware Description
    stream
    memory
    features
-   classes/index
-
+   /api/cpp/hardware/axi/index

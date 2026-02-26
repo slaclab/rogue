@@ -10,4 +10,4 @@ Compression Utilities
 
    compress
    decompress
-   classes/index
+   /api/cpp/utilities/compression/index
