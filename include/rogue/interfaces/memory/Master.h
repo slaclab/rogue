@@ -153,7 +153,7 @@ class Master {
     /**
      * @brief Queries maximum access size in bytes for this interface path.
      *
-     * @details 
+     * @details
      * Request is forwared to the lowest-level slave to determine the maximum transaction size.
      * Exposed as `_reqMaxAccess()` in Python.
      *

@@ -55,7 +55,7 @@ namespace memory {
  * If a non zero `min` and `max` transaction size are passed at creation this Hub will
  * behave as if it is a new root `Slave` memory device in the tree. This is useful in
  * cases where this `Hub` will master a paged address or other virtual address space.
- * 
+ *
  * Access-size behavior is selected by the `min`/`max` constructor parameters:
  * - `min == 0` and `max == 0`: pass-through mode. Access-size identity/name queries
  *   are forwarded to the downstream interface.

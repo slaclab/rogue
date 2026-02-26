@@ -154,7 +154,7 @@ class Master : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Mas
      * frame pointer being updated. The return value will indicate if the frame is a
      * single buffer at the end of the process. A frame lock must be held when this
      * method is called.
-     *     
+     *
      * Not exposed to Python.
      *
      * @param frame Reference to frame pointer.

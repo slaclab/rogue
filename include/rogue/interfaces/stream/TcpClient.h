@@ -51,7 +51,7 @@ class TcpClient : public rogue::interfaces::stream::TcpCore {
      * will result in both 8000 and 8001 being used by this bridge.
      *
      * Exposed in Python as `rogue.interfaces.stream.TcpClient`.
-     * 
+     *
      * @param addr Remote server address.
      * @param port Base TCP port number.
      * @return Shared pointer to the created client.

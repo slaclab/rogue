@@ -156,7 +156,7 @@ class Controller : public rogue::EnableSharedFromThis<rogue::protocols::rssi::Co
 
   public:
     /**
-     * @brief Factory method to create an RSSI controller. 
+     * @brief Factory method to create an RSSI controller.
      * @param segSize Initial local maximum segment size.
      * @param tran Transport endpoint used for link traffic.
      * @param app Application endpoint used for payload traffic.
