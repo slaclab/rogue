@@ -282,7 +282,8 @@ class Root(pr.Device):
                                  description='Save configuration to file. Data is saved in YAML format. Passed arg is full path to file to sore data to.'))
 
         self.add(pr.LocalCommand(name='LoadConfig', value='',
-                                 function=lambda arg: self.loadYaml(name=arg,
+                                 function=lambda arg: self.loadYaml(filename=arg,
+                                                                    node=self,
                                                                     writeEach=False,
                                                                     modes=['RW','WO'],
                                                                     incGroups=None,
@@ -816,9 +817,10 @@ class Root(pr.Device):
 
     def loadYaml(
         self,
-        name: str | list[str],
+        filename: str | list[str],
         writeEach: bool,
         modes: list[str],
+        node: pr.Node | None = None            
         incGroups: str | list[str] | None = None,
         excGroups: str | list[str] | None = None,
     ) -> bool:
@@ -827,12 +829,14 @@ class Root(pr.Device):
 
         Parameters
         ----------
-        name : str or list[str]
+        filename : str or list[str]
             Input file, directory, zip-path, or list of those entries.
         writeEach : bool
             Write each variable as it is applied.
         modes : list['RW' | 'WO' | 'RO']
             Variable modes to include. Allowed values are ``'RW'``, ``'WO'``, and ``'RO'``.
+        node : pr.Node
+            Tree node where the yaml should be applied
         incGroups : str or list[str], optional
             Group name or group names to include.
         excGroups : str or list[str], optional
@@ -905,7 +909,10 @@ class Root(pr.Device):
         with self.pollBlock(), self.updateGroup():
             for fn in lst:
                 d = pr.yamlToData(fName=fn)
-                self._setDictRoot(d=d,writeEach=writeEach,modes=modes,incGroups=incGroups,excGroups=excGroups)
+                if node is None or node == self:
+                    self._setDictRoot(d=d,writeEach=writeEach,modes=modes,incGroups=incGroups,excGroups=excGroups)
+                else:
+                    node._setDict(d=d, writeEach=writeEach, modes=modes, incGroups=incGroups, excGroups=excGroups)
 
             if not writeEach:
                 self._write()
