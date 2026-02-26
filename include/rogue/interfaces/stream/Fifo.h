@@ -75,7 +75,15 @@ class Fifo : public rogue::interfaces::stream::Master, public rogue::interfaces:
     /**
      * @brief Creates a FIFO stream buffer.
      *
-     * @details Exposed as `rogue.interfaces.stream.Fifo()` in Python.
+     * @details
+     * Parameter semantics are identical to the constructor; see `Fifo()`
+     * for queue-depth and trim behavior details.
+     *
+     * Exposed as `rogue.interfaces.stream.Fifo()` in Python.
+     *
+     * This static factory is the preferred construction path when the object
+     * is shared across Rogue graph connections or exposed to Python.
+     * It returns `std::shared_ptr` ownership compatible with Rogue pointer typedefs.
      *
      * @param maxDepth Queue busy/drop threshold in frames. `0` disables threshold-based drops.
      * @param trimSize Payload trim limit in copy mode. `0` disables trimming.
@@ -89,6 +97,11 @@ class Fifo : public rogue::interfaces::stream::Master, public rogue::interfaces:
 
     /**
      * @brief Constructs a FIFO stream buffer.
+     *
+     * @details
+     * This constructor is a low-level C++ allocation path.
+     * Prefer `create()` when shared ownership or Python exposure is required.
+
      *
      * @param maxDepth Queue busy/drop threshold in frames. `0` disables threshold-based drops.
      * @param trimSize Payload trim limit in copy mode. `0` disables trimming.

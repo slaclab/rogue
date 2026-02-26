@@ -81,9 +81,11 @@ class Buffer {
      * @brief Creates a buffer backed by memory owned by a stream `Pool`.
      *
      * @details
-     * This factory is used internally by pool implementations when a frame
-     * buffer is allocated. The `alloc` size may be larger than `size` when
-     * the allocator rounds up to alignment or slab boundaries.
+     * Parameter semantics are identical to the constructor; see `Buffer()`
+     * for allocation and ownership behavior details.
+     * This static factory is the preferred construction path when the object
+     * is shared across Rogue graph connections or exposed to Python.
+     * It returns `std::shared_ptr` ownership compatible with Rogue pointer typedefs.
      *
      * Not exposed to Python.
      *
@@ -103,6 +105,14 @@ class Buffer {
 
     /**
      * @brief Constructs a buffer around a pool allocation.
+     *
+     * @details
+     * This constructor is a low-level C++ allocation path.
+     * Prefer `create()` when shared ownership or Python exposure is required.
+     *
+     * This constructor is used internally by pool implementations when a frame
+     * buffer is allocated. The `alloc` size may be larger than `size` when
+     * the allocator rounds up to alignment or slab boundaries.
      *
      * @param source Pool that owns the backing allocation.
      * @param data Pointer to raw data allocation.

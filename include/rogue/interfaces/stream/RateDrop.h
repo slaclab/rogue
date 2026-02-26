@@ -55,6 +55,13 @@ class RateDrop : public rogue::interfaces::stream::Master, public rogue::interfa
     /**
      * @brief Creates a rate-drop filter.
      *
+     * @details
+     * Parameter semantics are identical to the constructor; see `RateDrop()`
+     * for mode and value behavior details.
+     * This static factory is the preferred construction path when the object
+     * is shared across Rogue graph connections or exposed to Python.
+     * It returns `std::shared_ptr` ownership compatible with Rogue pointer typedefs.
+     *
      * @param period Set to `true` for period mode; `false` for drop-count mode.
      * @param value Period seconds or drop-count setting.
      * @return Shared pointer to the created rate-drop filter.
@@ -66,6 +73,10 @@ class RateDrop : public rogue::interfaces::stream::Master, public rogue::interfa
 
     /**
      * @brief Constructs a rate-drop filter.
+     *
+     * @details
+     * This constructor is a low-level C++ allocation path.
+     * Prefer `create()` when shared ownership or Python exposure is required.
      *
      * @param period Set to `true` for period mode; `false` for drop-count mode.
      * @param value Period seconds or drop-count setting.

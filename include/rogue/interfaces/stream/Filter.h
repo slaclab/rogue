@@ -49,6 +49,13 @@ class Filter : public rogue::interfaces::stream::Master, public rogue::interface
     /**
      * @brief Creates a stream filter.
      *
+     * @details
+     * Parameter semantics are identical to the constructor; see `Filter()`
+     * for filter behavior details.
+     * This static factory is the preferred construction path when the object
+     * is shared across Rogue graph connections or exposed to Python.
+     * It returns `std::shared_ptr` ownership compatible with Rogue pointer typedefs.
+     *
      * @param dropErrors Set to `true` to drop frames with error flags.
      * @param channel Channel number to allow through the filter.
      * @return Shared pointer to the created filter.
@@ -60,6 +67,11 @@ class Filter : public rogue::interfaces::stream::Master, public rogue::interface
 
     /**
      * @brief Constructs a stream filter.
+     *
+     * @details
+     * This constructor is a low-level C++ allocation path.
+     * Prefer `create()` when shared ownership or Python exposure is required.
+
      *
      * @param dropErrors Set to `true` to drop frames with error flags.
      * @param channel Channel number to allow through the filter.

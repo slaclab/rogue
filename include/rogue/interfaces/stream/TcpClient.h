@@ -45,12 +45,12 @@ class TcpClient : public rogue::interfaces::stream::TcpCore {
      * @brief Creates a TCP stream bridge client and return as TcpClientPtr.
      *
      * @details
-     * The creator takes an address and port. The passed server address can either
-     * be an IP address or hostname. The stream bridge requires two TCP ports.
-     * The passed port is the base number of these two ports. A passed value of 8000
-     * will result in both 8000 and 8001 being used by this bridge.
-     *
+     * Parameter semantics are identical to the constructor; see `TcpClient()`
+     * for address and port behavior details.
      * Exposed in Python as `rogue.interfaces.stream.TcpClient`.
+     * This static factory is the preferred construction path when the object
+     * is shared across Rogue graph connections or exposed to Python.
+     * It returns `std::shared_ptr` ownership compatible with Rogue pointer typedefs.
      *
      * @param addr Remote server address.
      * @param port Base TCP port number.
@@ -63,6 +63,14 @@ class TcpClient : public rogue::interfaces::stream::TcpCore {
 
     /**
      * @brief Constructs a TCP stream bridge client.
+     *
+     * @details
+     * This constructor is a low-level C++ allocation path.
+     * Prefer `create()` when shared ownership or Python exposure is required.
+     *
+     * The constructor takes an address and port. The remote server address can
+     * be an IP address or hostname. The bridge uses two consecutive TCP ports;
+     * `port` is the base (for example, `port=8000` uses `8000` and `8001`).
      *
      * @param addr Remote server address.
      * @param port Base TCP port number.
