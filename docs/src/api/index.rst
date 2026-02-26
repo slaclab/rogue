@@ -27,20 +27,16 @@ C++ API
 =======
 
 Use the section class indexes for curated C++ APIs:
-
-.. toctree::
-   :maxdepth: 2
-
-   /api/cpp/interfaces/stream/index
-   /api/cpp/interfaces/memory/index
-   /api/cpp/protocols/udp/index
-   /api/cpp/protocols/rssi/index
-   /api/cpp/protocols/srp/index
-   /api/cpp/protocols/packetizer/index
-   /api/cpp/protocols/batcher/index
-   /api/cpp/protocols/xilinx/index
-   /api/cpp/utilities/fileio/index
-   /api/cpp/utilities/prbs/index
-   /api/cpp/utilities/compression/index
-   /api/cpp/hardware/axi/index
-   /api/cpp/hardware/raw/index
+* :doc:`/api/cpp/interfaces/stream/index`
+* :doc:`/api/cpp/interfaces/memory/index`
+* :doc:`/api/cpp/protocols/udp/index`
+* :doc:`/api/cpp/protocols/rssi/index`
+* :doc:`/api/cpp/protocols/srp/index`
+* :doc:`/api/cpp/protocols/packetizer/index`
+* :doc:`/api/cpp/protocols/batcher/index`
+* :doc:`/api/cpp/protocols/xilinx/index`
+* :doc:`/api/cpp/utilities/fileio/index`
+* :doc:`/api/cpp/utilities/prbs/index`
+* :doc:`/api/cpp/utilities/compression/index`
+* :doc:`/api/cpp/hardware/axi/index`
+* :doc:`/api/cpp/hardware/raw/index`
