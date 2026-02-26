@@ -62,6 +62,12 @@ class Transport : public rogue::interfaces::stream::Master, public rogue::interf
   public:
     /**
      * @brief Creates a packetizer transport endpoint.
+     *
+     * @details
+     * This static factory is the preferred construction path when the object
+     * is shared across Rogue graph connections or exposed to Python.
+     * It returns `std::shared_ptr` ownership compatible with Rogue pointer typedefs.
+     *
      * @return Shared pointer to the created transport endpoint.
      */
     static std::shared_ptr<rogue::protocols::packetizer::Transport> create();
@@ -69,7 +75,13 @@ class Transport : public rogue::interfaces::stream::Master, public rogue::interf
     /** @brief Registers Python bindings for this class. */
     static void setup_python();
 
-    /** @brief Constructs a packetizer transport endpoint. */
+    /**
+     * @brief Constructs a packetizer transport endpoint.
+     *
+     * @details
+     * This constructor is a low-level C++ allocation path.
+     * Prefer `create()` when shared ownership or Python exposure is required.
+     */
     Transport();
 
     /** @brief Destroys the packetizer transport endpoint. */

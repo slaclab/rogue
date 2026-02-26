@@ -82,11 +82,23 @@ class CoreV1 {
 
     /**
      * @brief Creates a `CoreV1` parser instance.
+     *
+     * @details
+     * This static factory is the preferred construction path when the object
+     * is shared across Rogue graph connections or exposed to Python.
+     * It returns `std::shared_ptr` ownership compatible with Rogue pointer typedefs.
+     *
      * @return Shared pointer to the created parser.
      */
     static std::shared_ptr<rogue::protocols::batcher::CoreV1> create();
 
-    /** @brief Constructs a `CoreV1` parser. */
+    /**
+     * @brief Constructs a `CoreV1` parser.
+     *
+     * @details
+     * This constructor is a low-level C++ allocation path.
+     * Prefer `create()` when shared ownership or Python exposure is required.
+     */
     CoreV1();
 
     /** @brief Destroys the parser. */

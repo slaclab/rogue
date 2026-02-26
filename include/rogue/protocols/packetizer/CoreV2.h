@@ -51,6 +51,14 @@ class CoreV2 {
   public:
     /**
      * @brief Creates a packetizer v2 core.
+     *
+     * @details
+     * Parameter semantics are identical to the constructor; see `CoreV2()`
+     * for construction-path details.
+     * This static factory is the preferred construction path when the object
+     * is shared across Rogue graph connections or exposed to Python.
+     * It returns `std::shared_ptr` ownership compatible with Rogue pointer typedefs.
+     *
      * @param enIbCrc Enable inbound CRC checking.
      * @param enObCrc Enable outbound CRC generation.
      * @param enSsi Enable SSI framing behavior.
@@ -63,6 +71,11 @@ class CoreV2 {
 
     /**
      * @brief Constructs a packetizer v2 core.
+     *
+     * @details
+     * This constructor is a low-level C++ allocation path.
+     * Prefer `create()` when shared ownership or Python exposure is required.
+     *
      * @param enIbCrc Enable inbound CRC checking.
      * @param enObCrc Enable outbound CRC generation.
      * @param enSsi Enable SSI framing behavior.

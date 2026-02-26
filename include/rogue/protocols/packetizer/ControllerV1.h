@@ -48,6 +48,14 @@ class ControllerV1 : public Controller, public rogue::EnableSharedFromThis<rogue
   public:
     /**
      * @brief Creates a packetizer v1 controller.
+     *
+     * @details
+     * Parameter semantics are identical to the constructor; see `ControllerV1()`
+     * for construction-path details.
+     * This static factory is the preferred construction path when the object
+     * is shared across Rogue graph connections or exposed to Python.
+     * It returns `std::shared_ptr` ownership compatible with Rogue pointer typedefs.
+     *
      * @param enSsi Enable SSI framing behavior.
      * @param tran Transport endpoint attached to this controller.
      * @param app Pointer to array of application endpoints indexed by destination.
@@ -60,6 +68,11 @@ class ControllerV1 : public Controller, public rogue::EnableSharedFromThis<rogue
 
     /**
      * @brief Constructs a packetizer v1 controller.
+     *
+     * @details
+     * This constructor is a low-level C++ allocation path.
+     * Prefer `create()` when shared ownership or Python exposure is required.
+     *
      * @param enSsi Enable SSI framing behavior.
      * @param tran Transport endpoint attached to this controller.
      * @param app Pointer to array of application endpoints indexed by destination.

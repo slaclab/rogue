@@ -51,6 +51,12 @@ class SplitterV2 : public rogue::interfaces::stream::Master, public rogue::inter
   public:
     /**
      * @brief Creates a `SplitterV2` instance.
+     *
+     * @details
+     * This static factory is the preferred construction path when the object
+     * is shared across Rogue graph connections or exposed to Python.
+     * It returns `std::shared_ptr` ownership compatible with Rogue pointer typedefs.
+     *
      * @return Shared pointer to the created splitter.
      */
     static std::shared_ptr<rogue::protocols::batcher::SplitterV2> create();
@@ -58,7 +64,13 @@ class SplitterV2 : public rogue::interfaces::stream::Master, public rogue::inter
     /** @brief Registers Python bindings for this class. */
     static void setup_python();
 
-    /** @brief Constructs a `SplitterV2` instance. */
+    /**
+     * @brief Constructs a `SplitterV2` instance.
+     *
+     * @details
+     * This constructor is a low-level C++ allocation path.
+     * Prefer `create()` when shared ownership or Python exposure is required.
+     */
     SplitterV2();
 
     /** @brief Destroys the splitter. */

@@ -68,6 +68,14 @@ class Data {
 
     /**
      * @brief Creates a parsed record descriptor.
+     *
+     * @details
+     * Parameter semantics are identical to the constructor; see `Data()`
+     * for construction-path details.
+     * This static factory is the preferred construction path when the object
+     * is shared across Rogue graph connections or exposed to Python.
+     * It returns `std::shared_ptr` ownership compatible with Rogue pointer typedefs.
+     *
      * @param it Iterator to beginning of record payload.
      * @param size Record payload size in bytes.
      * @param dest Destination/channel field.
@@ -83,6 +91,11 @@ class Data {
 
     /**
      * @brief Constructs a parsed record descriptor.
+     *
+     * @details
+     * This constructor is a low-level C++ allocation path.
+     * Prefer `create()` when shared ownership or Python exposure is required.
+     *
      * @param it Iterator to beginning of record payload.
      * @param size Record payload size in bytes.
      * @param dest Destination/channel field.
