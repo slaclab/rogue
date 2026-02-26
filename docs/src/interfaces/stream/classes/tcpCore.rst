@@ -1,18 +1,12 @@
 .. _interfaces_stream_tcp_core:
 
+.. note::
+   Canonical generated C++ API docs are centralized at :ref:`api_reference`.
+
 =======
 TcpCore
 =======
 
 Examples of using a TCP stream bridge are described in :ref:`interfaces_stream_using_tcp`.
-
-TcpCore objects in C++ are referenced by the following shared pointer typedef:
-
-.. doxygentypedef:: rogue::interfaces::stream::TcpCorePtr
-
-The class description is shown below:
-
-.. doxygenclass:: rogue::interfaces::stream::TcpCore
-   :members:
 
 

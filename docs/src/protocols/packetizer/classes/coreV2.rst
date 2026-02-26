@@ -1,17 +1,12 @@
 .. _protocols_packetizer_classes_coreV2:
 
+.. note::
+   Canonical generated C++ API docs are centralized at :ref:`api_reference`.
+
 ======
 CoreV2
 ======
 
 TODO
 
-CoreV2 objects in C++ are referenced by the following shared pointer typedef:
-
-.. doxygentypedef:: rogue::protocols::packetizer::CoreV2Ptr
-
-The CoreV2 class description is shown below:
-
-.. doxygenclass:: rogue::protocols::packetizer::CoreV2
-   :members:
 

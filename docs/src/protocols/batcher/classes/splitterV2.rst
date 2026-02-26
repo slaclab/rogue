@@ -1,5 +1,8 @@
 .. _protocols_batcher_classes_splitterV2:
 
+.. note::
+   Canonical generated C++ API docs are centralized at :ref:`api_reference`.
+
 ==========
 SplitterV2
 ==========
@@ -9,11 +12,4 @@ frame per record.
 
 Protocol reference: https://confluence.slac.stanford.edu/x/L2VlK
 
-SplitterV2 objects in C++ are referenced by the following shared pointer typedef:
 
-.. doxygentypedef:: rogue::protocols::batcher::SplitterV2Ptr
-
-The SplitterV2 class description is shown below:
-
-.. doxygenclass:: rogue::protocols::batcher::SplitterV2
-   :members:

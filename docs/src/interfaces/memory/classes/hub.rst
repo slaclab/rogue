@@ -1,15 +1,10 @@
 .. _interfaces_memory_hub:
 
+.. note::
+   Canonical generated C++ API docs are centralized at :ref:`api_reference`.
+
 ===
 Hub
 ===
 
-Hub objects in C++ are referenced by the following shared pointer typedef:
-
-.. doxygentypedef:: rogue::interfaces::memory::HubPtr
-
-The class description is shown below:
-
-.. doxygenclass:: rogue::interfaces::memory::Hub
-   :members:
 

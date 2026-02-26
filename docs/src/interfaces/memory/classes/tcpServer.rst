@@ -1,15 +1,10 @@
 .. _interfaces_memory_tcp_server:
 
+.. note::
+   Canonical generated C++ API docs are centralized at :ref:`api_reference`.
+
 =========
 TcpServer
 =========
 
-TcpServer objects in C++ are referenced by the following shared pointer typedef:
-
-.. doxygentypedef:: rogue::interfaces::memory::TcpServerPtr
-
-The class description is shown below:
-
-.. doxygenclass:: rogue::interfaces::memory::TcpServer
-   :members:
 

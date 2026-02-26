@@ -1,11 +1,10 @@
 .. _protocols_xilinx_classes_xvc_connection:
 
+.. note::
+   Canonical generated C++ API docs are centralized at :ref:`api_reference`.
+
 =============
 XvcConnection
 =============
 
-The XvcConnection class description is shown below:
-
-.. doxygenclass:: rogue::protocols::xilinx::XvcConnection
-   :members:
 

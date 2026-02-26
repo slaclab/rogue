@@ -1,15 +1,10 @@
 .. _interfaces_memory_slave:
 
+.. note::
+   Canonical generated C++ API docs are centralized at :ref:`api_reference`.
+
 ======
 Slave
 ======
 
-Slave objects in C++ are referenced by the following shared pointer typedef:
-
-.. doxygentypedef:: rogue::interfaces::memory::SlavePtr
-
-The class description is shown below:
-
-.. doxygenclass:: rogue::interfaces::memory::Slave
-   :members:
 

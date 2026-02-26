@@ -1,15 +1,10 @@
 .. _interfaces_memory_transaction_lock:
 
+.. note::
+   Canonical generated C++ API docs are centralized at :ref:`api_reference`.
+
 ===============
 TransactionLock
 ===============
 
-TransactionLock objects in C++ are referenced by the following shared pointer typedef:
-
-.. doxygentypedef:: rogue::interfaces::memory::TransactionLockPtr
-
-The class description is shown below:
-
-.. doxygenclass:: rogue::interfaces::memory::TransactionLock
-   :members:
 

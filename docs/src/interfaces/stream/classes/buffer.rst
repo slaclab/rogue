@@ -1,5 +1,8 @@
 .. _interfaces_stream_buffer:
 
+.. note::
+   Canonical generated C++ API docs are centralized at :ref:`api_reference`.
+
 ======
 Buffer
 ======
@@ -12,12 +15,4 @@ The uint8_t data within a Buffer is iterated using a the following typedef:
 
    rogue::interfaces::stream::Buffer::iterator
 
-Buffer objects in C++ are referenced by the following shared pointer typedef:
-
-.. doxygentypedef:: rogue::interfaces::stream::BufferPtr
-
-The Buffer class description is shown below:
-
-.. doxygenclass:: rogue::interfaces::stream::Buffer
-   :members:
 

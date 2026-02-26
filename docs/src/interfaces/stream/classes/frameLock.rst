@@ -1,15 +1,10 @@
 .. _interfaces_stream_frame_lock:
 
+.. note::
+   Canonical generated C++ API docs are centralized at :ref:`api_reference`.
+
 ==========
 Frame Lock
 ==========
 
-FrameLock objects in C++ are referenced by the following shared pointer typedef:
-
-.. doxygentypedef:: rogue::interfaces::stream::FrameLockPtr
-
-The class description is shown below:
-
-.. doxygenclass:: rogue::interfaces::stream::FrameLock
-   :members:
 

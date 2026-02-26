@@ -1,16 +1,10 @@
 .. _interfaces_stream_pool:
 
+.. note::
+   Canonical generated C++ API docs are centralized at :ref:`api_reference`.
+
 ====
 Pool
 ====
 
-Pool objects in C++ are referenced by the following shared pointer typedef:
-
-.. doxygentypedef:: rogue::interfaces::stream::PoolPtr
-
-The class description is shown below:
-
-.. doxygenclass:: rogue::interfaces::stream::Pool
-   :members:
-   :protected-members:
 

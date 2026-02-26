@@ -1,17 +1,12 @@
 .. _protocols_udp_classes_core:
 
+.. note::
+   Canonical generated C++ API docs are centralized at :ref:`api_reference`.
+
 ====
 Core
 ====
 
 TODO
 
-Core objects in C++ are referenced by the following shared pointer typedef:
-
-.. doxygentypedef:: rogue::protocols::udp::CorePtr
-
-The Core class description is shown below:
-
-.. doxygenclass:: rogue::protocols::udp::Core
-   :members:
 

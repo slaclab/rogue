@@ -1,15 +1,10 @@
 .. _protocols_xilinx_classes_jtag_driver:
 
+.. note::
+   Canonical generated C++ API docs are centralized at :ref:`api_reference`.
+
 ==========
 JtagDriver
 ==========
 
-JtagDriver objects in C++ are referenced by the following shared pointer typedef:
-
-.. doxygentypedef:: rogue::protocols::xilinx::JtagDriverPtr
-
-The JtagDriver class description is shown below:
-
-.. doxygenclass:: rogue::protocols::xilinx::JtagDriver
-   :members:
 

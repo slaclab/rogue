@@ -1,5 +1,8 @@
 .. _protocols_srp_classes_srpV3:
 
+.. note::
+   Canonical generated C++ API docs are centralized at :ref:`api_reference`.
+
 =====
 SrpV3
 =====
@@ -11,12 +14,4 @@ For SRPv3 packet-level protocol details, see:
 
 - https://confluence.slac.stanford.edu/x/cRmVD
 
-SrpV3 objects in C++ are referenced by the following shared pointer typedef:
-
-.. doxygentypedef:: rogue::protocols::srp::SrpV3Ptr
-
-The SrpV3 class description is shown below:
-
-.. doxygenclass:: rogue::protocols::srp::SrpV3
-   :members:
 

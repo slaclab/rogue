@@ -1,17 +1,12 @@
 .. _utilities_prbs_prbs:
 
+.. note::
+   Canonical generated C++ API docs are centralized at :ref:`api_reference`.
+
 ====
 PRBS
 ====
 
 The Prbs class provides both a PRBS transmitter and receiver.
 
-Prbs objects in C++ are referenced by the following shared pointer typedef:
-
-.. doxygentypedef:: rogue::utilities::PrbsPtr
-
-The class description is shown below:
-
-.. doxygenclass:: rogue::utilities::Prbs
-   :members:
 

@@ -1,5 +1,8 @@
 .. _protocols_rssi_classes_transport:
 
+.. note::
+   Canonical generated C++ API docs are centralized at :ref:`api_reference`.
+
 =========
 Transport
 =========
@@ -7,11 +10,4 @@ Transport
 ``Transport`` is the lower RSSI stream endpoint. It exchanges RSSI frames
 between the controller and the underlying link transport.
 
-Transport objects in C++ are referenced by the following shared pointer typedef:
 
-.. doxygentypedef:: rogue::protocols::rssi::TransportPtr
-
-The Transport class description is shown below:
-
-.. doxygenclass:: rogue::protocols::rssi::Transport
-   :members:

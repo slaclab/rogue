@@ -1,5 +1,8 @@
 .. _protocols_rssi_classes_server:
 
+.. note::
+   Canonical generated C++ API docs are centralized at :ref:`api_reference`.
+
 ======
 Server
 ======
@@ -8,11 +11,4 @@ Server
 RSSI ``Transport``, ``Application``, and ``Controller`` objects for server
 operation.
 
-Server objects in C++ are referenced by the following shared pointer typedef:
 
-.. doxygentypedef:: rogue::protocols::rssi::ServerPtr
-
-The Server class description is shown below:
-
-.. doxygenclass:: rogue::protocols::rssi::Server
-   :members:

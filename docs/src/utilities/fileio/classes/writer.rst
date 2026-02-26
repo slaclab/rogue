@@ -1,5 +1,8 @@
 .. _utilities_fileio_writer:
 
+.. note::
+   Canonical generated C++ API docs are centralized at :ref:`api_reference`.
+
 ============
 StreamWriter
 ============
@@ -35,12 +38,4 @@ Split files use incrementing numeric suffixes:
    myFile.dat.2
    myFile.dat.3
 
-StreamWriter objects in C++ are referenced by the following shared pointer typedef:
-
-.. doxygentypedef:: rogue::utilities::fileio::StreamWriterPtr
-
-The class description is shown below:
-
-.. doxygenclass:: rogue::utilities::fileio::StreamWriter
-   :members:
 

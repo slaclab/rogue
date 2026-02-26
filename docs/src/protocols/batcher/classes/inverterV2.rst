@@ -1,5 +1,8 @@
 .. _protocols_batcher_classes_inverterV2:
 
+.. note::
+   Canonical generated C++ API docs are centralized at :ref:`api_reference`.
+
 ==========
 InverterV2
 ==========
@@ -10,11 +13,4 @@ It is not a batching or unbatching stage.
 
 Protocol reference: https://confluence.slac.stanford.edu/x/L2VlK
 
-InverterV2 objects in C++ are referenced by the following shared pointer typedef:
 
-.. doxygentypedef:: rogue::protocols::batcher::InverterV2Ptr
-
-The InverterV2 class description is shown below:
-
-.. doxygenclass:: rogue::protocols::batcher::InverterV2
-   :members:

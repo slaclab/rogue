@@ -1,15 +1,10 @@
 .. _interfaces_stream_master:
 
+.. note::
+   Canonical generated C++ API docs are centralized at :ref:`api_reference`.
+
 ======
 Master
 ======
 
-Master objects in C++ are referenced by the following shared pointer typedef:
-
-.. doxygentypedef:: rogue::interfaces::stream::MasterPtr
-
-The class description is shown below:
-
-.. doxygenclass:: rogue::interfaces::stream::Master
-   :members:
 

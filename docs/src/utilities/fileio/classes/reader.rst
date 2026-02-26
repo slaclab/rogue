@@ -1,5 +1,8 @@
 .. _utilities_fileio_reader:
 
+.. note::
+   Canonical generated C++ API docs are centralized at :ref:`api_reference`.
+
 ============
 StreamReader
 ============
@@ -10,12 +13,4 @@ The file format consumed by StreamReader is documented here:
 
 - :ref:`utilities_fileio_format`
 
-StreamReader objects in C++ are referenced by the following shared pointer typedef:
-
-.. doxygentypedef:: rogue::utilities::fileio::StreamReaderPtr
-
-The class description is shown below:
-
-.. doxygenclass:: rogue::utilities::fileio::StreamReader
-   :members:
 
