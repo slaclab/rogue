@@ -67,7 +67,7 @@ namespace xilinx {
  */
 class JtagDriver {
   protected:
-    //! Remote port number
+    // Remote port number
     uint16_t port_;
 
     // occasionally drop a packet for testing (when enabled)

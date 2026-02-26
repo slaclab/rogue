@@ -39,7 +39,7 @@ class Controller;
  * Provides per-destination stream ingress/egress into the packetizer stack.
  */
 class Application : public rogue::interfaces::stream::Master, public rogue::interfaces::stream::Slave {
-    //! Core module
+    // Core module
     std::shared_ptr<rogue::protocols::packetizer::Controller> cntl_;
 
     // ID
@@ -49,7 +49,7 @@ class Application : public rogue::interfaces::stream::Master, public rogue::inte
     std::thread* thread_;
     bool threadEn_;
 
-    //! Thread background
+    // Thread background
     void runThread();
 
     // Application queue

@@ -61,14 +61,14 @@ class Header;
  * segmented/tracked for reliable delivery according to negotiated parameters.
  */
 class Controller : public rogue::EnableSharedFromThis<rogue::protocols::rssi::Controller> {
-    //! Hard coded values
+    // Hard coded values
     static const uint8_t Version     = 1;
     static const uint8_t TimeoutUnit = 3;  // rssiTime * std::pow(10,-TimeoutUnit) = 3 = ms
 
-    //! Local parameters
+    // Local parameters
     uint32_t locTryPeriod_;
 
-    //! Configurable parameters, requested by software
+    // Configurable parameters, requested by software
     uint8_t locMaxBuffers_;
     uint16_t locMaxSegment_;
     uint16_t locCumAckTout_;
@@ -77,7 +77,7 @@ class Controller : public rogue::EnableSharedFromThis<rogue::protocols::rssi::Co
     uint8_t locMaxRetran_;
     uint8_t locMaxCumAck_;
 
-    //! Negotiated parameters
+    // Negotiated parameters
     uint8_t curMaxBuffers_;
     uint16_t curMaxSegment_;
     uint16_t curCumAckTout_;
@@ -86,7 +86,7 @@ class Controller : public rogue::EnableSharedFromThis<rogue::protocols::rssi::Co
     uint8_t curMaxRetran_;
     uint8_t curMaxCumAck_;
 
-    //! Connection states
+    // Connection states
     enum States : uint32_t { StClosed = 0, StWaitSyn = 1, StSendSynAck = 2, StSendSeqAck = 3, StOpen = 4, StError = 5 };
 
     // Interfaces

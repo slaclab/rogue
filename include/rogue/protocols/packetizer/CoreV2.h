@@ -39,13 +39,13 @@ class ControllerV2;
  * endpoints for the packetizer v2 stack.
  */
 class CoreV2 {
-    //! Transport module
+    // Transport module
     std::shared_ptr<rogue::protocols::packetizer::Transport> tran_;
 
-    //! Application modules
+    // Application modules
     std::shared_ptr<rogue::protocols::packetizer::Application> app_[256];
 
-    //! Core module
+    // Core module
     std::shared_ptr<rogue::protocols::packetizer::ControllerV2> cntl_;
 
   public:

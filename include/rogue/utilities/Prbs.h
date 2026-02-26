@@ -46,67 +46,67 @@ namespace utilities {
  *   protected by an internal mutex.
  */
 class Prbs : public rogue::interfaces::stream::Slave, public rogue::interfaces::stream::Master {
-    //! Max size
+    // Max size
     static const uint32_t MaxBytes = 64;
 
-    //! PRBS taps
+    // PRBS taps
     uint8_t* taps_;
 
-    //! PRBS tap count
+    // PRBS tap count
     uint32_t tapCnt_;
 
-    //! Data width in bytes
+    // Data width in bytes
     uint32_t width_;
 
-    //! Data width in bytes
+    // Data width in bytes
     uint32_t byteWidth_;
 
-    //! Min size
+    // Min size
     uint32_t minSize_;
 
-    //! Lock
+    // Lock
     std::mutex pMtx_;
 
-    //! rx sequence tracking
+    // rx sequence tracking
     uint32_t rxSeq_;
 
-    //! RX Error count
+    // RX Error count
     uint32_t rxErrCount_;
 
-    //! Rx count
+    // Rx count
     uint32_t rxCount_;
 
-    //! Rx bytes
+    // Rx bytes
     uint32_t rxBytes_;
 
-    //! tx sequence tracking
+    // tx sequence tracking
     uint32_t txSeq_;
 
-    //! Transmit size
+    // Transmit size
     uint32_t txSize_;
 
-    //! TX Error count
+    // TX Error count
     uint32_t txErrCount_;
 
-    //! TX count
+    // TX count
     uint32_t txCount_;
 
-    //! TX bytes
+    // TX bytes
     uint32_t txBytes_;
 
-    //! Check payload
+    // Check payload
     bool checkPl_;
 
-    //! Gen payload
+    // Gen payload
     bool genPl_;
 
-    //! Send count
+    // Send count
     bool sendCount_;
 
-    //! Receive enable
+    // Receive enable
     bool rxEnable_;
 
-    //! Tx Rate Period in microseconds
+    // Tx Rate Period in microseconds
     uint32_t txPeriod_;
 
     // Stats
@@ -122,18 +122,18 @@ class Prbs : public rogue::interfaces::stream::Slave, public rogue::interfaces::
     double txRate_;
     double txBw_;
 
-    //! Logger
+    // Logger
     std::shared_ptr<rogue::Logging> rxLog_;
     std::shared_ptr<rogue::Logging> txLog_;
 
-    //! TX thread
+    // TX thread
     std::thread* txThread_;
     bool threadEn_;
 
-    //! Internal computation
+    // Internal computation
     void flfsr(uint8_t* data);
 
-    //! Thread background
+    // Thread background
     void runThread();
 
     static double updateTime(struct timeval* last);
