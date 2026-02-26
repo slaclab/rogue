@@ -1,11 +1,13 @@
 .. _protocols_batcher_classes_data:
 
-.. note::
-   Canonical generated C++ API docs are centralized at :ref:`api_reference`.
-
 ====
 Data
 ====
+
+.. note::
+   Canonical generated C++ API docs are centralized at :ref:`api_reference`.
+
+
 
 ``Data`` describes one parsed record in a Batcher super-frame, including
 payload iterator range and per-record metadata (destination and user bytes).

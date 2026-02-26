@@ -1,11 +1,13 @@
 .. _interfaces_stream_buffer:
 
-.. note::
-   Canonical generated C++ API docs are centralized at :ref:`api_reference`.
-
 ======
 Buffer
 ======
+
+.. note::
+   Canonical generated C++ API docs are centralized at :ref:`api_reference`.
+
+
 
 The list of Buffer objects in a Frame is iterated using a the following typedef:
 

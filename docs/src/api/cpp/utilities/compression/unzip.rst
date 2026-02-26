@@ -1,11 +1,13 @@
 .. _utilities_compression_streamunzip:
 
-.. note::
-   Canonical generated C++ API docs are centralized at :ref:`api_reference`.
-
 ===========
 StreamUnZip
 ===========
+
+.. note::
+   Canonical generated C++ API docs are centralized at :ref:`api_reference`.
+
+
 
 The StreamUnZip class provides a payload decompression engine for Rogue Frames. This module will receive compressed
 Frames from an external master, de-compress the Frame payload and then pass the compressed frame to a downstream Slave.

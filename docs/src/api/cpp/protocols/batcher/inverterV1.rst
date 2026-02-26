@@ -1,11 +1,13 @@
 .. _protocols_batcher_classes_inverterV1:
 
-.. note::
-   Canonical generated C++ API docs are centralized at :ref:`api_reference`.
-
 ==========
 InverterV1
 ==========
+
+.. note::
+   Canonical generated C++ API docs are centralized at :ref:`api_reference`.
+
+
 
 ``InverterV1`` rewrites Batcher v1 framing in place and forwards one
 transformed output frame per input frame.

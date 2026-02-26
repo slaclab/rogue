@@ -1,10 +1,12 @@
 .. _interfaces_memory_slave:
 
-.. note::
-   Canonical generated C++ API docs are centralized at :ref:`api_reference`.
-
 ======
 Slave
 ======
+
+.. note::
+   Canonical generated C++ API docs are centralized at :ref:`api_reference`.
+
+
 
 

@@ -1,11 +1,13 @@
 .. _interfaces_memory_transaction:
 
-.. note::
-   Canonical generated C++ API docs are centralized at :ref:`api_reference`.
-
 ===========
 Transaction
 ===========
+
+.. note::
+   Canonical generated C++ API docs are centralized at :ref:`api_reference`.
+
+
 
 
 Overview

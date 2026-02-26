@@ -1,11 +1,13 @@
 .. _interfaces_memory_constants:
 
-.. note::
-   Canonical generated C++ API docs are centralized at :ref:`api_reference`.
-
 =========
 Constants
 =========
+
+.. note::
+   Canonical generated C++ API docs are centralized at :ref:`api_reference`.
+
+
 
 The following constants are defined for use with the memory interface.
 

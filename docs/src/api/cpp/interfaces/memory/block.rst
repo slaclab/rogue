@@ -1,11 +1,13 @@
 .. _interfaces_memory_block:
 
-.. note::
-   Canonical generated C++ API docs are centralized at :ref:`api_reference`.
-
 =====
 Block
 =====
+
+.. note::
+   Canonical generated C++ API docs are centralized at :ref:`api_reference`.
+
+
 
 The memory interface Block class provides a mirror for the hardware register space as well as serving as a translater between python types and hardware bits and bytes.
 

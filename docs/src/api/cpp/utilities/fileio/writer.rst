@@ -1,11 +1,13 @@
 .. _utilities_fileio_writer:
 
-.. note::
-   Canonical generated C++ API docs are centralized at :ref:`api_reference`.
-
 ============
 StreamWriter
 ============
+
+.. note::
+   Canonical generated C++ API docs are centralized at :ref:`api_reference`.
+
+
 
 The StreamWriter class writes Rogue stream frames to disk. It can accept frames
 from multiple incoming sources, with :ref:`utilities_fileio_writer_channel`
