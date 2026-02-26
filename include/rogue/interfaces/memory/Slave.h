@@ -85,6 +85,9 @@ class Slave : public rogue::EnableSharedFromThis<rogue::interfaces::memory::Slav
      *
      * @details
      * Exposed as `rogue.interfaces.memory.Slave()` to Python.
+     * This static factory is the preferred construction path when the object
+     * is shared across Rogue graph connections or exposed to Python.
+     * It returns `std::shared_ptr` ownership compatible with Rogue pointer typedefs.
      *
      * `min` and `max` define the default access-size contract (in bytes) reported
      * by `doMinAccess()` and `doMaxAccess()`. The base `Slave` class stores and
@@ -106,6 +109,9 @@ class Slave : public rogue::EnableSharedFromThis<rogue::interfaces::memory::Slav
      * @brief Constructs a memory slave.
      *
      * @details
+     * This constructor is a low-level C++ allocation path.
+     * Prefer `create()` when shared ownership or Python exposure is required.
+     *
      * `min` and `max` are stored as the local access-size contract and returned by
      * default `doMinAccess()`/`doMaxAccess()` implementations.
      *

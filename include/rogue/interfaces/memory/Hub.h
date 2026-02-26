@@ -87,6 +87,11 @@ class Hub : public Master, public Slave {
      *
      * @details
      * Exposed to Python as `rogue.interfaces.memory.Hub()`.
+     * This static factory is the preferred construction path when the object
+     * is shared across Rogue graph connections or exposed to Python.
+     * It returns `std::shared_ptr` ownership compatible with Rogue pointer typedefs.
+     * Parameter semantics are identical to the constructor; see `Hub()` for
+     * virtual-root behavior details.
      *
      * @param offset The offset of this Hub device.
      * @param min Minimum transaction size in virtual-root mode. Use `0` with `max=0`
@@ -101,16 +106,21 @@ class Hub : public Master, public Slave {
     static void setup_python();
 
     /**
-     * @brief Creates a Hub with optional virtual-root access constraints.
+     * @brief Constructs a Hub with optional virtual-root access constraints.
      *
      * @details
+     * This constructor is a low-level C++ allocation path.
+     * Prefer `create()` when shared ownership or Python exposure is required.
+     *
      * Virtual-root mode is enabled only when both `min` and `max` are non-zero.
      * When both are zero, the hub behaves as a pass-through for access-limit queries.
      * Mixed values (only one non-zero) also behave as pass-through.
      *
-     * @param offset Local offset applied to forwarded transactions.
-     * @param min Minimum transaction size for virtual-root mode.
-     * @param max Maximum transaction size for virtual-root mode.
+     * @param offset The offset of this Hub device.
+     * @param min Minimum transaction size in virtual-root mode. Use `0` with `max=0`
+     *            to disable virtual-root mode.
+     * @param max Maximum transaction size in virtual-root mode. Use `0` with `min=0`
+     *            to disable virtual-root mode.
      */
     Hub(uint64_t offset, uint32_t min, uint32_t max);
 

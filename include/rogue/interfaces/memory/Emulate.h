@@ -64,7 +64,11 @@ class Emulate : public Slave {
     /**
      * @brief Creates an emulator device.
      *
-     * @details Exposed to Python as `rogue.interfaces.memory.Emulate()`.
+     * @details
+     * Exposed to Python as `rogue.interfaces.memory.Emulate()`.
+     * This static factory is the preferred construction path when the object
+     * is shared across Rogue graph connections or exposed to Python.
+     * It returns `std::shared_ptr` ownership compatible with Rogue pointer typedefs.
      *
      * @param min Minimum transaction size in bytes, or `0` if not a virtual root.
      * @param max Maximum transaction size in bytes, or `0` if not a virtual root.
@@ -79,6 +83,10 @@ class Emulate : public Slave {
 
     /**
      * @brief Constructs an emulator device.
+     *
+     * @details
+     * This constructor is a low-level C++ allocation path.
+     * Prefer `create()` when shared ownership or Python exposure is required.
      *
      * @param min Minimum transaction size in bytes, or `0` if not a virtual root.
      * @param max Maximum transaction size in bytes, or `0` if not a virtual root.

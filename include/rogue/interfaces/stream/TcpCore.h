@@ -83,14 +83,8 @@ class TcpCore : public rogue::interfaces::stream::Master, public rogue::interfac
      * @brief Creates a TCP stream bridge core instance and returns it as `TcpCorePtr`.
      *
      * @details
-     * The creator takes an address, port and server mode flag. The passed
-     * address can either be an IP address or hostname. When running in server
-     * mode the address string defines which network interface the socket server
-     * will listen on. A string of "*" results in all network interfaces being
-     * listened on. The stream bridge requires two TCP ports. The passed port is the
-     * base number of these two ports. A passed value of 8000 will result in both
-     * 8000 and 8001 being used by this bridge.
-     *
+     * Parameter semantics are identical to the constructor; see `TcpCore()`
+     * for address and port behavior details.
      * Not exposed to Python.
      *
      * @param addr Interface address for server, remote server address for client.
@@ -106,7 +100,15 @@ class TcpCore : public rogue::interfaces::stream::Master, public rogue::interfac
     /**
      * @brief Constructs a TCP stream bridge core.
      *
-     * @param addr Local bind address in server mode, remote address in client mode.
+     * @details
+     * The constructor takes an address, port, and server mode flag. The address
+     * can be an IP address or hostname. In server mode, the address selects the
+     * local interface to bind. A value of `"*"` binds all local interfaces.
+     *
+     * The stream bridge uses two consecutive TCP ports; `port` is the base.
+     * For example, `port=8000` uses ports `8000` and `8001`.
+     *
+     * @param addr Interface address for server, remote server address for client.
      * @param port Base TCP port number.
      * @param server Set to `true` to run in server mode.
      */

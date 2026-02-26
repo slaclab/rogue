@@ -262,6 +262,9 @@ class Variable {
      *
      * @details
      * Exposed to Python as `rogue.interfaces.memory.Variable()`.
+     * This static factory is the preferred construction path when the object
+     * is shared across Rogue graph connections or exposed to Python.
+     * It returns `std::shared_ptr` ownership compatible with Rogue pointer typedefs.
      *
      * @param name Variable name
      * @param mode Variable mode
@@ -311,7 +314,9 @@ class Variable {
      * @brief Constructs a variable descriptor.
      *
      * @details
-     * Parameters mirror `create()` and are typically not used directly.
+     * This constructor is a low-level C++ allocation path.
+     * Prefer `create()` when shared ownership or Python exposure is required.
+
      *
      * @param name Variable name.
      * @param mode Variable mode string.

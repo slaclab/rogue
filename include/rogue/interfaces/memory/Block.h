@@ -194,7 +194,11 @@ class Block : public Master {
     /**
      * @brief Creates a memory block.
      *
-     * @details Exposed to Python as `rogue.interfaces.memory.Block()`.
+     * @details
+     * Exposed to Python as `rogue.interfaces.memory.Block()`.
+     * This static factory is the preferred construction path when the object
+     * is shared across Rogue graph connections or exposed to Python.
+     * It returns `std::shared_ptr` ownership compatible with Rogue pointer typedefs.
      *
      * @param offset Memory offset of the block.
      * @param size Memory size (footprint) of the block.
@@ -207,6 +211,10 @@ class Block : public Master {
 
     /**
      * @brief Constructs a block device with a given offset and size.
+     *
+     * @details
+     * This constructor is a low-level C++ allocation path.
+     * Prefer `create()` when shared ownership or Python exposure is required.
      *
      * @param offset Memory offset of the block.
      * @param size Memory size (footprint) of the block.

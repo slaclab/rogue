@@ -83,9 +83,12 @@ class TcpClient : public rogue::interfaces::memory::Slave {
      * @brief Creates a TCP memory bridge client.
      *
      * @details
-     * The address is the remote `TcpServer` host (IP or hostname). The bridge uses
-     * two consecutive TCP ports starting at `port` (for example `8000` and `8001`).
+     * Parameter semantics are identical to the constructor; see `TcpClient()`
+     * for address and port behavior details.
      * Exposed as `rogue.interfaces.memory.TcpClient()` in Python.
+     * This static factory is the preferred construction path when the object
+     * is shared across Rogue graph connections or exposed to Python.
+     * It returns `std::shared_ptr` ownership compatible with Rogue pointer typedefs.
      *
      * @param addr Remote server address.
      * @param port Base TCP port number.
@@ -100,6 +103,14 @@ class TcpClient : public rogue::interfaces::memory::Slave {
 
     /**
      * @brief Constructs a TCP memory bridge client.
+     *
+     * @details
+     * The address is the remote `TcpServer` host (IP or hostname).
+     * The bridge uses two consecutive TCP ports starting at `port`; for example,
+     * `port=8000` uses ports `8000` and `8001`.
+     *
+     * This constructor is a low-level C++ allocation path.
+     * Prefer `create()` when shared ownership or Python exposure is required.
      *
      * @param addr Remote server address.
      * @param port Base TCP port number.

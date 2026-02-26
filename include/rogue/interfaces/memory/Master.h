@@ -76,7 +76,11 @@ class Master {
     /**
      * @brief Creates a memory master instance.
      *
-     * @details Exposed as `rogue.interfaces.memory.Master()` in Python.
+     * @details
+     * Exposed as `rogue.interfaces.memory.Master()` in Python.
+     * This static factory is the preferred construction path when the object
+     * is shared across Rogue graph connections or exposed to Python.
+     * It returns `std::shared_ptr` ownership compatible with Rogue pointer typedefs.
      *
      * @return Shared pointer to the created master.
      */
@@ -85,7 +89,13 @@ class Master {
     /** @brief Registers this type with Python bindings. */
     static void setup_python();
 
-    /** @brief Constructs a memory master instance. */
+    /**
+     * @brief Constructs a memory master instance.
+     *
+     * @details
+     * This constructor is a low-level C++ allocation path.
+     * Prefer `create()` when shared ownership or Python exposure is required.
+     */
     Master();
 
     /** @brief Destroys the memory master instance. */

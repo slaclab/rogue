@@ -80,9 +80,14 @@ class TcpServer : public rogue::interfaces::memory::Master {
      * @brief Creates a TCP memory bridge server.
      *
      * @details
-     * `addr` may be a hostname, IP address, or `"*"` to bind on all interfaces.
-     * The bridge uses two consecutive TCP ports starting at `port` (for example
-     * `8000` and `8001`). Exposed as `rogue.interfaces.memory.TcpServer()` in Python.
+     * Parameter semantics are identical to the constructor; see `TcpServer()`
+     * for address and port behavior details.
+     *
+     * Exposed as `rogue.interfaces.memory.TcpServer()` in Python.
+     *
+     * This static factory is the preferred construction path when the object
+     * is shared across Rogue graph connections or exposed to Python.
+     * It returns `std::shared_ptr` ownership compatible with Rogue pointer typedefs.
      *
      * @param addr Local bind address.
      * @param port Base TCP port number.
@@ -97,6 +102,14 @@ class TcpServer : public rogue::interfaces::memory::Master {
 
     /**
      * @brief Constructs a TCP memory bridge server.
+     *
+     * @details
+     * `addr` may be a hostname, IP address, or `"*"` to bind on all interfaces.
+     * The bridge uses two consecutive TCP ports starting at `port`; for example,
+     * `port=8000` uses ports `8000` and `8001`.
+     *
+     * This constructor is a low-level C++ allocation path.
+     * Prefer `create()` when shared ownership or Python exposure is required.
      *
      * @param addr Local bind address.
      * @param port Base TCP port number.
