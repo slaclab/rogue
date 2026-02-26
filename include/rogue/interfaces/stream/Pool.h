@@ -1,5 +1,5 @@
 /**
-  * ----------------------------------------------------------------------------
+ * ----------------------------------------------------------------------------
  * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
@@ -35,22 +35,38 @@ class Frame;
 class Buffer;
 
 /**
- * @brief Stream pool class.
+ * @brief Frame and buffer allocator for stream endpoints.
  *
  * @details
- * The stream Pool class is responsible for allocating and garbage collecting Frame
- * objects and the Buffer objects they contain. The default mode is to allocate a
- * Frame with a single Buffer of the requested sized. Alternatively the Pool class
- * can operate in fixed buffer size mode. In this mode Buffer objects of a fixed
- * sized are allocated, with a Frame containing enough Buffer to satisfy the original
- * request. Normally Buffer data is freed when returned back to the Pool class.
- * Alternatively a pool can be enabled if operating in fixed size mode. When a pool
- * is enabled returned buffer data is stored in the pool for later allocation to
- * a new requester. The pool size defines the maximum number of entries to allow in
- * the pool.
+ * `Pool` is the stream-memory allocation layer used by `Slave` objects to
+ * service frame requests from upstream `Master` objects (`Master::reqFrame()`
+ * eventually resolves through `Pool::acceptReq()` on the primary slave).
  *
- * A subclass can be created with intercepts the Frame requests and allocates
- * Frame and Buffer objects from an alternative source such as a hardware DMA driver.
+ * Core responsibilities:
+ * - Allocate and construct `Frame` objects.
+ * - Allocate and construct the underlying `Buffer` objects used by each frame.
+ * - Reclaim and optionally recycle buffer data when buffers are returned.
+ * - Track allocation statistics (`getAllocBytes()`, `getAllocCount()`).
+ *
+ * Default behavior:
+ * - A request typically returns a frame with one buffer sized for the request.
+ * - Buffer memory is released when returned (no caching required).
+ *
+ * Fixed-size mode (`setFixedSize()`):
+ * - Each allocated buffer uses the configured fixed buffer size.
+ * - If a frame request is larger than one fixed buffer, the frame is built from
+ *   multiple buffers so total capacity satisfies the request.
+ *
+ * Pooling mode (`setPoolSize()` with fixed-size operation):
+ * - Returned buffer memory blocks are cached in an internal free queue for reuse.
+ * - Pool size defines the maximum number of cached entries retained.
+ * - Reuse reduces allocator churn for high-rate streaming workloads.
+ *
+ * Subclassing/advanced use:
+ * - Override `acceptReq()` to customize how frames are assembled.
+ * - Override `retBuffer()` to customize return/recycle behavior.
+ * - Use protected helpers (`allocBuffer()`, `createBuffer()`, `decCounter()`)
+ *   when integrating external memory providers, such as DMA-backed memory.
  */
 class Pool : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Pool> {
     // Mutex
@@ -75,10 +91,10 @@ class Pool : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Pool>
     uint32_t poolSize_;
 
   public:
-    // Class creator
+    /** @brief Constructs a pool with default allocation behavior enabled. */
     Pool();
 
-    // Destroy the object
+    /** @brief Destroys the pool and releases any cached buffer storage. */
     virtual ~Pool();
 
     /**
@@ -88,8 +104,9 @@ class Pool : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Pool>
      * This value is incremented
      * as buffers are allocated and decremented as buffers are freed.
      *
-     * Exposed as getAllocBytes() to Python
-     * @return Total currently allocated bytes
+     * Exposed as `getAllocBytes()` in Python.
+     *
+     * @return Total currently allocated bytes.
      */
     uint32_t getAllocBytes();
 
@@ -100,8 +117,9 @@ class Pool : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Pool>
      * This value is incremented
      * as buffers are allocated and decremented as buffers are freed.
      *
-     * Exposed as getAllocCount() to Python
-     * @return Total currently allocated buffers
+     * Exposed as `getAllocCount()` in Python.
+     *
+     * @return Total currently allocated buffers.
      */
     uint32_t getAllocCount();
 
@@ -125,13 +143,13 @@ class Pool : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Pool>
      * the associated Buffer memory. May be overridden by a subclass to
      * change the way the buffer data is returned.
      *
-     * @param data Data pointer to release
-     * @param meta Meta data specific to the allocator
-     * @param size Size of data buffer
+     * @param data Data pointer to release.
+     * @param meta Metadata specific to the allocator.
+     * @param size Size of data buffer.
      */
     virtual void retBuffer(uint8_t* data, uint32_t meta, uint32_t size);
 
-    // Setup class for use in python
+    /** @brief Registers this type with Python bindings. */
     static void setup_python();
 
     /**
@@ -140,34 +158,39 @@ class Pool : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Pool>
      * @details
      * This method puts the allocator into fixed size mode.
      *
-     * Exposed as setFixedSize() to Python
+     * Exposed as `setFixedSize()` in Python.
+     *
      * @param size Fixed size value.
      */
     void setFixedSize(uint32_t size);
 
     /**
-     * Get fixed size mode
-     * Return state of fixed size mode.
+     * @brief Returns fixed-size allocation setting.
      *
-     * Exposed as getFixedSize() to Python
-     * @return Fixed size value or 0 if not in fixed size mode
+     * @details
+     * A return value of `0` means fixed-size mode is disabled.
+     *
+     * Exposed as `getFixedSize()` in Python.
+     *
+     * @return Fixed size value or `0` when fixed-size mode is disabled.
      */
     uint32_t getFixedSize();
 
     /**
      * @brief Sets buffer pool size.
      *
-     * Exposed as setPoolSize() to Python
+     * Exposed as `setPoolSize()` in Python.
+     *
      * @param size Number of entries to keep in the pool.
      */
     void setPoolSize(uint32_t size);
 
     /**
-     * Get pool size
-     * Return configured pool size
+     * @brief Returns configured maximum number of cached pool entries.
      *
-     * Exposed as getPoolSize() to Python
-     * @return Pool size
+     * Exposed as `getPoolSize()` in Python.
+     *
+     * @return Pool size.
      */
     uint32_t getPoolSize();
 
@@ -222,7 +245,7 @@ class Pool : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Pool>
     void decCounter(uint32_t alloc);
 };
 
-/** Alias for using shared pointer as PoolPtr */
+/** @brief Shared pointer alias for `Pool`. */
 typedef std::shared_ptr<rogue::interfaces::stream::Pool> PoolPtr;
 }  // namespace stream
 }  // namespace interfaces

@@ -44,8 +44,23 @@ class Frame;
  * @brief Stream master endpoint.
  *
  * @details
- * Source object for sending frames to one or more stream slaves. The first attached
- * slave is used to allocate new frames and is the last to receive sent frames.
+ * Source object for sending frames to one or more stream slaves. The first
+ * attached slave is used to allocate new frames and is the last to receive
+ * sent frames.
+ *
+ * `Master` is not an abstract class (no pure virtual methods), but it is
+ * commonly used as a base for protocol/source implementations.
+ *
+ * Subclass expectations in practice:
+ * - No `Master` method is required to be overridden.
+ * - Most subclasses keep `addSlave()`, `reqFrame()`, and `sendFrame()` as-is
+ *   and call `reqFrame()`/`sendFrame()` from their own public APIs or worker
+ *   threads (for example protocol transmit paths and file readers).
+ * - `stop()` is the primary `Master` method intended for override when the
+ *   subclass owns worker threads, timers, sockets, or device handles.
+ * - For transform/bridge classes that are both source and sink, ingress logic
+ *   is usually implemented by also inheriting `Slave` and overriding
+ *   `Slave::acceptFrame()`, while egress uses this `Master` interface.
  */
 class Master : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Master> {
     // Vector of slaves
@@ -102,10 +117,10 @@ class Master : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Mas
      *
      * @details
      * Creates an empty frame with at least the requested payload capacity.
-     * The Master will forward this request to the primary Slave object. 
+     * The Master will forward this request to the primary Slave object.
      * The request for a new Frame includes
      * a flag which indicates if a zeroCopy frame is allowed. In most cases this
-     * flag can be set to True. Non zero copy frames are requested if the Master may
+     * flag can be set to `true`. Non-zero-copy frames are requested if the Master may
      * need to transmit the same frame multiple times.
      * Exposed as `_reqFrame()` in Python.
      *
@@ -124,7 +139,7 @@ class Master : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Mas
      * order of attachment, followed last by the primary Slave. If the Frame is a
      * zero copy frame it will most likely be empty when the sendFrame() method returns
      *
-     * Exposed as `_sendFrame` in Python.
+     * Exposed as `_sendFrame()` in Python.
      *
      * @param frame Frame to send.
      */
@@ -134,7 +149,7 @@ class Master : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Mas
      * @brief Ensures a frame is represented by a single buffer.
      *
      * @details
-     * If the reqNew flag is true and the passed frame is not a single buffer, a
+     * If the `reqEn` flag is `true` and the passed frame is not a single buffer, a
      * new frame will be requested and the frame data will be copied, with the passed
      * frame pointer being updated. The return value will indicate if the frame is a
      * single buffer at the end of the process. A frame lock must be held when this
@@ -151,24 +166,43 @@ class Master : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Mas
     /**
      * @brief Stops frame generation and shuts down associated threads.
      *
-     * @details Exposed as `stop()` in Python. Subclasses may override.
+     * @details
+     * Exposed as `stop()` in Python.
+     *
+     * This is the primary subclass hook on `Master`. Override when the
+     * subclass owns background activity or transport resources that require
+     * deterministic shutdown.
      */
     virtual void stop();
 
 #ifndef NO_PYTHON
 
-    /** @brief Supports `==` operator usage from Python. */
+    /**
+     * @brief Supports `==` operator usage from Python.
+     * @param p Python object expected to resolve to a stream `Slave`.
+     */
     void equalsPy(boost::python::object p);
 
-    /** @brief Supports `>>` operator usage from Python. */
+    /**
+     * @brief Supports `>>` operator usage from Python.
+     * @param p Python object expected to resolve to a stream `Slave`.
+     * @return Original Python object for chaining semantics.
+     */
     boost::python::object rshiftPy(boost::python::object p);
 
 #endif
 
-    /** @brief Supports `==` operator usage in C++. */
+    /**
+     * @brief Supports `==` operator usage in C++.
+     * @param other Downstream slave to attach.
+     */
     void operator==(std::shared_ptr<rogue::interfaces::stream::Slave>& other);
 
-    /** @brief Connects this master to a slave via stream chaining operator. */
+    /**
+     * @brief Connects this master to a slave via stream chaining operator.
+     * @param other Downstream slave to attach.
+     * @return Reference to `other` for chaining.
+     */
     std::shared_ptr<rogue::interfaces::stream::Slave>& operator>>(
         std::shared_ptr<rogue::interfaces::stream::Slave>& other);
 };

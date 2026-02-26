@@ -117,13 +117,12 @@ class FrameIterator : public std::iterator<std::random_access_iterator_tag, uint
      */
     uint32_t remBuffer();
 
-    //! De-reference
     /**
      * @brief Dereferences iterator to current byte.
      *
      * @details
-     * This allows data at the current iterator position to be accessed
-     * using a *it de-reference
+     * Allows data at the current iterator position to be accessed using
+     * `*it` syntax.
      *
      * @return Reference to current byte.
      */
@@ -145,7 +144,6 @@ class FrameIterator : public std::iterator<std::random_access_iterator_tag, uint
      */
     uint8_t operator[](const uint32_t offset) const;
 
-    //! Pre-increment the iterator position
     /**
      * @brief Prefix-increments iterator by one byte.
      *
@@ -157,7 +155,6 @@ class FrameIterator : public std::iterator<std::random_access_iterator_tag, uint
      */
     const rogue::interfaces::stream::FrameIterator& operator++();
 
-    //! Post-increment the iterator position.
     /**
      * @brief Postfix-increments iterator by one byte.
      *
@@ -170,7 +167,6 @@ class FrameIterator : public std::iterator<std::random_access_iterator_tag, uint
      */
     rogue::interfaces::stream::FrameIterator operator++(int);
 
-    //! Pre-decrement the iterator position
     /**
      * @brief Prefix-decrements iterator by one byte.
      *
@@ -182,7 +178,6 @@ class FrameIterator : public std::iterator<std::random_access_iterator_tag, uint
      */
     const rogue::interfaces::stream::FrameIterator& operator--();
 
-    //! Post-decrement the iterator position.
     /**
      * @brief Postfix-decrements iterator by one byte.
      *
@@ -195,85 +190,78 @@ class FrameIterator : public std::iterator<std::random_access_iterator_tag, uint
      */
     rogue::interfaces::stream::FrameIterator operator--(int);
 
-    //! Not Equal.
     /**
      * @brief Compares two iterators for inequality.
      *
      * @details
-     * Compare this iterator to another iterator and return True if they are at
+     * Compare this iterator to another iterator and return `true` if they are at
      * different positions.
      *
      * @param other Iterator to compare against.
-     * @return True if the two iterators are not equal
+     * @return `true` if the two iterators are not equal.
      */
     bool operator!=(const rogue::interfaces::stream::FrameIterator& other) const;
 
-    //! Equal.
     /**
      * @brief Compares two iterators for equality.
      *
      * @details
-     * Compare this iterator to another iterator and return True if they are
-     * reference the same position within the Frame.
+     * Compare this iterator to another iterator and return `true` if they
+     * reference the same position within the frame.
      *
      * @param other Iterator to compare against.
-     * @return True if the two iterators are equal
+     * @return `true` if the two iterators are equal.
      */
     bool operator==(const rogue::interfaces::stream::FrameIterator& other) const;
 
-    //! Less than.
     /**
      * @brief Returns whether this iterator is before another iterator.
      *
      * @details
-     * Compare this iterator to another iterator and return True if the local
-     * iterator (left of <) is less than the iterator being compare against.
+     * Compare this iterator to another iterator and return `true` if the local
+     * iterator (left of `<`) is less than the iterator being compared against.
      *
      * @param other Iterator to compare against.
-     * @return True if the left iterator is less than the right.
+     * @return `true` if the left iterator is less than the right.
      */
     bool operator<(const rogue::interfaces::stream::FrameIterator& other) const;
 
-    //! Greater than.
     /**
      * @brief Returns whether this iterator is after another iterator.
      *
      * @details
-     * Compare this iterator to another iterator and return True if the local
-     * iterator (left of >) is greater than the iterator being compare against.
+     * Compare this iterator to another iterator and return `true` if the local
+     * iterator (left of `>`) is greater than the iterator being compared against.
      *
      * @param other Iterator to compare against.
-     * @return True if the left iterator is greater than the right.
+     * @return `true` if the left iterator is greater than the right.
      */
     bool operator>(const rogue::interfaces::stream::FrameIterator& other) const;
 
-    //! Less than or equal to.
     /**
      * @brief Returns whether this iterator is before or equal to another iterator.
      *
      * @details
-     * Compare this iterator to another iterator and return True if the local
-     * iterator (left of <=) is less than or equal to the iterator being compare against.
+     * Compare this iterator to another iterator and return `true` if the local
+     * iterator (left of `<=`) is less than or equal to the iterator being compared against.
      *
      * @param other Iterator to compare against.
-     * @return True if the left iterator is less than or equal to the right.
+     * @return `true` if the left iterator is less than or equal to the right.
      */
     bool operator<=(const rogue::interfaces::stream::FrameIterator& other) const;
 
-    //! Greater than or equal to.
     /**
      * @brief Returns whether this iterator is after or equal to another iterator.
      *
      * @details
-     * Compare this iterator to another iterator and return True if the local
-     * iterator (left of >=) is greater than or equal to the iterator being compare against.
+     * Compare this iterator to another iterator and return `true` if the local
+     * iterator (left of `>=`) is greater than or equal to the iterator being compared against.
      *
      * @param other Iterator to compare against.
-     * @return True if the left iterator is greater than or equal to the right.
+     * @return `true` if the left iterator is greater than or equal to the right.
      */
     bool operator>=(const rogue::interfaces::stream::FrameIterator& other) const;
 
-    //! Increment by value.
     /**
      * @brief Returns a new iterator offset forward by `add`.
      *
@@ -281,11 +269,10 @@ class FrameIterator : public std::iterator<std::random_access_iterator_tag, uint
      * Create a new iterator and increment its position by the passed value.
      *
      * @param add Positive or negative value to increment the current position by.
-     * @return New iterator at the new position
+     * @return New iterator at the new position.
      */
     rogue::interfaces::stream::FrameIterator operator+(const int32_t add) const;
 
-    //! Decrement by value.
     /**
      * @brief Returns a new iterator offset backward by `sub`.
      *
@@ -293,24 +280,22 @@ class FrameIterator : public std::iterator<std::random_access_iterator_tag, uint
      * Create a new iterator and decrement its position by the passed value.
      *
      * @param sub Positive or negative value to decrement the current position by.
-     * @return New iterator at the new position
+     * @return New iterator at the new position.
      */
     rogue::interfaces::stream::FrameIterator operator-(const int32_t sub) const;
 
-    //! Subtract incrementers.
     /**
      * @brief Returns byte-distance between two iterators.
      *
      * @details
-     * Return the difference between the current incrementer position (left of -) and
-     * the compared incrementer position.
+     * Return the difference between the current iterator position (left of `-`)
+     * and the compared iterator position.
      *
      * @param other Iterator to compare against.
-     * @return Different of the two positions as a int32_t
+     * @return Difference of the two positions as an `int32_t`.
      */
     int32_t operator-(const rogue::interfaces::stream::FrameIterator& other) const;
 
-    //! Increment by value
     /**
      * @brief In-place increments iterator by `add`.
      *
@@ -318,11 +303,10 @@ class FrameIterator : public std::iterator<std::random_access_iterator_tag, uint
      * Increment the current iterator by the passed value.
      *
      * @param add Positive or negative value to increment the current position by.
-     * @return Reference to current iterator at the new position
+     * @return Reference to current iterator at the new position.
      */
     rogue::interfaces::stream::FrameIterator& operator+=(const int32_t add);
 
-    //! Decrement by value
     /**
      * @brief In-place decrements iterator by `sub`.
      *
@@ -330,7 +314,7 @@ class FrameIterator : public std::iterator<std::random_access_iterator_tag, uint
      * Decrement the current iterator by the passed value.
      *
      * @param sub Positive or negative value to decrement the current position by.
-     * @return Reference to current iterator at the new position
+     * @return Reference to current iterator at the new position.
      */
     rogue::interfaces::stream::FrameIterator& operator-=(const int32_t sub);
 };

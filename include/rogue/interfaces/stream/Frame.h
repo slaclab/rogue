@@ -89,7 +89,7 @@ class Frame : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Fram
     std::mutex lock_;
 
   public:
-    //! Alias for using std::vector<std::shared_ptr<rogue::interfaces::stream::Buffer> >::iterator as Buffer::iterator
+    /** @brief Iterator alias for the internal buffer list. */
     typedef std::vector<std::shared_ptr<rogue::interfaces::stream::Buffer> >::iterator BufferIterator;
 
     /** @brief Registers Python bindings for this class. */
@@ -133,7 +133,6 @@ class Frame : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Fram
      */
     std::shared_ptr<rogue::interfaces::stream::FrameLock> lock();
 
-    //! Append passed frame to the end of this frame.
     /**
      * @brief Appends another frame's buffers to the end of this frame.
      *
@@ -141,14 +140,14 @@ class Frame : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Fram
      * Buffers from the passed frame are appended to the end of this frame and
      * will be removed from the source frame.
      *
-     * Not exposed to Python
-     * @param frame Source frame pointer (FramePtr) to append
-     * @return Buffer list iterator (Frame::BufferIterator) pointing to the first inserted buffer from passed frame
+     * Not exposed to Python.
+     *
+     * @param frame Source frame pointer (`FramePtr`) to append.
+     * @return Iterator pointing to the first inserted buffer from `frame`.
      */
     std::vector<std::shared_ptr<rogue::interfaces::stream::Buffer> >::iterator appendFrame(
         std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
-    //! Add a buffer to end of frame.
     /**
      * @brief Appends one buffer to the end of the frame.
      *
@@ -156,13 +155,12 @@ class Frame : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Fram
      * Not exposed to Python.
      *
      * This is for advanced manipulation of the underlying buffers.
-     * @param buff The buffer pointer (BufferPtr) to append to the end of the frame
-     * @return Buffer list iterator (Frame::BufferIterator) pointing to the added buffer
+     * @param buff Buffer pointer (`BufferPtr`) to append.
+     * @return Iterator pointing to the added buffer.
      */
     std::vector<std::shared_ptr<rogue::interfaces::stream::Buffer> >::iterator appendBuffer(
         std::shared_ptr<rogue::interfaces::stream::Buffer> buff);
 
-    //! Get Buffer list begin iterator
     /**
      * @brief Returns iterator to first underlying buffer.
      *
@@ -170,11 +168,10 @@ class Frame : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Fram
      * Not exposed to Python.
      *
      * This is for advanced manipulation of the underlying buffers.
-     * @return Buffer list iterator (Frame::BufferIterator) pointing to the start of the Buffer list
+     * @return Iterator pointing to the start of the buffer list.
      */
     std::vector<std::shared_ptr<rogue::interfaces::stream::Buffer> >::iterator beginBuffer();
 
-    //! Get Buffer list end iterator
     /**
      * @brief Returns end iterator for underlying buffer list.
      *
@@ -182,11 +179,10 @@ class Frame : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Fram
      * Not exposed to Python.
      *
      * This is for advanced manipulation of the underlying buffers.
-     * @return Buffer list iterator (Frame::BufferIterator) pointing to the end of the Buffer list
+     * @return Iterator pointing to the end of the buffer list.
      */
     std::vector<std::shared_ptr<rogue::interfaces::stream::Buffer> >::iterator endBuffer();
 
-    //! Get Buffer list count
     /**
      * @brief Returns number of underlying buffers in the frame.
      *
@@ -194,11 +190,10 @@ class Frame : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Fram
      * Not exposed to Python.
      *
      * This is for advanced manipulation of the underlying buffers.
-     * @return Number of buffers in the Buffer list
+     * @return Number of buffers in the list.
      */
     uint32_t bufferCount();
 
-    //! Empty the frame, removing all buffers
     /**
      * @brief Removes all buffers from the frame.
      *
@@ -207,47 +202,46 @@ class Frame : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Fram
      */
     void clear();
 
-    //! Buffer list empty state
     /**
      * @brief Returns whether the frame contains no buffers.
      *
      * @details
      * Not exposed to Python.
      *
-     * @return True if frame Buffer list is empty.
+     * @return `true` if frame buffer list is empty.
      */
     bool isEmpty();
 
-    //! Get total size of the Frame
     /**
      * @brief Returns total raw frame capacity in bytes.
      *
      * @details
      * This function returns the full buffer size.
      *
-     * Exposed as getSize() to Python
-     * @return Total raw Buffer size of Frame in bytes
+     * Exposed as `getSize()` in Python.
+     *
+     * @return Total raw buffer size of frame in bytes.
      */
     uint32_t getSize();
 
-    //! Get total available size of the Frame
     /**
      * @brief Returns remaining available payload space in bytes.
      *
      * @details
      * This is the space remaining for payload.
      *
-     * Exposed as getAvailable() to Python
-     * @return Remaining bytes available for payload in the Frame
+     * Exposed as `getAvailable()` in Python.
+     *
+     * @return Remaining bytes available for payload in the frame.
      */
     uint32_t getAvailable();
 
-    //! Get total payload size of the Frame
     /**
      * @brief Returns current payload size in bytes.
      *
-     * Exposed as getPayload() to Python
-     * @return Total payload bytes in the Frame
+     * Exposed as `getPayload()` in Python.
+     *
+     * @return Total payload bytes in the frame.
      */
     uint32_t getPayload();
 
@@ -549,7 +543,7 @@ class Frame : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Fram
     void debug();
 };
 
-//! Alias for using shared pointer as FramePtr
+/** @brief Shared pointer alias for `Frame`. */
 typedef std::shared_ptr<rogue::interfaces::stream::Frame> FramePtr;
 }  // namespace stream
 }  // namespace interfaces
