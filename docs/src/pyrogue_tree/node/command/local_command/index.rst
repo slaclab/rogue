@@ -38,6 +38,7 @@ LocalCommand (BaseCommand Alias) Class Documentation
 ====================================================
 
 .. autoclass:: pyrogue.BaseCommand
+   :no-index:
    :members:
    :member-order: bysource
    :inherited-members:
