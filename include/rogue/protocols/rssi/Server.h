@@ -37,15 +37,19 @@ class Controller;
  * @details
  * Bundles transport, application, and controller components for server-side
  * RSSI links.
+ * Protocol reference: https://confluence.slac.stanford.edu/x/1IyfD
+ *
+ * Construction wires the internal components together:
+ * `Transport <-> Controller <-> Application`.
  */
 class Server {
-    //! Transport module
+    // Transport endpoint.
     std::shared_ptr<rogue::protocols::rssi::Transport> tran_;
 
-    //! Application module
+    // Application endpoint.
     std::shared_ptr<rogue::protocols::rssi::Application> app_;
 
-    //! Server module
+    // Protocol controller.
     std::shared_ptr<rogue::protocols::rssi::Controller> cntl_;
 
   public:

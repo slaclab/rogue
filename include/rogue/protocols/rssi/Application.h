@@ -36,16 +36,26 @@ class Controller;
  *
  * @details
  * Provides stream ingress/egress for payload traffic through the RSSI stack.
+ *
+ * Threading model:
+ * - Inbound application frames are handled synchronously in `acceptFrame()`
+ *   and forwarded to `Controller::applicationRx()`.
+ * - Outbound application frames are produced by a background thread started in
+ *   `setController()` and drained from `Controller::applicationTx()`.
+ *
+ * Lifetime contract:
+ * - `setController()` must be called before destruction so the TX thread is
+ *   created and can be cleanly stopped/joined.
  */
 class Application : public rogue::interfaces::stream::Master, public rogue::interfaces::stream::Slave {
-    //! Core module
+    // RSSI controller backend.
     std::shared_ptr<rogue::protocols::rssi::Controller> cntl_;
 
-    // Transmission thread
+    // Outbound application worker thread.
     std::thread* thread_;
     bool threadEn_;
 
-    //! Thread background
+    // Worker thread entry point.
     void runThread();
 
   public:
@@ -66,6 +76,10 @@ class Application : public rogue::interfaces::stream::Master, public rogue::inte
 
     /**
      * @brief Attaches the RSSI controller.
+     *
+     * @details
+     * Stores controller reference and starts outbound worker thread.
+     *
      * @param cntl Controller instance that owns protocol state.
      */
     void setController(std::shared_ptr<rogue::protocols::rssi::Controller> cntl);
@@ -77,7 +91,7 @@ class Application : public rogue::interfaces::stream::Master, public rogue::inte
      * Called by the stream master side of this endpoint.
      *
      * @param size Minimum requested payload size in bytes.
-     * @param zeroCopyEn True to allow zero-copy allocation when possible.
+     * @param zeroCopyEn Zero-copy hint (not used by RSSI application path).
      * @return Newly allocated frame.
      */
     std::shared_ptr<rogue::interfaces::stream::Frame> acceptReq(uint32_t size, bool zeroCopyEn);

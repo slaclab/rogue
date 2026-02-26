@@ -35,39 +35,47 @@ namespace rssi {
  * @details
  * Wraps a stream frame and provides helpers for encoding, decoding, and
  * validating RSSI header fields.
+ *
+ * Field model:
+ * - Public members are the decoded/encoded RSSI header fields.
+ * - `verify()` parses bytes from the frame into these members and validates
+ *   checksum/size.
+ * - `update()` writes members back to frame bytes and updates checksum.
+ * - SYN-only fields are meaningful when `syn == true`.
  */
 class Header {
-    //! Set 16-bit uint value
+  private:
+    // Set 16-bit network-order integer at byte offset.
     inline void setUInt16(uint8_t* data, uint8_t byte, uint16_t value);
 
-    //! Get 16-bit uint value
+    // Get 16-bit network-order integer at byte offset.
     inline uint16_t getUInt16(uint8_t* data, uint8_t byte);
 
-    //! Set 32-bit uint value
+    // Set 32-bit network-order integer at byte offset.
     inline void setUInt32(uint8_t* data, uint8_t byte, uint32_t value);
 
-    //! Get 32-bit uint value
+    // Get 32-bit network-order integer at byte offset.
     inline uint32_t getUInt32(uint8_t* data, uint8_t byte);
 
-    //! compute checksum
+    // Compute RSSI checksum over indicated header size.
     uint16_t compSum(uint8_t* data, uint8_t size);
 
-  public:
-    /** @brief Encoded RSSI header size in bytes. */
-    static const int32_t HeaderSize = 8;
-    static const uint32_t SynSize   = 24;
-
-  private:
-    //! Frame pointer
+    // Underlying frame carrying RSSI header bytes.
     std::shared_ptr<rogue::interfaces::stream::Frame> frame_;
 
-    //! Time last transmitted
+    // Last transmit/update timestamp.
     struct timeval time_;
 
-    //! Transmit count
+    // Number of times update() has been called.
     uint32_t count_;
 
   public:
+    /** @brief Encoded RSSI non-SYN header size in bytes. */
+    static const int32_t HeaderSize = 8;
+
+    /** @brief Encoded RSSI SYN header size in bytes. */
+    static const uint32_t SynSize   = 24;
+
     /**
      * @brief Creates a header wrapper for an existing frame.
      * @param frame Frame containing RSSI header bytes.
@@ -121,58 +129,58 @@ class Header {
      */
     std::string dump();
 
-    //! Syn flag
+    /** @brief SYN flag (synchronization/header-extension present). */
     bool syn;
 
-    //! Ack flag
+    /** @brief ACK flag. */
     bool ack;
 
-    //! Rst flag
+    /** @brief RST flag. */
     bool rst;
 
-    //! NUL flag
+    /** @brief NUL/keepalive flag. */
     bool nul;
 
-    //! Busy flag
+    /** @brief Busy flag. */
     bool busy;
 
-    //! Sequence number
+    /** @brief Sequence number field. */
     uint8_t sequence;
 
-    //! Acknowledge number
+    /** @brief Acknowledge number field. */
     uint8_t acknowledge;
 
-    //! Version field
+    /** @brief Protocol version (SYN headers only). */
     uint8_t version;
 
-    //! Chk flag
+    /** @brief CHK capability flag (SYN headers only). */
     bool chk;
 
-    //! MAX Outstanding Segments
+    /** @brief Maximum outstanding segments (SYN headers only). */
     uint8_t maxOutstandingSegments;
 
-    //! MAX Segment Size
+    /** @brief Maximum segment size (SYN headers only). */
     uint16_t maxSegmentSize;
 
-    //! Retransmission Timeout
+    /** @brief Retransmission timeout (SYN headers only). */
     uint16_t retransmissionTimeout;
 
-    //! Cumulative Acknowledgment Timeout
+    /** @brief Cumulative ACK timeout (SYN headers only). */
     uint16_t cumulativeAckTimeout;
 
-    //! NULL Timeout
+    /** @brief NULL/keepalive timeout (SYN headers only). */
     uint16_t nullTimeout;
 
-    //! Max Retransmissions
+    /** @brief Maximum retransmissions (SYN headers only). */
     uint8_t maxRetransmissions;
 
-    //! MAX Cumulative Ack
+    /** @brief Maximum cumulative ACK count (SYN headers only). */
     uint8_t maxCumulativeAck;
 
-    //! Timeout Unit
+    /** @brief Timeout unit field (SYN headers only). */
     uint8_t timeoutUnit;
 
-    //! Connection ID
+    /** @brief Connection ID (SYN headers only). */
     uint32_t connectionId;
 };
 

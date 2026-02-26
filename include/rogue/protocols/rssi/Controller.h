@@ -43,6 +43,22 @@ class Header;
  * @details
  * Implements connection state, flow control, retransmission, and parameter
  * negotiation between RSSI application and transport endpoints.
+ *
+ * Protocol reference: https://confluence.slac.stanford.edu/x/1IyfD
+ *
+ * Class relationship within `rogue::protocols::rssi`:
+ * - `Client` / `Server`: convenience wrappers that construct and wire the
+ *   RSSI stack for endpoint role.
+ * - `Transport`: stream-facing link side for RSSI frames to/from the lower
+ *   transport (for example UDP-based links).
+ * - `Application`: stream-facing payload side used by upper protocol layers.
+ * - `Header`: codec/container for RSSI header fields on stream frames.
+ * - `Controller` (this class): central state machine and policy engine
+ *   connecting `Transport` and `Application`.
+ *
+ * Operationally, frames received from `Transport` are decoded and processed for
+ * ACK/SYN/state transitions and delivery, while `Application` frames are
+ * segmented/tracked for reliable delivery according to negotiated parameters.
  */
 class Controller : public rogue::EnableSharedFromThis<rogue::protocols::rssi::Controller> {
     //! Hard coded values
