@@ -29,14 +29,17 @@ C++ API
 Use the section class indexes for curated C++ APIs, grouped by namespace.
 
 ``rogue::hardware``
+
 * :doc:`/api/cpp/hardware/axi/index`
 * :doc:`/api/cpp/hardware/raw/index`
 
 ``rogue::interfaces``
+
 * :doc:`/api/cpp/interfaces/memory/index`
 * :doc:`/api/cpp/interfaces/stream/index`
 
 ``rogue::protocols``
+
 * :doc:`/api/cpp/protocols/batcher/index`
 * :doc:`/api/cpp/protocols/packetizer/index`
 * :doc:`/api/cpp/protocols/rssi/index`
@@ -45,6 +48,7 @@ Use the section class indexes for curated C++ APIs, grouped by namespace.
 * :doc:`/api/cpp/protocols/xilinx/index`
 
 ``rogue::utilities``
+
 * :doc:`/api/cpp/utilities/compression/index`
 * :doc:`/api/cpp/utilities/fileio/index`
 * :doc:`/api/cpp/utilities/prbs/index`
