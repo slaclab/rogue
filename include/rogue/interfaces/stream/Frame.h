@@ -245,58 +245,54 @@ class Frame : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Fram
      */
     uint32_t getPayload();
 
-    //! Set payload size
     /**
      * @brief Sets payload size in bytes.
      *
      * @details
      * Not exposed to Python.
      *
-     * @param size New payload size
+     * @param size New payload size.
      */
     void setPayload(uint32_t size);
 
-    //! Set payload size to at least the passed value
     /**
      * @brief Expands payload size to at least the passed value.
      *
      * @details
-     * If current payload size is larger then passed value,
+     * If current payload size is larger than the passed value,
      * the payload size is unchanged.
      *
-     * Not exposed to Python
-     * @param size New minimum size
+     * Not exposed to Python.
+     *
+     * @param size New minimum size.
      */
     void minPayload(uint32_t size);
 
-    //! Adjust payload size
     /**
      * @brief Adjusts payload size by a signed delta.
      *
      * @details
-     * Pass is a positive or negative size adjustment.
+     * `value` is a positive or negative size adjustment.
      *
-     * Not exposed to Python
-     * @param value Size adjustment value
+     * Not exposed to Python.
+     *
+     * @param value Size adjustment value.
      */
     void adjustPayload(int32_t value);
 
-    //! Set the Frame payload to full
     /**
      * @brief Sets payload size to full available frame capacity.
      *
      * @details
-     * Set the current payload size to equal the total
-     * available size of the buffers.
+     * Sets payload size equal to total available buffer capacity.
      *
-     * Not exposed to Python
+     * Not exposed to Python.
      */
     void setPayloadFull();
 
     /** @brief Sets the frame payload size to zero bytes. */
     void setPayloadEmpty();
 
-    //! Get Frame flags
     /**
      * @brief Returns 16-bit frame flags field.
      *
@@ -306,17 +302,18 @@ class Frame : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Fram
      * A typical use in Rogue is to pass the first and last user
      * Axi-Stream fields.
      *
-     * Exposed as getFlags() to Python
-     * @return 16-bit Flag value
+     * Exposed as `getFlags()` in Python.
+     *
+     * @return 16-bit flag value.
      */
     uint16_t getFlags();
 
-    //! Set Frame flags
     /**
      * @brief Sets 16-bit frame flags field.
      *
-     * Exposed as setFlags() to Python
-     * @param flags 16-bit flag value
+     * Exposed as `setFlags()` in Python.
+     *
+     * @param flags 16-bit flag value.
      */
     void setFlags(uint16_t flags);
 
@@ -326,7 +323,8 @@ class Frame : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Fram
      * @details
      * The first user value is stored in the lower 8 bits of the flag field.
      *
-     * Exposed as getFirstuser() to Python
+     * Exposed as `getFirstUser()` in Python.
+     *
      * @return 8-bit first-user value.
      */
     uint8_t getFirstUser();
@@ -346,7 +344,8 @@ class Frame : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Fram
      * @details
      * The last user value is stored in the upper 8 bits of the flag field.
      *
-     * Exposed as getLastUser() to Python
+     * Exposed as `getLastUser()` in Python.
+     *
      * @return 8-bit last-user value.
      */
     uint8_t getLastUser();
@@ -360,7 +359,6 @@ class Frame : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Fram
      */
     void setLastUser(uint8_t fuser);
 
-    //! Get channel
     /**
      * @brief Returns frame channel value.
      *
@@ -369,21 +367,21 @@ class Frame : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Fram
      * Master to Slave connections are not channelized. Exceptions include
      * data coming out of a data file reader.
      *
-     * Exposed as getChannel() to Python
-     * @return 8-bit channel ID
+     * Exposed as `getChannel()` in Python.
+     *
+     * @return 8-bit channel ID.
      */
     uint8_t getChannel();
 
-    //! Set channel
     /**
      * @brief Sets frame channel value.
      *
-     * Exposed as setChannel() to Python
-     * @param channel 8-bit channel ID
+     * Exposed as `setChannel()` in Python.
+     *
+     * @param channel 8-bit channel ID.
      */
     void setChannel(uint8_t channel);
 
-    //! Get error state
     /**
      * @brief Returns frame error status value.
      *
@@ -391,46 +389,47 @@ class Frame : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Fram
      * The error value is application specific, depending on the stream Master
      * implementation. A non-zero value is considered an error.
      *
-     * Exposed as getError() to Python
+     * Exposed as `getError()` in Python.
+     *
      * @return Error status value.
      */
     uint8_t getError();
 
-    //! Set error state
     /**
      * @brief Sets frame error status value.
      *
-     * Exposed as setError() to Python
-     * @param error New error value
+     * Exposed as `setError()` in Python.
+     *
+     * @param error New error value.
      */
     void setError(uint8_t error);
 
-    //! Get begin FrameIterator
     /**
      * @brief Returns begin iterator over frame payload.
      *
      * @details
-     * Return an iterator for accessing data within the Frame.
+     * Returns an iterator for accessing data within the frame.
      * This iterator assumes the payload size of the frame has
      * already been set. This means the frame has either been
      * received already containing data, or the setPayload() method
      * has been called.
      *
-     * Not exposed to Python
-     * @return FrameIterator pointing to beginning of payload
+     * Not exposed to Python.
+     *
+     * @return `FrameIterator` pointing to beginning of payload.
      */
     rogue::interfaces::stream::FrameIterator begin();
 
-    //! Get end FrameIterator
     /**
      * @brief Returns end iterator over frame payload.
      *
      * @details
      * This iterator is used to detect when the end of the
-     * Frame payload is reached when iterating through the Frame.
+     * frame payload is reached when iterating through the frame.
      *
-     * Not exposed to Python
-     * @return FrameIterator read end position
+     * Not exposed to Python.
+     *
+     * @return `FrameIterator` end position.
      */
     rogue::interfaces::stream::FrameIterator end();
 
@@ -476,8 +475,8 @@ class Frame : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Fram
 
 #ifndef NO_PYTHON
 
-    //! Python Frame data read function.
-    /** @brief Reads frame bytes into a passed Python bytearray/buffer.
+    /**
+     * @brief Reads frame bytes into a passed Python bytearray/buffer.
      *
      * @details
      * Exposed as `read()` to Python.
@@ -487,8 +486,8 @@ class Frame : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Fram
      */
     void readPy(boost::python::object p, uint32_t offset);
 
-    //! Python Frame data read function.
-    /** @brief Reads frame bytes into a newly allocated Python bytearray.
+    /**
+     * @brief Reads frame bytes into a newly allocated Python bytearray.
      *
      * @details
      * Exposed as `getBa()` to Python.
@@ -499,7 +498,6 @@ class Frame : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Fram
      */
     boost::python::object getBytearrayPy(uint32_t offset, uint32_t count);
 
-    //! Python Frame data read function.
     /**
      * @brief Returns a Python `memoryview` of frame payload data.
      *
@@ -510,8 +508,8 @@ class Frame : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Fram
      */
     boost::python::object getMemoryviewPy();
 
-    //! Python Frame data write function.
-    /** @brief Writes bytes from a Python bytearray/buffer into the frame.
+    /**
+     * @brief Writes bytes from a Python bytearray/buffer into the frame.
      *
      * @details
      * Exposed as `write()` to Python.

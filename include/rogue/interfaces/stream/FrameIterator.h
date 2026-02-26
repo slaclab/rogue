@@ -324,7 +324,11 @@ class FrameIterator : public std::iterator<std::random_access_iterator_tag, uint
  *
  * @details
  * This helper function copies from the passed data pointer into the
- * Frame at the iterator position. The iterator is incremented by the copy size.
+ * frame at the iterator position. The iterator is incremented by the copied
+ * byte count.
+ *
+ * Caller is expected to ensure sufficient writable frame capacity for `size`
+ * bytes from the iterator position.
  *
  * @param iter FrameIterator at position to copy the data to.
  * @param size Number of bytes to copy.
@@ -348,7 +352,11 @@ static inline void toFrame(rogue::interfaces::stream::FrameIterator& iter, uint3
  *
  * @details
  * This helper function copies data from the frame at the iterator location
- * into the passed data pointer. The iterator is updated by byte copy size.
+ * into the passed data pointer. The iterator is incremented by the copied
+ * byte count.
+ *
+ * Caller is expected to ensure sufficient readable frame payload for `size`
+ * bytes from the iterator position.
  *
  * @param iter FrameIterator at position to copy the data from.
  * @param size Number of bytes to copy.
@@ -372,8 +380,11 @@ static inline void fromFrame(rogue::interfaces::stream::FrameIterator& iter, uin
  *
  * @details
  * This helper function copies data from the source frame at the iterator
- * location into the dest frame at the iterator location. Both iterators are
- * updated by byte copy size.
+ * location into the destination frame at the iterator location. Both iterators
+ * are incremented by the copied byte count.
+ *
+ * Caller is expected to ensure sufficient readable bytes in `srcIter` and
+ * writable capacity in `dstIter` for `size` bytes.
  *
  * @param srcIter FrameIterator at position to copy the data from.
  * @param size Number of bytes to copy.
