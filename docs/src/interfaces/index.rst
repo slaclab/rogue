@@ -30,4 +30,4 @@ prototyped in Python and then re-implemented in C++ for performance.
    pyrogue/index
    sql.rst
    cpp_api.rst
-
+   version.rst
