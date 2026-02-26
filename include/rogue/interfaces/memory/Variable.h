@@ -520,7 +520,7 @@ class Variable {
      * @param value Pointer to input byte buffer.
      * @param index Value index, or `-1` for the full variable.
      */
-    void setByteArray(uint8_t*, int32_t index = -1);
+    void setByteArray(uint8_t* value, int32_t index = -1);
 
     /**
      * @brief Gets value into a raw byte array.
@@ -532,7 +532,7 @@ class Variable {
      * @param value Pointer to output byte buffer.
      * @param index Value index, or `-1` for the full variable.
      */
-    void getByteArray(uint8_t*, int32_t index = -1);
+    void getByteArray(uint8_t* value, int32_t index = -1);
 
     /////////////////////////////////
     // C++ Uint
@@ -548,7 +548,7 @@ class Variable {
      * @param value Input value.
      * @param index Value index, or `-1` for the full variable.
      */
-    void setUInt(uint64_t&, int32_t index = -1);
+    void setUInt(uint64_t& value, int32_t index = -1);
 
     /**
      * @brief Convenience alias for `setUInt`.
@@ -596,7 +596,7 @@ class Variable {
      * @param value Input value.
      * @param index Value index, or `-1` for the full variable.
      */
-    void setInt(int64_t&, int32_t index = -1);
+    void setInt(int64_t& value, int32_t index = -1);
 
     /**
      * @brief Convenience alias for `setInt`.
@@ -644,7 +644,7 @@ class Variable {
      * @param value Input value.
      * @param index Value index, or `-1` for the full variable.
      */
-    void setBool(bool&, int32_t index = -1);
+    void setBool(bool& value, int32_t index = -1);
 
     /**
      * @brief Convenience alias for `setBool`.
@@ -692,7 +692,7 @@ class Variable {
      * @param value Input string value.
      * @param index Value index, or `-1` for the full variable.
      */
-    void setString(const std::string&, int32_t index = -1);
+    void setString(const std::string& value, int32_t index = -1);
 
     /**
      * @brief Convenience alias for `setString`.
@@ -732,7 +732,7 @@ class Variable {
      * @param valueRet Output reference receiving the value.
      * @param index Value index, or `-1` for the full variable.
      */
-    void getValue(std::string&, int32_t index = -1);
+    void getValue(std::string& valueRet, int32_t index = -1);
 
     /////////////////////////////////
     // C++ Float
@@ -748,7 +748,7 @@ class Variable {
      * @param value Input value.
      * @param index Value index, or `-1` for the full variable.
      */
-    void setFloat(float&, int32_t index = -1);
+    void setFloat(float& value, int32_t index = -1);
 
     /**
      * @brief Convenience alias for `setFloat`.
@@ -796,7 +796,7 @@ class Variable {
      * @param value Input value.
      * @param index Value index, or `-1` for the full variable.
      */
-    void setDouble(double&, int32_t index = -1);
+    void setDouble(double& value, int32_t index = -1);
 
     /**
      * @brief Convenience alias for `setDouble`.
@@ -845,7 +845,7 @@ class Variable {
      * @param value Input value.
      * @param index Value index, or `-1` for the full variable.
      */
-    void setFixed(double&, int32_t index = -1);
+    void setFixed(double& value, int32_t index = -1);
 
     /**
      * @brief Gets fixed-point value.
