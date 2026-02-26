@@ -25,7 +25,4 @@ into multiple downstream transactions, providing a mechanism for handling comple
    slave
    hub
    usingTcp
-   blocks
-   blocks_advanced
    classes/index
-

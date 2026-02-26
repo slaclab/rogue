@@ -1,3 +1,4 @@
+.. _pyrogue_tree_blocks_advanced:
 .. _interfaces_memory_blocks_advanced:
 
 ========================

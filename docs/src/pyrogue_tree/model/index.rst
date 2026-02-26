@@ -15,7 +15,7 @@ Related Documentation
 =====================
 
 For advanced block/variable interaction details, see
-:doc:`/interfaces/memory/blocks_advanced`.
+:doc:`/pyrogue_tree/blocks_advanced`.
 
 Utility Functions
 =================

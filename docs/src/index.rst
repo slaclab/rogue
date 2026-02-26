@@ -31,6 +31,8 @@ Find other helpful links(slack channel, Jira, etc) `on confluence <https://confl
    custom_module/index
    pydm/index
    migration/index
+   api/index
+   
 
 Please email rherbst@slac.stanford.edu if you see any errors or have any
 questions about anything in the current documentation. We are still adding
@@ -42,4 +44,3 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-

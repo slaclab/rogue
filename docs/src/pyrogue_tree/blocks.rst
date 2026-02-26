@@ -1,3 +1,4 @@
+.. _pyrogue_tree_blocks:
 .. _interfaces_memory_blocks:
 
 ===============
