@@ -4,7 +4,9 @@
 Header
 ======
 
-TODO
+``Header`` is a helper codec/container for RSSI header fields. It parses frame
+bytes into structured fields (`verify()`), and encodes fields back into frame
+bytes with updated checksum (`update()`).
 
 Header objects in C++ are referenced by the following shared pointer typedef:
 
@@ -14,4 +16,3 @@ The Header class description is shown below:
 
 .. doxygenclass:: rogue::protocols::rssi::Header
    :members:
-

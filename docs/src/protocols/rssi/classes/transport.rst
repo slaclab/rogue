@@ -4,7 +4,8 @@
 Transport
 =========
 
-TODO
+``Transport`` is the lower RSSI stream endpoint. It exchanges RSSI frames
+between the controller and the underlying link transport.
 
 Transport objects in C++ are referenced by the following shared pointer typedef:
 
@@ -14,4 +15,3 @@ The Transport class description is shown below:
 
 .. doxygenclass:: rogue::protocols::rssi::Transport
    :members:
-
