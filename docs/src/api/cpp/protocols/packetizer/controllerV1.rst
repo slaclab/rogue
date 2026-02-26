@@ -4,11 +4,10 @@
 ControllerV1
 ============
 
-.. note::
-   Canonical generated C++ API docs are centralized at :ref:`api_reference`.
-
-
-
 TODO
 
 
+.. doxygentypedef:: rogue::protocols::packetizer::ControllerV1Ptr
+
+.. doxygenclass:: rogue::protocols::packetizer::ControllerV1
+   :members:

@@ -4,11 +4,10 @@
 Transport
 =========
 
-.. note::
-   Canonical generated C++ API docs are centralized at :ref:`api_reference`.
-
-
-
 TODO
 
 
+.. doxygentypedef:: rogue::protocols::packetizer::TransportPtr
+
+.. doxygenclass:: rogue::protocols::packetizer::Transport
+   :members:

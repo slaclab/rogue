@@ -4,11 +4,6 @@
 StreamWriter
 ============
 
-.. note::
-   Canonical generated C++ API docs are centralized at :ref:`api_reference`.
-
-
-
 The StreamWriter class writes Rogue stream frames to disk. It can accept frames
 from multiple incoming sources, with :ref:`utilities_fileio_writer_channel`
 providing the per-channel input interfaces. This class can be sub-classed to
@@ -41,3 +36,7 @@ Split files use incrementing numeric suffixes:
    myFile.dat.3
 
 
+.. doxygentypedef:: rogue::utilities::fileio::StreamWriterPtr
+
+.. doxygenclass:: rogue::utilities::fileio::StreamWriter
+   :members:

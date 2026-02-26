@@ -4,11 +4,10 @@
 MemMap
 ======
 
-.. note::
-   Canonical generated C++ API docs are centralized at :ref:`api_reference`.
-
-
-
 Examples of using the MemMap class are included in :ref:`hardware_raw_memory`.
 
 
+.. doxygentypedef:: rogue::hardware::MemMapPtr
+
+.. doxygenclass:: rogue::hardware::MemMap
+   :members:

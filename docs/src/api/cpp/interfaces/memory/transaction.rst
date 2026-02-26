@@ -4,12 +4,6 @@
 Transaction
 ===========
 
-.. note::
-   Canonical generated C++ API docs are centralized at :ref:`api_reference`.
-
-
-
-
 Overview
 --------
 
@@ -84,3 +78,7 @@ Python-facing APIs expose transaction fields and data access helpers. For Python
 backed transfers, the transaction may hold temporary Python buffer state until completion.
 
 
+.. doxygentypedef:: rogue::interfaces::memory::TransactionPtr
+
+.. doxygenclass:: rogue::interfaces::memory::Transaction
+   :members:

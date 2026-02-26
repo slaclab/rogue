@@ -47,10 +47,3 @@ Use the section class indexes for curated C++ APIs:
    /api/cpp/utilities/compression/index
    /api/cpp/hardware/axi/index
    /api/cpp/hardware/raw/index
-
-Complete Doxygen Index
-======================
-
-This is the full Breathe/Doxygen index for all parsed C++ symbols.
-
-.. doxygenindex::

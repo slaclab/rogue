@@ -4,11 +4,10 @@
 Application
 ===========
 
-.. note::
-   Canonical generated C++ API docs are centralized at :ref:`api_reference`.
-
-
-
 TODO
 
 
+.. doxygentypedef:: rogue::protocols::packetizer::ApplicationPtr
+
+.. doxygenclass:: rogue::protocols::packetizer::Application
+   :members:

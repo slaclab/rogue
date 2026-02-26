@@ -4,9 +4,7 @@
 TcpClient
 =========
 
-.. note::
-   Canonical generated C++ API docs are centralized at :ref:`api_reference`.
+.. doxygentypedef:: rogue::interfaces::memory::TcpClientPtr
 
-
-
-
+.. doxygenclass:: rogue::interfaces::memory::TcpClient
+   :members:

@@ -4,9 +4,7 @@
 JtagDriver
 ==========
 
-.. note::
-   Canonical generated C++ API docs are centralized at :ref:`api_reference`.
+.. doxygentypedef:: rogue::protocols::xilinx::JtagDriverPtr
 
-
-
-
+.. doxygenclass:: rogue::protocols::xilinx::JtagDriver
+   :members:

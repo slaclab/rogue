@@ -4,9 +4,7 @@
 Hub
 ===
 
-.. note::
-   Canonical generated C++ API docs are centralized at :ref:`api_reference`.
+.. doxygentypedef:: rogue::interfaces::memory::HubPtr
 
-
-
-
+.. doxygenclass:: rogue::interfaces::memory::Hub
+   :members:

@@ -4,11 +4,10 @@
 Client
 ======
 
-.. note::
-   Canonical generated C++ API docs are centralized at :ref:`api_reference`.
-
-
-
 TODO
 
 
+.. doxygentypedef:: rogue::protocols::udp::ClientPtr
+
+.. doxygenclass:: rogue::protocols::udp::Client
+   :members:

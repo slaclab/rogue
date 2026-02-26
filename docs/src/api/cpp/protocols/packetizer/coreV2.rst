@@ -4,11 +4,10 @@
 CoreV2
 ======
 
-.. note::
-   Canonical generated C++ API docs are centralized at :ref:`api_reference`.
-
-
-
 TODO
 
 
+.. doxygentypedef:: rogue::protocols::packetizer::CoreV2Ptr
+
+.. doxygenclass:: rogue::protocols::packetizer::CoreV2
+   :members:

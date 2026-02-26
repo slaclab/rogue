@@ -4,9 +4,7 @@
 Xvc
 ===
 
-.. note::
-   Canonical generated C++ API docs are centralized at :ref:`api_reference`.
+.. doxygentypedef:: rogue::protocols::xilinx::XvcPtr
 
-
-
-
+.. doxygenclass:: rogue::protocols::xilinx::Xvc
+   :members:

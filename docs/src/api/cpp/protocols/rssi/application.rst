@@ -4,12 +4,11 @@
 Application
 ===========
 
-.. note::
-   Canonical generated C++ API docs are centralized at :ref:`api_reference`.
-
-
-
 ``Application`` is the upper RSSI stream endpoint. It carries payload frames
 between user protocol layers and the RSSI controller.
 
 
+.. doxygentypedef:: rogue::protocols::rssi::ApplicationPtr
+
+.. doxygenclass:: rogue::protocols::rssi::Application
+   :members:

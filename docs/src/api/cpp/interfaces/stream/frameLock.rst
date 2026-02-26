@@ -4,9 +4,7 @@
 Frame Lock
 ==========
 
-.. note::
-   Canonical generated C++ API docs are centralized at :ref:`api_reference`.
+.. doxygentypedef:: rogue::interfaces::stream::FrameLockPtr
 
-
-
-
+.. doxygenclass:: rogue::interfaces::stream::FrameLock
+   :members:

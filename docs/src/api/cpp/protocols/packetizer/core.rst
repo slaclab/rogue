@@ -4,11 +4,10 @@
 Core
 ====
 
-.. note::
-   Canonical generated C++ API docs are centralized at :ref:`api_reference`.
-
-
-
 TODO
 
 
+.. doxygentypedef:: rogue::protocols::packetizer::CorePtr
+
+.. doxygenclass:: rogue::protocols::packetizer::Core
+   :members:

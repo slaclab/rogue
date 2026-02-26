@@ -4,9 +4,7 @@
 Frame
 =====
 
-.. note::
-   Canonical generated C++ API docs are centralized at :ref:`api_reference`.
+.. doxygentypedef:: rogue::interfaces::stream::FramePtr
 
-
-
-
+.. doxygenclass:: rogue::interfaces::stream::Frame
+   :members:

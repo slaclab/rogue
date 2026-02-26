@@ -4,13 +4,12 @@
 Server
 ======
 
-.. note::
-   Canonical generated C++ API docs are centralized at :ref:`api_reference`.
-
-
-
 ``Server`` is the role-specific convenience wrapper that owns and wires the
 RSSI ``Transport``, ``Application``, and ``Controller`` objects for server
 operation.
 
 
+.. doxygentypedef:: rogue::protocols::rssi::ServerPtr
+
+.. doxygenclass:: rogue::protocols::rssi::Server
+   :members:

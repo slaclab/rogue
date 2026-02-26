@@ -4,9 +4,7 @@
 Master
 ======
 
-.. note::
-   Canonical generated C++ API docs are centralized at :ref:`api_reference`.
+.. doxygentypedef:: rogue::interfaces::stream::MasterPtr
 
-
-
-
+.. doxygenclass:: rogue::interfaces::stream::Master
+   :members:

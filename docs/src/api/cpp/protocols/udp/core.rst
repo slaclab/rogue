@@ -4,11 +4,10 @@
 Core
 ====
 
-.. note::
-   Canonical generated C++ API docs are centralized at :ref:`api_reference`.
-
-
-
 TODO
 
 
+.. doxygentypedef:: rogue::protocols::udp::CorePtr
+
+.. doxygenclass:: rogue::protocols::udp::Core
+   :members:

@@ -4,9 +4,7 @@
 Slave
 =====
 
-.. note::
-   Canonical generated C++ API docs are centralized at :ref:`api_reference`.
+.. doxygentypedef:: rogue::interfaces::stream::SlavePtr
 
-
-
-
+.. doxygenclass:: rogue::interfaces::stream::Slave
+   :members:

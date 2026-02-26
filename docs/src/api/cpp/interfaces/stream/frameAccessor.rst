@@ -4,9 +4,5 @@
 Frame Accessor
 ==============
 
-.. note::
-   Canonical generated C++ API docs are centralized at :ref:`api_reference`.
-
-
-
-
+.. doxygenclass:: rogue::interfaces::stream::FrameAccessor
+   :members:

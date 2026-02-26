@@ -4,11 +4,10 @@
 TcpServer
 =========
 
-.. note::
-   Canonical generated C++ API docs are centralized at :ref:`api_reference`.
-
-
-
 Examples of using a TCP stream bridge are described in :ref:`interfaces_stream_using_tcp`.
 
 
+.. doxygentypedef:: rogue::interfaces::stream::TcpServerPtr
+
+.. doxygenclass:: rogue::interfaces::stream::TcpServer
+   :members:
