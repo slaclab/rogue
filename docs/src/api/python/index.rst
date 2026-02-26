@@ -3,10 +3,14 @@
 Python API
 ==========
 
-Canonical generated Python API reference pages.
+Canonical generated Python API reference pages, grouped by package.
+
+pyrogue
+-------
 
 .. toctree::
    :maxdepth: 1
+
 
    basecommand
    basevariable
@@ -19,11 +23,6 @@ Canonical generated Python API reference pages.
    fixed
    float
    int
-   interfaces_oscommandmemoryslave
-   interfaces_simpleclient
-   interfaces_stream_variable
-   interfaces_virtualclient
-   interfaces_zmqserver
    linkvariable
    localblock
    localvariable
@@ -31,8 +30,6 @@ Canonical generated Python API reference pages.
    node
    pollqueue
    process
-   protocols_epicsv4_epicspvholder
-   protocols_epicsv4_epicspvserver
    remotecommand
    remotevariable
    reversebits
@@ -42,11 +39,58 @@ Canonical generated Python API reference pages.
    twoscomplement
    ufixed
    uint
+   wordcount
+
+pyrogue.interfaces
+------------------
+
+.. toctree::
+   :maxdepth: 1
+
+
+   interfaces_oscommandmemoryslave
+   interfaces_simpleclient
+   interfaces_virtualclient
+   interfaces_zmqserver
+
+pyrogue.interfaces.stream
+-------------------------
+
+.. toctree::
+   :maxdepth: 1
+
+
+   interfaces_stream_variable
+
+pyrogue.protocols.epicsV4
+-------------------------
+
+.. toctree::
+   :maxdepth: 1
+
+
+   protocols_epicsv4_epicspvholder
+   protocols_epicsv4_epicspvserver
+
+pyrogue.utilities.fileio
+------------------------
+
+.. toctree::
+   :maxdepth: 1
+
+
    utilities_fileio_filereader
    utilities_fileio_rogueheader
    utilities_fileio_streamreader
    utilities_fileio_streamwriter
+
+pyrogue.utilities.prbs
+----------------------
+
+.. toctree::
+   :maxdepth: 1
+
+
    utilities_prbs_prbspair
    utilities_prbs_prbsrx
    utilities_prbs_prbstx
-   wordcount
