@@ -77,14 +77,22 @@ class Buffer {
     /** @brief Iterator alias for byte-wise buffer access. */
     typedef uint8_t* iterator;
 
-    // Class factory which returns a BufferPtr
-    /* Create a new Buffer with associated data.
+    /**
+     * @brief Creates a buffer backed by memory owned by a stream `Pool`.
      *
-     * Not exposed to python, Called by Pool class
-     * data Pointer to raw data block associated with Buffer
-     * meta Meta data to track allocation
-     * size Size of raw data block usable by Buffer
-     * alloc Total memory allocated, may be greater than size
+     * @details
+     * This factory is used internally by pool implementations when a frame
+     * buffer is allocated. The `alloc` size may be larger than `size` when
+     * the allocator rounds up to alignment or slab boundaries.
+     *
+     * Not exposed to Python.
+     *
+     * @param source Pool that owns the backing allocation.
+     * @param data Pointer to raw data allocation.
+     * @param meta Pool-defined metadata associated with the allocation.
+     * @param size Requested/usable raw buffer size in bytes.
+     * @param alloc Actual allocated bytes for this buffer.
+     * @return Shared pointer to the created buffer object.
      */
     static std::shared_ptr<rogue::interfaces::stream::Buffer> create(
         std::shared_ptr<rogue::interfaces::stream::Pool> source,
@@ -93,17 +101,32 @@ class Buffer {
         uint32_t size,
         uint32_t alloc);
 
-    // Create a buffer.
+    /**
+     * @brief Constructs a buffer around a pool allocation.
+     *
+     * @param source Pool that owns the backing allocation.
+     * @param data Pointer to raw data allocation.
+     * @param meta Pool-defined metadata associated with the allocation.
+     * @param size Requested/usable raw buffer size in bytes.
+     * @param alloc Actual allocated bytes for this buffer.
+     */
     Buffer(std::shared_ptr<rogue::interfaces::stream::Pool> source,
            void* data,
            uint32_t meta,
            uint32_t size,
            uint32_t alloc);
 
-    // Destroy a buffer
+    /** @brief Destroys the buffer wrapper and returns ownership to the pool path. */
     ~Buffer();
 
-    // Set owner frame, called by Frame class only
+    /**
+     * @brief Associates this buffer with its owning frame.
+     *
+     * @details
+     * Called by `Frame` while building or reparenting frame buffer lists.
+     *
+     * @param frame Owning frame object.
+     */
     void setFrame(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
     /**
@@ -225,7 +248,11 @@ class Buffer {
     /** @brief Clears payload (sets payload size to zero). */
     void setPayloadEmpty();
 
-    /** @brief Emits debug information for this buffer. */
+    /**
+     * @brief Emits debug information for this buffer.
+     *
+     * @param idx Buffer index/tag to print with the debug output.
+     */
     void debug(uint32_t idx);
 };
 

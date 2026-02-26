@@ -32,6 +32,12 @@ namespace stream {
 
 /**
  * @brief Typed accessor over a contiguous frame-data region.
+ *
+ * @details
+ * `FrameAccessor<T>` provides typed element access into frame payload data when
+ * the requested range is fully contained in a single underlying buffer span.
+ * This avoids per-byte iterator overhead in tight loops while preserving a
+ * checked construction step.
  */
 template <typename T>
 class FrameAccessor {
@@ -59,10 +65,14 @@ class FrameAccessor {
                                               "Attempt to create a FrameAccessor over a multi-buffer range!");
     }
 
-    /** 
+    /**
      * @brief Dereference by index.
-     * @details 
-     * Returns element reference at `offset` (unchecked). 
+     *
+     * @details
+     * Returns element reference at `offset` without bounds checking.
+     *
+     * @param offset Element index.
+     * @return Element reference.
      */
     T& operator[](const uint32_t offset) {
         return data_[offset];

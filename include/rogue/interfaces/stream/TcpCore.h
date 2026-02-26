@@ -39,12 +39,12 @@ namespace stream {
  * @details
  * This class implements the core functionality of the TcpClient and TcpServer
  * classes which implement a Rogue stream bridge over a TCP network. This core
- * can operation in either client or server mode. The TcpClient and TcpServer
- * classes are thin wrapper which define which mode flag to pass to this base
+ * can operate in either client or server mode. The TcpClient and TcpServer
+ * classes are thin wrappers that define which mode flag to pass to this base
  * class.
  *
  * The TcpServer and TcpClient interfaces are blocking and will stall frame
- * transmissions when the remote side is either not present or is back pressuring.
+ * transmissions when the remote side is either not present or is back-pressuring.
  * When the remote server is not present a local buffer is not utilized, where it is
  * utilized when a connection has been established.
  */
@@ -80,7 +80,7 @@ class TcpCore : public rogue::interfaces::stream::Master, public rogue::interfac
 
   public:
     /**
-     * @brief Creates a TCP stream bridge core instance and return as TcpCorePtr.
+     * @brief Creates a TCP stream bridge core instance and returns it as `TcpCorePtr`.
      *
      * @details
      * The creator takes an address, port and server mode flag. The passed

@@ -56,7 +56,7 @@ class TcpServer : public rogue::interfaces::stream::TcpCore {
      *
      * @param addr Interface address for the server.
      * @param port Base TCP port number for the bridge.
-     * @return Shared ponter (TcpServerPtr) to the created server.
+     * @return Shared pointer (`TcpServerPtr`) to the created server.
      */
     static std::shared_ptr<rogue::interfaces::stream::TcpServer> create(std::string addr, uint16_t port);
 
