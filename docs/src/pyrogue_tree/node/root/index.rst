@@ -274,8 +274,5 @@ The following :py:class:`pyrogue.LocalVariable` objects are all created when the
 Root Class Documentation
 ------------------------
 
-.. autoclass:: pyrogue.Root
-   :members:
-   :member-order: bysource
-   :inherited-members:
+See :doc:`/api/python/root` for generated API details.
 

@@ -17,7 +17,4 @@ Key points:
 StreamWriter Class Documentation
 ================================
 
-.. autoclass:: pyrogue.utilities.fileio.StreamWriter
-   :members:
-   :member-order: bysource
-   :inherited-members:
+See :doc:`/api/python/utilities_fileio_streamwriter` for generated API details.

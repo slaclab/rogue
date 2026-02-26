@@ -13,7 +13,4 @@ controls.
 PrbsRx Class Documentation
 ==========================
 
-.. autoclass:: pyrogue.utilities.prbs.PrbsRx
-   :members:
-   :member-order: bysource
-   :inherited-members:
+See :doc:`/api/python/utilities_prbs_prbsrx` for generated API details.

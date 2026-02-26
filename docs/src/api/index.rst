@@ -21,10 +21,7 @@ Primary Python API sections:
 .. toctree::
    :maxdepth: 2
 
-   /pyrogue_tree/index
-   /interfaces/pyrogue/index
-   /protocols/pyrogue/index
-   /utilities/fileio/python_reader
+   /api/python/index
 
 C++ API
 =======

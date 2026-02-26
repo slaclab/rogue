@@ -104,7 +104,5 @@ VirtualClient Description
 
 The class description for the VirtualClient class is included below:
 
-.. autoclass:: pyrogue.interfaces.VirtualClient
-   :members:
-   :member-order: bysource
+See :doc:`/api/python/interfaces_virtualclient` for generated API details.
 

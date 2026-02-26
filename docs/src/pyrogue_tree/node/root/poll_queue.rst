@@ -94,6 +94,4 @@ Temporarily block polling during a critical sequence
 PollQueue Class Documentation
 =============================
 
-.. autoclass:: pyrogue.PollQueue
-   :members:
-   :member-order: bysource
+See :doc:`/api/python/pollqueue` for generated API details.

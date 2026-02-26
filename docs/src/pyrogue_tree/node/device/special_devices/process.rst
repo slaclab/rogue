@@ -47,7 +47,4 @@ Example
 Process Class Documentation
 ===========================
 
-.. autoclass:: pyrogue.Process
-   :members:
-   :member-order: bysource
-   :inherited-members:
+See :doc:`/api/python/process` for generated API details.

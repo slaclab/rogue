@@ -51,7 +51,4 @@ Example
 LocalVariable Class Documentation
 =================================
 
-.. autoclass:: pyrogue.LocalVariable
-   :members:
-   :member-order: bysource
-   :inherited-members:
+See :doc:`/api/python/localvariable` for generated API details.
