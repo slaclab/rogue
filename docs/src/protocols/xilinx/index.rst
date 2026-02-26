@@ -100,9 +100,3 @@ C++ API reference pages are collected in :doc:`/api/cpp/protocols/xilinx/index`:
 - :doc:`/api/cpp/protocols/xilinx/jtagDriver`
 - :doc:`/api/cpp/protocols/xilinx/xvcServer`
 - :doc:`/api/cpp/protocols/xilinx/xvcConnection`
-
-.. toctree::
-   :maxdepth: 1
-   :hidden:
-
-   /api/cpp/protocols/xilinx/index

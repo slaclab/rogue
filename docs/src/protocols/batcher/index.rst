@@ -81,6 +81,8 @@ C++ splitter chain (v1)
 
    *(*src >> split) >> dst;
 
+C++ API details for batcher protocol classes are documented in
+:doc:`/api/cpp/protocols/batcher/index`.
 
 .. toctree::
    :maxdepth: 1
@@ -90,4 +92,3 @@ C++ splitter chain (v1)
    inverterV2
    splitterV1
    splitterV2
-   /api/cpp/protocols/batcher/index

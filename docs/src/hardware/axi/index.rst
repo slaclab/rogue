@@ -6,6 +6,9 @@ Generic AXI Hardware Interface
 
 Generic AXI Hardware Description
 
+C++ API details for AXI hardware interfaces are documented in
+:doc:`/api/cpp/hardware/axi/index`.
+
 .. toctree::
    :maxdepth: 1
    :caption: AXI Hardware:
@@ -13,4 +16,3 @@ Generic AXI Hardware Description
    stream
    memory
    features
-   /api/cpp/hardware/axi/index
