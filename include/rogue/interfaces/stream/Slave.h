@@ -85,7 +85,11 @@ class Slave : public rogue::interfaces::stream::Pool,
     /**
      * @brief Creates a new stream slave.
      *
-     * @details Exposed as `rogue.interfaces.stream.Slave()` in Python.
+     * @details
+     * Exposed as `rogue.interfaces.stream.Slave()` in Python.
+     * This static factory is the preferred construction path when the object
+     * is shared across Rogue graph connections or exposed to Python.
+     * It returns `std::shared_ptr` ownership compatible with Rogue pointer typedefs.
      *
      * @return Shared pointer to a newly created slave.
      */
@@ -94,7 +98,13 @@ class Slave : public rogue::interfaces::stream::Pool,
     /** @brief Registers this type with Python bindings. */
     static void setup_python();
 
-    /** @brief Constructs a stream slave. */
+    /**
+     * @brief Constructs a stream slave.
+     *
+     * @details
+     * This constructor is a low-level C++ allocation path.
+     * Prefer `create()` when shared ownership or Python exposure is required.
+     */
     Slave();
 
     /** @brief Destroys the stream slave. */

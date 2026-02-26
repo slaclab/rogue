@@ -99,6 +99,9 @@ class Frame : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Fram
      * @brief Creates an empty frame.
      *
      * @details
+     * This static factory is the preferred construction path when the object
+     * is shared across Rogue graph connections or exposed to Python.
+     * It returns `std::shared_ptr` ownership compatible with Rogue pointer typedefs.
      * Not exposed to Python.
      *
      * @return Shared pointer to the created frame.
@@ -109,7 +112,8 @@ class Frame : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Fram
      * @brief Constructs an empty frame.
      *
      * @details
-     * Usually created via `create()`.
+     * This constructor is a low-level C++ allocation path.
+     * Prefer `create()` when shared ownership or Python exposure is required.
      */
     Frame();
 

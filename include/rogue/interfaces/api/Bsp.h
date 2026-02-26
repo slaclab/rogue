@@ -51,6 +51,13 @@ class Bsp {
     /**
      * @brief Creates a wrapper from an existing Python object.
      *
+     * @details
+     * Parameter semantics are identical to the constructor; see `Bsp(boost::python::object)`
+     * for wrapping behavior details.
+     * This static factory is the preferred construction path when the object
+     * is shared across Rogue graph connections or exposed to Python.
+     * It returns `std::shared_ptr` ownership compatible with Rogue pointer typedefs.
+     *
      * @param obj Python object representing a PyRogue node/root.
      * @return Shared pointer to created wrapper.
      */
@@ -60,8 +67,11 @@ class Bsp {
      * @brief Creates a wrapper by importing module and instantiating root class.
      *
      * @details
-     * Initializes Python, imports `modName`, constructs `rootClass`, starts it,
-     * and waits until the Python root reports running state.
+     * Parameter semantics are identical to the constructor; see
+     * `Bsp(std::string, std::string)` for module/root startup behavior details.
+     * This static factory is the preferred construction path when the object
+     * is shared across Rogue graph connections or exposed to Python.
+     * It returns `std::shared_ptr` ownership compatible with Rogue pointer typedefs.
      *
      * @param modName Python module name containing root class.
      * @param rootClass Python root class name to instantiate.
@@ -72,12 +82,22 @@ class Bsp {
     /**
      * @brief Constructs wrapper from existing Python object.
      *
+     * @details
+     * This constructor is a low-level C++ allocation path.
+     * Prefer `create()` when shared ownership or Python exposure is required.
+     *
      * @param obj Python object representing a PyRogue node/root.
      */
     explicit Bsp(boost::python::object obj);
 
     /**
      * @brief Constructs wrapper by importing module and instantiating root class.
+     *
+     * @details
+     * This constructor is a low-level C++ allocation path.
+     * Prefer `create()` when shared ownership or Python exposure is required.
+     * Initializes Python, imports `modName`, constructs `rootClass`, starts it,
+     * and waits until the Python root reports running state.
      *
      * @param modName Python module name containing root class.
      * @param rootClass Python root class name to instantiate.

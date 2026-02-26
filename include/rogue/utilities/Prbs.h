@@ -141,6 +141,12 @@ class Prbs : public rogue::interfaces::stream::Slave, public rogue::interfaces::
   public:
     /**
      * @brief Creates a PRBS generator/checker instance.
+     *
+     * @details
+     * This static factory is the preferred construction path when the object
+     * is shared across Rogue graph connections or exposed to Python.
+     * It returns `std::shared_ptr` ownership compatible with Rogue pointer typedefs.
+     *
      * @return Shared pointer to the created PRBS object.
      */
     static std::shared_ptr<rogue::utilities::Prbs> create();
@@ -148,7 +154,13 @@ class Prbs : public rogue::interfaces::stream::Slave, public rogue::interfaces::
     /** @brief Registers Python bindings for this class. */
     static void setup_python();
 
-    /** @brief Constructs a PRBS instance with default taps and width. */
+    /**
+     * @brief Constructs a PRBS instance with default taps and width.
+     *
+     * @details
+     * This constructor is a low-level C++ allocation path.
+     * Prefer `create()` when shared ownership or Python exposure is required.
+     */
     Prbs();
 
     /** @brief Destroys the PRBS instance and stops background generation. */

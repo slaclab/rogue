@@ -140,16 +140,12 @@ class AxiStreamDma : public rogue::interfaces::stream::Master, public rogue::int
      * @brief Creates an AXI Stream DMA bridge instance.
      *
      * @details
+     * Parameter semantics are identical to the constructor; see `AxiStreamDma()`
+     * for destination and SSI behavior details.
      * Exposed to Python as `rogue.hardware.axi.AxiStreamDma(...)`.
-     *
-     * The destination field is an AXI Stream sideband routing value. Usage is
-     * driver/firmware specific, but a common mapping is:
-     * - low 8 bits: AXI `tDest` value carried with the stream frame
-     * - upper bits: DMA channel selection/indexing in lower-level hardware
-     *
-     * `ssiEnable` controls insertion/interpretation of SLAC SSI user bits:
-     * - SOF marker in first-user field bit 1
-     * - EOFE marker in last-user field bit 0
+     * This static factory is the preferred construction path when the object
+     * is shared across Rogue graph connections or exposed to Python.
+     * It returns `std::shared_ptr` ownership compatible with Rogue pointer typedefs.
      *
      * @param path Path to device, for example `/dev/datadev_0`.
      * @param dest Destination index for DMA transactions.
@@ -181,6 +177,20 @@ class AxiStreamDma : public rogue::interfaces::stream::Master, public rogue::int
 
     /**
      * @brief Constructs an AXI stream DMA bridge.
+     *
+     * @details
+     * This constructor is a low-level C++ allocation path.
+     * Prefer `create()` when shared ownership or Python exposure is required.
+     *
+     * The destination field is an AXI Stream sideband routing value. Usage is
+     * driver/firmware specific, but a common mapping is:
+     * - low 8 bits: AXI `tDest` value carried with the stream frame
+     * - upper bits: DMA channel selection/indexing in lower-level hardware
+     *
+     * `ssiEnable` controls insertion/interpretation of SLAC SSI user bits:
+     * - SOF marker in first-user field bit 1
+     * - EOFE marker in last-user field bit 0
+     *
      * @param path Device path, for example `/dev/datadev_0`.
      * @param dest Destination index used for DMA transactions.
      * @param ssiEnable Enable SSI user-field handling.

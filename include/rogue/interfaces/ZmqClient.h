@@ -77,6 +77,14 @@ class ZmqClient {
   public:
     /**
      * @brief Creates a ZeroMQ client.
+     *
+     * @details
+     * Parameter semantics are identical to the constructor; see `ZmqClient()`
+     * for socket setup behavior details.
+     * This static factory is the preferred construction path when the object
+     * is shared across Rogue graph connections or exposed to Python.
+     * It returns `std::shared_ptr` ownership compatible with Rogue pointer typedefs.
+     *
      * @param addr Server bind address or host.
      * @param port Base server port.
      * @param doString `true` for string request mode, `false` for binary mode.
@@ -89,6 +97,11 @@ class ZmqClient {
 
     /**
      * @brief Constructs a ZeroMQ client and connects sockets.
+     *
+     * @details
+     * This constructor is a low-level C++ allocation path.
+     * Prefer `create()` when shared ownership or Python exposure is required.
+     *
      * @param addr Server bind address or host.
      * @param port Base server port.
      * @param doString `true` for string request mode, `false` for binary mode.

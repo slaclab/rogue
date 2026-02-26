@@ -52,6 +52,12 @@ class StreamUnZip : public rogue::interfaces::stream::Slave, public rogue::inter
   public:
     /**
      * @brief Creates a stream decompressor instance.
+     *
+     * @details
+     * This static factory is the preferred construction path when the object
+     * is shared across Rogue graph connections or exposed to Python.
+     * It returns `std::shared_ptr` ownership compatible with Rogue pointer typedefs.
+     *
      * @return Shared pointer to the created decompressor.
      */
     static std::shared_ptr<rogue::utilities::StreamUnZip> create();
@@ -59,7 +65,13 @@ class StreamUnZip : public rogue::interfaces::stream::Slave, public rogue::inter
     /** @brief Registers Python bindings for this class. */
     static void setup_python();
 
-    /** @brief Constructs a stream decompressor. */
+    /**
+     * @brief Constructs a stream decompressor.
+     *
+     * @details
+     * This constructor is a low-level C++ allocation path.
+     * Prefer `create()` when shared ownership or Python exposure is required.
+     */
     StreamUnZip();
 
     /** @brief Destroys stream decompressor. */

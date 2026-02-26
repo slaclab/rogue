@@ -154,6 +154,12 @@ class StreamWriter : public rogue::EnableSharedFromThis<rogue::utilities::fileio
   public:
     /**
      * @brief Creates a stream writer instance.
+     *
+     * @details
+     * This static factory is the preferred construction path when the object
+     * is shared across Rogue graph connections or exposed to Python.
+     * It returns `std::shared_ptr` ownership compatible with Rogue pointer typedefs.
+     *
      * @return Shared pointer to the created writer.
      */
     static std::shared_ptr<rogue::utilities::fileio::StreamWriter> create();
@@ -161,7 +167,13 @@ class StreamWriter : public rogue::EnableSharedFromThis<rogue::utilities::fileio
     /** @brief Registers Python bindings for this class. */
     static void setup_python();
 
-    /** @brief Constructs a stream writer. */
+    /**
+     * @brief Constructs a stream writer.
+     *
+     * @details
+     * This constructor is a low-level C++ allocation path.
+     * Prefer `create()` when shared ownership or Python exposure is required.
+     */
     StreamWriter();
 
     /** @brief Destroys the stream writer and closes open resources. */

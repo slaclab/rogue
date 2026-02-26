@@ -65,6 +65,14 @@ class StreamWriterChannel : public rogue::interfaces::stream::Slave {
   public:
     /**
      * @brief Creates a stream writer channel instance.
+     *
+     * @details
+     * Parameter semantics are identical to the constructor; see
+     * `StreamWriterChannel()` for output-channel behavior details.
+     * This static factory is the preferred construction path when the object
+     * is shared across Rogue graph connections or exposed to Python.
+     * It returns `std::shared_ptr` ownership compatible with Rogue pointer typedefs.
+     *
      * @param writer Destination writer used to serialize frames.
      * @param channel Output channel/tag. Use `0` to forward per-frame channel.
      * @return Shared pointer to the created channel.
@@ -78,6 +86,11 @@ class StreamWriterChannel : public rogue::interfaces::stream::Slave {
 
     /**
      * @brief Constructs a stream writer channel.
+     *
+     * @details
+     * This constructor is a low-level C++ allocation path.
+     * Prefer `create()` when shared ownership or Python exposure is required.
+     *
      * @param writer Destination writer used to serialize frames.
      * @param channel Output channel/tag. Use `0` to forward per-frame channel.
      */

@@ -50,6 +50,11 @@ class GeneralError : public std::exception {
   public:
     /**
      * @brief Constructs an error from source and message text.
+     *
+     * @details
+     * This constructor is a low-level C++ allocation path.
+     * Prefer `create()` when consistent factory semantics are desired.
+     *
      * @param src Source/function context string.
      * @param text Error message body.
      */
@@ -57,6 +62,10 @@ class GeneralError : public std::exception {
 
     /**
      * @brief Creates a formatted error instance.
+     *
+     * @details
+     * This static factory provides a consistent construction path for this class.
+     *
      * @param src Source/function context string.
      * @param fmt `printf`-style format string for the message body.
      * @return Constructed `GeneralError`.

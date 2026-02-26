@@ -76,7 +76,11 @@ class Master : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Mas
     /**
      * @brief Creates a stream master.
      *
-     * @details Exposed as `rogue.interfaces.stream.Master()` in Python.
+     * @details
+     * Exposed as `rogue.interfaces.stream.Master()` in Python.
+     * This static factory is the preferred construction path when the object
+     * is shared across Rogue graph connections or exposed to Python.
+     * It returns `std::shared_ptr` ownership compatible with Rogue pointer typedefs.
      *
      * @return Shared pointer to the created master.
      */
@@ -85,7 +89,13 @@ class Master : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Mas
     /** @brief Registers this type with Python bindings. */
     static void setup_python();
 
-    /** @brief Constructs a stream master. */
+    /**
+     * @brief Constructs a stream master.
+     *
+     * @details
+     * This constructor is a low-level C++ allocation path.
+     * Prefer `create()` when shared ownership or Python exposure is required.
+     */
     Master();
 
     /** @brief Destroys the stream master. */
