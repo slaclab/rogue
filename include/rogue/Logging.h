@@ -29,65 +29,120 @@
 
 namespace rogue {
 
-//! Filter
+/** @brief Per-logger level override filter entry. */
 class LogFilter {
   public:
+    /** @brief Logger name prefix to match. */
     std::string name_;
+    /** @brief Minimum enabled level for matching names. */
     uint32_t level_;
 
+    /**
+     * @brief Constructs a filter entry.
+     * @param name Logger name prefix.
+     * @param level Minimum enabled level.
+     */
     LogFilter(std::string name, uint32_t level) {
         name_  = name;
         level_ = level;
     }
 };
 
-//! Logging
+/**
+ * @brief Structured Rogue logging helper.
+ *
+ * @details
+ * Provides leveled logging with global level control and optional name-based
+ * filters. Instances are typically created per class/module and reused.
+ */
 class Logging {
-    //! Global Logging level
+    // Global logging level
     static uint32_t gblLevel_;
 
-    //! Logging level lock
+    // Logging-level lock
     static std::mutex levelMtx_;
 
-    //! List of filters
+    // Name/level filters
     static std::vector<rogue::LogFilter*> filters_;
 
     void intLog(uint32_t level, const char* format, va_list args);
 
-    //! Local logging level
+    // Local logger level
     uint32_t level_;
 
-    //! Logger name
+    // Logger name
     std::string name_;
 
   public:
+    /** @brief Critical severity level constant. */
     static const uint32_t Critical = 50;
+    /** @brief Error severity level constant. */
     static const uint32_t Error    = 40;
+    /** @brief Thread-trace severity level constant. */
     static const uint32_t Thread   = 35;
+    /** @brief Warning severity level constant. */
     static const uint32_t Warning  = 30;
+    /** @brief Informational severity level constant. */
     static const uint32_t Info     = 20;
+    /** @brief Debug severity level constant. */
     static const uint32_t Debug    = 10;
 
+    /**
+     * @brief Creates a logger instance.
+     * @param name Logger name/category.
+     * @param quiet When `true`, suppresses creation banner output.
+     * @return Shared logger instance.
+     */
     static std::shared_ptr<rogue::Logging> create(const std::string& name, bool quiet = false);
 
+    /**
+     * @brief Constructs a logger.
+     * @param name Logger name/category.
+     * @param quiet When `true`, suppresses creation banner output.
+     */
     explicit Logging(const std::string& name, bool quiet = false);
+    /** @brief Destroys the logger instance. */
     ~Logging();
 
+    /**
+     * @brief Sets the global default logging level.
+     * @param level New global level threshold.
+     */
     static void setLevel(uint32_t level);
+
+    /**
+     * @brief Sets name-based filter level override.
+     * @param filter Logger-name prefix to match.
+     * @param level Level threshold for matching names.
+     */
     static void setFilter(const std::string& filter, uint32_t level);
 
+    /**
+     * @brief Emits a formatted log message at a specified level.
+     * @param level Severity level.
+     * @param fmt `printf`-style format string.
+     */
     void log(uint32_t level, const char* fmt, ...);
+
+    /** @brief Emits a formatted message at `Critical` level. */
     void critical(const char* fmt, ...);
+    /** @brief Emits a formatted message at `Error` level. */
     void error(const char* fmt, ...);
+    /** @brief Emits a formatted message at `Warning` level. */
     void warning(const char* fmt, ...);
+    /** @brief Emits a formatted message at `Info` level. */
     void info(const char* fmt, ...);
+    /** @brief Emits a formatted message at `Debug` level. */
     void debug(const char* fmt, ...);
 
+    /** @brief Emits the current thread id through this logger. */
     void logThreadId();
 
+    /** @brief Registers Python bindings for `Logging`. */
     static void setup_python();
 };
 
+/** @brief Shared pointer alias for `Logging`. */
 typedef std::shared_ptr<rogue::Logging> LoggingPtr;
 }  // namespace rogue
 

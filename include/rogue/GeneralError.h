@@ -34,10 +34,13 @@ namespace rogue {
 extern PyObject* generalErrorObj;
 #endif
 
-//! General exception
-/*
- * Called for all general errors that should not occur
- * in the system.
+/**
+ * @brief Generic Rogue exception type.
+ *
+ * @details
+ * Used for runtime errors that are not represented by a more specific
+ * exception class. Error messages are formatted as `source: message` and can
+ * be propagated to Python via `setup_python()` and `translate()`.
  */
 class GeneralError : public std::exception {
     static const uint32_t BuffSize = 600;
@@ -45,12 +48,34 @@ class GeneralError : public std::exception {
     char text_[BuffSize];
 
   public:
+    /**
+     * @brief Constructs an error from source and message text.
+     * @param src Source/function context string.
+     * @param text Error message body.
+     */
     GeneralError(std::string src, std::string text);
 
+    /**
+     * @brief Creates a formatted error instance.
+     * @param src Source/function context string.
+     * @param fmt `printf`-style format string for the message body.
+     * @return Constructed `GeneralError`.
+     */
     static GeneralError create(std::string src, const char* fmt, ...);
 
+    /**
+     * @brief Returns exception text for standard exception handling.
+     * @return NUL-terminated message string.
+     */
     char const* what() const throw();
+
+    /** @brief Registers Python exception translation for `GeneralError`. */
     static void setup_python();
+
+    /**
+     * @brief Translates `GeneralError` into a Python exception.
+     * @param e Caught exception instance.
+     */
     static void translate(GeneralError const& e);
 };
 }  // namespace rogue
