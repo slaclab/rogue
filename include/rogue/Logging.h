@@ -89,6 +89,14 @@ class Logging {
 
     /**
      * @brief Creates a logger instance.
+     *
+     * @details
+     * Parameter semantics are identical to the constructor; see `Logging()`
+     * for logger initialization details.
+     * This static factory is the preferred construction path when the object
+     * is shared across Rogue graph connections or exposed to Python.
+     * It returns `std::shared_ptr` ownership compatible with Rogue pointer typedefs.
+     *
      * @param name Logger name/category.
      * @param quiet When `true`, suppresses creation banner output.
      * @return Shared logger instance.
@@ -97,6 +105,11 @@ class Logging {
 
     /**
      * @brief Constructs a logger.
+     *
+     * @details
+     * This constructor is a low-level C++ allocation path.
+     * Prefer `create()` when shared ownership or Python exposure is required.
+     *
      * @param name Logger name/category.
      * @param quiet When `true`, suppresses creation banner output.
      */

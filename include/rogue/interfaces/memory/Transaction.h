@@ -154,7 +154,16 @@ class Transaction : public rogue::EnableSharedFromThis<rogue::interfaces::memory
     // Weak pointer to parent transaction, where applicable
     std::weak_ptr<rogue::interfaces::memory::Transaction> parentTransaction_;
 
-    // Create a transaction container and return a TransactionPtr, called by Master
+    /**
+     * @brief Creates a transaction container.
+     *
+     * @details
+     * Private/internal factory used by `Master` to allocate transaction
+     * instances with shared ownership and lifecycle tracking.
+     * Parameter semantics are identical to the constructor; see `Transaction()`.
+     * This static factory is the preferred construction path when shared ownership
+     * is required across asynchronous request/response paths.
+     */
     static std::shared_ptr<rogue::interfaces::memory::Transaction> create(struct timeval timeout);
 
     // Wait for the transaction to complete, called by Master
@@ -164,7 +173,19 @@ class Transaction : public rogue::EnableSharedFromThis<rogue::interfaces::memory
     // Setup class for use in python
     static void setup_python();
 
-    // Create a Transaction. Do not call directly. Only called from the Master class.
+    /**
+     * @brief Constructs a transaction container.
+     *
+     * @details
+     * This constructor is a low-level C++ allocation path.
+     * Prefer `create()` for normal transaction lifecycle management.
+     * Do not call this constructor directly in normal use; transactions are
+     * expected to be created by `Master` through the internal `create()` path.
+     * That path ensures consistent ownership and integration with transaction
+     * request/wait bookkeeping.
+     *
+     * @param timeout Initial timeout value copied into this transaction.
+     */
     explicit Transaction(struct timeval timeout);
 
     // Destroy the Transaction.

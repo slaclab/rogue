@@ -46,6 +46,11 @@ class FrameLock {
      * @brief Creates a frame lock wrapper.
      *
      * @details Intended for internal use by `Frame`.
+     * Parameter semantics are identical to the constructor; see `FrameLock()`
+     * for lock-wrapper behavior details.
+     * This static factory is the preferred construction path when the object
+     * is shared across Rogue graph connections or exposed to Python.
+     * It returns `std::shared_ptr` ownership compatible with Rogue pointer typedefs.
      *
      * @param frame Frame to lock.
      * @return Shared pointer to the created lock object.
@@ -55,6 +60,10 @@ class FrameLock {
 
     /**
      * @brief Constructs a lock wrapper for the provided frame.
+     *
+     * @details
+     * This constructor is a low-level C++ allocation path.
+     * Prefer `create()` when shared ownership or Python exposure is required.
      *
      * @param frame Frame to lock.
      */

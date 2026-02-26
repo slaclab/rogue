@@ -55,6 +55,14 @@ class Server {
   public:
     /**
      * @brief Creates an RSSI server bundle.
+     *
+     * @details
+     * Parameter semantics are identical to the constructor; see `Server()`
+     * for bundle-construction details.
+     * This static factory is the preferred construction path when the object
+     * is shared across Rogue graph connections or exposed to Python.
+     * It returns `std::shared_ptr` ownership compatible with Rogue pointer typedefs.
+     *
      * @param segSize Initial local maximum segment size.
      * @return Shared pointer to the created server bundle.
      */
@@ -65,6 +73,11 @@ class Server {
 
     /**
      * @brief Constructs an RSSI server bundle.
+     *
+     * @details
+     * This constructor is a low-level C++ allocation path.
+     * Prefer `create()` when shared ownership or Python exposure is required.
+     *
      * @param segSize Initial local maximum segment size.
      */
     explicit Server(uint32_t segSize);

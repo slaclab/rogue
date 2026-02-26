@@ -51,6 +51,14 @@ class Core {
   public:
     /**
      * @brief Creates a packetizer core.
+     *
+     * @details
+     * Parameter semantics are identical to the constructor; see `Core()`
+     * for core-construction details.
+     * This static factory is the preferred construction path when the object
+     * is shared across Rogue graph connections or exposed to Python.
+     * It returns `std::shared_ptr` ownership compatible with Rogue pointer typedefs.
+     *
      * @param enSsi Enable SSI framing behavior.
      * @return Shared pointer to the created packetizer core.
      */
@@ -61,6 +69,11 @@ class Core {
 
     /**
      * @brief Constructs a packetizer core.
+     *
+     * @details
+     * This constructor is a low-level C++ allocation path.
+     * Prefer `create()` when shared ownership or Python exposure is required.
+     *
      * @param enSsi Enable SSI framing behavior.
      */
     explicit Core(bool enSsi);

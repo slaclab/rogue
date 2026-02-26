@@ -81,6 +81,13 @@ class Xvc : public rogue::interfaces::stream::Master,
     /**
      * @brief Creates an XVC bridge instance.
      *
+     * @details
+     * Parameter semantics are identical to the constructor; see `Xvc()`
+     * for bridge-construction details.
+     * This static factory is the preferred construction path when the object
+     * is shared across Rogue graph connections or exposed to Python.
+     * It returns `std::shared_ptr` ownership compatible with Rogue pointer typedefs.
+     *
      * @param port TCP port used for local XVC server listener.
      * @return Shared pointer to the created XVC instance.
      */
@@ -91,6 +98,10 @@ class Xvc : public rogue::interfaces::stream::Master,
 
     /**
      * @brief Constructs an XVC bridge instance.
+     *
+     * @details
+     * This constructor is a low-level C++ allocation path.
+     * Prefer `create()` when shared ownership or Python exposure is required.
      *
      * @param port TCP port used for local XVC server listener.
      */

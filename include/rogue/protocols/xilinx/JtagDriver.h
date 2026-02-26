@@ -162,6 +162,13 @@ class JtagDriver {
     /**
      * @brief Creates a JTAG driver instance.
      *
+     * @details
+     * Parameter semantics are identical to the constructor; see `JtagDriver()`
+     * for driver-construction details.
+     * This static factory is the preferred construction path when the object
+     * is shared across Rogue graph connections or exposed to Python.
+     * It returns `std::shared_ptr` ownership compatible with Rogue pointer typedefs.
+     *
      * @param port Transport/service port value associated with this driver.
      * @return Shared pointer to the created driver.
      */
@@ -172,6 +179,10 @@ class JtagDriver {
 
     /**
      * @brief Constructs the JTAG driver base state.
+     *
+     * @details
+     * This constructor is a low-level C++ allocation path.
+     * Prefer `create()` when shared ownership or Python exposure is required.
      *
      * @param port Transport/service port value associated with this driver.
      */

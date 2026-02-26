@@ -58,6 +58,14 @@ class Application : public rogue::interfaces::stream::Master, public rogue::inte
   public:
     /**
      * @brief Creates a packetizer application endpoint.
+     *
+     * @details
+     * Parameter semantics are identical to the constructor; see `Application()`
+     * for endpoint-construction details.
+     * This static factory is the preferred construction path when the object
+     * is shared across Rogue graph connections or exposed to Python.
+     * It returns `std::shared_ptr` ownership compatible with Rogue pointer typedefs.
+     *
      * @param id Destination/application ID.
      * @return Shared pointer to the created application endpoint.
      */
@@ -68,6 +76,11 @@ class Application : public rogue::interfaces::stream::Master, public rogue::inte
 
     /**
      * @brief Constructs a packetizer application endpoint.
+     *
+     * @details
+     * This constructor is a low-level C++ allocation path.
+     * Prefer `create()` when shared ownership or Python exposure is required.
+     *
      * @param id Destination/application ID.
      */
     explicit Application(uint8_t id);

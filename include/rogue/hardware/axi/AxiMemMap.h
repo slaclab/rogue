@@ -76,7 +76,12 @@ class AxiMemMap : public rogue::interfaces::memory::Slave {
      * @brief Creates an AXI memory-map bridge instance.
      *
      * @details
+     * Parameter semantics are identical to the constructor; see `AxiMemMap()`
+     * for device-open and worker-thread setup details.
      * Exposed to Python as `rogue.hardware.axi.AxiMemMap()`.
+     * This static factory is the preferred construction path when the object
+     * is shared across Rogue graph connections or exposed to Python.
+     * It returns `std::shared_ptr` ownership compatible with Rogue pointer typedefs.
      *
      * @param path Device path (for example `/dev/datadev_0`).
      * @return Shared pointer to the created `AxiMemMap`.
@@ -90,6 +95,9 @@ class AxiMemMap : public rogue::interfaces::memory::Slave {
      * @brief Constructs an AXI memory-map bridge instance.
      *
      * @details
+     * This constructor is a low-level C++ allocation path.
+     * Prefer `create()` when shared ownership or Python exposure is required.
+     *
      * Opens driver device, validates driver API compatibility, and starts worker
      * thread for queued transaction processing.
      *

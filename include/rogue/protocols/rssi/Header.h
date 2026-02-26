@@ -78,6 +78,14 @@ class Header {
 
     /**
      * @brief Creates a header wrapper for an existing frame.
+     *
+     * @details
+     * Parameter semantics are identical to the constructor; see `Header()`
+     * for wrapper-construction details.
+     * This static factory is the preferred construction path when the object
+     * is shared across Rogue graph connections or exposed to Python.
+     * It returns `std::shared_ptr` ownership compatible with Rogue pointer typedefs.
+     *
      * @param frame Frame containing RSSI header bytes.
      * @return Shared pointer to the created header wrapper.
      */
@@ -86,6 +94,11 @@ class Header {
 
     /**
      * @brief Constructs a header wrapper for an existing frame.
+     *
+     * @details
+     * This constructor is a low-level C++ allocation path.
+     * Prefer `create()` when shared ownership or Python exposure is required.
+     *
      * @param frame Frame containing RSSI header bytes.
      */
     explicit Header(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
