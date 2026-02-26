@@ -267,6 +267,7 @@ class Variable {
      * @param mode Variable mode
      * @param minimum Variable min value, 0 for none
      * @param maximum Variable max value, 0 for none
+     * @param offset Variable byte offset within the parent block.
      * @param bitOffset Bit offset vector
      * @param bitSize Bit size vector
      * @param overlapEn Overlap enable flag

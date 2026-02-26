@@ -94,18 +94,15 @@ also be subclassed directly in C++ for custom transports:
 API references
 --------------
 
-.. doxygentypedef:: rogue::protocols::xilinx::XvcPtr
+C++ API reference pages are collected in :doc:`classes/index`:
 
-.. doxygenclass:: rogue::protocols::xilinx::Xvc
-   :members:
+- :doc:`classes/xvc`
+- :doc:`classes/jtagDriver`
+- :doc:`classes/xvcServer`
+- :doc:`classes/xvcConnection`
 
-.. doxygentypedef:: rogue::protocols::xilinx::JtagDriverPtr
+.. toctree::
+   :maxdepth: 1
+   :hidden:
 
-.. doxygenclass:: rogue::protocols::xilinx::JtagDriver
-   :members:
-
-.. doxygenclass:: rogue::protocols::xilinx::XvcServer
-   :members:
-
-.. doxygenclass:: rogue::protocols::xilinx::XvcConnection
-   :members:
+   classes/index

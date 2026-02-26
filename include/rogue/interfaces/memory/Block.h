@@ -251,7 +251,7 @@ class Block : public Master {
      *
      * @param enable Set to `true` to enable block operations.
      */
-    void setEnable(bool);
+    void setEnable(bool enable);
 
     /**
      * @brief Sets logging verbosity level for this block.

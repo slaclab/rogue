@@ -26,7 +26,7 @@
 
 // Command definitions
 #define AXIS_Read_Ack 0x2001        // Command to acknowledge read.
-#define AXIS_Write_ReqMissed 0x2002  // Command to indicate a missed write request.
+#define AXIS_Write_ReqMissed 0x2002   // Command to indicate a missed write request.
 
 // Only define the following if not compiling for kernel space
 #ifndef DMA_IN_KERNEL

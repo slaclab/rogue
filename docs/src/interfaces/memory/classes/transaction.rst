@@ -39,7 +39,7 @@ Locking and Data Access
 
 Transaction payload bytes are accessed via ``begin()``/``end()`` and protected using
 ``TransactionLock`` (from ``lock()``). Use the lock wrapper whenever reading/writing
- transaction data or completion state from asynchronous code paths.
+transaction data or completion state from asynchronous code paths.
 
 Timeout and Expiration
 ----------------------
