@@ -30,56 +30,104 @@ namespace rogue {
 namespace protocols {
 namespace batcher {
 
-//!  AXI Stream FIFO
+/**
+ * @brief Parsed batcher record descriptor.
+ *
+ * @details
+ * `Data` represents one record extracted from a batcher super-frame by
+ * `CoreV1` or `CoreV2`. It stores:
+ * - Iterators delimiting the payload bytes in the original frame.
+ * - Per-record routing/control fields (`dest`, `fUser`, `lUser`).
+ *
+ * `SplitterV1` and `SplitterV2` consume `Data` objects from `CoreV1/CoreV2`
+ * to build and emit individual output frames.
+ *
+ * Protocol references:
+ * - Batcher v1: https://confluence.slac.stanford.edu/x/th1SDg
+ * - Batcher v2: https://confluence.slac.stanford.edu/x/L2VlK
+ */
 class Data {
-    //! Data Iterator
+    // Iterator to beginning of record payload in source frame.
     rogue::interfaces::stream::FrameIterator it_;
 
-    //! Data Size
+    // Record payload size in bytes.
     uint32_t size_;
 
-    //! Data destination
+    // Destination/channel field from record tail.
     uint8_t dest_;
 
-    //! First user
+    // First-user metadata byte from record tail.
     uint8_t fUser_;
 
-    //! Last user
+    // Last-user metadata byte from record tail.
     uint8_t lUser_;
 
   public:
-    //! Setup class in python
+    /** @brief Registers Python bindings for this class. */
     static void setup_python();
 
-    //! Create object
+    /**
+     * @brief Creates a parsed record descriptor.
+     * @param it Iterator to beginning of record payload.
+     * @param size Record payload size in bytes.
+     * @param dest Destination/channel field.
+     * @param fUser First-user metadata byte.
+     * @param lUser Last-user metadata byte.
+     * @return Shared pointer to the created record descriptor.
+     */
     static std::shared_ptr<rogue::protocols::batcher::Data> create(rogue::interfaces::stream::FrameIterator it,
                                                                    uint32_t size,
                                                                    uint8_t dest,
                                                                    uint8_t fUser,
                                                                    uint8_t lUser);
 
-    //! Creator
+    /**
+     * @brief Constructs a parsed record descriptor.
+     * @param it Iterator to beginning of record payload.
+     * @param size Record payload size in bytes.
+     * @param dest Destination/channel field.
+     * @param fUser First-user metadata byte.
+     * @param lUser Last-user metadata byte.
+     */
     Data(rogue::interfaces::stream::FrameIterator it, uint32_t size, uint8_t dest, uint8_t fUser, uint8_t lUser);
 
-    //! Deconstructor
+    /** @brief Destroys the record descriptor. */
     ~Data();
 
-    //! Return Begin Data Iterator
+    /**
+     * @brief Returns iterator to beginning of payload.
+     * @return Payload-begin iterator.
+     */
     rogue::interfaces::stream::FrameIterator begin();
 
-    //! Return End Data Iterator
+    /**
+     * @brief Returns iterator to end of payload.
+     * @return Payload-end iterator.
+     */
     rogue::interfaces::stream::FrameIterator end();
 
-    //! Return Data Size
+    /**
+     * @brief Returns payload size.
+     * @return Payload size in bytes.
+     */
     uint32_t size();
 
-    //! Return Data destination
+    /**
+     * @brief Returns destination/channel value.
+     * @return Destination/channel field.
+     */
     uint8_t dest();
 
-    //! Return First user
+    /**
+     * @brief Returns first-user metadata.
+     * @return First-user byte.
+     */
     uint8_t fUser();
 
-    //! Return Last user
+    /**
+     * @brief Returns last-user metadata.
+     * @return Last-user byte.
+     */
     uint8_t lUser();
 };
 

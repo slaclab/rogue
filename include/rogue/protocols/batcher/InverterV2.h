@@ -31,22 +31,49 @@ namespace rogue {
 namespace protocols {
 namespace batcher {
 
-//!  AXI Stream FIFO
+/**
+ * @brief In-place inverter for SLAC AXI Batcher v2 framing.
+ *
+ * @details
+ * Protocol reference: https://confluence.slac.stanford.edu/x/L2VlK
+ *
+ * `InverterV2` uses `CoreV2` metadata to reinterpret/shift record tail data
+ * inside the original frame payload. This produces a transformed frame layout
+ * expected by downstream consumers without allocating one frame per record.
+ * It is not a batching or unbatching stage: one input frame yields one output
+ * frame after in-place reformatting.
+ *
+ * `InverterV2` transforms a batcher v2 frame by copying per-record tail fields
+ * into the header/tail positions expected by downstream consumers and trimming
+ * the final tail from payload. The transformed frame is then forwarded.
+ * Use `SplitterV2` when true unbatching (one output frame per record) is
+ * desired.
+ *
+ * Threading model:
+ * - No internal worker thread is created.
+ * - Processing executes synchronously in the caller thread of `acceptFrame()`.
+ */
 class InverterV2 : public rogue::interfaces::stream::Master, public rogue::interfaces::stream::Slave {
   public:
-    //! Class creation
+    /**
+     * @brief Creates an `InverterV2` instance.
+     * @return Shared pointer to the created inverter.
+     */
     static std::shared_ptr<rogue::protocols::batcher::InverterV2> create();
 
-    //! Setup class in python
+    /** @brief Registers Python bindings for this class. */
     static void setup_python();
 
-    //! Creator
+    /** @brief Constructs an `InverterV2` instance. */
     InverterV2();
 
-    //! Deconstructor
+    /** @brief Destroys the inverter. */
     ~InverterV2();
 
-    //! Accept a frame from master
+    /**
+     * @brief Accepts, transforms, and forwards one batcher v2 frame.
+     * @param frame Input frame to transform.
+     */
     void acceptFrame(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 };
 
