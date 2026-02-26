@@ -17,13 +17,18 @@
 #ifndef __ROGUE_DIRECTIVES_H__
 #define __ROGUE_DIRECTIVES_H__
 
+/** @brief Use NumPy 1.7+ non-deprecated C-API symbols. */
 #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
+/** @brief Enable Python `Py_ssize_t`-safe API signatures. */
 #define PY_SSIZE_T_CLEAN
+/** @brief Silence global placeholders warning in newer Boost versions. */
 #define BOOST_BIND_GLOBAL_PLACEHOLDERS
 
+/** @brief Enable C++11 mode in bundled CRC++ implementation. */
 #define CRCPP_USE_CPP11
 
 #ifndef __STDC_FORMAT_MACROS
+    /** @brief Enable PRI* printf format macros from `<inttypes.h>` in C++. */
     #define __STDC_FORMAT_MACROS
 #endif
 
