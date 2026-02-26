@@ -64,6 +64,13 @@ class Server : public rogue::protocols::udp::Core,
     /**
      * @brief Creates a UDP server endpoint.
      *
+     * @details
+     * Parameter semantics are identical to the constructor; see `Server()`
+     * for endpoint setup behavior details.
+     * This static factory is the preferred construction path when the object
+     * is shared across Rogue graph connections or exposed to Python.
+     * It returns `std::shared_ptr` ownership compatible with Rogue pointer typedefs.
+     *
      * @param port Local UDP port to bind (0 requests dynamic port assignment).
      * @param jumbo `true` for jumbo payload sizing; `false` for standard MTU.
      * @return Shared pointer to the created server.
@@ -77,6 +84,9 @@ class Server : public rogue::protocols::udp::Core,
      * @brief Constructs a UDP server endpoint.
      *
      * @details
+     * This constructor is a low-level C++ allocation path.
+     * Prefer `create()` when shared ownership or Python exposure is required.
+     *
      * Creates and binds UDP socket, initializes frame pool sizing, and starts
      * background receive thread. If `port == 0`, the OS-assigned port is queried
      * and stored.

@@ -64,6 +64,13 @@ class Client : public rogue::protocols::udp::Core,
     /**
      * @brief Creates a UDP client endpoint.
      *
+     * @details
+     * Parameter semantics are identical to the constructor; see `Client()`
+     * for endpoint setup behavior details.
+     * This static factory is the preferred construction path when the object
+     * is shared across Rogue graph connections or exposed to Python.
+     * It returns `std::shared_ptr` ownership compatible with Rogue pointer typedefs.
+     *
      * @param host Remote hostname or IPv4 address.
      * @param port Remote UDP port.
      * @param jumbo `true` for jumbo payload sizing; `false` for standard MTU.
@@ -78,6 +85,9 @@ class Client : public rogue::protocols::udp::Core,
      * @brief Constructs a UDP client endpoint.
      *
      * @details
+     * This constructor is a low-level C++ allocation path.
+     * Prefer `create()` when shared ownership or Python exposure is required.
+     *
      * Resolves host address, creates UDP socket, initializes frame pool sizing,
      * and starts background receive thread.
      *

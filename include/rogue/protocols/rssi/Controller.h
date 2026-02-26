@@ -157,6 +157,14 @@ class Controller : public rogue::EnableSharedFromThis<rogue::protocols::rssi::Co
   public:
     /**
      * @brief Factory method to create an RSSI controller.
+     *
+     * @details
+     * Parameter semantics are identical to the constructor; see `Controller()`
+     * for endpoint wiring details.
+     * This static factory is the preferred construction path when the object
+     * is shared across Rogue graph connections or exposed to Python.
+     * It returns `std::shared_ptr` ownership compatible with Rogue pointer typedefs.
+     *
      * @param segSize Initial local maximum segment size.
      * @param tran Transport endpoint used for link traffic.
      * @param app Application endpoint used for payload traffic.
@@ -171,6 +179,11 @@ class Controller : public rogue::EnableSharedFromThis<rogue::protocols::rssi::Co
 
     /**
      * @brief Constructs an RSSI controller.
+     *
+     * @details
+     * This constructor is a low-level C++ allocation path.
+     * Prefer `create()` when shared ownership or Python exposure is required.
+     *
      * @param segSize Initial local max segment size.
      * @param tran Transport endpoint used for link traffic.
      * @param app Application endpoint used for payload traffic.
