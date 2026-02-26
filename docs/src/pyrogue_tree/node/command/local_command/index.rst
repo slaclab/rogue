@@ -37,8 +37,8 @@ Example
 LocalCommand (BaseCommand Alias) Class Documentation
 ====================================================
 
-.. autoclass:: pyrogue.BaseCommand
-   :no-index:
-   :members:
-   :member-order: bysource
-   :inherited-members:
+`LocalCommand` is an alias-style specialization of
+:py:class:`pyrogue.BaseCommand`.
+
+For full API documentation (including inherited members), see:
+:ref:`pyrogue_tree_node_command`.
