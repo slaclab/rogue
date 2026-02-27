@@ -94,12 +94,10 @@ def waitCntrlC() -> None:
     class monitorSignal(object):
         """ """
 
-        def __init__(self) -> None:
-            """Initialize signal-monitor state."""
+        def __init__(self):
             self.runEnable = True
 
-        def receiveSignal(self, *args: Any) -> None:
-            """Handle SIGTERM by stopping the wait loop."""
+        def receiveSignal(self,*args):
             print("Got SIGTERM, exiting")
             self.runEnable = False
 
@@ -212,7 +210,6 @@ def yamlToData(stream: str = '', fName: str | None = None) -> Any:
         pass
 
     def include_mapping(loader: yaml.Loader, node: Any) -> Any:
-        """Resolve and load a ``!include`` YAML reference."""
         rel = loader.construct_scalar(node)
 
         # Filename starts with absolute path
@@ -231,7 +228,6 @@ def yamlToData(stream: str = '', fName: str | None = None) -> Any:
         return yamlToData(fName=os.path.abspath(filename))
 
     def construct_mapping(loader: yaml.Loader, node: Any) -> odict:
-        """Construct mappings as ``OrderedDict`` to preserve key order."""
         loader.flatten_mapping(node)
         return odict(loader.construct_pairs(node))
 
@@ -279,7 +275,6 @@ def dataToYaml(data: Any) -> str:
         pass
 
     def _var_representer(dumper: yaml.Dumper, data: pr.VariableValue) -> Any:
-        """Represent ``VariableValue`` using display formatting and YAML typing."""
         if isinstance(data.value, bool):
             enc = 'tag:yaml.org,2002:bool'
         elif data.enum is not None:
@@ -297,7 +292,6 @@ def dataToYaml(data: Any) -> str:
             return dumper.represent_scalar(enc, data.valueDisp)
 
     def _dict_representer(dumper: yaml.Dumper, data: odict) -> Any:
-        """Represent ``OrderedDict`` values while preserving key order."""
         return dumper.represent_mapping(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, data.items())
 
     PyrogueDumper.add_representer(pr.VariableValue, _var_representer)
@@ -418,8 +412,8 @@ def functionWrapper(
     Returns
     -------
     callable
-        Wrapper callable that accepts ``function=...`` plus keyword arguments
-        from ``callArgs`` and invokes ``function`` using only supported names.
+        Wrapper callable with signature ``(function, *callArgs)`` that invokes
+        ``function`` using only supported keyword arguments.
 
     Notes
     -----
@@ -429,48 +423,25 @@ def functionWrapper(
       code is generated dynamically.
     """
 
-    # Build a stable no-op wrapper for unset callbacks.
     if function is None:
-        def _none_wrapper(*, function: Callable[..., Any] | None = None, **kwargs: Any) -> None:
-            """No-op callback used when no user function is configured."""
-            return None
-        return _none_wrapper
+        return eval("lambda " + ", ".join(['function'] + callArgs) + ": None")
 
-    # Determine accepted callback keyword names once at wrapper construction.
-    accepted_names: set[str] = set()
-    accepts_var_kwargs = False
-    introspection_failed = False
-
+    # Find the arg overlaps
     try:
-        sig = inspect.signature(function)
-        for name, param in sig.parameters.items():
-            if name == 'self':
-                continue
-            if param.kind in (inspect.Parameter.POSITIONAL_OR_KEYWORD, inspect.Parameter.KEYWORD_ONLY):
-                accepted_names.add(name)
-            elif param.kind == inspect.Parameter.VAR_KEYWORD:
-                accepts_var_kwargs = True
+        # Function args
+        fargs = inspect.getfullargspec(function).args + inspect.getfullargspec(function).kwonlyargs
+
+        # Build overlapping arg list
+        args = [f'{k}={k}' for k in fargs if k != 'self' and k in callArgs]
+
+    # handle c++ functions, no args supported for now
     except Exception:
-        # Preserve legacy behavior for non-introspectable callables (for
-        # example some C++ bindings): call with no forwarded callback args.
-        introspection_failed = True
+        args = []
 
-    def _wrapper(*, function: Callable[..., Any], **kwargs: Any) -> Any:
-        """Invoke callback with only supported keyword arguments."""
-        if function is None:
-            return None
-
-        if introspection_failed:
-            return function()
-
-        if accepts_var_kwargs:
-            forwarded = {k: kwargs[k] for k in callArgs if k in kwargs}
-        else:
-            forwarded = {k: kwargs[k] for k in accepted_names if k in kwargs}
-
-        return function(**forwarded)
-
-    return _wrapper
+    # Build the function
+    ls = "lambda " + ", ".join(['function'] + callArgs) + ": function(" + ", ".join(args) + ")"
+    #print("Creating Function: " + ls)
+    return eval(ls)
 
 
 def genDocTableHeader(fields: Sequence[str], indent: int, width: int) -> str:
