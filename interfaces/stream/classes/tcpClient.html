@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TcpClient &mdash; Rogue v6.8.2 documentation</title>
+  <title>TcpClient &mdash; Rogue v6.8.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=42e93e3f"></script>
+      <script src="../../../_static/documentation_options.js?v=e691ba26"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -88,6 +88,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../pyrogue/index.html">Python Interfaces</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../sql.html">SQL Logging Interface</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../cpp_api.html">Wrapping Rogue In C++</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../version.html">Rogue Version Helper</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../utilities/index.html">Utilities</a></li>
@@ -133,34 +134,64 @@
 <dl class="cpp type">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream12TcpClientPtrE">
 <span id="_CPPv3N5rogue10interfaces6stream12TcpClientPtrE"></span><span id="_CPPv2N5rogue10interfaces6stream12TcpClientPtrE"></span><span id="rogue::interfaces::stream::TcpClientPtr"></span><span class="target" id="namespacerogue_1_1interfaces_1_1stream_1abfe05adf801e128fd4798344ed1dbd7a"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream9TcpClientE" title="rogue::interfaces::stream::TcpClient"><span class="n"><span class="pre">TcpClient</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">TcpClientPtr</span></span></span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream12TcpClientPtrE" title="Link to this definition"></a><br /></dt>
-<dd><p>Alias for using shared pointer as TcpClientPtr. </p>
+<dd><p>Shared pointer alias for <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1TcpClient"><span class="std std-ref"><span class="pre">TcpClient</span></span></a></code>. </p>
 </dd></dl>
 
 <p>The class description is shown below:</p>
 <dl class="cpp class">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream9TcpClientE">
 <span id="_CPPv3N5rogue10interfaces6stream9TcpClientE"></span><span id="_CPPv2N5rogue10interfaces6stream9TcpClientE"></span><span id="rogue::interfaces::stream::TcpClient"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1TcpClient"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">TcpClient</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="tcpCore.html#_CPPv4N5rogue10interfaces6stream7TcpCoreE" title="rogue::interfaces::stream::TcpCore"><span class="n"><span class="pre">TcpCore</span></span></a><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream9TcpClientE" title="Link to this definition"></a><br /></dt>
-<dd><p>Stream TCP Bridge Client. </p>
-<p>This class is a wrapper around <a class="reference internal" href="tcpCore.html#classrogue_1_1interfaces_1_1stream_1_1TcpCore"><span class="std std-ref">TcpCore</span></a> which operates in client mode. </p>
+<dd><p>Stream TCP bridge client. </p>
+<p>Thin wrapper around <code class="docutils literal notranslate"><a class="reference internal" href="tcpCore.html#classrogue_1_1interfaces_1_1stream_1_1TcpCore"><span class="std std-ref"><span class="pre">TcpCore</span></span></a></code> configured for client mode. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream9TcpClient9TcpClientENSt6stringE8uint16_t">
+<span id="_CPPv3N5rogue10interfaces6stream9TcpClient9TcpClientENSt6stringE8uint16_t"></span><span id="_CPPv2N5rogue10interfaces6stream9TcpClient9TcpClientENSt6stringE8uint16_t"></span><span id="rogue::interfaces::stream::TcpClient::TcpClient__ss.uint16_t"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1TcpClient_1ad7a57627c690c8ccd2aadccd336c6e3d"></span><span class="sig-name descname"><span class="n"><span class="pre">TcpClient</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">addr</span></span>, <span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">port</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream9TcpClient9TcpClientENSt6stringE8uint16_t" title="Link to this definition"></a><br /></dt>
+<dd><p>Constructs a TCP stream bridge client. </p>
+<p>This constructor is a low-level C++ allocation path. Prefer <code class="docutils literal notranslate"><a class="reference internal" href="master.html#classrogue_1_1interfaces_1_1stream_1_1Master_1a3c6558447ac572d910c4db8a6d8ecc6d"><span class="std std-ref"><span class="pre">create()</span></span></a></code> when shared ownership or Python exposure is required.</p>
+<p>The constructor takes an address and port. The remote server address can be an IP address or hostname. The bridge uses two consecutive TCP ports; <code class="docutils literal notranslate"><span class="pre">port</span></code> is the base (for example, <code class="docutils literal notranslate"><span class="pre">port=8000</span></code> uses <code class="docutils literal notranslate"><span class="pre">8000</span></code> and <code class="docutils literal notranslate"><span class="pre">8001</span></code>).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>addr</strong> – Remote server address. </p></li>
+<li><p><strong>port</strong> – Base TCP port number. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream9TcpClientD0Ev">
+<span id="_CPPv3N5rogue10interfaces6stream9TcpClientD0Ev"></span><span id="_CPPv2N5rogue10interfaces6stream9TcpClientD0Ev"></span><span id="rogue::interfaces::stream::TcpClient::~TcpClient"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1TcpClient_1a352d23228a2a6043b40d671f667c4b15"></span><span class="sig-name descname"><span class="n"><span class="pre">~TcpClient</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream9TcpClientD0Ev" title="Link to this definition"></a><br /></dt>
+<dd><p>Destroys the TCP client. </p>
+</dd></dl>
+
+</div>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-static-functions">Public Static Functions</p>
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream9TcpClient6createENSt6stringE8uint16_t">
 <span id="_CPPv3N5rogue10interfaces6stream9TcpClient6createENSt6stringE8uint16_t"></span><span id="_CPPv2N5rogue10interfaces6stream9TcpClient6createENSt6stringE8uint16_t"></span><span id="rogue::interfaces::stream::TcpClient::create__ss.uint16_t"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1TcpClient_1a465cb567aa9cf9ff9c74d3110a11d4b0"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream9TcpClientE" title="rogue::interfaces::stream::TcpClient"><span class="n"><span class="pre">TcpClient</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">create</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">addr</span></span>, <span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">port</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream9TcpClient6createENSt6stringE8uint16_t" title="Link to this definition"></a><br /></dt>
-<dd><p>Create a <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1TcpClient"><span class="std std-ref">TcpClient</span></a> object and return as a TcpClientPtr. </p>
-<p>The creator takes an address and port. The passed server address can either be an IP address or hostname. The stream bridge requires two TCP ports. The passed port is the base number of these two ports. A passed value of 8000 will result in both 8000 and 8001 being used by this bridge.</p>
-<p>Exposed to Python as <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1TcpClient"><span class="std std-ref">rogue.interfaces.stream.TcpClient</span></a> </p>
+<dd><p>Creates a TCP stream bridge client and return as TcpClientPtr. </p>
+<p>Parameter semantics are identical to the constructor; see <code class="docutils literal notranslate"><span class="pre">TcpClient()</span></code> for address and port behavior details. Exposed in Python as <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1TcpClient"><span class="std std-ref"><span class="pre">rogue.interfaces.stream.TcpClient</span></span></a></code>. This static factory is the preferred construction path when the object is shared across Rogue graph connections or exposed to Python. It returns <code class="docutils literal notranslate"><span class="pre">std::shared_ptr</span></code> ownership compatible with Rogue pointer typedefs.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>addr</strong> – Interface address for server, remote server address for client. </p></li>
-<li><p><strong>port</strong> – Base port number of use for connection. </p></li>
+<li><p><strong>addr</strong> – Remote server address. </p></li>
+<li><p><strong>port</strong> – Base TCP port number. </p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1TcpClient"><span class="std std-ref">TcpClient</span></a> object as a TcpClientPtr </p>
+<dd class="field-even"><p>Shared pointer to the created client. </p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream9TcpClient12setup_pythonEv">
+<span id="_CPPv3N5rogue10interfaces6stream9TcpClient12setup_pythonEv"></span><span id="_CPPv2N5rogue10interfaces6stream9TcpClient12setup_pythonEv"></span><span id="rogue::interfaces::stream::TcpClient::setup_python"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1TcpClient_1aa15242c6cb674b0137fb8999223e71e4"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setup_python</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream9TcpClient12setup_pythonEv" title="Link to this definition"></a><br /></dt>
+<dd><p>Registers this type with Python bindings. </p>
 </dd></dl>
 
 </div>

@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Welcome to Rogue’s documentation! &mdash; Rogue v6.8.2 documentation</title>
+  <title>Welcome to Rogue’s documentation! &mdash; Rogue v6.8.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=42e93e3f"></script>
+      <script src="_static/documentation_options.js?v=e691ba26"></script>
       <script src="_static/doctools.js?v=fd6eb6e6"></script>
       <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -202,6 +202,7 @@ branch of Rogue. New documentation is being added incrementally over time.</p>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="pyrogue_tree/model/index.html">Model API</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pyrogue_tree/model/index.html#related-documentation">Related Documentation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pyrogue_tree/model/index.html#utility-functions">Utility Functions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pyrogue_tree/model/index.html#base-model">Base Model</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pyrogue_tree/model/index.html#common-built-in-models">Common Built-in Models</a></li>
@@ -252,11 +253,25 @@ branch of Rogue. New documentation is being added incrementally over time.</p>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="interfaces/sql.html">SQL Logging Interface</a></li>
-<li class="toctree-l2"><a class="reference internal" href="interfaces/cpp_api.html">Wrapping Rogue In C++</a></li>
+<li class="toctree-l2"><a class="reference internal" href="interfaces/cpp_api.html">Wrapping Rogue In C++</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="interfaces/cpp_api.html#creating-a-root-wrapper">Creating a root wrapper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="interfaces/cpp_api.html#node-traversal-and-variable-access">Node traversal and variable access</a></li>
+<li class="toctree-l3"><a class="reference internal" href="interfaces/cpp_api.html#commands">Commands</a></li>
+<li class="toctree-l3"><a class="reference internal" href="interfaces/cpp_api.html#variable-listeners-root-only">Variable listeners (root only)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="interfaces/cpp_api.html#reference-example">Reference example</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="interfaces/version.html">Rogue Version Helper</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="interfaces/version.html#notes">Notes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="interfaces/version.html#python-examples">Python examples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="interfaces/version.html#c-examples">C++ examples</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="utilities/index.html">Utilities</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="utilities/fileio/index.html">File I/O Utilities</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="utilities/fileio/format.html">Rogue File Data Format</a></li>
 <li class="toctree-l3"><a class="reference internal" href="utilities/fileio/writing.html">Writing Frames To A File</a></li>
 <li class="toctree-l3"><a class="reference internal" href="utilities/fileio/reading.html">Reading Frames From A File</a></li>
 <li class="toctree-l3"><a class="reference internal" href="utilities/fileio/custom.html">Custom Writers</a></li>
@@ -268,6 +283,10 @@ branch of Rogue. New documentation is being added incrementally over time.</p>
 <li class="toctree-l3"><a class="reference internal" href="utilities/prbs/writing.html">Generating PRBS Frames</a></li>
 <li class="toctree-l3"><a class="reference internal" href="utilities/prbs/reading.html">Receiving PRBS Frames</a></li>
 <li class="toctree-l3"><a class="reference internal" href="utilities/prbs/classes/index.html">PRBS Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="utilities/hls/index.html">HLS Utilities</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="utilities/hls/reg_interf_parser.html">HLS Register Interface Parser</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="utilities/compression/index.html">Compression Utilities</a><ul>
@@ -301,9 +320,10 @@ branch of Rogue. New documentation is being added incrementally over time.</p>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="protocols/rssi/index.html">RSSI Protocol</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="protocols/rssi/client.html">RSSI Protocol Client</a></li>
-<li class="toctree-l3"><a class="reference internal" href="protocols/rssi/server.html">RSSI Protocol Server</a></li>
-<li class="toctree-l3"><a class="reference internal" href="protocols/rssi/classes/index.html">RSSI Protocol Class Descriptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="protocols/rssi/index.html#protocol-documentation">Protocol documentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="protocols/rssi/index.html#how-rssi-classes-fit-together">How RSSI classes fit together</a></li>
+<li class="toctree-l3"><a class="reference internal" href="protocols/rssi/index.html#python-usage-example">Python usage example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="protocols/rssi/index.html#see-also">See also</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="protocols/packetizer/index.html">Packetizer Protocol</a><ul>
@@ -312,11 +332,19 @@ branch of Rogue. New documentation is being added incrementally over time.</p>
 <li class="toctree-l3"><a class="reference internal" href="protocols/packetizer/classes/index.html">Packetizer Protocol Class Descriptions</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="protocols/network.html">Network Wrapper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="protocols/network.html">Network Wrapper</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="protocols/network.html#overview">Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="protocols/network.html#when-to-use">When to use</a></li>
+<li class="toctree-l3"><a class="reference internal" href="protocols/network.html#key-constructor-arguments">Key constructor arguments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="protocols/network.html#typical-root-integration">Typical Root integration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="protocols/network.html#server-mode-less-common">Server mode (less common)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="protocols/network.html#available-helper-methods-commands">Available helper methods/commands</a></li>
+<li class="toctree-l3"><a class="reference internal" href="protocols/network.html#see-also">See also</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="protocols/batcher/index.html">Batcher Protocol</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="protocols/batcher/inverterV1.html">Batcher Protocol InverterV1</a></li>
-<li class="toctree-l3"><a class="reference internal" href="protocols/batcher/splitterV1.html">Batcher Protocol SplitterV1</a></li>
-<li class="toctree-l3"><a class="reference internal" href="protocols/batcher/classes/index.html">Batcher Protocol Class Descriptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="protocols/batcher/index.html#how-the-classes-fit-together">How the classes fit together</a></li>
+<li class="toctree-l3"><a class="reference internal" href="protocols/batcher/index.html#usage-examples">Usage examples</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="protocols/epicsV4/index.html">EPICSV4 Protocol</a></li>
@@ -325,6 +353,14 @@ branch of Rogue. New documentation is being added incrementally over time.</p>
 <li class="toctree-l3"><a class="reference internal" href="protocols/srp/srpV3.html">SRP Protocol Version 3</a></li>
 <li class="toctree-l3"><a class="reference internal" href="protocols/srp/cmd.html">SRP Protocol Command</a></li>
 <li class="toctree-l3"><a class="reference internal" href="protocols/srp/classes/index.html">SRP Protocol Class Descriptions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="protocols/xilinx/index.html">Xilinx Protocols</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="protocols/xilinx/index.html#typical-usage">Typical usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="protocols/xilinx/index.html#python-example">Python example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="protocols/xilinx/index.html#c-example">C++ example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="protocols/xilinx/index.html#jtagdriver-notes">JtagDriver notes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="protocols/xilinx/index.html#api-references">API references</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="protocols/uart.html">UART Protocol</a></li>

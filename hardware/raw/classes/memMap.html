@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MemMap &mdash; Rogue v6.8.2 documentation</title>
+  <title>MemMap &mdash; Rogue v6.8.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=42e93e3f"></script>
+      <script src="../../../_static/documentation_options.js?v=e691ba26"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -107,33 +107,89 @@
 <dl class="cpp type">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue8hardware9MemMapPtrE">
 <span id="_CPPv3N5rogue8hardware9MemMapPtrE"></span><span id="_CPPv2N5rogue8hardware9MemMapPtrE"></span><span id="rogue::hardware::MemMapPtr"></span><span class="target" id="namespacerogue_1_1hardware_1aae0f893068bc24dd502a7b4877dc0804"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">hardware</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue8hardware6MemMapE" title="rogue::hardware::MemMap"><span class="n"><span class="pre">MemMap</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">hardware</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">MemMapPtr</span></span></span><a class="headerlink" href="#_CPPv4N5rogue8hardware9MemMapPtrE" title="Link to this definition"></a><br /></dt>
-<dd><p>Alias for using shared pointer as TcpClientPtr. </p>
+<dd><p>Shared pointer alias for <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1hardware_1_1MemMap"><span class="std std-ref"><span class="pre">MemMap</span></span></a></code>. </p>
 </dd></dl>
 
 <p>The class description is shown below:</p>
 <dl class="cpp class">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue8hardware6MemMapE">
 <span id="_CPPv3N5rogue8hardware6MemMapE"></span><span id="_CPPv2N5rogue8hardware6MemMapE"></span><span id="rogue::hardware::MemMap"></span><span class="target" id="classrogue_1_1hardware_1_1MemMap"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">MemMap</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="../../../interfaces/memory/classes/slave.html#_CPPv4N5rogue10interfaces6memory5SlaveE" title="rogue::interfaces::memory::Slave"><span class="n"><span class="pre">Slave</span></span></a><a class="headerlink" href="#_CPPv4N5rogue8hardware6MemMapE" title="Link to this definition"></a><br /></dt>
-<dd><p>Raw Memory Map Class. </p>
-<p>This class provides a bridge between the Rogue memory interface and a standard Linux /dev/map interface. </p>
+<dd><p>Memory-slave bridge for direct <code class="docutils literal notranslate"><span class="pre">/dev/mem</span></code> mapped register access. </p>
+<p><code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1hardware_1_1MemMap"><span class="std std-ref"><span class="pre">MemMap</span></span></a></code> maps a physical address range from Linux <code class="docutils literal notranslate"><span class="pre">/dev/mem</span></code> into user space and services Rogue memory transactions against that mapped region.</p>
+<p>Transaction flow:<ul class="simple">
+<li><p><code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1hardware_1_1MemMap_1a49451bcb4e20bf4238828ae332d07b3f"><span class="std std-ref"><span class="pre">doTransaction()</span></span></a></code> enqueues requests from upstream memory masters.</p></li>
+<li><p>A worker thread dequeues transactions and performs 32-bit word accesses.</p></li>
+<li><p>Read/verify requests copy mapped values into transaction buffer.</p></li>
+<li><p>Write/post requests copy transaction buffer values into mapped memory.</p></li>
+</ul>
+</p>
+<p>This class is intended for environments where raw memory mapping is permitted and safe for the target platform. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue8hardware6MemMap6MemMapE8uint64_t8uint32_t">
+<span id="_CPPv3N5rogue8hardware6MemMap6MemMapE8uint64_t8uint32_t"></span><span id="_CPPv2N5rogue8hardware6MemMap6MemMapE8uint64_t8uint32_t"></span><span id="rogue::hardware::MemMap::MemMap__uint64_t.uint32_t"></span><span class="target" id="classrogue_1_1hardware_1_1MemMap_1a5a2e1331aff728a874a141d0941ebf31"></span><span class="sig-name descname"><span class="n"><span class="pre">MemMap</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">base</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">size</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware6MemMap6MemMapE8uint64_t8uint32_t" title="Link to this definition"></a><br /></dt>
+<dd><p>Constructs a raw memory-map bridge instance. </p>
+<p>This constructor is a low-level C++ allocation path. Prefer <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1hardware_1_1MemMap_1a0356b72c974a8e09af737da6b52a8255"><span class="std std-ref"><span class="pre">create()</span></span></a></code> when shared ownership or Python exposure is required.</p>
+<p>Opens <code class="docutils literal notranslate"><span class="pre">/dev/mem</span></code>, maps the requested physical range, and starts worker thread for queued transaction processing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>base</strong> – Physical base address to map. </p></li>
+<li><p><strong>size</strong> – Size of address space to map in bytes. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue8hardware6MemMapD0Ev">
+<span id="_CPPv3N5rogue8hardware6MemMapD0Ev"></span><span id="_CPPv2N5rogue8hardware6MemMapD0Ev"></span><span id="rogue::hardware::MemMap::~MemMap"></span><span class="target" id="classrogue_1_1hardware_1_1MemMap_1ae580af5fbc98022db95f75e90a2fc472"></span><span class="sig-name descname"><span class="n"><span class="pre">~MemMap</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware6MemMapD0Ev" title="Link to this definition"></a><br /></dt>
+<dd><p>Destroys the raw memory-map bridge instance. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue8hardware6MemMap4stopEv">
+<span id="_CPPv3N5rogue8hardware6MemMap4stopEv"></span><span id="_CPPv2N5rogue8hardware6MemMap4stopEv"></span><span id="rogue::hardware::MemMap::stop"></span><span class="target" id="classrogue_1_1hardware_1_1MemMap_1a5b418a9ac5e1dc9ceb0bc63635efaf40"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">stop</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware6MemMap4stopEv" title="Link to this definition"></a><br /></dt>
+<dd><p>Stops worker thread, unmaps memory, and closes <code class="docutils literal notranslate"><span class="pre">/dev/mem</span></code>. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue8hardware6MemMap13doTransactionENSt10shared_ptrIN5rogue10interfaces6memory11TransactionEEE">
+<span id="_CPPv3N5rogue8hardware6MemMap13doTransactionENSt10shared_ptrIN5rogue10interfaces6memory11TransactionEEE"></span><span id="_CPPv2N5rogue8hardware6MemMap13doTransactionENSt10shared_ptrIN5rogue10interfaces6memory11TransactionEEE"></span><span id="rogue::hardware::MemMap::doTransaction__std::shared_ptr:rogue::interfaces::memory::Transaction:"></span><span class="target" id="classrogue_1_1hardware_1_1MemMap_1a49451bcb4e20bf4238828ae332d07b3f"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">doTransaction</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="../../../interfaces/memory/classes/transaction.html#_CPPv4N5rogue10interfaces6memory11TransactionE" title="rogue::interfaces::memory::Transaction"><span class="n"><span class="pre">Transaction</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">tran</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware6MemMap13doTransactionENSt10shared_ptrIN5rogue10interfaces6memory11TransactionEEE" title="Link to this definition"></a><br /></dt>
+<dd><p>Queues a memory transaction for asynchronous mapped-memory access. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>tran</strong> – Transaction received from upstream memory master. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-static-functions">Public Static Functions</p>
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue8hardware6MemMap6createE8uint64_t8uint32_t">
 <span id="_CPPv3N5rogue8hardware6MemMap6createE8uint64_t8uint32_t"></span><span id="_CPPv2N5rogue8hardware6MemMap6createE8uint64_t8uint32_t"></span><span id="rogue::hardware::MemMap::create__uint64_t.uint32_t"></span><span class="target" id="classrogue_1_1hardware_1_1MemMap_1a0356b72c974a8e09af737da6b52a8255"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">hardware</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue8hardware6MemMapE" title="rogue::hardware::MemMap"><span class="n"><span class="pre">MemMap</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">create</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">base</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">size</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware6MemMap6createE8uint64_t8uint32_t" title="Link to this definition"></a><br /></dt>
-<dd><p>Class factory which returns a MemMapPtr to a newly created <a class="reference internal" href="#classrogue_1_1hardware_1_1MemMap"><span class="std std-ref">MemMap</span></a> object. </p>
-<p>Exposed to Python as <a class="reference internal" href="#classrogue_1_1hardware_1_1MemMap"><span class="std std-ref">rogue.hardware.MemMap()</span></a> </p>
+<dd><p>Creates a raw memory-map bridge instance. </p>
+<p>Parameter semantics are identical to the constructor; see <code class="docutils literal notranslate"><span class="pre">MemMap()</span></code> for mapping and worker-thread setup details. Exposed to Python as <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1hardware_1_1MemMap"><span class="std std-ref"><span class="pre">rogue.hardware.MemMap()</span></span></a></code>. This static factory is the preferred construction path when the object is shared across Rogue graph connections or exposed to Python. It returns <code class="docutils literal notranslate"><span class="pre">std::shared_ptr</span></code> ownership compatible with Rogue pointer typedefs.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>base</strong> – Base address to map </p></li>
-<li><p><strong>size</strong> – Size of address space to map </p></li>
+<li><p><strong>base</strong> – Physical base address to map. </p></li>
+<li><p><strong>size</strong> – Size of address space to map in bytes. </p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="#classrogue_1_1hardware_1_1MemMap"><span class="std std-ref">MemMap</span></a> pointer (MemMapPtr) </p>
+<dd class="field-even"><p>Shared pointer to the created <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1hardware_1_1MemMap"><span class="std std-ref"><span class="pre">MemMap</span></span></a></code>. </p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue8hardware6MemMap12setup_pythonEv">
+<span id="_CPPv3N5rogue8hardware6MemMap12setup_pythonEv"></span><span id="_CPPv2N5rogue8hardware6MemMap12setup_pythonEv"></span><span id="rogue::hardware::MemMap::setup_python"></span><span class="target" id="classrogue_1_1hardware_1_1MemMap_1a820f47a00817469cc0c76b42ab949e0c"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setup_python</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware6MemMap12setup_pythonEv" title="Link to this definition"></a><br /></dt>
+<dd><p>Registers Python bindings for this class. </p>
 </dd></dl>
 
 </div>

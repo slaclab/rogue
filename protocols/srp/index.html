@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SRP Protocol &mdash; Rogue v6.8.2 documentation</title>
+  <title>SRP Protocol &mdash; Rogue v6.8.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=42e93e3f"></script>
+      <script src="../../_static/documentation_options.js?v=e691ba26"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -69,6 +69,7 @@
 <li class="toctree-l3"><a class="reference internal" href="classes/index.html">SRP Protocol Class Descriptions</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../xilinx/index.html">Xilinx Protocols</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../uart.html">UART Protocol</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../pyrogue/index.html">Pyrogue Protocols</a></li>
 </ul>
@@ -106,7 +107,16 @@
              
   <section id="srp-protocol">
 <span id="protocols-srp"></span><h1>SRP Protocol<a class="headerlink" href="#srp-protocol" title="Link to this heading"></a></h1>
-<p>TODO</p>
+<p>Rogue SRP components provide a bridge between the memory transaction API and
+the stream API. Memory reads/writes are serialized into SRP stream frames,
+transported over a link (for example DMA or TCP), and consumed by FPGA/ASIC
+logic that implements the SRP protocol for register access.</p>
+<p>Rogue documentation focuses on integration and usage. The wire-format protocol
+specifications are maintained externally:</p>
+<ul class="simple">
+<li><p>SRPv0: <a class="reference external" href="https://confluence.slac.stanford.edu/x/aRmVD">https://confluence.slac.stanford.edu/x/aRmVD</a></p></li>
+<li><p>SRPv3: <a class="reference external" href="https://confluence.slac.stanford.edu/x/cRmVD">https://confluence.slac.stanford.edu/x/cRmVD</a></p></li>
+</ul>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">SRP Protocol</span></p>
 <ul>

@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Command &mdash; Rogue v6.8.2 documentation</title>
+  <title>Command &mdash; Rogue v6.8.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=42e93e3f"></script>
+      <script src="../../../_static/documentation_options.js?v=e691ba26"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -117,7 +117,7 @@ behavior.</p>
 <section id="command-types">
 <h2>Command types<a class="headerlink" href="#command-types" title="Link to this heading"></a></h2>
 <ul class="simple">
-<li><p><a class="reference internal" href="local_command/index.html#pyrogue.BaseCommand" title="pyrogue.BaseCommand"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyrogue.BaseCommand</span></code></a>: base class</p></li>
+<li><p><a class="reference internal" href="#pyrogue.BaseCommand" title="pyrogue.BaseCommand"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyrogue.BaseCommand</span></code></a>: base class</p></li>
 <li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">pyrogue.LocalCommand</span></code>: software-only command</p></li>
 <li><p><a class="reference internal" href="remote_command/index.html#pyrogue.RemoteCommand" title="pyrogue.RemoteCommand"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyrogue.RemoteCommand</span></code></a>: command tied to a hardware register write</p></li>
 </ul>
@@ -222,7 +222,7 @@ Default to no-op for command if None.</p></li>
 <dd><p>Read the command variable.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>cmd</strong> (<a class="reference internal" href="local_command/index.html#pyrogue.BaseCommand" title="pyrogue.BaseCommand"><em>BaseCommand</em></a>) – Command to read.</p>
+<dd class="field-odd"><p><strong>cmd</strong> (<a class="reference internal" href="#pyrogue.BaseCommand" title="pyrogue.BaseCommand"><em>BaseCommand</em></a>) – Command to read.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
@@ -237,7 +237,7 @@ Default to no-op for command if None.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>cmd</strong> (<a class="reference internal" href="local_command/index.html#pyrogue.BaseCommand" title="pyrogue.BaseCommand"><em>BaseCommand</em></a>) – Command to write.</p></li>
+<li><p><strong>cmd</strong> (<a class="reference internal" href="#pyrogue.BaseCommand" title="pyrogue.BaseCommand"><em>BaseCommand</em></a>) – Command to write.</p></li>
 <li><p><strong>arg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><em>object</em></a>) – Value to write.</p></li>
 </ul>
 </dd>
@@ -254,7 +254,7 @@ Default to no-op for command if None.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>cmd</strong> (<a class="reference internal" href="local_command/index.html#pyrogue.BaseCommand" title="pyrogue.BaseCommand"><em>BaseCommand</em></a>) – Command to write.</p></li>
+<li><p><strong>cmd</strong> (<a class="reference internal" href="#pyrogue.BaseCommand" title="pyrogue.BaseCommand"><em>BaseCommand</em></a>) – Command to write.</p></li>
 <li><p><strong>arg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><em>object</em></a>) – Value to write and verify.</p></li>
 </ul>
 </dd>
@@ -273,7 +273,7 @@ Default to no-op for command if None.</p></li>
 <dd class="field-odd"><p><strong>sets</strong> (<em>iterable</em>) – Values to write sequentially.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code></a>[[<a class="reference internal" href="local_command/index.html#pyrogue.BaseCommand" title="pyrogue._Command.BaseCommand"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseCommand</span></code></a>], <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>]</span></p>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code></a>[[<a class="reference internal" href="#pyrogue.BaseCommand" title="pyrogue._Command.BaseCommand"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseCommand</span></code></a>], <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>]</span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -284,7 +284,7 @@ Default to no-op for command if None.</p></li>
 <dd><p>Toggle a command by writing 1 then 0.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>cmd</strong> (<a class="reference internal" href="local_command/index.html#pyrogue.BaseCommand" title="pyrogue.BaseCommand"><em>BaseCommand</em></a>) – Command to toggle.</p>
+<dd class="field-odd"><p><strong>cmd</strong> (<a class="reference internal" href="#pyrogue.BaseCommand" title="pyrogue.BaseCommand"><em>BaseCommand</em></a>) – Command to toggle.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
@@ -301,7 +301,7 @@ Default to no-op for command if None.</p></li>
 <dd class="field-odd"><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><em>object</em></a>) – Value to write when the touch function is called.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code></a>[[<a class="reference internal" href="local_command/index.html#pyrogue.BaseCommand" title="pyrogue._Command.BaseCommand"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseCommand</span></code></a>], <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>]</span></p>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code></a>[[<a class="reference internal" href="#pyrogue.BaseCommand" title="pyrogue._Command.BaseCommand"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseCommand</span></code></a>], <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>]</span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -313,7 +313,7 @@ Default to no-op for command if None.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>cmd</strong> (<a class="reference internal" href="local_command/index.html#pyrogue.BaseCommand" title="pyrogue.BaseCommand"><em>BaseCommand</em></a>) – Command to touch.</p></li>
+<li><p><strong>cmd</strong> (<a class="reference internal" href="#pyrogue.BaseCommand" title="pyrogue.BaseCommand"><em>BaseCommand</em></a>) – Command to touch.</p></li>
 <li><p><strong>arg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><em>object</em></a>) – Value to write. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, writes <code class="docutils literal notranslate"><span class="pre">1</span></code>.</p></li>
 </ul>
 </dd>
@@ -329,7 +329,7 @@ Default to no-op for command if None.</p></li>
 <dd><p>Touch the command with 0.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>cmd</strong> (<a class="reference internal" href="local_command/index.html#pyrogue.BaseCommand" title="pyrogue.BaseCommand"><em>BaseCommand</em></a>) – Command to touch.</p>
+<dd class="field-odd"><p><strong>cmd</strong> (<a class="reference internal" href="#pyrogue.BaseCommand" title="pyrogue.BaseCommand"><em>BaseCommand</em></a>) – Command to touch.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
@@ -343,7 +343,7 @@ Default to no-op for command if None.</p></li>
 <dd><p>Touch the command with 1.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>cmd</strong> (<a class="reference internal" href="local_command/index.html#pyrogue.BaseCommand" title="pyrogue.BaseCommand"><em>BaseCommand</em></a>) – Command to touch.</p>
+<dd class="field-odd"><p><strong>cmd</strong> (<a class="reference internal" href="#pyrogue.BaseCommand" title="pyrogue.BaseCommand"><em>BaseCommand</em></a>) – Command to touch.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
@@ -360,7 +360,7 @@ Default to no-op for command if None.</p></li>
 <dd class="field-odd"><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><em>object</em></a>) – Value to post.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code></a>[[<a class="reference internal" href="local_command/index.html#pyrogue.BaseCommand" title="pyrogue._Command.BaseCommand"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseCommand</span></code></a>], <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>]</span></p>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code></a>[[<a class="reference internal" href="#pyrogue.BaseCommand" title="pyrogue._Command.BaseCommand"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseCommand</span></code></a>], <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>]</span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -372,7 +372,7 @@ Default to no-op for command if None.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>cmd</strong> (<a class="reference internal" href="local_command/index.html#pyrogue.BaseCommand" title="pyrogue.BaseCommand"><em>BaseCommand</em></a>) – Command to post.</p></li>
+<li><p><strong>cmd</strong> (<a class="reference internal" href="#pyrogue.BaseCommand" title="pyrogue.BaseCommand"><em>BaseCommand</em></a>) – Command to post.</p></li>
 <li><p><strong>arg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><em>object</em></a>) – Value to post.</p></li>
 </ul>
 </dd>
@@ -388,7 +388,7 @@ Default to no-op for command if None.</p></li>
 <dd><p>Post a value of 1.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>cmd</strong> (<a class="reference internal" href="local_command/index.html#pyrogue.BaseCommand" title="pyrogue.BaseCommand"><em>BaseCommand</em></a>) – Command to post.</p>
+<dd class="field-odd"><p><strong>cmd</strong> (<a class="reference internal" href="#pyrogue.BaseCommand" title="pyrogue.BaseCommand"><em>BaseCommand</em></a>) – Command to post.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
@@ -402,7 +402,7 @@ Default to no-op for command if None.</p></li>
 <dd><p>Post a value of 0.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>cmd</strong> (<a class="reference internal" href="local_command/index.html#pyrogue.BaseCommand" title="pyrogue.BaseCommand"><em>BaseCommand</em></a>) – Command to post.</p>
+<dd class="field-odd"><p><strong>cmd</strong> (<a class="reference internal" href="#pyrogue.BaseCommand" title="pyrogue.BaseCommand"><em>BaseCommand</em></a>) – Command to post.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
@@ -570,7 +570,7 @@ The variable and value class are passed as an arg: func(path,varValue)</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="pyrogue.BaseCommand.commands">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">commands</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.OrderedDict" title="(in Python v3.14)"><span class="pre">OrderedDict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="local_command/index.html#pyrogue.BaseCommand" title="pyrogue._Command.BaseCommand"><span class="pre">BaseCommand</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#pyrogue.BaseCommand.commands" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">commands</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.OrderedDict" title="(in Python v3.14)"><span class="pre">OrderedDict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#pyrogue.BaseCommand" title="pyrogue._Command.BaseCommand"><span class="pre">BaseCommand</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#pyrogue.BaseCommand.commands" title="Link to this definition"></a></dt>
 <dd><p>Return direct child commands.</p>
 </dd></dl>
 
@@ -580,7 +580,7 @@ The variable and value class are passed as an arg: func(path,varValue)</p>
 <dd><p>Return commands filtered by group.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.OrderedDict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">OrderedDict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference internal" href="local_command/index.html#pyrogue.BaseCommand" title="pyrogue._Command.BaseCommand"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseCommand</span></code></a>]</span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.OrderedDict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">OrderedDict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference internal" href="#pyrogue.BaseCommand" title="pyrogue._Command.BaseCommand"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseCommand</span></code></a>]</span></p>
 </dd>
 <dt class="field-even">Parameters<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">

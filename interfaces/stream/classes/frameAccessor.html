@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Frame Accessor &mdash; Rogue v6.8.2 documentation</title>
+  <title>Frame Accessor &mdash; Rogue v6.8.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=42e93e3f"></script>
+      <script src="../../../_static/documentation_options.js?v=e691ba26"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -88,6 +88,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../pyrogue/index.html">Python Interfaces</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../sql.html">SQL Logging Interface</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../cpp_api.html">Wrapping Rogue In C++</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../version.html">Rogue Version Helper</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../utilities/index.html">Utilities</a></li>
@@ -132,43 +133,75 @@
 <dl class="cpp class">
 <dt class="sig sig-object cpp" id="_CPPv4I0EN5rogue10interfaces6stream13FrameAccessorE">
 <span id="_CPPv3I0EN5rogue10interfaces6stream13FrameAccessorE"></span><span id="_CPPv2I0EN5rogue10interfaces6stream13FrameAccessorE"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">T</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameAccessor"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">FrameAccessor</span></span></span><a class="headerlink" href="#_CPPv4I0EN5rogue10interfaces6stream13FrameAccessorE" title="Link to this definition"></a><br /></dt>
-<dd><p><a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> Accessor. </p>
+<dd><p>Typed accessor over a contiguous frame-data region. </p>
+<p><code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1FrameAccessor"><span class="std std-ref"><span class="pre">FrameAccessor</span></span></a><span class="pre">&lt;T&gt;</span></code> provides typed element access into frame payload data when the requested range is fully contained in a single underlying buffer span. This avoids per-byte iterator overhead in tight loops while preserving a checked construction step. </p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream13FrameAccessor13FrameAccessorERN5rogue10interfaces6stream13FrameIteratorE8uint32_t">
 <span id="_CPPv3N5rogue10interfaces6stream13FrameAccessor13FrameAccessorERN5rogue10interfaces6stream13FrameIteratorE8uint32_t"></span><span id="_CPPv2N5rogue10interfaces6stream13FrameAccessor13FrameAccessorERN5rogue10interfaces6stream13FrameIteratorE8uint32_t"></span><span id="rogue::interfaces::stream::FrameAccessor::FrameAccessor__rogue::interfaces::stream::FrameIteratorR.uint32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameAccessor_1a5ded8ca069c83e412c62b7e22a437ebe"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">FrameAccessor</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="frameIterator.html#_CPPv4N5rogue10interfaces6stream13FrameIteratorE" title="rogue::interfaces::stream::FrameIterator"><span class="n"><span class="pre">FrameIterator</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">iter</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">size</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream13FrameAccessor13FrameAccessorERN5rogue10interfaces6stream13FrameIteratorE8uint32_t" title="Link to this definition"></a><br /></dt>
-<dd><p>Creator. </p>
+<dd><p>Creates a typed accessor at the iterator location. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>iter</strong> – <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> iterator positioned at the first element. </p></li>
+<li><p><strong>size</strong> – Number of elements in the accessor. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Throws<span class="colon">:</span></dt>
+<dd class="field-even"><p><span><span class="cpp-expr sig sig-inline cpp"><span class="n">rogue</span><span class="p">::</span><span class="n">GeneralError</span></span></span> – If the range spans multiple buffers. </p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream13FrameAccessorixEK8uint32_t">
 <span id="_CPPv3N5rogue10interfaces6stream13FrameAccessorixEK8uint32_t"></span><span id="_CPPv2N5rogue10interfaces6stream13FrameAccessorixEK8uint32_t"></span><span id="rogue::interfaces::stream::FrameAccessor::subscript-operator__uint32_tC"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameAccessor_1a99c7d33bb014283c45a29ed1ecb60ede"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0EN5rogue10interfaces6stream13FrameAccessorE" title="rogue::interfaces::stream::FrameAccessor::T"><span class="n"><span class="pre">T</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="sig-name descname"><span class="k"><span class="pre">operator</span></span><span class="o"><span class="pre">[]</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">offset</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream13FrameAccessorixEK8uint32_t" title="Link to this definition"></a><br /></dt>
-<dd><p>De-reference by index. </p>
+<dd><p>Dereference by index. </p>
+<p>Returns element reference at <code class="docutils literal notranslate"><span class="pre">offset</span></code> without bounds checking.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>offset</strong> – Element index. </p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Element reference. </p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream13FrameAccessor2atEK8uint32_t">
 <span id="_CPPv3N5rogue10interfaces6stream13FrameAccessor2atEK8uint32_t"></span><span id="_CPPv2N5rogue10interfaces6stream13FrameAccessor2atEK8uint32_t"></span><span id="rogue::interfaces::stream::FrameAccessor::at__uint32_tC"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameAccessor_1abffbc982fc606541c1c5b6d5ea835caa"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0EN5rogue10interfaces6stream13FrameAccessorE" title="rogue::interfaces::stream::FrameAccessor::T"><span class="n"><span class="pre">T</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="sig-name descname"><span class="n"><span class="pre">at</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">offset</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream13FrameAccessor2atEK8uint32_t" title="Link to this definition"></a><br /></dt>
-<dd><p>Access element at location. </p>
+<dd><p>Returns element reference at <code class="docutils literal notranslate"><span class="pre">offset</span></code> with bounds checking. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>offset</strong> – Element index. </p>
+</dd>
+<dt class="field-even">Throws<span class="colon">:</span></dt>
+<dd class="field-even"><p><span><span class="cpp-expr sig sig-inline cpp"><span class="n">rogue</span><span class="p">::</span><span class="n">GeneralError</span></span></span> – If <code class="docutils literal notranslate"><span class="pre">offset</span> <span class="pre">&gt;=</span> <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1FrameAccessor_1a01f45f2caade8b8d0626f7bd12f75eb0"><span class="std std-ref"><span class="pre">size()</span></span></a></code>. </p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Element reference. </p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream13FrameAccessor4sizeEv">
 <span id="_CPPv3N5rogue10interfaces6stream13FrameAccessor4sizeEv"></span><span id="_CPPv2N5rogue10interfaces6stream13FrameAccessor4sizeEv"></span><span id="rogue::interfaces::stream::FrameAccessor::size"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameAccessor_1a01f45f2caade8b8d0626f7bd12f75eb0"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">size</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream13FrameAccessor4sizeEv" title="Link to this definition"></a><br /></dt>
-<dd><p>Get size. </p>
+<dd><p>Returns number of elements in this accessor. </p>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream13FrameAccessor5beginEv">
 <span id="_CPPv3N5rogue10interfaces6stream13FrameAccessor5beginEv"></span><span id="_CPPv2N5rogue10interfaces6stream13FrameAccessor5beginEv"></span><span id="rogue::interfaces::stream::FrameAccessor::begin"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameAccessor_1a532b767e25a388875708836841ebdcdc"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0EN5rogue10interfaces6stream13FrameAccessorE" title="rogue::interfaces::stream::FrameAccessor::T"><span class="n"><span class="pre">T</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">begin</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream13FrameAccessor5beginEv" title="Link to this definition"></a><br /></dt>
-<dd><p>Begin iterator. </p>
+<dd><p>Returns pointer to first element. </p>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream13FrameAccessor3endEv">
 <span id="_CPPv3N5rogue10interfaces6stream13FrameAccessor3endEv"></span><span id="_CPPv2N5rogue10interfaces6stream13FrameAccessor3endEv"></span><span id="rogue::interfaces::stream::FrameAccessor::end"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameAccessor_1ad17901f217c18558924c3027fb520711"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0EN5rogue10interfaces6stream13FrameAccessorE" title="rogue::interfaces::stream::FrameAccessor::T"><span class="n"><span class="pre">T</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">end</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream13FrameAccessor3endEv" title="Link to this definition"></a><br /></dt>
-<dd><p>End iterator. </p>
+<dd><p>Returns pointer one-past-last element. </p>
 </dd></dl>
 
 </div>

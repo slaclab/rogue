@@ -4,16 +4,16 @@
 Batcher Protocol Class Descriptions
 ===================================
 
-TODO
-
 The following are detailed descriptions of the various C++ classes that make up the Rogue Batcher protocol.
 
 .. toctree::
    :maxdepth: 1
-   :caption: UDP Classes:
+   :caption: Batcher Classes:
 
    coreV1
+   coreV2
    data
    inverterV1
+   inverterV2
    splitterV1
-
+   splitterV2

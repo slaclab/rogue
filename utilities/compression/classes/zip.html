@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>StreamZip &mdash; Rogue v6.8.2 documentation</title>
+  <title>StreamZip &mdash; Rogue v6.8.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=42e93e3f"></script>
+      <script src="../../../_static/documentation_options.js?v=e691ba26"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -56,6 +56,7 @@
 <li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Utilities</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../../fileio/index.html">File I/O Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../prbs/index.html">PRBS Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../hls/index.html">HLS Utilities</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../index.html">Compression Utilities</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="../compress.html">Compressing Frames</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../decompress.html">Decompressing Frames</a></li>
@@ -118,31 +119,56 @@ an external master, compress the Frame payload and then pass the compressed fram
 <dl class="cpp class">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9utilities9StreamZipE">
 <span id="_CPPv3N5rogue9utilities9StreamZipE"></span><span id="_CPPv2N5rogue9utilities9StreamZipE"></span><span id="rogue::utilities::StreamZip"></span><span class="target" id="classrogue_1_1utilities_1_1StreamZip"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">StreamZip</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="../../../interfaces/stream/classes/slave.html#_CPPv4N5rogue10interfaces6stream5SlaveE" title="rogue::interfaces::stream::Slave"><span class="n"><span class="pre">Slave</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="../../../interfaces/stream/classes/master.html#_CPPv4N5rogue10interfaces6stream6MasterE" title="rogue::interfaces::stream::Master"><span class="n"><span class="pre">Master</span></span></a><a class="headerlink" href="#_CPPv4N5rogue9utilities9StreamZipE" title="Link to this definition"></a><br /></dt>
-<dd><p>Stream compressor. </p>
+<dd><p>Stream module that compresses frame payloads using bzip2. </p>
+<p><code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1utilities_1_1StreamZip"><span class="std std-ref"><span class="pre">StreamZip</span></span></a></code> consumes frames on its slave side, compresses the payload bytes, and forwards a new frame downstream from its master side. Frame metadata (channel, flags, error state) is preserved.</p>
+<p>Output frame allocation is requested via <code class="docutils literal notranslate"><a class="reference internal" href="../../../interfaces/stream/classes/master.html#classrogue_1_1interfaces_1_1stream_1_1Master_1ad544671aa75fa6a633c22635f21a13a4"><span class="std std-ref"><span class="pre">reqFrame()</span></span></a></code>. The implementation starts with an output frame sized to the input payload and grows it if needed.</p>
+<p>Threading model:<ul class="simple">
+<li><p><code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1utilities_1_1StreamZip"><span class="std std-ref"><span class="pre">StreamZip</span></span></a></code> does not create an internal worker thread.</p></li>
+<li><p>Compression runs synchronously in the caller thread that invokes <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1utilities_1_1StreamZip_1a864f8325f7e23e9ada16d4bbf5a1f699"><span class="std std-ref"><span class="pre">acceptFrame()</span></span></a></code>.</p></li>
+<li><p>A lock is taken on the input frame while payload buffers are read, so the frame contents are stable during compression. </p></li>
+</ul>
+</p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9utilities9StreamZip9StreamZipEv">
 <span id="_CPPv3N5rogue9utilities9StreamZip9StreamZipEv"></span><span id="_CPPv2N5rogue9utilities9StreamZip9StreamZipEv"></span><span id="rogue::utilities::StreamZip::StreamZip"></span><span class="target" id="classrogue_1_1utilities_1_1StreamZip_1ae67545ca4a36facaa97f4f91863db41e"></span><span class="sig-name descname"><span class="n"><span class="pre">StreamZip</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9utilities9StreamZip9StreamZipEv" title="Link to this definition"></a><br /></dt>
-<dd><p>Creator. </p>
+<dd><p>Constructs a stream compressor. </p>
+<p>This constructor is a low-level C++ allocation path. Prefer <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1utilities_1_1StreamZip_1a1c3455875a2254f22104c0d2c66bf3cd"><span class="std std-ref"><span class="pre">create()</span></span></a></code> when shared ownership or Python exposure is required. </p>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9utilities9StreamZipD0Ev">
 <span id="_CPPv3N5rogue9utilities9StreamZipD0Ev"></span><span id="_CPPv2N5rogue9utilities9StreamZipD0Ev"></span><span id="rogue::utilities::StreamZip::~StreamZip"></span><span class="target" id="classrogue_1_1utilities_1_1StreamZip_1a47354742e181f4847ce5461ec3578141"></span><span class="sig-name descname"><span class="n"><span class="pre">~StreamZip</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9utilities9StreamZipD0Ev" title="Link to this definition"></a><br /></dt>
-<dd><p>Deconstructor. </p>
+<dd><p>Destroys stream compressor. </p>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9utilities9StreamZip11acceptFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE">
 <span id="_CPPv3N5rogue9utilities9StreamZip11acceptFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE"></span><span id="_CPPv2N5rogue9utilities9StreamZip11acceptFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE"></span><span id="rogue::utilities::StreamZip::acceptFrame__std::shared_ptr:rogue::interfaces::stream::Frame:"></span><span class="target" id="classrogue_1_1utilities_1_1StreamZip_1a864f8325f7e23e9ada16d4bbf5a1f699"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">acceptFrame</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="../../../interfaces/stream/classes/frame.html#_CPPv4N5rogue10interfaces6stream5FrameE" title="rogue::interfaces::stream::Frame"><span class="n"><span class="pre">Frame</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">frame</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9utilities9StreamZip11acceptFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE" title="Link to this definition"></a><br /></dt>
-<dd><p>Accept a frame from master. </p>
+<dd><p>Accepts a frame, compresses its payload, and forwards the result. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>frame</strong> – Input frame to compress. </p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9utilities9StreamZip9acceptReqE8uint32_tb">
 <span id="_CPPv3N5rogue9utilities9StreamZip9acceptReqE8uint32_tb"></span><span id="_CPPv2N5rogue9utilities9StreamZip9acceptReqE8uint32_tb"></span><span id="rogue::utilities::StreamZip::acceptReq__uint32_t.b"></span><span class="target" id="classrogue_1_1utilities_1_1StreamZip_1a29055f6dd34e77b4032d2fee504aef03"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="../../../interfaces/stream/classes/frame.html#_CPPv4N5rogue10interfaces6stream5FrameE" title="rogue::interfaces::stream::Frame"><span class="n"><span class="pre">Frame</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">acceptReq</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">size</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">zeroCopyEn</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9utilities9StreamZip9acceptReqE8uint32_tb" title="Link to this definition"></a><br /></dt>
-<dd><p>Accept a new frame request. </p>
+<dd><p>Forwards frame-allocation requests upstream. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>size</strong> – Requested payload size in bytes. </p></li>
+<li><p><strong>zeroCopyEn</strong> – <code class="docutils literal notranslate"><span class="pre">true</span></code> to request zero-copy buffer handling. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Allocated frame from upstream master path. </p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
@@ -151,13 +177,19 @@ an external master, compress the Frame payload and then pass the compressed fram
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9utilities9StreamZip6createEv">
 <span id="_CPPv3N5rogue9utilities9StreamZip6createEv"></span><span id="_CPPv2N5rogue9utilities9StreamZip6createEv"></span><span id="rogue::utilities::StreamZip::create"></span><span class="target" id="classrogue_1_1utilities_1_1StreamZip_1a1c3455875a2254f22104c0d2c66bf3cd"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">utilities</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue9utilities9StreamZipE" title="rogue::utilities::StreamZip"><span class="n"><span class="pre">StreamZip</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">create</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9utilities9StreamZip6createEv" title="Link to this definition"></a><br /></dt>
-<dd><p>Class creation. </p>
+<dd><p>Creates a stream compressor instance. </p>
+<p>This static factory is the preferred construction path when the object is shared across Rogue graph connections or exposed to Python. It returns <code class="docutils literal notranslate"><span class="pre">std::shared_ptr</span></code> ownership compatible with Rogue pointer typedefs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Shared pointer to the created compressor. </p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9utilities9StreamZip12setup_pythonEv">
 <span id="_CPPv3N5rogue9utilities9StreamZip12setup_pythonEv"></span><span id="_CPPv2N5rogue9utilities9StreamZip12setup_pythonEv"></span><span id="rogue::utilities::StreamZip::setup_python"></span><span class="target" id="classrogue_1_1utilities_1_1StreamZip_1a6e307e3a0cdb7d421b18e8d7ec13bea6"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setup_python</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9utilities9StreamZip12setup_pythonEv" title="Link to this definition"></a><br /></dt>
-<dd><p>Setup class in python. </p>
+<dd><p>Registers Python bindings for this class. </p>
 </dd></dl>
 
 </div>

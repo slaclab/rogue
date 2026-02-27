@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Blocks &amp; Models &mdash; Rogue v6.8.2 documentation</title>
+  <title>Blocks &amp; Models &mdash; Rogue v6.8.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=42e93e3f"></script>
+      <script src="../../_static/documentation_options.js?v=e691ba26"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -62,6 +62,7 @@
 <li class="toctree-l3"><a class="reference internal" href="hub.html">Memory Hub Example</a></li>
 <li class="toctree-l3"><a class="reference internal" href="usingTcp.html">Using The TCP Bridge</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Blocks &amp; Models</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#how-variables-models-and-block-methods-tie-together">How Variables, Models, and Block Methods Tie Together</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#custom-models">Custom Models</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#using-custom-models">Using Custom Models</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#pre-allocating-blocks">Pre-Allocating Blocks</a></li>
@@ -75,6 +76,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../pyrogue/index.html">Python Interfaces</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../sql.html">SQL Logging Interface</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../cpp_api.html">Wrapping Rogue In C++</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../version.html">Rogue Version Helper</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../utilities/index.html">Utilities</a></li>
@@ -139,6 +141,29 @@ transactions to occur at a lower level in the Block.</p>
 a special Python class in Rogue which defines how a register type is converted, accessed and displayed. The Model
 class works closely with the Block, with the Block having lower level routines which are directly associated
 with the standard set of Rogue Models.</p>
+<section id="how-variables-models-and-block-methods-tie-together">
+<h2>How Variables, Models, and Block Methods Tie Together<a class="headerlink" href="#how-variables-models-and-block-methods-tie-together" title="Link to this heading"></a></h2>
+<p>Each <code class="docutils literal notranslate"><span class="pre">Variable</span></code> stores model metadata (for example <code class="docutils literal notranslate"><span class="pre">UInt</span></code>, <code class="docutils literal notranslate"><span class="pre">Int</span></code>, <code class="docutils literal notranslate"><span class="pre">Bool</span></code>, <code class="docutils literal notranslate"><span class="pre">String</span></code>, <code class="docutils literal notranslate"><span class="pre">Float</span></code>,
+<code class="docutils literal notranslate"><span class="pre">Double</span></code>, <code class="docutils literal notranslate"><span class="pre">Fixed</span></code>, <code class="docutils literal notranslate"><span class="pre">Bytes</span></code>, <code class="docutils literal notranslate"><span class="pre">PyFunc</span></code>) and binds to matching conversion methods in <code class="docutils literal notranslate"><span class="pre">Block</span></code>.
+This binding is configured once when the variable is constructed.</p>
+<p>At runtime the flow is:</p>
+<ol class="arabic simple">
+<li><p>A variable API is called (for example <code class="docutils literal notranslate"><span class="pre">setUInt()</span></code>, <code class="docutils literal notranslate"><span class="pre">getString()</span></code>, or Python <code class="docutils literal notranslate"><span class="pre">_set()</span></code>/<code class="docutils literal notranslate"><span class="pre">_get()</span></code>).</p></li>
+<li><p>The variable calls its bound <code class="docutils literal notranslate"><span class="pre">Block</span></code> conversion method pair.</p></li>
+<li><p>The conversion method packs/unpacks bits using the variable layout (bit offsets, widths, stride, endianness).</p></li>
+<li><p>A block transaction is executed to write/read hardware (including verify/retry behavior).</p></li>
+</ol>
+<p>Conceptually:</p>
+<ul class="simple">
+<li><p>Conversion methods in <code class="docutils literal notranslate"><span class="pre">Block</span></code>:
+<code class="docutils literal notranslate"><span class="pre">setPyFunc/getPyFunc</span></code>, <code class="docutils literal notranslate"><span class="pre">setByteArray/getByteArray</span></code>, <code class="docutils literal notranslate"><span class="pre">setUInt/getUInt</span></code>,
+<code class="docutils literal notranslate"><span class="pre">setInt/getInt</span></code>, <code class="docutils literal notranslate"><span class="pre">setBool/getBool</span></code>, <code class="docutils literal notranslate"><span class="pre">setString/getString</span></code>,
+<code class="docutils literal notranslate"><span class="pre">setFloat/getFloat</span></code>, <code class="docutils literal notranslate"><span class="pre">setDouble/getDouble</span></code>, <code class="docutils literal notranslate"><span class="pre">setFixed/getFixed</span></code>.</p></li>
+<li><p>Transport methods in <code class="docutils literal notranslate"><span class="pre">Block</span></code>:
+<code class="docutils literal notranslate"><span class="pre">write/read</span></code>, <code class="docutils literal notranslate"><span class="pre">startTransaction/checkTransaction</span></code>.</p></li>
+</ul>
+<p>This separation is important: conversion selects how bytes are interpreted, while transport selects when bytes move
+to/from hardware.</p>
 <p>The following Models are currently supported in Rogue:</p>
 <table class="docutils align-default">
 <thead>
@@ -227,6 +252,7 @@ with the standard set of Rogue Models.</p>
 <p>Most of the above types perform the python to byte conversions in low level C++ calls in the Block class for performance reasons.
 An exception to this is UInt and Int types that exceed 64-bits. These conversions are performed in the Model class at the python
 level.</p>
+</section>
 <section id="custom-models">
 <h2>Custom Models<a class="headerlink" href="#custom-models" title="Link to this heading"></a></h2>
 <p>The user has the ability to create application specific data types by sub-classing the Model in python and providing the

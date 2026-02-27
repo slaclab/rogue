@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Block &mdash; Rogue v6.8.2 documentation</title>
+  <title>Block &mdash; Rogue v6.8.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=42e93e3f"></script>
+      <script src="../../../_static/documentation_options.js?v=e691ba26"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -82,6 +82,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../pyrogue/index.html">Python Interfaces</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../sql.html">SQL Logging Interface</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../cpp_api.html">Wrapping Rogue In C++</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../version.html">Rogue Version Helper</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../utilities/index.html">Utilities</a></li>
@@ -129,25 +130,47 @@ see <a class="reference internal" href="../../../pyrogue_tree/node/block/index.h
 <dl class="cpp type">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory8BlockPtrE">
 <span id="_CPPv3N5rogue10interfaces6memory8BlockPtrE"></span><span id="_CPPv2N5rogue10interfaces6memory8BlockPtrE"></span><span id="rogue::interfaces::memory::BlockPtr"></span><span class="target" id="namespacerogue_1_1interfaces_1_1memory_1a38bd2f3dab2a37acd41790d82373c692"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue10interfaces6memory5BlockE" title="rogue::interfaces::memory::Block"><span class="n"><span class="pre">Block</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">BlockPtr</span></span></span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory8BlockPtrE" title="Link to this definition"></a><br /></dt>
-<dd><p>Alias for using shared pointer as BlockPtr. </p>
+<dd><p>Shared pointer alias for <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Block"><span class="std std-ref"><span class="pre">Block</span></span></a></code>. </p>
 </dd></dl>
 
 <p>The class description is shown below:</p>
 <dl class="cpp class">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory5BlockE">
 <span id="_CPPv3N5rogue10interfaces6memory5BlockE"></span><span id="_CPPv2N5rogue10interfaces6memory5BlockE"></span><span id="rogue::interfaces::memory::Block"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Block"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Block</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="master.html#_CPPv4N5rogue10interfaces6memory6MasterE" title="rogue::interfaces::memory::Master"><span class="n"><span class="pre">Master</span></span></a><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5BlockE" title="Link to this definition"></a><br /></dt>
-<dd><p>Memory interface <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Block"><span class="std std-ref">Block</span></a> device. </p>
+<dd><p>Memory interface block device. </p>
+<p>Bridges higher-level variable access to lower-level memory transactions.</p>
+<p>A <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Block"><span class="std std-ref"><span class="pre">Block</span></span></a></code> owns staged byte storage for a register region and one or more <code class="docutils literal notranslate"><span class="pre">Variable</span></code> objects that map bit fields into that storage. Typed access methods (<code class="docutils literal notranslate"><span class="pre">setUInt</span></code>, <code class="docutils literal notranslate"><span class="pre">getString</span></code>, <code class="docutils literal notranslate"><span class="pre">setFloat</span></code>, etc.) are not selected directly by users of <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Block"><span class="std std-ref"><span class="pre">Block</span></span></a></code>; instead, each <code class="docutils literal notranslate"><span class="pre">Variable</span></code> binds to the appropriate <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Block"><span class="std std-ref"><span class="pre">Block</span></span></a></code> method pair according to its model (<code class="docutils literal notranslate"><span class="pre">UInt</span></code>, <code class="docutils literal notranslate"><span class="pre">Int</span></code>, <code class="docutils literal notranslate"><span class="pre">Bool</span></code>, <code class="docutils literal notranslate"><span class="pre">String</span></code>, <code class="docutils literal notranslate"><span class="pre">Float</span></code>, <code class="docutils literal notranslate"><span class="pre">Double</span></code>, <code class="docutils literal notranslate"><span class="pre">Fixed</span></code>, <code class="docutils literal notranslate"><span class="pre">Bytes</span></code>, <code class="docutils literal notranslate"><span class="pre">PyFunc</span></code>) and width constraints.</p>
+<p>Conversion and transport are separated:<ul class="simple">
+<li><p>Conversion methods (<code class="docutils literal notranslate"><span class="pre">set*</span></code>/<code class="docutils literal notranslate"><span class="pre">get*</span></code>) pack/unpack values between native types and staged bytes using variable metadata (bit offsets, bit widths, byte order, list indexing/stride).</p></li>
+<li><p><a class="reference internal" href="transaction.html#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> methods (<code class="docutils literal notranslate"><span class="pre">write</span></code>, <code class="docutils literal notranslate"><span class="pre">read</span></code>, <code class="docutils literal notranslate"><span class="pre">startTransaction</span></code>, <code class="docutils literal notranslate"><span class="pre">checkTransaction</span></code>) move staged bytes to/from hardware and handle verify/retry/update behavior.</p></li>
+</ul>
+</p>
+<p>Typical usage is through <code class="docutils literal notranslate"><span class="pre">Variable</span></code> APIs, which call the matching <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Block"><span class="std std-ref"><span class="pre">Block</span></span></a></code> conversion method and then issue read/write transactions. </p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
 <dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory5Block5BlockE8uint64_t8uint32_t">
+<span id="_CPPv3N5rogue10interfaces6memory5Block5BlockE8uint64_t8uint32_t"></span><span id="_CPPv2N5rogue10interfaces6memory5Block5BlockE8uint64_t8uint32_t"></span><span id="rogue::interfaces::memory::Block::Block__uint64_t.uint32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Block_1ac63e325ee3341e0bc41f0ef3c33b8f2e"></span><span class="sig-name descname"><span class="n"><span class="pre">Block</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">offset</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">size</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Block5BlockE8uint64_t8uint32_t" title="Link to this definition"></a><br /></dt>
+<dd><p>Constructs a block device with a given offset and size. </p>
+<p>This constructor is a low-level C++ allocation path. Prefer <code class="docutils literal notranslate"><a class="reference internal" href="master.html#classrogue_1_1interfaces_1_1memory_1_1Master_1a00026302600ff98ee2556e934d4fc655"><span class="std std-ref"><span class="pre">create()</span></span></a></code> when shared ownership or Python exposure is required.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>offset</strong> – Memory offset of the block. </p></li>
+<li><p><strong>size</strong> – Memory size (footprint) of the block. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory5Block4pathEv">
 <span id="_CPPv3N5rogue10interfaces6memory5Block4pathEv"></span><span id="_CPPv2N5rogue10interfaces6memory5Block4pathEv"></span><span id="rogue::interfaces::memory::Block::path"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Block_1a81a71b0be5db57665d7073ef2881df67"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">path</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Block4pathEv" title="Link to this definition"></a><br /></dt>
-<dd><p>Return the path of the block. </p>
-<p>Return the path of the block in the device tree</p>
-<p>Exposed as path property to Python </p>
+<dd><p>Returns the path of the block in the device tree. </p>
+<p>Exposed as <code class="docutils literal notranslate"><span class="pre">path</span></code> property in Python.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Full path of the block </p>
+<dd class="field-odd"><p>Full path of the block. </p>
 </dd>
 </dl>
 </dd></dl>
@@ -155,12 +178,11 @@ see <a class="reference internal" href="../../../pyrogue_tree/node/block/index.h
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory5Block4modeEv">
 <span id="_CPPv3N5rogue10interfaces6memory5Block4modeEv"></span><span id="_CPPv2N5rogue10interfaces6memory5Block4modeEv"></span><span id="rogue::interfaces::memory::Block::mode"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Block_1ab17d958ad7e6ef2b2404fc00297b3e5c"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">mode</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Block4modeEv" title="Link to this definition"></a><br /></dt>
-<dd><p>Return the mode of the block. </p>
-<p>Return the mode of the block, the supported modes are “RW”, “RO” and “WO”</p>
-<p>Exposed as mode property to Python </p>
+<dd><p>Returns the block access mode. </p>
+<p>Supported modes include <code class="docutils literal notranslate"><span class="pre">&quot;RW&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;RO&quot;</span></code>, and <code class="docutils literal notranslate"><span class="pre">&quot;WO&quot;</span></code>. Exposed as <code class="docutils literal notranslate"><span class="pre">mode</span></code> property in Python.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Mode string </p>
+<dd class="field-odd"><p>Mode string. </p>
 </dd>
 </dl>
 </dd></dl>
@@ -168,39 +190,46 @@ see <a class="reference internal" href="../../../pyrogue_tree/node/block/index.h
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory5Block8bulkOpEnEv">
 <span id="_CPPv3N5rogue10interfaces6memory5Block8bulkOpEnEv"></span><span id="_CPPv2N5rogue10interfaces6memory5Block8bulkOpEnEv"></span><span id="rogue::interfaces::memory::Block::bulkOpEn"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Block_1a75519e5d98ae47c098cb38af709af491"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">bulkOpEn</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Block8bulkOpEnEv" title="Link to this definition"></a><br /></dt>
-<dd><p>Return bulk enable flag. </p>
-<p>Return the bulk enable flag, indicating if this block should be included in bulk read and write operations.</p>
-<p>Exposed as bulkOpEn property to Python </p>
+<dd><p>Returns whether this block participates in bulk operations. </p>
+<p>Exposed as <code class="docutils literal notranslate"><span class="pre">bulkOpEn</span></code> property in Python.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>bulk enable flag </p>
+<dd class="field-odd"><p>Bulk-operation enable flag. </p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory5Block9setEnableEb">
-<span id="_CPPv3N5rogue10interfaces6memory5Block9setEnableEb"></span><span id="_CPPv2N5rogue10interfaces6memory5Block9setEnableEb"></span><span id="rogue::interfaces::memory::Block::setEnable__b"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Block_1a3ae26c89796bb9043994f72aa135ea9e"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setEnable</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">bool</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Block9setEnableEb" title="Link to this definition"></a><br /></dt>
-<dd><p>Set enable state. </p>
-<p>Set the enable state</p>
-<p>Exposed as setEnable method to Python </p>
+<span id="_CPPv3N5rogue10interfaces6memory5Block9setEnableEb"></span><span id="_CPPv2N5rogue10interfaces6memory5Block9setEnableEb"></span><span id="rogue::interfaces::memory::Block::setEnable__b"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Block_1ac32769a00cfe88caf6ced1bac4848885"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setEnable</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">enable</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Block9setEnableEb" title="Link to this definition"></a><br /></dt>
+<dd><p>Sets the block enable state. </p>
+<p>Exposed as <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Block_1ac32769a00cfe88caf6ced1bac4848885"><span class="std std-ref"><span class="pre">setEnable()</span></span></a></code> in Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>enable</strong> – Set to <code class="docutils literal notranslate"><span class="pre">true</span></code> to enable block operations. </p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory5Block11setLogLevelE8uint32_t">
 <span id="_CPPv3N5rogue10interfaces6memory5Block11setLogLevelE8uint32_t"></span><span id="_CPPv2N5rogue10interfaces6memory5Block11setLogLevelE8uint32_t"></span><span id="rogue::interfaces::memory::Block::setLogLevel__uint32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Block_1af17777408fe5c97b097dce771de3c40d"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setLogLevel</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">level</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Block11setLogLevelE8uint32_t" title="Link to this definition"></a><br /></dt>
-<dd><p>Set logging level for block. </p>
+<dd><p>Sets logging verbosity level for this block. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>level</strong> – Logging level value. </p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory5Block6offsetEv">
 <span id="_CPPv3N5rogue10interfaces6memory5Block6offsetEv"></span><span id="_CPPv2N5rogue10interfaces6memory5Block6offsetEv"></span><span id="rogue::interfaces::memory::Block::offset"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Block_1acf8d3ddaa62b256d3dd9228ea126ebb1"></span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">offset</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Block6offsetEv" title="Link to this definition"></a><br /></dt>
-<dd><p>Get offset of this <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Block"><span class="std std-ref">Block</span></a>. </p>
-<p>Return the offset of this <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Block"><span class="std std-ref">Block</span></a></p>
-<p>Exposed as offset property to Python </p>
+<dd><p>Returns the local offset of this block. </p>
+<p>Exposed as <code class="docutils literal notranslate"><span class="pre">offset</span></code> property in Python.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>64-bit address offset </p>
+<dd class="field-odd"><p>64-bit address offset. </p>
 </dd>
 </dl>
 </dd></dl>
@@ -208,12 +237,11 @@ see <a class="reference internal" href="../../../pyrogue_tree/node/block/index.h
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory5Block7addressEv">
 <span id="_CPPv3N5rogue10interfaces6memory5Block7addressEv"></span><span id="_CPPv2N5rogue10interfaces6memory5Block7addressEv"></span><span id="rogue::interfaces::memory::Block::address"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Block_1ae9d2d675b60e3bd49094f0c672f9ebf1"></span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">address</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Block7addressEv" title="Link to this definition"></a><br /></dt>
-<dd><p>Get full address of this <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Block"><span class="std std-ref">Block</span></a>. </p>
-<p>Return the full address of this block, including the parent address plus the local offset.</p>
-<p>Exposed as address property to Python </p>
+<dd><p>Returns the full address of this block. </p>
+<p>Includes parent address plus local offset. Exposed as <code class="docutils literal notranslate"><span class="pre">address</span></code> property in Python.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>64-bit address </p>
+<dd class="field-odd"><p>64-bit address. </p>
 </dd>
 </dl>
 </dd></dl>
@@ -221,12 +249,11 @@ see <a class="reference internal" href="../../../pyrogue_tree/node/block/index.h
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory5Block4sizeEv">
 <span id="_CPPv3N5rogue10interfaces6memory5Block4sizeEv"></span><span id="_CPPv2N5rogue10interfaces6memory5Block4sizeEv"></span><span id="rogue::interfaces::memory::Block::size"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Block_1a0d38d2cd0b8641a81bc212712d6ebcd8"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">size</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Block4sizeEv" title="Link to this definition"></a><br /></dt>
-<dd><p>Get size of this block in bytes. </p>
-<p>Return the size of this block in bytes.</p>
-<p>Exposed as size property to Python </p>
+<dd><p>Returns block size in bytes. </p>
+<p>Exposed as <code class="docutils literal notranslate"><span class="pre">size</span></code> property in Python.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>32-bit size </p>
+<dd class="field-odd"><p>32-bit block size. </p>
 </dd>
 </dl>
 </dd></dl>
@@ -234,22 +261,21 @@ see <a class="reference internal" href="../../../pyrogue_tree/node/block/index.h
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory5Block12blockPyTransEv">
 <span id="_CPPv3N5rogue10interfaces6memory5Block12blockPyTransEv"></span><span id="_CPPv2N5rogue10interfaces6memory5Block12blockPyTransEv"></span><span id="rogue::interfaces::memory::Block::blockPyTrans"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Block_1aa38dcfa282892f008698e318800156e4"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">blockPyTrans</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Block12blockPyTransEv" title="Link to this definition"></a><br /></dt>
-<dd><p>Get block python transactions flag. </p>
+<dd><p>Returns whether Python transaction callbacks are blocked. </p>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory5Block16startTransactionE8uint32_tbbPN5rogue10interfaces6memory8VariableE7int32_t">
 <span id="_CPPv3N5rogue10interfaces6memory5Block16startTransactionE8uint32_tbbPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="_CPPv2N5rogue10interfaces6memory5Block16startTransactionE8uint32_tbbPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="rogue::interfaces::memory::Block::startTransaction__uint32_t.b.b.rogue::interfaces::memory::VariableP.int32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Block_1a4fd0c83f8e529dfaf8c38b0e44513a9f"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">startTransaction</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">type</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">forceWr</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">check</span></span>, <span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Variable</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">var</span></span>, <span class="n"><span class="pre">int32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">index</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="o"><span class="pre">-</span></span><span class="m"><span class="pre">1</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Block16startTransactionE8uint32_tbbPN5rogue10interfaces6memory8VariableE7int32_t" title="Link to this definition"></a><br /></dt>
-<dd><p>Start a c++ transaction for this block. </p>
-<p>Start a c++ transaction with the passed type and access range</p>
+<dd><p>Starts a C++ transaction for this block. </p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>type</strong> – <a class="reference internal" href="transaction.html#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> type </p></li>
-<li><p><strong>forceWr</strong> – Force write of non-stale block </p></li>
-<li><p><strong>check</strong> – Flag to indicate if the transaction results should be immediately checked </p></li>
-<li><p><strong>var</strong> – Variable associated with transaction </p></li>
-<li><p><strong>index</strong> – Variable index for list variables, -1 for full variable </p></li>
+<li><p><strong>type</strong> – <a class="reference internal" href="transaction.html#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> type. </p></li>
+<li><p><strong>forceWr</strong> – Forces write even when block is not stale. </p></li>
+<li><p><strong>check</strong> – Requests immediate result checking, meaning wait for the transaction to complete before returning. </p></li>
+<li><p><strong>var</strong> – Variable associated with the transaction. </p></li>
+<li><p><strong>index</strong> – Variable index for list variables, or <code class="docutils literal notranslate"><span class="pre">-1</span></code> for full variable. </p></li>
 </ul>
 </dd>
 </dl>
@@ -258,17 +284,16 @@ see <a class="reference internal" href="../../../pyrogue_tree/node/block/index.h
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory5Block18startTransactionPyE8uint32_tbbNSt10shared_ptrIN5rogue10interfaces6memory8VariableEEE7int32_t">
 <span id="_CPPv3N5rogue10interfaces6memory5Block18startTransactionPyE8uint32_tbbNSt10shared_ptrIN5rogue10interfaces6memory8VariableEEE7int32_t"></span><span id="_CPPv2N5rogue10interfaces6memory5Block18startTransactionPyE8uint32_tbbNSt10shared_ptrIN5rogue10interfaces6memory8VariableEEE7int32_t"></span><span id="rogue::interfaces::memory::Block::startTransactionPy__uint32_t.b.b.std::shared_ptr:rogue::interfaces::memory::Variable:.int32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Block_1ad1d2397b354490bebe5bcb144a6b957b"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">startTransactionPy</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">type</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">forceWr</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">check</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Variable</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">var</span></span>, <span class="n"><span class="pre">int32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">index</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Block18startTransactionPyE8uint32_tbbNSt10shared_ptrIN5rogue10interfaces6memory8VariableEEE7int32_t" title="Link to this definition"></a><br /></dt>
-<dd><p>Start a transaction for this block, python version. </p>
-<p>Start a transaction with the passed type and access range</p>
-<p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Block_1a4fd0c83f8e529dfaf8c38b0e44513a9f"><span class="std std-ref">startTransaction()</span></a> method to Python</p>
+<dd><p>Starts a block transaction from Python. </p>
+<p>Exposed as <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Block_1a4fd0c83f8e529dfaf8c38b0e44513a9f"><span class="std std-ref"><span class="pre">startTransaction()</span></span></a></code> in Python.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>type</strong> – <a class="reference internal" href="transaction.html#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> type </p></li>
-<li><p><strong>forceWr</strong> – Force write of non-stale block </p></li>
-<li><p><strong>check</strong> – Flag to indicate if the transaction results should be immediately checked </p></li>
-<li><p><strong>var</strong> – Variable associated with transaction, None for block level </p></li>
-<li><p><strong>index</strong> – Variable index for list variables, -1 for full variable </p></li>
+<li><p><strong>type</strong> – <a class="reference internal" href="transaction.html#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> type. </p></li>
+<li><p><strong>forceWr</strong> – Forces write even when block is not stale. </p></li>
+<li><p><strong>check</strong> – Requests immediate result checking, meaning wait for the transaction to complete before returning. </p></li>
+<li><p><strong>var</strong> – Variable associated with transaction, or <code class="docutils literal notranslate"><span class="pre">None</span></code> for block scope. </p></li>
+<li><p><strong>index</strong> – Variable index for list variables, or <code class="docutils literal notranslate"><span class="pre">-1</span></code> for full variable. </p></li>
 </ul>
 </dd>
 </dl>
@@ -277,39 +302,53 @@ see <a class="reference internal" href="../../../pyrogue_tree/node/block/index.h
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory5Block16checkTransactionEv">
 <span id="_CPPv3N5rogue10interfaces6memory5Block16checkTransactionEv"></span><span id="_CPPv2N5rogue10interfaces6memory5Block16checkTransactionEv"></span><span id="rogue::interfaces::memory::Block::checkTransaction"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Block_1a4a00c4cf979f668200bc9c97a756aa69"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">checkTransaction</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Block16checkTransactionEv" title="Link to this definition"></a><br /></dt>
-<dd><p>Check transaction result, C++ version without python update calls. </p>
-<p>Check transaction result, an exception is thrown if an error occured. </p>
+<dd><p>Checks transaction result in C++ mode. </p>
+<p>Throws an exception if an error occurred. </p>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory5Block18checkTransactionPyEv">
 <span id="_CPPv3N5rogue10interfaces6memory5Block18checkTransactionPyEv"></span><span id="_CPPv2N5rogue10interfaces6memory5Block18checkTransactionPyEv"></span><span id="rogue::interfaces::memory::Block::checkTransactionPy"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Block_1ad37144d5f4b3cb60c0df60601e3358a5"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">checkTransactionPy</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Block18checkTransactionPyEv" title="Link to this definition"></a><br /></dt>
-<dd><p>Check transaction result, python version with update calls. </p>
-<p>Check transaction result, an exception is thrown if an error occured.</p>
-<p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Block_1a4a00c4cf979f668200bc9c97a756aa69"><span class="std std-ref">checkTransaction()</span></a> method to Python </p>
+<dd><p>Checks transaction result. </p>
+<p>Python version of <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Block_1a4a00c4cf979f668200bc9c97a756aa69"><span class="std std-ref"><span class="pre">checkTransaction()</span></span></a></code>, with variable update calls. Throws an exception if an error occurred. Exposed as <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Block_1a4a00c4cf979f668200bc9c97a756aa69"><span class="std std-ref"><span class="pre">checkTransaction()</span></span></a></code> in Python. </p>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory5Block5writeEPN5rogue10interfaces6memory8VariableE7int32_t">
 <span id="_CPPv3N5rogue10interfaces6memory5Block5writeEPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="_CPPv2N5rogue10interfaces6memory5Block5writeEPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="rogue::interfaces::memory::Block::write__rogue::interfaces::memory::VariableP.int32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Block_1a50badeae7759acbdeee458b6ed686ca5"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">write</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Variable</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">var</span></span>, <span class="n"><span class="pre">int32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">index</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="o"><span class="pre">-</span></span><span class="m"><span class="pre">1</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Block5writeEPN5rogue10interfaces6memory8VariableE7int32_t" title="Link to this definition"></a><br /></dt>
-<dd><p>Issue write/verify/check sequence from c++. </p>
+<dd><p>Issues write/verify/check sequence from C++. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>var</strong> – Variable associated with the transaction. </p></li>
+<li><p><strong>index</strong> – Variable index for list variables, or <code class="docutils literal notranslate"><span class="pre">-1</span></code> for full variable. </p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory5Block4readEPN5rogue10interfaces6memory8VariableE7int32_t">
 <span id="_CPPv3N5rogue10interfaces6memory5Block4readEPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="_CPPv2N5rogue10interfaces6memory5Block4readEPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="rogue::interfaces::memory::Block::read__rogue::interfaces::memory::VariableP.int32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Block_1a980dee08e997ff9aff91e94760c5c591"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">read</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Variable</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">var</span></span>, <span class="n"><span class="pre">int32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">index</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="o"><span class="pre">-</span></span><span class="m"><span class="pre">1</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Block4readEPN5rogue10interfaces6memory8VariableE7int32_t" title="Link to this definition"></a><br /></dt>
-<dd><p>Issue read/check sequence from c++. </p>
+<dd><p>Issues read/check sequence from C++. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>var</strong> – Variable associated with the transaction. </p></li>
+<li><p><strong>index</strong> – Variable index for list variables, or <code class="docutils literal notranslate"><span class="pre">-1</span></code> for full variable. </p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory5Block12addVariablesENSt6vectorINSt10shared_ptrIN5rogue10interfaces6memory8VariableEEEEE">
 <span id="_CPPv3N5rogue10interfaces6memory5Block12addVariablesENSt6vectorINSt10shared_ptrIN5rogue10interfaces6memory8VariableEEEEE"></span><span id="_CPPv2N5rogue10interfaces6memory5Block12addVariablesENSt6vectorINSt10shared_ptrIN5rogue10interfaces6memory8VariableEEEEE"></span><span id="rogue::interfaces::memory::Block::addVariables__std::vector:std::shared_ptr:rogue::interfaces::memory::Variable::"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Block_1aed1e3aec51a587ccf9b04611014ad75c"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">addVariables</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Variable</span></span><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">variables</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Block12addVariablesENSt6vectorINSt10shared_ptrIN5rogue10interfaces6memory8VariableEEEEE" title="Link to this definition"></a><br /></dt>
-<dd><p>Add variables to block, C++ version. </p>
-<p>Add the passed list of variables to this block</p>
-<p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Block_1aed1e3aec51a587ccf9b04611014ad75c"><span class="std std-ref">addVariables()</span></a> method to Python</p>
+<dd><p>Adds variables to this block (C++ API). </p>
+<p>Exposed as <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Block_1aed1e3aec51a587ccf9b04611014ad75c"><span class="std std-ref"><span class="pre">addVariables()</span></span></a></code> in Python.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>variables</strong> – Variable list </p>
+<dd class="field-odd"><p><strong>variables</strong> – Variable list. </p>
 </dd>
 </dl>
 </dd></dl>
@@ -317,11 +356,10 @@ see <a class="reference internal" href="../../../pyrogue_tree/node/block/index.h
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory5Block14addVariablesPyEN5boost6python6objectE">
 <span id="_CPPv3N5rogue10interfaces6memory5Block14addVariablesPyEN5boost6python6objectE"></span><span id="_CPPv2N5rogue10interfaces6memory5Block14addVariablesPyEN5boost6python6objectE"></span><span id="rogue::interfaces::memory::Block::addVariablesPy__boost::python::object"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Block_1a0fc483d38029a77085e8cbead13e33a3"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">addVariablesPy</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">boost</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">python</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">object</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">variables</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Block14addVariablesPyEN5boost6python6objectE" title="Link to this definition"></a><br /></dt>
-<dd><p>Add variables to block, Python version. </p>
-<p>Add the passed list of variables to this block</p>
+<dd><p>Adds variables to this block (Python API). </p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>variables</strong> – Variable list </p>
+<dd class="field-odd"><p><strong>variables</strong> – Python list/iterable of variables. </p>
 </dd>
 </dl>
 </dd></dl>
@@ -329,226 +367,611 @@ see <a class="reference internal" href="../../../pyrogue_tree/node/block/index.h
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory5Block9variablesEv">
 <span id="_CPPv3N5rogue10interfaces6memory5Block9variablesEv"></span><span id="_CPPv2N5rogue10interfaces6memory5Block9variablesEv"></span><span id="rogue::interfaces::memory::Block::variables"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Block_1a6be01132a2cca5bce855d5ab4f36f0d8"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Variable</span></span><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">variables</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Block9variablesEv" title="Link to this definition"></a><br /></dt>
-<dd><p>Return a list of variables in this block, C++ version. </p>
+<dd><p>Returns the variable list associated with this block (C++ API). </p>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory5Block11variablesPyEv">
 <span id="_CPPv3N5rogue10interfaces6memory5Block11variablesPyEv"></span><span id="_CPPv2N5rogue10interfaces6memory5Block11variablesPyEv"></span><span id="rogue::interfaces::memory::Block::variablesPy"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Block_1a25ebd19baa3dc510c11bfa66a6aa26ef"></span><span class="n"><span class="pre">boost</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">python</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">object</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">variablesPy</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Block11variablesPyEv" title="Link to this definition"></a><br /></dt>
-<dd><p>Return a list of variables in the block, python version. </p>
-<p>Return the list of variables associated with this block</p>
-<p>Exposed as variables property to Python </p>
+<dd><p>Returns the variable list associated with this block (Python API). </p>
+<p>Exposed as <code class="docutils literal notranslate"><span class="pre">variables</span></code> property in Python. </p>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory5Block8rateTestEv">
 <span id="_CPPv3N5rogue10interfaces6memory5Block8rateTestEv"></span><span id="_CPPv2N5rogue10interfaces6memory5Block8rateTestEv"></span><span id="rogue::interfaces::memory::Block::rateTest"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Block_1af806b8a22a6758bb2ba23a326e351af2"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">rateTest</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Block8rateTestEv" title="Link to this definition"></a><br /></dt>
-<dd><p>Rate test function for perfmance tests. </p>
-<p>Exposed as rateTest method to Python </p>
+<dd><p>Runs block rate-test helper for performance testing. </p>
+<p>Python: Exposed as <code class="docutils literal notranslate"><span class="pre">rateTest</span></code> to python users. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory5Block9setPyFuncERN5boost6python6objectEPN5rogue10interfaces6memory8VariableE7int32_t">
+<span id="_CPPv3N5rogue10interfaces6memory5Block9setPyFuncERN5boost6python6objectEPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="_CPPv2N5rogue10interfaces6memory5Block9setPyFuncERN5boost6python6objectEPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="rogue::interfaces::memory::Block::setPyFunc__boost::python::objectR.rogue::interfaces::memory::VariableP.int32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Block_1a2ce2489de0bf5e88b4953fc14f0e24ae"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setPyFunc</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">boost</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">python</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">object</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">value</span></span>, <span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Variable</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">var</span></span>, <span class="n"><span class="pre">int32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">index</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Block9setPyFuncERN5boost6python6objectEPN5rogue10interfaces6memory8VariableE7int32_t" title="Link to this definition"></a><br /></dt>
+<dd><p>Sets variable data using a Python callback/value. </p>
+<p>Used for <code class="docutils literal notranslate"><span class="pre">PyFunc</span></code> variables and Python fallback paths for large-width integer variables where direct scalar conversion is not used. Calls model-specific <code class="docutils literal notranslate"><span class="pre">toBytes()</span></code> conversion before writing staged bytes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value</strong> – Python source value. </p></li>
+<li><p><strong>var</strong> – Variable associated with the transaction. </p></li>
+<li><p><strong>index</strong> – Variable index for list variables, or <code class="docutils literal notranslate"><span class="pre">-1</span></code> for full variable. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory5Block9getPyFuncEPN5rogue10interfaces6memory8VariableE7int32_t">
+<span id="_CPPv3N5rogue10interfaces6memory5Block9getPyFuncEPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="_CPPv2N5rogue10interfaces6memory5Block9getPyFuncEPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="rogue::interfaces::memory::Block::getPyFunc__rogue::interfaces::memory::VariableP.int32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Block_1a064bb34d85e5bf8f193262e888cc2099"></span><span class="n"><span class="pre">boost</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">python</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">object</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getPyFunc</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Variable</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">var</span></span>, <span class="n"><span class="pre">int32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">index</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Block9getPyFuncEPN5rogue10interfaces6memory8VariableE7int32_t" title="Link to this definition"></a><br /></dt>
+<dd><p>Gets variable data using a Python callback/value conversion. </p>
+<p>Used for <code class="docutils literal notranslate"><span class="pre">PyFunc</span></code> variables and Python fallback paths for large-width integer variables where direct scalar conversion is not used. Reads staged bytes and calls model-specific <code class="docutils literal notranslate"><span class="pre">fromBytes()</span></code> conversion.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>var</strong> – Variable associated with the transaction. </p></li>
+<li><p><strong>index</strong> – Variable index for list variables, or <code class="docutils literal notranslate"><span class="pre">-1</span></code> for full variable. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Python object representing the variable value. </p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory5Block14setByteArrayPyERN5boost6python6objectEPN5rogue10interfaces6memory8VariableE7int32_t">
 <span id="_CPPv3N5rogue10interfaces6memory5Block14setByteArrayPyERN5boost6python6objectEPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="_CPPv2N5rogue10interfaces6memory5Block14setByteArrayPyERN5boost6python6objectEPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="rogue::interfaces::memory::Block::setByteArrayPy__boost::python::objectR.rogue::interfaces::memory::VariableP.int32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Block_1ad39fd22f0773739eed5c2aa958bd4a0f"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setByteArrayPy</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">boost</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">python</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">object</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">value</span></span>, <span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Variable</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">var</span></span>, <span class="n"><span class="pre">int32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">index</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Block14setByteArrayPyERN5boost6python6objectEPN5rogue10interfaces6memory8VariableE7int32_t" title="Link to this definition"></a><br /></dt>
-<dd><p>Set data using byte array, python version. </p>
+<dd><p>Sets variable data from Python byte-array-like input. </p>
+<p>Primary Python path for <code class="docutils literal notranslate"><span class="pre">Bytes</span></code> variables. Also used by some large-width numeric model paths when values are represented as raw bytes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value</strong> – Python source buffer. </p></li>
+<li><p><strong>var</strong> – Variable associated with the transaction. </p></li>
+<li><p><strong>index</strong> – Variable index for list variables, or <code class="docutils literal notranslate"><span class="pre">-1</span></code> for full variable. </p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory5Block14getByteArrayPyEPN5rogue10interfaces6memory8VariableE7int32_t">
 <span id="_CPPv3N5rogue10interfaces6memory5Block14getByteArrayPyEPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="_CPPv2N5rogue10interfaces6memory5Block14getByteArrayPyEPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="rogue::interfaces::memory::Block::getByteArrayPy__rogue::interfaces::memory::VariableP.int32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Block_1aed57e3d7e0af7be2dfa14251ef5323ee"></span><span class="n"><span class="pre">boost</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">python</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">object</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getByteArrayPy</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Variable</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">var</span></span>, <span class="n"><span class="pre">int32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">index</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Block14getByteArrayPyEPN5rogue10interfaces6memory8VariableE7int32_t" title="Link to this definition"></a><br /></dt>
-<dd><p>Get data using byte array, python version. </p>
+<dd><p>Gets variable data as a Python byte-array-like object. </p>
+<p>Primary Python path for <code class="docutils literal notranslate"><span class="pre">Bytes</span></code> variables. Also used by some large-width numeric model paths when values are represented as raw bytes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>var</strong> – Variable associated with the transaction. </p></li>
+<li><p><strong>index</strong> – Variable index for list variables, or <code class="docutils literal notranslate"><span class="pre">-1</span></code> for full variable. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Python object containing the variable bytes. </p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory5Block12setByteArrayEPK7uint8_tPN5rogue10interfaces6memory8VariableE7int32_t">
 <span id="_CPPv3N5rogue10interfaces6memory5Block12setByteArrayEPK7uint8_tPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="_CPPv2N5rogue10interfaces6memory5Block12setByteArrayEPK7uint8_tPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="rogue::interfaces::memory::Block::setByteArray__uint8_tCP.rogue::interfaces::memory::VariableP.int32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Block_1ac608978216d5298ddcc848d86f985b57"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setByteArray</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">value</span></span>, <span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Variable</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">var</span></span>, <span class="n"><span class="pre">int32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">index</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Block12setByteArrayEPK7uint8_tPN5rogue10interfaces6memory8VariableE7int32_t" title="Link to this definition"></a><br /></dt>
-<dd><p>Set data using byte array, C++ Version. </p>
+<dd><p>Sets variable data from C++ byte array input. </p>
+<p>Primary C++ path for <code class="docutils literal notranslate"><span class="pre">Bytes</span></code> variables and width-overflow fallback path for numeric models that cannot be represented in native scalar types.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value</strong> – Source byte buffer. </p></li>
+<li><p><strong>var</strong> – Variable associated with the transaction. </p></li>
+<li><p><strong>index</strong> – Variable index for list variables, or <code class="docutils literal notranslate"><span class="pre">-1</span></code> for full variable. </p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory5Block12getByteArrayEP7uint8_tPN5rogue10interfaces6memory8VariableE7int32_t">
 <span id="_CPPv3N5rogue10interfaces6memory5Block12getByteArrayEP7uint8_tPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="_CPPv2N5rogue10interfaces6memory5Block12getByteArrayEP7uint8_tPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="rogue::interfaces::memory::Block::getByteArray__uint8_tP.rogue::interfaces::memory::VariableP.int32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Block_1aebe136a158e593f427238f3691f77e94"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getByteArray</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">value</span></span>, <span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Variable</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">var</span></span>, <span class="n"><span class="pre">int32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">index</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Block12getByteArrayEP7uint8_tPN5rogue10interfaces6memory8VariableE7int32_t" title="Link to this definition"></a><br /></dt>
-<dd><p>Get data using byte array, C++ Version. </p>
+<dd><p>Gets variable data into a C++ byte array buffer. </p>
+<p>Primary C++ path for <code class="docutils literal notranslate"><span class="pre">Bytes</span></code> variables and width-overflow fallback path for numeric models that cannot be represented in native scalar types.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value</strong> – Destination byte buffer. </p></li>
+<li><p><strong>var</strong> – Variable associated with the transaction. </p></li>
+<li><p><strong>index</strong> – Variable index for list variables, or <code class="docutils literal notranslate"><span class="pre">-1</span></code> for full variable. </p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory5Block9setUIntPyERN5boost6python6objectEPN5rogue10interfaces6memory8VariableE7int32_t">
 <span id="_CPPv3N5rogue10interfaces6memory5Block9setUIntPyERN5boost6python6objectEPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="_CPPv2N5rogue10interfaces6memory5Block9setUIntPyERN5boost6python6objectEPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="rogue::interfaces::memory::Block::setUIntPy__boost::python::objectR.rogue::interfaces::memory::VariableP.int32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Block_1a8559a5863da7dd6201a961888b73704d"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setUIntPy</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">boost</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">python</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">object</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">value</span></span>, <span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Variable</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">var</span></span>, <span class="n"><span class="pre">int32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">index</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Block9setUIntPyERN5boost6python6objectEPN5rogue10interfaces6memory8VariableE7int32_t" title="Link to this definition"></a><br /></dt>
-<dd><p>Set data using unsigned int, python version. </p>
+<dd><p>Sets unsigned-integer variable data from Python input. </p>
+<p>Python path for <code class="docutils literal notranslate"><span class="pre">UInt</span></code> variables when width is 64 bits or less. Supports scalar values and array/list updates for list variables.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value</strong> – Python source value. </p></li>
+<li><p><strong>var</strong> – Variable associated with the transaction. </p></li>
+<li><p><strong>index</strong> – Variable index for list variables, or <code class="docutils literal notranslate"><span class="pre">-1</span></code> for full variable. </p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory5Block9getUIntPyEPN5rogue10interfaces6memory8VariableE7int32_t">
 <span id="_CPPv3N5rogue10interfaces6memory5Block9getUIntPyEPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="_CPPv2N5rogue10interfaces6memory5Block9getUIntPyEPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="rogue::interfaces::memory::Block::getUIntPy__rogue::interfaces::memory::VariableP.int32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Block_1a74665c4f07fc93140e348bda686315ec"></span><span class="n"><span class="pre">boost</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">python</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">object</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getUIntPy</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Variable</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">var</span></span>, <span class="n"><span class="pre">int32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">index</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Block9getUIntPyEPN5rogue10interfaces6memory8VariableE7int32_t" title="Link to this definition"></a><br /></dt>
-<dd><p>Get data using unsigned int, python version. </p>
+<dd><p>Gets unsigned-integer variable data as Python output. </p>
+<p>Python path for <code class="docutils literal notranslate"><span class="pre">UInt</span></code> variables when width is 64 bits or less. Returns either a scalar or an array/list-like object for list variables.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>var</strong> – Variable associated with the transaction. </p></li>
+<li><p><strong>index</strong> – Variable index for list variables, or <code class="docutils literal notranslate"><span class="pre">-1</span></code> for full variable. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Python object containing unsigned-integer value. </p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory5Block7setUIntERK8uint64_tPN5rogue10interfaces6memory8VariableE7int32_t">
 <span id="_CPPv3N5rogue10interfaces6memory5Block7setUIntERK8uint64_tPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="_CPPv2N5rogue10interfaces6memory5Block7setUIntERK8uint64_tPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="rogue::interfaces::memory::Block::setUInt__uint64_tCR.rogue::interfaces::memory::VariableP.int32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Block_1a2528c83f7cb24cece6524efb8b97c9ec"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setUInt</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">value</span></span>, <span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Variable</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">var</span></span>, <span class="n"><span class="pre">int32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">index</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Block7setUIntERK8uint64_tPN5rogue10interfaces6memory8VariableE7int32_t" title="Link to this definition"></a><br /></dt>
-<dd><p>Set data using unsigned int, C++ Version. </p>
+<dd><p>Sets unsigned-integer variable data from C++ input. </p>
+<p>C++ path for <code class="docutils literal notranslate"><span class="pre">UInt</span></code> variables when width is 64 bits or less. Wider <code class="docutils literal notranslate"><span class="pre">UInt</span></code> values are handled through byte-array conversion paths.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value</strong> – Source unsigned-integer value. </p></li>
+<li><p><strong>var</strong> – Variable associated with the transaction. </p></li>
+<li><p><strong>index</strong> – Variable index for list variables, or <code class="docutils literal notranslate"><span class="pre">-1</span></code> for full variable. </p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory5Block7getUIntEPN5rogue10interfaces6memory8VariableE7int32_t">
 <span id="_CPPv3N5rogue10interfaces6memory5Block7getUIntEPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="_CPPv2N5rogue10interfaces6memory5Block7getUIntEPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="rogue::interfaces::memory::Block::getUInt__rogue::interfaces::memory::VariableP.int32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Block_1ab42fa03993cad26e611dfc478902048f"></span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getUInt</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Variable</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">var</span></span>, <span class="n"><span class="pre">int32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">index</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Block7getUIntEPN5rogue10interfaces6memory8VariableE7int32_t" title="Link to this definition"></a><br /></dt>
-<dd><p>Get data using unsigned int, C++ Version. </p>
+<dd><p>Gets unsigned-integer variable data as C++ output. </p>
+<p>C++ path for <code class="docutils literal notranslate"><span class="pre">UInt</span></code> variables when width is 64 bits or less. Wider <code class="docutils literal notranslate"><span class="pre">UInt</span></code> values are handled through byte-array conversion paths.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>var</strong> – Variable associated with the transaction. </p></li>
+<li><p><strong>index</strong> – Variable index for list variables, or <code class="docutils literal notranslate"><span class="pre">-1</span></code> for full variable. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Unsigned-integer value. </p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory5Block8setIntPyERN5boost6python6objectEPN5rogue10interfaces6memory8VariableE7int32_t">
 <span id="_CPPv3N5rogue10interfaces6memory5Block8setIntPyERN5boost6python6objectEPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="_CPPv2N5rogue10interfaces6memory5Block8setIntPyERN5boost6python6objectEPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="rogue::interfaces::memory::Block::setIntPy__boost::python::objectR.rogue::interfaces::memory::VariableP.int32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Block_1aacca171230f996de696923469f469d39"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setIntPy</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">boost</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">python</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">object</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">value</span></span>, <span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Variable</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">var</span></span>, <span class="n"><span class="pre">int32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">index</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Block8setIntPyERN5boost6python6objectEPN5rogue10interfaces6memory8VariableE7int32_t" title="Link to this definition"></a><br /></dt>
-<dd><p>Set data using int, python version. </p>
+<dd><p>Sets signed-integer variable data from Python input. </p>
+<p>Python path for <code class="docutils literal notranslate"><span class="pre">Int</span></code> variables when width is 64 bits or less. Supports scalar values and array/list updates for list variables.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value</strong> – Python source value. </p></li>
+<li><p><strong>var</strong> – Variable associated with the transaction. </p></li>
+<li><p><strong>index</strong> – Variable index for list variables, or <code class="docutils literal notranslate"><span class="pre">-1</span></code> for full variable. </p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory5Block8getIntPyEPN5rogue10interfaces6memory8VariableE7int32_t">
 <span id="_CPPv3N5rogue10interfaces6memory5Block8getIntPyEPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="_CPPv2N5rogue10interfaces6memory5Block8getIntPyEPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="rogue::interfaces::memory::Block::getIntPy__rogue::interfaces::memory::VariableP.int32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Block_1a748bf247570d1200069a4e2acafc1181"></span><span class="n"><span class="pre">boost</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">python</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">object</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getIntPy</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Variable</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">var</span></span>, <span class="n"><span class="pre">int32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">index</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Block8getIntPyEPN5rogue10interfaces6memory8VariableE7int32_t" title="Link to this definition"></a><br /></dt>
-<dd><p>Get data using int, python version. </p>
+<dd><p>Gets signed-integer variable data as Python output. </p>
+<p>Python path for <code class="docutils literal notranslate"><span class="pre">Int</span></code> variables when width is 64 bits or less. Returns either a scalar or an array/list-like object for list variables.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>var</strong> – Variable associated with the transaction. </p></li>
+<li><p><strong>index</strong> – Variable index for list variables, or <code class="docutils literal notranslate"><span class="pre">-1</span></code> for full variable. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Python object containing signed-integer value. </p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory5Block6setIntERK7int64_tPN5rogue10interfaces6memory8VariableE7int32_t">
 <span id="_CPPv3N5rogue10interfaces6memory5Block6setIntERK7int64_tPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="_CPPv2N5rogue10interfaces6memory5Block6setIntERK7int64_tPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="rogue::interfaces::memory::Block::setInt__int64_tCR.rogue::interfaces::memory::VariableP.int32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Block_1aa2bd718de4956df41e14ae4246408d24"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setInt</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">int64_t</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">value</span></span>, <span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Variable</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">var</span></span>, <span class="n"><span class="pre">int32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">index</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Block6setIntERK7int64_tPN5rogue10interfaces6memory8VariableE7int32_t" title="Link to this definition"></a><br /></dt>
-<dd><p>Set data using int, C++ Version. </p>
+<dd><p>Sets signed-integer variable data from C++ input. </p>
+<p>C++ path for <code class="docutils literal notranslate"><span class="pre">Int</span></code> variables when width is 64 bits or less. Wider <code class="docutils literal notranslate"><span class="pre">Int</span></code> values are handled through byte-array conversion paths.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value</strong> – Source signed-integer value. </p></li>
+<li><p><strong>var</strong> – Variable associated with the transaction. </p></li>
+<li><p><strong>index</strong> – Variable index for list variables, or <code class="docutils literal notranslate"><span class="pre">-1</span></code> for full variable. </p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory5Block6getIntEPN5rogue10interfaces6memory8VariableE7int32_t">
 <span id="_CPPv3N5rogue10interfaces6memory5Block6getIntEPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="_CPPv2N5rogue10interfaces6memory5Block6getIntEPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="rogue::interfaces::memory::Block::getInt__rogue::interfaces::memory::VariableP.int32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Block_1ac5019a45629acbad0ad8156405c3b620"></span><span class="n"><span class="pre">int64_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getInt</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Variable</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">var</span></span>, <span class="n"><span class="pre">int32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">index</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Block6getIntEPN5rogue10interfaces6memory8VariableE7int32_t" title="Link to this definition"></a><br /></dt>
-<dd><p>Get data using int, C++ Version. </p>
+<dd><p>Gets signed-integer variable data as C++ output. </p>
+<p>C++ path for <code class="docutils literal notranslate"><span class="pre">Int</span></code> variables when width is 64 bits or less. Wider <code class="docutils literal notranslate"><span class="pre">Int</span></code> values are handled through byte-array conversion paths.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>var</strong> – Variable associated with the transaction. </p></li>
+<li><p><strong>index</strong> – Variable index for list variables, or <code class="docutils literal notranslate"><span class="pre">-1</span></code> for full variable. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Signed-integer value. </p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory5Block9setBoolPyERN5boost6python6objectEPN5rogue10interfaces6memory8VariableE7int32_t">
 <span id="_CPPv3N5rogue10interfaces6memory5Block9setBoolPyERN5boost6python6objectEPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="_CPPv2N5rogue10interfaces6memory5Block9setBoolPyERN5boost6python6objectEPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="rogue::interfaces::memory::Block::setBoolPy__boost::python::objectR.rogue::interfaces::memory::VariableP.int32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Block_1a1abab7343c00bf80cd2ecf088ebffdba"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setBoolPy</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">boost</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">python</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">object</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">value</span></span>, <span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Variable</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">var</span></span>, <span class="n"><span class="pre">int32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">index</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Block9setBoolPyERN5boost6python6objectEPN5rogue10interfaces6memory8VariableE7int32_t" title="Link to this definition"></a><br /></dt>
-<dd><p>Set data using bool, python version. </p>
+<dd><p>Sets boolean variable data from Python input. </p>
+<p>Python path for <code class="docutils literal notranslate"><span class="pre">Bool</span></code> variables.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value</strong> – Python source value. </p></li>
+<li><p><strong>var</strong> – Variable associated with the transaction. </p></li>
+<li><p><strong>index</strong> – Variable index for list variables, or <code class="docutils literal notranslate"><span class="pre">-1</span></code> for full variable. </p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory5Block9getBoolPyEPN5rogue10interfaces6memory8VariableE7int32_t">
 <span id="_CPPv3N5rogue10interfaces6memory5Block9getBoolPyEPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="_CPPv2N5rogue10interfaces6memory5Block9getBoolPyEPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="rogue::interfaces::memory::Block::getBoolPy__rogue::interfaces::memory::VariableP.int32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Block_1aacb0d5aaebbbd962ecc54c58e723332f"></span><span class="n"><span class="pre">boost</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">python</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">object</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getBoolPy</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Variable</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">var</span></span>, <span class="n"><span class="pre">int32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">index</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Block9getBoolPyEPN5rogue10interfaces6memory8VariableE7int32_t" title="Link to this definition"></a><br /></dt>
-<dd><p>Get data using bool, python version. </p>
+<dd><p>Gets boolean variable data as Python output. </p>
+<p>Python path for <code class="docutils literal notranslate"><span class="pre">Bool</span></code> variables.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>var</strong> – Variable associated with the transaction. </p></li>
+<li><p><strong>index</strong> – Variable index for list variables, or <code class="docutils literal notranslate"><span class="pre">-1</span></code> for full variable. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Python object containing boolean value. </p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory5Block7setBoolERKbPN5rogue10interfaces6memory8VariableE7int32_t">
 <span id="_CPPv3N5rogue10interfaces6memory5Block7setBoolERKbPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="_CPPv2N5rogue10interfaces6memory5Block7setBoolERKbPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="rogue::interfaces::memory::Block::setBool__bCR.rogue::interfaces::memory::VariableP.int32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Block_1adea4239e57f1a66fe1e9f1b7ae10e579"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setBool</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">value</span></span>, <span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Variable</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">var</span></span>, <span class="n"><span class="pre">int32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">index</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Block7setBoolERKbPN5rogue10interfaces6memory8VariableE7int32_t" title="Link to this definition"></a><br /></dt>
-<dd><p>Set data using bool, C++ Version. </p>
+<dd><p>Sets boolean variable data from C++ input. </p>
+<p>C++ path for <code class="docutils literal notranslate"><span class="pre">Bool</span></code> variables.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value</strong> – Source boolean value. </p></li>
+<li><p><strong>var</strong> – Variable associated with the transaction. </p></li>
+<li><p><strong>index</strong> – Variable index for list variables, or <code class="docutils literal notranslate"><span class="pre">-1</span></code> for full variable. </p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory5Block7getBoolEPN5rogue10interfaces6memory8VariableE7int32_t">
 <span id="_CPPv3N5rogue10interfaces6memory5Block7getBoolEPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="_CPPv2N5rogue10interfaces6memory5Block7getBoolEPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="rogue::interfaces::memory::Block::getBool__rogue::interfaces::memory::VariableP.int32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Block_1aacf26cf2dac9f02abc622bb64b2d3fbd"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getBool</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Variable</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">var</span></span>, <span class="n"><span class="pre">int32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">index</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Block7getBoolEPN5rogue10interfaces6memory8VariableE7int32_t" title="Link to this definition"></a><br /></dt>
-<dd><p>Get data using bool, C++ Version. </p>
+<dd><p>Gets boolean variable data as C++ output. </p>
+<p>C++ path for <code class="docutils literal notranslate"><span class="pre">Bool</span></code> variables.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>var</strong> – Variable associated with the transaction. </p></li>
+<li><p><strong>index</strong> – Variable index for list variables, or <code class="docutils literal notranslate"><span class="pre">-1</span></code> for full variable. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Boolean value. </p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory5Block11setStringPyERN5boost6python6objectEPN5rogue10interfaces6memory8VariableE7int32_t">
 <span id="_CPPv3N5rogue10interfaces6memory5Block11setStringPyERN5boost6python6objectEPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="_CPPv2N5rogue10interfaces6memory5Block11setStringPyERN5boost6python6objectEPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="rogue::interfaces::memory::Block::setStringPy__boost::python::objectR.rogue::interfaces::memory::VariableP.int32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Block_1a9e5be0a78200eb43ab31fa6c8eb6d635"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setStringPy</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">boost</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">python</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">object</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">value</span></span>, <span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Variable</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">var</span></span>, <span class="n"><span class="pre">int32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">index</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Block11setStringPyERN5boost6python6objectEPN5rogue10interfaces6memory8VariableE7int32_t" title="Link to this definition"></a><br /></dt>
-<dd><p>Set data using String, python version. </p>
+<dd><p>Sets string variable data from Python input. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value</strong> – Python source value. </p></li>
+<li><p><strong>var</strong> – Variable associated with the transaction. </p></li>
+<li><p><strong>index</strong> – Variable index for list variables, or <code class="docutils literal notranslate"><span class="pre">-1</span></code> for full variable. </p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory5Block11getStringPyEPN5rogue10interfaces6memory8VariableE7int32_t">
 <span id="_CPPv3N5rogue10interfaces6memory5Block11getStringPyEPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="_CPPv2N5rogue10interfaces6memory5Block11getStringPyEPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="rogue::interfaces::memory::Block::getStringPy__rogue::interfaces::memory::VariableP.int32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Block_1a0f568e62afb74f1faed28f6c520a0da1"></span><span class="n"><span class="pre">boost</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">python</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">object</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getStringPy</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Variable</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">var</span></span>, <span class="n"><span class="pre">int32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">index</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Block11getStringPyEPN5rogue10interfaces6memory8VariableE7int32_t" title="Link to this definition"></a><br /></dt>
-<dd><p>Get data using String, python version. </p>
+<dd><p>Gets string variable data as Python output. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>var</strong> – Variable associated with the transaction. </p></li>
+<li><p><strong>index</strong> – Variable index for list variables, or <code class="docutils literal notranslate"><span class="pre">-1</span></code> for full variable. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Python object containing string value. </p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory5Block9setStringERKNSt6stringEPN5rogue10interfaces6memory8VariableE7int32_t">
 <span id="_CPPv3N5rogue10interfaces6memory5Block9setStringERKNSt6stringEPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="_CPPv2N5rogue10interfaces6memory5Block9setStringERKNSt6stringEPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="rogue::interfaces::memory::Block::setString__ssCR.rogue::interfaces::memory::VariableP.int32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Block_1a011cadb051ee1ba41a37ceb8b544e260"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setString</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">value</span></span>, <span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Variable</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">var</span></span>, <span class="n"><span class="pre">int32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">index</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Block9setStringERKNSt6stringEPN5rogue10interfaces6memory8VariableE7int32_t" title="Link to this definition"></a><br /></dt>
-<dd><p>Set data using String, C++ Version. </p>
+<dd><p>Sets string variable data from C++ input. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value</strong> – Source string value. </p></li>
+<li><p><strong>var</strong> – Variable associated with the transaction. </p></li>
+<li><p><strong>index</strong> – Variable index for list variables, or <code class="docutils literal notranslate"><span class="pre">-1</span></code> for full variable. </p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory5Block9getStringEPN5rogue10interfaces6memory8VariableE7int32_t">
 <span id="_CPPv3N5rogue10interfaces6memory5Block9getStringEPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="_CPPv2N5rogue10interfaces6memory5Block9getStringEPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="rogue::interfaces::memory::Block::getString__rogue::interfaces::memory::VariableP.int32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Block_1af2835b3439611008bc6febb903b6dfb5"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getString</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Variable</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">var</span></span>, <span class="n"><span class="pre">int32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">index</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Block9getStringEPN5rogue10interfaces6memory8VariableE7int32_t" title="Link to this definition"></a><br /></dt>
-<dd><p>Get data using String, C++ Version. </p>
+<dd><p>Gets string variable data as C++ output. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>var</strong> – Variable associated with the transaction. </p></li>
+<li><p><strong>index</strong> – Variable index for list variables, or <code class="docutils literal notranslate"><span class="pre">-1</span></code> for full variable. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>String value. </p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory5Block9getStringEPN5rogue10interfaces6memory8VariableERNSt6stringE7int32_t">
 <span id="_CPPv3N5rogue10interfaces6memory5Block9getStringEPN5rogue10interfaces6memory8VariableERNSt6stringE7int32_t"></span><span id="_CPPv2N5rogue10interfaces6memory5Block9getStringEPN5rogue10interfaces6memory8VariableERNSt6stringE7int32_t"></span><span id="rogue::interfaces::memory::Block::getString__rogue::interfaces::memory::VariableP.ssR.int32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Block_1a6406ea690b70b3309047c201a5b7aa65"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getString</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Variable</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">var</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">valueRet</span></span>, <span class="n"><span class="pre">int32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">index</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Block9getStringEPN5rogue10interfaces6memory8VariableERNSt6stringE7int32_t" title="Link to this definition"></a><br /></dt>
-<dd><p>Get data into String, C++ Version. </p>
+<dd><p>Gets string variable data into an output string reference. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>var</strong> – Variable associated with the transaction. </p></li>
+<li><p><strong>valueRet</strong> – Destination string reference. </p></li>
+<li><p><strong>index</strong> – Variable index for list variables, or <code class="docutils literal notranslate"><span class="pre">-1</span></code> for full variable. </p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory5Block8getValueEPN5rogue10interfaces6memory8VariableERNSt6stringE7int32_t">
 <span id="_CPPv3N5rogue10interfaces6memory5Block8getValueEPN5rogue10interfaces6memory8VariableERNSt6stringE7int32_t"></span><span id="_CPPv2N5rogue10interfaces6memory5Block8getValueEPN5rogue10interfaces6memory8VariableERNSt6stringE7int32_t"></span><span id="rogue::interfaces::memory::Block::getValue__rogue::interfaces::memory::VariableP.ssR.int32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Block_1a89d0f4b81e4e6dafa6e8494758717513"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getValue</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Variable</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">var</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">valueRet</span></span>, <span class="n"><span class="pre">int32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">index</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Block8getValueEPN5rogue10interfaces6memory8VariableERNSt6stringE7int32_t" title="Link to this definition"></a><br /></dt>
-<dd><p>Get data into String, C++ Version. </p>
+<dd><p>Alias to <code class="docutils literal notranslate"><span class="pre">getString(var,</span> <span class="pre">valueRet,</span> <span class="pre">index)</span></code>. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>var</strong> – Variable associated with the transaction. </p></li>
+<li><p><strong>valueRet</strong> – Destination string reference. </p></li>
+<li><p><strong>index</strong> – Variable index for list variables, or <code class="docutils literal notranslate"><span class="pre">-1</span></code> for full variable. </p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory5Block10setFloatPyERN5boost6python6objectEPN5rogue10interfaces6memory8VariableE7int32_t">
 <span id="_CPPv3N5rogue10interfaces6memory5Block10setFloatPyERN5boost6python6objectEPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="_CPPv2N5rogue10interfaces6memory5Block10setFloatPyERN5boost6python6objectEPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="rogue::interfaces::memory::Block::setFloatPy__boost::python::objectR.rogue::interfaces::memory::VariableP.int32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Block_1a5db53637acbd094933bb690026b5a890"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setFloatPy</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">boost</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">python</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">object</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">value</span></span>, <span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Variable</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">var</span></span>, <span class="n"><span class="pre">int32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">index</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Block10setFloatPyERN5boost6python6objectEPN5rogue10interfaces6memory8VariableE7int32_t" title="Link to this definition"></a><br /></dt>
-<dd><p>Set data using Float, python version. </p>
+<dd><p>Sets float variable data from Python input. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value</strong> – Python source value. </p></li>
+<li><p><strong>var</strong> – Variable associated with the transaction. </p></li>
+<li><p><strong>index</strong> – Variable index for list variables, or <code class="docutils literal notranslate"><span class="pre">-1</span></code> for full variable. </p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory5Block10getFloatPyEPN5rogue10interfaces6memory8VariableE7int32_t">
 <span id="_CPPv3N5rogue10interfaces6memory5Block10getFloatPyEPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="_CPPv2N5rogue10interfaces6memory5Block10getFloatPyEPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="rogue::interfaces::memory::Block::getFloatPy__rogue::interfaces::memory::VariableP.int32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Block_1ad3044a85bc4eae3e73b69bee3ee9271f"></span><span class="n"><span class="pre">boost</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">python</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">object</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getFloatPy</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Variable</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">var</span></span>, <span class="n"><span class="pre">int32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">index</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Block10getFloatPyEPN5rogue10interfaces6memory8VariableE7int32_t" title="Link to this definition"></a><br /></dt>
-<dd><p>Get data using Float, python version. </p>
+<dd><p>Gets float variable data as Python output. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>var</strong> – Variable associated with the transaction. </p></li>
+<li><p><strong>index</strong> – Variable index for list variables, or <code class="docutils literal notranslate"><span class="pre">-1</span></code> for full variable. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Python object containing float value. </p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory5Block8setFloatERKfPN5rogue10interfaces6memory8VariableE7int32_t">
 <span id="_CPPv3N5rogue10interfaces6memory5Block8setFloatERKfPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="_CPPv2N5rogue10interfaces6memory5Block8setFloatERKfPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="rogue::interfaces::memory::Block::setFloat__floatCR.rogue::interfaces::memory::VariableP.int32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Block_1a7ab4c760e7b10b928360b5e6f2e735ac"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setFloat</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">value</span></span>, <span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Variable</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">var</span></span>, <span class="n"><span class="pre">int32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">index</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Block8setFloatERKfPN5rogue10interfaces6memory8VariableE7int32_t" title="Link to this definition"></a><br /></dt>
-<dd><p>Set data using Float, C++ Version. </p>
+<dd><p>Sets float variable data from C++ input. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value</strong> – Source float value. </p></li>
+<li><p><strong>var</strong> – Variable associated with the transaction. </p></li>
+<li><p><strong>index</strong> – Variable index for list variables, or <code class="docutils literal notranslate"><span class="pre">-1</span></code> for full variable. </p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory5Block8getFloatEPN5rogue10interfaces6memory8VariableE7int32_t">
 <span id="_CPPv3N5rogue10interfaces6memory5Block8getFloatEPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="_CPPv2N5rogue10interfaces6memory5Block8getFloatEPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="rogue::interfaces::memory::Block::getFloat__rogue::interfaces::memory::VariableP.int32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Block_1a2155ce26a7a35c978d367f6aca298335"></span><span class="kt"><span class="pre">float</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getFloat</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Variable</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">var</span></span>, <span class="n"><span class="pre">int32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">index</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Block8getFloatEPN5rogue10interfaces6memory8VariableE7int32_t" title="Link to this definition"></a><br /></dt>
-<dd><p>Get data using Float, C++ Version. </p>
+<dd><p>Gets float variable data as C++ output. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>var</strong> – Variable associated with the transaction. </p></li>
+<li><p><strong>index</strong> – Variable index for list variables, or <code class="docutils literal notranslate"><span class="pre">-1</span></code> for full variable. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Float value. </p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory5Block11setDoublePyERN5boost6python6objectEPN5rogue10interfaces6memory8VariableE7int32_t">
 <span id="_CPPv3N5rogue10interfaces6memory5Block11setDoublePyERN5boost6python6objectEPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="_CPPv2N5rogue10interfaces6memory5Block11setDoublePyERN5boost6python6objectEPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="rogue::interfaces::memory::Block::setDoublePy__boost::python::objectR.rogue::interfaces::memory::VariableP.int32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Block_1a0b3292d19d335553759e5a098b339ea3"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setDoublePy</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">boost</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">python</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">object</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">value</span></span>, <span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Variable</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">var</span></span>, <span class="n"><span class="pre">int32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">index</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Block11setDoublePyERN5boost6python6objectEPN5rogue10interfaces6memory8VariableE7int32_t" title="Link to this definition"></a><br /></dt>
-<dd><p>Set data using Double, python version. </p>
+<dd><p>Sets double variable data from Python input. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value</strong> – Python source value. </p></li>
+<li><p><strong>var</strong> – Variable associated with the transaction. </p></li>
+<li><p><strong>index</strong> – Variable index for list variables, or <code class="docutils literal notranslate"><span class="pre">-1</span></code> for full variable. </p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory5Block11getDoublePyEPN5rogue10interfaces6memory8VariableE7int32_t">
 <span id="_CPPv3N5rogue10interfaces6memory5Block11getDoublePyEPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="_CPPv2N5rogue10interfaces6memory5Block11getDoublePyEPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="rogue::interfaces::memory::Block::getDoublePy__rogue::interfaces::memory::VariableP.int32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Block_1a7986812537c98926e49da31a512f680b"></span><span class="n"><span class="pre">boost</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">python</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">object</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getDoublePy</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Variable</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">var</span></span>, <span class="n"><span class="pre">int32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">index</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Block11getDoublePyEPN5rogue10interfaces6memory8VariableE7int32_t" title="Link to this definition"></a><br /></dt>
-<dd><p>Get data using Double, python version. </p>
+<dd><p>Gets double variable data as Python output. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>var</strong> – Variable associated with the transaction. </p></li>
+<li><p><strong>index</strong> – Variable index for list variables, or <code class="docutils literal notranslate"><span class="pre">-1</span></code> for full variable. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Python object containing double value. </p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory5Block9setDoubleERKdPN5rogue10interfaces6memory8VariableE7int32_t">
 <span id="_CPPv3N5rogue10interfaces6memory5Block9setDoubleERKdPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="_CPPv2N5rogue10interfaces6memory5Block9setDoubleERKdPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="rogue::interfaces::memory::Block::setDouble__doubleCR.rogue::interfaces::memory::VariableP.int32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Block_1a2883a1a0262e382c1a4f9f7fc8bcb931"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setDouble</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">value</span></span>, <span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Variable</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">var</span></span>, <span class="n"><span class="pre">int32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">index</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Block9setDoubleERKdPN5rogue10interfaces6memory8VariableE7int32_t" title="Link to this definition"></a><br /></dt>
-<dd><p>Set data using Double, C++ Version. </p>
+<dd><p>Sets double variable data from C++ input. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value</strong> – Source double value. </p></li>
+<li><p><strong>var</strong> – Variable associated with the transaction. </p></li>
+<li><p><strong>index</strong> – Variable index for list variables, or <code class="docutils literal notranslate"><span class="pre">-1</span></code> for full variable. </p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory5Block9getDoubleEPN5rogue10interfaces6memory8VariableE7int32_t">
 <span id="_CPPv3N5rogue10interfaces6memory5Block9getDoubleEPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="_CPPv2N5rogue10interfaces6memory5Block9getDoubleEPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="rogue::interfaces::memory::Block::getDouble__rogue::interfaces::memory::VariableP.int32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Block_1a20136cd067cb757fcd7404415b9574d2"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getDouble</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Variable</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">var</span></span>, <span class="n"><span class="pre">int32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">index</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Block9getDoubleEPN5rogue10interfaces6memory8VariableE7int32_t" title="Link to this definition"></a><br /></dt>
-<dd><p>Get data using Double, C++ Version. </p>
+<dd><p>Gets double variable data as C++ output. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>var</strong> – Variable associated with the transaction. </p></li>
+<li><p><strong>index</strong> – Variable index for list variables, or <code class="docutils literal notranslate"><span class="pre">-1</span></code> for full variable. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Double value. </p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory5Block10setFixedPyERN5boost6python6objectEPN5rogue10interfaces6memory8VariableE7int32_t">
 <span id="_CPPv3N5rogue10interfaces6memory5Block10setFixedPyERN5boost6python6objectEPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="_CPPv2N5rogue10interfaces6memory5Block10setFixedPyERN5boost6python6objectEPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="rogue::interfaces::memory::Block::setFixedPy__boost::python::objectR.rogue::interfaces::memory::VariableP.int32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Block_1afac8819b74c2d36c8687bbb458cb16aa"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setFixedPy</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">boost</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">python</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">object</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">value</span></span>, <span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Variable</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">var</span></span>, <span class="n"><span class="pre">int32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">index</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Block10setFixedPyERN5boost6python6objectEPN5rogue10interfaces6memory8VariableE7int32_t" title="Link to this definition"></a><br /></dt>
-<dd><p>Set data using Fixed Point, Python version. </p>
+<dd><p>Sets fixed-point variable data from Python input. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value</strong> – Python source value. </p></li>
+<li><p><strong>var</strong> – Variable associated with the transaction. </p></li>
+<li><p><strong>index</strong> – Variable index for list variables, or <code class="docutils literal notranslate"><span class="pre">-1</span></code> for full variable. </p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory5Block10getFixedPyEPN5rogue10interfaces6memory8VariableE7int32_t">
 <span id="_CPPv3N5rogue10interfaces6memory5Block10getFixedPyEPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="_CPPv2N5rogue10interfaces6memory5Block10getFixedPyEPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="rogue::interfaces::memory::Block::getFixedPy__rogue::interfaces::memory::VariableP.int32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Block_1aeb9c8823037b43cd521e81e65a5fd5fd"></span><span class="n"><span class="pre">boost</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">python</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">object</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getFixedPy</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Variable</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">var</span></span>, <span class="n"><span class="pre">int32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">index</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Block10getFixedPyEPN5rogue10interfaces6memory8VariableE7int32_t" title="Link to this definition"></a><br /></dt>
-<dd><p>Get data using Fixed Point, Python version. </p>
+<dd><p>Gets fixed-point variable data as Python output. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>var</strong> – Variable associated with the transaction. </p></li>
+<li><p><strong>index</strong> – Variable index for list variables, or <code class="docutils literal notranslate"><span class="pre">-1</span></code> for full variable. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Python object containing fixed-point value. </p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory5Block8setFixedERKdPN5rogue10interfaces6memory8VariableE7int32_t">
 <span id="_CPPv3N5rogue10interfaces6memory5Block8setFixedERKdPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="_CPPv2N5rogue10interfaces6memory5Block8setFixedERKdPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="rogue::interfaces::memory::Block::setFixed__doubleCR.rogue::interfaces::memory::VariableP.int32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Block_1a269ec6c0106e7e793d8998409a42d14b"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setFixed</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">value</span></span>, <span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Variable</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">var</span></span>, <span class="n"><span class="pre">int32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">index</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Block8setFixedERKdPN5rogue10interfaces6memory8VariableE7int32_t" title="Link to this definition"></a><br /></dt>
-<dd><p>Set data using Fixed Point, C++ Version. </p>
+<dd><p>Sets fixed-point variable data from C++ input. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value</strong> – Source fixed-point value. </p></li>
+<li><p><strong>var</strong> – Variable associated with the transaction. </p></li>
+<li><p><strong>index</strong> – Variable index for list variables, or <code class="docutils literal notranslate"><span class="pre">-1</span></code> for full variable. </p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory5Block8getFixedEPN5rogue10interfaces6memory8VariableE7int32_t">
 <span id="_CPPv3N5rogue10interfaces6memory5Block8getFixedEPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="_CPPv2N5rogue10interfaces6memory5Block8getFixedEPN5rogue10interfaces6memory8VariableE7int32_t"></span><span id="rogue::interfaces::memory::Block::getFixed__rogue::interfaces::memory::VariableP.int32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Block_1ab7357161825b10809fca15937e63764c"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getFixed</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Variable</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">var</span></span>, <span class="n"><span class="pre">int32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">index</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Block8getFixedEPN5rogue10interfaces6memory8VariableE7int32_t" title="Link to this definition"></a><br /></dt>
-<dd><p>Get data using Fixed Point, C++ Version. </p>
+<dd><p>Gets fixed-point variable data as C++ output. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>var</strong> – Variable associated with the transaction. </p></li>
+<li><p><strong>index</strong> – Variable index for list variables, or <code class="docutils literal notranslate"><span class="pre">-1</span></code> for full variable. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Fixed-point value. </p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
@@ -557,14 +980,17 @@ see <a class="reference internal" href="../../../pyrogue_tree/node/block/index.h
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory5Block6createE8uint64_t8uint32_t">
 <span id="_CPPv3N5rogue10interfaces6memory5Block6createE8uint64_t8uint32_t"></span><span id="_CPPv2N5rogue10interfaces6memory5Block6createE8uint64_t8uint32_t"></span><span id="rogue::interfaces::memory::Block::create__uint64_t.uint32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Block_1a14ff6eab131b7bc4a1020fe2d2bb1350"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue10interfaces6memory5BlockE" title="rogue::interfaces::memory::Block"><span class="n"><span class="pre">Block</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">create</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">offset</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">size</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Block6createE8uint64_t8uint32_t" title="Link to this definition"></a><br /></dt>
-<dd><p>Class factory which returns a pointer to a <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Block"><span class="std std-ref">Block</span></a> (BlockPtr) </p>
-<p>Exposed to Python as <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Block"><span class="std std-ref">rogue.interfaces.memory.Block()</span></a></p>
+<dd><p>Creates a memory block. </p>
+<p>Exposed to Python as <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Block"><span class="std std-ref"><span class="pre">rogue.interfaces.memory.Block()</span></span></a></code>. This static factory is the preferred construction path when the object is shared across Rogue graph connections or exposed to Python. It returns <code class="docutils literal notranslate"><span class="pre">std::shared_ptr</span></code> ownership compatible with Rogue pointer typedefs.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>offset</strong> – Memory offset of the <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Block"><span class="std std-ref">Block</span></a></p></li>
-<li><p><strong>size</strong> – Memory size (footprint) of the <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Block"><span class="std std-ref">Block</span></a></p></li>
+<li><p><strong>offset</strong> – Memory offset of the block. </p></li>
+<li><p><strong>size</strong> – Memory size (footprint) of the block. </p></li>
 </ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Shared pointer to the created block. </p>
 </dd>
 </dl>
 </dd></dl>

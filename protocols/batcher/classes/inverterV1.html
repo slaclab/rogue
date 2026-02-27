@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>InverterV1 &mdash; Rogue v6.8.2 documentation</title>
+  <title>InverterV1 &mdash; Rogue v6.8.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=42e93e3f"></script>
+      <script src="../../../_static/documentation_options.js?v=e691ba26"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -23,7 +23,7 @@
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="SplitterV1" href="splitterV1.html" />
+    <link rel="next" title="InverterV2" href="inverterV2.html" />
     <link rel="prev" title="Data" href="data.html" /> 
 </head>
 
@@ -61,19 +61,18 @@
 <li class="toctree-l2"><a class="reference internal" href="../../packetizer/index.html">Packetizer Protocol</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../network.html">Network Wrapper</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../index.html">Batcher Protocol</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="../inverterV1.html">Batcher Protocol InverterV1</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../splitterV1.html">Batcher Protocol SplitterV1</a></li>
-<li class="toctree-l3 current"><a class="reference internal" href="index.html">Batcher Protocol Class Descriptions</a><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="coreV1.html">CoreV1</a></li>
-<li class="toctree-l4"><a class="reference internal" href="data.html">Data</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">InverterV1</a></li>
-<li class="toctree-l4"><a class="reference internal" href="splitterV1.html">SplitterV1</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../index.html#how-the-classes-fit-together">How the classes fit together</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../index.html#usage-examples">Usage examples</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../index.html#python-splitter-chain-v2">Python splitter chain (v2)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../index.html#python-inverter-chain-v1">Python inverter chain (v1)</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="../index.html#c-splitter-chain-v1">C++ splitter chain (v1)</a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../epicsV4/index.html">EPICSV4 Protocol</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../srp/index.html">SRP Protocol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../xilinx/index.html">Xilinx Protocols</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../uart.html">UART Protocol</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../pyrogue/index.html">Pyrogue Protocols</a></li>
 </ul>
@@ -113,7 +112,10 @@
              
   <section id="inverterv1">
 <span id="protocols-batcher-classes-inverterv1"></span><h1>InverterV1<a class="headerlink" href="#inverterv1" title="Link to this heading"></a></h1>
-<p>TODO</p>
+<p><code class="docutils literal notranslate"><span class="pre">InverterV1</span></code> rewrites Batcher v1 framing in place and forwards one
+transformed output frame per input frame.
+It is not a batching or unbatching stage.</p>
+<p>Protocol reference: <a class="reference external" href="https://confluence.slac.stanford.edu/x/th1SDg">https://confluence.slac.stanford.edu/x/th1SDg</a></p>
 <p>InverterV1 objects in C++ are referenced by the following shared pointer typedef:</p>
 <dl class="cpp type">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols7batcher13InverterV1PtrE">
@@ -124,25 +126,39 @@
 <dl class="cpp class">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols7batcher10InverterV1E">
 <span id="_CPPv3N5rogue9protocols7batcher10InverterV1E"></span><span id="_CPPv2N5rogue9protocols7batcher10InverterV1E"></span><span id="rogue::protocols::batcher::InverterV1"></span><span class="target" id="classrogue_1_1protocols_1_1batcher_1_1InverterV1"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">InverterV1</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="../../../interfaces/stream/classes/master.html#_CPPv4N5rogue10interfaces6stream6MasterE" title="rogue::interfaces::stream::Master"><span class="n"><span class="pre">Master</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="../../../interfaces/stream/classes/slave.html#_CPPv4N5rogue10interfaces6stream5SlaveE" title="rogue::interfaces::stream::Slave"><span class="n"><span class="pre">Slave</span></span></a><a class="headerlink" href="#_CPPv4N5rogue9protocols7batcher10InverterV1E" title="Link to this definition"></a><br /></dt>
-<dd><p>AXI Stream FIFO. </p>
+<dd><p>In-place inverter for SLAC AXI Batcher v1 framing. </p>
+<p>Protocol reference: <a class="reference external" href="https://confluence.slac.stanford.edu/x/th1SDg">https://confluence.slac.stanford.edu/x/th1SDg</a></p>
+<p><code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1protocols_1_1batcher_1_1InverterV1"><span class="std std-ref"><span class="pre">InverterV1</span></span></a></code> uses <code class="docutils literal notranslate"><a class="reference internal" href="coreV1.html#classrogue_1_1protocols_1_1batcher_1_1CoreV1"><span class="std std-ref"><span class="pre">CoreV1</span></span></a></code> metadata to reinterpret/shift record tail data inside the original frame payload. This produces a transformed frame layout expected by downstream consumers without allocating one frame per record. It is not a batching or unbatching stage: one input frame yields one output frame after in-place reformatting.</p>
+<p><code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1protocols_1_1batcher_1_1InverterV1"><span class="std std-ref"><span class="pre">InverterV1</span></span></a></code> transforms a batcher v1 frame by copying per-record tail fields into the header/tail positions expected by downstream consumers and trimming the final tail from payload. The transformed frame is then forwarded. Use <code class="docutils literal notranslate"><a class="reference internal" href="splitterV1.html#classrogue_1_1protocols_1_1batcher_1_1SplitterV1"><span class="std std-ref"><span class="pre">SplitterV1</span></span></a></code> when true unbatching (one output frame per record) is desired.</p>
+<p>Threading model:<ul class="simple">
+<li><p>No internal worker thread is created.</p></li>
+<li><p>Processing executes synchronously in the caller thread of <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1protocols_1_1batcher_1_1InverterV1_1a02bddfe74707ac469149848010065bfd"><span class="std std-ref"><span class="pre">acceptFrame()</span></span></a></code>. </p></li>
+</ul>
+</p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols7batcher10InverterV110InverterV1Ev">
 <span id="_CPPv3N5rogue9protocols7batcher10InverterV110InverterV1Ev"></span><span id="_CPPv2N5rogue9protocols7batcher10InverterV110InverterV1Ev"></span><span id="rogue::protocols::batcher::InverterV1::InverterV1"></span><span class="target" id="classrogue_1_1protocols_1_1batcher_1_1InverterV1_1a0b6ad863909a3fd675b6efcc4151591e"></span><span class="sig-name descname"><span class="n"><span class="pre">InverterV1</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols7batcher10InverterV110InverterV1Ev" title="Link to this definition"></a><br /></dt>
-<dd><p>Creator. </p>
+<dd><p>Constructs an <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1protocols_1_1batcher_1_1InverterV1"><span class="std std-ref"><span class="pre">InverterV1</span></span></a></code> instance. </p>
+<p>This constructor is a low-level C++ allocation path. Prefer <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1protocols_1_1batcher_1_1InverterV1_1a7d28113e5675441527bf60e49fc924c2"><span class="std std-ref"><span class="pre">create()</span></span></a></code> when shared ownership or Python exposure is required. </p>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols7batcher10InverterV1D0Ev">
 <span id="_CPPv3N5rogue9protocols7batcher10InverterV1D0Ev"></span><span id="_CPPv2N5rogue9protocols7batcher10InverterV1D0Ev"></span><span id="rogue::protocols::batcher::InverterV1::~InverterV1"></span><span class="target" id="classrogue_1_1protocols_1_1batcher_1_1InverterV1_1ad99ccf14d818dda3e781d94acde04e11"></span><span class="sig-name descname"><span class="n"><span class="pre">~InverterV1</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols7batcher10InverterV1D0Ev" title="Link to this definition"></a><br /></dt>
-<dd><p>Deconstructor. </p>
+<dd><p>Destroys the inverter. </p>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols7batcher10InverterV111acceptFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE">
 <span id="_CPPv3N5rogue9protocols7batcher10InverterV111acceptFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE"></span><span id="_CPPv2N5rogue9protocols7batcher10InverterV111acceptFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE"></span><span id="rogue::protocols::batcher::InverterV1::acceptFrame__std::shared_ptr:rogue::interfaces::stream::Frame:"></span><span class="target" id="classrogue_1_1protocols_1_1batcher_1_1InverterV1_1a02bddfe74707ac469149848010065bfd"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">acceptFrame</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="../../../interfaces/stream/classes/frame.html#_CPPv4N5rogue10interfaces6stream5FrameE" title="rogue::interfaces::stream::Frame"><span class="n"><span class="pre">Frame</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">frame</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols7batcher10InverterV111acceptFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE" title="Link to this definition"></a><br /></dt>
-<dd><p>Accept a frame from master. </p>
+<dd><p>Accepts, transforms, and forwards one batcher v1 frame. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>frame</strong> – Input frame to transform. </p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
@@ -151,13 +167,19 @@
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols7batcher10InverterV16createEv">
 <span id="_CPPv3N5rogue9protocols7batcher10InverterV16createEv"></span><span id="_CPPv2N5rogue9protocols7batcher10InverterV16createEv"></span><span id="rogue::protocols::batcher::InverterV1::create"></span><span class="target" id="classrogue_1_1protocols_1_1batcher_1_1InverterV1_1a7d28113e5675441527bf60e49fc924c2"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">protocols</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">batcher</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue9protocols7batcher10InverterV1E" title="rogue::protocols::batcher::InverterV1"><span class="n"><span class="pre">InverterV1</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">create</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols7batcher10InverterV16createEv" title="Link to this definition"></a><br /></dt>
-<dd><p>Class creation. </p>
+<dd><p>Creates an <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1protocols_1_1batcher_1_1InverterV1"><span class="std std-ref"><span class="pre">InverterV1</span></span></a></code> instance. </p>
+<p>This static factory is the preferred construction path when the object is shared across Rogue graph connections or exposed to Python. It returns <code class="docutils literal notranslate"><span class="pre">std::shared_ptr</span></code> ownership compatible with Rogue pointer typedefs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Shared pointer to the created inverter. </p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols7batcher10InverterV112setup_pythonEv">
 <span id="_CPPv3N5rogue9protocols7batcher10InverterV112setup_pythonEv"></span><span id="_CPPv2N5rogue9protocols7batcher10InverterV112setup_pythonEv"></span><span id="rogue::protocols::batcher::InverterV1::setup_python"></span><span class="target" id="classrogue_1_1protocols_1_1batcher_1_1InverterV1_1a85eda147843074e419a6b3dcef1c65c8"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setup_python</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols7batcher10InverterV112setup_pythonEv" title="Link to this definition"></a><br /></dt>
-<dd><p>Setup class in python. </p>
+<dd><p>Registers Python bindings for this class. </p>
 </dd></dl>
 
 </div>
@@ -170,7 +192,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="data.html" class="btn btn-neutral float-left" title="Data" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="splitterV1.html" class="btn btn-neutral float-right" title="SplitterV1" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="inverterV2.html" class="btn btn-neutral float-right" title="InverterV2" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Core &mdash; Rogue v6.8.2 documentation</title>
+  <title>Core &mdash; Rogue v6.8.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=42e93e3f"></script>
+      <script src="../../../_static/documentation_options.js?v=e691ba26"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -73,6 +73,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../batcher/index.html">Batcher Protocol</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../epicsV4/index.html">EPICSV4 Protocol</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../srp/index.html">SRP Protocol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../xilinx/index.html">Xilinx Protocols</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../uart.html">UART Protocol</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../pyrogue/index.html">Pyrogue Protocols</a></li>
 </ul>
@@ -123,44 +124,77 @@
 <dl class="cpp class">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols3udp4CoreE">
 <span id="_CPPv3N5rogue9protocols3udp4CoreE"></span><span id="_CPPv2N5rogue9protocols3udp4CoreE"></span><span id="rogue::protocols::udp::Core"></span><span class="target" id="classrogue_1_1protocols_1_1udp_1_1Core"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Core</span></span></span><a class="headerlink" href="#_CPPv4N5rogue9protocols3udp4CoreE" title="Link to this definition"></a><br /></dt>
-<dd><p>UDP <a class="reference internal" href="#classrogue_1_1protocols_1_1udp_1_1Core"><span class="std std-ref">Core</span></a>. </p>
+<dd><p>Shared UDP transport base for stream client/server endpoints. </p>
+<p><code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1protocols_1_1udp_1_1Core"><span class="std std-ref"><span class="pre">Core</span></span></a></code> contains common socket and transport configuration used by UDP stream endpoints. It centralizes payload sizing (<code class="docutils literal notranslate"><span class="pre">jumbo</span></code> vs standard MTU), socket timeout configuration for transmit operations, receive-buffer sizing, and shared synchronization primitives used by derived classes.</p>
+<p>Concrete data-path behavior (background receive thread, stream callbacks, and socket lifecycle) is implemented by <code class="docutils literal notranslate"><a class="reference internal" href="client.html#classrogue_1_1protocols_1_1udp_1_1Client"><span class="std std-ref"><span class="pre">udp::Client</span></span></a></code> and <code class="docutils literal notranslate"><a class="reference internal" href="server.html#classrogue_1_1protocols_1_1udp_1_1Server"><span class="std std-ref"><span class="pre">udp::Server</span></span></a></code>. </p>
 <p>Subclassed by <a class="reference internal" href="client.html#classrogue_1_1protocols_1_1udp_1_1Client"><span class="std std-ref">rogue::protocols::udp::Client</span></a>, <a class="reference internal" href="server.html#classrogue_1_1protocols_1_1udp_1_1Server"><span class="std std-ref">rogue::protocols::udp::Server</span></a></p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols3udp4Core4CoreEb">
 <span id="_CPPv3N5rogue9protocols3udp4Core4CoreEb"></span><span id="_CPPv2N5rogue9protocols3udp4Core4CoreEb"></span><span id="rogue::protocols::udp::Core::Core__b"></span><span class="target" id="classrogue_1_1protocols_1_1udp_1_1Core_1a7ea9aaa9af18612f9c65d62f7d978e94"></span><span class="k"><span class="pre">explicit</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Core</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">jumbo</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols3udp4Core4CoreEb" title="Link to this definition"></a><br /></dt>
-<dd><p>Creator. </p>
+<dd><p>Constructs shared UDP core state. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>jumbo</strong> – <code class="docutils literal notranslate"><span class="pre">true</span></code> to use jumbo-payload sizing; <code class="docutils literal notranslate"><span class="pre">false</span></code> for standard MTU. </p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols3udp4CoreD0Ev">
 <span id="_CPPv3N5rogue9protocols3udp4CoreD0Ev"></span><span id="_CPPv2N5rogue9protocols3udp4CoreD0Ev"></span><span id="rogue::protocols::udp::Core::~Core"></span><span class="target" id="classrogue_1_1protocols_1_1udp_1_1Core_1afc2ec8295c5689e2a045ac3ed72d64a5"></span><span class="sig-name descname"><span class="n"><span class="pre">~Core</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols3udp4CoreD0Ev" title="Link to this definition"></a><br /></dt>
-<dd><p>Destructor. </p>
+<dd><p>Destroys the UDP core instance. </p>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols3udp4Core4stopEv">
 <span id="_CPPv3N5rogue9protocols3udp4Core4stopEv"></span><span id="_CPPv2N5rogue9protocols3udp4Core4stopEv"></span><span id="rogue::protocols::udp::Core::stop"></span><span class="target" id="classrogue_1_1protocols_1_1udp_1_1Core_1aa9e12b03ae21ef77210b101ac8e8f67c"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">stop</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols3udp4Core4stopEv" title="Link to this definition"></a><br /></dt>
-<dd><p>Stop the interface. </p>
+<dd><p>Stops the UDP interface. </p>
+<p>Derived classes provide socket/thread shutdown behavior. </p>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols3udp4Core10maxPayloadEv">
 <span id="_CPPv3N5rogue9protocols3udp4Core10maxPayloadEv"></span><span id="_CPPv2N5rogue9protocols3udp4Core10maxPayloadEv"></span><span id="rogue::protocols::udp::Core::maxPayload"></span><span class="target" id="classrogue_1_1protocols_1_1udp_1_1Core_1ab03dec9bb64d1b5daf2a7f8ad00c375a"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">maxPayload</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols3udp4Core10maxPayloadEv" title="Link to this definition"></a><br /></dt>
-<dd><p>Return max payload. </p>
+<dd><p>Returns maximum UDP payload size in bytes. </p>
+<p>Returns:<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">8972</span></code> bytes when jumbo mode is enabled (<code class="docutils literal notranslate"><span class="pre">MTU</span> <span class="pre">9000</span></code>).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">1472</span></code> bytes when jumbo mode is disabled (<code class="docutils literal notranslate"><span class="pre">MTU</span> <span class="pre">1500</span></code>).</p></li>
+</ul>
+</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Maximum payload size for configured MTU mode. </p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols3udp4Core16setRxBufferCountE8uint32_t">
 <span id="_CPPv3N5rogue9protocols3udp4Core16setRxBufferCountE8uint32_t"></span><span id="_CPPv2N5rogue9protocols3udp4Core16setRxBufferCountE8uint32_t"></span><span id="rogue::protocols::udp::Core::setRxBufferCount__uint32_t"></span><span class="target" id="classrogue_1_1protocols_1_1udp_1_1Core_1acac7c7ad61bf47c6ce329bbf28ee4a7b"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setRxBufferCount</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">count</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols3udp4Core16setRxBufferCountE8uint32_t" title="Link to this definition"></a><br /></dt>
-<dd><p>Set number of expected incoming buffers. </p>
+<dd><p>Requests kernel UDP receive-buffer sizing by packet count. </p>
+<p>Computes <code class="docutils literal notranslate"><span class="pre">count</span> <span class="pre">*</span> <span class="pre">mtu</span></code> bytes and programs <code class="docutils literal notranslate"><span class="pre">SO_RCVBUF</span></code>. Returns <code class="docutils literal notranslate"><span class="pre">false</span></code> if the kernel effective receive buffer is smaller than requested.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>count</strong> – Number of packets worth of RX buffering to request. </p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">true</span></code> if effective buffer size meets/exceeds request. </p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols3udp4Core10setTimeoutE8uint32_t">
 <span id="_CPPv3N5rogue9protocols3udp4Core10setTimeoutE8uint32_t"></span><span id="_CPPv2N5rogue9protocols3udp4Core10setTimeoutE8uint32_t"></span><span id="rogue::protocols::udp::Core::setTimeout__uint32_t"></span><span class="target" id="classrogue_1_1protocols_1_1udp_1_1Core_1a0b8a565e777aab7ba481e7f58858cd23"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setTimeout</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">timeout</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols3udp4Core10setTimeoutE8uint32_t" title="Link to this definition"></a><br /></dt>
-<dd><p>Set timeout for frame transmits in microseconds. </p>
+<dd><p>Sets outbound transmit wait timeout. </p>
+<p>Timeout is specified in microseconds and converted to <code class="docutils literal notranslate"><span class="pre">timeval</span></code> for <code class="docutils literal notranslate"><span class="pre">select()</span></code>-based write readiness checks in derived endpoints.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>timeout</strong> – Timeout in microseconds. </p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
@@ -169,7 +203,7 @@
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols3udp4Core12setup_pythonEv">
 <span id="_CPPv3N5rogue9protocols3udp4Core12setup_pythonEv"></span><span id="_CPPv2N5rogue9protocols3udp4Core12setup_pythonEv"></span><span id="rogue::protocols::udp::Core::setup_python"></span><span class="target" id="classrogue_1_1protocols_1_1udp_1_1Core_1ab06a41212bc10a2d0d30ddf6fb8bed8e"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setup_python</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols3udp4Core12setup_pythonEv" title="Link to this definition"></a><br /></dt>
-<dd><p>Setup class in python. </p>
+<dd><p>Registers Python bindings for this class. </p>
 </dd></dl>
 
 </div>

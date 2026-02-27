@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue.utilities.prbs &mdash; Rogue v6.8.2 documentation</title>
+  <title>pyrogue.utilities.prbs &mdash; Rogue v6.8.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -14,7 +14,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=42e93e3f"></script>
+      <script src="../../../_static/documentation_options.js?v=e691ba26"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -100,10 +100,13 @@
 <span class="c1">#-----------------------------------------------------------------------------</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">rogue.utilities</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">rogue.interfaces.stream</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ris</span>
 
 
 <div class="viewcode-block" id="PrbsRx">
@@ -114,13 +117,21 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    width : int, optional</span>
-<span class="sd">        PRBS data width. If ``None``, the Rogue default is used.</span>
+<span class="sd">        PRBS word width in bits. The underlying Rogue PRBS engine requires a</span>
+<span class="sd">        multiple of 32 bits. If ``None``, the C++ default is 32 bits.</span>
 <span class="sd">    checkPayload : bool, optional (default = True)</span>
 <span class="sd">        Enable payload checking when ``True``.</span>
-<span class="sd">    taps : int, optional</span>
-<span class="sd">        PRBS taps value. If ``None``, the Rogue default is used.</span>
-<span class="sd">    stream : object, optional</span>
-<span class="sd">        Optional stream to connect as the RX source.</span>
+<span class="sd">    taps : bytes-like, optional</span>
+<span class="sd">        LFSR feedback tap bit positions used by the PRBS generator/checker.</span>
+<span class="sd">        Provide a bytes-like sequence (for example ``bytes([1, 2, 6, 31])``)</span>
+<span class="sd">        where each entry is a tapped bit index in the PRBS state. If ``None``,</span>
+<span class="sd">        Rogue uses the C++ default taps ``[1, 2, 6, 31]``.</span>
+<span class="sd">        For a 32-bit state in Rogue&#39;s left-shift Fibonacci form, this means</span>
+<span class="sd">        ``new_bit0 = bit1 ^ bit2 ^ bit6 ^ bit31``, which corresponds to the</span>
+<span class="sd">        polynomial ``x^32 + x^7 + x^3 + x^2 + 1`` (equivalent forms may use</span>
+<span class="sd">        reciprocal indexing conventions).</span>
+<span class="sd">    stream : rogue.interfaces.stream.Master, optional</span>
+<span class="sd">        Optional stream endpoint to connect as the RX source upon initialization.</span>
 <span class="sd">    **kwargs : Any</span>
 <span class="sd">        Additional arguments forwarded to ``pyrogue.Device``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -130,8 +141,8 @@
         <span class="o">*</span><span class="p">,</span>
         <span class="n">width</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">checkPayload</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-        <span class="n">taps</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">stream</span><span class="p">:</span> <span class="n">Any</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">taps</span><span class="p">:</span> <span class="nb">bytes</span> <span class="o">|</span> <span class="nb">bytearray</span> <span class="o">|</span> <span class="nb">memoryview</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">stream</span><span class="p">:</span> <span class="n">ris</span><span class="o">.</span><span class="n">Master</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize a software PRBS receiver.&quot;&quot;&quot;</span>
@@ -200,14 +211,14 @@
 <div class="viewcode-block" id="PrbsRx.setWidth">
 <a class="viewcode-back" href="../../../pyrogue_tree/node/device/special_devices/prbsrx.html#pyrogue.utilities.prbs.PrbsRx.setWidth">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">setWidth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the PRBS width.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set PRBS word width in bits (must be a multiple of 32).&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">setWidth</span><span class="p">(</span><span class="n">width</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="PrbsRx.setTaps">
 <a class="viewcode-back" href="../../../pyrogue_tree/node/device/special_devices/prbsrx.html#pyrogue.utilities.prbs.PrbsRx.setTaps">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">setTaps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">taps</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the PRBS taps value.&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setTaps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">taps</span><span class="p">:</span> <span class="nb">bytes</span> <span class="o">|</span> <span class="nb">bytearray</span> <span class="o">|</span> <span class="nb">memoryview</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set LFSR feedback tap bit positions.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">setTaps</span><span class="p">(</span><span class="n">taps</span><span class="p">)</span></div>
 </div>
 
@@ -223,11 +234,19 @@
 <span class="sd">    sendCount : bool, optional (default = False)</span>
 <span class="sd">        Enable count transmission when ``True``.</span>
 <span class="sd">    width : int, optional</span>
-<span class="sd">        PRBS data width. If ``None``, the Rogue default is used.</span>
-<span class="sd">    taps : int, optional</span>
-<span class="sd">        PRBS taps value. If ``None``, the Rogue default is used.</span>
-<span class="sd">    stream : object, optional</span>
-<span class="sd">        Optional stream to connect as the TX destination.</span>
+<span class="sd">        PRBS word width in bits. The underlying Rogue PRBS engine requires a</span>
+<span class="sd">        multiple of 32 bits. If ``None``, the C++ default is 32 bits.</span>
+<span class="sd">    taps : bytes-like, optional</span>
+<span class="sd">        LFSR feedback tap bit positions used by the PRBS generator/checker.</span>
+<span class="sd">        Provide a bytes-like sequence (for example ``bytes([1, 2, 6, 31])``)</span>
+<span class="sd">        where each entry is a tapped bit index in the PRBS state. If ``None``,</span>
+<span class="sd">        Rogue uses the C++ default taps ``[1, 2, 6, 31]``.</span>
+<span class="sd">        For a 32-bit state in Rogue&#39;s left-shift Fibonacci form, this means</span>
+<span class="sd">        ``new_bit0 = bit1 ^ bit2 ^ bit6 ^ bit31``, which corresponds to the</span>
+<span class="sd">        polynomial ``x^32 + x^7 + x^3 + x^2 + 1`` (equivalent forms may use</span>
+<span class="sd">        reciprocal indexing conventions).</span>
+<span class="sd">    stream : rogue.interfaces.stream.Slave, optional</span>
+<span class="sd">        Optional stream endpoint to connect as the TX destination.</span>
 <span class="sd">    **kwargs : Any</span>
 <span class="sd">        Additional arguments forwarded to ``pyrogue.Device``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -237,8 +256,8 @@
         <span class="o">*</span><span class="p">,</span>
         <span class="n">sendCount</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">width</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">taps</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">stream</span><span class="p">:</span> <span class="n">Any</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">taps</span><span class="p">:</span> <span class="nb">bytes</span> <span class="o">|</span> <span class="nb">bytearray</span> <span class="o">|</span> <span class="nb">memoryview</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">stream</span><span class="p">:</span> <span class="n">ris</span><span class="o">.</span><span class="n">Slave</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize a software PRBS transmitter.&quot;&quot;&quot;</span>
@@ -332,14 +351,14 @@
 <div class="viewcode-block" id="PrbsTx.setWidth">
 <a class="viewcode-back" href="../../../pyrogue_tree/node/device/special_devices/prbstx.html#pyrogue.utilities.prbs.PrbsTx.setWidth">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">setWidth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the PRBS width.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set PRBS word width in bits (must be a multiple of 32).&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">setWidth</span><span class="p">(</span><span class="n">width</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="PrbsTx.setTaps">
 <a class="viewcode-back" href="../../../pyrogue_tree/node/device/special_devices/prbstx.html#pyrogue.utilities.prbs.PrbsTx.setTaps">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">setTaps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">taps</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the PRBS taps value.&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setTaps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">taps</span><span class="p">:</span> <span class="nb">bytes</span> <span class="o">|</span> <span class="nb">bytearray</span> <span class="o">|</span> <span class="nb">memoryview</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set LFSR feedback tap bit positions.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">setTaps</span><span class="p">(</span><span class="n">taps</span><span class="p">)</span></div>
 
 
@@ -364,15 +383,23 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    width : int, optional</span>
-<span class="sd">        PRBS data width. If ``None``, the Rogue default is used.</span>
-<span class="sd">    taps : int, optional</span>
-<span class="sd">        PRBS taps value. If ``None``, the Rogue default is used.</span>
+<span class="sd">        PRBS word width in bits. The underlying Rogue PRBS engine requires a</span>
+<span class="sd">        multiple of 32 bits. If ``None``, the C++ default is 32 bits.</span>
+<span class="sd">    taps : bytes-like, optional</span>
+<span class="sd">        LFSR feedback tap bit positions used by the PRBS generator/checker.</span>
+<span class="sd">        Provide a bytes-like sequence (for example ``bytes([1, 2, 6, 31])``)</span>
+<span class="sd">        where each entry is a tapped bit index in the PRBS state. If ``None``,</span>
+<span class="sd">        Rogue uses the C++ default taps ``[1, 2, 6, 31]``.</span>
+<span class="sd">        For a 32-bit state in Rogue&#39;s left-shift Fibonacci form, this means</span>
+<span class="sd">        ``new_bit0 = bit1 ^ bit2 ^ bit6 ^ bit31``, which corresponds to the</span>
+<span class="sd">        polynomial ``x^32 + x^7 + x^3 + x^2 + 1`` (equivalent forms may use</span>
+<span class="sd">        reciprocal indexing conventions).</span>
 <span class="sd">    sendCount : bool, optional (default = False)</span>
 <span class="sd">        Forward the TX count through the stream.</span>
-<span class="sd">    txStream : object, optional</span>
-<span class="sd">        Optional TX stream destination.</span>
-<span class="sd">    rxStream : object, optional</span>
-<span class="sd">        Optional RX stream source.</span>
+<span class="sd">    txStream : rogue.interfaces.stream.Master or rogue.interfaces.stream.Slave, optional</span>
+<span class="sd">        Optional TX stream endpoint.</span>
+<span class="sd">    rxStream : rogue.interfaces.stream.Master or rogue.interfaces.stream.Slave, optional</span>
+<span class="sd">        Optional RX stream endpoint.</span>
 <span class="sd">    **kwargs : Any</span>
 <span class="sd">        Additional arguments forwarded to ``pyrogue.Device``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -380,29 +407,28 @@
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">width</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">taps</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">taps</span><span class="p">:</span> <span class="nb">bytes</span> <span class="o">|</span> <span class="nb">bytearray</span> <span class="o">|</span> <span class="nb">memoryview</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">sendCount</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="n">txStream</span><span class="p">:</span> <span class="n">Any</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">rxStream</span><span class="p">:</span> <span class="n">Any</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">txStream</span><span class="p">:</span> <span class="n">ris</span><span class="o">.</span><span class="n">Master</span> <span class="o">|</span> <span class="n">ris</span><span class="o">.</span><span class="n">Slave</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">rxStream</span><span class="p">:</span> <span class="n">ris</span><span class="o">.</span><span class="n">Master</span> <span class="o">|</span> <span class="n">ris</span><span class="o">.</span><span class="n">Slave</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize a PRBS TX/RX pair.&quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">PrbsTx</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span> <span class="n">taps</span><span class="o">=</span><span class="n">taps</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="n">txStream</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">PrbsRx</span><span class="p">(</span><span class="n">sendCount</span><span class="o">=</span><span class="n">sendCount</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span> <span class="n">taps</span><span class="o">=</span><span class="n">taps</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="n">rxStream</span><span class="p">))</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">PrbsTx</span><span class="p">(</span><span class="n">sendCount</span><span class="o">=</span><span class="n">sendCount</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span> <span class="n">taps</span><span class="o">=</span><span class="n">taps</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="n">txStream</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">PrbsRx</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span> <span class="n">taps</span><span class="o">=</span><span class="n">taps</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="n">rxStream</span><span class="p">))</span>
 
 <div class="viewcode-block" id="PrbsPair.setWidth">
 <a class="viewcode-back" href="../../../pyrogue_tree/node/device/special_devices/prbspair.html#pyrogue.utilities.prbs.PrbsPair.setWidth">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">setWidth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set PRBS width on both devices.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set PRBS word width in bits on both devices.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">PrbsTx</span><span class="o">.</span><span class="n">setWidth</span><span class="p">(</span><span class="n">width</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">PrbsRx</span><span class="o">.</span><span class="n">setWidth</span><span class="p">(</span><span class="n">width</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="PrbsPair.setTaps">
 <a class="viewcode-back" href="../../../pyrogue_tree/node/device/special_devices/prbspair.html#pyrogue.utilities.prbs.PrbsPair.setTaps">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">setTaps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">taps</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set PRBS taps on both devices.&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setTaps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">taps</span><span class="p">:</span> <span class="nb">bytes</span> <span class="o">|</span> <span class="nb">bytearray</span> <span class="o">|</span> <span class="nb">memoryview</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set LFSR feedback tap bit positions on both devices.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">PrbsTx</span><span class="o">.</span><span class="n">setTaps</span><span class="p">(</span><span class="n">taps</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">PrbsRx</span><span class="o">.</span><span class="n">setTaps</span><span class="p">(</span><span class="n">taps</span><span class="p">)</span></div>
 
@@ -422,16 +448,19 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the stream slave endpoint.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">PrbsTx</span><span class="o">.</span><span class="n">_getStreamSlave</span><span class="p">()</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__rshift__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">other</span><span class="p">):</span>
-        <span class="n">pyrogue</span><span class="o">.</span><span class="n">streamConnect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">other</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__rshift__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Connect this pair output to ``other``.&quot;&quot;&quot;</span>
+        <span class="n">pyrogue</span><span class="o">.</span><span class="n">streamConnect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">other</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__lshift__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">other</span><span class="p">):</span>
-        <span class="n">pyrogue</span><span class="o">.</span><span class="n">streamConnect</span><span class="p">(</span><span class="n">other</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__lshift__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Connect ``other`` output to this pair input.&quot;&quot;&quot;</span>
+        <span class="n">pyrogue</span><span class="o">.</span><span class="n">streamConnect</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">other</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">other</span><span class="p">):</span>
-        <span class="n">pyrogue</span><span class="o">.</span><span class="n">streamConnectBiDir</span><span class="p">(</span><span class="n">other</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span></div>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a bidirectional stream connection to ``other``.&quot;&quot;&quot;</span>
+        <span class="n">pyrogue</span><span class="o">.</span><span class="n">streamConnectBiDir</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span></div>
 
 </pre></div>
 

@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Building Rogue Inside Miniforge &mdash; Rogue v6.8.2 documentation</title>
+  <title>Building Rogue Inside Miniforge &mdash; Rogue v6.8.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=42e93e3f"></script>
+      <script src="../_static/documentation_options.js?v=e691ba26"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -187,6 +187,14 @@ $ make install
 <section id="building-and-viewing-the-docs">
 <h2>Building and Viewing the Docs<a class="headerlink" href="#building-and-viewing-the-docs" title="Link to this heading"></a></h2>
 <p>Note: if edits are made to the source files, the full build process needs to be run for changes to reflect in documentation.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span># build the docs
+$ cd ../docs/
+$ make html
+
+# view output on web browser
+$ google-chrome build/html/index.html
+</pre></div>
+</div>
 </section>
 <section id="deleting-miniforge-environment">
 <h2>Deleting Miniforge Environment<a class="headerlink" href="#deleting-miniforge-environment" title="Link to this heading"></a></h2>

@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Batcher Protocol Class Descriptions &mdash; Rogue v6.8.2 documentation</title>
+  <title>Batcher Protocol Class Descriptions &mdash; Rogue v6.8.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=42e93e3f"></script>
+      <script src="../../../_static/documentation_options.js?v=e691ba26"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -24,7 +24,7 @@
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
     <link rel="next" title="CoreV1" href="coreV1.html" />
-    <link rel="prev" title="Batcher Protocol SplitterV1" href="../splitterV1.html" /> 
+    <link rel="prev" title="Batcher Protocol SplitterV2" href="../splitterV2.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -61,19 +61,18 @@
 <li class="toctree-l2"><a class="reference internal" href="../../packetizer/index.html">Packetizer Protocol</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../network.html">Network Wrapper</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../index.html">Batcher Protocol</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="../inverterV1.html">Batcher Protocol InverterV1</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../splitterV1.html">Batcher Protocol SplitterV1</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Batcher Protocol Class Descriptions</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="coreV1.html">CoreV1</a></li>
-<li class="toctree-l4"><a class="reference internal" href="data.html">Data</a></li>
-<li class="toctree-l4"><a class="reference internal" href="inverterV1.html">InverterV1</a></li>
-<li class="toctree-l4"><a class="reference internal" href="splitterV1.html">SplitterV1</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../index.html#how-the-classes-fit-together">How the classes fit together</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../index.html#usage-examples">Usage examples</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../index.html#python-splitter-chain-v2">Python splitter chain (v2)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../index.html#python-inverter-chain-v1">Python inverter chain (v1)</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="../index.html#c-splitter-chain-v1">C++ splitter chain (v1)</a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../epicsV4/index.html">EPICSV4 Protocol</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../srp/index.html">SRP Protocol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../xilinx/index.html">Xilinx Protocols</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../uart.html">UART Protocol</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../pyrogue/index.html">Pyrogue Protocols</a></li>
 </ul>
@@ -112,15 +111,17 @@
              
   <section id="batcher-protocol-class-descriptions">
 <span id="protocols-batcher-classes"></span><h1>Batcher Protocol Class Descriptions<a class="headerlink" href="#batcher-protocol-class-descriptions" title="Link to this heading"></a></h1>
-<p>TODO</p>
 <p>The following are detailed descriptions of the various C++ classes that make up the Rogue Batcher protocol.</p>
 <div class="toctree-wrapper compound">
-<p class="caption" role="heading"><span class="caption-text">UDP Classes:</span></p>
+<p class="caption" role="heading"><span class="caption-text">Batcher Classes:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="coreV1.html">CoreV1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="coreV2.html">CoreV2</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data.html">Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="inverterV1.html">InverterV1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="inverterV2.html">InverterV2</a></li>
 <li class="toctree-l1"><a class="reference internal" href="splitterV1.html">SplitterV1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="splitterV2.html">SplitterV2</a></li>
 </ul>
 </div>
 </section>
@@ -129,7 +130,7 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../splitterV1.html" class="btn btn-neutral float-left" title="Batcher Protocol SplitterV1" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../splitterV2.html" class="btn btn-neutral float-left" title="Batcher Protocol SplitterV2" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="coreV1.html" class="btn btn-neutral float-right" title="CoreV1" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

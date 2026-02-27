@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Writing Frames To A File &mdash; Rogue v6.8.2 documentation</title>
+  <title>Writing Frames To A File &mdash; Rogue v6.8.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=42e93e3f"></script>
+      <script src="../../_static/documentation_options.js?v=e691ba26"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -24,7 +24,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Reading Frames From A File" href="reading.html" />
-    <link rel="prev" title="File I/O Utilities" href="index.html" /> 
+    <link rel="prev" title="Rogue File Data Format" href="format.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -55,6 +55,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../interfaces/index.html">Interfaces</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">Utilities</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="index.html">File I/O Utilities</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="format.html">Rogue File Data Format</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Writing Frames To A File</a></li>
 <li class="toctree-l3"><a class="reference internal" href="reading.html">Reading Frames From A File</a></li>
 <li class="toctree-l3"><a class="reference internal" href="custom.html">Custom Writers</a></li>
@@ -63,6 +64,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../prbs/index.html">PRBS Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../hls/index.html">HLS Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../compression/index.html">Compression Utilities</a></li>
 </ul>
 </li>
@@ -107,6 +109,8 @@ file writer supports multiple incoming streams, which are then deliniated in the
 data file. The Channel 0 interface can be used to write frames which may have a non-zero
 channel ID field value set. If this value is non-zero the Frame’s channel ID will be used
 when writing the file.</p>
+<p>For the canonical on-disk record format (headers, flags/error encoding, raw mode,
+and split-file behavior), see <a class="reference internal" href="format.html#utilities-fileio-format"><span class="std std-ref">Rogue File Data Format</span></a>.</p>
 <p>The following code block describes how to create and connect a file writer in python:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">rogue.utilities.fileio</span>
@@ -221,7 +225,7 @@ present in the Rogue PyDM GUI, providing an interface for opening and closing fi
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="index.html" class="btn btn-neutral float-left" title="File I/O Utilities" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="format.html" class="btn btn-neutral float-left" title="Rogue File Data Format" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="reading.html" class="btn btn-neutral float-right" title="Reading Frames From A File" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

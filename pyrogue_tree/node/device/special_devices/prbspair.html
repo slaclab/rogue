@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PrbsPair Device Class &mdash; Rogue v6.8.2 documentation</title>
+  <title>PrbsPair Device Class &mdash; Rogue v6.8.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
   
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=42e93e3f"></script>
+      <script src="../../../../_static/documentation_options.js?v=e691ba26"></script>
       <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -128,11 +128,19 @@ transmit and receive control should live under one node.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>width</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>, </em><em>optional</em>) – PRBS data width. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, the Rogue default is used.</p></li>
-<li><p><strong>taps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>, </em><em>optional</em>) – PRBS taps value. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, the Rogue default is used.</p></li>
+<li><p><strong>width</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>, </em><em>optional</em>) – PRBS word width in bits. The underlying Rogue PRBS engine requires a
+multiple of 32 bits. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, the C++ default is 32 bits.</p></li>
+<li><p><strong>taps</strong> (<em>bytes-like</em><em>, </em><em>optional</em>) – LFSR feedback tap bit positions used by the PRBS generator/checker.
+Provide a bytes-like sequence (for example <code class="docutils literal notranslate"><span class="pre">bytes([1,</span> <span class="pre">2,</span> <span class="pre">6,</span> <span class="pre">31])</span></code>)
+where each entry is a tapped bit index in the PRBS state. If <code class="docutils literal notranslate"><span class="pre">None</span></code>,
+Rogue uses the C++ default taps <code class="docutils literal notranslate"><span class="pre">[1,</span> <span class="pre">2,</span> <span class="pre">6,</span> <span class="pre">31]</span></code>.
+For a 32-bit state in Rogue’s left-shift Fibonacci form, this means
+<code class="docutils literal notranslate"><span class="pre">new_bit0</span> <span class="pre">=</span> <span class="pre">bit1</span> <span class="pre">^</span> <span class="pre">bit2</span> <span class="pre">^</span> <span class="pre">bit6</span> <span class="pre">^</span> <span class="pre">bit31</span></code>, which corresponds to the
+polynomial <code class="docutils literal notranslate"><span class="pre">x^32</span> <span class="pre">+</span> <span class="pre">x^7</span> <span class="pre">+</span> <span class="pre">x^3</span> <span class="pre">+</span> <span class="pre">x^2</span> <span class="pre">+</span> <span class="pre">1</span></code> (equivalent forms may use
+reciprocal indexing conventions).</p></li>
 <li><p><strong>sendCount</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>, </em><em>optional</em><em> (</em><em>default = False</em><em>)</em>) – Forward the TX count through the stream.</p></li>
-<li><p><strong>txStream</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><em>object</em></a><em>, </em><em>optional</em>) – Optional TX stream destination.</p></li>
-<li><p><strong>rxStream</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><em>object</em></a><em>, </em><em>optional</em>) – Optional RX stream source.</p></li>
+<li><p><strong>txStream</strong> (<em>rogue.interfaces.stream.Master</em><em> or </em><em>rogue.interfaces.stream.Slave</em><em>, </em><em>optional</em>) – Optional TX stream endpoint.</p></li>
+<li><p><strong>rxStream</strong> (<em>rogue.interfaces.stream.Master</em><em> or </em><em>rogue.interfaces.stream.Slave</em><em>, </em><em>optional</em>) – Optional RX stream endpoint.</p></li>
 <li><p><strong>**kwargs</strong> (<em>Any</em>) – Additional arguments forwarded to <code class="docutils literal notranslate"><span class="pre">pyrogue.Device</span></code>.</p></li>
 </ul>
 </dd>
@@ -140,7 +148,7 @@ transmit and receive control should live under one node.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pyrogue.utilities.prbs.PrbsPair.setWidth">
 <span class="sig-name descname"><span class="pre">setWidth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">width</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/pyrogue/utilities/prbs.html#PrbsPair.setWidth"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.utilities.prbs.PrbsPair.setWidth" title="Link to this definition"></a></dt>
-<dd><p>Set PRBS width on both devices.</p>
+<dd><p>Set PRBS word width in bits on both devices.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
@@ -154,13 +162,13 @@ transmit and receive control should live under one node.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pyrogue.utilities.prbs.PrbsPair.setTaps">
 <span class="sig-name descname"><span class="pre">setTaps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">taps</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/pyrogue/utilities/prbs.html#PrbsPair.setTaps"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.utilities.prbs.PrbsPair.setTaps" title="Link to this definition"></a></dt>
-<dd><p>Set PRBS taps on both devices.</p>
+<dd><p>Set LFSR feedback tap bit positions on both devices.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
 </dd>
 <dt class="field-even">Parameters<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>taps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>)</p>
+<dd class="field-even"><p><strong>taps</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.14)"><em>bytes</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytearray" title="(in Python v3.14)"><em>bytearray</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#memoryview" title="(in Python v3.14)"><em>memoryview</em></a>)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -365,7 +373,7 @@ The command wrapper supplies keyword arguments <code class="docutils literal not
 
 <dl class="py property">
 <dt class="sig sig-object py" id="pyrogue.utilities.prbs.PrbsPair.commands">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">commands</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.OrderedDict" title="(in Python v3.14)"><span class="pre">OrderedDict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="../../command/local_command/index.html#pyrogue.BaseCommand" title="pyrogue._Command.BaseCommand"><span class="pre">BaseCommand</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#pyrogue.utilities.prbs.PrbsPair.commands" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">commands</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.OrderedDict" title="(in Python v3.14)"><span class="pre">OrderedDict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="../../command/index.html#pyrogue.BaseCommand" title="pyrogue._Command.BaseCommand"><span class="pre">BaseCommand</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#pyrogue.utilities.prbs.PrbsPair.commands" title="Link to this definition"></a></dt>
 <dd><p>Return direct child commands.</p>
 </dd></dl>
 
@@ -375,7 +383,7 @@ The command wrapper supplies keyword arguments <code class="docutils literal not
 <dd><p>Return commands filtered by group.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.OrderedDict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">OrderedDict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference internal" href="../../command/local_command/index.html#pyrogue.BaseCommand" title="pyrogue._Command.BaseCommand"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseCommand</span></code></a>]</span></p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.OrderedDict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">OrderedDict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference internal" href="../../command/index.html#pyrogue.BaseCommand" title="pyrogue._Command.BaseCommand"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseCommand</span></code></a>]</span></p>
 </dd>
 <dt class="field-even">Parameters<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">

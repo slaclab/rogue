@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Frame Lock &mdash; Rogue v6.8.2 documentation</title>
+  <title>Frame Lock &mdash; Rogue v6.8.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=42e93e3f"></script>
+      <script src="../../../_static/documentation_options.js?v=e691ba26"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -88,6 +88,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../pyrogue/index.html">Python Interfaces</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../sql.html">SQL Logging Interface</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../cpp_api.html">Wrapping Rogue In C++</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../version.html">Rogue Version Helper</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../utilities/index.html">Utilities</a></li>
@@ -132,45 +133,85 @@
 <dl class="cpp type">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream12FrameLockPtrE">
 <span id="_CPPv3N5rogue10interfaces6stream12FrameLockPtrE"></span><span id="_CPPv2N5rogue10interfaces6stream12FrameLockPtrE"></span><span id="rogue::interfaces::stream::FrameLockPtr"></span><span class="target" id="namespacerogue_1_1interfaces_1_1stream_1ad282a6c7aa64c4607580c16125f88308"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream9FrameLockE" title="rogue::interfaces::stream::FrameLock"><span class="n"><span class="pre">FrameLock</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">FrameLockPtr</span></span></span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream12FrameLockPtrE" title="Link to this definition"></a><br /></dt>
-<dd><p>Alias for using shared pointer as FrameLockPtr. </p>
+<dd><p>Shared pointer alias for <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1FrameLock"><span class="std std-ref"><span class="pre">FrameLock</span></span></a></code>. </p>
 </dd></dl>
 
 <p>The class description is shown below:</p>
 <dl class="cpp class">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream9FrameLockE">
 <span id="_CPPv3N5rogue10interfaces6stream9FrameLockE"></span><span id="_CPPv2N5rogue10interfaces6stream9FrameLockE"></span><span id="rogue::interfaces::stream::FrameLock"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameLock"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">FrameLock</span></span></span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream9FrameLockE" title="Link to this definition"></a><br /></dt>
-<dd><p><a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> Lock. </p>
-<p>The <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1FrameLock"><span class="std std-ref">FrameLock</span></a> is a container for holding a lock on <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> data while accessing that data. This lock allows multiple stream <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">Slave</span></a> objects to read and update <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> data while ensuring only one thread is updating at a time. The lock is released when the <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1FrameLock"><span class="std std-ref">FrameLock</span></a> object is destroyed. The <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1FrameLock"><span class="std std-ref">FrameLock</span></a> object is never created directly, instead it is returned by the <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame_1a23064b82cca2ff70a2716d4199b8f976"><span class="std std-ref">Frame::lock()</span></a> method. </p>
+<dd><p>Scoped lock wrapper for stream frames. </p>
+<p>Holds a lock while frame data is accessed. This allows multiple stream slaves to read/update safely while ensuring only one updater at a time. Locks are released on destruction. Instances are created via <code class="docutils literal notranslate"><a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame_1a23064b82cca2ff70a2716d4199b8f976"><span class="std std-ref"><span class="pre">Frame::lock()</span></span></a></code>. </p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
 <dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream9FrameLock9FrameLockENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE">
+<span id="_CPPv3N5rogue10interfaces6stream9FrameLock9FrameLockENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE"></span><span id="_CPPv2N5rogue10interfaces6stream9FrameLock9FrameLockENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE"></span><span id="rogue::interfaces::stream::FrameLock::FrameLock__std::shared_ptr:rogue::interfaces::stream::Frame:"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameLock_1aff0fe33d1ce036dad3531f361d6f624b"></span><span class="k"><span class="pre">explicit</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">FrameLock</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="frame.html#_CPPv4N5rogue10interfaces6stream5FrameE" title="rogue::interfaces::stream::Frame"><span class="n"><span class="pre">Frame</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">frame</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream9FrameLock9FrameLockENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE" title="Link to this definition"></a><br /></dt>
+<dd><p>Constructs a lock wrapper for the provided frame. </p>
+<p>This constructor is a low-level C++ allocation path. Prefer <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1FrameLock_1a39855df95c91880cd79b428e1e4a5eb2"><span class="std std-ref"><span class="pre">create()</span></span></a></code> when shared ownership or Python exposure is required.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>frame</strong> – <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> to lock. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream9FrameLockD0Ev">
+<span id="_CPPv3N5rogue10interfaces6stream9FrameLockD0Ev"></span><span id="_CPPv2N5rogue10interfaces6stream9FrameLockD0Ev"></span><span id="rogue::interfaces::stream::FrameLock::~FrameLock"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameLock_1a3c996fa46f7c20aee342b1a63514e8b7"></span><span class="sig-name descname"><span class="n"><span class="pre">~FrameLock</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream9FrameLockD0Ev" title="Link to this definition"></a><br /></dt>
+<dd><p>Destroys the wrapper and releases any held lock. </p>
+</dd></dl>
+
+<dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream9FrameLock4lockEv">
 <span id="_CPPv3N5rogue10interfaces6stream9FrameLock4lockEv"></span><span id="_CPPv2N5rogue10interfaces6stream9FrameLock4lockEv"></span><span id="rogue::interfaces::stream::FrameLock::lock"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameLock_1aec723c30883fbc0e4cb64895c741c531"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">lock</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream9FrameLock4lockEv" title="Link to this definition"></a><br /></dt>
-<dd><p>Lock associated frame if not locked. </p>
-<p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1FrameLock_1aec723c30883fbc0e4cb64895c741c531"><span class="std std-ref">lock()</span></a> to Python </p>
+<dd><p>Locks the associated frame when not already locked. </p>
+<p>Exposed as <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1FrameLock_1aec723c30883fbc0e4cb64895c741c531"><span class="std std-ref"><span class="pre">lock()</span></span></a></code> in Python. </p>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream9FrameLock6unlockEv">
 <span id="_CPPv3N5rogue10interfaces6stream9FrameLock6unlockEv"></span><span id="_CPPv2N5rogue10interfaces6stream9FrameLock6unlockEv"></span><span id="rogue::interfaces::stream::FrameLock::unlock"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameLock_1a8208a7df89daa87a82c8f527e7ce6a4f"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">unlock</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream9FrameLock6unlockEv" title="Link to this definition"></a><br /></dt>
-<dd><p>UnLock associated frame if locked. </p>
-<p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1FrameLock_1a8208a7df89daa87a82c8f527e7ce6a4f"><span class="std std-ref">unlock()</span></a> to Python </p>
+<dd><p>Unlocks the associated frame when currently locked. </p>
+<p>Exposed as <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1FrameLock_1a8208a7df89daa87a82c8f527e7ce6a4f"><span class="std std-ref"><span class="pre">unlock()</span></span></a></code> in Python. </p>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream9FrameLock5enterEv">
 <span id="_CPPv3N5rogue10interfaces6stream9FrameLock5enterEv"></span><span id="_CPPv2N5rogue10interfaces6stream9FrameLock5enterEv"></span><span id="rogue::interfaces::stream::FrameLock::enter"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameLock_1a7539162561bd3af6592482816d9511b2"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">enter</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream9FrameLock5enterEv" title="Link to this definition"></a><br /></dt>
-<dd><p>Enter method for python, does nothing. </p>
-<p>This exists only to support the with call in python.</p>
-<p>Exposed as <strong>enter</strong>() to Python </p>
+<dd><p>Python context-manager entry hook. </p>
+<p>Exists to support Python <code class="docutils literal notranslate"><span class="pre">with</span></code> usage. Exposed as <code class="docutils literal notranslate"><span class="pre">__enter__()</span></code> in Python. </p>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream9FrameLock4exitEPvPvPv">
 <span id="_CPPv3N5rogue10interfaces6stream9FrameLock4exitEPvPvPv"></span><span id="_CPPv2N5rogue10interfaces6stream9FrameLock4exitEPvPvPv"></span><span id="rogue::interfaces::stream::FrameLock::exit__voidP.voidP.voidP"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameLock_1a69bce60271c20a9e0961bb55d9a589df"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">exit</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="p"><span class="pre">*</span></span>, <span class="kt"><span class="pre">void</span></span><span class="p"><span class="pre">*</span></span>, <span class="kt"><span class="pre">void</span></span><span class="p"><span class="pre">*</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream9FrameLock4exitEPvPvPv" title="Link to this definition"></a><br /></dt>
-<dd><p>Exit method for python, does nothing. </p>
-<p>This exists only to support the with call in python.</p>
-<p>Exposed as <strong>exit</strong>() to Python </p>
+<dd><p>Python context-manager exit hook. </p>
+<p>Exists to support Python <code class="docutils literal notranslate"><span class="pre">with</span></code> usage. Exposed as <code class="docutils literal notranslate"><span class="pre">__exit__()</span></code> in Python. </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-static-functions">Public Static Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream9FrameLock6createENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE">
+<span id="_CPPv3N5rogue10interfaces6stream9FrameLock6createENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE"></span><span id="_CPPv2N5rogue10interfaces6stream9FrameLock6createENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE"></span><span id="rogue::interfaces::stream::FrameLock::create__std::shared_ptr:rogue::interfaces::stream::Frame:"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameLock_1a39855df95c91880cd79b428e1e4a5eb2"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream9FrameLockE" title="rogue::interfaces::stream::FrameLock"><span class="n"><span class="pre">FrameLock</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">create</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="frame.html#_CPPv4N5rogue10interfaces6stream5FrameE" title="rogue::interfaces::stream::Frame"><span class="n"><span class="pre">Frame</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">frame</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream9FrameLock6createENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE" title="Link to this definition"></a><br /></dt>
+<dd><p>Creates a frame lock wrapper. </p>
+<p>Intended for internal use by <code class="docutils literal notranslate"><a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref"><span class="pre">Frame</span></span></a></code>. Parameter semantics are identical to the constructor; see <code class="docutils literal notranslate"><span class="pre">FrameLock()</span></code> for lock-wrapper behavior details. This static factory is the preferred construction path when the object is shared across Rogue graph connections or exposed to Python. It returns <code class="docutils literal notranslate"><span class="pre">std::shared_ptr</span></code> ownership compatible with Rogue pointer typedefs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>frame</strong> – <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> to lock. </p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Shared pointer to the created lock object. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream9FrameLock12setup_pythonEv">
+<span id="_CPPv3N5rogue10interfaces6stream9FrameLock12setup_pythonEv"></span><span id="_CPPv2N5rogue10interfaces6stream9FrameLock12setup_pythonEv"></span><span id="rogue::interfaces::stream::FrameLock::setup_python"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameLock_1ab5cdd97ffdf6e0541d0e003a73e8c30e"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setup_python</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream9FrameLock12setup_pythonEv" title="Link to this definition"></a><br /></dt>
+<dd><p>Registers this type with Python bindings. </p>
 </dd></dl>
 
 </div>

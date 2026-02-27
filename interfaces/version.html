@@ -1,0 +1,228 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rogue Version Helper &mdash; Rogue v6.8.3 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=f9c5c301" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=e691ba26"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Utilities" href="../utilities/index.html" />
+    <link rel="prev" title="Wrapping Rogue In C++" href="cpp_api.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../introduction/index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Interfaces</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="clients/index.html">Client Interfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stream/index.html">Stream Interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="memory/index.html">Memory Interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="simulation/index.html">Simulation Interfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyrogue/index.html">Python Interfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sql.html">SQL Logging Interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cpp_api.html">Wrapping Rogue In C++</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Rogue Version Helper</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#notes">Notes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#python-examples">Python examples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#c-examples">C++ examples</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../utilities/index.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hardware/index.html">Hardware</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../protocols/index.html">Protocols</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../custom_module/index.html">Creating Custom Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pydm/index.html">Using the PyDM Gui</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migration/index.html">Migration Notes</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Interfaces</a></li>
+      <li class="breadcrumb-item active">Rogue Version Helper</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/interfaces/version.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="rogue-version-helper">
+<span id="interfaces-version"></span><h1>Rogue Version Helper<a class="headerlink" href="#rogue-version-helper" title="Link to this heading"></a></h1>
+<p>Rogue provides version/query helpers through <code class="docutils literal notranslate"><span class="pre">rogue::Version</span></code> in C++ and
+<code class="docutils literal notranslate"><span class="pre">rogue.Version</span></code> in Python.</p>
+<p>The helper is useful for:</p>
+<ul class="simple">
+<li><p>logging the currently installed Rogue version</p></li>
+<li><p>enforcing minimum/maximum/exact version requirements</p></li>
+<li><p>retrieving parsed version components (major/minor/maint/devel)</p></li>
+</ul>
+<section id="notes">
+<h2>Notes<a class="headerlink" href="#notes" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">current()</span></code> returns the compiled Rogue version string (typically prefixed
+with <code class="docutils literal notranslate"><span class="pre">v</span></code>, for example <code class="docutils literal notranslate"><span class="pre">v6.3.0-0-g&lt;hash&gt;</span></code>).</p></li>
+<li><p>comparison helpers (<code class="docutils literal notranslate"><span class="pre">greaterThanEqual</span></code>, <code class="docutils literal notranslate"><span class="pre">minVersion</span></code>, etc.) expect
+version strings in <code class="docutils literal notranslate"><span class="pre">major.minor.maint</span></code> form (for example <code class="docutils literal notranslate"><span class="pre">&quot;6.3.0&quot;</span></code>).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pythonVersion()</span></code> returns a Python-style version string (for example
+<code class="docutils literal notranslate"><span class="pre">&quot;6.3.0&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;6.3.0.dev4&quot;</span></code>).</p></li>
+</ul>
+</section>
+<section id="python-examples">
+<h2>Python examples<a class="headerlink" href="#python-examples" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">rogue</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Rogue current:&quot;</span><span class="p">,</span> <span class="n">rogue</span><span class="o">.</span><span class="n">Version</span><span class="o">.</span><span class="n">current</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Rogue pythonVersion:&quot;</span><span class="p">,</span> <span class="n">rogue</span><span class="o">.</span><span class="n">Version</span><span class="o">.</span><span class="n">pythonVersion</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;major/minor/maint/devel:&quot;</span><span class="p">,</span>
+      <span class="n">rogue</span><span class="o">.</span><span class="n">Version</span><span class="o">.</span><span class="n">major</span><span class="p">(),</span>
+      <span class="n">rogue</span><span class="o">.</span><span class="n">Version</span><span class="o">.</span><span class="n">minor</span><span class="p">(),</span>
+      <span class="n">rogue</span><span class="o">.</span><span class="n">Version</span><span class="o">.</span><span class="n">maint</span><span class="p">(),</span>
+      <span class="n">rogue</span><span class="o">.</span><span class="n">Version</span><span class="o">.</span><span class="n">devel</span><span class="p">())</span>
+
+<span class="k">if</span> <span class="ow">not</span> <span class="n">rogue</span><span class="o">.</span><span class="n">Version</span><span class="o">.</span><span class="n">greaterThanEqual</span><span class="p">(</span><span class="s2">&quot;6.0.0&quot;</span><span class="p">):</span>
+    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Rogue &gt;= 6.0.0 is required&quot;</span><span class="p">)</span>
+
+<span class="c1"># Raises if the requirement is not met.</span>
+<span class="n">rogue</span><span class="o">.</span><span class="n">Version</span><span class="o">.</span><span class="n">minVersion</span><span class="p">(</span><span class="s2">&quot;6.0.0&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">rogue</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">rogue</span><span class="o">.</span><span class="n">Version</span><span class="o">.</span><span class="n">exactVersion</span><span class="p">(</span><span class="s2">&quot;6.3.0&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Exact version match&quot;</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Version mismatch: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="c-examples">
+<h2>C++ examples<a class="headerlink" href="#c-examples" title="Link to this heading"></a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;rogue/Version.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Rogue current: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">rogue</span><span class="o">::</span><span class="n">Version</span><span class="o">::</span><span class="n">current</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;major.minor.maint: &quot;</span>
+<span class="w">              </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">rogue</span><span class="o">::</span><span class="n">Version</span><span class="o">::</span><span class="n">getMajor</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;.&quot;</span>
+<span class="w">              </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">rogue</span><span class="o">::</span><span class="n">Version</span><span class="o">::</span><span class="n">getMinor</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;.&quot;</span>
+<span class="w">              </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">rogue</span><span class="o">::</span><span class="n">Version</span><span class="o">::</span><span class="n">getMaint</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">rogue</span><span class="o">::</span><span class="n">Version</span><span class="o">::</span><span class="n">greaterThanEqual</span><span class="p">(</span><span class="s">&quot;6.0.0&quot;</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">cerr</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Rogue &gt;= 6.0.0 is required</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// Throws rogue::GeneralError if requirement is not met.</span>
+<span class="w">    </span><span class="n">rogue</span><span class="o">::</span><span class="n">Version</span><span class="o">::</span><span class="n">minVersion</span><span class="p">(</span><span class="s">&quot;6.0.0&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;rogue/Version.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;rogue/GeneralError.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">rogue</span><span class="o">::</span><span class="n">Version</span><span class="o">::</span><span class="n">maxVersion</span><span class="p">(</span><span class="s">&quot;7.0.0&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="n">rogue</span><span class="o">::</span><span class="n">Version</span><span class="o">::</span><span class="n">exactVersion</span><span class="p">(</span><span class="s">&quot;6.3.0&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">rogue</span><span class="o">::</span><span class="n">GeneralError</span><span class="o">&amp;</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">cerr</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Version check failed: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">what</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="cpp_api.html" class="btn btn-neutral float-left" title="Wrapping Rogue In C++" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../utilities/index.html" class="btn btn-neutral float-right" title="Utilities" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

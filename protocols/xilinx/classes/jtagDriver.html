@@ -1,0 +1,355 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JtagDriver &mdash; Rogue v6.8.3 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=f9c5c301" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=e691ba26"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="XvcServer" href="xvcServer.html" />
+    <link rel="prev" title="Xvc" href="xvc.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction/index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../interfaces/index.html">Interfaces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../utilities/index.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../hardware/index.html">Hardware</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Protocols</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../udp/index.html">UDP Protocol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../rssi/index.html">RSSI Protocol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../packetizer/index.html">Packetizer Protocol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../network.html">Network Wrapper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../batcher/index.html">Batcher Protocol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../epicsV4/index.html">EPICSV4 Protocol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../srp/index.html">SRP Protocol</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">Xilinx Protocols</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../index.html#typical-usage">Typical usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../index.html#python-example">Python example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../index.html#c-example">C++ example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../index.html#jtagdriver-notes">JtagDriver notes</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../index.html#api-references">API references</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="index.html">Xilinx Protocol Class Descriptions</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../uart.html">UART Protocol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../pyrogue/index.html">Pyrogue Protocols</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../custom_module/index.html">Creating Custom Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pydm/index.html">Using the PyDM Gui</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../migration/index.html">Migration Notes</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Protocols</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Xilinx Protocols</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Xilinx Protocol Class Descriptions</a></li>
+      <li class="breadcrumb-item active">JtagDriver</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/protocols/xilinx/classes/jtagDriver.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="jtagdriver">
+<span id="protocols-xilinx-classes-jtag-driver"></span><h1>JtagDriver<a class="headerlink" href="#jtagdriver" title="Link to this heading"></a></h1>
+<p>JtagDriver objects in C++ are referenced by the following shared pointer typedef:</p>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols6xilinx13JtagDriverPtrE">
+<span id="_CPPv3N5rogue9protocols6xilinx13JtagDriverPtrE"></span><span id="_CPPv2N5rogue9protocols6xilinx13JtagDriverPtrE"></span><span id="rogue::protocols::xilinx::JtagDriverPtr"></span><span class="target" id="namespacerogue_1_1protocols_1_1xilinx_1abd52ab28a47c0d024ec16b21e0f77072"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">protocols</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">xilinx</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue9protocols6xilinx10JtagDriverE" title="rogue::protocols::xilinx::JtagDriver"><span class="n"><span class="pre">JtagDriver</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">protocols</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">xilinx</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">JtagDriverPtr</span></span></span><a class="headerlink" href="#_CPPv4N5rogue9protocols6xilinx13JtagDriverPtrE" title="Link to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<p>The JtagDriver class description is shown below:</p>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols6xilinx10JtagDriverE">
+<span id="_CPPv3N5rogue9protocols6xilinx10JtagDriverE"></span><span id="_CPPv2N5rogue9protocols6xilinx10JtagDriverE"></span><span id="rogue::protocols::xilinx::JtagDriver"></span><span class="target" id="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">JtagDriver</span></span></span><a class="headerlink" href="#_CPPv4N5rogue9protocols6xilinx10JtagDriverE" title="Link to this definition"></a><br /></dt>
+<dd><p>Base transport driver for the AxisToJtag firmware protocol. </p>
+<p><code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1protocols_1_1xilinx_1_1JtagDriver"><span class="std std-ref"><span class="pre">JtagDriver</span></span></a></code> implements protocol framing, query/shift command handling, retry logic, and vector chunking for XVC/JTAG operations. Concrete transport drivers derive from this class and provide I/O primitives.</p>
+<p>Transport subclasses must implement:<ul class="simple">
+<li><p><code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1protocols_1_1xilinx_1_1JtagDriver_1a65616729aa8e85a846b99a8a53015f6c"><span class="std std-ref"><span class="pre">xfer()</span></span></a></code> to move opaque protocol messages to/from the target.</p></li>
+<li><p><code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1protocols_1_1xilinx_1_1JtagDriver_1a0db463bfea795d9d56fd8530dd0b6fba"><span class="std std-ref"><span class="pre">getMaxVectorSize()</span></span></a></code> to report maximum JTAG vector bytes supported by the transport.</p></li>
+</ul>
+</p>
+<p>Message sizing:<ul class="simple">
+<li><p>Transport receives at most <code class="docutils literal notranslate"><span class="pre">2</span> <span class="pre">*</span> <a class="reference internal" href="#classrogue_1_1protocols_1_1xilinx_1_1JtagDriver_1a0db463bfea795d9d56fd8530dd0b6fba"><span class="std std-ref"><span class="pre">getMaxVectorSize()</span></span></a> <span class="pre">+</span> <span class="pre">getWordSize()</span></code> bytes in one transfer request.</p></li>
+<li><p>Protocol messages may contain two vectors plus protocol header.</p></li>
+</ul>
+</p>
+<p><code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1protocols_1_1xilinx_1_1JtagDriver_1a65616729aa8e85a846b99a8a53015f6c"><span class="std std-ref"><span class="pre">xfer()</span></span></a></code> contract:<ul class="simple">
+<li><p>transmit <code class="docutils literal notranslate"><span class="pre">txBytes</span></code> from <code class="docutils literal notranslate"><span class="pre">txb</span></code>.</p></li>
+<li><p>receive exactly <code class="docutils literal notranslate"><span class="pre">hsize</span></code> header bytes into <code class="docutils literal notranslate"><span class="pre">hdbuf</span></code> (or throw on short read).</p></li>
+<li><p>receive up to <code class="docutils literal notranslate"><span class="pre">size</span></code> payload bytes into <code class="docutils literal notranslate"><span class="pre">rxb</span></code>.</p></li>
+<li><p>return number of payload bytes written to <code class="docutils literal notranslate"><span class="pre">rxb</span></code>.</p></li>
+<li><p>throw on timeout/error so retry/error handling can be applied by <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1protocols_1_1xilinx_1_1JtagDriver_1aab592b24c6e10aef82fecb1376ba3316"><span class="std std-ref"><span class="pre">xferRel()</span></span></a></code>. </p></li>
+</ul>
+</p>
+<p>Subclassed by <a class="reference internal" href="xvc.html#classrogue_1_1protocols_1_1xilinx_1_1Xvc"><span class="std std-ref">rogue::protocols::xilinx::Xvc</span></a></p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols6xilinx10JtagDriver10JtagDriverE8uint16_t">
+<span id="_CPPv3N5rogue9protocols6xilinx10JtagDriver10JtagDriverE8uint16_t"></span><span id="_CPPv2N5rogue9protocols6xilinx10JtagDriver10JtagDriverE8uint16_t"></span><span id="rogue::protocols::xilinx::JtagDriver::JtagDriver__uint16_t"></span><span class="target" id="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver_1af8d414e34906a6b30148beffb5cbd345"></span><span class="k"><span class="pre">explicit</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">JtagDriver</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">port</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols6xilinx10JtagDriver10JtagDriverE8uint16_t" title="Link to this definition"></a><br /></dt>
+<dd><p>Constructs the JTAG driver base state. </p>
+<p>This constructor is a low-level C++ allocation path. Prefer <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1protocols_1_1xilinx_1_1JtagDriver_1a241cb05bce89ea6af009e195ecb0f451"><span class="std std-ref"><span class="pre">create()</span></span></a></code> when shared ownership or Python exposure is required.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>port</strong> – Transport/service port value associated with this driver. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols6xilinx10JtagDriver4initEv">
+<span id="_CPPv3N5rogue9protocols6xilinx10JtagDriver4initEv"></span><span id="_CPPv2N5rogue9protocols6xilinx10JtagDriver4initEv"></span><span id="rogue::protocols::xilinx::JtagDriver::init"></span><span class="target" id="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver_1a36b6c4d702effeee757264b5eeca301e"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">init</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols6xilinx10JtagDriver4initEv" title="Link to this definition"></a><br /></dt>
+<dd><p>Performs post-construction initialization. </p>
+<p>Base implementation performs target query to cache protocol parameters. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols6xilinx10JtagDriver4xferEP7uint8_tjP7uint8_tjP7uint8_tj">
+<span id="_CPPv3N5rogue9protocols6xilinx10JtagDriver4xferEP7uint8_tjP7uint8_tjP7uint8_tj"></span><span id="_CPPv2N5rogue9protocols6xilinx10JtagDriver4xferEP7uint8_tjP7uint8_tjP7uint8_tj"></span><span id="rogue::protocols::xilinx::JtagDriver::xfer__uint8_tP.unsigned.uint8_tP.unsigned.uint8_tP.unsigned"></span><span class="target" id="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver_1a65616729aa8e85a846b99a8a53015f6c"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xfer</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">txb</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">txBytes</span></span>, <span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">hdbuf</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">hsize</span></span>, <span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">rxb</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">size</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols6xilinx10JtagDriver4xferEP7uint8_tjP7uint8_tjP7uint8_tj" title="Link to this definition"></a><br /></dt>
+<dd><p>Transport-level transfer primitive implemented by subclass. </p>
+<p>Sends request bytes and receives reply header/payload for one protocol transaction.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>txb</strong> – Request transmit buffer. </p></li>
+<li><p><strong>txBytes</strong> – Number of transmit bytes in <code class="docutils literal notranslate"><span class="pre">txb</span></code>. </p></li>
+<li><p><strong>hdbuf</strong> – Reply header destination buffer. </p></li>
+<li><p><strong>hsize</strong> – Number of reply header bytes expected. </p></li>
+<li><p><strong>rxb</strong> – Reply payload destination buffer. </p></li>
+<li><p><strong>size</strong> – Maximum payload bytes to store in <code class="docutils literal notranslate"><span class="pre">rxb</span></code>. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Throws<span class="colon">:</span></dt>
+<dd class="field-even"><p><span><span class="cpp-expr sig sig-inline cpp"><span class="n">rogue</span><span class="p">::</span><span class="n">GeneralError</span></span></span> – On transport/protocol timeout or I/O error. </p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Number of payload bytes received. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols6xilinx10JtagDriver7xferRelEP7uint8_tjP6HeaderP7uint8_tj">
+<span id="_CPPv3N5rogue9protocols6xilinx10JtagDriver7xferRelEP7uint8_tjP6HeaderP7uint8_tj"></span><span id="_CPPv2N5rogue9protocols6xilinx10JtagDriver7xferRelEP7uint8_tjP6HeaderP7uint8_tj"></span><span id="rogue::protocols::xilinx::JtagDriver::xferRel__uint8_tP.unsigned.HeaderP.uint8_tP.unsigned"></span><span class="target" id="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver_1aab592b24c6e10aef82fecb1376ba3316"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">xferRel</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">txb</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">txBytes</span></span>, <span class="n"><span class="pre">Header</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">phdr</span></span>, <span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">rxb</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">sizeBytes</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols6xilinx10JtagDriver7xferRelEP7uint8_tjP6HeaderP7uint8_tj" title="Link to this definition"></a><br /></dt>
+<dd><p>Executes transfer with retry and protocol validation. </p>
+<p>Calls <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1protocols_1_1xilinx_1_1JtagDriver_1a65616729aa8e85a846b99a8a53015f6c"><span class="std std-ref"><span class="pre">xfer()</span></span></a></code> repeatedly up to retry limit, checks header/error fields, validates transaction ID where applicable, and returns payload length.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>txb</strong> – Request transmit buffer. </p></li>
+<li><p><strong>txBytes</strong> – Number of transmit bytes in <code class="docutils literal notranslate"><span class="pre">txb</span></code>. </p></li>
+<li><p><strong>phdr</strong> – Optional destination for parsed reply header. </p></li>
+<li><p><strong>rxb</strong> – Reply payload destination buffer. </p></li>
+<li><p><strong>sizeBytes</strong> – Maximum payload bytes accepted in <code class="docutils literal notranslate"><span class="pre">rxb</span></code>. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Throws<span class="colon">:</span></dt>
+<dd class="field-even"><p><span><span class="cpp-expr sig sig-inline cpp"><span class="n">rogue</span><span class="p">::</span><span class="n">GeneralError</span></span></span> – If retries are exhausted or protocol errors persist. </p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Number of payload bytes received. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols6xilinx10JtagDriver5queryEv">
+<span id="_CPPv3N5rogue9protocols6xilinx10JtagDriver5queryEv"></span><span id="_CPPv2N5rogue9protocols6xilinx10JtagDriver5queryEv"></span><span id="rogue::protocols::xilinx::JtagDriver::query"></span><span class="target" id="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver_1a92a311c86a5e919a0046cf1f69486951"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">query</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols6xilinx10JtagDriver5queryEv" title="Link to this definition"></a><br /></dt>
+<dd><p>Queries target capabilities and caches protocol parameters. </p>
+<p>Updates cached word size, memory depth, and period information. If target reports no memory (<code class="docutils literal notranslate"><span class="pre">0</span></code>), streaming semantics apply.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Maximum target-supported vector size in bytes (or <code class="docutils literal notranslate"><span class="pre">0</span></code> for streaming target). </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols6xilinx10JtagDriver16getMaxVectorSizeEv">
+<span id="_CPPv3N5rogue9protocols6xilinx10JtagDriver16getMaxVectorSizeEv"></span><span id="_CPPv2N5rogue9protocols6xilinx10JtagDriver16getMaxVectorSizeEv"></span><span id="rogue::protocols::xilinx::JtagDriver::getMaxVectorSize"></span><span class="target" id="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver_1a0db463bfea795d9d56fd8530dd0b6fba"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getMaxVectorSize</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols6xilinx10JtagDriver16getMaxVectorSizeEv" title="Link to this definition"></a><br /></dt>
+<dd><p>Returns transport-supported maximum vector size in bytes. </p>
+<p>This value is transport-specific and may differ from target capability. Effective runtime vector length is bounded by the minimum of transport and target limits.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Maximum transport-supported vector size in bytes. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols6xilinx10JtagDriver11setPeriodNsE8uint32_t">
+<span id="_CPPv3N5rogue9protocols6xilinx10JtagDriver11setPeriodNsE8uint32_t"></span><span id="_CPPv2N5rogue9protocols6xilinx10JtagDriver11setPeriodNsE8uint32_t"></span><span id="rogue::protocols::xilinx::JtagDriver::setPeriodNs__uint32_t"></span><span class="target" id="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver_1a90de67ce2a65bbb2dceb26b4836b0577"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setPeriodNs</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">newPeriod</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols6xilinx10JtagDriver11setPeriodNsE8uint32_t" title="Link to this definition"></a><br /></dt>
+<dd><p>Requests update of TCK period. </p>
+<p>Base behavior returns current period when <code class="docutils literal notranslate"><span class="pre">newPeriod</span> <span class="pre">==</span> <span class="pre">0</span></code>; otherwise returns requested period if target period is unknown, or current cached period when fixed by target.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>newPeriod</strong> – Requested period in nanoseconds. </p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Effective period in nanoseconds. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols6xilinx10JtagDriver11sendVectorsE8uint64_tP7uint8_tP7uint8_tP7uint8_t">
+<span id="_CPPv3N5rogue9protocols6xilinx10JtagDriver11sendVectorsE8uint64_tP7uint8_tP7uint8_tP7uint8_t"></span><span id="_CPPv2N5rogue9protocols6xilinx10JtagDriver11sendVectorsE8uint64_tP7uint8_tP7uint8_tP7uint8_t"></span><span id="rogue::protocols::xilinx::JtagDriver::sendVectors__uint64_t.uint8_tP.uint8_tP.uint8_tP"></span><span class="target" id="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver_1abd4027a3ac72fc326bff84a9877ae93c"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">sendVectors</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">numBits</span></span>, <span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">tms</span></span>, <span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">tdi</span></span>, <span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">tdo</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols6xilinx10JtagDriver11sendVectorsE8uint64_tP7uint8_tP7uint8_tP7uint8_t" title="Link to this definition"></a><br /></dt>
+<dd><p>Sends JTAG TMS/TDI vectors and receives TDO. </p>
+<p>Vectors are interpreted little-endian (first transmitted/received bits at lowest byte offsets). Large vectors are chunked according to target and transport capabilities.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>numBits</strong> – Number of bits in each input vector. </p></li>
+<li><p><strong>tms</strong> – Pointer to TMS vector bytes. </p></li>
+<li><p><strong>tdi</strong> – Pointer to TDI vector bytes. </p></li>
+<li><p><strong>tdo</strong> – Pointer to output TDO vector bytes. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols6xilinx10JtagDriver8dumpInfoEP4FILE">
+<span id="_CPPv3N5rogue9protocols6xilinx10JtagDriver8dumpInfoEP4FILE"></span><span id="_CPPv2N5rogue9protocols6xilinx10JtagDriver8dumpInfoEP4FILE"></span><span id="rogue::protocols::xilinx::JtagDriver::dumpInfo__FILEP"></span><span class="target" id="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver_1a617fe4574a316ef11a3f56d8cf44542e"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dumpInfo</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">FILE</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">f</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="n"><span class="pre">stdout</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols6xilinx10JtagDriver8dumpInfoEP4FILE" title="Link to this definition"></a><br /></dt>
+<dd><p>Dumps cached driver/target information. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>f</strong> – Output stream (<code class="docutils literal notranslate"><span class="pre">stdout</span></code> by default). </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols6xilinx10JtagDriver6isDoneEv">
+<span id="_CPPv3N5rogue9protocols6xilinx10JtagDriver6isDoneEv"></span><span id="_CPPv2N5rogue9protocols6xilinx10JtagDriver6isDoneEv"></span><span id="rogue::protocols::xilinx::JtagDriver::isDone"></span><span class="target" id="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver_1a34bfa7da5e6d28dd943066b786fc80e8"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">isDone</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols6xilinx10JtagDriver6isDoneEv" title="Link to this definition"></a><br /></dt>
+<dd><p>Returns completion/shutdown flag. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">true</span></code> when driver is marked done; otherwise <code class="docutils literal notranslate"><span class="pre">false</span></code>. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-static-functions">Public Static Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols6xilinx10JtagDriver6createE8uint16_t">
+<span id="_CPPv3N5rogue9protocols6xilinx10JtagDriver6createE8uint16_t"></span><span id="_CPPv2N5rogue9protocols6xilinx10JtagDriver6createE8uint16_t"></span><span id="rogue::protocols::xilinx::JtagDriver::create__uint16_t"></span><span class="target" id="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver_1a241cb05bce89ea6af009e195ecb0f451"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">protocols</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">xilinx</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue9protocols6xilinx10JtagDriverE" title="rogue::protocols::xilinx::JtagDriver"><span class="n"><span class="pre">JtagDriver</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">create</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">port</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols6xilinx10JtagDriver6createE8uint16_t" title="Link to this definition"></a><br /></dt>
+<dd><p>Creates a JTAG driver instance. </p>
+<p>Parameter semantics are identical to the constructor; see <code class="docutils literal notranslate"><span class="pre">JtagDriver()</span></code> for driver-construction details. This static factory is the preferred construction path when the object is shared across Rogue graph connections or exposed to Python. It returns <code class="docutils literal notranslate"><span class="pre">std::shared_ptr</span></code> ownership compatible with Rogue pointer typedefs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>port</strong> – Transport/service port value associated with this driver. </p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Shared pointer to the created driver. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols6xilinx10JtagDriver12setup_pythonEv">
+<span id="_CPPv3N5rogue9protocols6xilinx10JtagDriver12setup_pythonEv"></span><span id="_CPPv2N5rogue9protocols6xilinx10JtagDriver12setup_pythonEv"></span><span id="rogue::protocols::xilinx::JtagDriver::setup_python"></span><span class="target" id="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver_1a69224f4873952690ae95f0561cee39ce"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setup_python</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols6xilinx10JtagDriver12setup_pythonEv" title="Link to this definition"></a><br /></dt>
+<dd><p>Registers Python bindings for this class. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="xvc.html" class="btn btn-neutral float-left" title="Xvc" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="xvcServer.html" class="btn btn-neutral float-right" title="XvcServer" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

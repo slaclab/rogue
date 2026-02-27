@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Batcher Protocol InverterV1 &mdash; Rogue v6.8.2 documentation</title>
+  <title>Batcher Protocol InverterV1 &mdash; Rogue v6.8.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=42e93e3f"></script>
+      <script src="../../_static/documentation_options.js?v=e691ba26"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -23,7 +23,7 @@
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Batcher Protocol SplitterV1" href="splitterV1.html" />
+    <link rel="next" title="Batcher Protocol InverterV2" href="inverterV2.html" />
     <link rel="prev" title="Batcher Protocol" href="index.html" /> 
 </head>
 
@@ -61,13 +61,18 @@
 <li class="toctree-l2"><a class="reference internal" href="../packetizer/index.html">Packetizer Protocol</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../network.html">Network Wrapper</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="index.html">Batcher Protocol</a><ul class="current">
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Batcher Protocol InverterV1</a></li>
-<li class="toctree-l3"><a class="reference internal" href="splitterV1.html">Batcher Protocol SplitterV1</a></li>
-<li class="toctree-l3"><a class="reference internal" href="classes/index.html">Batcher Protocol Class Descriptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#how-the-classes-fit-together">How the classes fit together</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html#usage-examples">Usage examples</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="index.html#python-splitter-chain-v2">Python splitter chain (v2)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="index.html#python-inverter-chain-v1">Python inverter chain (v1)</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="index.html#c-splitter-chain-v1">C++ splitter chain (v1)</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../epicsV4/index.html">EPICSV4 Protocol</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../srp/index.html">SRP Protocol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../xilinx/index.html">Xilinx Protocols</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../uart.html">UART Protocol</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../pyrogue/index.html">Pyrogue Protocols</a></li>
 </ul>
@@ -106,7 +111,33 @@
              
   <section id="batcher-protocol-inverterv1">
 <span id="protocols-batcher-inverterv1"></span><h1>Batcher Protocol InverterV1<a class="headerlink" href="#batcher-protocol-inverterv1" title="Link to this heading"></a></h1>
-<p>TODO</p>
+<p><code class="docutils literal notranslate"><span class="pre">InverterV1</span></code> transforms a Batcher v1 frame in place and forwards a single
+output frame.</p>
+<p>Protocol reference: <a class="reference external" href="https://confluence.slac.stanford.edu/x/th1SDg">https://confluence.slac.stanford.edu/x/th1SDg</a></p>
+<section id="behavior-summary">
+<h2>Behavior summary<a class="headerlink" href="#behavior-summary" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Input is parsed with <code class="docutils literal notranslate"><span class="pre">CoreV1</span></code>.</p></li>
+<li><p>Tail/header data is shifted in place across records.</p></li>
+<li><p>Final payload is reduced by one tail-width segment.</p></li>
+<li><p>Exactly one output frame is emitted for each input frame.</p></li>
+<li><p>This is not batching or unbatching; it is a one-frame in-place reformat.</p></li>
+</ul>
+<p>Use this when downstream expects the transformed layout rather than
+split-per-record output. Use <code class="docutils literal notranslate"><span class="pre">SplitterV1</span></code> for true unbatching.</p>
+</section>
+<section id="python-example">
+<h2>Python example<a class="headerlink" href="#python-example" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">rogue.protocols.batcher</span>
+
+<span class="n">src</span> <span class="o">=</span> <span class="n">MyBatcherV1Source</span><span class="p">()</span>
+<span class="n">inv</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">batcher</span><span class="o">.</span><span class="n">InverterV1</span><span class="p">()</span>
+<span class="n">dst</span> <span class="o">=</span> <span class="n">MyTransformedFrameSink</span><span class="p">()</span>
+
+<span class="n">src</span> <span class="o">&gt;&gt;</span> <span class="n">inv</span> <span class="o">&gt;&gt;</span> <span class="n">dst</span>
+</pre></div>
+</div>
+</section>
 </section>
 
 
@@ -114,7 +145,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="index.html" class="btn btn-neutral float-left" title="Batcher Protocol" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="splitterV1.html" class="btn btn-neutral float-right" title="Batcher Protocol SplitterV1" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="inverterV2.html" class="btn btn-neutral float-right" title="Batcher Protocol InverterV2" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

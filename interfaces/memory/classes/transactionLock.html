@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TransactionLock &mdash; Rogue v6.8.2 documentation</title>
+  <title>TransactionLock &mdash; Rogue v6.8.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=42e93e3f"></script>
+      <script src="../../../_static/documentation_options.js?v=e691ba26"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -82,6 +82,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../pyrogue/index.html">Python Interfaces</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../sql.html">SQL Logging Interface</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../cpp_api.html">Wrapping Rogue In C++</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../version.html">Rogue Version Helper</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../utilities/index.html">Utilities</a></li>
@@ -126,45 +127,85 @@
 <dl class="cpp type">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory18TransactionLockPtrE">
 <span id="_CPPv3N5rogue10interfaces6memory18TransactionLockPtrE"></span><span id="_CPPv2N5rogue10interfaces6memory18TransactionLockPtrE"></span><span id="rogue::interfaces::memory::TransactionLockPtr"></span><span class="target" id="namespacerogue_1_1interfaces_1_1memory_1a00cf0577ef3f940f1090e53d30e53d8c"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue10interfaces6memory15TransactionLockE" title="rogue::interfaces::memory::TransactionLock"><span class="n"><span class="pre">TransactionLock</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">TransactionLockPtr</span></span></span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory18TransactionLockPtrE" title="Link to this definition"></a><br /></dt>
-<dd><p>Alias for using shared pointer as TransactionLockPtr. </p>
+<dd><p>Shared pointer alias for <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1TransactionLock"><span class="std std-ref"><span class="pre">TransactionLock</span></span></a></code>. </p>
 </dd></dl>
 
 <p>The class description is shown below:</p>
 <dl class="cpp class">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory15TransactionLockE">
 <span id="_CPPv3N5rogue10interfaces6memory15TransactionLockE"></span><span id="_CPPv2N5rogue10interfaces6memory15TransactionLockE"></span><span id="rogue::interfaces::memory::TransactionLock"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1TransactionLock"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">TransactionLock</span></span></span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory15TransactionLockE" title="Link to this definition"></a><br /></dt>
-<dd><p><a class="reference internal" href="transaction.html#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> Lock. </p>
-<p>The <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1TransactionLock"><span class="std std-ref">TransactionLock</span></a> is a container for holding a lock on <a class="reference internal" href="transaction.html#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> data while accessing that data. This lock ensures that <a class="reference internal" href="transaction.html#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> is not destroyed when the <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a> is updating its data and result. This object is created by calling <a class="reference internal" href="transaction.html#classrogue_1_1interfaces_1_1memory_1_1Transaction_1abe142dd20644143128029bd4fd4d0008"><span class="std std-ref">Transaction::lock()</span></a>. </p>
+<dd><p>Scoped lock wrapper for a memory transaction. </p>
+<p>Holds a lock on transaction data while client code accesses it. The lock prevents transaction destruction while a slave updates data and completion state. Instances are created via <code class="docutils literal notranslate"><a class="reference internal" href="transaction.html#classrogue_1_1interfaces_1_1memory_1_1Transaction_1abe142dd20644143128029bd4fd4d0008"><span class="std std-ref"><span class="pre">Transaction::lock()</span></span></a></code>. </p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
 <dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory15TransactionLock15TransactionLockENSt10shared_ptrIN5rogue10interfaces6memory11TransactionEEE">
+<span id="_CPPv3N5rogue10interfaces6memory15TransactionLock15TransactionLockENSt10shared_ptrIN5rogue10interfaces6memory11TransactionEEE"></span><span id="_CPPv2N5rogue10interfaces6memory15TransactionLock15TransactionLockENSt10shared_ptrIN5rogue10interfaces6memory11TransactionEEE"></span><span id="rogue::interfaces::memory::TransactionLock::TransactionLock__std::shared_ptr:rogue::interfaces::memory::Transaction:"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1TransactionLock_1a5d7e620f27ea521d4d77de3555b4e220"></span><span class="k"><span class="pre">explicit</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">TransactionLock</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="transaction.html#_CPPv4N5rogue10interfaces6memory11TransactionE" title="rogue::interfaces::memory::Transaction"><span class="n"><span class="pre">Transaction</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">transaction</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory15TransactionLock15TransactionLockENSt10shared_ptrIN5rogue10interfaces6memory11TransactionEEE" title="Link to this definition"></a><br /></dt>
+<dd><p>Constructs a lock wrapper for the provided transaction. </p>
+<p>This constructor is a low-level C++ allocation path. Prefer <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1TransactionLock_1a3278f7e40c369e63b55eecaa4948526a"><span class="std std-ref"><span class="pre">create()</span></span></a></code> when shared ownership or Python exposure is required.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>transaction</strong> – <a class="reference internal" href="transaction.html#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> to guard. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory15TransactionLockD0Ev">
+<span id="_CPPv3N5rogue10interfaces6memory15TransactionLockD0Ev"></span><span id="_CPPv2N5rogue10interfaces6memory15TransactionLockD0Ev"></span><span id="rogue::interfaces::memory::TransactionLock::~TransactionLock"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1TransactionLock_1ac6cdb3dfa5d808c3680a2b0868959dc0"></span><span class="sig-name descname"><span class="n"><span class="pre">~TransactionLock</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory15TransactionLockD0Ev" title="Link to this definition"></a><br /></dt>
+<dd><p>Destroys the wrapper and releases any held lock. </p>
+</dd></dl>
+
+<dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory15TransactionLock4lockEv">
 <span id="_CPPv3N5rogue10interfaces6memory15TransactionLock4lockEv"></span><span id="_CPPv2N5rogue10interfaces6memory15TransactionLock4lockEv"></span><span id="rogue::interfaces::memory::TransactionLock::lock"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1TransactionLock_1a944eab05ce6a2ae233ce7110b4c00c0b"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">lock</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory15TransactionLock4lockEv" title="Link to this definition"></a><br /></dt>
-<dd><p>Lock associated <a class="reference internal" href="transaction.html#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> if not locked. </p>
-<p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1TransactionLock_1a944eab05ce6a2ae233ce7110b4c00c0b"><span class="std std-ref">lock()</span></a> to Python </p>
+<dd><p>Locks the associated transaction when not already locked. </p>
+<p>Exposed as <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1TransactionLock_1a944eab05ce6a2ae233ce7110b4c00c0b"><span class="std std-ref"><span class="pre">lock()</span></span></a></code> in Python. </p>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory15TransactionLock6unlockEv">
 <span id="_CPPv3N5rogue10interfaces6memory15TransactionLock6unlockEv"></span><span id="_CPPv2N5rogue10interfaces6memory15TransactionLock6unlockEv"></span><span id="rogue::interfaces::memory::TransactionLock::unlock"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1TransactionLock_1a689be9da11fef5fa95bfdb4e39c6eb7f"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">unlock</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory15TransactionLock6unlockEv" title="Link to this definition"></a><br /></dt>
-<dd><p>UnLock associated transaction if locked. </p>
-<p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1TransactionLock_1a689be9da11fef5fa95bfdb4e39c6eb7f"><span class="std std-ref">unlock()</span></a> to Python </p>
+<dd><p>Unlocks the associated transaction when currently locked. </p>
+<p>Exposed as <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1TransactionLock_1a689be9da11fef5fa95bfdb4e39c6eb7f"><span class="std std-ref"><span class="pre">unlock()</span></span></a></code> in Python. </p>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory15TransactionLock5enterEv">
 <span id="_CPPv3N5rogue10interfaces6memory15TransactionLock5enterEv"></span><span id="_CPPv2N5rogue10interfaces6memory15TransactionLock5enterEv"></span><span id="rogue::interfaces::memory::TransactionLock::enter"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1TransactionLock_1abed16ae4763e8599bb796393bf9c2148"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">enter</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory15TransactionLock5enterEv" title="Link to this definition"></a><br /></dt>
-<dd><p>Enter method for python, does nothing. </p>
-<p>This exists only to support the with call in python.</p>
-<p>Exposed as <strong>enter</strong>() to Python </p>
+<dd><p>Python context-manager entry hook. </p>
+<p>Exists to support Python <code class="docutils literal notranslate"><span class="pre">with</span></code> usage. Exposed as <code class="docutils literal notranslate"><span class="pre">__enter__()</span></code> in Python. </p>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory15TransactionLock4exitEPvPvPv">
 <span id="_CPPv3N5rogue10interfaces6memory15TransactionLock4exitEPvPvPv"></span><span id="_CPPv2N5rogue10interfaces6memory15TransactionLock4exitEPvPvPv"></span><span id="rogue::interfaces::memory::TransactionLock::exit__voidP.voidP.voidP"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1TransactionLock_1adf323de935a5893ecaa03c1d8e90088e"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">exit</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="p"><span class="pre">*</span></span>, <span class="kt"><span class="pre">void</span></span><span class="p"><span class="pre">*</span></span>, <span class="kt"><span class="pre">void</span></span><span class="p"><span class="pre">*</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory15TransactionLock4exitEPvPvPv" title="Link to this definition"></a><br /></dt>
-<dd><p>Exit method for python, does nothing. </p>
-<p>This exists only to support the with call in python.</p>
-<p>Exposed as <strong>exit</strong>() to Python </p>
+<dd><p>Python context-manager exit hook. </p>
+<p>Exists to support Python <code class="docutils literal notranslate"><span class="pre">with</span></code> usage. Exposed as <code class="docutils literal notranslate"><span class="pre">__exit__()</span></code> in Python. </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-static-functions">Public Static Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory15TransactionLock6createENSt10shared_ptrIN5rogue10interfaces6memory11TransactionEEE">
+<span id="_CPPv3N5rogue10interfaces6memory15TransactionLock6createENSt10shared_ptrIN5rogue10interfaces6memory11TransactionEEE"></span><span id="_CPPv2N5rogue10interfaces6memory15TransactionLock6createENSt10shared_ptrIN5rogue10interfaces6memory11TransactionEEE"></span><span id="rogue::interfaces::memory::TransactionLock::create__std::shared_ptr:rogue::interfaces::memory::Transaction:"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1TransactionLock_1a3278f7e40c369e63b55eecaa4948526a"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue10interfaces6memory15TransactionLockE" title="rogue::interfaces::memory::TransactionLock"><span class="n"><span class="pre">TransactionLock</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">create</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="transaction.html#_CPPv4N5rogue10interfaces6memory11TransactionE" title="rogue::interfaces::memory::Transaction"><span class="n"><span class="pre">Transaction</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">transaction</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory15TransactionLock6createENSt10shared_ptrIN5rogue10interfaces6memory11TransactionEEE" title="Link to this definition"></a><br /></dt>
+<dd><p>Creates a transaction lock wrapper. </p>
+<p>Parameter semantics are identical to the constructor; see <code class="docutils literal notranslate"><span class="pre">TransactionLock()</span></code> for lock-wrapper behavior details. This static factory is the preferred construction path when the object is shared across Rogue graph connections or exposed to Python. It returns <code class="docutils literal notranslate"><span class="pre">std::shared_ptr</span></code> ownership compatible with Rogue pointer typedefs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>transaction</strong> – <a class="reference internal" href="transaction.html#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> to guard. </p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Shared pointer to the created lock object. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory15TransactionLock12setup_pythonEv">
+<span id="_CPPv3N5rogue10interfaces6memory15TransactionLock12setup_pythonEv"></span><span id="_CPPv2N5rogue10interfaces6memory15TransactionLock12setup_pythonEv"></span><span id="rogue::interfaces::memory::TransactionLock::setup_python"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1TransactionLock_1aa08c8dc0379360e45e81f2d5ed7fffb6"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setup_python</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory15TransactionLock12setup_pythonEv" title="Link to this definition"></a><br /></dt>
+<dd><p>Registers this type with Python bindings. </p>
 </dd></dl>
 
 </div>

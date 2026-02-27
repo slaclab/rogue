@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Application &mdash; Rogue v6.8.2 documentation</title>
+  <title>Application &mdash; Rogue v6.8.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=42e93e3f"></script>
+      <script src="../../../_static/documentation_options.js?v=e691ba26"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -77,6 +77,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../batcher/index.html">Batcher Protocol</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../epicsV4/index.html">EPICSV4 Protocol</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../srp/index.html">SRP Protocol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../xilinx/index.html">Xilinx Protocols</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../uart.html">UART Protocol</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../pyrogue/index.html">Pyrogue Protocols</a></li>
 </ul>
@@ -127,43 +128,77 @@
 <dl class="cpp class">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols10packetizer11ApplicationE">
 <span id="_CPPv3N5rogue9protocols10packetizer11ApplicationE"></span><span id="_CPPv2N5rogue9protocols10packetizer11ApplicationE"></span><span id="rogue::protocols::packetizer::Application"></span><span class="target" id="classrogue_1_1protocols_1_1packetizer_1_1Application"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Application</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="../../../interfaces/stream/classes/master.html#_CPPv4N5rogue10interfaces6stream6MasterE" title="rogue::interfaces::stream::Master"><span class="n"><span class="pre">Master</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="../../../interfaces/stream/classes/slave.html#_CPPv4N5rogue10interfaces6stream5SlaveE" title="rogue::interfaces::stream::Slave"><span class="n"><span class="pre">Slave</span></span></a><a class="headerlink" href="#_CPPv4N5rogue9protocols10packetizer11ApplicationE" title="Link to this definition"></a><br /></dt>
-<dd><p><a class="reference internal" href="#classrogue_1_1protocols_1_1packetizer_1_1Application"><span class="std std-ref">Application</span></a> Class. </p>
+<dd><p>Packetizer application endpoint. </p>
+<p>Provides per-destination stream ingress/egress into the packetizer stack. </p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols10packetizer11Application11ApplicationE7uint8_t">
 <span id="_CPPv3N5rogue9protocols10packetizer11Application11ApplicationE7uint8_t"></span><span id="_CPPv2N5rogue9protocols10packetizer11Application11ApplicationE7uint8_t"></span><span id="rogue::protocols::packetizer::Application::Application__uint8_t"></span><span class="target" id="classrogue_1_1protocols_1_1packetizer_1_1Application_1a00c2fbcf105cce78002389035a5155a7"></span><span class="k"><span class="pre">explicit</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Application</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">id</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols10packetizer11Application11ApplicationE7uint8_t" title="Link to this definition"></a><br /></dt>
-<dd><p>Creator. </p>
+<dd><p>Constructs a packetizer application endpoint. </p>
+<p>This constructor is a low-level C++ allocation path. Prefer <code class="docutils literal notranslate"><a class="reference internal" href="../../../interfaces/stream/classes/master.html#classrogue_1_1interfaces_1_1stream_1_1Master_1a3c6558447ac572d910c4db8a6d8ecc6d"><span class="std std-ref"><span class="pre">create()</span></span></a></code> when shared ownership or Python exposure is required.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>id</strong> – Destination/application ID. </p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols10packetizer11ApplicationD0Ev">
 <span id="_CPPv3N5rogue9protocols10packetizer11ApplicationD0Ev"></span><span id="_CPPv2N5rogue9protocols10packetizer11ApplicationD0Ev"></span><span id="rogue::protocols::packetizer::Application::~Application"></span><span class="target" id="classrogue_1_1protocols_1_1packetizer_1_1Application_1a6acb2bfca2fd20fc0e736efd90959b9e"></span><span class="sig-name descname"><span class="n"><span class="pre">~Application</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols10packetizer11ApplicationD0Ev" title="Link to this definition"></a><br /></dt>
-<dd><p>Destructor. </p>
+<dd><p>Destroys the application endpoint. </p>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols10packetizer11Application13setControllerENSt10shared_ptrIN5rogue9protocols10packetizer10ControllerEEE">
 <span id="_CPPv3N5rogue9protocols10packetizer11Application13setControllerENSt10shared_ptrIN5rogue9protocols10packetizer10ControllerEEE"></span><span id="_CPPv2N5rogue9protocols10packetizer11Application13setControllerENSt10shared_ptrIN5rogue9protocols10packetizer10ControllerEEE"></span><span id="rogue::protocols::packetizer::Application::setController__std::shared_ptr:rogue::protocols::packetizer::Controller:"></span><span class="target" id="classrogue_1_1protocols_1_1packetizer_1_1Application_1a81ebeb478f9740231590257930ac02fe"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setController</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">protocols</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">packetizer</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="controller.html#_CPPv4N5rogue9protocols10packetizer10ControllerE" title="rogue::protocols::packetizer::Controller"><span class="n"><span class="pre">Controller</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">cntl</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols10packetizer11Application13setControllerENSt10shared_ptrIN5rogue9protocols10packetizer10ControllerEEE" title="Link to this definition"></a><br /></dt>
-<dd><p>Set <a class="reference internal" href="controller.html#classrogue_1_1protocols_1_1packetizer_1_1Controller"><span class="std std-ref">Controller</span></a>. </p>
+<dd><p>Attaches the packetizer controller. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>cntl</strong> – <a class="reference internal" href="controller.html#classrogue_1_1protocols_1_1packetizer_1_1Controller"><span class="std std-ref">Controller</span></a> instance that handles packetizer state. </p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols10packetizer11Application9pushFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE">
 <span id="_CPPv3N5rogue9protocols10packetizer11Application9pushFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE"></span><span id="_CPPv2N5rogue9protocols10packetizer11Application9pushFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE"></span><span id="rogue::protocols::packetizer::Application::pushFrame__std::shared_ptr:rogue::interfaces::stream::Frame:"></span><span class="target" id="classrogue_1_1protocols_1_1packetizer_1_1Application_1a0309e3df352b7eca2c69e60e768733ba"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pushFrame</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="../../../interfaces/stream/classes/frame.html#_CPPv4N5rogue10interfaces6stream5FrameE" title="rogue::interfaces::stream::Frame"><span class="n"><span class="pre">Frame</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">frame</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols10packetizer11Application9pushFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE" title="Link to this definition"></a><br /></dt>
-<dd><p>Push frame for transmit. </p>
+<dd><p>Queues a frame for packetized transmission. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>frame</strong> – Frame to send through this application channel. </p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols10packetizer11Application9acceptReqE8uint32_tb">
 <span id="_CPPv3N5rogue9protocols10packetizer11Application9acceptReqE8uint32_tb"></span><span id="_CPPv2N5rogue9protocols10packetizer11Application9acceptReqE8uint32_tb"></span><span id="rogue::protocols::packetizer::Application::acceptReq__uint32_t.b"></span><span class="target" id="classrogue_1_1protocols_1_1packetizer_1_1Application_1aeb796cb75600dbf55e369a890faa8efe"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="../../../interfaces/stream/classes/frame.html#_CPPv4N5rogue10interfaces6stream5FrameE" title="rogue::interfaces::stream::Frame"><span class="n"><span class="pre">Frame</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">acceptReq</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">size</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">zeroCopyEn</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols10packetizer11Application9acceptReqE8uint32_tb" title="Link to this definition"></a><br /></dt>
-<dd><p>Generate a Frame. Called from master. </p>
+<dd><p>Allocates a frame for upstream writers. </p>
+<p>Called by the stream master side of this endpoint.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>size</strong> – Minimum requested payload size in bytes. </p></li>
+<li><p><strong>zeroCopyEn</strong> – True to allow zero-copy allocation when possible. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Newly allocated frame. </p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols10packetizer11Application11acceptFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE">
 <span id="_CPPv3N5rogue9protocols10packetizer11Application11acceptFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE"></span><span id="_CPPv2N5rogue9protocols10packetizer11Application11acceptFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE"></span><span id="rogue::protocols::packetizer::Application::acceptFrame__std::shared_ptr:rogue::interfaces::stream::Frame:"></span><span class="target" id="classrogue_1_1protocols_1_1packetizer_1_1Application_1a8dcc14a1211ff10194063657d63df543"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">acceptFrame</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="../../../interfaces/stream/classes/frame.html#_CPPv4N5rogue10interfaces6stream5FrameE" title="rogue::interfaces::stream::Frame"><span class="n"><span class="pre">Frame</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">frame</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols10packetizer11Application11acceptFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE" title="Link to this definition"></a><br /></dt>
-<dd><p>Accept a frame from master. </p>
+<dd><p>Accepts a frame from upstream application logic. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>frame</strong> – Input frame to packetize. </p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
@@ -172,13 +207,22 @@
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols10packetizer11Application6createE7uint8_t">
 <span id="_CPPv3N5rogue9protocols10packetizer11Application6createE7uint8_t"></span><span id="_CPPv2N5rogue9protocols10packetizer11Application6createE7uint8_t"></span><span id="rogue::protocols::packetizer::Application::create__uint8_t"></span><span class="target" id="classrogue_1_1protocols_1_1packetizer_1_1Application_1a29b576e18b5c6a6f868ad5c164204632"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">protocols</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">packetizer</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue9protocols10packetizer11ApplicationE" title="rogue::protocols::packetizer::Application"><span class="n"><span class="pre">Application</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">create</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">id</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols10packetizer11Application6createE7uint8_t" title="Link to this definition"></a><br /></dt>
-<dd><p>Class creation. </p>
+<dd><p>Creates a packetizer application endpoint. </p>
+<p>Parameter semantics are identical to the constructor; see <code class="docutils literal notranslate"><span class="pre">Application()</span></code> for endpoint-construction details. This static factory is the preferred construction path when the object is shared across Rogue graph connections or exposed to Python. It returns <code class="docutils literal notranslate"><span class="pre">std::shared_ptr</span></code> ownership compatible with Rogue pointer typedefs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>id</strong> – Destination/application ID. </p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Shared pointer to the created application endpoint. </p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols10packetizer11Application12setup_pythonEv">
 <span id="_CPPv3N5rogue9protocols10packetizer11Application12setup_pythonEv"></span><span id="_CPPv2N5rogue9protocols10packetizer11Application12setup_pythonEv"></span><span id="rogue::protocols::packetizer::Application::setup_python"></span><span class="target" id="classrogue_1_1protocols_1_1packetizer_1_1Application_1a382e4b5eefabd3cd960dd1d3befd2f8c"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setup_python</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols10packetizer11Application12setup_pythonEv" title="Link to this definition"></a><br /></dt>
-<dd><p>Setup class in python. </p>
+<dd><p>Registers Python bindings for this class. </p>
 </dd></dl>
 
 </div>

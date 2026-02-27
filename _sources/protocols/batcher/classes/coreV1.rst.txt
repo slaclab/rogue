@@ -4,7 +4,10 @@
 CoreV1
 ======
 
-TODO
+``CoreV1`` parses Batcher v1 super-frames and exposes parsed record metadata
+through ``Data`` objects plus header/tail iterators.
+
+Protocol reference: https://confluence.slac.stanford.edu/x/th1SDg
 
 CoreV1 objects in C++ are referenced by the following shared pointer typedef:
 
@@ -14,4 +17,3 @@ The CoreV1 class description is shown below:
 
 .. doxygenclass:: rogue::protocols::batcher::CoreV1
    :members:
-

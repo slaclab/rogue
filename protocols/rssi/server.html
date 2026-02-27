@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>RSSI Protocol Server &mdash; Rogue v6.8.2 documentation</title>
+  <title>RSSI Protocol Server &mdash; Rogue v6.8.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=42e93e3f"></script>
+      <script src="../../_static/documentation_options.js?v=e691ba26"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -58,9 +58,15 @@
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">Protocols</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../udp/index.html">UDP Protocol</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="index.html">RSSI Protocol</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="client.html">RSSI Protocol Client</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">RSSI Protocol Server</a></li>
-<li class="toctree-l3"><a class="reference internal" href="classes/index.html">RSSI Protocol Class Descriptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#protocol-documentation">Protocol documentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#how-rssi-classes-fit-together">How RSSI classes fit together</a></li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#python-usage-example">Python usage example</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html#see-also">See also</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="client.html">RSSI Protocol Client</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">RSSI Protocol Server</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classes/index.html">RSSI Protocol Class Descriptions</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../packetizer/index.html">Packetizer Protocol</a></li>
@@ -68,6 +74,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../batcher/index.html">Batcher Protocol</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../epicsV4/index.html">EPICSV4 Protocol</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../srp/index.html">SRP Protocol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../xilinx/index.html">Xilinx Protocols</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../uart.html">UART Protocol</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../pyrogue/index.html">Pyrogue Protocols</a></li>
 </ul>
@@ -106,7 +113,30 @@
              
   <section id="rssi-protocol-server">
 <span id="protocols-rssi-server"></span><h1>RSSI Protocol Server<a class="headerlink" href="#rssi-protocol-server" title="Link to this heading"></a></h1>
-<p>TODO</p>
+<p><code class="docutils literal notranslate"><span class="pre">rogue::protocols::rssi::Server</span></code> is the convenience wrapper for endpoint
+logic running RSSI in server role.</p>
+<p>It constructs and wires:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Transport</span></code> (lower/link side),</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Application</span></code> (upper/payload side),</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Controller</span></code> (state machine and reliability logic).</p></li>
+</ul>
+<p>Use <code class="docutils literal notranslate"><span class="pre">transport()</span></code> to connect to the underlying link and <code class="docutils literal notranslate"><span class="pre">application()</span></code> to
+connect upper-layer protocol blocks.</p>
+<p>Example (Python):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">rogue.protocols.udp</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">rogue.protocols.rssi</span>
+
+<span class="n">udp</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">udp</span><span class="o">.</span><span class="n">Server</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+<span class="n">rssi</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">rssi</span><span class="o">.</span><span class="n">Server</span><span class="p">(</span><span class="n">udp</span><span class="o">.</span><span class="n">maxPayload</span><span class="p">()</span> <span class="o">-</span> <span class="mi">8</span><span class="p">)</span>
+
+<span class="c1"># Link-layer stream connection</span>
+<span class="n">udp</span> <span class="o">==</span> <span class="n">rssi</span><span class="o">.</span><span class="n">transport</span><span class="p">()</span>
+
+<span class="c1"># Start controller state machine</span>
+<span class="n">rssi</span><span class="o">.</span><span class="n">_start</span><span class="p">()</span>
+</pre></div>
+</div>
 </section>
 
 

@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Server &mdash; Rogue v6.8.2 documentation</title>
+  <title>Server &mdash; Rogue v6.8.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=42e93e3f"></script>
+      <script src="../../../_static/documentation_options.js?v=e691ba26"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -73,6 +73,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../batcher/index.html">Batcher Protocol</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../epicsV4/index.html">EPICSV4 Protocol</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../srp/index.html">SRP Protocol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../xilinx/index.html">Xilinx Protocols</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../uart.html">UART Protocol</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../pyrogue/index.html">Pyrogue Protocols</a></li>
 </ul>
@@ -123,37 +124,65 @@
 <dl class="cpp class">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols3udp6ServerE">
 <span id="_CPPv3N5rogue9protocols3udp6ServerE"></span><span id="_CPPv2N5rogue9protocols3udp6ServerE"></span><span id="rogue::protocols::udp::Server"></span><span class="target" id="classrogue_1_1protocols_1_1udp_1_1Server"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Server</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">protocols</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">udp</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="core.html#_CPPv4N5rogue9protocols3udp4CoreE" title="rogue::protocols::udp::Core"><span class="n"><span class="pre">Core</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="../../../interfaces/stream/classes/master.html#_CPPv4N5rogue10interfaces6stream6MasterE" title="rogue::interfaces::stream::Master"><span class="n"><span class="pre">Master</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="../../../interfaces/stream/classes/slave.html#_CPPv4N5rogue10interfaces6stream5SlaveE" title="rogue::interfaces::stream::Slave"><span class="n"><span class="pre">Slave</span></span></a><a class="headerlink" href="#_CPPv4N5rogue9protocols3udp6ServerE" title="Link to this definition"></a><br /></dt>
-<dd><p>PGP Card class. </p>
+<dd><p>UDP stream endpoint that listens on a local UDP port. </p>
+<p><code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1protocols_1_1udp_1_1Server"><span class="std std-ref"><span class="pre">Server</span></span></a></code> combines UDP transport (<code class="docutils literal notranslate"><a class="reference internal" href="core.html#classrogue_1_1protocols_1_1udp_1_1Core"><span class="std std-ref"><span class="pre">udp::Core</span></span></a></code>) with Rogue stream interfaces:<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">stream::Slave</span></code>: accepts outbound frames and transmits datagrams to the most recently seen remote endpoint.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">stream::Master</span></code>: emits inbound datagrams as Rogue frames.</p></li>
+</ul>
+</p>
+<p>A background receive thread listens on the bound UDP socket, forwards payloads as frames, and updates remote endpoint address when packets are received. </p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols3udp6Server6ServerE8uint16_tb">
 <span id="_CPPv3N5rogue9protocols3udp6Server6ServerE8uint16_tb"></span><span id="_CPPv2N5rogue9protocols3udp6Server6ServerE8uint16_tb"></span><span id="rogue::protocols::udp::Server::Server__uint16_t.b"></span><span class="target" id="classrogue_1_1protocols_1_1udp_1_1Server_1a226a2cec59ae3109c2435b025b2f5f3b"></span><span class="sig-name descname"><span class="n"><span class="pre">Server</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">port</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">jumbo</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols3udp6Server6ServerE8uint16_tb" title="Link to this definition"></a><br /></dt>
-<dd><p>Creator. </p>
+<dd><p>Constructs a UDP server endpoint. </p>
+<p>This constructor is a low-level C++ allocation path. Prefer <code class="docutils literal notranslate"><a class="reference internal" href="../../../interfaces/stream/classes/master.html#classrogue_1_1interfaces_1_1stream_1_1Master_1a3c6558447ac572d910c4db8a6d8ecc6d"><span class="std std-ref"><span class="pre">create()</span></span></a></code> when shared ownership or Python exposure is required.</p>
+<p>Creates and binds UDP socket, initializes frame pool sizing, and starts background receive thread. If <code class="docutils literal notranslate"><span class="pre">port</span> <span class="pre">==</span> <span class="pre">0</span></code>, the OS-assigned port is queried and stored.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>port</strong> – Local UDP port to bind (0 requests dynamic port assignment). </p></li>
+<li><p><strong>jumbo</strong> – <code class="docutils literal notranslate"><span class="pre">true</span></code> for jumbo payload sizing; <code class="docutils literal notranslate"><span class="pre">false</span></code> for standard MTU. </p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols3udp6ServerD0Ev">
 <span id="_CPPv3N5rogue9protocols3udp6ServerD0Ev"></span><span id="_CPPv2N5rogue9protocols3udp6ServerD0Ev"></span><span id="rogue::protocols::udp::Server::~Server"></span><span class="target" id="classrogue_1_1protocols_1_1udp_1_1Server_1a442423d338623bf319dd042bc9badb09"></span><span class="sig-name descname"><span class="n"><span class="pre">~Server</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols3udp6ServerD0Ev" title="Link to this definition"></a><br /></dt>
-<dd><p>Destructor. </p>
+<dd><p>Destroys the UDP server endpoint. </p>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols3udp6Server4stopEv">
 <span id="_CPPv3N5rogue9protocols3udp6Server4stopEv"></span><span id="_CPPv2N5rogue9protocols3udp6Server4stopEv"></span><span id="rogue::protocols::udp::Server::stop"></span><span class="target" id="classrogue_1_1protocols_1_1udp_1_1Server_1a903aebdfbbdea18bfc1c04cf4aa804de"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">stop</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols3udp6Server4stopEv" title="Link to this definition"></a><br /></dt>
-<dd><p>Stop the interface. </p>
+<dd><p>Stops the UDP server endpoint. </p>
+<p>Stops receive thread, joins thread, and closes socket. </p>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols3udp6Server7getPortEv">
 <span id="_CPPv3N5rogue9protocols3udp6Server7getPortEv"></span><span id="_CPPv2N5rogue9protocols3udp6Server7getPortEv"></span><span id="rogue::protocols::udp::Server::getPort"></span><span class="target" id="classrogue_1_1protocols_1_1udp_1_1Server_1ad62725d4ef34b4259df31ccee3a5f441"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getPort</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols3udp6Server7getPortEv" title="Link to this definition"></a><br /></dt>
-<dd><p>Get port number. </p>
+<dd><p>Returns bound local UDP port number. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Local UDP port. </p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols3udp6Server11acceptFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE">
 <span id="_CPPv3N5rogue9protocols3udp6Server11acceptFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE"></span><span id="_CPPv2N5rogue9protocols3udp6Server11acceptFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE"></span><span id="rogue::protocols::udp::Server::acceptFrame__std::shared_ptr:rogue::interfaces::stream::Frame:"></span><span class="target" id="classrogue_1_1protocols_1_1udp_1_1Server_1a4fce70a0661a6487c5860a90c1d797b5"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">acceptFrame</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="../../../interfaces/stream/classes/frame.html#_CPPv4N5rogue10interfaces6stream5FrameE" title="rogue::interfaces::stream::Frame"><span class="n"><span class="pre">Frame</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">frame</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols3udp6Server11acceptFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE" title="Link to this definition"></a><br /></dt>
-<dd><p>Accept a frame from master. </p>
+<dd><p>Accepts an outbound stream frame and transmits it as UDP datagrams. </p>
+<p>Datagrams are sent to the current remote endpoint address learned by the receive thread. Writes use <code class="docutils literal notranslate"><span class="pre">select()</span></code> with configured timeout.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>frame</strong> – Outbound frame to transmit. </p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
@@ -162,13 +191,25 @@
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols3udp6Server6createE8uint16_tb">
 <span id="_CPPv3N5rogue9protocols3udp6Server6createE8uint16_tb"></span><span id="_CPPv2N5rogue9protocols3udp6Server6createE8uint16_tb"></span><span id="rogue::protocols::udp::Server::create__uint16_t.b"></span><span class="target" id="classrogue_1_1protocols_1_1udp_1_1Server_1a4572656541ce7f1af817e84552ec25de"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">protocols</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">udp</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue9protocols3udp6ServerE" title="rogue::protocols::udp::Server"><span class="n"><span class="pre">Server</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">create</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">port</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">jumbo</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols3udp6Server6createE8uint16_tb" title="Link to this definition"></a><br /></dt>
-<dd><p>Class creation. </p>
+<dd><p>Creates a UDP server endpoint. </p>
+<p>Parameter semantics are identical to the constructor; see <code class="docutils literal notranslate"><span class="pre">Server()</span></code> for endpoint setup behavior details. This static factory is the preferred construction path when the object is shared across Rogue graph connections or exposed to Python. It returns <code class="docutils literal notranslate"><span class="pre">std::shared_ptr</span></code> ownership compatible with Rogue pointer typedefs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>port</strong> – Local UDP port to bind (0 requests dynamic port assignment). </p></li>
+<li><p><strong>jumbo</strong> – <code class="docutils literal notranslate"><span class="pre">true</span></code> for jumbo payload sizing; <code class="docutils literal notranslate"><span class="pre">false</span></code> for standard MTU. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Shared pointer to the created server. </p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols3udp6Server12setup_pythonEv">
 <span id="_CPPv3N5rogue9protocols3udp6Server12setup_pythonEv"></span><span id="_CPPv2N5rogue9protocols3udp6Server12setup_pythonEv"></span><span id="rogue::protocols::udp::Server::setup_python"></span><span class="target" id="classrogue_1_1protocols_1_1udp_1_1Server_1a2f1a4c7e923f55a58ae5ef5864f7d195"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setup_python</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols3udp6Server12setup_pythonEv" title="Link to this definition"></a><br /></dt>
-<dd><p>Setup class in python. </p>
+<dd><p>Registers Python bindings for this class. </p>
 </dd></dl>
 
 </div>

@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Header &mdash; Rogue v6.8.2 documentation</title>
+  <title>Header &mdash; Rogue v6.8.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=42e93e3f"></script>
+      <script src="../../../_static/documentation_options.js?v=e691ba26"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -58,15 +58,13 @@
 <li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Protocols</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../../udp/index.html">UDP Protocol</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../index.html">RSSI Protocol</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="../client.html">RSSI Protocol Client</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../server.html">RSSI Protocol Server</a></li>
-<li class="toctree-l3 current"><a class="reference internal" href="index.html">RSSI Protocol Class Descriptions</a><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="client.html">Client</a></li>
-<li class="toctree-l4"><a class="reference internal" href="server.html">Server</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">Header</a></li>
-<li class="toctree-l4"><a class="reference internal" href="controller.html">Controller</a></li>
-<li class="toctree-l4"><a class="reference internal" href="application.html">Application</a></li>
-<li class="toctree-l4"><a class="reference internal" href="transport.html">Transport</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../index.html#protocol-documentation">Protocol documentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../index.html#how-rssi-classes-fit-together">How RSSI classes fit together</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../index.html#python-usage-example">Python usage example</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../index.html#see-also">See also</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../client.html">RSSI Protocol Client</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../server.html">RSSI Protocol Server</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="index.html">RSSI Protocol Class Descriptions</a></li>
 </ul>
 </li>
 </ul>
@@ -76,6 +74,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../batcher/index.html">Batcher Protocol</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../epicsV4/index.html">EPICSV4 Protocol</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../srp/index.html">SRP Protocol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../xilinx/index.html">Xilinx Protocols</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../uart.html">UART Protocol</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../pyrogue/index.html">Pyrogue Protocols</a></li>
 </ul>
@@ -115,7 +114,9 @@
              
   <section id="header">
 <span id="protocols-rssi-classes-header"></span><h1>Header<a class="headerlink" href="#header" title="Link to this heading"></a></h1>
-<p>TODO</p>
+<p><code class="docutils literal notranslate"><span class="pre">Header</span></code> is a helper codec/container for RSSI header fields. It parses frame
+bytes into structured fields (<cite>verify()</cite>), and encodes fields back into frame
+bytes with updated checksum (<cite>update()</cite>).</p>
 <p>Header objects in C++ are referenced by the following shared pointer typedef:</p>
 <dl class="cpp type">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi9HeaderPtrE">
@@ -126,61 +127,100 @@
 <dl class="cpp class">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6HeaderE">
 <span id="_CPPv3N5rogue9protocols4rssi6HeaderE"></span><span id="_CPPv2N5rogue9protocols4rssi6HeaderE"></span><span id="rogue::protocols::rssi::Header"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Header"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Header</span></span></span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6HeaderE" title="Link to this definition"></a><br /></dt>
-<dd><p>PGP Card class. </p>
+<dd><p>RSSI header container and codec. </p>
+<p>Wraps a stream frame and provides helpers for encoding, decoding, and validating RSSI header fields.</p>
+<p>Field model:<ul class="simple">
+<li><p>Public members are the decoded/encoded RSSI header fields.</p></li>
+<li><p><code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1protocols_1_1rssi_1_1Header_1a8033b5ae693eaae2c5ecf5038beb4958"><span class="std std-ref"><span class="pre">verify()</span></span></a></code> parses bytes from the frame into these members and validates checksum/size.</p></li>
+<li><p><code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1protocols_1_1rssi_1_1Header_1a5fde7c3ebdf53897b7e09513ef66b6d3"><span class="std std-ref"><span class="pre">update()</span></span></a></code> writes members back to frame bytes and updates checksum.</p></li>
+<li><p>SYN-only fields are meaningful when <code class="docutils literal notranslate"><span class="pre">syn</span> <span class="pre">==</span> <span class="pre">true</span></code>. </p></li>
+</ul>
+</p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6Header6HeaderENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE">
 <span id="_CPPv3N5rogue9protocols4rssi6Header6HeaderENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE"></span><span id="_CPPv2N5rogue9protocols4rssi6Header6HeaderENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE"></span><span id="rogue::protocols::rssi::Header::Header__std::shared_ptr:rogue::interfaces::stream::Frame:"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Header_1a803d96b5c5c2950a4fed9c5e1ca39b2d"></span><span class="k"><span class="pre">explicit</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Header</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="../../../interfaces/stream/classes/frame.html#_CPPv4N5rogue10interfaces6stream5FrameE" title="rogue::interfaces::stream::Frame"><span class="n"><span class="pre">Frame</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">frame</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Header6HeaderENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE" title="Link to this definition"></a><br /></dt>
-<dd><p>Creator. </p>
+<dd><p>Constructs a header wrapper for an existing frame. </p>
+<p>This constructor is a low-level C++ allocation path. Prefer <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1protocols_1_1rssi_1_1Header_1ac385a8d5b1164368f265d93ca7f97c34"><span class="std std-ref"><span class="pre">create()</span></span></a></code> when shared ownership or Python exposure is required.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>frame</strong> – Frame containing RSSI header bytes. </p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6HeaderD0Ev">
 <span id="_CPPv3N5rogue9protocols4rssi6HeaderD0Ev"></span><span id="_CPPv2N5rogue9protocols4rssi6HeaderD0Ev"></span><span id="rogue::protocols::rssi::Header::~Header"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Header_1a10cb8bcdd0fdcab0814ba6b69f0b3dbc"></span><span class="sig-name descname"><span class="n"><span class="pre">~Header</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6HeaderD0Ev" title="Link to this definition"></a><br /></dt>
-<dd><p>Destructor. </p>
+<dd><p>Destroys the header wrapper. </p>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6Header8getFrameEv">
 <span id="_CPPv3N5rogue9protocols4rssi6Header8getFrameEv"></span><span id="_CPPv2N5rogue9protocols4rssi6Header8getFrameEv"></span><span id="rogue::protocols::rssi::Header::getFrame"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Header_1a42597dfed115fd201c3993e0919148e7"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="../../../interfaces/stream/classes/frame.html#_CPPv4N5rogue10interfaces6stream5FrameE" title="rogue::interfaces::stream::Frame"><span class="n"><span class="pre">Frame</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getFrame</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Header8getFrameEv" title="Link to this definition"></a><br /></dt>
-<dd><p>Get Frame. </p>
+<dd><p>Returns the underlying frame. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Frame associated with this header object. </p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6Header6verifyEv">
 <span id="_CPPv3N5rogue9protocols4rssi6Header6verifyEv"></span><span id="_CPPv2N5rogue9protocols4rssi6Header6verifyEv"></span><span id="rogue::protocols::rssi::Header::verify"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Header_1a8033b5ae693eaae2c5ecf5038beb4958"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">verify</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Header6verifyEv" title="Link to this definition"></a><br /></dt>
-<dd><p>Verify header checksum. Also inits records. </p>
+<dd><p>Verifies header checksum and initializes cached fields. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if the header checksum and format are valid. </p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6Header6updateEv">
 <span id="_CPPv3N5rogue9protocols4rssi6Header6updateEv"></span><span id="_CPPv2N5rogue9protocols4rssi6Header6updateEv"></span><span id="rogue::protocols::rssi::Header::update"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Header_1a5fde7c3ebdf53897b7e09513ef66b6d3"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">update</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Header6updateEv" title="Link to this definition"></a><br /></dt>
-<dd><p>Update header with settings and update checksum. </p>
+<dd><p>Encodes current field values into the frame and updates checksum. </p>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6Header7getTimeEv">
 <span id="_CPPv3N5rogue9protocols4rssi6Header7getTimeEv"></span><span id="_CPPv2N5rogue9protocols4rssi6Header7getTimeEv"></span><span id="rogue::protocols::rssi::Header::getTime"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Header_1ac8b275907e6f4d09010ab95418925be5"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">timeval</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="sig-name descname"><span class="n"><span class="pre">getTime</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Header7getTimeEv" title="Link to this definition"></a><br /></dt>
-<dd><p>Get time. </p>
+<dd><p>Returns the last transmit timestamp. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Reference to timestamp associated with this header. </p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6Header5countEv">
 <span id="_CPPv3N5rogue9protocols4rssi6Header5countEv"></span><span id="_CPPv2N5rogue9protocols4rssi6Header5countEv"></span><span id="rogue::protocols::rssi::Header::count"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Header_1a899afda58d3e36faeff7dffe87a2f6aa"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">count</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Header5countEv" title="Link to this definition"></a><br /></dt>
-<dd><p>Get Count. </p>
+<dd><p>Returns the transmit count. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Transmit count associated with this header. </p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6Header7rstTimeEv">
 <span id="_CPPv3N5rogue9protocols4rssi6Header7rstTimeEv"></span><span id="_CPPv2N5rogue9protocols4rssi6Header7rstTimeEv"></span><span id="rogue::protocols::rssi::Header::rstTime"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Header_1a6fbb31a6fa34b5cdefd156a64561604a"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">rstTime</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Header7rstTimeEv" title="Link to this definition"></a><br /></dt>
-<dd><p>Reset tx time. </p>
+<dd><p>Resets transmit timestamp to the current time. </p>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6Header4dumpEv">
 <span id="_CPPv3N5rogue9protocols4rssi6Header4dumpEv"></span><span id="_CPPv2N5rogue9protocols4rssi6Header4dumpEv"></span><span id="rogue::protocols::rssi::Header::dump"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Header_1a3318fdcf31a0279d30b0b34b6bee084d"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dump</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Header4dumpEv" title="Link to this definition"></a><br /></dt>
-<dd><p>Dump message contents. </p>
+<dd><p>Returns a formatted string of header contents. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Human-readable header dump. </p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
@@ -189,25 +229,25 @@
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6Header3synE">
 <span id="_CPPv3N5rogue9protocols4rssi6Header3synE"></span><span id="_CPPv2N5rogue9protocols4rssi6Header3synE"></span><span id="rogue::protocols::rssi::Header::syn__b"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Header_1a0c1e964fbbfa213b516549a681c90930"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">syn</span></span></span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Header3synE" title="Link to this definition"></a><br /></dt>
-<dd><p>Syn flag. </p>
+<dd><p>SYN flag (synchronization/header-extension present). </p>
 </dd></dl>
 
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6Header3ackE">
 <span id="_CPPv3N5rogue9protocols4rssi6Header3ackE"></span><span id="_CPPv2N5rogue9protocols4rssi6Header3ackE"></span><span id="rogue::protocols::rssi::Header::ack__b"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Header_1a966dbda6b3ebfff32b9b92924086916b"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ack</span></span></span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Header3ackE" title="Link to this definition"></a><br /></dt>
-<dd><p>Ack flag. </p>
+<dd><p>ACK flag. </p>
 </dd></dl>
 
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6Header3rstE">
 <span id="_CPPv3N5rogue9protocols4rssi6Header3rstE"></span><span id="_CPPv2N5rogue9protocols4rssi6Header3rstE"></span><span id="rogue::protocols::rssi::Header::rst__b"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Header_1ac501745bf79f41d4152744d07fcf1389"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">rst</span></span></span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Header3rstE" title="Link to this definition"></a><br /></dt>
-<dd><p>Rst flag. </p>
+<dd><p>RST flag. </p>
 </dd></dl>
 
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6Header3nulE">
 <span id="_CPPv3N5rogue9protocols4rssi6Header3nulE"></span><span id="_CPPv2N5rogue9protocols4rssi6Header3nulE"></span><span id="rogue::protocols::rssi::Header::nul__b"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Header_1a94714c12f6cf4f5a2357539faf268dd8"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">nul</span></span></span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Header3nulE" title="Link to this definition"></a><br /></dt>
-<dd><p>NUL flag. </p>
+<dd><p>NUL/keepalive flag. </p>
 </dd></dl>
 
 <dl class="cpp var">
@@ -219,79 +259,79 @@
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6Header8sequenceE">
 <span id="_CPPv3N5rogue9protocols4rssi6Header8sequenceE"></span><span id="_CPPv2N5rogue9protocols4rssi6Header8sequenceE"></span><span id="rogue::protocols::rssi::Header::sequence__uint8_t"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Header_1adc13dc16708d1f00d0e0e4d0d16a56cd"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">sequence</span></span></span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Header8sequenceE" title="Link to this definition"></a><br /></dt>
-<dd><p>Sequence number. </p>
+<dd><p>Sequence number field. </p>
 </dd></dl>
 
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6Header11acknowledgeE">
 <span id="_CPPv3N5rogue9protocols4rssi6Header11acknowledgeE"></span><span id="_CPPv2N5rogue9protocols4rssi6Header11acknowledgeE"></span><span id="rogue::protocols::rssi::Header::acknowledge__uint8_t"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Header_1a78e61a8f5ffe1ed37a44a8b4859dad01"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">acknowledge</span></span></span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Header11acknowledgeE" title="Link to this definition"></a><br /></dt>
-<dd><p>Acknowledge number. </p>
+<dd><p>Acknowledge number field. </p>
 </dd></dl>
 
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6Header7versionE">
 <span id="_CPPv3N5rogue9protocols4rssi6Header7versionE"></span><span id="_CPPv2N5rogue9protocols4rssi6Header7versionE"></span><span id="rogue::protocols::rssi::Header::version__uint8_t"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Header_1aa272a23979fac48cf39331134c70035f"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">version</span></span></span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Header7versionE" title="Link to this definition"></a><br /></dt>
-<dd><p>Version field. </p>
+<dd><p>Protocol version (SYN headers only). </p>
 </dd></dl>
 
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6Header3chkE">
 <span id="_CPPv3N5rogue9protocols4rssi6Header3chkE"></span><span id="_CPPv2N5rogue9protocols4rssi6Header3chkE"></span><span id="rogue::protocols::rssi::Header::chk__b"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Header_1a319971bec37fd16a386c0b83f1c99419"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">chk</span></span></span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Header3chkE" title="Link to this definition"></a><br /></dt>
-<dd><p>Chk flag. </p>
+<dd><p>CHK capability flag (SYN headers only). </p>
 </dd></dl>
 
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6Header22maxOutstandingSegmentsE">
 <span id="_CPPv3N5rogue9protocols4rssi6Header22maxOutstandingSegmentsE"></span><span id="_CPPv2N5rogue9protocols4rssi6Header22maxOutstandingSegmentsE"></span><span id="rogue::protocols::rssi::Header::maxOutstandingSegments__uint8_t"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Header_1ad9e7c9c4d69241684a5c93a51b19da86"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">maxOutstandingSegments</span></span></span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Header22maxOutstandingSegmentsE" title="Link to this definition"></a><br /></dt>
-<dd><p>MAX Outstanding Segments. </p>
+<dd><p>Maximum outstanding segments (SYN headers only). </p>
 </dd></dl>
 
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6Header14maxSegmentSizeE">
 <span id="_CPPv3N5rogue9protocols4rssi6Header14maxSegmentSizeE"></span><span id="_CPPv2N5rogue9protocols4rssi6Header14maxSegmentSizeE"></span><span id="rogue::protocols::rssi::Header::maxSegmentSize__uint16_t"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Header_1a975fbd05a3001629a4c865192464c6ef"></span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">maxSegmentSize</span></span></span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Header14maxSegmentSizeE" title="Link to this definition"></a><br /></dt>
-<dd><p>MAX Segment Size. </p>
+<dd><p>Maximum segment size (SYN headers only). </p>
 </dd></dl>
 
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6Header21retransmissionTimeoutE">
 <span id="_CPPv3N5rogue9protocols4rssi6Header21retransmissionTimeoutE"></span><span id="_CPPv2N5rogue9protocols4rssi6Header21retransmissionTimeoutE"></span><span id="rogue::protocols::rssi::Header::retransmissionTimeout__uint16_t"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Header_1a923ec44551baf92ade1872f3de58ecd1"></span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">retransmissionTimeout</span></span></span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Header21retransmissionTimeoutE" title="Link to this definition"></a><br /></dt>
-<dd><p>Retransmission Timeout. </p>
+<dd><p>Retransmission timeout (SYN headers only). </p>
 </dd></dl>
 
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6Header20cumulativeAckTimeoutE">
 <span id="_CPPv3N5rogue9protocols4rssi6Header20cumulativeAckTimeoutE"></span><span id="_CPPv2N5rogue9protocols4rssi6Header20cumulativeAckTimeoutE"></span><span id="rogue::protocols::rssi::Header::cumulativeAckTimeout__uint16_t"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Header_1ac6900994b5de58bcaa2feb707972669e"></span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cumulativeAckTimeout</span></span></span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Header20cumulativeAckTimeoutE" title="Link to this definition"></a><br /></dt>
-<dd><p>Cumulative Acknowledgment Timeout. </p>
+<dd><p>Cumulative ACK timeout (SYN headers only). </p>
 </dd></dl>
 
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6Header11nullTimeoutE">
 <span id="_CPPv3N5rogue9protocols4rssi6Header11nullTimeoutE"></span><span id="_CPPv2N5rogue9protocols4rssi6Header11nullTimeoutE"></span><span id="rogue::protocols::rssi::Header::nullTimeout__uint16_t"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Header_1ab66d9ae56b32ec8cda2e6062f8151565"></span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">nullTimeout</span></span></span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Header11nullTimeoutE" title="Link to this definition"></a><br /></dt>
-<dd><p>NULL Timeout. </p>
+<dd><p>NULL/keepalive timeout (SYN headers only). </p>
 </dd></dl>
 
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6Header18maxRetransmissionsE">
 <span id="_CPPv3N5rogue9protocols4rssi6Header18maxRetransmissionsE"></span><span id="_CPPv2N5rogue9protocols4rssi6Header18maxRetransmissionsE"></span><span id="rogue::protocols::rssi::Header::maxRetransmissions__uint8_t"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Header_1a5fc64bc7cef9ba004c95438d8d9ca570"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">maxRetransmissions</span></span></span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Header18maxRetransmissionsE" title="Link to this definition"></a><br /></dt>
-<dd><p>Max Retransmissions. </p>
+<dd><p>Maximum retransmissions (SYN headers only). </p>
 </dd></dl>
 
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6Header16maxCumulativeAckE">
 <span id="_CPPv3N5rogue9protocols4rssi6Header16maxCumulativeAckE"></span><span id="_CPPv2N5rogue9protocols4rssi6Header16maxCumulativeAckE"></span><span id="rogue::protocols::rssi::Header::maxCumulativeAck__uint8_t"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Header_1a3af256d815772b4f53caeabc123c26ac"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">maxCumulativeAck</span></span></span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Header16maxCumulativeAckE" title="Link to this definition"></a><br /></dt>
-<dd><p>MAX Cumulative Ack. </p>
+<dd><p>Maximum cumulative ACK count (SYN headers only). </p>
 </dd></dl>
 
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6Header11timeoutUnitE">
 <span id="_CPPv3N5rogue9protocols4rssi6Header11timeoutUnitE"></span><span id="_CPPv2N5rogue9protocols4rssi6Header11timeoutUnitE"></span><span id="rogue::protocols::rssi::Header::timeoutUnit__uint8_t"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Header_1aad9f62cfe3347f62025f620e8b1a9194"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">timeoutUnit</span></span></span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Header11timeoutUnitE" title="Link to this definition"></a><br /></dt>
-<dd><p>Timeout Unit. </p>
+<dd><p>Timeout unit field (SYN headers only). </p>
 </dd></dl>
 
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6Header12connectionIdE">
 <span id="_CPPv3N5rogue9protocols4rssi6Header12connectionIdE"></span><span id="_CPPv2N5rogue9protocols4rssi6Header12connectionIdE"></span><span id="rogue::protocols::rssi::Header::connectionId__uint32_t"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Header_1a41a0e70f642eafdf294a83e3630ab639"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">connectionId</span></span></span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Header12connectionIdE" title="Link to this definition"></a><br /></dt>
-<dd><p>Connection ID. </p>
+<dd><p>Connection ID (SYN headers only). </p>
 </dd></dl>
 
 </div>
@@ -300,7 +340,16 @@
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6Header6createENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE">
 <span id="_CPPv3N5rogue9protocols4rssi6Header6createENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE"></span><span id="_CPPv2N5rogue9protocols4rssi6Header6createENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE"></span><span id="rogue::protocols::rssi::Header::create__std::shared_ptr:rogue::interfaces::stream::Frame:"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Header_1ac385a8d5b1164368f265d93ca7f97c34"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">protocols</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">rssi</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue9protocols4rssi6HeaderE" title="rogue::protocols::rssi::Header"><span class="n"><span class="pre">Header</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">create</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="../../../interfaces/stream/classes/frame.html#_CPPv4N5rogue10interfaces6stream5FrameE" title="rogue::interfaces::stream::Frame"><span class="n"><span class="pre">Frame</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">frame</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Header6createENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE" title="Link to this definition"></a><br /></dt>
-<dd><p>Create. </p>
+<dd><p>Creates a header wrapper for an existing frame. </p>
+<p>Parameter semantics are identical to the constructor; see <code class="docutils literal notranslate"><span class="pre">Header()</span></code> for wrapper-construction details. This static factory is the preferred construction path when the object is shared across Rogue graph connections or exposed to Python. It returns <code class="docutils literal notranslate"><span class="pre">std::shared_ptr</span></code> ownership compatible with Rogue pointer typedefs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>frame</strong> – Frame containing RSSI header bytes. </p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Shared pointer to the created header wrapper. </p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
@@ -309,7 +358,13 @@
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6Header10HeaderSizeE">
 <span id="_CPPv3N5rogue9protocols4rssi6Header10HeaderSizeE"></span><span id="_CPPv2N5rogue9protocols4rssi6Header10HeaderSizeE"></span><span id="rogue::protocols::rssi::Header::HeaderSize__int32_tC"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Header_1ab40b573ae8130e21757e8a40098aee33"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">int32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">HeaderSize</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">8</span></span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Header10HeaderSizeE" title="Link to this definition"></a><br /></dt>
-<dd><p><a class="reference internal" href="#classrogue_1_1protocols_1_1rssi_1_1Header"><span class="std std-ref">Header</span></a> Size. </p>
+<dd><p>Encoded RSSI non-SYN header size in bytes. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6Header7SynSizeE">
+<span id="_CPPv3N5rogue9protocols4rssi6Header7SynSizeE"></span><span id="_CPPv2N5rogue9protocols4rssi6Header7SynSizeE"></span><span id="rogue::protocols::rssi::Header::SynSize__uint32_tC"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Header_1a9b3c2a403b17a2a45e3ee995ef568ad1"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SynSize</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">24</span></span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Header7SynSizeE" title="Link to this definition"></a><br /></dt>
+<dd><p>Encoded RSSI SYN header size in bytes. </p>
 </dd></dl>
 
 </div>

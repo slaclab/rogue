@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SRP Protocol Version 0 &mdash; Rogue v6.8.2 documentation</title>
+  <title>SRP Protocol Version 0 &mdash; Rogue v6.8.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=42e93e3f"></script>
+      <script src="../../_static/documentation_options.js?v=e691ba26"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -63,12 +63,17 @@
 <li class="toctree-l2"><a class="reference internal" href="../batcher/index.html">Batcher Protocol</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../epicsV4/index.html">EPICSV4 Protocol</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="index.html">SRP Protocol</a><ul class="current">
-<li class="toctree-l3 current"><a class="current reference internal" href="#">SRP Protocol Version 0</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">SRP Protocol Version 0</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#implementation-notes">Implementation notes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#python-usage-example">Python usage example</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="srpV3.html">SRP Protocol Version 3</a></li>
 <li class="toctree-l3"><a class="reference internal" href="cmd.html">SRP Protocol Command</a></li>
 <li class="toctree-l3"><a class="reference internal" href="classes/index.html">SRP Protocol Class Descriptions</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../xilinx/index.html">Xilinx Protocols</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../uart.html">UART Protocol</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../pyrogue/index.html">Pyrogue Protocols</a></li>
 </ul>
@@ -107,7 +112,71 @@
              
   <section id="srp-protocol-version-0">
 <span id="protocols-srp-srpv0"></span><h1>SRP Protocol Version 0<a class="headerlink" href="#srp-protocol-version-0" title="Link to this heading"></a></h1>
-<p>TODO</p>
+<p><cite>SrpV0</cite> converts Rogue memory transactions into SRPv0 stream frames and decodes
+responses from hardware. In a typical system, those SRP frames are carried over
+Rogue stream transports and terminate at FPGA/ASIC SRP logic that performs
+register access.</p>
+<p>Rogue does not re-document the SRPv0 wire format here. Use the protocol
+specification for packet-level details:</p>
+<ul class="simple">
+<li><p>SRPv0 reference: <a class="reference external" href="https://confluence.slac.stanford.edu/x/aRmVD">https://confluence.slac.stanford.edu/x/aRmVD</a></p></li>
+</ul>
+<section id="implementation-notes">
+<h2>Implementation notes<a class="headerlink" href="#implementation-notes" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Rogue can issue multiple SRPv0 requests before responses return; these are
+tracked as in-flight transactions by transaction ID.</p></li>
+<li><p>Responses are matched by ID, so response order does not need to match request
+order.</p></li>
+<li><p>If a response is missing, the initiating memory master times out based on the
+configured software timeout (see <code class="docutils literal notranslate"><span class="pre">Master.setTimeout()</span></code>, microseconds).</p></li>
+<li><p>Late responses that arrive after timeout are treated as expired and ignored.</p></li>
+</ul>
+</section>
+<section id="python-usage-example">
+<h2>Python usage example<a class="headerlink" href="#python-usage-example" title="Link to this heading"></a></h2>
+<p>The common PyRogue pattern is to construct the transport and <code class="docutils literal notranslate"><span class="pre">SrpV0</span></code> inside a
+<code class="docutils literal notranslate"><span class="pre">Root</span></code> subclass, then pass the SRP object as <code class="docutils literal notranslate"><span class="pre">memBase</span></code> when adding devices.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">rogue.hardware.axi</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">rogue.protocols.srp</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyRegs</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;ScratchPad&#39;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Example RW register&#39;</span><span class="p">,</span>
+            <span class="n">offset</span><span class="o">=</span><span class="mh">0x0000</span><span class="p">,</span>
+            <span class="n">bitSize</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span>
+            <span class="n">base</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
+        <span class="p">))</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyRoot</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="s1">&#39;/dev/datadev_0&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="c1"># Stream transport carrying SRPv0 frames (register channel).</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">regStream</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">hardware</span><span class="o">.</span><span class="n">axi</span><span class="o">.</span><span class="n">AxiStreamDma</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># SRPv0 protocol bridge.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">srp</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">srp</span><span class="o">.</span><span class="n">SrpV0</span><span class="p">()</span>
+
+        <span class="c1"># Bidirectional stream connection: transport &lt;-&gt; SRPv0.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">regStream</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">srp</span>
+
+        <span class="c1"># Attach register map device to SRPv0 memory slave interface.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">MyRegs</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Regs&#39;</span><span class="p">,</span>
+            <span class="n">offset</span><span class="o">=</span><span class="mh">0x00000000</span><span class="p">,</span>
+            <span class="n">memBase</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">srp</span><span class="p">,</span>
+            <span class="n">expand</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">))</span>
+</pre></div>
+</div>
+</section>
 </section>
 
 

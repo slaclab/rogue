@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>StreamReader &mdash; Rogue v6.8.2 documentation</title>
+  <title>StreamReader &mdash; Rogue v6.8.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=42e93e3f"></script>
+      <script src="../../../_static/documentation_options.js?v=e691ba26"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -55,6 +55,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../interfaces/index.html">Interfaces</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Utilities</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="../index.html">File I/O Utilities</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../format.html">Rogue File Data Format</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../writing.html">Writing Frames To A File</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../reading.html">Reading Frames From A File</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../custom.html">Custom Writers</a></li>
@@ -68,6 +69,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../prbs/index.html">PRBS Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../hls/index.html">HLS Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../compression/index.html">Compression Utilities</a></li>
 </ul>
 </li>
@@ -109,6 +111,10 @@
   <section id="streamreader">
 <span id="utilities-fileio-reader"></span><h1>StreamReader<a class="headerlink" href="#streamreader" title="Link to this heading"></a></h1>
 <p>The StreamReader class is the utilitiy for reading data from a Rogue file in a streaming fashion.</p>
+<p>The file format consumed by StreamReader is documented here:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../format.html#utilities-fileio-format"><span class="std std-ref">Rogue File Data Format</span></a></p></li>
+</ul>
 <p>StreamReader objects in C++ are referenced by the following shared pointer typedef:</p>
 <dl class="cpp type">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9utilities6fileio15StreamReaderPtrE">
@@ -119,49 +125,72 @@
 <dl class="cpp class">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9utilities6fileio12StreamReaderE">
 <span id="_CPPv3N5rogue9utilities6fileio12StreamReaderE"></span><span id="_CPPv2N5rogue9utilities6fileio12StreamReaderE"></span><span id="rogue::utilities::fileio::StreamReader"></span><span class="target" id="classrogue_1_1utilities_1_1fileio_1_1StreamReader"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">StreamReader</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="../../../interfaces/stream/classes/master.html#_CPPv4N5rogue10interfaces6stream6MasterE" title="rogue::interfaces::stream::Master"><span class="n"><span class="pre">Master</span></span></a><a class="headerlink" href="#_CPPv4N5rogue9utilities6fileio12StreamReaderE" title="Link to this definition"></a><br /></dt>
-<dd><p>Stream writer central class. </p>
+<dd><p>Reads Rogue stream data files and emits frames on stream master interface. </p>
+<p><code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1utilities_1_1fileio_1_1StreamReader"><span class="std std-ref"><span class="pre">StreamReader</span></span></a></code> opens a file (or indexed file sequence) created by Rogue file writer utilities, parses frame headers/metadata, reconstructs stream frames, and forwards them downstream via <code class="docutils literal notranslate"><a class="reference internal" href="../../../interfaces/stream/classes/master.html#classrogue_1_1interfaces_1_1stream_1_1Master_1ac4270a45820c4c03dd7f2b472df4efd8"><span class="std std-ref"><span class="pre">sendFrame()</span></span></a></code>.</p>
+<p>File sequence behavior:<ul class="simple">
+<li><p>If opened on a filename ending in <code class="docutils literal notranslate"><span class="pre">.1</span></code>, the reader attempts <code class="docutils literal notranslate"><span class="pre">.2</span></code>, <code class="docutils literal notranslate"><span class="pre">.3</span></code>, … automatically as each file completes.</p></li>
+<li><p>Otherwise only the specified file is read.</p></li>
+</ul>
+</p>
+<p>Read activity runs in a background thread while <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1utilities_1_1fileio_1_1StreamReader_1af310a52ac05d8a0b58518961894625de"><span class="std std-ref"><span class="pre">isActive()</span></span></a></code> is true. </p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9utilities6fileio12StreamReader12StreamReaderEv">
 <span id="_CPPv3N5rogue9utilities6fileio12StreamReader12StreamReaderEv"></span><span id="_CPPv2N5rogue9utilities6fileio12StreamReader12StreamReaderEv"></span><span id="rogue::utilities::fileio::StreamReader::StreamReader"></span><span class="target" id="classrogue_1_1utilities_1_1fileio_1_1StreamReader_1ab0acb81c3e07de450f1319d6d585347f"></span><span class="sig-name descname"><span class="n"><span class="pre">StreamReader</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9utilities6fileio12StreamReader12StreamReaderEv" title="Link to this definition"></a><br /></dt>
-<dd><p>Creator. </p>
+<dd><p>Constructs a stream reader instance. </p>
+<p>This constructor is a low-level C++ allocation path. Prefer <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1utilities_1_1fileio_1_1StreamReader_1a07539fca3bf81f80dcb42608b6b045c2"><span class="std std-ref"><span class="pre">create()</span></span></a></code> when shared ownership or Python exposure is required. </p>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9utilities6fileio12StreamReaderD0Ev">
 <span id="_CPPv3N5rogue9utilities6fileio12StreamReaderD0Ev"></span><span id="_CPPv2N5rogue9utilities6fileio12StreamReaderD0Ev"></span><span id="rogue::utilities::fileio::StreamReader::~StreamReader"></span><span class="target" id="classrogue_1_1utilities_1_1fileio_1_1StreamReader_1a2b14863975f0d7acaf00e6446d174de8"></span><span class="sig-name descname"><span class="n"><span class="pre">~StreamReader</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9utilities6fileio12StreamReaderD0Ev" title="Link to this definition"></a><br /></dt>
-<dd><p>Deconstructor. </p>
+<dd><p>Destroys stream reader and closes active file/thread. </p>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9utilities6fileio12StreamReader4openENSt6stringE">
 <span id="_CPPv3N5rogue9utilities6fileio12StreamReader4openENSt6stringE"></span><span id="_CPPv2N5rogue9utilities6fileio12StreamReader4openENSt6stringE"></span><span id="rogue::utilities::fileio::StreamReader::open__ss"></span><span class="target" id="classrogue_1_1utilities_1_1fileio_1_1StreamReader_1a8282e867ca83ec89181a03cf1fdb2009"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">open</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">file</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9utilities6fileio12StreamReader4openENSt6stringE" title="Link to this definition"></a><br /></dt>
-<dd><p>Read from the data file. </p>
+<dd><p>Opens a file and starts background read processing. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>file</strong> – Input data filename. </p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9utilities6fileio12StreamReader5closeEv">
 <span id="_CPPv3N5rogue9utilities6fileio12StreamReader5closeEv"></span><span id="_CPPv2N5rogue9utilities6fileio12StreamReader5closeEv"></span><span id="rogue::utilities::fileio::StreamReader::close"></span><span class="target" id="classrogue_1_1utilities_1_1fileio_1_1StreamReader_1a443b4f30a5b4e6a97c16afd22ca27355"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">close</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9utilities6fileio12StreamReader5closeEv" title="Link to this definition"></a><br /></dt>
-<dd><p>Close and stop thread. </p>
+<dd><p>Stops read thread and closes active file immediately. </p>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9utilities6fileio12StreamReader6isOpenEv">
 <span id="_CPPv3N5rogue9utilities6fileio12StreamReader6isOpenEv"></span><span id="_CPPv2N5rogue9utilities6fileio12StreamReader6isOpenEv"></span><span id="rogue::utilities::fileio::StreamReader::isOpen"></span><span class="target" id="classrogue_1_1utilities_1_1fileio_1_1StreamReader_1a9290704af6468aa0707d90a5d9ef8f7d"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">isOpen</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9utilities6fileio12StreamReader6isOpenEv" title="Link to this definition"></a><br /></dt>
-<dd><p>Get open status. </p>
+<dd><p>Returns whether a file descriptor is currently open. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">true</span></code> if file is open; otherwise <code class="docutils literal notranslate"><span class="pre">false</span></code>. </p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9utilities6fileio12StreamReader9closeWaitEv">
 <span id="_CPPv3N5rogue9utilities6fileio12StreamReader9closeWaitEv"></span><span id="_CPPv2N5rogue9utilities6fileio12StreamReader9closeWaitEv"></span><span id="rogue::utilities::fileio::StreamReader::closeWait"></span><span class="target" id="classrogue_1_1utilities_1_1fileio_1_1StreamReader_1ababff3960108dd630cffd9cd3abce191"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">closeWait</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9utilities6fileio12StreamReader9closeWaitEv" title="Link to this definition"></a><br /></dt>
-<dd><p>Close when done. </p>
+<dd><p>Waits for read activity to complete, then closes file/thread. </p>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9utilities6fileio12StreamReader8isActiveEv">
 <span id="_CPPv3N5rogue9utilities6fileio12StreamReader8isActiveEv"></span><span id="_CPPv2N5rogue9utilities6fileio12StreamReader8isActiveEv"></span><span id="rogue::utilities::fileio::StreamReader::isActive"></span><span class="target" id="classrogue_1_1utilities_1_1fileio_1_1StreamReader_1af310a52ac05d8a0b58518961894625de"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">isActive</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9utilities6fileio12StreamReader8isActiveEv" title="Link to this definition"></a><br /></dt>
-<dd><p>Return true while reading. </p>
+<dd><p>Returns read activity state. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">true</span></code> while background reader is active. </p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
@@ -170,13 +199,19 @@
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9utilities6fileio12StreamReader6createEv">
 <span id="_CPPv3N5rogue9utilities6fileio12StreamReader6createEv"></span><span id="_CPPv2N5rogue9utilities6fileio12StreamReader6createEv"></span><span id="rogue::utilities::fileio::StreamReader::create"></span><span class="target" id="classrogue_1_1utilities_1_1fileio_1_1StreamReader_1a07539fca3bf81f80dcb42608b6b045c2"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">utilities</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">fileio</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue9utilities6fileio12StreamReaderE" title="rogue::utilities::fileio::StreamReader"><span class="n"><span class="pre">StreamReader</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">create</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9utilities6fileio12StreamReader6createEv" title="Link to this definition"></a><br /></dt>
-<dd><p>Class creation. </p>
+<dd><p>Creates a stream reader instance. </p>
+<p>This static factory is the preferred construction path when the object is shared across Rogue graph connections or exposed to Python. It returns <code class="docutils literal notranslate"><span class="pre">std::shared_ptr</span></code> ownership compatible with Rogue pointer typedefs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Shared pointer to the created reader. </p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9utilities6fileio12StreamReader12setup_pythonEv">
 <span id="_CPPv3N5rogue9utilities6fileio12StreamReader12setup_pythonEv"></span><span id="_CPPv2N5rogue9utilities6fileio12StreamReader12setup_pythonEv"></span><span id="rogue::utilities::fileio::StreamReader::setup_python"></span><span class="target" id="classrogue_1_1utilities_1_1fileio_1_1StreamReader_1a5013121a68a8a9b782dca6bfa245cd80"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setup_python</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9utilities6fileio12StreamReader12setup_pythonEv" title="Link to this definition"></a><br /></dt>
-<dd><p>Setup class in python. </p>
+<dd><p>Registers Python bindings for this class. </p>
 </dd></dl>
 
 </div>

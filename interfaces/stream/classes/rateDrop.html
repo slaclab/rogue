@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>RateDrop &mdash; Rogue v6.8.2 documentation</title>
+  <title>RateDrop &mdash; Rogue v6.8.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=42e93e3f"></script>
+      <script src="../../../_static/documentation_options.js?v=e691ba26"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -88,6 +88,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../pyrogue/index.html">Python Interfaces</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../sql.html">SQL Logging Interface</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../cpp_api.html">Wrapping Rogue In C++</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../version.html">Rogue Version Helper</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../utilities/index.html">Utilities</a></li>
@@ -133,32 +134,74 @@
 <dl class="cpp type">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream11RateDropPtrE">
 <span id="_CPPv3N5rogue10interfaces6stream11RateDropPtrE"></span><span id="_CPPv2N5rogue10interfaces6stream11RateDropPtrE"></span><span id="rogue::interfaces::stream::RateDropPtr"></span><span class="target" id="namespacerogue_1_1interfaces_1_1stream_1a8e46b9385767d501c829f098eb9c150e"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream8RateDropE" title="rogue::interfaces::stream::RateDrop"><span class="n"><span class="pre">RateDrop</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">RateDropPtr</span></span></span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream11RateDropPtrE" title="Link to this definition"></a><br /></dt>
-<dd><p>Alias for using shared pointer as RateDropPtr. </p>
+<dd><p>Shared pointer alias for <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1RateDrop"><span class="std std-ref"><span class="pre">RateDrop</span></span></a></code>. </p>
 </dd></dl>
 
 <p>The class description is shown below:</p>
 <dl class="cpp class">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream8RateDropE">
 <span id="_CPPv3N5rogue10interfaces6stream8RateDropE"></span><span id="_CPPv2N5rogue10interfaces6stream8RateDropE"></span><span id="rogue::interfaces::stream::RateDrop"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1RateDrop"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">RateDrop</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="master.html#_CPPv4N5rogue10interfaces6stream6MasterE" title="rogue::interfaces::stream::Master"><span class="n"><span class="pre">Master</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="slave.html#_CPPv4N5rogue10interfaces6stream5SlaveE" title="rogue::interfaces::stream::Slave"><span class="n"><span class="pre">Slave</span></span></a><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream8RateDropE" title="Link to this definition"></a><br /></dt>
-<dd><p>Stream Rate Drop. </p>
-<p>Drops frames at a defined rate. The rate value will defined as either the number of frames to drop between each kept frame or the time interval between each kept frame. If the period flag is true the passed value will be interpreted as the time between kept frames in seconds. If the rate flag is false the value will be interpreted as the number of frames to drop between each ketp frame. </p>
+<dd><p>Stream frame-rate dropper. </p>
+<p>Drops frames at a configured rate, either by frame count or by time period. In period mode, <code class="docutils literal notranslate"><span class="pre">value</span></code> is interpreted as seconds between kept frames. Otherwise, <code class="docutils literal notranslate"><span class="pre">value</span></code> is interpreted as number of dropped frames between kept frames. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream8RateDrop8RateDropEbd">
+<span id="_CPPv3N5rogue10interfaces6stream8RateDrop8RateDropEbd"></span><span id="_CPPv2N5rogue10interfaces6stream8RateDrop8RateDropEbd"></span><span id="rogue::interfaces::stream::RateDrop::RateDrop__b.double"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1RateDrop_1a831833e79eefaf2ff533f1a36f0885ca"></span><span class="sig-name descname"><span class="n"><span class="pre">RateDrop</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">period</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream8RateDrop8RateDropEbd" title="Link to this definition"></a><br /></dt>
+<dd><p>Constructs a rate-drop filter. </p>
+<p>This constructor is a low-level C++ allocation path. Prefer <code class="docutils literal notranslate"><a class="reference internal" href="master.html#classrogue_1_1interfaces_1_1stream_1_1Master_1a3c6558447ac572d910c4db8a6d8ecc6d"><span class="std std-ref"><span class="pre">create()</span></span></a></code> when shared ownership or Python exposure is required.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>period</strong> – Set to <code class="docutils literal notranslate"><span class="pre">true</span></code> for period mode; <code class="docutils literal notranslate"><span class="pre">false</span></code> for drop-count mode. </p></li>
+<li><p><strong>value</strong> – Period seconds or drop-count setting. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream8RateDropD0Ev">
+<span id="_CPPv3N5rogue10interfaces6stream8RateDropD0Ev"></span><span id="_CPPv2N5rogue10interfaces6stream8RateDropD0Ev"></span><span id="rogue::interfaces::stream::RateDrop::~RateDrop"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1RateDrop_1ae9f6e90511a4cf61cb7fb37a45681f8e"></span><span class="sig-name descname"><span class="n"><span class="pre">~RateDrop</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream8RateDropD0Ev" title="Link to this definition"></a><br /></dt>
+<dd><p>Destroys the rate-drop filter. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream8RateDrop11acceptFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE">
+<span id="_CPPv3N5rogue10interfaces6stream8RateDrop11acceptFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE"></span><span id="_CPPv2N5rogue10interfaces6stream8RateDrop11acceptFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE"></span><span id="rogue::interfaces::stream::RateDrop::acceptFrame__std::shared_ptr:rogue::interfaces::stream::Frame:"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1RateDrop_1ae763fab025cf0a3c94821b66435e8c59"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">acceptFrame</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="frame.html#_CPPv4N5rogue10interfaces6stream5FrameE" title="rogue::interfaces::stream::Frame"><span class="n"><span class="pre">Frame</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">frame</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream8RateDrop11acceptFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE" title="Link to this definition"></a><br /></dt>
+<dd><p>Receives a frame and drops/forwards according to configured rate policy. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>frame</strong> – Incoming frame. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-static-functions">Public Static Functions</p>
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream8RateDrop6createEbd">
 <span id="_CPPv3N5rogue10interfaces6stream8RateDrop6createEbd"></span><span id="_CPPv2N5rogue10interfaces6stream8RateDrop6createEbd"></span><span id="rogue::interfaces::stream::RateDrop::create__b.double"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1RateDrop_1ae797bfa9e095e0e45cf8d0153eca563b"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream8RateDropE" title="rogue::interfaces::stream::RateDrop"><span class="n"><span class="pre">RateDrop</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">create</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">period</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream8RateDrop6createEbd" title="Link to this definition"></a><br /></dt>
-<dd><p>Create a <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1RateDrop"><span class="std std-ref">RateDrop</span></a> object and return as a RateDropPtr. </p>
+<dd><p>Creates a rate-drop filter. </p>
+<p>Parameter semantics are identical to the constructor; see <code class="docutils literal notranslate"><span class="pre">RateDrop()</span></code> for mode and value behavior details. This static factory is the preferred construction path when the object is shared across Rogue graph connections or exposed to Python. It returns <code class="docutils literal notranslate"><span class="pre">std::shared_ptr</span></code> ownership compatible with Rogue pointer typedefs.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>period</strong> – Set to true to define the parameter as a period value. </p></li>
-<li><p><strong>value</strong> – Period value or drop count </p></li>
+<li><p><strong>period</strong> – Set to <code class="docutils literal notranslate"><span class="pre">true</span></code> for period mode; <code class="docutils literal notranslate"><span class="pre">false</span></code> for drop-count mode. </p></li>
+<li><p><strong>value</strong> – Period seconds or drop-count setting. </p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1RateDrop"><span class="std std-ref">RateDrop</span></a> object as a RateDropPtr </p>
+<dd class="field-even"><p>Shared pointer to the created rate-drop filter. </p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream8RateDrop12setup_pythonEv">
+<span id="_CPPv3N5rogue10interfaces6stream8RateDrop12setup_pythonEv"></span><span id="_CPPv2N5rogue10interfaces6stream8RateDrop12setup_pythonEv"></span><span id="rogue::interfaces::stream::RateDrop::setup_python"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1RateDrop_1a8fbd2941320473275bbbcf6347d79aa2"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setup_python</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream8RateDrop12setup_pythonEv" title="Link to this definition"></a><br /></dt>
+<dd><p>Registers this type with Python bindings. </p>
 </dd></dl>
 
 </div>

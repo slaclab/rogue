@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue.utilities.fileio._FileReader &mdash; Rogue v6.8.2 documentation</title>
+  <title>pyrogue.utilities.fileio._FileReader &mdash; Rogue v6.8.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
@@ -14,7 +14,7 @@
   
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=42e93e3f"></script>
+      <script src="../../../../_static/documentation_options.js?v=e691ba26"></script>
       <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -102,7 +102,10 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">struct</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Iterator</span>
+
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy.typing</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">npt</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">yaml</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 
@@ -114,29 +117,25 @@
 <a class="viewcode-back" href="../../../../utilities/fileio/python_reader.html#pyrogue.utilities.fileio.RogueHeader">[docs]</a>
 <span class="nd">@dataclass</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">RogueHeader</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Rogue frame header.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    size : int</span>
+<span class="sd">        Payload size of the record in bytes (header-adjusted by this reader).</span>
+<span class="sd">    flags : int</span>
+<span class="sd">        Frame flags for the record.</span>
+<span class="sd">    error : int</span>
+<span class="sd">        Error status for the record.</span>
+<span class="sd">    channel : int</span>
+<span class="sd">        Channel id for the record.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">size</span> <span class="p">:</span> <span class="nb">int</span>     <span class="c1"># 4 Bytes, uint32, I</span>
     <span class="n">flags</span><span class="p">:</span> <span class="nb">int</span>     <span class="c1"># 2 bytes, uint16, H</span>
     <span class="n">error</span><span class="p">:</span> <span class="nb">int</span>     <span class="c1"># 1 bytes, uint8,  B</span>
     <span class="n">channel</span><span class="p">:</span> <span class="nb">int</span>   <span class="c1"># 1 bytes, uint8,  B</span></div>
 
-
-<span class="sd">&quot;&quot;&quot; Rogue Header data</span>
-
-<span class="sd">    Attributes</span>
-<span class="sd">    ----------</span>
-<span class="sd">    size : int</span>
-<span class="sd">        Size of the record, minus the header</span>
-
-<span class="sd">    flags : int</span>
-<span class="sd">        Frame flags for the record</span>
-
-<span class="sd">    error : int</span>
-<span class="sd">        Error status for the record</span>
-
-<span class="sd">    channel : int</span>
-<span class="sd">        Channel id for the record</span>
-
-<span class="sd">&quot;&quot;&quot;</span>
 
 <span class="n">BatchHeaderSize</span>  <span class="o">=</span> <span class="mi">8</span>
 <span class="n">BatchHeaderPack</span>  <span class="o">=</span> <span class="s1">&#39;IBBBB&#39;</span>
@@ -144,37 +143,34 @@
 <span class="c1"># Batcher Header</span>
 <span class="nd">@dataclass</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">BatchHeader</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Batch sub-frame header.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    size : int</span>
+<span class="sd">        Sub-frame payload size in bytes.</span>
+<span class="sd">    tdest : int</span>
+<span class="sd">        TDEST value from AXI Stream frame metadata.</span>
+<span class="sd">    fUser : int</span>
+<span class="sd">        First USER value from AXI Stream frame metadata.</span>
+<span class="sd">    lUser : int</span>
+<span class="sd">        Last USER value from AXI Stream frame metadata.</span>
+<span class="sd">    width : int</span>
+<span class="sd">        Width of the batched data in bytes.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">size</span><span class="p">:</span> <span class="nb">int</span>   <span class="c1"># 4 Bytes, uint32, I</span>
     <span class="n">tdest</span><span class="p">:</span> <span class="nb">int</span>  <span class="c1"># 1 Byte, uint8, B</span>
     <span class="n">fUser</span><span class="p">:</span> <span class="nb">int</span>  <span class="c1"># 1 Byte, uint8, B</span>
     <span class="n">lUser</span><span class="p">:</span> <span class="nb">int</span>  <span class="c1"># 1 Byte, uint8, B</span>
     <span class="n">width</span><span class="p">:</span> <span class="nb">int</span>  <span class="c1"># 1 Byte, uint8, B</span>
 
-
-<span class="sd">&quot;&quot;&quot; Batcher Header data</span>
-
-<span class="sd">    Attributes</span>
-<span class="sd">    ----------</span>
-<span class="sd">    size: int</span>
-<span class="sd">        Sub frame size in bytes</span>
-
-<span class="sd">    tdest: int</span>
-<span class="sd">        TDEST value from AXI Stream Frame</span>
-
-<span class="sd">    fUser: int</span>
-<span class="sd">        First USER value from AXI Stream Frame</span>
-
-<span class="sd">    lUser: int</span>
-<span class="sd">        Last USER value from AXI Stream Frame</span>
-
-<span class="sd">    width : int</span>
-<span class="sd">        Width of the batched data in bytes</span>
-
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="n">DataArray</span> <span class="o">=</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">int8</span><span class="p">]</span>
+<span class="n">Record</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">RogueHeader</span><span class="p">,</span> <span class="n">DataArray</span><span class="p">]</span>
+<span class="n">BatchRecord</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">RogueHeader</span><span class="p">,</span> <span class="n">BatchHeader</span><span class="p">,</span> <span class="n">DataArray</span><span class="p">]</span>
 
 <span class="k">class</span><span class="w"> </span><span class="nc">FileReaderException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; File reader exception &quot;&quot;&quot;</span>
-    <span class="k">pass</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;File reader exception.&quot;&quot;&quot;</span>
 
 
 <div class="viewcode-block" id="FileReader">
@@ -185,17 +181,16 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    files : str or list</span>
-<span class="sd">        Filename or list of filenams to read data from</span>
-
-<span class="sd">    configChan : int</span>
-<span class="sd">        Channel id of configuration/status stream in the data file. Set to None to disable processing configuration.</span>
-
-<span class="sd">    log : obj</span>
-<span class="sd">        Logging object to use. If set to None a new logger will be created with the name &quot;pyrogue.FileReader&quot;.</span>
-
+<span class="sd">    files : str or list[str]</span>
+<span class="sd">        Filename or list of filenames to read data from.</span>
+<span class="sd">    configChan : int | None</span>
+<span class="sd">        Channel id of configuration/status stream in the data file. Set to</span>
+<span class="sd">        ``None`` to disable configuration processing.</span>
+<span class="sd">    log : logging.Logger | None</span>
+<span class="sd">        Logger to use. If ``None``, a new logger with name</span>
+<span class="sd">        ``&quot;pyrogue.FileReader&quot;`` is created.</span>
 <span class="sd">    batched : bool</span>
-<span class="sd">        Flag to indicate if data file contains batched data</span>
+<span class="sd">        Flag indicating if the data file contains batched data.</span>
 
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
@@ -205,11 +200,17 @@
 <span class="sd">    totCount: int</span>
 <span class="sd">        Total number of data records processed from</span>
 
-<span class="sd">    configDig: obj</span>
-<span class="sd">        Current configuration/status dictionary</span>
+<span class="sd">    configDict : dict[str, Any]</span>
+<span class="sd">        Current configuration/status dictionary.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">files</span><span class="p">,</span> <span class="n">configChan</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">batched</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">files</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">configChan</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">log</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">batched</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_configChan</span> <span class="o">=</span> <span class="n">configChan</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_currFile</span>   <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fileSize</span>   <span class="o">=</span> <span class="mi">0</span>
@@ -235,7 +236,7 @@
             <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span><span class="n">os</span><span class="o">.</span><span class="n">R_OK</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="n">FileReaderException</span><span class="p">(</span><span class="s2">&quot;Failed to read file </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fn</span><span class="p">))</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_nextRecord</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_nextRecord</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
 
             <span class="c1"># Hit end of file</span>
@@ -271,18 +272,15 @@
 
 <div class="viewcode-block" id="FileReader.records">
 <a class="viewcode-back" href="../../../../utilities/fileio/python_reader.html#pyrogue.utilities.fileio.FileReader.records">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">records</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">records</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">Record</span> <span class="o">|</span> <span class="n">BatchRecord</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Generator which returns (header, data) tuples</span>
+<span class="sd">        Yield data records from all configured files.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        RogueHeader, bytearray</span>
-<span class="sd">            (header, data) tuple where header is a dictionary and data is a byte array, for batched = False.</span>
-
-<span class="sd">        RogueHeader, BatchHeader, bytearray</span>
-<span class="sd">            (header, header, data) tuple where header are dictionaried and data is a byte array, for batched = True.</span>
-
+<span class="sd">        Iterator[Record | BatchRecord]</span>
+<span class="sd">            For ``batched=False``, yields ``(RogueHeader, numpy.ndarray[int8])``.</span>
+<span class="sd">            For ``batched=True``, yields ``(RogueHeader, BatchHeader, numpy.ndarray[int8])``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_config</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_currCount</span> <span class="o">=</span> <span class="mi">0</span>
@@ -352,20 +350,23 @@
 
 
     <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">currCount</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">currCount</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return number of records read from the current file.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_currCount</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">totCount</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">totCount</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return total number of records read across all files.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_totCount</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">configDict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">configDict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return merged configuration/status dictionary.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span>
 
 <div class="viewcode-block" id="FileReader.configValue">
 <a class="viewcode-back" href="../../../../utilities/fileio/python_reader.html#pyrogue.utilities.fileio.FileReader.configValue">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">configValue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">configValue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get a configuration or status value</span>
 
@@ -397,7 +398,8 @@
         <span class="k">return</span> <span class="n">obj</span></div>
 
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_updateConfig</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_updateConfig</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Merge a status/config update dictionary into ``self._config``.&quot;&quot;&quot;</span>
         <span class="c1"># Combination of dictUpdate and keyValueUpdate from pyrogue helpers</span>
 
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">new</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -414,10 +416,12 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;FileReader&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return self for context-manager use.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">tb</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">tb</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;No-op context-manager exit hook.&quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
 </pre></div>

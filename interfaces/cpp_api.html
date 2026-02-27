@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Wrapping Rogue In C++ &mdash; Rogue v6.8.2 documentation</title>
+  <title>Wrapping Rogue In C++ &mdash; Rogue v6.8.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=42e93e3f"></script>
+      <script src="../_static/documentation_options.js?v=e691ba26"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -23,7 +23,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Utilities" href="../utilities/index.html" />
+    <link rel="next" title="Rogue Version Helper" href="version.html" />
     <link rel="prev" title="SQL Logging Interface" href="sql.html" /> 
 </head>
 
@@ -59,7 +59,15 @@
 <li class="toctree-l2"><a class="reference internal" href="simulation/index.html">Simulation Interfaces</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyrogue/index.html">Python Interfaces</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sql.html">SQL Logging Interface</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Wrapping Rogue In C++</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Wrapping Rogue In C++</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#creating-a-root-wrapper">Creating a root wrapper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#node-traversal-and-variable-access">Node traversal and variable access</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#commands">Commands</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#variable-listeners-root-only">Variable listeners (root only)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reference-example">Reference example</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="version.html">Rogue Version Helper</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../utilities/index.html">Utilities</a></li>
@@ -98,26 +106,72 @@
              
   <section id="wrapping-rogue-in-c">
 <span id="interfaces-cpp-api"></span><h1>Wrapping Rogue In C++<a class="headerlink" href="#wrapping-rogue-in-c" title="Link to this heading"></a></h1>
-<p>Rogue can be used within a C++ framework in the following way:</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;boost/python.hpp&gt;</span>
+<p>The supported C++ wrapper interface is <code class="docutils literal notranslate"><span class="pre">rogue::interfaces::api::Bsp</span></code> from
+<code class="docutils literal notranslate"><span class="pre">include/rogue/interfaces/api/Bsp.h</span></code>. It wraps a PyRogue node/root object and
+provides helper methods for node traversal, command execution, and variable
+set/get operations.</p>
+<section id="creating-a-root-wrapper">
+<h2>Creating a root wrapper<a class="headerlink" href="#creating-a-root-wrapper" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">Bsp</span></code> can construct and start a PyRogue root directly from Python module/class
+names:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;rogue/interfaces/api/Bsp.h&quot;</span>
 
-<span class="c1">// Include the module containing our root class</span>
-<span class="n">bp</span><span class="o">::</span><span class="n">object</span><span class="w"> </span><span class="n">mod</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bp</span><span class="o">::</span><span class="n">import</span><span class="p">(</span><span class="s">&quot;MyModule&quot;</span><span class="p">);</span>
-
-<span class="c1">// Create an instance of the root object</span>
-<span class="nl">bp</span><span class="p">:</span><span class="n">obect</span><span class="w"> </span><span class="n">root</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mod</span><span class="p">.</span><span class="n">attr</span><span class="p">(</span><span class="s">&quot;MyRoot&quot;</span><span class="p">)();</span>
-
-<span class="c1">// Execute a command</span>
-<span class="n">root</span><span class="p">.</span><span class="n">attr</span><span class="p">(</span><span class="s">&quot;exec&quot;</span><span class="p">)(</span><span class="s">&quot;myRoot.HardReset&quot;</span><span class="p">);</span>
-<span class="n">root</span><span class="p">.</span><span class="n">attr</span><span class="p">(</span><span class="s">&quot;exec&quot;</span><span class="p">)(</span><span class="s">&quot;myRoot.LoadConfig&quot;</span><span class="p">,</span><span class="s">&quot;config.yml&quot;</span><span class="p">);</span>
-
-<span class="c1">// Set a variable</span>
-<span class="n">root</span><span class="p">.</span><span class="n">attr</span><span class="p">(</span><span class="s">&quot;setDisp&quot;</span><span class="p">)(</span><span class="s">&quot;myRoot.AxiVersion.ScratchPad&quot;</span><span class="p">,</span><span class="s">&quot;0xA&quot;</span><span class="p">);</span>
-
-<span class="c1">// Get a variable</span>
-<span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bp</span><span class="o">::</span><span class="n">extract</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">(</span><span class="n">root</span><span class="p">.</span><span class="n">attr</span><span class="p">(</span><span class="s">&quot;getDisp&quot;</span><span class="p">)(</span><span class="s">&quot;myRoot.AxiVersion.ScratchPad&quot;</span><span class="p">));</span>
+<span class="c1">// Imports pyrogue.examples and constructs ExampleRoot().</span>
+<span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">api</span><span class="o">::</span><span class="n">Bsp</span><span class="w"> </span><span class="n">bsp</span><span class="p">(</span><span class="s">&quot;pyrogue.examples&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;ExampleRoot&quot;</span><span class="p">);</span>
 </pre></div>
 </div>
+<p>If constructed this way, the root is started in the constructor and stopped in
+the wrapper destructor.</p>
+</section>
+<section id="node-traversal-and-variable-access">
+<h2>Node traversal and variable access<a class="headerlink" href="#node-traversal-and-variable-access" title="Link to this heading"></a></h2>
+<p>Use <code class="docutils literal notranslate"><span class="pre">operator[]</span></code> for hierarchical traversal and <code class="docutils literal notranslate"><span class="pre">getNode()</span></code> for full-path
+lookup:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Read variable (no forced hardware read).</span>
+<span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">localTime</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bsp</span><span class="p">[</span><span class="s">&quot;LocalTime&quot;</span><span class="p">].</span><span class="n">get</span><span class="p">();</span>
+
+<span class="c1">// Write + readback.</span>
+<span class="n">bsp</span><span class="p">[</span><span class="s">&quot;AxiVersion&quot;</span><span class="p">][</span><span class="s">&quot;ScratchPad&quot;</span><span class="p">].</span><span class="n">setWrite</span><span class="p">(</span><span class="s">&quot;0x1111&quot;</span><span class="p">);</span>
+<span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">scratch</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bsp</span><span class="p">[</span><span class="s">&quot;AxiVersion&quot;</span><span class="p">][</span><span class="s">&quot;ScratchPad&quot;</span><span class="p">].</span><span class="n">readGet</span><span class="p">();</span>
+
+<span class="c1">// Full-path access returns a shared pointer wrapper.</span>
+<span class="k">auto</span><span class="w"> </span><span class="n">node</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bsp</span><span class="p">.</span><span class="n">getNode</span><span class="p">(</span><span class="s">&quot;ExampleRoot.AxiVersion.ScratchPad&quot;</span><span class="p">);</span>
+<span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">scratch2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">node</span><span class="o">-&gt;</span><span class="n">get</span><span class="p">();</span>
+</pre></div>
+</div>
+</section>
+<section id="commands">
+<h2>Commands<a class="headerlink" href="#commands" title="Link to this heading"></a></h2>
+<p>Command nodes are invoked through <code class="docutils literal notranslate"><span class="pre">operator()</span></code> or <code class="docutils literal notranslate"><span class="pre">execute()</span></code>:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Execute commands without argument.</span>
+<span class="n">bsp</span><span class="p">[</span><span class="s">&quot;WriteAll&quot;</span><span class="p">]();</span>
+<span class="n">bsp</span><span class="p">[</span><span class="s">&quot;ReadAll&quot;</span><span class="p">]();</span>
+
+<span class="c1">// Execute command with argument.</span>
+<span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">yaml</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bsp</span><span class="p">[</span><span class="s">&quot;GetYamlConfig&quot;</span><span class="p">](</span><span class="s">&quot;True&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<section id="variable-listeners-root-only">
+<h2>Variable listeners (root only)<a class="headerlink" href="#variable-listeners-root-only" title="Link to this heading"></a></h2>
+<p>Variable listeners can be attached only on a root wrapper:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span><span class="w"> </span><span class="nf">varListener</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">path</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">value</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;Var Listener: %s = %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">path</span><span class="p">.</span><span class="n">c_str</span><span class="p">(),</span><span class="w"> </span><span class="n">value</span><span class="p">.</span><span class="n">c_str</span><span class="p">());</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">varDone</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;Var Done</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">bsp</span><span class="p">.</span><span class="n">addVarListener</span><span class="p">(</span><span class="o">&amp;</span><span class="n">varListener</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">varDone</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<section id="reference-example">
+<h2>Reference example<a class="headerlink" href="#reference-example" title="Link to this heading"></a></h2>
+<p>See <code class="docutils literal notranslate"><span class="pre">tests/api_test/src/api_test.cpp</span></code> for a complete working example that
+matches the current <code class="docutils literal notranslate"><span class="pre">Bsp</span></code> API.</p>
+</section>
 </section>
 
 
@@ -125,7 +179,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="sql.html" class="btn btn-neutral float-left" title="SQL Logging Interface" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../utilities/index.html" class="btn btn-neutral float-right" title="Utilities" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="version.html" class="btn btn-neutral float-right" title="Rogue Version Helper" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

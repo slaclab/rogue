@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>RSSI Protocol &mdash; Rogue v6.8.2 documentation</title>
+  <title>RSSI Protocol &mdash; Rogue v6.8.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=42e93e3f"></script>
+      <script src="../../_static/documentation_options.js?v=e691ba26"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -58,9 +58,15 @@
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">Protocols</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../udp/index.html">UDP Protocol</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">RSSI Protocol</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="client.html">RSSI Protocol Client</a></li>
-<li class="toctree-l3"><a class="reference internal" href="server.html">RSSI Protocol Server</a></li>
-<li class="toctree-l3"><a class="reference internal" href="classes/index.html">RSSI Protocol Class Descriptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#protocol-documentation">Protocol documentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#how-rssi-classes-fit-together">How RSSI classes fit together</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#python-usage-example">Python usage example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#see-also">See also</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="client.html">RSSI Protocol Client</a></li>
+<li class="toctree-l4"><a class="reference internal" href="server.html">RSSI Protocol Server</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classes/index.html">RSSI Protocol Class Descriptions</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../packetizer/index.html">Packetizer Protocol</a></li>
@@ -68,6 +74,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../batcher/index.html">Batcher Protocol</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../epicsV4/index.html">EPICSV4 Protocol</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../srp/index.html">SRP Protocol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../xilinx/index.html">Xilinx Protocols</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../uart.html">UART Protocol</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../pyrogue/index.html">Pyrogue Protocols</a></li>
 </ul>
@@ -105,15 +112,121 @@
              
   <section id="rssi-protocol">
 <span id="protocols-rssi"></span><h1>RSSI Protocol<a class="headerlink" href="#rssi-protocol" title="Link to this heading"></a></h1>
-<p>TODO</p>
+<p>RSSI (Reliable Streaming Service Interface) provides reliable, in-order stream
+delivery over lower layers that are not inherently reliable (for example UDP).
+Rogue’s RSSI implementation uses sequence/acknowledge exchange, retransmission,
+timeout handling, and negotiated link parameters to maintain a stable stream.
+Conceptually, RSSI is based on the Reliable Data Protocol lineage defined by
+RFC 908 and RFC 1151.</p>
+<section id="protocol-documentation">
+<h2>Protocol documentation<a class="headerlink" href="#protocol-documentation" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>RSSI protocol reference: <a class="reference external" href="https://confluence.slac.stanford.edu/x/1IyfD">https://confluence.slac.stanford.edu/x/1IyfD</a></p></li>
+<li><p>Additional SLAC RSSI notes: <a class="reference external" href="https://confluence.slac.stanford.edu/x/xovOCw">https://confluence.slac.stanford.edu/x/xovOCw</a></p></li>
+</ul>
+<p>The protocol reference links to the relevant RFC background used by RSSI’s
+reliability model (sequencing, acknowledgments, retransmission, and timeout
+behavior).</p>
+</section>
+<section id="how-rssi-classes-fit-together">
+<h2>How RSSI classes fit together<a class="headerlink" href="#how-rssi-classes-fit-together" title="Link to this heading"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">rogue::protocols::rssi</span></code> classes are layered as follows:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Client</span></code> / <code class="docutils literal notranslate"><span class="pre">Server</span></code>:
+convenience wrappers that instantiate and wire the full stack for each role.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Controller</span></code>:
+the protocol state machine; performs handshake, negotiation, ACK handling,
+retransmission policy, and flow-control decisions.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Transport</span></code>:
+lower stream edge carrying RSSI frames to/from the underlying transport link.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Application</span></code>:
+upper stream edge carrying payload frames to/from application protocols.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Header</span></code>:
+helper codec/container for parsing and encoding RSSI frame headers.</p></li>
+</ul>
+<p>Typical stream topology:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>[Underlying link] &lt;-&gt; Transport &lt;-&gt; Controller &lt;-&gt; Application &lt;-&gt; [Upper protocol]
+</pre></div>
+</div>
+</section>
+<section id="python-usage-example">
+<h2>Python usage example<a class="headerlink" href="#python-usage-example" title="Link to this heading"></a></h2>
+<p>In most PyRogue applications, RSSI links are created with
+<code class="docutils literal notranslate"><span class="pre">pyrogue.protocols.UdpRssiPack</span></code>. This helper bundles UDP socket transport,
+RSSI protocol endpoints, and packetizer wiring into a single object. It is
+implemented as a <code class="docutils literal notranslate"><span class="pre">pyrogue.Device</span></code>, so RSSI link/status variables are exposed
+directly in the PyRogue tree. For wrapper details, see
+<a class="reference internal" href="../network.html#protocols-network"><span class="std std-ref">Network Wrapper</span></a>. For typical FPGA-facing links, instantiate it in
+client mode (<code class="docutils literal notranslate"><span class="pre">server=False</span></code>).</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue.protocols</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">rogue.protocols.srp</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyRoot</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;MyRoot&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">UdpRssiPack</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Net&#39;</span><span class="p">,</span>
+            <span class="n">server</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">host</span><span class="o">=</span><span class="s1">&#39;10.0.0.5&#39;</span><span class="p">,</span>
+            <span class="n">port</span><span class="o">=</span><span class="mi">8192</span><span class="p">,</span>
+            <span class="n">jumbo</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">packVer</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+            <span class="n">enSsi</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addInterface</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Net</span><span class="p">)</span>
+
+        <span class="n">srp</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">srp</span><span class="o">.</span><span class="n">SrpV3</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Net</span><span class="o">.</span><span class="n">application</span><span class="p">(</span><span class="n">dest</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">==</span> <span class="n">srp</span>
+
+        <span class="c1"># Example device using SRP as memBase</span>
+        <span class="c1"># self.add(MyDevice(name=&#39;Dev&#39;, offset=0x0, memBase=srp))</span>
+</pre></div>
+</div>
+<p>For advanced debugging or custom wiring, you can still instantiate each layer
+explicitly. The following pattern is used in wrappers such as
+<code class="docutils literal notranslate"><span class="pre">python/pyrogue/protocols/_Network.py</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">rogue.protocols.udp</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">rogue.protocols.rssi</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">rogue.protocols.packetizer</span>
+
+<span class="c1"># Server side</span>
+<span class="n">s_udp</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">udp</span><span class="o">.</span><span class="n">Server</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+<span class="n">s_rssi</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">rssi</span><span class="o">.</span><span class="n">Server</span><span class="p">(</span><span class="n">s_udp</span><span class="o">.</span><span class="n">maxPayload</span><span class="p">()</span> <span class="o">-</span> <span class="mi">8</span><span class="p">)</span>
+<span class="n">s_pack</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">packetizer</span><span class="o">.</span><span class="n">CoreV2</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+<span class="n">s_udp</span> <span class="o">==</span> <span class="n">s_rssi</span><span class="o">.</span><span class="n">transport</span><span class="p">()</span>
+<span class="n">s_rssi</span><span class="o">.</span><span class="n">application</span><span class="p">()</span> <span class="o">==</span> <span class="n">s_pack</span><span class="o">.</span><span class="n">transport</span><span class="p">()</span>
+
+<span class="c1"># Client side</span>
+<span class="n">c_udp</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">udp</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="s2">&quot;127.0.0.1&quot;</span><span class="p">,</span> <span class="n">s_udp</span><span class="o">.</span><span class="n">port</span><span class="p">(),</span> <span class="kc">True</span><span class="p">)</span>
+<span class="n">c_rssi</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">rssi</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">c_udp</span><span class="o">.</span><span class="n">maxPayload</span><span class="p">()</span> <span class="o">-</span> <span class="mi">8</span><span class="p">)</span>
+<span class="n">c_pack</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">packetizer</span><span class="o">.</span><span class="n">CoreV2</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+<span class="n">c_udp</span> <span class="o">==</span> <span class="n">c_rssi</span><span class="o">.</span><span class="n">transport</span><span class="p">()</span>
+<span class="n">c_rssi</span><span class="o">.</span><span class="n">application</span><span class="p">()</span> <span class="o">==</span> <span class="n">c_pack</span><span class="o">.</span><span class="n">transport</span><span class="p">()</span>
+
+<span class="c1"># Start RSSI state machines (Python binding names)</span>
+<span class="n">s_rssi</span><span class="o">.</span><span class="n">_start</span><span class="p">()</span>
+<span class="n">c_rssi</span><span class="o">.</span><span class="n">_start</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="see-also">
+<h2>See also<a class="headerlink" href="#see-also" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="../network.html#protocols-network"><span class="std std-ref">Network Wrapper</span></a></p></li>
+</ul>
 <div class="toctree-wrapper compound">
-<p class="caption" role="heading"><span class="caption-text">UDP Protocol</span></p>
+<p class="caption" role="heading"><span class="caption-text">RSSI Protocol</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="client.html">RSSI Protocol Client</a></li>
 <li class="toctree-l1"><a class="reference internal" href="server.html">RSSI Protocol Server</a></li>
 <li class="toctree-l1"><a class="reference internal" href="classes/index.html">RSSI Protocol Class Descriptions</a></li>
 </ul>
 </div>
+</section>
 </section>
 
 

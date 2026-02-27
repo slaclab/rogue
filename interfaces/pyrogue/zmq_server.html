@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Python ZMQServer &mdash; Rogue v6.8.2 documentation</title>
+  <title>Python ZMQServer &mdash; Rogue v6.8.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=42e93e3f"></script>
+      <script src="../../_static/documentation_options.js?v=e691ba26"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -61,13 +61,18 @@
 <li class="toctree-l3"><a class="reference internal" href="memory_stream_variable.html">Python Stream Variable</a></li>
 <li class="toctree-l3"><a class="reference internal" href="os_command_memory_slave.html">OsCommandMemorySlave</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Python ZMQServer</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#python-zmqserver-class-documentation">Python ZMQServer Class Documentation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#what-it-provides">What it provides</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#common-usage-pattern">Common usage pattern</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#client-access-examples">Client access examples</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#notes">Notes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#class-api">Class API</a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../sql.html">SQL Logging Interface</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../cpp_api.html">Wrapping Rogue In C++</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../version.html">Rogue Version Helper</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../utilities/index.html">Utilities</a></li>
@@ -107,8 +112,79 @@
              
   <section id="python-zmqserver">
 <span id="interfaces-python-zmqserver"></span><h1>Python ZMQServer<a class="headerlink" href="#python-zmqserver" title="Link to this heading"></a></h1>
-<section id="python-zmqserver-class-documentation">
-<h2>Python ZMQServer Class Documentation<a class="headerlink" href="#python-zmqserver-class-documentation" title="Link to this heading"></a></h2>
+<p>The <a class="reference internal" href="#pyrogue.interfaces.ZmqServer" title="pyrogue.interfaces.ZmqServer"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyrogue.interfaces.ZmqServer</span></code></a> interface exposes a running
+PyRogue root tree to external client programs over ZeroMQ sockets carried on
+TCP. In practice, this is the primary remote-control path used by tools such
+as PyDM GUIs, <a class="reference internal" href="../clients/simple.html#interfaces-clients-simple"><span class="std std-ref">Simple Client Interface</span></a>, and
+<a class="reference internal" href="../clients/virtual.html#interfaces-clients-virtual"><span class="std std-ref">Virtual Client Interface</span></a>.</p>
+<section id="what-it-provides">
+<h2>What it provides<a class="headerlink" href="#what-it-provides" title="Link to this heading"></a></h2>
+<p>At startup, the server binds three TCP-backed ZeroMQ endpoints using a base
+port:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">base</span></code>: publish socket for asynchronous variable updates</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">base+1</span></code>: binary request/reply path (used by full-featured clients)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">base+2</span></code>: string request/reply path (used by lightweight clients)</p></li>
+</ul>
+<p>From the client perspective, this gives remote access to the same tree content
+you have inside the process: read/write variables, call commands, and monitor
+value changes.</p>
+</section>
+<section id="common-usage-pattern">
+<h2>Common usage pattern<a class="headerlink" href="#common-usage-pattern" title="Link to this heading"></a></h2>
+<p>Create the server in <code class="docutils literal notranslate"><span class="pre">Root.__init__</span></code> and register it as an interface:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyRoot</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Root&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Example&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Expose this root over TCP/ZeroMQ.</span>
+        <span class="c1"># port=0 enables automatic base-port selection.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">zmqServer</span> <span class="o">=</span> <span class="n">pyrogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">ZmqServer</span><span class="p">(</span>
+            <span class="n">root</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
+            <span class="n">addr</span><span class="o">=</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span>
+            <span class="n">port</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addInterface</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">zmqServer</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>After <code class="docutils literal notranslate"><span class="pre">root.start()</span></code>, the selected port range can be inspected with
+<code class="docutils literal notranslate"><span class="pre">root.zmqServer.port()</span></code> and <code class="docutils literal notranslate"><span class="pre">root.zmqServer.address</span></code>.</p>
+</section>
+<section id="client-access-examples">
+<h2>Client access examples<a class="headerlink" href="#client-access-examples" title="Link to this heading"></a></h2>
+<p>Simple client (lightweight, string operations):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pyrogue.interfaces</span><span class="w"> </span><span class="kn">import</span> <span class="n">SimpleClient</span>
+
+<span class="k">with</span> <span class="n">SimpleClient</span><span class="p">(</span><span class="n">addr</span><span class="o">=</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">9099</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">client</span><span class="o">.</span><span class="n">getDisp</span><span class="p">(</span><span class="s1">&#39;root.RogueVersion&#39;</span><span class="p">))</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">setDisp</span><span class="p">(</span><span class="s1">&#39;root.AxiVersion.ScratchPad&#39;</span><span class="p">,</span> <span class="s1">&#39;0x100&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">client</span><span class="o">.</span><span class="n">valueDisp</span><span class="p">(</span><span class="s1">&#39;root.AxiVersion.ScratchPad&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Virtual client (mirrored remote tree):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pyrogue.interfaces</span><span class="w"> </span><span class="kn">import</span> <span class="n">VirtualClient</span>
+
+<span class="k">with</span> <span class="n">VirtualClient</span><span class="p">(</span><span class="n">addr</span><span class="o">=</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">9099</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+    <span class="n">root</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">root</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">RogueVersion</span><span class="o">.</span><span class="n">valueDisp</span><span class="p">())</span>
+    <span class="n">root</span><span class="o">.</span><span class="n">AxiVersion</span><span class="o">.</span><span class="n">ScratchPad</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mh">0x100</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="notes">
+<h2>Notes<a class="headerlink" href="#notes" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">addr='127.0.0.1'</span></code> keeps access local to the host.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">addr='*'</span></code> binds all interfaces.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">port=0</span></code> auto-selects an available base port (starting near <code class="docutils literal notranslate"><span class="pre">9099</span></code>).</p></li>
+<li><p>Group filtering can be applied with <code class="docutils literal notranslate"><span class="pre">incGroups</span></code>/<code class="docutils literal notranslate"><span class="pre">excGroups</span></code> to control
+which variable updates are published.</p></li>
+</ul>
+</section>
+<section id="class-api">
+<h2>Class API<a class="headerlink" href="#class-api" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="pyrogue.interfaces.ZmqServer">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pyrogue.interfaces.</span></span><span class="sig-name descname"><span class="pre">ZmqServer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">root</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">addr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">incGroups</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">excGroups</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['NoServe']</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/interfaces/_ZmqServer.html#ZmqServer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.ZmqServer" title="Link to this definition"></a></dt>
