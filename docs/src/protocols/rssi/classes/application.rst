@@ -4,7 +4,8 @@
 Application
 ===========
 
-TODO
+``Application`` is the upper RSSI stream endpoint. It carries payload frames
+between user protocol layers and the RSSI controller.
 
 Application objects in C++ are referenced by the following shared pointer typedef:
 
@@ -14,4 +15,3 @@ The Application class description is shown below:
 
 .. doxygenclass:: rogue::protocols::rssi::Application
    :members:
-

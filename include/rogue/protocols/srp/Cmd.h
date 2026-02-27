@@ -29,26 +29,57 @@ namespace rogue {
 namespace protocols {
 namespace srp {
 
-//! SRP Cmd
-/*
- * Serves as an interface between memory accesses and streams
- * carnying the SRP protocol.
+/**
+ * @brief Lightweight command protocol transmitter for opcode/context messages.
+ *
+ * @details
+ * `Cmd` implements a small command protocol that carries only an opcode and
+ * a context value. It is typically used for lightweight hardware commands such
+ * as triggers, strobes, and other fire-and-forget control events.
+ *
+ * This protocol is distinct from SRP and does not model request/response
+ * memory transactions. In common usage, frames sent by `Cmd` do not require
+ * a response path.
+ *
+ * Historical note: the class resides in `rogue::protocols::srp` for API
+ * compatibility with existing applications. Although that namespace placement
+ * is not semantically ideal, changing it would break downstream code.
  */
 class Cmd : public rogue::interfaces::stream::Master {
   public:
-    //! Class creation
+    /**
+     * @brief Creates an SRP command interface instance.
+     *
+     * @details
+     * This static factory is the preferred construction path when the object
+     * is shared across Rogue graph connections or exposed to Python.
+     * It returns `std::shared_ptr` ownership compatible with Rogue pointer typedefs.
+     *
+     * @return Shared pointer to the created `Cmd`.
+     */
     static std::shared_ptr<rogue::protocols::srp::Cmd> create();
 
-    //! Setup class in python
+    /** @brief Registers Python bindings for this class. */
     static void setup_python();
 
-    //! Creator
+    /**
+     * @brief Constructs an SRP command interface.
+     *
+     * @details
+     * This constructor is a low-level C++ allocation path.
+     * Prefer `create()` when shared ownership or Python exposure is required.
+     */
     Cmd();
 
-    //! Deconstructor
+    /** @brief Destroys the SRP command interface. */
     ~Cmd();
 
-    //! Post a transaction. Master will call this method with the access attributes.
+    /**
+     * @brief Sends an SRP command frame.
+     *
+     * @param opCode SRP command opcode.
+     * @param context Command context value carried in the frame.
+     */
     void sendCmd(uint8_t opCode, uint32_t context);
 };
 

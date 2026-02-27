@@ -4,7 +4,12 @@
 SrpV0
 =====
 
-TODO
+`rogue::protocols::srp::SrpV0` bridges Rogue memory transactions to SRPv0
+stream frames that are transported to hardware SRP endpoints.
+
+For SRPv0 packet-level protocol details, see:
+
+- https://confluence.slac.stanford.edu/x/aRmVD
 
 SrpV0 objects in C++ are referenced by the following shared pointer typedef:
 
@@ -14,4 +19,3 @@ The SrpV0 class description is shown below:
 
 .. doxygenclass:: rogue::protocols::srp::SrpV0
    :members:
-

@@ -30,7 +30,15 @@ namespace rogue {
 namespace interfaces {
 namespace stream {
 
-//! Frame Accessor
+/**
+ * @brief Typed accessor over a contiguous frame-data region.
+ *
+ * @details
+ * `FrameAccessor<T>` provides typed element access into frame payload data when
+ * the requested range is fully contained in a single underlying buffer span.
+ * This avoids per-byte iterator overhead in tight loops while preserving a
+ * checked construction step.
+ */
 template <typename T>
 class FrameAccessor {
   private:
@@ -41,7 +49,13 @@ class FrameAccessor {
     uint32_t size_;
 
   public:
-    //! Creator
+    /**
+     * @brief Creates a typed accessor at the iterator location.
+     *
+     * @param iter Frame iterator positioned at the first element.
+     * @param size Number of elements in the accessor.
+     * @throws rogue::GeneralError If the range spans multiple buffers.
+     */
     FrameAccessor(rogue::interfaces::stream::FrameIterator& iter, uint32_t size) {
         data_ = reinterpret_cast<T*>(iter.ptr());
         size_ = size;
@@ -51,12 +65,26 @@ class FrameAccessor {
                                               "Attempt to create a FrameAccessor over a multi-buffer range!");
     }
 
-    //! De-reference by index
+    /**
+     * @brief Dereference by index.
+     *
+     * @details
+     * Returns element reference at `offset` without bounds checking.
+     *
+     * @param offset Element index.
+     * @return Element reference.
+     */
     T& operator[](const uint32_t offset) {
         return data_[offset];
     }
 
-    //! Access element at location
+    /**
+     * @brief Returns element reference at `offset` with bounds checking.
+     *
+     * @param offset Element index.
+     * @return Element reference.
+     * @throws rogue::GeneralError If `offset >= size()`.
+     */
     T& at(const uint32_t offset) {
         if (offset >= size_)
             throw rogue::GeneralError::create("FrameAccessor",
@@ -67,17 +95,17 @@ class FrameAccessor {
         return data_[offset];
     }
 
-    //! Get size
+    /** @brief Returns number of elements in this accessor. */
     uint32_t size() {
         return size_;
     }
 
-    //! Begin iterator
+    /** @brief Returns pointer to first element. */
     T* begin() {
         return data_;
     }
 
-    //! End iterator
+    /** @brief Returns pointer one-past-last element. */
     T* end() {
         return data_ + size_;
     }

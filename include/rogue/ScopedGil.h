@@ -24,14 +24,23 @@
 
 namespace rogue {
 
-//! Logging
+/**
+ * @brief RAII helper that acquires the Python GIL for a scope.
+ *
+ * @details
+ * Constructing this object acquires the GIL (when Python is enabled) and
+ * destruction releases it, making it safe to call Python/C-API or Boost.Python
+ * operations from C++ threads.
+ */
 class ScopedGil {
 #ifndef NO_PYTHON
     PyGILState_STATE state_;
 #endif
 
   public:
+    /** @brief Acquires the GIL for this scope. */
     ScopedGil();
+    /** @brief Releases the GIL acquired by this scope. */
     ~ScopedGil();
 };
 }  // namespace rogue

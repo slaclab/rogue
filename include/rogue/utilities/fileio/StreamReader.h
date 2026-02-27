@@ -33,65 +33,110 @@ namespace rogue {
 namespace utilities {
 namespace fileio {
 
-//! Stream writer central class
+/**
+ * @brief Reads Rogue stream data files and emits frames on stream master interface.
+ *
+ * @details
+ * `StreamReader` opens a file (or indexed file sequence) created by Rogue file
+ * writer utilities, parses frame headers/metadata, reconstructs stream frames,
+ * and forwards them downstream via `sendFrame()`.
+ *
+ * File sequence behavior:
+ * - If opened on a filename ending in `.1`, the reader attempts `.2`, `.3`, ...
+ *   automatically as each file completes.
+ * - Otherwise only the specified file is read.
+ *
+ * Read activity runs in a background thread while `isActive()` is true.
+ */
 class StreamReader : public rogue::interfaces::stream::Master {
-    //! Base file name
+    // Base file name for indexed-file mode.
     std::string baseName_;
 
-    //! File descriptor
+    // Active file descriptor.
     int32_t fd_;
 
-    //! File index
+    // Current file index in indexed-file mode.
     uint32_t fdIdx_;
 
-    //! Active
+    // True while read thread is actively processing file data.
     bool active_;
 
-    //! Read thread
+    // Read worker thread.
     std::thread* readThread_;
     bool threadEn_;
 
-    //! Thread background
+    // Worker thread entry point.
     void runThread();
 
-    //! Open file
+    // Open next indexed file in sequence.
     bool nextFile();
 
-    //! Internal close
+    // Internal close helper.
     void intClose();
 
-    //! Active condition
+    // Condition signaled when activity state changes.
     std::condition_variable cond_;
 
-    //! Active lock
+    // Mutex for file/thread/activity state.
     std::mutex mtx_;
 
   public:
-    //! Class creation
+    /**
+     * @brief Creates a stream reader instance.
+     *
+     * @details
+     * This static factory is the preferred construction path when the object
+     * is shared across Rogue graph connections or exposed to Python.
+     * It returns `std::shared_ptr` ownership compatible with Rogue pointer typedefs.
+     *
+     * @return Shared pointer to the created reader.
+     */
     static std::shared_ptr<rogue::utilities::fileio::StreamReader> create();
 
-    //! Setup class in python
+    /** @brief Registers Python bindings for this class. */
     static void setup_python();
 
-    //! Creator
+    /**
+     * @brief Constructs a stream reader instance.
+     *
+     * @details
+     * This constructor is a low-level C++ allocation path.
+     * Prefer `create()` when shared ownership or Python exposure is required.
+     */
     StreamReader();
 
-    //! Deconstructor
+    /** @brief Destroys stream reader and closes active file/thread. */
     ~StreamReader();
 
-    //! Read from the data file
+    /**
+     * @brief Opens a file and starts background read processing.
+     *
+     * @param file Input data filename.
+     */
     void open(std::string file);
 
-    //! Close and stop thread
+    /**
+     * @brief Stops read thread and closes active file immediately.
+     */
     void close();
 
-    //! Get open status
+    /**
+     * @brief Returns whether a file descriptor is currently open.
+     *
+     * @return `true` if file is open; otherwise `false`.
+     */
     bool isOpen();
 
-    //! Close when done
+    /**
+     * @brief Waits for read activity to complete, then closes file/thread.
+     */
     void closeWait();
 
-    //! Return true while reading
+    /**
+     * @brief Returns read activity state.
+     *
+     * @return `true` while background reader is active.
+     */
     bool isActive();
 };
 

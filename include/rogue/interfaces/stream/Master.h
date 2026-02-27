@@ -40,10 +40,27 @@ namespace stream {
 class Slave;
 class Frame;
 
-//! Stream master class
-/** This class serves as the source for sending Frame data to a Slave. Each master
- * interfaces to one or more stream slave objects. The first stream Slave is used
- * to allocated new Frame objects and it is the last Slave to receive frame data.
+/**
+ * @brief Stream master endpoint.
+ *
+ * @details
+ * Source object for sending frames to one or more stream slaves. The first
+ * attached slave is used to allocate new frames and is the last to receive
+ * sent frames.
+ *
+ * `Master` is not an abstract class (no pure virtual methods), but it is
+ * commonly used as a base for protocol/source implementations.
+ *
+ * Subclass expectations in practice:
+ * - No `Master` method is required to be overridden.
+ * - Most subclasses keep `addSlave()`, `reqFrame()`, and `sendFrame()` as-is
+ *   and call `reqFrame()`/`sendFrame()` from their own public APIs or worker
+ *   threads (for example protocol transmit paths and file readers).
+ * - `stop()` is the primary `Master` method intended for override when the
+ *   subclass owns worker threads, timers, sockets, or device handles.
+ * - For transform/bridge classes that are both source and sink, ingress logic
+ *   is usually implemented by also inheriting `Slave` and overriding
+ *   `Slave::acceptFrame()`, while egress uses this `Master` interface.
  */
 class Master : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Master> {
     // Vector of slaves
@@ -56,109 +73,151 @@ class Master : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Mas
     std::shared_ptr<rogue::interfaces::stream::Slave> defSlave_;
 
   public:
-    //! Class factory which returns a pointer to a Master object (MasterPtr)
-    /** Create a new Master
+    /**
+     * @brief Creates a stream master.
      *
-     * Exposed as rogue.interfaces.stream.Master() to Python
+     * @details
+     * Exposed as `rogue.interfaces.stream.Master()` in Python.
+     * This static factory is the preferred construction path when the object
+     * is shared across Rogue graph connections or exposed to Python.
+     * It returns `std::shared_ptr` ownership compatible with Rogue pointer typedefs.
+     *
+     * @return Shared pointer to the created master.
      */
     static std::shared_ptr<rogue::interfaces::stream::Master> create();
 
-    // Setup class for use in python
+    /** @brief Registers this type with Python bindings. */
     static void setup_python();
 
-    // Class creator
+    /**
+     * @brief Constructs a stream master.
+     *
+     * @details
+     * This constructor is a low-level C++ allocation path.
+     * Prefer `create()` when shared ownership or Python exposure is required.
+     */
     Master();
 
-    // Destroy the object
+    /** @brief Destroys the stream master. */
     virtual ~Master();
 
-    //! Get Slave Count
-    /** Return the number of slaves.
+    /**
+     * @brief Returns the number of attached slaves.
      *
-     * Exposed as _slaveCount() to Python.
+     * @details Exposed as `_slaveCount()` in Python.
+     *
+     * @return Number of attached slaves.
      */
     uint32_t slaveCount();
 
-    //! Add a slave object
-    /** Multiple slaves are allowed.
-     * The first added slave is the Slave object from which the Master will request
-     * new Frame allocations. The first Slave is also the last Slave object
-     * which will receive the Frame.
+    /**
+     * @brief Attaches a downstream slave.
      *
-     * Exposed as _addSlave() to Python. Called in Python by the
-     * pyrogue.streamTop() method.
-     * @param slave Stream Slave pointer (SlavePtr)
+     * @details
+     * Multiple slaves are supported. The first attached slave is used for frame
+     * allocation and receives frames last during send.
+     * Exposed as `_addSlave()` in Python.
+     *
+     * @param slave Stream slave pointer.
      */
     void addSlave(std::shared_ptr<rogue::interfaces::stream::Slave> slave);
 
-    //! Request new Frame to be allocated by primary Slave
-    /** This method is called to create a new Frame object. An empty Frame with
-     * the requested payload capacity is create. The Master will forward this
-     * request to the primary Slave object. The request for a new Frame includes
-     * a flag which indicates if a zeroCopy frame is allowed. In most cases this
-     * flag can be set to True. Non zero copy frames are requested if the Master may
-     * need to transmit the same frame multiple times.
+    /**
+     * @brief Requests allocation of a new frame from the primary slave.
      *
-     * Exposed as _reqFrame() to Python.
-     * @param size Minimum size for requested Frame, larger Frame may be allocated
-     * @param zeroCopyEn Flag which indicates if a zero copy mode Frame is allowed.
-     * @return Newly allocated Frame pointer (FramePtr)
+     * @details
+     * Creates an empty frame with at least the requested payload capacity.
+     * The Master will forward this request to the primary Slave object.
+     * The request for a new Frame includes
+     * a flag which indicates if a zeroCopy frame is allowed. In most cases this
+     * flag can be set to `true`. Non-zero-copy frames are requested if the Master may
+     * need to transmit the same frame multiple times.
+     * Exposed as `_reqFrame()` in Python.
+     *
+     * @param size Minimum requested payload size in bytes.
+     * @param zeroCopyEn Set to `true` when zero-copy frame allocation is allowed.
+     * @return Newly allocated frame pointer.
      */
     std::shared_ptr<rogue::interfaces::stream::Frame> reqFrame(uint32_t size, bool zeroCopyEn);
 
-    //! Push frame to all slaves
-    /** This method sends the passed Frame to all of the attached Slave objects by
+    /**
+     * @brief Sends a frame to all attached slaves.
+     *
+     * @details
+     * This method sends the passed Frame to all of the attached Slave objects by
      * calling their acceptFrame() method. First the secondary Slaves are called in
      * order of attachment, followed last by the primary Slave. If the Frame is a
-     * zero copy frame it will most likely be empty when the sendFrame() method returns.
+     * zero copy frame it will most likely be empty when the sendFrame() method returns
      *
-     * Exposed as _sendFrame to Python
-     * @param frame Frame pointer (FramePtr) to send
+     * Exposed as `_sendFrame()` in Python.
+     *
+     * @param frame Frame to send.
      */
     void sendFrame(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
-    //! Ensure frame is a single buffer
-    /** This method makes sure the passed frame is composed of a single buffer.
-     *  If the reqNew flag is true and the passed frame is not a single buffer, a
-     *  new frame will be requested and the frame data will be copied, with the passed
-     *  frame pointer being updated. The return value will indicate if the frame is a
-     *  single buffer at the end of the process. A frame lock must be held when this
-     *  method is called.
+    /**
+     * @brief Ensures a frame is represented by a single buffer.
      *
-     * Not exposed to Python
-     * @param frame Reference to frame pointer (FramePtr)
-     * @param rewEn Flag to determine if a new frame should be requested
+     * @details
+     * If the `reqEn` flag is `true` and the passed frame is not a single buffer, a
+     * new frame will be requested and the frame data will be copied, with the passed
+     * frame pointer being updated. The return value will indicate if the frame is a
+     * single buffer at the end of the process. A frame lock must be held when this
+     * method is called.
+     *
+     * Not exposed to Python.
+     *
+     * @param frame Reference to frame pointer.
+     * @param reqEn Set to `true` to allow allocating and copying into a new frame.
+     * @return `true` if the resulting frame is single-buffer.
      */
     bool ensureSingleBuffer(std::shared_ptr<rogue::interfaces::stream::Frame>& frame, bool reqEn);
 
-    //! Shut down any threads associated with this object
-    /** This method is called to stop any frames from being generated by this Master and
-     *  shut down any threads, allowing for a clean program exit
+    /**
+     * @brief Stops frame generation and shuts down associated threads.
      *
-     *  Exposed as stop() to Python
-     *  Subclasses should override this method
+     * @details
+     * Exposed as `stop()` in Python.
+     *
+     * This is the primary subclass hook on `Master`. Override when the
+     * subclass owns background activity or transport resources that require
+     * deterministic shutdown.
      */
     virtual void stop();
 
 #ifndef NO_PYTHON
 
-    //! Support == operator in python
+    /**
+     * @brief Supports `==` operator usage from Python.
+     * @param p Python object expected to resolve to a stream `Slave`.
+     */
     void equalsPy(boost::python::object p);
 
-    //! Support >> operator in python
+    /**
+     * @brief Supports `>>` operator usage from Python.
+     * @param p Python object expected to resolve to a stream `Slave`.
+     * @return Original Python object for chaining semantics.
+     */
     boost::python::object rshiftPy(boost::python::object p);
 
 #endif
 
-    //! Support == operator in C++
+    /**
+     * @brief Supports `==` operator usage in C++.
+     * @param other Downstream slave to attach.
+     */
     void operator==(std::shared_ptr<rogue::interfaces::stream::Slave>& other);
 
-    //! Support >> operator in C++
+    /**
+     * @brief Connects this master to a slave via stream chaining operator.
+     * @param other Downstream slave to attach.
+     * @return Reference to `other` for chaining.
+     */
     std::shared_ptr<rogue::interfaces::stream::Slave>& operator>>(
         std::shared_ptr<rogue::interfaces::stream::Slave>& other);
 };
 
-//! Alias for using shared pointer as MasterPtr
+/** @brief Shared pointer alias for `Master`. */
 typedef std::shared_ptr<rogue::interfaces::stream::Master> MasterPtr;
 }  // namespace stream
 }  // namespace interfaces

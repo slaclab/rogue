@@ -24,19 +24,27 @@
 #define __AXIS_DRIVER_H__
 #include "DmaDriver.h"
 
-// Command definitions
-#define AXIS_Read_Ack 0x2001          // Command to acknowledge read
-#define AXIS_Write_ReqMissed 0x2002   // Command to indicate a missed write request
+/** @brief ioctl command code used to acknowledge a completed AXIS read. */
+#define AXIS_Read_Ack 0x2001  // NOLINT
+
+/** @brief ioctl command code used to signal a missed AXIS write request. */
+#define AXIS_Write_ReqMissed 0x2002  // NOLINT
 
 // Only define the following if not compiling for kernel space
 #ifndef DMA_IN_KERNEL
 
 /**
- * Set flags for AXIS transactions.
+ * @brief Packs AXIS first-user, last-user, and continuation bits.
  *
- * @param fuser First user-defined flag.
- * @param luser Last user-defined flag.
- * @param cont  Continuation flag.
+ * @details
+ * Encodes:
+ * - `fuser` in bits `[7:0]`
+ * - `luser` in bits `[15:8]`
+ * - `cont` in bit `16`
+ *
+ * @param fuser First user-defined flag (`[7:0]`).
+ * @param luser Last user-defined flag (`[7:0]`).
+ * @param cont Continuation flag (`[0]`).
  *
  * @return The combined flags value.
  */
@@ -52,7 +60,7 @@ static inline uint32_t axisSetFlags(uint32_t fuser, uint32_t luser, uint32_t con
 }
 
 /**
- * Extract the first user-defined flag from the combined flags.
+ * @brief Extracts first-user flag from packed AXIS flags.
  *
  * @param flags The combined flags value.
  *
@@ -63,7 +71,7 @@ static inline uint32_t axisGetFuser(uint32_t flags) {
 }
 
 /**
- * Extract the last user-defined flag from the combined flags.
+ * @brief Extracts last-user flag from packed AXIS flags.
  *
  * @param flags The combined flags value.
  *
@@ -74,7 +82,7 @@ static inline uint32_t axisGetLuser(uint32_t flags) {
 }
 
 /**
- * Extract the continuation flag from the combined flags.
+ * @brief Extracts continuation flag from packed AXIS flags.
  *
  * @param flags The combined flags value.
  *
@@ -85,7 +93,11 @@ static inline uint32_t axisGetCont(uint32_t flags) {
 }
 
 /**
- * Acknowledge a read operation.
+ * @brief Issues AXIS read-acknowledge ioctl command.
+ *
+ * @details
+ * Calls `ioctl(fd, AXIS_Read_Ack, 0)` to notify the driver that a read
+ * transaction has been acknowledged/consumed.
  *
  * @param fd File descriptor for the AXIS device.
  */
@@ -94,7 +106,11 @@ static inline void axisReadAck(int32_t fd) {
 }
 
 /**
- * Indicate a missed write request.
+ * @brief Issues AXIS missed-write-request ioctl command.
+ *
+ * @details
+ * Calls `ioctl(fd, AXIS_Write_ReqMissed, 0)` to notify the driver that a write
+ * request was missed and recovery/diagnostic handling may be required.
  *
  * @param fd File descriptor for the AXIS device.
  */

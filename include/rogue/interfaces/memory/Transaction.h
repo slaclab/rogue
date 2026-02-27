@@ -47,12 +47,33 @@ class Hub;
 //         using TransactionQueue = std::queue<std::shared_ptr<rogue::interfaces::memory::Transaction>>;
 using TransactionMap = std::map<uint32_t, std::shared_ptr<rogue::interfaces::memory::Transaction>>;
 
-//! Transaction Container
-/** The Transaction is passed between the Master and Slave to initiate a transaction.
- * The Transaction class contains information about the transaction as well as the
- * transaction data pointer. Each created transaction object has a unique 32-bit
- * transaction ID which is used to track the transaction. Transactions are never
- * created directly, instead they are created in the Master() class.
+/**
+ * @brief Memory transaction container passed between master and slave.
+ *
+ * @details
+ * Encapsulates a single memory operation request and completion state while it moves
+ * between `Master` and `Slave` layers.
+ *
+ * Lifecycle and ownership:
+ * - Instances are created internally by `Master`; callers do not construct them directly.
+ * - A transaction is identified by a unique 32-bit ID.
+ * - Data is accessed through an internal byte iterator and guarded by `TransactionLock`.
+ * - Completion is signaled via `done()` or `error*()` and may be observed by wait logic.
+ *
+ * Timeout and completion behavior:
+ * - A per-transaction timeout is captured at creation and used by wait/refresh logic.
+ * - Transactions may expire when timeout is reached before completion.
+ * - Timeout refresh can propagate from parent/peer activity to avoid premature expiration.
+ *
+ * Subtransaction behavior:
+ * - A transaction can be split into child subtransactions.
+ * - Parent tracks children in `subTranMap_` and completes only after all children complete
+ *   (or propagates child error to the parent).
+ *
+ * Python integration:
+ * - Python buffer-backed transactions are supported when Python APIs are used.
+ * - Accessors such as `id()`, `address()`, `size()`, `type()`, and `expired()` are
+ *   exposed to Python bindings.
  */
 class Transaction : public rogue::EnableSharedFromThis<rogue::interfaces::memory::Transaction> {
     friend class TransactionLock;
@@ -60,7 +81,7 @@ class Transaction : public rogue::EnableSharedFromThis<rogue::interfaces::memory
     friend class Hub;
 
   public:
-    //! Alias for using uint8_t * as Transaction::iterator
+    /** @brief Iterator alias for transaction byte access. */
     typedef uint8_t* iterator;
 
   private:
@@ -127,13 +148,22 @@ class Transaction : public rogue::EnableSharedFromThis<rogue::interfaces::memory
     // Identify if it's a parent or a sub transaction
     bool isSubTransaction_;
 
-    //! Log
+    /** Logger for transaction activity. */
     std::shared_ptr<rogue::Logging> log_;
 
     // Weak pointer to parent transaction, where applicable
     std::weak_ptr<rogue::interfaces::memory::Transaction> parentTransaction_;
 
-    // Create a transaction container and return a TransactionPtr, called by Master
+    /**
+     * @brief Creates a transaction container.
+     *
+     * @details
+     * Private/internal factory used by `Master` to allocate transaction
+     * instances with shared ownership and lifecycle tracking.
+     * Parameter semantics are identical to the constructor; see `Transaction()`.
+     * This static factory is the preferred construction path when shared ownership
+     * is required across asynchronous request/response paths.
+     */
     static std::shared_ptr<rogue::interfaces::memory::Transaction> create(struct timeval timeout);
 
     // Wait for the transaction to complete, called by Master
@@ -143,137 +173,187 @@ class Transaction : public rogue::EnableSharedFromThis<rogue::interfaces::memory
     // Setup class for use in python
     static void setup_python();
 
-    // Create a Transaction. Do not call directly. Only called from the Master class.
+    /**
+     * @brief Constructs a transaction container.
+     *
+     * @details
+     * This constructor is a low-level C++ allocation path.
+     * Prefer `create()` for normal transaction lifecycle management.
+     * Do not call this constructor directly in normal use; transactions are
+     * expected to be created by `Master` through the internal `create()` path.
+     * That path ensures consistent ownership and integration with transaction
+     * request/wait bookkeeping.
+     *
+     * @param timeout Initial timeout value copied into this transaction.
+     */
     explicit Transaction(struct timeval timeout);
 
     // Destroy the Transaction.
     ~Transaction();
 
-    //! Lock Transaction and return a TransactionLockPtr object
-    /** Exposed as lock() to Python
-     *  @return TransactionLock pointer (TransactonLockPtr)
+    /**
+     * @brief Locks the transaction and returns a lock wrapper.
+     *
+     * @details Exposed as `lock()` in Python.
+     *
+     * @return Transaction lock pointer.
      */
     std::shared_ptr<rogue::interfaces::memory::TransactionLock> lock();
 
-    //! Get expired flag
-    /** The expired flag is set by the Master when the Transaction times out
-     * and the Master is no longer waiting for the Transaction to complete.
-     * Lock must be held before checking the expired status.
+    /**
+     * @brief Returns whether this transaction has expired.
      *
-     * Exposed as expired() to Python
-     * @return True if transaction is expired.
+     * @details
+     * Expiration is set by `Master` when timeout occurs and no further waiting is
+     * performed. The lock must be held before checking expiration state.
+     * Exposed as `expired()` in Python.
+     *
+     * @return `true` if transaction is expired; otherwise `false`.
      */
     bool expired();
 
-    //! Get 32-bit Transaction ID
-    /** Exposed as id() to Python
-     * @return 32-bit transaction ID
+    /**
+     * @brief Returns the transaction ID.
+     *
+     * @details Exposed as `id()` in Python.
+     *
+     * @return 32-bit transaction ID.
      */
     uint32_t id();
 
-    //! Get Transaction address
-    /** Exposed as address() to Python
-     * @return 64-bit Transaction ID
+    /**
+     * @brief Returns the transaction address.
+     *
+     * @details Exposed as `address()` in Python.
+     *
+     * @return 64-bit transaction address.
      */
     uint64_t address();
 
-    //! Get Transaction size
-    /** Exposed as size() to Python
-     * @return 32-bit Transaction size
+    /**
+     * @brief Returns the transaction size.
+     *
+     * @details Exposed as `size()` in Python.
+     *
+     * @return 32-bit transaction size in bytes.
      */
     uint32_t size();
 
-    //! Get Transaction type
-    /** The transaction type values are defined in Constants
-     * Exposed as type() to Python
-     * @return 32-bit Transaction type
+    /**
+     * @brief Returns the transaction type constant.
+     *
+     * @details
+     * Type values are defined in `rogue/interfaces/memory/Constants.h`, including:
+     * - `rogue::interfaces::memory::Read`
+     * - `rogue::interfaces::memory::Write`
+     * - `rogue::interfaces::memory::Post`
+     * - `rogue::interfaces::memory::Verify`
+     *
+     * Exposed as `type()` in Python.
+     *
+     * @return 32-bit transaction type.
      */
     uint32_t type();
 
-    //! Create a subtransaction
-    /** Create a new transaction and assign internal pointers linking it to this parent transaction
-     * @return A pointer to the newly created subtransaction
+    /**
+     * @brief Creates a subtransaction linked to this parent transaction.
+     *
+     * @return Pointer to the newly created subtransaction.
      */
     std::shared_ptr<rogue::interfaces::memory::Transaction> createSubTransaction();
 
+    /** @brief Marks subtransaction creation as complete for this transaction. */
     void doneSubTransactions();
 
-    //! Refresh transaction timer
-    /** Called to refresh the Transaction timer. If the passed reference
-     * Transaction is NULL or the Transaction start time is later than the
-     * reference transaction, the Transaction timer will be refreshed.
+    /**
+     * @brief Refreshes the transaction timer.
      *
-     * Not exposed to Python
-     * @param reference Reference TransactionPtr
+     * @details
+     * Timer is refreshed when `reference` is null or when this transaction start time
+     * is later than the reference transaction start time. Not exposed to Python.
+     *
+     * @param reference Reference transaction.
      */
     void refreshTimer(std::shared_ptr<rogue::interfaces::memory::Transaction> reference);
 
-    //! Complete transaction without error
-    /** Lock must be held before calling this method. The
-     * error types are defined in Constants.
+    /**
+     * @brief Marks transaction completion without error.
      *
-     * Exposed as done() to Python
+     * @details
+     * The transaction lock must be held before calling this method.
+     * Exposed as `done()` in Python.
      */
     void done();
 
-    //! Complete transaction with passed error, python interface
-    /** Lock must be held before calling this method.
+    /**
+     * @brief Marks transaction completion with an error string (Python interface).
      *
-     * Exposed as error() to Python
-     * @param error Transaction error message
+     * @details
+     * The transaction lock must be held before calling this method.
+     * Exposed as `error()` in Python.
+     *
+     * @param error Transaction error message.
      */
     void errorStr(std::string error);
 
-    //! Complete transaction with passed error
-    /** Lock must be held before calling this method.
+    /**
+     * @brief Marks transaction completion with a formatted C-string error.
      *
-     * @param error Transaction error message
+     * @details The transaction lock must be held before calling this method.
      */
     void error(const char* fmt, ...);
 
-    //! Get start iterator for Transaction data
-    /** Not exposed to Python
+    /**
+     * @brief Returns iterator to the beginning of transaction data.
      *
-     * Lock must be held before calling this method and while
-     * updating Transaction data.
-     * @return Data iterator as Transaction::iterator
+     * @details
+     * Not exposed to Python. Lock must be held before calling this method and while
+     * updating transaction data.
+     *
+     * @return Data iterator.
      */
     uint8_t* begin();
 
-    //! Get end iterator for Transaction data
-    /** Not exposed to Python
+    /**
+     * @brief Returns iterator to the end of transaction data.
      *
-     * Lock must be held before calling this method and while
-     * updating Transaction data.
-     * @return Data iterator as Transaction::iterator
+     * @details
+     * Not exposed to Python. Lock must be held before calling this method and while
+     * updating transaction data.
+     *
+     * @return Data iterator.
      */
     uint8_t* end();
 
 #ifndef NO_PYTHON
 
-    //! Method for copying transaction data to Python byte array
-    /** Exposed to Python as getData()
+    /**
+     * @brief Copies transaction data into a Python byte-array-like object.
      *
-     * The size of the data to be copied is defined by the size of
-     * the passed data buffer.
-     * @param p Python byte array object
-     * @param offset Offset for Transaction data access.
+     * @details
+     * Exposed to Python as `getData()`. The copy size is defined by the provided
+     * destination buffer size.
+     *
+     * @param p Python byte-array-like destination object.
+     * @param offset Offset for transaction data access.
      */
     void getData(boost::python::object p, uint32_t offset);
 
-    //! Method for copying transaction data from Python byte array
-    /** Exposed to Python as setData()
+    /**
+     * @brief Copies data from a Python byte-array-like object into the transaction.
      *
-     * The size of the data to be copied is defined by the size of
-     * the passed data buffer.
-     * @param p Python byte array object
-     * @param offset Offset for Transaction data access.
+     * @details
+     * Exposed to Python as `setData()`. The copy size is defined by the provided
+     * source buffer size.
+     *
+     * @param p Python byte-array-like source object.
+     * @param offset Offset for transaction data access.
      */
     void setData(boost::python::object p, uint32_t offset);
 #endif
 };
 
-//! Alias for using shared pointer as TransactionPtr
+/** @brief Shared pointer alias for `Transaction`. */
 typedef std::shared_ptr<rogue::interfaces::memory::Transaction> TransactionPtr;
 
 }  // namespace memory

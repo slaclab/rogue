@@ -108,6 +108,7 @@ Building and Viewing the Docs
 Note: if edits are made to the source files, the full build process needs to be run for changes to reflect in documentation.
 
 .. code::
+
    # build the docs
    $ cd ../docs/
    $ make html
@@ -123,4 +124,3 @@ Run the following commands to delete the miniforge environment.
 .. code::
 
    $ conda env remove -n rogue_build
-

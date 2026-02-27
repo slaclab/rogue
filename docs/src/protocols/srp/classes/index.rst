@@ -4,9 +4,9 @@
 SRP Protocol Class Descriptions
 ===============================
 
-TODO
-
 The following are detailed descriptions of the various C++ classes that make up the Rogue SRP protocol.
+The ``Cmd`` class is also listed here because it is in the same namespace, even
+though it is a separate lightweight command protocol.
 
 .. toctree::
    :maxdepth: 1
@@ -15,4 +15,3 @@ The following are detailed descriptions of the various C++ classes that make up 
    srpV0
    srpV3
    cmd
-

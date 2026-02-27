@@ -31,22 +31,55 @@ namespace rogue {
 namespace protocols {
 namespace batcher {
 
-//!  AXI Stream FIFO
+/**
+ * @brief Splits one batcher v2 super-frame into per-record output frames.
+ *
+ * @details
+ * Protocol reference: https://confluence.slac.stanford.edu/x/L2VlK
+ *
+ * `SplitterV2` uses `CoreV2` to parse a batcher super-frame, then emits one
+ * Rogue stream frame per parsed `Data` record:
+ * - Payload bytes copied from record data.
+ * - Channel set from record destination.
+ * - First/last user fields propagated from record metadata.
+ *
+ * Threading model:
+ * - No internal worker thread is created.
+ * - Processing executes synchronously in the caller thread of `acceptFrame()`.
+ */
 class SplitterV2 : public rogue::interfaces::stream::Master, public rogue::interfaces::stream::Slave {
   public:
-    //! Class creation
+    /**
+     * @brief Creates a `SplitterV2` instance.
+     *
+     * @details
+     * This static factory is the preferred construction path when the object
+     * is shared across Rogue graph connections or exposed to Python.
+     * It returns `std::shared_ptr` ownership compatible with Rogue pointer typedefs.
+     *
+     * @return Shared pointer to the created splitter.
+     */
     static std::shared_ptr<rogue::protocols::batcher::SplitterV2> create();
 
-    //! Setup class in python
+    /** @brief Registers Python bindings for this class. */
     static void setup_python();
 
-    //! Creator
+    /**
+     * @brief Constructs a `SplitterV2` instance.
+     *
+     * @details
+     * This constructor is a low-level C++ allocation path.
+     * Prefer `create()` when shared ownership or Python exposure is required.
+     */
     SplitterV2();
 
-    //! Deconstructor
+    /** @brief Destroys the splitter. */
     ~SplitterV2();
 
-    //! Accept a frame from master
+    /**
+     * @brief Accepts one batcher v2 frame and emits parsed records as frames.
+     * @param frame Input batcher super-frame.
+     */
     void acceptFrame(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 };
 

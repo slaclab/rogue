@@ -1,5 +1,5 @@
 /**
- * ----------------------------------------------------------------------------
+  * ----------------------------------------------------------------------------
  * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description :
@@ -29,73 +29,84 @@
 namespace rogue {
 namespace utilities {
 
-//! PRBS master / slave class
-/*
- * Engine can be used as either a master or slave.
- * Internal thread can en enabled for auto frame generation
+/**
+ * @brief PRBS generator/checker that can act as both stream master and slave.
+ *
+ * @details
+ * The engine can transmit deterministic pseudo-random patterns and verify
+ * received patterns for bit-error testing. It supports one-shot frame
+ * generation and optional background transmit mode.
+ *
+ * Threading model:
+ * - Receive checking executes synchronously in the thread calling
+ *   `acceptFrame()`.
+ * - Optional periodic transmit mode (`enable()`) runs in an internal TX thread
+ *   that repeatedly calls `genFrame()`.
+ * - Counters, LFSR state, and configuration shared between RX/TX paths are
+ *   protected by an internal mutex.
  */
 class Prbs : public rogue::interfaces::stream::Slave, public rogue::interfaces::stream::Master {
-    //! Max size
+    // Max size
     static const uint32_t MaxBytes = 64;
 
-    //! PRBS taps
+    // PRBS taps
     uint8_t* taps_;
 
-    //! PRBS tap count
+    // PRBS tap count
     uint32_t tapCnt_;
 
-    //! Data width in bytes
+    // Data width in bytes
     uint32_t width_;
 
-    //! Data width in bytes
+    // Data width in bytes
     uint32_t byteWidth_;
 
-    //! Min size
+    // Min size
     uint32_t minSize_;
 
-    //! Lock
+    // Lock
     std::mutex pMtx_;
 
-    //! rx sequence tracking
+    // rx sequence tracking
     uint32_t rxSeq_;
 
-    //! RX Error count
+    // RX Error count
     uint32_t rxErrCount_;
 
-    //! Rx count
+    // Rx count
     uint32_t rxCount_;
 
-    //! Rx bytes
+    // Rx bytes
     uint32_t rxBytes_;
 
-    //! tx sequence tracking
+    // tx sequence tracking
     uint32_t txSeq_;
 
-    //! Transmit size
+    // Transmit size
     uint32_t txSize_;
 
-    //! TX Error count
+    // TX Error count
     uint32_t txErrCount_;
 
-    //! TX count
+    // TX count
     uint32_t txCount_;
 
-    //! TX bytes
+    // TX bytes
     uint32_t txBytes_;
 
-    //! Check payload
+    // Check payload
     bool checkPl_;
 
-    //! Gen payload
+    // Gen payload
     bool genPl_;
 
-    //! Send count
+    // Send count
     bool sendCount_;
 
-    //! Receive enable
+    // Receive enable
     bool rxEnable_;
 
-    //! Tx Rate Period in microseconds
+    // Tx Rate Period in microseconds
     uint32_t txPeriod_;
 
     // Stats
@@ -111,110 +122,205 @@ class Prbs : public rogue::interfaces::stream::Slave, public rogue::interfaces::
     double txRate_;
     double txBw_;
 
-    //! Logger
+    // Logger
     std::shared_ptr<rogue::Logging> rxLog_;
     std::shared_ptr<rogue::Logging> txLog_;
 
-    //! TX thread
+    // TX thread
     std::thread* txThread_;
     bool threadEn_;
 
-    //! Internal computation
+    // Internal computation
     void flfsr(uint8_t* data);
 
-    //! Thread background
+    // Thread background
     void runThread();
 
     static double updateTime(struct timeval* last);
 
   public:
-    //! Class creation
+    /**
+     * @brief Creates a PRBS generator/checker instance.
+     *
+     * @details
+     * This static factory is the preferred construction path when the object
+     * is shared across Rogue graph connections or exposed to Python.
+     * It returns `std::shared_ptr` ownership compatible with Rogue pointer typedefs.
+     *
+     * @return Shared pointer to the created PRBS object.
+     */
     static std::shared_ptr<rogue::utilities::Prbs> create();
 
-    //! Setup class in python
+    /** @brief Registers Python bindings for this class. */
     static void setup_python();
 
-    //! Creator with default taps and size
+    /**
+     * @brief Constructs a PRBS instance with default taps and width.
+     *
+     * @details
+     * This constructor is a low-level C++ allocation path.
+     * Prefer `create()` when shared ownership or Python exposure is required.
+     */
     Prbs();
 
-    //! Deconstructor
+    /** @brief Destroys the PRBS instance and stops background generation. */
     ~Prbs();
 
-    //! Set width
+    /**
+     * @brief Sets generator/checker data width.
+     * @param width Data width in bits.
+     */
     void setWidth(uint32_t width);
 
-    //! Set taps
+    /**
+     * @brief Configures LFSR taps.
+     * @param tapCnt Number of tap entries in \p taps.
+     * @param taps Pointer to tap index array.
+     */
     void setTaps(uint32_t tapCnt, uint8_t* taps);
 
 #ifndef NO_PYTHON
-    //! Set taps, python
+    /**
+     * @brief Configures LFSR taps from a Python sequence.
+     * @param p Python object containing tap values.
+     */
     void setTapsPy(boost::python::object p);
 #endif
 
-    //! Send counter value
+    /**
+     * @brief Enables or disables transmission of sequence counters in payload.
+     * @param state True to include counters in generated data.
+     */
     void sendCount(bool state);
 
-    //! Generate a data frame
+    /**
+     * @brief Generates and transmits one PRBS frame.
+     * @param size Payload size in bytes.
+     */
     void genFrame(uint32_t size);
 
-    //! Auto run data generation
+    /**
+     * @brief Enables periodic background frame generation.
+     *
+     * @details
+     * Starts an internal TX worker thread if one is not already running.
+     * Generated frames use the configured TX period from `setTxPeriod()`.
+     *
+     * @param size Payload size in bytes for generated frames.
+     */
     void enable(uint32_t size);
 
-    //! Disable auto generation
+    /**
+     * @brief Disables periodic background frame generation.
+     *
+     * @details
+     * Stops and joins the internal TX worker thread started by `enable()`.
+     */
     void disable();
 
-    //! Get rx enable
+    /**
+     * @brief Returns whether RX checking is enabled.
+     * @return True when RX checking is enabled.
+     */
     bool getRxEnable();
 
-    //! Set rx enable
-    void setRxEnable(bool);
+    /**
+     * @brief Enables or disables RX checking.
+     * @param state True to validate incoming PRBS frames.
+     */
+    void setRxEnable(bool state);
 
-    //! Get rx errors
+    /**
+     * @brief Returns RX error count.
+     * @return Number of receive-side check failures.
+     */
     uint32_t getRxErrors();
 
-    //! Get rx count
+    /**
+     * @brief Returns RX frame count.
+     * @return Number of received frames.
+     */
     uint32_t getRxCount();
 
-    //! Get rx total bytes
+    /**
+     * @brief Returns RX byte count.
+     * @return Total received payload bytes.
+     */
     uint32_t getRxBytes();
 
-    //! Get rx rate
+    /**
+     * @brief Returns computed RX frame rate.
+     * @return Receive frame rate in frames/second.
+     */
     double getRxRate();
 
-    //! Get rx bw
+    /**
+     * @brief Returns computed RX bandwidth.
+     * @return Receive bandwidth in bytes/second.
+     */
     double getRxBw();
 
-    //! Get tx rate
+    /**
+     * @brief Returns computed TX frame rate.
+     * @return Transmit frame rate in frames/second.
+     */
     double getTxRate();
 
-    //! Set tx rate period in micorseconds
-    void setTxPeriod(uint32_t);
+    /**
+     * @brief Sets background TX period.
+     * @param txPeriod Period in microseconds between generated frames.
+     */
+    void setTxPeriod(uint32_t txPeriod);
 
-    //! Get tx rate limit
+    /**
+     * @brief Returns configured background TX period.
+     * @return TX period in microseconds.
+     */
     uint32_t getTxPeriod();
 
-    //! Get tx bw
+    /**
+     * @brief Returns computed TX bandwidth.
+     * @return Transmit bandwidth in bytes/second.
+     */
     double getTxBw();
 
-    //! Get tx errors
+    /**
+     * @brief Returns TX error count.
+     * @return Number of transmit-side generation errors.
+     */
     uint32_t getTxErrors();
 
-    //! Get tx count
+    /**
+     * @brief Returns TX frame count.
+     * @return Number of transmitted frames.
+     */
     uint32_t getTxCount();
 
-    //! Get tx total bytes
+    /**
+     * @brief Returns TX byte count.
+     * @return Total transmitted payload bytes.
+     */
     uint32_t getTxBytes();
 
-    //! Set check payload flag, default = true
+    /**
+     * @brief Enables or disables payload checking.
+     * @param state True to validate payload contents.
+     */
     void checkPayload(bool state);
 
-    //! Set check generate flag, default = true
+    /**
+     * @brief Enables or disables payload generation.
+     * @param state True to generate PRBS payload bytes.
+     */
     void genPayload(bool state);
 
-    //! Reset counters
+    /** @brief Resets RX/TX counters and statistics. */
     void resetCount();
 
-    //! Accept a frame from master
+    /**
+     * @brief Accepts a frame from an upstream master.
+     * @param frame Received stream frame.
+     */
     void acceptFrame(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 };
 

@@ -31,15 +31,23 @@ namespace rogue {
 namespace interfaces {
 namespace memory {
 
-//! Memory TCP Bridge Client
-/** This class implements a TCP bridge between a memory Master and a memory Slave.
- * The client side of the TCP bridge accepts a memory Transaction from an attached
- * master and forwards that Transaction to a remote TcpServer. The server side of the
- * TCP bridge implements a memory Master device which executes the memory Transaction
- * to an attached Slave.
+/**
+ * @brief Memory TCP bridge client.
  *
- * The TcpClient memory interface will drop transactions when the remote server is not
- * present or when the pipeline backs up.
+ * @details
+ * Bridges a local memory transaction source to a remote `TcpServer`.
+ *
+ * The client accepts transactions through its `Slave` interface and sends them over
+ * a two-socket request/response transport (base port and base port + 1). Non-posted
+ * transactions are tracked by transaction ID until a response is received by the
+ * background thread.
+ *
+ * Operational behavior:
+ * - Write/Post transactions include payload bytes in the outbound message.
+ * - Read/Verify transactions send metadata and receive payload bytes in the response.
+ * - Posted writes are completed locally after send (no response wait).
+ * - If the remote side is unavailable or send path is backpressured, sends may fail
+ *   and in-flight transactions can time out at higher layers.
  */
 class TcpClient : public rogue::interfaces::memory::Slave {
     // Inbound Address
@@ -71,40 +79,72 @@ class TcpClient : public rogue::interfaces::memory::Slave {
     std::mutex bridgeMtx_;
 
   public:
-    //! Create a TcpClient object and return as a TcpServerPtr
-    /**The creator takes an address and port. The passed address is the address of
-     * the remote TcpServer to connect to, and can either be an IP address or hostname.
-     * The memory bridge requires two TCP ports. The passed port is the
-     * base number of these two ports. A passed value of 8000 will result in both
-     * 8000 and 8001 being used by this bridge.
+    /**
+     * @brief Creates a TCP memory bridge client.
      *
-     * Exposed as rogue.interfaces.memory.TcpClient() to Python
-     * @param addr Interface address
-     * @param port Base port number to use for connection.
-     * @return TcpServer object as a TcpServerPtr
+     * @details
+     * Parameter semantics are identical to the constructor; see `TcpClient()`
+     * for address and port behavior details.
+     * Exposed as `rogue.interfaces.memory.TcpClient()` in Python.
+     * This static factory is the preferred construction path when the object
+     * is shared across Rogue graph connections or exposed to Python.
+     * It returns `std::shared_ptr` ownership compatible with Rogue pointer typedefs.
+     *
+     * @param addr Remote server address.
+     * @param port Base TCP port number.
+     * @return Shared pointer to the created client.
      */
     static std::shared_ptr<rogue::interfaces::memory::TcpClient> create(std::string addr, uint16_t port);
 
-    // Setup class in python
+    /**
+     * @brief Registers this type with Python bindings.
+     */
     static void setup_python();
 
-    // Create a TcpClient object
+    /**
+     * @brief Constructs a TCP memory bridge client.
+     *
+     * @details
+     * The address is the remote `TcpServer` host (IP or hostname).
+     * The bridge uses two consecutive TCP ports starting at `port`; for example,
+     * `port=8000` uses ports `8000` and `8001`.
+     *
+     * This constructor is a low-level C++ allocation path.
+     * Prefer `create()` when shared ownership or Python exposure is required.
+     *
+     * @param addr Remote server address.
+     * @param port Base TCP port number.
+     */
     TcpClient(std::string addr, uint16_t port);
 
-    // Destroy the TcpClient
+    /**
+     * @brief Destroys the TCP client and releases transport resources.
+     */
     ~TcpClient();
 
-    // Close the connections, deprecated
+    /**
+     * @brief Closes bridge connections.
+     *
+     * @details Deprecated; use `stop()`.
+     */
     void close();
 
-    // Stop the interface
+    /**
+     * @brief Stops the bridge interface and worker thread.
+     */
     void stop();
 
-    // Process transaction from Master
+    /**
+     * @brief Processes a transaction received from the upstream master.
+     *
+     * @param tran Transaction to forward to the remote server.
+     */
     void doTransaction(std::shared_ptr<rogue::interfaces::memory::Transaction> tran);
 };
 
-//! Alias for using shared pointer as TcpClientPtr
+/**
+ * @brief Shared pointer alias for `TcpClient`.
+ */
 typedef std::shared_ptr<rogue::interfaces::memory::TcpClient> TcpClientPtr;
 
 }  // namespace memory

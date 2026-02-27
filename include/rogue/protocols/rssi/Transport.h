@@ -1,5 +1,5 @@
 /**
- * ----------------------------------------------------------------------------
+  * ----------------------------------------------------------------------------
  * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
@@ -8,7 +8,7 @@
  * This file is part of the rogue software platform. It is subject to
  * the license terms in the LICENSE.txt file found in the top-level directory
  * of this distribution and at:
- *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ *  https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
  * No part of the rogue software platform, including this file, may be
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
@@ -32,28 +32,58 @@ namespace rssi {
 
 class Controller;
 
-//! RSSI Transport Class
+/**
+ * @brief RSSI transport endpoint.
+ *
+ * @details
+ * Bridges stream traffic between the RSSI controller and the underlying link.
+ *
+ * Inbound frames are forwarded synchronously to
+ * `Controller::transportRx()`. Outbound transport frames are produced via
+ * controller APIs and emitted by other RSSI components.
+ */
 class Transport : public rogue::interfaces::stream::Master, public rogue::interfaces::stream::Slave {
-    //! Core module
+    // RSSI controller backend.
     std::shared_ptr<rogue::protocols::rssi::Controller> cntl_;
 
   public:
-    //! Class creation
+    /**
+     * @brief Creates a new transport endpoint instance.
+     *
+     * @details
+     * This static factory is the preferred construction path when the object
+     * is shared across Rogue graph connections or exposed to Python.
+     * It returns `std::shared_ptr` ownership compatible with Rogue pointer typedefs.
+     *
+     * @return Shared pointer to the created transport endpoint.
+     */
     static std::shared_ptr<rogue::protocols::rssi::Transport> create();
 
-    //! Setup class in python
+    /** @brief Registers Python bindings for this class. */
     static void setup_python();
 
-    //! Creator
+    /**
+     * @brief Constructs a transport endpoint.
+     *
+     * @details
+     * This constructor is a low-level C++ allocation path.
+     * Prefer `create()` when shared ownership or Python exposure is required.
+     */
     Transport();
 
-    //! Destructor
+    /** @brief Destroys the transport endpoint. */
     ~Transport();
 
-    //! Setup links
+    /**
+     * @brief Attaches the RSSI controller.
+     * @param cntl Controller instance that owns protocol state.
+     */
     void setController(std::shared_ptr<rogue::protocols::rssi::Controller> cntl);
 
-    //! Accept a frame from master
+    /**
+     * @brief Accepts a frame from the upstream stream interface.
+     * @param frame Input frame to decode and forward to controller logic.
+     */
     void acceptFrame(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 };
 

@@ -34,37 +34,55 @@ namespace rogue {
 namespace interfaces {
 namespace stream {
 
-//! Stream TCP Bridge Server
-/** This class is a wrapper around TcpCore which operates in server mode.
+/**
+ * @brief Stream TCP bridge server.
+ *
+ * @details Thin wrapper around `TcpCore` configured for server mode.
  */
 class TcpServer : public rogue::interfaces::stream::TcpCore {
   public:
-    //! Create a TcpServer object and return as a TcpServerPtr
-    /**The creator takes an address and port. The passed address can either be
-     * an IP address or hostname. The address string  defines which network interface
-     * the socket server will listen on. A string of "*" results in all network interfaces
-     * being listened on. The stream bridge requires two TCP ports. The passed port is the
-     * base number of these two ports. A passed value of 8000 will result in both
-     * 8000 and 8001 being used by this bridge.
+    /**
+     * @brief Factory method to create a TCP stream bridge server.
      *
-     * Exposed to Python as rogue.interfaces.stream.TcpServer
-     * @param addr Interface address for server, remote server address for client.
-     * @param port Base port number of use for connection.
-     * @return TcpServer object as a TcpServerPtr
+     * @details
+     * Parameter semantics are identical to the constructor; see `TcpServer()`
+     * for address and port behavior details.
+     * Exposed in Python as `rogue.interfaces.stream.TcpServer`.
+     * This static factory is the preferred construction path when the object
+     * is shared across Rogue graph connections or exposed to Python.
+     * It returns `std::shared_ptr` ownership compatible with Rogue pointer typedefs.
+     *
+     * @param addr Interface address for the server.
+     * @param port Base TCP port number for the bridge.
+     * @return Shared pointer (`TcpServerPtr`) to the created server.
      */
     static std::shared_ptr<rogue::interfaces::stream::TcpServer> create(std::string addr, uint16_t port);
 
-    // Setup class in python
+    /** @brief Registers this type with Python bindings. */
     static void setup_python();
 
-    // Create a TcpServer object
+    /**
+     * @brief Constructs a TCP stream bridge server.
+     *
+     * @details
+     * This constructor is a low-level C++ allocation path.
+     * Prefer `create()` when shared ownership or Python exposure is required.
+     *
+     * The address can be an IP address or hostname and selects the local bind
+     * interface. A value of `"*"` binds all interfaces. The bridge uses two
+     * consecutive TCP ports; `port` is the base (for example, `port=8000` uses
+     * `8000` and `8001`).
+     *
+     * @param addr Local bind address.
+     * @param port Base TCP port number.
+     */
     TcpServer(std::string addr, uint16_t port);
 
-    // Destroy the TcpServer
+    /** @brief Destroys the TCP server. */
     ~TcpServer();
 };
 
-//! Alias for using shared pointer as TcpServerPtr
+/** @brief Alias for using shared pointer as TcpServerPtr. */
 typedef std::shared_ptr<rogue::interfaces::stream::TcpServer> TcpServerPtr;
 
 }  // namespace stream

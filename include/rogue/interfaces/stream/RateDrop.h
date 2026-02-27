@@ -30,11 +30,13 @@ namespace rogue {
 namespace interfaces {
 namespace stream {
 
-//! Stream Rate Drop
-/** Drops frames at a defined rate. The rate value will defined as either the number of frames to drop
- * between each kept frame or the time interval  between each kept frame. If the period flag is true the passed
- * value will be interpreted as the time between kept frames in seconds. If the rate flag is false the value will
- * be interpreted as the number of frames to drop between each ketp frame.
+/**
+ * @brief Stream frame-rate dropper.
+ *
+ * @details
+ * Drops frames at a configured rate, either by frame count or by time period.
+ * In period mode, `value` is interpreted as seconds between kept frames.
+ * Otherwise, `value` is interpreted as number of dropped frames between kept frames.
  */
 class RateDrop : public rogue::interfaces::stream::Master, public rogue::interfaces::stream::Slave {
     // Configurations
@@ -50,27 +52,49 @@ class RateDrop : public rogue::interfaces::stream::Master, public rogue::interfa
     struct timeval nextPeriod_;
 
   public:
-    //! Create a RateDrop object and return as a RateDropPtr
-    /** @param period Set to true to define the parameter as a period value.
-     * @param value Period value or drop count
-     * @return RateDrop object as a RateDropPtr
+    /**
+     * @brief Creates a rate-drop filter.
+     *
+     * @details
+     * Parameter semantics are identical to the constructor; see `RateDrop()`
+     * for mode and value behavior details.
+     * This static factory is the preferred construction path when the object
+     * is shared across Rogue graph connections or exposed to Python.
+     * It returns `std::shared_ptr` ownership compatible with Rogue pointer typedefs.
+     *
+     * @param period Set to `true` for period mode; `false` for drop-count mode.
+     * @param value Period seconds or drop-count setting.
+     * @return Shared pointer to the created rate-drop filter.
      */
     static std::shared_ptr<rogue::interfaces::stream::RateDrop> create(bool period, double value);
 
-    // Setup class for use in python
+    /** @brief Registers this type with Python bindings. */
     static void setup_python();
 
-    // Create a RateDrop object
+    /**
+     * @brief Constructs a rate-drop filter.
+     *
+     * @details
+     * This constructor is a low-level C++ allocation path.
+     * Prefer `create()` when shared ownership or Python exposure is required.
+     *
+     * @param period Set to `true` for period mode; `false` for drop-count mode.
+     * @param value Period seconds or drop-count setting.
+     */
     RateDrop(bool period, double value);
 
-    // Destroy the RateDrop
+    /** @brief Destroys the rate-drop filter. */
     ~RateDrop();
 
-    // Receive frame from Master
+    /**
+     * @brief Receives a frame and drops/forwards according to configured rate policy.
+     *
+     * @param frame Incoming frame.
+     */
     void acceptFrame(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 };
 
-//! Alias for using shared pointer as RateDropPtr
+/** @brief Shared pointer alias for `RateDrop`. */
 typedef std::shared_ptr<rogue::interfaces::stream::RateDrop> RateDropPtr;
 }  // namespace stream
 }  // namespace interfaces

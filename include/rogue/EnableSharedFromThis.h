@@ -24,14 +24,37 @@
 
 namespace rogue {
 
+/**
+ * @brief Common virtual base for Rogue shared-from-this support.
+ *
+ * @details
+ * Rogue uses this type as a shared base when multiple inheritance is combined
+ * with Python-side subclassing, avoiding duplicate `std::enable_shared_from_this`
+ * subobjects and related weak-pointer failures.
+ */
 class EnableSharedFromThisBase : public std::enable_shared_from_this<rogue::EnableSharedFromThisBase> {
   public:
+    /** @brief Virtual destructor for polymorphic base usage. */
     virtual ~EnableSharedFromThisBase() {}
 };
 
+/**
+ * @brief Typed shared-from-this helper for Rogue classes.
+ *
+ * @details
+ * Use this in place of directly inheriting `std::enable_shared_from_this<T>`
+ * for Rogue classes that may participate in multiple inheritance and Python
+ * wrapping.
+ *
+ * @tparam T Final/derived class type.
+ */
 template <typename T>
 class EnableSharedFromThis : virtual public EnableSharedFromThisBase {
   public:
+    /**
+     * @brief Returns a `shared_ptr<T>` for this instance.
+     * @return Shared pointer to this object cast to `T`.
+     */
     std::shared_ptr<T> shared_from_this() {
         return std::dynamic_pointer_cast<T>(EnableSharedFromThisBase::shared_from_this());
     }

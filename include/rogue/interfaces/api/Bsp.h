@@ -26,7 +26,21 @@ namespace rogue {
 namespace interfaces {
 namespace api {
 
-//! Bsp Class
+/**
+ * @brief C++ convenience wrapper around a PyRogue node object.
+ *
+ * @details
+ * `Bsp` provides a small C++ API that forwards operations to underlying Python
+ * PyRogue objects through Boost.Python. It supports:
+ * - constructing from an existing Python object
+ * - constructing and starting a root class by module/class name
+ * - node traversal (`operator[]`, `getNode`)
+ * - command execution and variable set/get helper calls
+ * - root-only variable listener registration
+ *
+ * If constructed as a root wrapper (`create(modName, rootClass)`), destructor
+ * stops the root automatically.
+ */
 class Bsp {
   protected:
     boost::python::object _obj;
@@ -34,52 +48,160 @@ class Bsp {
     std::string _name;
 
   public:
-    //! Class factory
+    /**
+     * @brief Creates a wrapper from an existing Python object.
+     *
+     * @details
+     * Parameter semantics are identical to the constructor; see `Bsp(boost::python::object)`
+     * for wrapping behavior details.
+     * This static factory is the preferred construction path when the object
+     * is shared across Rogue graph connections or exposed to Python.
+     * It returns `std::shared_ptr` ownership compatible with Rogue pointer typedefs.
+     *
+     * @param obj Python object representing a PyRogue node/root.
+     * @return Shared pointer to created wrapper.
+     */
     static std::shared_ptr<rogue::interfaces::api::Bsp> create(boost::python::object obj);
+
+    /**
+     * @brief Creates a wrapper by importing module and instantiating root class.
+     *
+     * @details
+     * Parameter semantics are identical to the constructor; see
+     * `Bsp(std::string, std::string)` for module/root startup behavior details.
+     * This static factory is the preferred construction path when the object
+     * is shared across Rogue graph connections or exposed to Python.
+     * It returns `std::shared_ptr` ownership compatible with Rogue pointer typedefs.
+     *
+     * @param modName Python module name containing root class.
+     * @param rootClass Python root class name to instantiate.
+     * @return Shared pointer to created wrapper.
+     */
     static std::shared_ptr<rogue::interfaces::api::Bsp> create(std::string modName, std::string rootClass);
 
-    //! Create the object
+    /**
+     * @brief Constructs wrapper from existing Python object.
+     *
+     * @details
+     * This constructor is a low-level C++ allocation path.
+     * Prefer `create()` when shared ownership or Python exposure is required.
+     *
+     * @param obj Python object representing a PyRogue node/root.
+     */
     explicit Bsp(boost::python::object obj);
+
+    /**
+     * @brief Constructs wrapper by importing module and instantiating root class.
+     *
+     * @details
+     * This constructor is a low-level C++ allocation path.
+     * Prefer `create()` when shared ownership or Python exposure is required.
+     * Initializes Python, imports `modName`, constructs `rootClass`, starts it,
+     * and waits until the Python root reports running state.
+     *
+     * @param modName Python module name containing root class.
+     * @param rootClass Python root class name to instantiate.
+     */
     Bsp(std::string modName, std::string rootClass);
+
+    /** @brief Destroys wrapper (stops root when wrapper owns root instance). */
     ~Bsp();
 
-    //! Add Var Listener
+    /**
+     * @brief Registers variable listener callbacks on wrapped root.
+     *
+     * @details
+     * Valid only when wrapper owns a root object.
+     *
+     * @param func Callback invoked per variable update.
+     * @param done Callback invoked when listener terminates.
+     */
     void addVarListener(void (*func)(std::string, std::string), void (*done)());
 
-    //! Get Attribute
+    /**
+     * @brief Returns string form of named attribute from wrapped object.
+     *
+     * @param attribute Attribute name.
+     * @return Attribute value string.
+     */
     std::string getAttribute(std::string attribute);
 
-    //! Return a sub-node operator
+    /**
+     * @brief Returns wrapper for child node using `node(name)` lookup.
+     *
+     * @param name Child node name/path.
+     * @return Wrapper for child node.
+     */
     rogue::interfaces::api::Bsp operator[](std::string name);
 
-    //! Return a sub-node pointer
+    /**
+     * @brief Returns shared wrapper for child node using `getNode(name)`.
+     *
+     * @param name Child node path.
+     * @return Shared pointer to child-node wrapper.
+     */
     std::shared_ptr<rogue::interfaces::api::Bsp> getNode(std::string name);
 
-    //! Execute a command
+    /**
+     * @brief Executes wrapped command node with string argument.
+     *
+     * @param arg Command argument string.
+     * @return Command result string.
+     */
     std::string operator()(std::string arg);
 
-    //! Execute a command without arg
+    /**
+     * @brief Executes wrapped command node without argument.
+     *
+     * @return Command result string.
+     */
     std::string operator()();
 
-    //! Execute a command
+    /**
+     * @brief Executes wrapped command node with string argument.
+     *
+     * @param arg Command argument string.
+     * @return Command result string.
+     */
     std::string execute(std::string arg);
 
-    //! Execute a command without arg
+    /**
+     * @brief Executes wrapped command node without argument.
+     *
+     * @return Command result string.
+     */
     std::string execute();
 
-    //! Set
+    /**
+     * @brief Sets wrapped variable value without forcing write transaction.
+     *
+     * @param value Value string passed to Python `setDisp`.
+     */
     void set(std::string value);
 
-    //! Set and write
+    /**
+     * @brief Sets wrapped variable value and forces write transaction.
+     *
+     * @param value Value string passed to Python `setDisp`.
+     */
     void setWrite(std::string value);
 
-    //! Get
+    /**
+     * @brief Gets wrapped variable value without forcing read transaction.
+     *
+     * @return Current value string from Python `getDisp`.
+     */
     std::string get();
 
-    //! Read and get
+    /**
+     * @brief Performs read transaction then gets wrapped variable value.
+     *
+     * @return Read-back value string from Python `getDisp`.
+     */
     std::string readGet();
 };
 
+/** @brief Shared pointer alias for `Bsp`. */
 typedef std::shared_ptr<rogue::interfaces::api::Bsp> BspPtr;
 }  // namespace api
 }  // namespace interfaces

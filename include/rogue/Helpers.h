@@ -19,25 +19,33 @@
 #include "rogue/Directives.h"
 
 // Connect stream
+/** @brief Connect a stream master to a downstream stream slave. */
 #define rogueStreamConnect(src, dst) src->addSlave(dst);
 
 // Add stream tap, DEPRECATED
+/** @brief Deprecated alias for `rogueStreamConnect`. */
 #define rogueStreamTap(src, dst) src->addSlave(dst);
 
 // Connect stream bi-directionally
+/** @brief Connect two stream endpoints in both directions. */
 #define rogueStreamConnectBiDir(devA, devB) \
     devA->addSlave(devB);                   \
     devB->addSlave(devA);
 
 // Connect memory bus
+/** @brief Connect a memory master to a memory slave. */
 #define rogueBusConnect(src, dst) src->setSlave(dst);
 
 // Global default timeout value
+/** @brief Default timeout in microseconds used by Rogue helper APIs. */
 #define ROGUE_DEFAULT_TIMEOUT 1000000
 
 namespace rogue {
 
-// Return default timeout value
+/**
+ * @brief Returns Rogue default timeout as a `timeval`.
+ * @param tout Output `timeval` populated from `ROGUE_DEFAULT_TIMEOUT`.
+ */
 inline void defaultTimeout(struct timeval& tout) {
     div_t divResult = div(ROGUE_DEFAULT_TIMEOUT, 1000000);
     tout.tv_sec     = divResult.quot;
