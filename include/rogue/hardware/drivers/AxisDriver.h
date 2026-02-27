@@ -24,9 +24,11 @@
 #define __AXIS_DRIVER_H__
 #include "DmaDriver.h"
 
-// Command definitions
-#define AXIS_Read_Ack 0x2001        // Command to acknowledge read.
-#define AXIS_Write_ReqMissed 0x2002   // Command to indicate a missed write request.
+/** @brief ioctl command code used to acknowledge a completed AXIS read. */
+#define AXIS_Read_Ack 0x2001  // NOLINT
+
+/** @brief ioctl command code used to signal a missed AXIS write request. */
+#define AXIS_Write_ReqMissed 0x2002  // NOLINT
 
 // Only define the following if not compiling for kernel space
 #ifndef DMA_IN_KERNEL
@@ -93,6 +95,10 @@ static inline uint32_t axisGetCont(uint32_t flags) {
 /**
  * @brief Issues AXIS read-acknowledge ioctl command.
  *
+ * @details
+ * Calls `ioctl(fd, AXIS_Read_Ack, 0)` to notify the driver that a read
+ * transaction has been acknowledged/consumed.
+ *
  * @param fd File descriptor for the AXIS device.
  */
 static inline void axisReadAck(int32_t fd) {
@@ -101,6 +107,10 @@ static inline void axisReadAck(int32_t fd) {
 
 /**
  * @brief Issues AXIS missed-write-request ioctl command.
+ *
+ * @details
+ * Calls `ioctl(fd, AXIS_Write_ReqMissed, 0)` to notify the driver that a write
+ * request was missed and recovery/diagnostic handling may be required.
  *
  * @param fd File descriptor for the AXIS device.
  */
