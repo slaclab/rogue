@@ -35,6 +35,32 @@ a special Python class in Rogue which defines how a register type is converted, 
 class works closely with the Block, with the Block having lower level routines which are directly associated
 with the standard set of Rogue Models.
 
+How Variables, Models, and Block Methods Tie Together
+-----------------------------------------------------
+
+Each ``Variable`` stores model metadata (for example ``UInt``, ``Int``, ``Bool``, ``String``, ``Float``,
+``Double``, ``Fixed``, ``Bytes``, ``PyFunc``) and binds to matching conversion methods in ``Block``.
+This binding is configured once when the variable is constructed.
+
+At runtime the flow is:
+
+1. A variable API is called (for example ``setUInt()``, ``getString()``, or Python ``_set()``/``_get()``).
+2. The variable calls its bound ``Block`` conversion method pair.
+3. The conversion method packs/unpacks bits using the variable layout (bit offsets, widths, stride, endianness).
+4. A block transaction is executed to write/read hardware (including verify/retry behavior).
+
+Conceptually:
+
+- Conversion methods in ``Block``:
+  ``setPyFunc/getPyFunc``, ``setByteArray/getByteArray``, ``setUInt/getUInt``,
+  ``setInt/getInt``, ``setBool/getBool``, ``setString/getString``,
+  ``setFloat/getFloat``, ``setDouble/getDouble``, ``setFixed/getFixed``.
+- Transport methods in ``Block``:
+  ``write/read``, ``startTransaction/checkTransaction``.
+
+This separation is important: conversion selects how bytes are interpreted, while transport selects when bytes move
+to/from hardware.
+
 The following Models are currently supported in Rogue:
 
 +---------------------------------------------+-----------------------+-------------------+----------------+------------------------------------------------+
@@ -169,4 +195,3 @@ blocks the overlap their address space. The code blow is executed during the cre
       mode="RW"))
 
 For more information see the :ref:`interfaces_memory_block` and :ref:`interfaces_memory_model` class descriptions.
-

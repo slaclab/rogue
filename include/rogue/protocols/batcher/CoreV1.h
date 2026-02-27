@@ -33,75 +33,154 @@ namespace batcher {
 
 class Data;
 
-//!  AXI Stream FIFO
+/**
+ * @brief Parser for SLAC AXI Batcher v1 super-frames.
+ *
+ * @details
+ * Protocol reference: https://confluence.slac.stanford.edu/x/th1SDg
+ *
+ * `CoreV1` parses one incoming batched stream frame into:
+ * - A super-header region.
+ * - A list of per-record `Data` descriptors.
+ * - A list of tail iterators for each record.
+ *
+ * This class is the shared parser used by `SplitterV1` and `InverterV1`.
+ * - `SplitterV1` uses parsed `Data` records to emit one frame per batch entry.
+ * - `InverterV1` uses parsed tail/header locations to rewrite framing in place.
+ *
+ * Record accessors (`record()`, `beginTail()`, `endTail()`) expose records in
+ * stream order, even though parsing walks tails from the end of the frame.
+ *
+ * Threading model:
+ * - No internal threads are created.
+ * - The object is intended for single-threaded use per instance.
+ */
 class CoreV1 {
     std::shared_ptr<rogue::Logging> log_;
 
-    //! Frame pointers
+    // Most recently parsed frame.
     std::shared_ptr<rogue::interfaces::stream::Frame> frame_;
 
-    //! Data List
+    // Parsed record descriptors.
     std::vector<std::shared_ptr<rogue::protocols::batcher::Data> > list_;
 
-    //! Header size
+    // Parsed super-header size in bytes.
     uint32_t headerSize_;
 
-    //! Tail size
+    // Parsed per-record tail size in bytes.
     uint32_t tailSize_;
 
-    //! Tail pointers
+    // Iterators pointing to each parsed tail.
     std::vector<rogue::interfaces::stream::FrameIterator> tails_;
 
-    //! Sequence number
+    // Parsed frame sequence number.
     uint32_t seq_;
 
   public:
-    //! Setup class in python
+    /** @brief Registers Python bindings for this class. */
     static void setup_python();
 
-    //! Create class
+    /**
+     * @brief Creates a `CoreV1` parser instance.
+     *
+     * @details
+     * This static factory is the preferred construction path when the object
+     * is shared across Rogue graph connections or exposed to Python.
+     * It returns `std::shared_ptr` ownership compatible with Rogue pointer typedefs.
+     *
+     * @return Shared pointer to the created parser.
+     */
     static std::shared_ptr<rogue::protocols::batcher::CoreV1> create();
 
-    //! Creator
+    /**
+     * @brief Constructs a `CoreV1` parser.
+     *
+     * @details
+     * This constructor is a low-level C++ allocation path.
+     * Prefer `create()` when shared ownership or Python exposure is required.
+     */
     CoreV1();
 
-    //! Deconstructor
+    /** @brief Destroys the parser. */
     ~CoreV1();
 
-    //! Init size for internal containers
+    /**
+     * @brief Pre-reserves internal record/tail container capacity.
+     * @param size Expected maximum record count per frame.
+     */
     void initSize(uint32_t size);
 
-    //! Record count
+    /**
+     * @brief Returns number of parsed records.
+     * @return Parsed record count.
+     */
     uint32_t count();
 
-    //! Get header size
+    /**
+     * @brief Returns parsed super-header size.
+     * @return Header size in bytes.
+     */
     uint32_t headerSize();
 
-    //! Get beginning of header iterator
+    /**
+     * @brief Returns iterator to beginning of parsed header.
+     * @return Header-begin iterator.
+     */
     rogue::interfaces::stream::FrameIterator beginHeader();
 
-    //! Get end of header iterator
+    /**
+     * @brief Returns iterator to end of parsed header.
+     * @return Header-end iterator.
+     */
     rogue::interfaces::stream::FrameIterator endHeader();
 
-    //! Get tail size
+    /**
+     * @brief Returns parsed tail size per record.
+     * @return Tail size in bytes.
+     */
     uint32_t tailSize();
 
-    //! Get beginning of tail iterator
+    /**
+     * @brief Returns iterator to beginning of a parsed record tail.
+     * @param index Zero-based record index in stream order.
+     * @return Tail-begin iterator for requested record.
+     */
     rogue::interfaces::stream::FrameIterator beginTail(uint32_t index);
 
-    //! Get end of tail iterator
+    /**
+     * @brief Returns iterator to end of a parsed record tail.
+     * @param index Zero-based record index in stream order.
+     * @return Tail-end iterator for requested record.
+     */
     rogue::interfaces::stream::FrameIterator endTail(uint32_t index);
 
-    //! Get data
+    /**
+     * @brief Returns parsed data record descriptor by index.
+     * @param index Zero-based record index in stream order.
+     * @return Reference to parsed `Data` record pointer.
+     */
     std::shared_ptr<rogue::protocols::batcher::Data>& record(uint32_t index);
 
-    //! Return sequence
+    /**
+     * @brief Returns parsed batch sequence number.
+     * @return Sequence number from super-header.
+     */
     uint32_t sequence();
 
-    //! Process a frame
+    /**
+     * @brief Parses a batched frame and populates parser state.
+     *
+     * @details
+     * On success, header/tail metadata and record descriptors are available
+     * through the accessor methods. On failure, parser state is reset and
+     * `false` is returned.
+     *
+     * @param frame Input batched frame.
+     * @return `true` if frame is valid and parsed; otherwise `false`.
+     */
     bool processFrame(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
-    //! Reset data
+    /** @brief Clears parsed frame state and record lists. */
     void reset();
 };
 

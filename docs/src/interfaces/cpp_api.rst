@@ -4,25 +4,79 @@
 Wrapping Rogue In C++
 =====================
 
-Rogue can be used within a C++ framework in the following way:
+The supported C++ wrapper interface is ``rogue::interfaces::api::Bsp`` from
+``include/rogue/interfaces/api/Bsp.h``. It wraps a PyRogue node/root object and
+provides helper methods for node traversal, command execution, and variable
+set/get operations.
 
-.. code-block:: c
+Creating a root wrapper
+-----------------------
 
-   #include <boost/python.hpp>
+``Bsp`` can construct and start a PyRogue root directly from Python module/class
+names:
 
-   // Include the module containing our root class
-   bp::object mod = bp::import("MyModule");
+.. code-block:: cpp
 
-   // Create an instance of the root object
-   bp:obect root = mod.attr("MyRoot")();
+   #include "rogue/interfaces/api/Bsp.h"
 
-   // Execute a command
-   root.attr("exec")("myRoot.HardReset");
-   root.attr("exec")("myRoot.LoadConfig","config.yml");
+   // Imports pyrogue.examples and constructs ExampleRoot().
+   rogue::interfaces::api::Bsp bsp("pyrogue.examples", "ExampleRoot");
 
-   // Set a variable
-   root.attr("setDisp")("myRoot.AxiVersion.ScratchPad","0xA");
+If constructed this way, the root is started in the constructor and stopped in
+the wrapper destructor.
 
-   // Get a variable
-   std::string ret = bp::extract<std::string>(root.attr("getDisp")("myRoot.AxiVersion.ScratchPad"));
+Node traversal and variable access
+----------------------------------
 
+Use ``operator[]`` for hierarchical traversal and ``getNode()`` for full-path
+lookup:
+
+.. code-block:: cpp
+
+   // Read variable (no forced hardware read).
+   std::string localTime = bsp["LocalTime"].get();
+
+   // Write + readback.
+   bsp["AxiVersion"]["ScratchPad"].setWrite("0x1111");
+   std::string scratch = bsp["AxiVersion"]["ScratchPad"].readGet();
+
+   // Full-path access returns a shared pointer wrapper.
+   auto node = bsp.getNode("ExampleRoot.AxiVersion.ScratchPad");
+   std::string scratch2 = node->get();
+
+Commands
+--------
+
+Command nodes are invoked through ``operator()`` or ``execute()``:
+
+.. code-block:: cpp
+
+   // Execute commands without argument.
+   bsp["WriteAll"]();
+   bsp["ReadAll"]();
+
+   // Execute command with argument.
+   std::string yaml = bsp["GetYamlConfig"]("True");
+
+Variable listeners (root only)
+------------------------------
+
+Variable listeners can be attached only on a root wrapper:
+
+.. code-block:: cpp
+
+   void varListener(std::string path, std::string value) {
+       printf("Var Listener: %s = %s\n", path.c_str(), value.c_str());
+   }
+
+   void varDone() {
+       printf("Var Done\n");
+   }
+
+   bsp.addVarListener(&varListener, &varDone);
+
+Reference example
+-----------------
+
+See ``tests/api_test/src/api_test.cpp`` for a complete working example that
+matches the current ``Bsp`` API.

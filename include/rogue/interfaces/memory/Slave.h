@@ -1,5 +1,5 @@
 /**
- * ----------------------------------------------------------------------------
+  * ----------------------------------------------------------------------------
  * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
@@ -40,8 +40,11 @@ namespace memory {
 class Master;
 class Transaction;
 
-//! Memory Slave device
-/** The memory Slave device accepts and services transactions from one or more Master devices.
+/**
+ * @brief Memory slave device.
+ *
+ * @details
+ * The memory Slave device accepts and services transactions from one or more Master devices.
  * The Slave device is normally sub-classed in either C++ or Python to provide an interfaces
  * to hardware or the next level memory transaction protocol, such as SrpV0 or SrpV3.
  * Examples of Slave sub-class implementations are included elsewhere in this document.
@@ -77,148 +80,233 @@ class Slave : public rogue::EnableSharedFromThis<rogue::interfaces::memory::Slav
     std::string name_;
 
   public:
-    //! Class factory which returns a pointer to a Slave (SlavePtr)
-    /** Exposed as rogue.interfaces.memory.Slave() to Python
+    /**
+     * @brief Creates a memory slave.
      *
-     * @param min Minimum transaction this Slave can accept.
-     * @param max Maximum transaction this Slave can accept.
+     * @details
+     * Exposed as `rogue.interfaces.memory.Slave()` to Python.
+     * This static factory is the preferred construction path when the object
+     * is shared across Rogue graph connections or exposed to Python.
+     * It returns `std::shared_ptr` ownership compatible with Rogue pointer typedefs.
+     *
+     * `min` and `max` define the default access-size contract (in bytes) reported
+     * by `doMinAccess()` and `doMaxAccess()`. The base `Slave` class stores and
+     * returns these values as provided; higher-level classes may layer additional
+     * semantics on top of them.
+     *
+     * @param min Minimum transaction size this slave can accept, in bytes.
+     * @param max Maximum transaction size this slave can accept, in bytes.
+     * @return Shared pointer to the created slave.
      */
     static std::shared_ptr<rogue::interfaces::memory::Slave> create(uint32_t min, uint32_t max);
 
-    // Setup class for use in python
+    /**
+     * @brief Registers this type with Python bindings.
+     */
     static void setup_python();
 
-    // Create Slave object
+    /**
+     * @brief Constructs a memory slave.
+     *
+     * @details
+     * This constructor is a low-level C++ allocation path.
+     * Prefer `create()` when shared ownership or Python exposure is required.
+     *
+     * `min` and `max` are stored as the local access-size contract and returned by
+     * default `doMinAccess()`/`doMaxAccess()` implementations.
+     *
+     * @param min Minimum transaction size this slave can accept, in bytes.
+     * @param max Maximum transaction size this slave can accept, in bytes.
+     */
     Slave(uint32_t min, uint32_t max);
 
-    // Destroy the Slave
+    /**
+     * @brief Destroys the memory slave instance.
+     */
     virtual ~Slave();
 
-    //! Stop the interface
+    /**
+     * @brief Stops the memory slave interface.
+     *
+     * @details
+     * Base implementation is a no-op. Subclasses may override to stop worker
+     * threads or transport links.
+     */
     virtual void stop();
 
-    //! Add a transaction to the internal tracking map
-    /** This method is called by the sub-class to add a transaction into the local
+    /**
+     * @brief Adds a transaction to the internal tracking map.
+     *
+     * @details
+     * This method is called by the sub-class to add a transaction into the local
      * tracking map for later retrieval. This is used when the transaction will be
      * completed later as the result of protocol data being returned to the Slave.
      *
-     * Exposed to python as _addTransaction()
-     * @param transaction Pointer to transaction as TransactionPtr
+     * Exposed to Python as `_addTransaction()`.
+     *
+     * @param transaction Pointer to transaction as TransactionPtr.
      */
     void addTransaction(std::shared_ptr<rogue::interfaces::memory::Transaction> transaction);
 
-    //! Get a transaction from the internal tracking map
-    /** This method is called by the sub-class to retrieve an existing transaction
+    /**
+     * @brief Gets a transaction from the internal tracking map.
+     *
+     * @details
+     * This method is called by the sub-class to retrieve an existing transaction
      * using the unique transaction ID. If the transaction exists in the list the
      * pointer to that transaction will be returned. If not a NULL pointer will be
      * returned. When getTransaction() is called the map will also be checked for
      * stale transactions which will be removed from the map.
      *
-     * Exposed to python as _getTransaction()
-     * @param index ID of transaction to lookup
-     * @return Pointer to transaction as TransactionPtr or NULL if not found
+     * Exposed to Python as `_getTransaction()`.
+     *
+     * @param index ID of transaction to lookup.
+     * @return Pointer to transaction as TransactionPtr or NULL if not found.
      */
     std::shared_ptr<rogue::interfaces::memory::Transaction> getTransaction(uint32_t index);
 
-    //! Get min size from slave
-    /** Not exposed to Python
-     * @return Minimum transaction size
+    /**
+     * @brief Returns configured minimum transaction size.
+     *
+     * @details Not exposed to Python.
+     *
+     * @return Minimum transaction size in bytes.
      */
     uint32_t min();
 
-    //! Get max size from slave
-    /** Not exposed to Python
-     * @return Maximum transaction size
+    /**
+     * @brief Returns configured maximum transaction size.
+     *
+     * @details Not exposed to Python.
+     *
+     * @return Maximum transaction size in bytes.
      */
     uint32_t max();
 
-    //! Get unique slave ID
-    /** Not exposed to Python
-     * @return Unique slave ID
+    /**
+     * @brief Returns unique slave ID.
+     *
+     * @details Not exposed to Python.
+     *
+     * @return Unique slave ID.
      */
     uint32_t id();
 
-    //! Set slave Name
-    /** Sxposed to Python as setName
+    /**
+     * @brief Sets slave name.
+     *
+     * @details Exposed to Python as `setName`.
+     *
+     * @param name New slave name string.
      */
-    void setName(std::string);
+    void setName(std::string name);
 
-    //! Get slave Name
-    /** Not exposed to Python
-     * @return Slave Name
+    /**
+     * @brief Returns slave name.
+     *
+     * @details Not exposed to Python.
+     *
+     * @return Slave name.
      */
     std::string name();
 
-    //! Interface to service SlaveId request from Master
-    /** Called by memory Master. May be overridden by Slave sub-class.
-     * By default returns the local Slave ID
+    /**
+     * @brief Services `SlaveId` request from a master.
      *
-     * Not exposed to Python
-     * @return Unique Slave ID
+     * @details
+     * Called by memory `Master`. Subclasses may override.
+     * Base implementation returns local slave ID.
+     * Not exposed to Python.
+     *
+     * @return Unique slave ID.
      */
     virtual uint32_t doSlaveId();
 
-    //! Interface to service SlaveName request from Master
-    /** Called by memory Master. May be overridden by Slave sub-class.
-     * By default returns the local Slave Name
+    /**
+     * @brief Services `SlaveName` request from a master.
      *
-     * Not exposed to Python
-     * @return Unique Slave Name
+     * @details
+     * Called by memory `Master`. Subclasses may override.
+     * Base implementation returns local slave name.
+     * Not exposed to Python.
+     *
+     * @return Slave name.
      */
     virtual std::string doSlaveName();
 
-    //! Interface to service the getMinAccess request from an attached master
-    /** By default the local min access value will be returned. A Slave
-     * sub-class is allowed to override this method.
+    /**
+     * @brief Services `getMinAccess` request from an attached master.
      *
-     * Exposed as _doMinAccess() to Python
-     * @return Min transaction access size
+     * @details
+     * Base implementation returns local `min()` value. Subclasses may override.
+     * Exposed as `_doMinAccess()` to Python.
+     *
+     * @return Minimum transaction access size in bytes.
      */
     virtual uint32_t doMinAccess();
 
-    //! Interface to service the getMaxAccess request from an attached master
-    /** By default the local max access value will be returned. A Slave
-     * sub-class is allowed to override this method.
+    /**
+     * @brief Services `getMaxAccess` request from an attached master.
      *
-     * Exposed as _doMaxAccess() to Python
-     * @return Max transaction access size
+     * @details
+     * Base implementation returns local `max()` value. Subclasses may override.
+     * Exposed as `_doMaxAccess()` to Python.
+     *
+     * @return Maximum transaction access size in bytes.
      */
     virtual uint32_t doMaxAccess();
 
-    //! Interface to service the getAddress request from an attached master
-    /** This Slave will return 0 byte default. A Slave sub-class is allowed
-     * to override this method.
+    /**
+     * @brief Services `getAddress` request from an attached master.
      *
-     * Exposed as _doAddress() to Python
-     * @return Address
+     * @details
+     * Base implementation returns `0`. Subclasses may override to contribute an
+     * address offset.
+     * Exposed as `_doAddress()` to Python.
+     *
+     * @return Address offset in bytes.
      */
     virtual uint64_t doAddress();
 
-    //! Interface to service the transaction request from an attached master
-    /** By default the Slave class will return an Unsupported error.
+    /**
+     * @brief Services a transaction request from an attached master.
      *
      * It is possible for this method to be overridden in either a Python or C++
      * subclass. Examples of sub-classing a Slave is included elsewhere in this
      * document.
      *
-     * Exposed to Python as _doTransaction()
-     * @param transaction Transaction pointer as TransactionPtr
+     * @details
+     * Base implementation reports an unsupported-transaction error.
+     * Exposed to Python as `_doTransaction()`.
+     *
+     * @param transaction Transaction pointer as TransactionPtr.
      */
     virtual void doTransaction(std::shared_ptr<rogue::interfaces::memory::Transaction> transaction);
 
 #ifndef NO_PYTHON
 
-    //! Support << operator in python
+    /**
+     * @brief Supports `<<` operator usage from Python.
+     *
+     * @param p Python object expected to provide a memory `Master`.
+     */
     void lshiftPy(boost::python::object p);
 
 #endif
 
-    //! Support << operator in C++
+    /**
+     * @brief Connects this slave to a master via chaining operator.
+     *
+     * @details Equivalent to `other->setSlave(this)` semantics.
+     *
+     * @param other Memory master to connect.
+     * @return Reference to the passed master pointer.
+     */
     std::shared_ptr<rogue::interfaces::memory::Master>& operator<<(
         std::shared_ptr<rogue::interfaces::memory::Master>& other);
 };
 
-//! Alias for using shared pointer as SlavePtr
+/** @brief Shared pointer alias for `Slave`. */
 typedef std::shared_ptr<rogue::interfaces::memory::Slave> SlavePtr;
 
 #ifndef NO_PYTHON
@@ -227,31 +315,84 @@ typedef std::shared_ptr<rogue::interfaces::memory::Slave> SlavePtr;
 class SlaveWrap : public rogue::interfaces::memory::Slave,
                   public boost::python::wrapper<rogue::interfaces::memory::Slave> {
   public:
-    // Constructor
+    /**
+     * @brief Constructs a memory-slave wrapper instance.
+     *
+     * @param min Minimum transaction size this slave can accept, in bytes.
+     * @param max Maximum transaction size this slave can accept, in bytes.
+     */
     SlaveWrap(uint32_t min, uint32_t max);
 
-    // Return min access size to requesting master
+    /**
+     * @brief Returns minimum transaction access size.
+     *
+     * @details Invokes the Python override when provided.
+     *
+     * @return Minimum transaction access size in bytes.
+     */
     uint32_t doMinAccess();
 
-    // Return min access size to requesting master
+    /**
+     * @brief Calls the base-class `doMinAccess()` implementation.
+     *
+     * @details Used as the fallback when no Python override is present.
+     *
+     * @return Minimum transaction access size in bytes.
+     */
     uint32_t defDoMinAccess();
 
-    // Return max access size to requesting master
+    /**
+     * @brief Returns maximum transaction access size.
+     *
+     * @details Invokes the Python override when provided.
+     *
+     * @return Maximum transaction access size in bytes.
+     */
     uint32_t doMaxAccess();
 
-    // Return max access size to requesting master
+    /**
+     * @brief Calls the base-class `doMaxAccess()` implementation.
+     *
+     * @details Used as the fallback when no Python override is present.
+     *
+     * @return Maximum transaction access size in bytes.
+     */
     uint32_t defDoMaxAccess();
 
-    // Return offset
+    /**
+     * @brief Returns base address contribution for this slave.
+     *
+     * @details Invokes the Python override when provided.
+     *
+     * @return Address offset in bytes.
+     */
     uint64_t doAddress();
 
-    // Return offset
+    /**
+     * @brief Calls the base-class `doAddress()` implementation.
+     *
+     * @details Used as the fallback when no Python override is present.
+     *
+     * @return Address offset in bytes.
+     */
     uint64_t defDoAddress();
 
-    // Post a transaction. Master will call this method.
+    /**
+     * @brief Services a transaction request from an attached master.
+     *
+     * @details Invokes the Python override when provided.
+     *
+     * @param transaction Transaction object to process.
+     */
     void doTransaction(std::shared_ptr<rogue::interfaces::memory::Transaction> transaction);
 
-    // Post a transaction. Master will call this method.
+    /**
+     * @brief Calls the base-class `doTransaction()` implementation.
+     *
+     * @details Used as the fallback when no Python override is present.
+     *
+     * @param transaction Transaction object to process.
+     */
     void defDoTransaction(std::shared_ptr<rogue::interfaces::memory::Transaction> transaction);
 };
 

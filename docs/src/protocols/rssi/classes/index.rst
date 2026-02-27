@@ -4,13 +4,11 @@
 RSSI Protocol Class Descriptions
 ================================
 
-TODO
-
 The following are detailed descriptions of the various C++ classes that make up the Rogue RSSI protocol.
 
 .. toctree::
    :maxdepth: 1
-   :caption: UDP Classes:
+   :caption: RSSI Classes:
 
    client
    server
@@ -18,4 +16,3 @@ The following are detailed descriptions of the various C++ classes that make up 
    controller
    application
    transport
-

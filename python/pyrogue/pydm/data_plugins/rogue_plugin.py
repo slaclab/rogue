@@ -21,10 +21,12 @@ from pydm.data_plugins.plugin import PyDMPlugin, PyDMConnection
 from PyQt5.QtCore import pyqtSlot, Qt
 from PyQt5.QtWidgets import QApplication
 from pydm import utilities
+from pydm.widgets.channel import PyDMChannel
 
 import pyrogue
 from pyrogue.interfaces import VirtualClient
 from matplotlib.pyplot import Figure
+from pyrogue._Variable import VariableValue
 
 
 logger = logging.getLogger(__name__)
@@ -32,7 +34,20 @@ logger = logging.getLogger(__name__)
 AlarmToInt = {'None':0, 'Good':0, 'AlarmMinor':1, 'AlarmMajor':2}
 
 
-def parseAddress(address):
+def parseAddress(address: str) -> tuple[str, int, str, str, int]:
+    """Parse a Rogue PyDM address string.
+
+    Parameters
+    ----------
+    address : str
+        Address in the form ``rogue://index/path/mode/index`` or
+        ``rogue://host:port/path/mode/index``.
+
+    Returns
+    -------
+    tuple[str, int, str, str, int]
+        Parsed ``(host, port, path, mode, index)`` tuple.
+    """
     # "rogue://index/<path>/<mode>/<index>"
     # or
     # "rogue://host:port/<path>/<mode>/<index>"
@@ -63,15 +78,40 @@ def parseAddress(address):
     return (host,port,path,mode,index)
 
 
-def nodeFromAddress(address):
+def nodeFromAddress(address: str) -> pyrogue.Node | None:
+    """Resolve and return a Rogue node from a PyDM address string.
+
+    Parameters
+    ----------
+    address : str
+        Rogue PyDM address string.
+
+    Returns
+    -------
+    pyrogue.Node | None
+        Resolved node or ``None`` if lookup fails.
+    """
     host, port, path, mode, index = parseAddress(address)
     client = VirtualClient(host, port)
     return client.root.getNode(path)
 
 
 class RogueConnection(PyDMConnection):
+    """PyDM connection implementation backed by ``pyrogue.interfaces.VirtualClient``.
 
-    def __init__(self, channel, address, protocol=None, parent=None):
+    Parameters
+    ----------
+    channel : object
+        PyDM channel instance associated with this connection.
+    address : str
+        Raw address string for the connection.
+    protocol : str | None, optional
+        Protocol name as provided by PyDM.
+    parent : object | None, optional
+        Optional Qt parent object.
+    """
+
+    def __init__(self, channel: PyDMChannel, address: str, protocol: str | None = None, parent: object | None = None) -> None:
         super(RogueConnection, self).__init__(channel, address, protocol, parent)
 
         self.app = QApplication.instance()
@@ -107,14 +147,24 @@ class RogueConnection(PyDMConnection):
         self.add_listener(channel)
         self._client.addLinkMonitor(self.linkState)
 
-    def linkState(self, state):
+    def linkState(self, state: bool) -> None:
+        """Emit PyDM connection state updates from link-monitor callbacks."""
         if state:
             self.connection_state_signal.emit(True)
         else:
             self.connection_state_signal.emit(False)
 
 
-    def _updateVariable(self,path,varValue):
+    def _updateVariable(self, path: str, varValue: VariableValue) -> None:
+        """Forward Rogue variable updates into PyDM value/severity signals.
+
+        Parameters
+        ----------
+        path : str
+            Variable path for the update.
+        varValue : pyrogue._Variable.VariableValue
+            Updated value snapshot from the Rogue listener callback.
+        """
 
         if self._index != -1:
             varValue = self._node.getVariableValue(read=False, index=self._index)
@@ -142,7 +192,14 @@ class RogueConnection(PyDMConnection):
     @pyqtSlot(float)
     @pyqtSlot(str)
     @pyqtSlot(np.ndarray)
-    def put_value(self, new_value):
+    def put_value(self, new_value: int | float | str | np.ndarray | None) -> None:
+        """Handle write requests from PyDM widgets.
+
+        Parameters
+        ----------
+        new_value : int | float | str | numpy.ndarray | None
+            Incoming value from the bound PyDM widget signal.
+        """
         if self._node is None or not self._notDev:
             return
 
@@ -161,7 +218,14 @@ class RogueConnection(PyDMConnection):
             self._node.setDisp(val,index=self._index)
 
 
-    def add_listener(self, channel):
+    def add_listener(self, channel: PyDMChannel) -> None:
+        """Attach a PyDM channel listener and emit initial metadata/value.
+
+        Parameters
+        ----------
+        channel : PyDMChannel
+            PyDM channel to register for this connection.
+        """
         if self._node is None:
             return
 
@@ -214,7 +278,16 @@ class RogueConnection(PyDMConnection):
         else:
             self.new_value_signal[str].emit(self._node.name)
 
-    def remove_listener(self, channel, destroying):
+    def remove_listener(self, channel: PyDMChannel, destroying: bool) -> None:
+        """Detach listener resources associated with this connection.
+
+        Parameters
+        ----------
+        channel : PyDMChannel
+            PyDM channel being removed.
+        destroying : bool
+            Whether removal is part of channel/widget destruction.
+        """
         self._client.remLinkMonitor(self.linkState)
         self._client.stop()
         #if channel.value_signal is not None:
@@ -238,10 +311,12 @@ class RogueConnection(PyDMConnection):
         #super(RogueConnection, self).remove_listener(channel)
         pass
 
-    def close(self):
+    def close(self) -> None:
+        """Close connection resources (handled by listener teardown)."""
         pass
 
 
 class RoguePlugin(PyDMPlugin):
+    """PyDM plugin registration for the ``rogue://`` protocol."""
     protocol = "rogue"
     connection_class = RogueConnection

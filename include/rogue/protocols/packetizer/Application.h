@@ -1,5 +1,5 @@
 /**
- * ----------------------------------------------------------------------------
+  * ----------------------------------------------------------------------------
  * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
@@ -32,9 +32,14 @@ namespace packetizer {
 
 class Controller;
 
-//! Application Class
+/**
+ * @brief Packetizer application endpoint.
+ *
+ * @details
+ * Provides per-destination stream ingress/egress into the packetizer stack.
+ */
 class Application : public rogue::interfaces::stream::Master, public rogue::interfaces::stream::Slave {
-    //! Core module
+    // Core module
     std::shared_ptr<rogue::protocols::packetizer::Controller> cntl_;
 
     // ID
@@ -44,39 +49,73 @@ class Application : public rogue::interfaces::stream::Master, public rogue::inte
     std::thread* thread_;
     bool threadEn_;
 
-    //! Thread background
+    // Thread background
     void runThread();
 
     // Application queue
     rogue::Queue<std::shared_ptr<rogue::interfaces::stream::Frame>> queue_;
 
   public:
-    //! Class creation
+    /**
+     * @brief Creates a packetizer application endpoint.
+     *
+     * @details
+     * Parameter semantics are identical to the constructor; see `Application()`
+     * for endpoint-construction details.
+     * This static factory is the preferred construction path when the object
+     * is shared across Rogue graph connections or exposed to Python.
+     * It returns `std::shared_ptr` ownership compatible with Rogue pointer typedefs.
+     *
+     * @param id Destination/application ID.
+     * @return Shared pointer to the created application endpoint.
+     */
     static std::shared_ptr<rogue::protocols::packetizer::Application> create(uint8_t id);
 
-    //! Setup class in python
+    /** @brief Registers Python bindings for this class. */
     static void setup_python();
 
-    //! Creator
+    /**
+     * @brief Constructs a packetizer application endpoint.
+     *
+     * @details
+     * This constructor is a low-level C++ allocation path.
+     * Prefer `create()` when shared ownership or Python exposure is required.
+     *
+     * @param id Destination/application ID.
+     */
     explicit Application(uint8_t id);
 
-    //! Destructor
+    /** @brief Destroys the application endpoint. */
     ~Application();
 
-    //! Set Controller
+    /**
+     * @brief Attaches the packetizer controller.
+     * @param cntl Controller instance that handles packetizer state.
+     */
     void setController(std::shared_ptr<rogue::protocols::packetizer::Controller> cntl);
 
-    //! Push frame for transmit
+    /**
+     * @brief Queues a frame for packetized transmission.
+     * @param frame Frame to send through this application channel.
+     */
     void pushFrame(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
-    //! Generate a Frame. Called from master
-    /*
-     * Pass total size required.
-     * Pass flag indicating if zero copy buffers are acceptable
+    /**
+     * @brief Allocates a frame for upstream writers.
+     *
+     * @details
+     * Called by the stream master side of this endpoint.
+     *
+     * @param size Minimum requested payload size in bytes.
+     * @param zeroCopyEn True to allow zero-copy allocation when possible.
+     * @return Newly allocated frame.
      */
     std::shared_ptr<rogue::interfaces::stream::Frame> acceptReq(uint32_t size, bool zeroCopyEn);
 
-    //! Accept a frame from master
+    /**
+     * @brief Accepts a frame from upstream application logic.
+     * @param frame Input frame to packetize.
+     */
     void acceptFrame(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 };
 

@@ -22,7 +22,7 @@ from pydm.widgets import PyDMLabel, PyDMPushButton, PyDMEnumComboBox
 
 from qtpy.QtCore import Property, Slot, QEvent, Qt, QPoint
 from qtpy.QtWidgets import QVBoxLayout, QHBoxLayout, QHeaderView
-from qtpy.QtWidgets import QTreeWidgetItem, QTreeWidget, QLabel
+from qtpy.QtWidgets import QTreeWidgetItem, QTreeWidget, QLabel, QWidget
 from qtpy.QtGui import QFontMetrics, QGuiApplication
 
 class Col:
@@ -43,8 +43,23 @@ class Col:
 
 
 class DebugDev(QTreeWidgetItem):
+    """Tree item representing a Rogue device node.
 
-    def __init__(self,*, path, top, parent, dev, noExpand):
+    Parameters
+    ----------
+    path : str
+        Full Rogue node path for this device.
+    top : DebugTree
+        Owning debug-tree widget.
+    parent : QTreeWidget | QTreeWidgetItem
+        Parent tree widget/item.
+    dev : pyrogue.Device
+        Backing Rogue device object.
+    noExpand : bool
+        If ``True``, delay child expansion until user expands the row.
+    """
+
+    def __init__(self, *, path: str, top: "DebugTree", parent: QTreeWidget | QTreeWidgetItem, dev: pyrogue.Device, noExpand: bool) -> None:
         QTreeWidgetItem.__init__(self,parent)
         self._top      = top
         self._parent   = parent
@@ -90,7 +105,7 @@ class DebugDev(QTreeWidgetItem):
             self._dummy = QTreeWidgetItem(self) # One dummy item to add expand control
             self.setExpanded(False)
 
-    def _setup(self,noExpand):
+    def _setup(self, noExpand: bool) -> None:
 
         # Get dictionary of variables followed by commands
         lst = self._dev.variablesByGroup(incGroups=self._top._incGroups,
@@ -122,7 +137,7 @@ class DebugDev(QTreeWidgetItem):
             else:
                 DebugDev(path=self._path + '.' + val.name, top=self._top, parent=self, dev=val, noExpand=noExpand)
 
-    def _expand(self):
+    def _expand(self) -> None:
         if self._dummy is None:
             return
 
@@ -132,8 +147,21 @@ class DebugDev(QTreeWidgetItem):
 
 
 class DebugGroup(QTreeWidgetItem):
+    """Tree item representing a GUI grouping node.
 
-    def __init__(self,*, path, top, parent, name):
+    Parameters
+    ----------
+    path : str
+        Parent Rogue node path for this group.
+    top : DebugTree
+        Owning debug-tree widget.
+    parent : QTreeWidgetItem
+        Parent tree item.
+    name : str
+        GUI group name.
+    """
+
+    def __init__(self, *, path: str, top: "DebugTree", parent: QTreeWidgetItem, name: str) -> None:
         QTreeWidgetItem.__init__(self,parent)
         self._top      = top
         self._parent   = parent
@@ -149,7 +177,7 @@ class DebugGroup(QTreeWidgetItem):
         self._dummy = QTreeWidgetItem(self) # One dummy item to add expand control
         self.setExpanded(False)
 
-    def _setup(self):
+    def _setup(self) -> None:
 
         # Create variables
         for n in self._list:
@@ -165,7 +193,7 @@ class DebugGroup(QTreeWidgetItem):
                             parent=self,
                             variable=n)
 
-    def _expand(self):
+    def _expand(self) -> None:
         if self._dummy is None:
             return
 
@@ -173,10 +201,11 @@ class DebugGroup(QTreeWidgetItem):
         self._dummy = None
         self._setup()
 
-    def addNode(self,node):
+    def addNode(self, node: pyrogue.Node) -> None:
         self._list.append(node)
 
-def makeVariableViewWidget(parent):
+def makeVariableViewWidget(parent: "DebugHolder") -> QWidget:
+    """Create an editor/view widget for a variable or command row."""
     if parent._var.isCommand and not parent._var.arg:
         w = PyDMPushButton(label='Exec',
                            pressValue=1,
@@ -195,8 +224,28 @@ def makeVariableViewWidget(parent):
 
 
 class DebugHolder(QTreeWidgetItem):
+    """Tree item representing a variable or command node.
 
-    def __init__(self,*,path,top,parent,variable):
+    Parameters
+    ----------
+    path : str
+        Full Rogue node path for the variable/command.
+    top : DebugTree
+        Owning debug-tree widget.
+    parent : QTreeWidgetItem
+        Parent tree item.
+    variable : pyrogue.BaseVariable | pyrogue.BaseCommand
+        Backing Rogue variable or command object.
+    """
+
+    def __init__(
+        self,
+        *,
+        path: str,
+        top: "DebugTree",
+        parent: QTreeWidgetItem,
+        variable: pyrogue.BaseVariable | pyrogue.BaseCommand,
+    ) -> None:
         QTreeWidgetItem.__init__(self,parent)
         self._top    = top
         self._parent = parent
@@ -248,7 +297,27 @@ class DebugHolder(QTreeWidgetItem):
 
 
 class DebugTree(PyDMFrame):
-    def __init__(self, parent=None, init_channel=None, incGroups=None, excGroups=['Hidden']):
+    """Interactive tree view for browsing and controlling Rogue nodes.
+
+    Parameters
+    ----------
+    parent : QWidget | None, optional
+        Parent Qt widget.
+    init_channel : str | None, optional
+        Initial Rogue channel address.
+    incGroups : list[str] | None, optional
+        Include filter for Rogue groups.
+    excGroups : list[str] | None, optional
+        Exclude filter for Rogue groups.
+    """
+
+    def __init__(
+        self,
+        parent: QWidget | None = None,
+        init_channel: str | None = None,
+        incGroups: list[str] | None = None,
+        excGroups: list[str] | None = ['Hidden'],
+    ) -> None:
         PyDMFrame.__init__(self, parent, init_channel)
 
         self._node = None
@@ -260,7 +329,8 @@ class DebugTree(PyDMFrame):
 
         self._colWidths = Col.ColumnWidths.copy()
 
-    def connection_changed(self, connected):
+    def connection_changed(self, connected: bool) -> None:
+        """Build tree controls after first successful channel connection."""
         build = (self._node is None) and (self._connected != connected and connected is True)
         super(DebugTree, self).connection_changed(connected)
 
@@ -306,29 +376,29 @@ class DebugTree(PyDMFrame):
         DebugDev(path = self._path, top=self, parent=self._tree, dev=self._node, noExpand=False)
         self.setUpdatesEnabled(True)
 
-    def _copyPath(self, checked, point):
+    def _copyPath(self, checked: bool, point: QPoint) -> None:
         item = self._tree.itemAt(point)
         if item is not None and hasattr(item, '_path'):
             QGuiApplication.clipboard().setText(item._path)
 
-    def _copyColumnText(self, checked, point: QPoint):
+    def _copyColumnText(self, checked: bool, point: QPoint) -> None:
         item = self._tree.itemAt(point)
         if item is not None:
             QGuiApplication.clipboard().setText(
                 item.text(self._tree.columnAt(point.x()))
             )
 
-    def _hideColumn(self, checked, point: QPoint):
+    def _hideColumn(self, checked: bool, point: QPoint) -> None:
         self._tree.setColumnHidden(self._tree.columnAt(point.x()), True)
 
-    def _toggleColumn(self, checked, col: int):
+    def _toggleColumn(self, checked: bool, col: int) -> None:
         self._tree.setColumnHidden(col, not checked)
 
-    def _showAllCols(self, checked):
+    def _showAllCols(self, checked: bool) -> None:
         for i in range(Col.NumCols):
             self._tree.setColumnHidden(i, False)
 
-    def _openContextMenu(self, point):
+    def _openContextMenu(self, point: QPoint) -> None:
         # Generate base context menu from PyDM. We can't override generate_context_menu because
         # it doesn't give us the point where the mouse right clicked, which we need to implement the 'copy' actions
         menu = super(DebugTree, self).generate_context_menu()
@@ -357,7 +427,7 @@ class DebugTree(PyDMFrame):
         menu.exec_(self._tree.viewport().mapToGlobal(point))
 
     @Slot(QTreeWidgetItem)
-    def _expandCb(self,item):
+    def _expandCb(self, item: QTreeWidgetItem) -> None:
         self.setUpdatesEnabled(False)
         item._expand()
         self._tree.setColumnWidth(Col.Node, self._colWidths[Col.Node])
@@ -367,34 +437,34 @@ class DebugTree(PyDMFrame):
         self.setUpdatesEnabled(True)
 
     @Property(str)
-    def incGroups(self):
+    def incGroups(self) -> str:
         if self._incGroups is None or len(self._incGroups) == 0:
             return ''
         else:
             return ','.join(self._incGroups)
 
     @incGroups.setter
-    def incGroups(self, value):
+    def incGroups(self, value: str) -> None:
         if value == '':
             self._incGroups = None
         else:
             self._incGroups = value.split(',')
 
     @Property(str)
-    def excGroups(self):
+    def excGroups(self) -> str:
         if self._excGroups is None or len(self._excGroups) == 0:
             return ''
         else:
             return ','.join(self._excGroups)
 
     @excGroups.setter
-    def excGroups(self, value):
+    def excGroups(self, value: str) -> None:
         if value == '':
             self._excGroups = None
         else:
             self._excGroups = value.split(',')
 
-    def eventFilter(self, obj, event):
+    def eventFilter(self, obj: object, event: QEvent) -> bool:
         if event.type() == QEvent.Wheel:
             return True
         else:

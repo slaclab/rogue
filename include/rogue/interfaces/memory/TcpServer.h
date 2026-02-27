@@ -31,12 +31,23 @@ namespace rogue {
 namespace interfaces {
 namespace memory {
 
-//! Memory TCP Bridge Server
-/** This class implements a TCP bridge between a memory Master and a memory Slave.
- * The server side of the TCP bridge implements a memory Master device which executes
- * the memory Transaction to an attached Slave. On the other end of the link a
- * TcpClient accepts a memory Transaction from an attached Master and forwards it to
- * this TcpSver.
+/**
+ * @brief Memory TCP bridge server.
+ *
+ * @details
+ * Implements the server side of the memory TCP bridge.
+ *
+ * The server receives request messages from remote `TcpClient` instances on a base
+ * port and returns completion/result messages on base port + 1. Each inbound request
+ * is translated into a local memory transaction executed through this `Master`
+ * interface to the attached downstream slave path.
+ *
+ * Operational behavior:
+ * - Request messages carry transaction ID, address, size, type, and optional write data.
+ * - Transactions are executed synchronously in the server worker thread.
+ * - Responses include returned read data (when applicable) and a status/result string.
+ * - The server must bind both bridge ports successfully; binding failures typically
+ *   indicate address/port conflicts.
  */
 class TcpServer : public rogue::interfaces::memory::Master {
     // Inbound Address
@@ -65,38 +76,67 @@ class TcpServer : public rogue::interfaces::memory::Master {
     bool threadEn_;
 
   public:
-    //! Create a TcpServer object and return as a TcpServerPtr
-    /**The creator takes an address and port. The passed address can either be
-     * an IP address or hostname. The address string  defines which network interface
-     * the socket server will listen on. A string of "*" results in all network interfaces
-     * being listened on. The memory bridge requires two TCP ports. The passed port is the
-     * base number of these two ports. A passed value of 8000 will result in both
-     * 8000 and 8001 being used by this bridge.
+    /**
+     * @brief Creates a TCP memory bridge server.
      *
-     * Exposed as rogue.interfaces.memory.TcpServer() to Python
-     * @param addr Interface address
-     * @param port Base port number to use for connection.
-     * @return TcpServer object as a TcpServerPtr
+     * @details
+     * Parameter semantics are identical to the constructor; see `TcpServer()`
+     * for address and port behavior details.
+     *
+     * Exposed as `rogue.interfaces.memory.TcpServer()` in Python.
+     *
+     * This static factory is the preferred construction path when the object
+     * is shared across Rogue graph connections or exposed to Python.
+     * It returns `std::shared_ptr` ownership compatible with Rogue pointer typedefs.
+     *
+     * @param addr Local bind address.
+     * @param port Base TCP port number.
+     * @return Shared pointer to the created server.
      */
     static std::shared_ptr<rogue::interfaces::memory::TcpServer> create(std::string addr, uint16_t port);
 
-    // Setup class in python
+    /**
+     * @brief Registers this type with Python bindings.
+     */
     static void setup_python();
 
-    // Create a TcpServer object
+    /**
+     * @brief Constructs a TCP memory bridge server.
+     *
+     * @details
+     * `addr` may be a hostname, IP address, or `"*"` to bind on all interfaces.
+     * The bridge uses two consecutive TCP ports starting at `port`; for example,
+     * `port=8000` uses ports `8000` and `8001`.
+     *
+     * This constructor is a low-level C++ allocation path.
+     * Prefer `create()` when shared ownership or Python exposure is required.
+     *
+     * @param addr Local bind address.
+     * @param port Base TCP port number.
+     */
     TcpServer(std::string addr, uint16_t port);
 
-    // Destroy the TcpServer
+    /**
+     * @brief Destroys the TCP server and releases transport resources.
+     */
     ~TcpServer();
 
-    // Close the connections, deprecated
+    /**
+     * @brief Closes bridge connections.
+     *
+     * @details Deprecated; use `stop()`.
+     */
     void close();
 
-    // Stop the interface
+    /**
+     * @brief Stops the bridge interface and worker thread.
+     */
     void stop();
 };
 
-//! Alias for using shared pointer as TcpServerPtr
+/**
+ * @brief Shared pointer alias for `TcpServer`.
+ */
 typedef std::shared_ptr<rogue::interfaces::memory::TcpServer> TcpServerPtr;
 
 }  // namespace memory

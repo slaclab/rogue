@@ -16,6 +16,7 @@
 import logging
 from pydm.tools import ExternalTool
 from pydm.utilities.iconfont import IconFont
+from pydm.widgets.channel import PyDMChannel
 from qtpy.QtWidgets import QFileDialog
 
 import pyrogue
@@ -26,8 +27,15 @@ logger = logging.getLogger(__name__)
 
 
 class OpenFileBrowse(ExternalTool):
+    """PyDM tool to browse for a file path and apply it to a node.
 
-    def __init__(self,save=False):
+    Parameters
+    ----------
+    save : bool, optional
+        If ``True``, use save-file dialog mode. Otherwise use open-file mode.
+    """
+
+    def __init__(self, save: bool = False) -> None:
         icon = IconFont().icon("cogs")
         self.save = save
 
@@ -40,7 +48,16 @@ class OpenFileBrowse(ExternalTool):
         use_with_widgets = True
         ExternalTool.__init__(self, icon=icon, name=name, group=group, use_with_widgets=use_with_widgets)
 
-    def call(self, channels, sender):
+    def call(self, channels: list[PyDMChannel], sender: object) -> None:
+        """Open file dialog and write selected path to the target node.
+
+        Parameters
+        ----------
+        channels : list[PyDMChannel]
+            Channels associated with the invoking PyDM widget.
+        sender : object
+            Widget or window that triggered the tool.
+        """
         addr, port, path, mode, index = parseAddress(channels[0].address)
         self._client = VirtualClient(addr, port)
         node = self._client.root.getNode(path)
@@ -73,17 +90,23 @@ class OpenFileBrowse(ExternalTool):
         else:
             logger.warning(f"File browser used with invalid node: {node.name}")
 
-    def to_json(self):
+    def to_json(self) -> str:
+        """Return serialized tool configuration."""
         return ""
 
-    def from_json(self, content):
+    def from_json(self, content: str) -> None:
+        """Load serialized tool configuration."""
         pass
 
-    def get_info(self):
+    def get_info(self) -> dict[str, object]:
+        """Return metadata for PyDM tool registration."""
         ret = ExternalTool.get_info(self)
         ret.update({'file': __file__})
         return ret
 
 class SaveFileBrowse(OpenFileBrowse):
-    def __init__(self):
+    """Save-mode specialization of :class:`OpenFileBrowse`."""
+
+    def __init__(self) -> None:
+        """Initialize the save-file browser tool."""
         OpenFileBrowse.__init__(self, save=True)

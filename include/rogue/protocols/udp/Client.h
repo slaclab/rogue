@@ -37,35 +37,86 @@ namespace rogue {
 namespace protocols {
 namespace udp {
 
+/**
+ * @brief UDP stream endpoint that sends to and receives from a remote host.
+ *
+ * @details
+ * `Client` combines UDP transport (`udp::Core`) with Rogue stream interfaces:
+ * - `stream::Slave`: accepts outbound frames and transmits them as UDP datagrams.
+ * - `stream::Master`: emits received UDP datagrams as Rogue frames.
+ *
+ * A background receive thread continuously reads datagrams and forwards them
+ * downstream as frames from the local frame pool.
+ */
 class Client : public rogue::protocols::udp::Core,
                public rogue::interfaces::stream::Master,
                public rogue::interfaces::stream::Slave {
-    //! Address, hostname or ip address
+    // Remote hostname or IPv4 address string.
     std::string address_;
 
-    //! Remote port number
+    // Remote UDP port.
     uint16_t port_;
 
-    //! Thread background
+    // Background receive thread entry point.
     void runThread(std::weak_ptr<int>);
 
   public:
-    //! Class creation
+    /**
+     * @brief Creates a UDP client endpoint.
+     *
+     * @details
+     * Parameter semantics are identical to the constructor; see `Client()`
+     * for endpoint setup behavior details.
+     * This static factory is the preferred construction path when the object
+     * is shared across Rogue graph connections or exposed to Python.
+     * It returns `std::shared_ptr` ownership compatible with Rogue pointer typedefs.
+     *
+     * @param host Remote hostname or IPv4 address.
+     * @param port Remote UDP port.
+     * @param jumbo `true` for jumbo payload sizing; `false` for standard MTU.
+     * @return Shared pointer to the created client.
+     */
     static std::shared_ptr<rogue::protocols::udp::Client> create(std::string host, uint16_t port, bool jumbo);
 
-    //! Setup class in python
+    /** @brief Registers Python bindings for this class. */
     static void setup_python();
 
-    //! Creator
+    /**
+     * @brief Constructs a UDP client endpoint.
+     *
+     * @details
+     * This constructor is a low-level C++ allocation path.
+     * Prefer `create()` when shared ownership or Python exposure is required.
+     *
+     * Resolves host address, creates UDP socket, initializes frame pool sizing,
+     * and starts background receive thread.
+     *
+     * @param host Remote hostname or IPv4 address.
+     * @param port Remote UDP port.
+     * @param jumbo `true` for jumbo payload sizing; `false` for standard MTU.
+     */
     Client(std::string host, uint16_t port, bool jumbo);
 
-    //! Destructor
+    /** @brief Destroys the UDP client endpoint. */
     ~Client();
 
-    //! Stop the interface
+    /**
+     * @brief Stops the UDP client endpoint.
+     *
+     * @details
+     * Stops receive thread, joins thread, and closes socket.
+     */
     void stop();
 
-    //! Accept a frame from master
+    /**
+     * @brief Accepts an outbound stream frame and transmits it as UDP datagrams.
+     *
+     * @details
+     * Each non-empty frame buffer payload is sent as a UDP datagram. Writes use
+     * `select()` with configured timeout; timeout/failure is logged.
+     *
+     * @param frame Outbound frame to transmit.
+     */
     void acceptFrame(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 };
 

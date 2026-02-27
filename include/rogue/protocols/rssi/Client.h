@@ -1,5 +1,5 @@
 /**
- * ----------------------------------------------------------------------------
+  * ----------------------------------------------------------------------------
  * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
@@ -31,101 +31,188 @@ class Transport;
 class Application;
 class Controller;
 
-//! RSSI Client Class
+/**
+ * @brief RSSI client convenience wrapper.
+ *
+ * @details
+ * Bundles transport, application, and controller components for client-side
+ * RSSI links.
+ * Protocol reference: https://confluence.slac.stanford.edu/x/1IyfD
+ *
+ * Construction wires the internal components together:
+ * `Transport <-> Controller <-> Application`.
+ */
 class Client {
-    //! Transport module
+    // Transport endpoint.
     std::shared_ptr<rogue::protocols::rssi::Transport> tran_;
 
-    //! Application module
+    // Application endpoint.
     std::shared_ptr<rogue::protocols::rssi::Application> app_;
 
-    //! Client module
+    // Protocol controller.
     std::shared_ptr<rogue::protocols::rssi::Controller> cntl_;
 
   public:
-    //! Class creation
+    /**
+     * @brief Creates an RSSI client bundle.
+     *
+     * @details
+     * Parameter semantics are identical to the constructor; see `Client()`
+     * for bundle-construction details.
+     * This static factory is the preferred construction path when the object
+     * is shared across Rogue graph connections or exposed to Python.
+     * It returns `std::shared_ptr` ownership compatible with Rogue pointer typedefs.
+     *
+     * @param segSize Initial local maximum segment size.
+     * @return Shared pointer to the created client bundle.
+     */
     static std::shared_ptr<rogue::protocols::rssi::Client> create(uint32_t segSize);
 
-    //! Setup class in python
+    /** @brief Registers Python bindings for this class. */
     static void setup_python();
 
-    //! Creator
+    /**
+     * @brief Constructs an RSSI client bundle.
+     *
+     * @details
+     * This constructor is a low-level C++ allocation path.
+     * Prefer `create()` when shared ownership or Python exposure is required.
+     *
+     * @param segSize Initial local maximum segment size.
+     */
     explicit Client(uint32_t segSize);
 
-    //! Destructor
+    /** @brief Destroys the client bundle. */
     ~Client();
 
-    //! Get transport interface
+    /**
+     * @brief Returns the transport endpoint.
+     * @return Shared transport interface.
+     */
     std::shared_ptr<rogue::protocols::rssi::Transport> transport();
 
-    //! Application module
+    /**
+     * @brief Returns the application endpoint.
+     * @return Shared application interface.
+     */
     std::shared_ptr<rogue::protocols::rssi::Application> application();
 
-    //! Get state
+    /**
+     * @brief Returns whether the link is in open state.
+     * @return True when connection state is open.
+     */
     bool getOpen();
 
-    //! Get Down Count
+    /**
+     * @brief Returns the down-transition counter.
+     * @return Number of times the link entered a down/closed state.
+     */
     uint32_t getDownCount();
 
-    //! Get Drop Count
+    /**
+     * @brief Returns the dropped-frame counter.
+     * @return Number of dropped received frames.
+     */
     uint32_t getDropCount();
 
-    //! Get Retransmit Count
+    /**
+     * @brief Returns the retransmit counter.
+     * @return Number of retransmitted frames.
+     */
     uint32_t getRetranCount();
 
-    //! Get locBusy
+    /**
+     * @brief Returns the local busy state.
+     * @return True when the local endpoint is currently busy.
+     */
     bool getLocBusy();
 
-    //! Get locBusyCnt
+    /**
+     * @brief Returns the local busy event counter.
+     * @return Number of local busy assertions.
+     */
     uint32_t getLocBusyCnt();
 
-    //! Get remBusy
+    /**
+     * @brief Returns the remote busy state.
+     * @return True when the remote endpoint reports busy.
+     */
     bool getRemBusy();
 
-    //! Get remBusyCnt
+    /**
+     * @brief Returns the remote busy event counter.
+     * @return Number of remote busy indications.
+     */
     uint32_t getRemBusyCnt();
 
+    /** @brief Sets the local connection retry period in microseconds. */
     void setLocTryPeriod(uint32_t val);
+    /** @brief Returns the local connection retry period in microseconds. */
     uint32_t getLocTryPeriod();
 
+    /** @brief Sets the local maximum outstanding-buffer count. */
     void setLocMaxBuffers(uint8_t val);
+    /** @brief Returns the local maximum outstanding-buffer count. */
     uint8_t getLocMaxBuffers();
 
+    /** @brief Sets the local maximum segment size in bytes. */
     void setLocMaxSegment(uint16_t val);
+    /** @brief Returns the local maximum segment size in bytes. */
     uint16_t getLocMaxSegment();
 
+    /** @brief Sets the local cumulative-ACK timeout. */
     void setLocCumAckTout(uint16_t val);
+    /** @brief Returns the local cumulative-ACK timeout. */
     uint16_t getLocCumAckTout();
 
+    /** @brief Sets the local retransmit timeout. */
     void setLocRetranTout(uint16_t val);
+    /** @brief Returns the local retransmit timeout. */
     uint16_t getLocRetranTout();
 
+    /** @brief Sets the local null-segment timeout. */
     void setLocNullTout(uint16_t val);
+    /** @brief Returns the local null-segment timeout. */
     uint16_t getLocNullTout();
 
+    /** @brief Sets the local maximum retransmit count. */
     void setLocMaxRetran(uint8_t val);
+    /** @brief Returns the local maximum retransmit count. */
     uint8_t getLocMaxRetran();
 
+    /** @brief Sets the local maximum cumulative-ACK interval. */
     void setLocMaxCumAck(uint8_t val);
+    /** @brief Returns the local maximum cumulative-ACK interval. */
     uint8_t getLocMaxCumAck();
 
+    /** @brief Returns the negotiated maximum outstanding-buffer count. */
     uint8_t curMaxBuffers();
+    /** @brief Returns the negotiated maximum segment size in bytes. */
     uint16_t curMaxSegment();
+    /** @brief Returns the negotiated cumulative-ACK timeout. */
     uint16_t curCumAckTout();
+    /** @brief Returns the negotiated retransmit timeout. */
     uint16_t curRetranTout();
+    /** @brief Returns the negotiated null-segment timeout. */
     uint16_t curNullTout();
+    /** @brief Returns the negotiated maximum retransmit count. */
     uint8_t curMaxRetran();
+    /** @brief Returns the negotiated maximum cumulative-ACK interval. */
     uint8_t curMaxCumAck();
 
+    /** @brief Resets runtime counters. */
     void resetCounters();
 
-    //! Set timeout in microseconds for frame transmits
+    /**
+     * @brief Sets timeout in microseconds for frame transmits.
+     * @param timeout Timeout in microseconds.
+     */
     void setTimeout(uint32_t timeout);
 
-    //! Stop connection
+    /** @brief Stops the RSSI connection. */
     void stop();
 
-    //! Start connection
+    /** @brief Starts or restarts RSSI connection establishment. */
     void start();
 };
 

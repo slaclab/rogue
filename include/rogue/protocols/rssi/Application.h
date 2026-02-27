@@ -1,5 +1,5 @@
 /**
- * ----------------------------------------------------------------------------
+  * ----------------------------------------------------------------------------
  * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
@@ -31,42 +31,87 @@ namespace rssi {
 
 class Controller;
 
-//! RSSI Application Class
+/**
+ * @brief RSSI application-side endpoint.
+ *
+ * @details
+ * Provides stream ingress/egress for payload traffic through the RSSI stack.
+ *
+ * Threading model:
+ * - Inbound application frames are handled synchronously in `acceptFrame()`
+ *   and forwarded to `Controller::applicationRx()`.
+ * - Outbound application frames are produced by a background thread started in
+ *   `setController()` and drained from `Controller::applicationTx()`.
+ *
+ * Lifetime contract:
+ * - `setController()` must be called before destruction so the TX thread is
+ *   created and can be cleanly stopped/joined.
+ */
 class Application : public rogue::interfaces::stream::Master, public rogue::interfaces::stream::Slave {
-    //! Core module
+    // RSSI controller backend.
     std::shared_ptr<rogue::protocols::rssi::Controller> cntl_;
 
-    // Transmission thread
+    // Outbound application worker thread.
     std::thread* thread_;
     bool threadEn_;
 
-    //! Thread background
+    // Worker thread entry point.
     void runThread();
 
   public:
-    //! Class creation
+    /**
+     * @brief Creates an RSSI application endpoint.
+     *
+     * @details
+     * This static factory is the preferred construction path when the object
+     * is shared across Rogue graph connections or exposed to Python.
+     * It returns `std::shared_ptr` ownership compatible with Rogue pointer typedefs.
+     *
+     * @return Shared pointer to the created application endpoint.
+     */
     static std::shared_ptr<rogue::protocols::rssi::Application> create();
 
-    //! Setup class in python
+    /** @brief Registers Python bindings for this class. */
     static void setup_python();
 
-    //! Creator
+    /**
+     * @brief Constructs an RSSI application endpoint.
+     *
+     * @details
+     * This constructor is a low-level C++ allocation path.
+     * Prefer `create()` when shared ownership or Python exposure is required.
+     */
     Application();
 
-    //! Destructor
+    /** @brief Destroys the application endpoint. */
     ~Application();
 
-    //! Setup links
+    /**
+     * @brief Attaches the RSSI controller.
+     *
+     * @details
+     * Stores controller reference and starts outbound worker thread.
+     *
+     * @param cntl Controller instance that owns protocol state.
+     */
     void setController(std::shared_ptr<rogue::protocols::rssi::Controller> cntl);
 
-    //! Generate a Frame. Called from master
-    /*
-     * Pass total size required.
-     * Pass flag indicating if zero copy buffers are acceptable
+    /**
+     * @brief Allocates a frame for upstream writers.
+     *
+     * @details
+     * Called by the stream master side of this endpoint.
+     *
+     * @param size Minimum requested payload size in bytes.
+     * @param zeroCopyEn Zero-copy hint (not used by RSSI application path).
+     * @return Newly allocated frame.
      */
     std::shared_ptr<rogue::interfaces::stream::Frame> acceptReq(uint32_t size, bool zeroCopyEn);
 
-    //! Accept a frame from master
+    /**
+     * @brief Accepts a frame from upstream application logic.
+     * @param frame Input frame for RSSI transmission.
+     */
     void acceptFrame(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 };
 

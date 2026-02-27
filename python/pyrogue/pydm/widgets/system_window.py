@@ -16,7 +16,7 @@
 from pydm.widgets.frame import PyDMFrame
 import pyrogue
 from pyrogue.pydm.data_plugins.rogue_plugin import nodeFromAddress
-from qtpy.QtWidgets import QVBoxLayout
+from qtpy.QtWidgets import QVBoxLayout, QWidget
 from pyrogue.pydm.widgets import RootControl
 from pyrogue.pydm.widgets import DataWriter
 from pyrogue.pydm.widgets import RunControl
@@ -24,11 +24,22 @@ from pyrogue.pydm.widgets import SystemLog
 
 
 class SystemWindow(PyDMFrame):
-    def __init__(self, parent=None, init_channel=None):
+    """Top-level system summary window for a Rogue root.
+
+    Parameters
+    ----------
+    parent : QWidget | None, optional
+        Parent Qt widget.
+    init_channel : str | None, optional
+        Initial Rogue channel address.
+    """
+
+    def __init__(self, parent: QWidget | None = None, init_channel: str | None = None) -> None:
         PyDMFrame.__init__(self, parent, init_channel)
         self._node = None
 
-    def connection_changed(self, connected):
+    def connection_changed(self, connected: bool) -> None:
+        """Build sub-widgets after first successful channel connection."""
         build = (self._node is None) and (self._connected != connected and connected is True)
         super(SystemWindow, self).connection_changed(connected)
 

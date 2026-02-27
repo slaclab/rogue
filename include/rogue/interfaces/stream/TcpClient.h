@@ -34,35 +34,54 @@ namespace rogue {
 namespace interfaces {
 namespace stream {
 
-//! Stream TCP Bridge Client
-/** This class is a wrapper around TcpCore which operates in client mode.
+/**
+ * @brief Stream TCP bridge client.
+ *
+ * @details Thin wrapper around `TcpCore` configured for client mode.
  */
 class TcpClient : public rogue::interfaces::stream::TcpCore {
   public:
-    //! Create a TcpClient object and return as a TcpClientPtr
-    /**The creator takes an address and port. The passed server address can either
-     * be an IP address or hostname. The stream bridge requires two TCP ports.
-     * The passed port is the base number of these two ports. A passed value of 8000
-     * will result in both 8000 and 8001 being used by this bridge.
+    /**
+     * @brief Creates a TCP stream bridge client and return as TcpClientPtr.
      *
-     * Exposed to Python as rogue.interfaces.stream.TcpClient
-     * @param addr Interface address for server, remote server address for client.
-     * @param port Base port number of use for connection.
-     * @return TcpClient object as a TcpClientPtr
+     * @details
+     * Parameter semantics are identical to the constructor; see `TcpClient()`
+     * for address and port behavior details.
+     * Exposed in Python as `rogue.interfaces.stream.TcpClient`.
+     * This static factory is the preferred construction path when the object
+     * is shared across Rogue graph connections or exposed to Python.
+     * It returns `std::shared_ptr` ownership compatible with Rogue pointer typedefs.
+     *
+     * @param addr Remote server address.
+     * @param port Base TCP port number.
+     * @return Shared pointer to the created client.
      */
     static std::shared_ptr<rogue::interfaces::stream::TcpClient> create(std::string addr, uint16_t port);
 
-    // Setup class for use in python
+    /** @brief Registers this type with Python bindings. */
     static void setup_python();
 
-    // Create a TcpClient object
+    /**
+     * @brief Constructs a TCP stream bridge client.
+     *
+     * @details
+     * This constructor is a low-level C++ allocation path.
+     * Prefer `create()` when shared ownership or Python exposure is required.
+     *
+     * The constructor takes an address and port. The remote server address can
+     * be an IP address or hostname. The bridge uses two consecutive TCP ports;
+     * `port` is the base (for example, `port=8000` uses `8000` and `8001`).
+     *
+     * @param addr Remote server address.
+     * @param port Base TCP port number.
+     */
     TcpClient(std::string addr, uint16_t port);
 
-    // Destroy the TcpClient
+    /** @brief Destroys the TCP client. */
     ~TcpClient();
 };
 
-//! Alias for using shared pointer as TcpClientPtr
+/** @brief Shared pointer alias for `TcpClient`. */
 typedef std::shared_ptr<rogue::interfaces::stream::TcpClient> TcpClientPtr;
 
 }  // namespace stream

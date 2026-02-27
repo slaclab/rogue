@@ -17,15 +17,26 @@ from pydm.widgets.frame import PyDMFrame
 from pydm.widgets import PyDMEnumComboBox, PyDMLabel
 from pyrogue.pydm.data_plugins.rogue_plugin import nodeFromAddress
 from qtpy.QtCore import Qt
-from qtpy.QtWidgets import QVBoxLayout, QHBoxLayout, QFormLayout, QGroupBox
+from qtpy.QtWidgets import QVBoxLayout, QHBoxLayout, QFormLayout, QGroupBox, QWidget
 
 
 class RunControl(PyDMFrame):
-    def __init__(self, parent=None, init_channel=None):
+    """PyDM widget for controlling a ``pyrogue.RunControl`` node.
+
+    Parameters
+    ----------
+    parent : QWidget | None, optional
+        Parent Qt widget.
+    init_channel : str | None, optional
+        Initial Rogue channel address.
+    """
+
+    def __init__(self, parent: QWidget | None = None, init_channel: str | None = None) -> None:
         PyDMFrame.__init__(self, parent, init_channel)
         self._node = None
 
-    def connection_changed(self, connected):
+    def connection_changed(self, connected: bool) -> None:
+        """Build controls after first successful channel connection."""
         build = (self._node is None) and (self._connected != connected and connected is True)
         super(RunControl, self).connection_changed(connected)
 

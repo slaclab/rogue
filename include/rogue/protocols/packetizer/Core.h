@@ -1,5 +1,5 @@
 /**
- * ----------------------------------------------------------------------------
+  * ----------------------------------------------------------------------------
  * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
@@ -31,40 +31,79 @@ class Transport;
 class Application;
 class Controller;
 
-//! Core Class
+/**
+ * @brief Packetizer core wiring object.
+ *
+ * @details
+ * Owns and connects transport, controller, and per-destination application
+ * endpoints for the packetizer v1 stack.
+ */
 class Core {
-    //! Transport module
+    // Transport module
     std::shared_ptr<rogue::protocols::packetizer::Transport> tran_;
 
-    //! Application modules
+    // Application modules
     std::shared_ptr<rogue::protocols::packetizer::Application> app_[256];
 
-    //! Core module
+    // Core module
     std::shared_ptr<rogue::protocols::packetizer::Controller> cntl_;
 
   public:
-    //! Class creation
+    /**
+     * @brief Creates a packetizer core.
+     *
+     * @details
+     * Parameter semantics are identical to the constructor; see `Core()`
+     * for core-construction details.
+     * This static factory is the preferred construction path when the object
+     * is shared across Rogue graph connections or exposed to Python.
+     * It returns `std::shared_ptr` ownership compatible with Rogue pointer typedefs.
+     *
+     * @param enSsi Enable SSI framing behavior.
+     * @return Shared pointer to the created packetizer core.
+     */
     static std::shared_ptr<rogue::protocols::packetizer::Core> create(bool enSsi);
 
-    //! Setup class in python
+    /** @brief Registers Python bindings for this class. */
     static void setup_python();
 
-    //! Creator
+    /**
+     * @brief Constructs a packetizer core.
+     *
+     * @details
+     * This constructor is a low-level C++ allocation path.
+     * Prefer `create()` when shared ownership or Python exposure is required.
+     *
+     * @param enSsi Enable SSI framing behavior.
+     */
     explicit Core(bool enSsi);
 
-    //! Destructor
+    /** @brief Destroys the packetizer core. */
     ~Core();
 
-    //! Get transport interface
+    /**
+     * @brief Returns the transport-facing endpoint.
+     * @return Shared transport interface.
+     */
     std::shared_ptr<rogue::protocols::packetizer::Transport> transport();
 
-    //! Application module
+    /**
+     * @brief Returns an application endpoint by destination ID.
+     * @param dest Destination channel ID.
+     * @return Shared application endpoint.
+     */
     std::shared_ptr<rogue::protocols::packetizer::Application> application(uint8_t dest);
 
-    //! Get drop count
+    /**
+     * @brief Returns total dropped-frame count reported by the controller.
+     * @return Number of dropped frames.
+     */
     uint32_t getDropCount();
 
-    //! Set timeout
+    /**
+     * @brief Sets transmit timeout for internal controller operations.
+     * @param timeout Timeout in microseconds.
+     */
     void setTimeout(uint32_t timeout);
 };
 

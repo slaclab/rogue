@@ -24,11 +24,22 @@ import datetime
 
 
 class DataWriter(PyDMFrame):
-    def __init__(self, parent=None, init_channel=None):
+    """PyDM widget for controlling a ``pyrogue.DataWriter`` device.
+
+    Parameters
+    ----------
+    parent : QWidget | None, optional
+        Parent Qt widget.
+    init_channel : str | None, optional
+        Initial Rogue channel address.
+    """
+
+    def __init__(self, parent: QWidget | None = None, init_channel: str | None = None) -> None:
         PyDMFrame.__init__(self, parent, init_channel)
         self._node = None
 
-    def connection_changed(self, connected):
+    def connection_changed(self, connected: bool) -> None:
+        """Build controls after first successful channel connection."""
         build = (self._node is None) and (self._connected != connected and connected is True)
         super(DataWriter, self).connection_changed(connected)
 
@@ -138,7 +149,8 @@ class DataWriter(PyDMFrame):
         fl.addRow('Total File Size:',w)
 
     @Slot()
-    def _closeDataFile(self):
+    def _closeDataFile(self) -> None:
+        """Update button enable state after closing the data file."""
         self._dataFile.setEnabled(True)
         self._browsebutton.setEnabled(True)
         self._openbutton.setEnabled(True)
@@ -146,7 +158,8 @@ class DataWriter(PyDMFrame):
         self._closebutton.setEnabled(False)
 
     @Slot()
-    def _openDataFile(self):
+    def _openDataFile(self) -> None:
+        """Update button enable state after opening the data file."""
         self._dataFile.setEnabled(False)
         self._browsebutton.setEnabled(False)
         self._openbutton.setEnabled(False)
@@ -154,7 +167,8 @@ class DataWriter(PyDMFrame):
         self._closebutton.setEnabled(True)
 
     @Slot()
-    def _browse(self):
+    def _browse(self) -> None:
+        """Open file browser and apply selected output file path."""
         dlg = QFileDialog()
         sug = datetime.datetime.now().strftime("data_%Y%m%d_%H%M%S.dat")
 

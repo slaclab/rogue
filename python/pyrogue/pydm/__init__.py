@@ -13,21 +13,62 @@
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 import os
-import sys
 import signal
+from types import FrameType
+
 import pydm
-import pyrogue
 import pydm.data_plugins
 from pyrogue.pydm.data_plugins.rogue_plugin import RoguePlugin
 
 # Define a signal handler to ensure the application quits gracefully
-def pydmSignalHandler(sig, frame):
+def pydmSignalHandler(sig: int, frame: FrameType | None) -> None:
+    """Handle process termination signals by closing all PyDM windows.
+
+    Parameters
+    ----------
+    sig : int
+        Received signal number.
+    frame : types.FrameType | None
+        Current stack frame provided by :mod:`signal`.
+    """
     app = pydm.PyDMApplication.instance()
     if app is not None:
         app.closeAllWindows()
 
 # Function to run the PyDM application with specified parameters
-def runPyDM(serverList='localhost:9090', ui=None, title=None, sizeX=800, sizeY=1000, maxListExpand=5, maxListSize=100):
+def runPyDM(
+    serverList: str = 'localhost:9090',
+    ui: str | None = None,
+    title: str | None = None,
+    sizeX: int = 800,
+    sizeY: int = 1000,
+    maxListExpand: int = 5,
+    maxListSize: int = 100,
+) -> None:
+    """Launch the default Rogue PyDM application.
+
+    Parameters
+    ----------
+    serverList : str, optional
+        Comma-separated list of ``host:port`` Rogue servers.
+    ui : str | None, optional
+        Optional UI file path. Defaults to ``pydmTop.py`` in this package.
+    title : str | None, optional
+        Optional window title. Defaults to ``"Rogue Server: <servers>"``.
+    sizeX : int, optional
+        Initial window width in pixels.
+    sizeY : int, optional
+        Initial window height in pixels.
+    maxListExpand : int, optional
+        Debug-tree auto-expand depth argument forwarded to the UI.
+    maxListSize : int, optional
+        Debug-tree list-size cap argument forwarded to the UI.
+
+    Returns
+    -------
+    None
+        This function runs the Qt event loop until the application exits.
+    """
 
     # Set the ROGUE_SERVERS environment variable
     os.environ['ROGUE_SERVERS'] = serverList

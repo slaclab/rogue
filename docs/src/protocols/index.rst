@@ -17,5 +17,6 @@ Protocols
    batcher/index
    epicsV4/index
    srp/index
+   xilinx/index
    uart
    pyrogue/index

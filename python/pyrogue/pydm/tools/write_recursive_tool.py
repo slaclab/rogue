@@ -15,6 +15,7 @@
 import logging
 from pydm.tools import ExternalTool
 from pydm.utilities.iconfont import IconFont
+from pydm.widgets.channel import PyDMChannel
 
 import pyrogue
 from pyrogue.interfaces import VirtualClient
@@ -24,15 +25,25 @@ logger = logging.getLogger(__name__)
 
 
 class WriteVariable(ExternalTool):
+    """PyDM tool to recursively write a device subtree."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         icon = IconFont().icon("cogs")
         name = "Write Device Recursive"
         group = "Rogue"
         use_with_widgets = True
         ExternalTool.__init__(self, icon=icon, name=name, group=group, use_with_widgets=use_with_widgets)
 
-    def call(self, channels, sender):
+    def call(self, channels: list[PyDMChannel], sender: object) -> None:
+        """Execute a recursive write operation against the selected node.
+
+        Parameters
+        ----------
+        channels : list[PyDMChannel]
+            Channels associated with the invoking PyDM widget.
+        sender : object
+            Widget or window that triggered the tool.
+        """
         addr, port, path, mode, index = parseAddress(channels[0].address)
         self._client = VirtualClient(addr, port)
         node = self._client.root.getNode(path)
@@ -44,13 +55,16 @@ class WriteVariable(ExternalTool):
         else:
             logger.warning("Invalid node for recursive write: {}".format(node.path))
 
-    def to_json(self):
+    def to_json(self) -> str:
+        """Return serialized tool configuration."""
         return ""
 
-    def from_json(self, content):
+    def from_json(self, content: str) -> None:
+        """Load serialized tool configuration."""
         pass
 
-    def get_info(self):
+    def get_info(self) -> dict[str, object]:
+        """Return metadata for PyDM tool registration."""
         ret = ExternalTool.get_info(self)
         ret.update({'file': __file__})
         return ret

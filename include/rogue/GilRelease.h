@@ -25,16 +25,29 @@
 
 namespace rogue {
 
-//! Logging
+/**
+ * @brief RAII helper that releases the Python GIL for a scope.
+ *
+ * @details
+ * Constructing this object releases the GIL (when Python is enabled), allowing
+ * blocking or long-running C++ work to proceed without stalling other Python
+ * threads. Destruction re-acquires the GIL.
+ */
 class GilRelease {
 #ifndef NO_PYTHON
     PyThreadState* state_;
 #endif
 
   public:
+    /** @brief Constructs and releases the GIL for this scope. */
     GilRelease();
+    /** @brief Re-acquires the GIL if currently released. */
     ~GilRelease();
+
+    /** @brief Re-acquires the GIL explicitly. */
     void acquire();
+
+    /** @brief Releases the GIL explicitly. */
     void release();
 };
 }  // namespace rogue

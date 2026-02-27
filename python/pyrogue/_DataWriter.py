@@ -233,15 +233,8 @@ class DataWriter(pr.Device):
         """
         return 0
 
-    def _getBandwidth(self, dev: pr.Device | None = None, var: pr.Variable | None = None) -> float:
+    def _getBandwidth(self) -> float:
         """Return instantaneous write bandwidth.
-
-        Parameters
-        ----------
-        dev : pyrogue.Device or None, optional
-            Optional callback context passed by LocalVariable polling.
-        var : pyrogue.Variable or None, optional
-            Optional callback context passed by LocalVariable polling.
 
         Returns
         -------

@@ -31,13 +31,13 @@ namespace stream {
 class Pool;
 class Frame;
 
-//! Frame buffer
-/** This class is a container for buffers which make up a frame. Each buffer is associated
- * with a contiguous block of memory allocated by an instance of the Pool class.
- * Each buffer within the frame has a reserved header and tail area to pre-reserve
- * space which may be required by protocol layers. Direct interaction with the Buffer
- * class is an advanced topic, most users will simply use a FrameIterator to access
- * Frame and Buffer data. The Buffer class is not available in Python.
+/**
+ * @brief Stream frame buffer container.
+ *
+ * @details
+ * Represents a contiguous memory block (allocated by a `Pool`) that contributes to
+ * a frame. Buffers reserve header/tail regions for protocol layers. Most users should
+ * access payload data through `FrameIterator`; `Buffer` is a lower-level C++ API.
  */
 class Buffer {
     // Pointer to entity which allocated this buffer
@@ -74,17 +74,27 @@ class Buffer {
     uint32_t error_;
 
   public:
-    //! Alias for using uint8_t * as Buffer::iterator
+    /** @brief Iterator alias for byte-wise buffer access. */
     typedef uint8_t* iterator;
 
-    // Class factory which returns a BufferPtr
-    /* Create a new Buffer with associated data.
+    /**
+     * @brief Creates a buffer backed by memory owned by a stream `Pool`.
      *
-     * Not exposed to python, Called by Pool class
-     * data Pointer to raw data block associated with Buffer
-     * meta Meta data to track allocation
-     * size Size of raw data block usable by Buffer
-     * alloc Total memory allocated, may be greater than size
+     * @details
+     * Parameter semantics are identical to the constructor; see `Buffer()`
+     * for allocation and ownership behavior details.
+     * This static factory is the preferred construction path when the object
+     * is shared across Rogue graph connections or exposed to Python.
+     * It returns `std::shared_ptr` ownership compatible with Rogue pointer typedefs.
+     *
+     * Not exposed to Python.
+     *
+     * @param source Pool that owns the backing allocation.
+     * @param data Pointer to raw data allocation.
+     * @param meta Pool-defined metadata associated with the allocation.
+     * @param size Requested/usable raw buffer size in bytes.
+     * @param alloc Actual allocated bytes for this buffer.
+     * @return Shared pointer to the created buffer object.
      */
     static std::shared_ptr<rogue::interfaces::stream::Buffer> create(
         std::shared_ptr<rogue::interfaces::stream::Pool> source,
@@ -93,126 +103,170 @@ class Buffer {
         uint32_t size,
         uint32_t alloc);
 
-    // Create a buffer.
+    /**
+     * @brief Constructs a buffer around a pool allocation.
+     *
+     * @details
+     * This constructor is a low-level C++ allocation path.
+     * Prefer `create()` when shared ownership or Python exposure is required.
+     *
+     * This constructor is used internally by pool implementations when a frame
+     * buffer is allocated. The `alloc` size may be larger than `size` when
+     * the allocator rounds up to alignment or slab boundaries.
+     *
+     * @param source Pool that owns the backing allocation.
+     * @param data Pointer to raw data allocation.
+     * @param meta Pool-defined metadata associated with the allocation.
+     * @param size Requested/usable raw buffer size in bytes.
+     * @param alloc Actual allocated bytes for this buffer.
+     */
     Buffer(std::shared_ptr<rogue::interfaces::stream::Pool> source,
            void* data,
            uint32_t meta,
            uint32_t size,
            uint32_t alloc);
 
-    // Destroy a buffer
+    /** @brief Destroys the buffer wrapper and returns ownership to the pool path. */
     ~Buffer();
 
-    // Set owner frame, called by Frame class only
+    /**
+     * @brief Associates this buffer with its owning frame.
+     *
+     * @details
+     * Called by `Frame` while building or reparenting frame buffer lists.
+     *
+     * @param frame Owning frame object.
+     */
     void setFrame(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
-    //! Get meta data
-    /** The meta data field is used by the Pool class or sub-class to
-     * track the allocated data.
-     * @return Meta data value
+    /**
+     * @brief Returns metadata associated with this buffer.
+     *
+     * @details Metadata is used by `Pool` implementations to track allocations.
+     *
+     * @return Metadata value.
      */
     uint32_t getMeta();
 
-    //! Set meta data
-    /** The meta data field is used by the Pool class or sub-class to
-     * track the allocated data.
-     * @param meta Meta data value
+    /**
+     * @brief Sets metadata associated with this buffer.
+     *
+     * @details Metadata is used by `Pool` implementations to track allocations.
+     *
+     * @param meta Metadata value.
      */
     void setMeta(uint32_t meta);
 
-    //! Adjust header by passed value
-    /** @param value Head adjustment amount
+    /**
+     * @brief Adjusts header reservation size.
+     *
+     * @param value Header adjustment in bytes.
      */
     void adjustHeader(int32_t value);
 
-    //! Clear the header reservation
+    /** @brief Clears header reservation. */
     void zeroHeader();
 
-    //! Adjust tail reservation by passed value
-    /** @param value Tail adjustment amount
+    /**
+     * @brief Adjusts tail reservation size.
+     *
+     * @param value Tail adjustment in bytes.
      */
     void adjustTail(int32_t value);
 
-    //! Clear the tail reservation
+    /** @brief Clears tail reservation. */
     void zeroTail();
 
-    //! Get beginning buffer iterator
-    /** Get an iterator which indicates the start of the
-     * buffer space, not including the header reservation.
-     * @return Begin buffer iterator
+    /**
+     * @brief Returns iterator to start of buffer payload region.
+     *
+     * @details Excludes reserved header space.
+     *
+     * @return Begin buffer iterator.
      */
     uint8_t* begin();
 
-    //! Get end buffer iterator
-    /** Get an iterator which indicates the end of the the buffer minus
-     * the tail reservation.
-     * @return End buffer iterator
+    /**
+     * @brief Returns iterator to end of usable buffer region.
+     *
+     * @details Excludes reserved tail space.
+     *
+     * @return End buffer iterator.
      */
     uint8_t* end();
 
-    //! Get end payload iterator
-    /** Get an iterator which indicates the end of the the payload space.
-     * @return End payload iterator
+    /**
+     * @brief Returns iterator to end of current payload.
+     *
+     * @return End payload iterator.
      */
     uint8_t* endPayload();
 
-    //! Get Buffer size
-    /** Get size of buffer that can hold payload data. This function
-     * returns the full buffer size minus the head and tail reservation.
-     * @return Buffer size in bytes
+    /**
+     * @brief Returns payload-capable buffer size.
+     *
+     * @details Full buffer size minus current header/tail reservations.
+     *
+     * @return Buffer size in bytes.
      */
     uint32_t getSize();
 
-    //! Get the available space for payload
-    /** Get the remaining data available for payload.
-     * @return The amount of available space for payload in bytes.
+    /**
+     * @brief Returns remaining available payload space.
+     *
+     * @return Available payload space in bytes.
      */
     uint32_t getAvailable();
 
-    //! Get the payload size
-    /** This method will return the amount of
-     * payload data in the buffer.
-     * @return Payload size in bytes
+    /**
+     * @brief Returns current payload size.
+     *
+     * @return Payload size in bytes.
      */
     uint32_t getPayload();
 
-    //! Set the payload size
-    /** Set the payload size to the passed value.
-     * @param size New payload size in bytes
+    /**
+     * @brief Sets payload size.
+     *
+     * @param size New payload size in bytes.
      */
     void setPayload(uint32_t size);
 
-    //! Set minimum payload size.
-    /** This method sets the payload size to be at least
-     * the passed value. If the current payload size exceeds
-     * the passed value, the size is unchanged.
-     * @param size Min payload size in bytes
+    /**
+     * @brief Ensures payload size is at least `size`.
+     *
+     * @details Payload size is unchanged when already larger than `size`.
+     *
+     * @param size Minimum payload size in bytes.
      */
     void minPayload(uint32_t size);
 
-    //! Adjust the payload size
-    /** This method adjusts the payload size by the
-     * passed positive or negative value.
-     * @param value Value to adjust payload by in bytes
+    /**
+     * @brief Adjusts payload size by signed delta.
+     *
+     * @param value Payload adjustment in bytes.
      */
     void adjustPayload(int32_t value);
 
-    //! Set the payload size to fill the buffer
-    /**This method sets the buffer payload size to fill the buffer,
-     * minus the header and tail reservation.
+    /**
+     * @brief Sets payload size to maximum available buffer space.
+     *
+     * @details Fills buffer minus header and tail reservations.
      */
     void setPayloadFull();
 
-    //! Set the buffer as empty
-    /**This method sets the buffer payload size as empty.
-     */
+    /** @brief Clears payload (sets payload size to zero). */
     void setPayloadEmpty();
 
-    //! Debug Buffer
+    /**
+     * @brief Emits debug information for this buffer.
+     *
+     * @param idx Buffer index/tag to print with the debug output.
+     */
     void debug(uint32_t idx);
 };
 
-//! Alias for using shared pointer as BufferPtr
+/** @brief Shared pointer alias for `Buffer`. */
 typedef std::shared_ptr<rogue::interfaces::stream::Buffer> BufferPtr;
 }  // namespace stream
 }  // namespace interfaces

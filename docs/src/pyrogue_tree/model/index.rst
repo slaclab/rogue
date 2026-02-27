@@ -11,6 +11,12 @@ Most users interact with models indirectly through variable ``base`` and related
 type configuration. Advanced users can use model classes directly for custom
 encoding/decoding workflows.
 
+Related Documentation
+=====================
+
+For advanced block/variable interaction details, see
+:doc:`/interfaces/memory/blocks_advanced`.
+
 Utility Functions
 =================
 

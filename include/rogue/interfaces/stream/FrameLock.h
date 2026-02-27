@@ -29,64 +29,84 @@ namespace stream {
 
 class Frame;
 
-//! Frame Lock
 /**
- * The FrameLock is a container for holding a lock on Frame data while accessing that
- * data. This lock allows multiple stream Slave objects to read and update Frame data
- * while ensuring only one thread is updating at a time. The lock is released when
- * the FrameLock object is destroyed. The FrameLock object is never created directly,
- * instead it is returned by the Frame::lock() method.
+ * @brief Scoped lock wrapper for stream frames.
+ *
+ * @details
+ * Holds a lock while frame data is accessed. This allows multiple stream slaves to
+ * read/update safely while ensuring only one updater at a time. Locks are released
+ * on destruction. Instances are created via `Frame::lock()`.
  */
 class FrameLock {
     std::shared_ptr<rogue::interfaces::stream::Frame> frame_;
     bool locked_;
 
   public:
-    // Class factory which returns a pointer to a FrameLock (FrameLockPtr)
-    /* Only called by Frame object.
-     * Create a new Frame lock on the passed Frame.
-     * frame Frame pointer (FramePtr) to create a lock on
+    /**
+     * @brief Creates a frame lock wrapper.
+     *
+     * @details Intended for internal use by `Frame`.
+     * Parameter semantics are identical to the constructor; see `FrameLock()`
+     * for lock-wrapper behavior details.
+     * This static factory is the preferred construction path when the object
+     * is shared across Rogue graph connections or exposed to Python.
+     * It returns `std::shared_ptr` ownership compatible with Rogue pointer typedefs.
+     *
+     * @param frame Frame to lock.
+     * @return Shared pointer to the created lock object.
      */
     static std::shared_ptr<rogue::interfaces::stream::FrameLock> create(
         std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
-    // Frame lock constructor
+    /**
+     * @brief Constructs a lock wrapper for the provided frame.
+     *
+     * @details
+     * This constructor is a low-level C++ allocation path.
+     * Prefer `create()` when shared ownership or Python exposure is required.
+     *
+     * @param frame Frame to lock.
+     */
     explicit FrameLock(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
-    // Setup class for use in python
+    /** @brief Registers this type with Python bindings. */
     static void setup_python();
 
-    // Destroy and release the frame lock
+    /** @brief Destroys the wrapper and releases any held lock. */
     ~FrameLock();
 
-    //! Lock associated frame if not locked
-    /** Exposed as lock() to Python
+    /**
+     * @brief Locks the associated frame when not already locked.
+     *
+     * @details Exposed as `lock()` in Python.
      */
     void lock();
 
-    //! UnLock associated frame if locked
-    /** Exposed as unlock() to Python
+    /**
+     * @brief Unlocks the associated frame when currently locked.
+     *
+     * @details Exposed as `unlock()` in Python.
      */
     void unlock();
 
-    //! Enter method for python, does nothing
-    /** This exists only to support the
-     * with call in python.
+    /**
+     * @brief Python context-manager entry hook.
      *
-     * Exposed as __enter__() to Python
+     * @details
+     * Exists to support Python `with` usage. Exposed as `__enter__()` in Python.
      */
     void enter();
 
-    //! Exit method for python, does nothing
-    /** This exists only to support the
-     * with call in python.
+    /**
+     * @brief Python context-manager exit hook.
      *
-     * Exposed as __exit__() to Python
+     * @details
+     * Exists to support Python `with` usage. Exposed as `__exit__()` in Python.
      */
     void exit(void*, void*, void*);
 };
 
-//! Alias for using shared pointer as FrameLockPtr
+/** @brief Shared pointer alias for `FrameLock`. */
 typedef std::shared_ptr<rogue::interfaces::stream::FrameLock> FrameLockPtr;
 
 }  // namespace stream

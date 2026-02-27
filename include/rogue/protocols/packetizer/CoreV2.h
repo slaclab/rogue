@@ -1,5 +1,5 @@
 /**
- * ----------------------------------------------------------------------------
+  * ----------------------------------------------------------------------------
  * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
@@ -31,40 +31,83 @@ class Transport;
 class Application;
 class ControllerV2;
 
-//! Core Class
+/**
+ * @brief Packetizer v2 core wiring object.
+ *
+ * @details
+ * Owns and connects transport, v2 controller, and per-destination application
+ * endpoints for the packetizer v2 stack.
+ */
 class CoreV2 {
-    //! Transport module
+    // Transport module
     std::shared_ptr<rogue::protocols::packetizer::Transport> tran_;
 
-    //! Application modules
+    // Application modules
     std::shared_ptr<rogue::protocols::packetizer::Application> app_[256];
 
-    //! Core module
+    // Core module
     std::shared_ptr<rogue::protocols::packetizer::ControllerV2> cntl_;
 
   public:
-    //! Class creation
+    /**
+     * @brief Creates a packetizer v2 core.
+     *
+     * @details
+     * Parameter semantics are identical to the constructor; see `CoreV2()`
+     * for construction-path details.
+     * This static factory is the preferred construction path when the object
+     * is shared across Rogue graph connections or exposed to Python.
+     * It returns `std::shared_ptr` ownership compatible with Rogue pointer typedefs.
+     *
+     * @param enIbCrc Enable inbound CRC checking.
+     * @param enObCrc Enable outbound CRC generation.
+     * @param enSsi Enable SSI framing behavior.
+     * @return Shared pointer to the created packetizer v2 core.
+     */
     static std::shared_ptr<rogue::protocols::packetizer::CoreV2> create(bool enIbCrc, bool enObCrc, bool enSsi);
 
-    //! Setup class in python
+    /** @brief Registers Python bindings for this class. */
     static void setup_python();
 
-    //! Creator
+    /**
+     * @brief Constructs a packetizer v2 core.
+     *
+     * @details
+     * This constructor is a low-level C++ allocation path.
+     * Prefer `create()` when shared ownership or Python exposure is required.
+     *
+     * @param enIbCrc Enable inbound CRC checking.
+     * @param enObCrc Enable outbound CRC generation.
+     * @param enSsi Enable SSI framing behavior.
+     */
     CoreV2(bool enIbCrc, bool enObCrc, bool enSsi);
 
-    //! Destructor
+    /** @brief Destroys the packetizer v2 core. */
     ~CoreV2();
 
-    //! Get transport interface
+    /**
+     * @brief Returns the transport-facing endpoint.
+     * @return Shared transport interface.
+     */
     std::shared_ptr<rogue::protocols::packetizer::Transport> transport();
 
-    //! Application module
+    /**
+     * @brief Returns an application endpoint by destination ID.
+     * @param dest Destination channel ID.
+     * @return Shared application endpoint.
+     */
     std::shared_ptr<rogue::protocols::packetizer::Application> application(uint8_t dest);
 
-    //! Get drop count
+    /**
+     * @brief Returns total dropped-frame count reported by the controller.
+     * @return Number of dropped frames.
+     */
     uint32_t getDropCount();
 
-    //! Set timeout
+    /**
+     * @brief Sets transmit timeout for internal controller operations.
+     * @param timeout Timeout in microseconds.
+     */
     void setTimeout(uint32_t timeout);
 };
 

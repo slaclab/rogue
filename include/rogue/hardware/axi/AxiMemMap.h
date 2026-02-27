@@ -34,16 +34,29 @@ namespace rogue {
 namespace hardware {
 namespace axi {
 
-//! AXI Memory Map Class
-/** This class provides a bridge between the Rogue memory interface and one
- * of the AES Stream Drivers device drivers. This bridge allows for read and
- * write transactions to PCI Express boards (using the data_dev driver)
- * or Zynq AXI4 register space (using the rce_memmap driver). The driver
- * controls which space is available to the user. Multiple AxiMemMap classes
- * are allowed to be attached to the driver at the same time.
+/**
+ * @brief Memory-slave bridge for AXI register access via aes-stream-driver.
+ *
+ * @details
+ * `AxiMemMap` is Rogue's wrapper around the AES stream drivers kernel/user API:
+ * https://github.com/slaclab/aes-stream-drivers
+ *
+ * It adapts Rogue memory transactions to the driver register access calls
+ * (`dmaReadRegister`/`dmaWriteRegister`). This enables read/write transactions
+ * to PCIe register space (for example via the `datadev` driver) or Zynq AXI4
+ * register space (for example via `axi_memory_map`), depending on what the loaded
+ * driver exposes.
+ *
+ * Transaction flow:
+ * - `doTransaction()` enqueues requests from upstream memory masters.
+ * - A worker thread dequeues transactions and executes 32-bit register accesses.
+ * - Read data is copied back into the transaction buffer.
+ * - Each transaction completes with `done()` or `error(...)`.
+ *
+ * Multiple `AxiMemMap` instances may be attached to the same underlying driver.
  */
 class AxiMemMap : public rogue::interfaces::memory::Slave {
-    //! AxiMemMap file descriptor
+    // AxiMemMap device file descriptor.
     int32_t fd_;
 
     // Logging
@@ -52,37 +65,63 @@ class AxiMemMap : public rogue::interfaces::memory::Slave {
     std::thread* thread_;
     bool threadEn_;
 
-    //! Thread background
+    // Background worker thread entry point.
     void runThread();
 
     // Queue
     rogue::Queue<std::shared_ptr<rogue::interfaces::memory::Transaction>> queue_;
 
   public:
-    //! Class factory which returns a AxiMemMapPtr to a newly created AxiMemMap object
-    /** Exposed to Python as rogue.hardware.axi.AxiMemMap()
-     * @param path Path to device. i.e /dev/datadev_0
-     * @return AxiMemMap pointer (AxiMemMapPtr)
+    /**
+     * @brief Creates an AXI memory-map bridge instance.
+     *
+     * @details
+     * Parameter semantics are identical to the constructor; see `AxiMemMap()`
+     * for device-open and worker-thread setup details.
+     * Exposed to Python as `rogue.hardware.axi.AxiMemMap()`.
+     * This static factory is the preferred construction path when the object
+     * is shared across Rogue graph connections or exposed to Python.
+     * It returns `std::shared_ptr` ownership compatible with Rogue pointer typedefs.
+     *
+     * @param path Device path (for example `/dev/datadev_0`).
+     * @return Shared pointer to the created `AxiMemMap`.
      */
     static std::shared_ptr<rogue::hardware::axi::AxiMemMap> create(std::string path);
 
-    // Setup class for use in python
+    /** @brief Registers Python bindings for this class. */
     static void setup_python();
 
-    // Class Creator
+    /**
+     * @brief Constructs an AXI memory-map bridge instance.
+     *
+     * @details
+     * This constructor is a low-level C++ allocation path.
+     * Prefer `create()` when shared ownership or Python exposure is required.
+     *
+     * Opens driver device, validates driver API compatibility, and starts worker
+     * thread for queued transaction processing.
+     *
+     * @param path Device path (for example `/dev/datadev_0`).
+     */
     explicit AxiMemMap(std::string path);
 
-    // Destructor
+    /** @brief Destroys the AXI memory-map bridge instance. */
     ~AxiMemMap();
 
-    // Stop the interface
+    /**
+     * @brief Stops worker thread and closes device handle.
+     */
     void stop();
 
-    // Accept as transaction from the memory Master as defined in the Slave class.
+    /**
+     * @brief Queues a memory transaction for asynchronous register execution.
+     *
+     * @param tran Transaction received from upstream memory master.
+     */
     void doTransaction(std::shared_ptr<rogue::interfaces::memory::Transaction> tran);
 };
 
-//! Alias for using shared pointer as TcpClientPtr
+/** @brief Shared pointer alias for `AxiMemMap`. */
 typedef std::shared_ptr<rogue::hardware::axi::AxiMemMap> AxiMemMapPtr;
 
 }  // namespace axi
