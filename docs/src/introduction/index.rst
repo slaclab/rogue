@@ -4,34 +4,46 @@
 Introduction
 ============
 
-This should be a paragraph/abstract that defines what rogue is at a quick glance.
-This section goes into depth about what rogue is, and situations in which you might use it.
-This is where I should put starter information and include various notes from the powerpoint slide.
+Rogue is a mixed C++/Python framework for building hardware control and data
+acquisition applications. It provides reusable interfaces for moving streaming
+data, accessing register maps, organizing systems into a hierarchical device
+tree, and exposing that tree to tools such as GUIs, scripting, and higher-level
+DAQ software.
+
+In practice, Rogue is most useful when you need to combine:
+
+* High-throughput data paths that run in C++ threads
+* Structured hardware control and orchestration in Python
+* A clean abstraction boundary between hardware transports and application logic
+
+Whether you are bringing up a single board or coordinating a distributed
+multi-server system, Rogue is designed to let you start quickly and scale
+without rewriting core architecture.
 
 
 Goals of Rogue
 ==============
 
-Provide a system to facilitate hardware development and intermediate daq systems for interfacing to hardware
+Rogue is designed to facilitate hardware development and intermediate DAQ
+systems by providing a consistent, extensible software foundation.
 
-* Support a number of hardware & software interface technologies, including ones that don’t yet exist
-* Easy to understand mechanisms for connecting independent management and data processing modules together using a set of well defined, easy to understand interfaces
-* Allow data paths to exist in independent high performance threads
-   
-   * While also allowing data access to python for visualization
+* Support multiple hardware and software interface technologies, including
+  future transports and protocols.
+* Provide clear mechanisms for connecting independent management and data
+  processing modules through well-defined interfaces.
+* Run high-performance data paths in independent C++ threads while still
+  enabling Python-side access for inspection and visualization.
+* Offer a flexible hierarchy for composing system components independent of
+  physical network or hardware boundaries.
+* Coordinate and manage multi-node or multi-server deployments.
+* Support data writing, replay, and configuration archiving for debug and
+  operations workflows.
+* Interface with higher-level control and management layers, including:
 
-* Flexible structure for creating a hierarchy of system components
-   
-   * Independent of the network and hardware hierarchies
-
-* Internode coordination and management of multi-server systems (RCE clusters)
-* Support data file writing & configuration archiving
-* Interface independently to a number of management layers, sometimes in parallel
-   
-   * EPICS
-   * CODA
-   * Ignition (mysql)
-   * EuDaq
+  * EPICS
+  * CODA
+  * Ignition (MySQL)
+  * EuDaq
 
 
 
@@ -39,30 +51,44 @@ Structure of Rogue
 ==================
 
 
-* Mixed C++/Python codebase using boost::python library
+Rogue uses a layered architecture that combines low-level performance with
+high-level application development.
 
-   * C++ base classes expose most of their methods to Python layer
-   * C++ threads are used for data path and underlying communication mechanisms
-   * Allows rapid development in Python with ability to drop into C++ for performance
-   * Most development with Rogue is done in Python
+* Mixed C++/Python codebase (via Boost.Python bindings):
 
-* Low level (C++) base structures
+  * C++ base classes expose core methods into Python.
+  * C++ threads handle bulk transport and communication mechanisms.
+  * Python enables rapid iteration, orchestration, and system composition.
+  * Performance-critical components can be implemented or migrated to C++.
 
-   * :ref:`Stream Interface <interfaces_stream>` for bulk data movement and asynchronous messages.
+* High-level Python interfaces:
 
-      * Rogue::interfaces::stream
+  * :ref:`Tree-based <pyrogue_tree>` structure for hierarchical system
+    organization.
+  * Devices can contain Variables, Commands, and other Devices.
+  * These objects derive from the :ref:`Node <pyrogue_tree_node>` base class.
+  * :ref:`Variables <pyrogue_tree_node_variable>` describe register data
+    (addressing, type, access behavior, and display semantics).
+  * :ref:`Commands <pyrogue_tree_node_command>` define operational procedures
+    and control actions.
 
-   * :ref:`Memory Interface <interfaces_memory>` for register access.
+* Low-level C++ interfaces:
 
-      * Rogue::interfaces::memory
+  * :ref:`Stream Interface <interfaces_stream>` for bulk data movement and
+    asynchronous messaging (`rogue::interfaces::stream`).
+  * :ref:`Memory Interface <interfaces_memory>` for register and memory-mapped
+    access (`rogue::interfaces::memory`).
 
-* Higher level (Python) :ref:`interfaces` for organizing systems.
+* Additional modules and ecosystem components:
 
-   * :ref:`Tree-based <pyrogue_tree>` class structure for hierarchical organization.
-   * Devices contain Variables, Commands, and other Devices
+  * :ref:`Utilities <utilities>` for file I/O, PRBS tools, compression, and
+    other support functions used during development and operations.
+  * :ref:`Protocols <protocols>` for transport and control integrations such
+    as UDP, RSSI, SRP, packetizer, EPICS, and related protocol layers.
+  * :ref:`Hardware <hardware>` for hardware-facing drivers and interfaces,
+    including AXI and raw memory-mapped access paths.
+  * :ref:`PyDM GUI support <pydm>` for Rogue channel integration and custom
+    widgets used to monitor and control device trees.
 
-      * These are all a part of the :ref:`Node <pyrogue_tree_node>` base class
-
-   * Variables describe registers - Address, data type, etc: :ref:`pyrogue_tree_node_variable`
-   * Commands describe common sequences of operations on a Device :ref:`pyrogue_tree_node_command`
-
+To continue, see :ref:`interfaces` for transport-level APIs and
+:ref:`starting_tutorials` for a hands-on starting path.
