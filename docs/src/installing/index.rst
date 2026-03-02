@@ -7,16 +7,17 @@ Installing & Compiling Rogue
 This section describes how to obtain and install Rogue. 
 After installation is completed, consider following one of our :ref:`tutorials` to learn the basics. 
 
-The recommended method for installing rogue is on Linux systems through :ref:`installing_miniforge`. 
+The recommended method for installing rogue is through :ref:`installing_miniforge` and
+:ref:`installing_miniforge_build`.
 If you chose to build rogue from source instead of using miniforge, the following list 
 is the recommendation for each operating system.
 
-**Note:** rogue installations are not currently supported on mac or windows hardware. 
-A Linux(Ubuntu) VM or docker image will be required to build rogue. 
+**Note:** Native source builds are currently supported on Linux and macOS arm64.
+Windows users should use Ubuntu (WSL) or Docker.
 
 * Linux - :ref:`installing_full_build`
 * Windows - :ref:`installing_docker`
-* Mac - :ref:`installing_docker`
+* Mac (arm64) - :ref:`installing_miniforge_build`
 
 
 .. toctree::
