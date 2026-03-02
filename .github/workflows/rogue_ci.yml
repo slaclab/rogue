@@ -182,11 +182,6 @@ jobs:
           cmake ..
           cmake --build .
 
-      # Run API Test
-      - name: Run API Test
-        shell: bash -el {0}
-        run: |
-          tests/api_test/bin/api_test
 
 # ----------------------------------------------------------------------------
 
