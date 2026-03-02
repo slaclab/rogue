@@ -648,7 +648,7 @@ class LegendRow(Display):
         args: list[str] | None = None,
         macros: dict[str, str] | None = None,
         path: str | None = None,
-        main: "TimePlotter" | None = None,
+        main: TimePlotter | None = None,
     ) -> None:
         super(LegendRow, self).__init__(parent=parent, args=args, macros=None)
 
