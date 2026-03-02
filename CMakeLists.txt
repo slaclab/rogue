@@ -22,6 +22,17 @@ endif()
 cmake_minimum_required(VERSION 3.15)
 include(InstallRequiredSystemLibraries)
 
+# CMake policy compatibility:
+# - CMP0144: honor upper-case <PACKAGENAME>_ROOT variables in find_package.
+# - CMP0167: keep FindBoost module behavior for the current Boost discovery flow.
+if(POLICY CMP0144)
+   cmake_policy(SET CMP0144 NEW)
+endif()
+
+if(POLICY CMP0167)
+   cmake_policy(SET CMP0167 OLD)
+endif()
+
 # Set default release type
 if (NOT EXISTS ${CMAKE_BINARY_DIR}/CMakeCache.txt)
   if (NOT CMAKE_BUILD_TYPE)
@@ -75,6 +86,7 @@ if ( NOT NO_PYTHON )
    # Hint for boost on miniforge
    if (DEFINED ENV{CONDA_PREFIX})
       set(BOOST_ROOT $ENV{CONDA_PREFIX})
+      set(Boost_ROOT $ENV{CONDA_PREFIX})
    endif()
 
    # Loop through potential Boost Python component names
