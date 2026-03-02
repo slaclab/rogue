@@ -24,28 +24,22 @@ without rewriting core architecture.
 Goals of Rogue
 ==============
 
-Rogue is designed to facilitate hardware development and intermediate DAQ
-systems by providing a consistent, extensible software foundation.
+The primary goal of Rogue is to accelerate data acquisition (DAQ) system
+development while keeping performance and integration requirements manageable.
 
-* Support multiple hardware and software interface technologies, including
-  future transports and protocols.
-* Provide clear mechanisms for connecting independent management and data
-  processing modules through well-defined interfaces.
-* Run high-performance data paths in independent C++ threads while still
-  enabling Python-side access for inspection and visualization.
-* Offer a flexible hierarchy for composing system components independent of
-  physical network or hardware boundaries.
-* Coordinate and manage multi-node or multi-server deployments.
-* Support data writing, replay, and configuration archiving for debug and
-  operations workflows.
-* Interface with higher-level control and management layers, including:
+* Speed up system bring-up with reusable interfaces and building blocks.
+* Support heterogeneous hardware and software connections through consistent
+  transport and control abstractions.
+* Provide easy-to-use abstractions for common access patterns such as register
+  access, streaming data flow, and device orchestration.
+* Preserve fine-grained operational control when detailed behavior tuning is
+  required.
+* Keep control logic decoupled from transport details so systems remain
+  maintainable as requirements evolve.
+* Scale from single-board setups to multi-node, multi-server deployments.
+* Integrate with higher-level control ecosystems, including:
 
-  * EPICS
-  * CODA
-  * Ignition (MySQL)
-  * EuDaq
-
-
+  * EPICS, CODA, Ignition (MySQL), EuDaq
 
 Structure of Rogue
 ==================
@@ -89,9 +83,9 @@ Below the Python layer, core interfaces provide deterministic access to data
 movement and register transactions.
 
 * :ref:`Stream Interface <interfaces_stream>` for bulk data movement and
-  asynchronous messaging (`rogue::interfaces::stream`).
+  asynchronous messaging.
 * :ref:`Memory Interface <interfaces_memory>` for register and memory-mapped
-  access (`rogue::interfaces::memory`).
+  access.
 
 Additional Modules and Ecosystem Components
 -------------------------------------------
