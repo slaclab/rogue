@@ -87,7 +87,7 @@ Configuration Stream
 Add Special Devices
 -------------------
 
-#. Create :ref:`ppg <hardware_pgp_pgp_cardp>` card :ref:`interfaces <interfaces>`
+#. Create PGP card :ref:`hardware interfaces <hardware>`
 #. Create PRBS Transmitter :ref:`pyrogue_tree_node_device_prbsrx` device
 #. Create a :ref:`Stream Writer <pyrogue_tree_node_device_streamwriter>` device
 #. Create a :ref:`Data Receiver <pyrogue_tree_node_device_datareceiver>` device
@@ -254,4 +254,3 @@ Override Necessary Functions
             self._ax = self._fig.add_subplot(111)
             self._ax.plot(self.TestArray.get(read=read))
             return self._fig
-
