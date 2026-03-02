@@ -2,8 +2,8 @@ channels:
   - conda-forge
 dependencies:
   - python>=3.7
-  - gcc_linux-64
-  - gxx_linux-64
+  - c-compiler
+  - cxx-compiler
   - make
   - git
   - git-lfs
@@ -27,4 +27,4 @@ dependencies:
   - matplotlib
   - pytest
   - pytest-cov
-  - pyqt=5.12
+  - pyqt>=5.15
