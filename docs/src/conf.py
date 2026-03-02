@@ -60,7 +60,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'Rogue'
-copyright = '2025, SLAC National Accelerator Laboratory'
+copyright = '2026, SLAC National Accelerator Laboratory'
 author = 'SLAC TID-ID'
 
 # The version info for the project you're documenting, acts as replacement for
