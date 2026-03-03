@@ -24,3 +24,4 @@ bld-dir/*
 /rhel7-x86_64
 rogue.egg-info*
 .vscode/
+.cursor/
