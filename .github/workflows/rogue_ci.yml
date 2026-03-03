@@ -161,7 +161,11 @@ jobs:
       - name: Install Python test/documentation dependencies
         shell: bash -el {0}
         run: |
-          python -m pip install -r pip_requirements.txt
+          # hwcounter uses x86 inline assembly (rdtsc/eax/edx) and fails to
+          # build on macOS arm64 GitHub runners. Exclude it for this job.
+          # Linux CI still installs full requirements and covers hwcounter.
+          grep -vE '^hwcounter$' pip_requirements.txt > /tmp/pip_requirements_macos.txt
+          python -m pip install -r /tmp/pip_requirements_macos.txt
 
       # Rogue
       - name: Build Rogue
