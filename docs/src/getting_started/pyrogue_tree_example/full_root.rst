@@ -1,8 +1,11 @@
 .. _full_root_definition:
 
-======================
-Full Example Root Code
-======================
+=======================================
+Step 3: Review the Complete Root Example
+=======================================
+
+This page collects the full example root in one listing so you can compare
+against your implementation and copy from a complete reference.
 
 .. code-block:: python
 

@@ -1,8 +1,12 @@
 .. _tutorials_p_t_device:
 
-================================
-Creating a Custom Pyrogue Device
-================================
+==========================================
+Step 2: Create a Custom PyRogue Device
+==========================================
+
+This page shows a representative custom `pyrogue.Device` implementation.
+Use it as a pattern for adding strongly-typed register maps, helper
+`LinkVariable` values, and command interfaces.
 
 .. code-block:: python
 

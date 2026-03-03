@@ -1,10 +1,12 @@
 .. _interfaces_python_osmemmaster:
 
-======================================
-Python OsMemMaster Class Documentation
-======================================
+==========================
+OsMemMaster Device Example
+==========================
 
-OsMemMaster 
+`OsMemMaster` is an optional example of a memory-backed monitoring device.
+It demonstrates how to map host-level metrics into a standard PyRogue device
+interface.
 
 .. code-block:: python
 

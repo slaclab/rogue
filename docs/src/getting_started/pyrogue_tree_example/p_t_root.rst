@@ -1,10 +1,12 @@
 .. _tutorials_p_t_root:
 
-===========================
-Basic Pyrogue Tree Tutorial
-===========================
+========================================
+Step 1: Build Your First PyRogue Root
+========================================
 
-In this tutorial, we will go through all of the steps creating a pyrogue tree.
+This page walks through creating a functional PyRogue root tree from scratch.
+Each section adds one building block so you can run, inspect, and extend your
+application incrementally.
 
 Creating a Root Node
 ====================

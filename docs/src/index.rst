@@ -20,8 +20,8 @@ Find other helpful links(slack channel, Jira, etc) `on confluence <https://confl
    :caption: Contents:
 
    introduction/index
-   tutorials/index
-   installing/index
+   getting_started/index
+   advanced_examples/index
    pyrogue_tree/index
    interfaces/index
    utilities/index
@@ -31,6 +31,7 @@ Find other helpful links(slack channel, Jira, etc) `on confluence <https://confl
    custom_module/index
    pydm/index
    migration/index
+   installing/index
    api/index
    
 
