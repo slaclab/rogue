@@ -29,13 +29,24 @@ except ImportError:
 #logger = logging.getLogger('pyrogue')
 #logger.setLevel(logging.DEBUG)
 
-MaxAvgNs = { 'remoteSetRate'   : 1.0e6,
-             'remoteSetNvRate' : 1.0e6,
-             'remoteGetRate'   : 1.0e6,
-             'localSetRate'    : 1.0e6,
-             'localGetRate'    : 1.0e6,
-             'linkedSetRate'   : 1.0e6,
-             'linkedGetRate'   : 1.0e6 }
+# Pre-existing tuned thresholds from the original x86/hwcounter-based test.
+MaxCycles = { 'remoteSetRate'   : 8.0e9,
+              'remoteSetNvRate' : 7.0e9,
+              'remoteGetRate'   : 6.0e9,
+              'localSetRate'    : 8.0e9,
+              'localGetRate'    : 6.0e9,
+              'linkedSetRate'   : 9.0e9,
+              'linkedGetRate'   : 8.0e9 }
+
+BENCH_COUNT = 100000
+NOMINAL_CPU_HZ = 3.0e9
+
+# Cross-platform fallback thresholds in ns/op derived from MaxCycles assuming
+# NOMINAL_CPU_HZ and BENCH_COUNT.
+MaxAvgNs = {
+    k: (v * 1.0e9) / (NOMINAL_CPU_HZ * BENCH_COUNT)
+    for k, v in MaxCycles.items()
+}
 
 class LocalDev(pr.Device):
 
@@ -140,7 +151,7 @@ def test_rate():
     #pr.enable()
 
     with DummyTree() as root:
-        count = 100000
+        count = BENCH_COUNT
         operations = {
             'remoteSetRate': lambda i: root.LocalDev.TestRemote.set(i),
             'remoteSetNvRate': lambda i: root.LocalDev.TestRemoteNoVerify.set(i),
@@ -157,14 +168,23 @@ def test_rate():
             result = _measure_operation(root, count, operation)
 
             msg = (
-                f"{name} avg_ns {result['avg_ns']:.2e}, "
-                f"maximum {MaxAvgNs[name]:.2e}, rate {result['rate_hz']}"
+                f"{name}: avg {result['avg_ns']:.2e} ns/op, "
+                f"maximum {MaxAvgNs[name]:.2e} ns/op, "
+                f"rate {result['rate_hz']:.2e} ops/s"
             )
             if HAS_HWCOUNTER:
-                msg += f", cycles {result['cycles']:.2e}"
+                msg += (
+                    f", cycles {result['cycles']:.2e} cycles, "
+                    f"maximum {MaxCycles[name]:.2e} cycles"
+                )
             print(msg)
 
-            if result['avg_ns'] > MaxAvgNs[name]:
+            if HAS_HWCOUNTER:
+                if result['cycles'] > MaxCycles[name]:
+                    failures.append(
+                        f"{name}: cycles {result['cycles']:.2e} > {MaxCycles[name]:.2e}"
+                    )
+            elif result['avg_ns'] > MaxAvgNs[name]:
                 failures.append(
                     f"{name}: avg_ns {result['avg_ns']:.2e} > {MaxAvgNs[name]:.2e}"
                 )
