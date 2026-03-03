@@ -173,14 +173,11 @@ jobs:
         run: |
           python -c "import rogue, pyrogue; print('rogue import ok')"
 
-      # Compile API Test
-      - name: Compile API Test
+      # Run Python tests (exclude separate C++ api_test job on macOS)
+      - name: Rogue Tests
         shell: bash -el {0}
         run: |
-          cd tests/api_test
-          mkdir build; cd build
-          cmake ..
-          cmake --build .
+          python -m pytest
 
 
 # ----------------------------------------------------------------------------
