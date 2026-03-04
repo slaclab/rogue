@@ -4,6 +4,11 @@ then
    LD_LIBRARY_PATH=""
 fi
 
+if [ -z "$DYLD_LIBRARY_PATH" ]
+then
+   DYLD_LIBRARY_PATH=""
+fi
+
 if [ -z "$PYTHONPATH" ]
 then
    PYTHONPATH=""
@@ -18,9 +23,9 @@ export PYTHONPATH=${ROGUE_DIR}/python:${PYTHONPATH}
 
 # Setup library path
 export LD_LIBRARY_PATH=${ROGUE_DIR}/lib:${LD_LIBRARY_PATH}
+export DYLD_LIBRARY_PATH=${ROGUE_DIR}/lib:${DYLD_LIBRARY_PATH}
 
 # PYDM environment
 export PYQTDESIGNERPATH=${ROGUE_DIR}/python/pyrogue/pydm:${PYQTDESIGNERPATH}
 export PYDM_DATA_PLUGINS_PATH=${ROGUE_DIR}/python/pyrogue/pydm/data_plugins
 export PYDM_TOOLS_PATH=${ROGUE_DIR}/python/pyrogue/pydm/tools
-

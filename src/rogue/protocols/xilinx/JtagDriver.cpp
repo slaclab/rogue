@@ -25,6 +25,7 @@
 #include <pthread.h>
 #include <sys/socket.h>
 
+#include <cinttypes>
 #include <cmath>
 #include <cstdio>
 #include <memory>
@@ -298,10 +299,12 @@ void rpx::JtagDriver::sendVectors(uint64_t bits, uint8_t* tms, uint8_t* tdi, uin
 }
 
 void rpx::JtagDriver::dumpInfo(FILE* f) {
-    fprintf(f, "Word size:                  %d\n", getWordSize());
-    fprintf(f, "Target Memory Depth (bytes) %d\n", getWordSize() * getMemDepth());
-    fprintf(f, "Max. Vector Length  (bytes) %ld\n", getMaxVectorSize());
-    fprintf(f, "TCK Period             (ns) %ld\n", static_cast<uint64_t>(getPeriodNs()));
+    fprintf(f, "Word size:                  %" PRIu64 "\n", static_cast<uint64_t>(getWordSize()));
+    fprintf(f,
+            "Target Memory Depth (bytes) %" PRIu64 "\n",
+            static_cast<uint64_t>(getWordSize()) * static_cast<uint64_t>(getMemDepth()));
+    fprintf(f, "Max. Vector Length  (bytes) %" PRIu64 "\n", getMaxVectorSize());
+    fprintf(f, "TCK Period             (ns) %" PRIu64 "\n", static_cast<uint64_t>(getPeriodNs()));
 }
 
 void rpx::JtagDriver::setup_python() {

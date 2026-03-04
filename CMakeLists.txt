@@ -22,6 +22,17 @@ endif()
 cmake_minimum_required(VERSION 3.15)
 include(InstallRequiredSystemLibraries)
 
+# CMake policy compatibility:
+# - CMP0144: honor upper-case <PACKAGENAME>_ROOT variables in find_package.
+# - CMP0167: keep FindBoost module behavior for the current Boost discovery flow.
+if(POLICY CMP0144)
+   cmake_policy(SET CMP0144 NEW)
+endif()
+
+if(POLICY CMP0167)
+   cmake_policy(SET CMP0167 OLD)
+endif()
+
 # Set default release type
 if (NOT EXISTS ${CMAKE_BINARY_DIR}/CMakeCache.txt)
   if (NOT CMAKE_BUILD_TYPE)
@@ -31,6 +42,11 @@ endif()
 
 # Project name
 project (rogue)
+
+# Current Apple support target is arm64 only.
+if (APPLE AND NOT ((CMAKE_SYSTEM_PROCESSOR STREQUAL "arm64") OR (CMAKE_SYSTEM_PROCESSOR STREQUAL "aarch64")))
+   message(FATAL_ERROR "macOS builds are only supported on arm64")
+endif()
 
 # C/C++
 enable_language(CXX)
@@ -70,6 +86,7 @@ if ( NOT NO_PYTHON )
    # Hint for boost on miniforge
    if (DEFINED ENV{CONDA_PREFIX})
       set(BOOST_ROOT $ENV{CONDA_PREFIX})
+      set(Boost_ROOT $ENV{CONDA_PREFIX})
    endif()
 
    # Loop through potential Boost Python component names
@@ -116,11 +133,17 @@ find_package(ZeroMQ QUIET)
 # ZeroMQ does not always support cmake, use brute force
 if (NOT ZeroMQ_FOUND)
 
-   # Convert LD_LIBRARY PATH for search
+   set(HINT_PATHS "")
+
+   # Convert library path hints for search.
    if(DEFINED ENV{LD_LIBRARY_PATH})
-      string(REPLACE ":" ";" HINT_PATHS $ENV{LD_LIBRARY_PATH})
-   else()
-      set(HINT_PATHS, "")
+      string(REPLACE ":" ";" LD_HINT_PATHS $ENV{LD_LIBRARY_PATH})
+      list(APPEND HINT_PATHS ${LD_HINT_PATHS})
+   endif()
+
+   if(APPLE AND DEFINED ENV{DYLD_LIBRARY_PATH})
+      string(REPLACE ":" ";" DYLD_HINT_PATHS $ENV{DYLD_LIBRARY_PATH})
+      list(APPEND HINT_PATHS ${DYLD_HINT_PATHS})
    endif()
 
    # See if zmq library is in LD_LIBRARY_PATH
@@ -227,12 +250,6 @@ include_directories(system ${Python3_NumPy_INCLUDE_DIRS})
 include_directories(system ${ZeroMQ_INCLUDE_DIR})
 include_directories(system ${BZIP2_INCLUDE_DIR})
 
-if (APPLE)
-   SET(CMAKE_SHARED_LIBRARY_SUFFIX ".dylib")
-else()
-   SET(CMAKE_SHARED_LIBRARY_SUFFIX ".so")
-endif()
-
 # Create rogue core library
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 add_library(rogue-core OBJECT "")
@@ -243,7 +260,11 @@ add_subdirectory(src/rogue)
 # Always build shared library
 add_library(rogue-core-shared SHARED $<TARGET_OBJECTS:rogue-core> "")
 set_target_properties(rogue-core-shared PROPERTIES OUTPUT_NAME librogue-core)
-set_target_properties(rogue-core-shared PROPERTIES PREFIX "" SUFFIX ".so")
+if (APPLE)
+   set_target_properties(rogue-core-shared PROPERTIES PREFIX "" SUFFIX ".dylib")
+else()
+   set_target_properties(rogue-core-shared PROPERTIES PREFIX "" SUFFIX ".so")
+endif()
 set_target_properties(rogue-core-shared PROPERTIES VERSION ${ROGUE_VERSION} SOVERSION ${ROGUE_SOVER})
 
 TARGET_LINK_LIBRARIES(rogue-core-shared PUBLIC ${Boost_LIBRARIES})
@@ -268,7 +289,9 @@ if(STATIC_LIB)
     TARGET_LINK_LIBRARIES(rogue-core-static PUBLIC ${ZeroMQ_LIBRARY})
     TARGET_LINK_LIBRARIES(rogue-core-static PUBLIC ${BZIP2_LIBRARIES})
     TARGET_LINK_LIBRARIES(rogue-core-static PUBLIC ${Python3_LIBRARIES})
-    TARGET_LINK_LIBRARIES(rogue-core-static PUBLIC rt)
+    if (NOT APPLE)
+       TARGET_LINK_LIBRARIES(rogue-core-static PUBLIC rt)
+    endif()
 endif()
 
 
@@ -422,4 +445,3 @@ endif()
 
 message("----------------------------------------------------------------------")
 message("")
-
