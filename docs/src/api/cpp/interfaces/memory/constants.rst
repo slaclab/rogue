@@ -14,6 +14,11 @@ Transaction Types
 
 The following memory transaction types are defined:
 
+.. doxygenvariable:: rogue::interfaces::memory::Read
+.. doxygenvariable:: rogue::interfaces::memory::Write
+.. doxygenvariable:: rogue::interfaces::memory::Post
+.. doxygenvariable:: rogue::interfaces::memory::Verify
+
 .. _interface_memory_constants_ptype:
 .. _interfaces_memory_constants_ptype:
 
@@ -22,10 +27,7 @@ Block Process Types
 
 The following block processing type ar defined:
 
-.. doxygenvariable:: rogue::interfaces::memory::Read
-.. doxygenvariable:: rogue::interfaces::memory::Write
-.. doxygenvariable:: rogue::interfaces::memory::Post
-.. doxygenvariable:: rogue::interfaces::memory::Verify
+
 
 .. doxygenvariable:: rogue::interfaces::memory::PyFunc
 .. doxygenvariable:: rogue::interfaces::memory::Bytes
