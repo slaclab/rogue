@@ -248,7 +248,4 @@ There are several specialized device classes available:
 Device Class Documentation
 ==========================
 
-.. autoclass:: pyrogue.Device
-   :members:
-   :member-order: bysource
-   :inherited-members:
+See :doc:`/api/python/device` for generated API details.

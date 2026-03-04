@@ -13,7 +13,4 @@ transmit and receive control should live under one node.
 PrbsPair Class Documentation
 ============================
 
-.. autoclass:: pyrogue.utilities.prbs.PrbsPair
-   :members:
-   :member-order: bysource
-   :inherited-members:
+See :doc:`/api/python/utilities_prbs_prbspair` for generated API details.

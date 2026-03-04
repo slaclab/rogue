@@ -13,7 +13,4 @@ counters.
 PrbsTx Class Documentation
 ==========================
 
-.. autoclass:: pyrogue.utilities.prbs.PrbsTx
-   :members:
-   :member-order: bysource
-   :inherited-members:
+See :doc:`/api/python/utilities_prbs_prbstx` for generated API details.

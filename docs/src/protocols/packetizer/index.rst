@@ -6,6 +6,8 @@ Packetizer Protocol
 
 TODO
 
+C++ API details for packetizer protocol classes are documented in
+:doc:`/api/cpp/protocols/packetizer/index`.
 
 .. toctree::
    :maxdepth: 1
@@ -13,5 +15,3 @@ TODO
 
    core
    coreV2
-   classes/index
-

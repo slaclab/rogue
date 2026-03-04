@@ -134,7 +134,4 @@ segments:
 RemoteVariable Class Documentation
 ==================================
 
-.. autoclass:: pyrogue.RemoteVariable
-   :members:
-   :member-order: bysource
-   :inherited-members:
+See :doc:`/api/python/remotevariable` for generated API details.

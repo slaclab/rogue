@@ -21,8 +21,6 @@ The Node class is the base class of all devices-this includes variables, command
 
 Node Class Description
 ======================
-.. autoclass:: pyrogue.Node
-   :members:
-   :member-order: bysource
+See :doc:`/api/python/node` for generated API details.
 
 

@@ -129,7 +129,7 @@ Note: if edits are made to the source files, the full build process needs to be 
 
    # build the docs
    $ cd ../docs/
-   $ make html
+   $ make clean html
 
    # view output on web browser
    $ open build/html/index.html

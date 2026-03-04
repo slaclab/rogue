@@ -70,9 +70,6 @@ SimpleClient Description
 
 The class description for the SimpleClient class is included below:
 
-.. autoclass:: pyrogue.interfaces.SimpleClient
-   :members:
-   :member-order: bysource
+See :doc:`/api/python/interfaces_simpleclient` for generated API details.
 
-   .. automethod:: pyrogue.interfaces.SimpleClient._stop
-
+   See :doc:`/api/python/interfaces_simpleclient` for method details, including ``_stop``.

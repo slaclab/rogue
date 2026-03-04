@@ -19,6 +19,9 @@ dependencies:
   - zeromq
   - sphinx
   - sphinx_rtd_theme
+  - sphinx-autodoc-typehints
+  - sphinx-copybutton
+  - sphinxcontrib-napoleon
   - breathe
   - pyserial
   - p4p

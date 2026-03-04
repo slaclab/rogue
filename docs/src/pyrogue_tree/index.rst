@@ -23,3 +23,5 @@ A common hierarchy will be a Root Node connected to any number of Device Nodes, 
    node/command/index
    node/variable/index
    model/index
+   blocks
+   blocks_advanced
