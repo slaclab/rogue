@@ -4,5 +4,7 @@
 XvcConnection
 =============
 
+The class description is shown below:
+
 .. doxygenclass:: rogue::protocols::xilinx::XvcConnection
    :members:

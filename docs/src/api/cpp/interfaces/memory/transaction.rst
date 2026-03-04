@@ -78,7 +78,11 @@ Python-facing APIs expose transaction fields and data access helpers. For Python
 backed transfers, the transaction may hold temporary Python buffer state until completion.
 
 
+Transaction objects in C++ are referenced by the following shared pointer typedef:
+
 .. doxygentypedef:: rogue::interfaces::memory::TransactionPtr
+
+The class description is shown below:
 
 .. doxygenclass:: rogue::interfaces::memory::Transaction
    :members:

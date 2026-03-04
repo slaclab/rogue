@@ -8,7 +8,11 @@ Transport
 between the controller and the underlying link transport.
 
 
+Transport objects in C++ are referenced by the following shared pointer typedef:
+
 .. doxygentypedef:: rogue::protocols::rssi::TransportPtr
+
+The class description is shown below:
 
 .. doxygenclass:: rogue::protocols::rssi::Transport
    :members:

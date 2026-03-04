@@ -10,7 +10,11 @@ frame per record.
 Protocol reference: https://confluence.slac.stanford.edu/x/L2VlK
 
 
+SplitterV2 objects in C++ are referenced by the following shared pointer typedef:
+
 .. doxygentypedef:: rogue::protocols::batcher::SplitterV2Ptr
+
+The class description is shown below:
 
 .. doxygenclass:: rogue::protocols::batcher::SplitterV2
    :members:

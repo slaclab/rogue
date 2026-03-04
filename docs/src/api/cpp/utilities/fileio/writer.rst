@@ -36,7 +36,11 @@ Split files use incrementing numeric suffixes:
    myFile.dat.3
 
 
+StreamWriter objects in C++ are referenced by the following shared pointer typedef:
+
 .. doxygentypedef:: rogue::utilities::fileio::StreamWriterPtr
+
+The class description is shown below:
 
 .. doxygenclass:: rogue::utilities::fileio::StreamWriter
    :members:

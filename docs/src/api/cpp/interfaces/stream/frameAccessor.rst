@@ -4,5 +4,7 @@
 Frame Accessor
 ==============
 
+The class description is shown below:
+
 .. doxygenclass:: rogue::interfaces::stream::FrameAccessor
    :members:

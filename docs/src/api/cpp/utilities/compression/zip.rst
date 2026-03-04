@@ -10,7 +10,11 @@ an external master, compress the Frame payload and then pass the compressed fram
 This compression module uses the Bzip2 library.
 
 
+StreamZip objects in C++ are referenced by the following shared pointer typedef:
+
 .. doxygentypedef:: rogue::utilities::StreamZipPtr
+
+The class description is shown below:
 
 .. doxygenclass:: rogue::utilities::StreamZip
    :members:
