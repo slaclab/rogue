@@ -773,20 +773,20 @@ std::string rim::Variable::getDumpValue(bool read) {
 // C++ Byte Array
 /////////////////////////////////
 
-void rim::Variable::setByteArray(uint8_t* data, int32_t index) {
+void rim::Variable::setByteArray(uint8_t* value, int32_t index) {
     if (setByteArray_ == NULL)
         throw(rogue::GeneralError::create("Variable::setByteArray", "Wrong set type for variable %s", path_.c_str()));
 
-    (block_->*setByteArray_)(data, this, index);
+    (block_->*setByteArray_)(value, this, index);
     block_->write(this, index);
 }
 
-void rim::Variable::getByteArray(uint8_t* data, int32_t index) {
+void rim::Variable::getByteArray(uint8_t* value, int32_t index) {
     if (getByteArray_ == NULL)
         throw(rogue::GeneralError::create("Variable::getByteArray", "Wrong get type for variable %s", path_.c_str()));
 
     block_->read(this, index);
-    (block_->*getByteArray_)(data, this, index);
+    (block_->*getByteArray_)(value, this, index);
 }
 
 /////////////////////////////////
@@ -869,12 +869,12 @@ std::string rim::Variable::getString(int32_t index) {
     return (block_->*getString_)(this, index);
 }
 
-void rim::Variable::getValue(std::string& retString, int32_t index) {
+void rim::Variable::getValue(std::string& valueRet, int32_t index) {
     if (getString_ == NULL) {
         throw(rogue::GeneralError::create("Variable::getValue", "Wrong get type for variable %s", path_.c_str()));
     } else {
         block_->read(this, index);
-        block_->getValue(this, retString, index);
+        block_->getValue(this, valueRet, index);
     }
 }
 
