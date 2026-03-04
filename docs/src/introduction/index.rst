@@ -102,7 +102,7 @@ and user-facing workflows.
 * :ref:`PyDM GUI support <pydm>` for Rogue channel integration and custom
   widgets used to monitor and control device trees.
 
-To continue, proceed to the :ref:`getting_started` guide, or explore the topics in the sidebar.
+To continue, proceed to the :doc:`/getting_started/index`, or explore the topics in the sidebar.
 
 
 .. toctree::
