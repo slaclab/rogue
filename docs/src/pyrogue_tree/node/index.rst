@@ -1,7 +1,7 @@
 .. _pyrogue_tree_node:
 
 ====
-Node 
+Node
 ====
 
 The Node class is the base class of all devices-this includes variables, commands, and more.
@@ -19,8 +19,7 @@ The Node class is the base class of all devices-this includes variables, command
    block/index
    groups
 
-Node Class Description
-======================
+Node API Reference
+==================
 See :doc:`/api/python/node` for generated API details.
-
 

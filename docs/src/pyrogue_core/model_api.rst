@@ -10,6 +10,7 @@ Python-facing value semantics.
 Conceptual docs:
 
 - :doc:`/pyrogue_tree/model/index`
+- :doc:`/memory_interface/model_types`
 
 Reference docs:
 

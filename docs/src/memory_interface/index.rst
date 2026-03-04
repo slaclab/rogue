@@ -13,5 +13,6 @@ composition, and practical usage. Low-level class reference remains in
    :caption: Memory Interface:
 
    overview
+   model_types
    /interfaces/memory/index
    transactions

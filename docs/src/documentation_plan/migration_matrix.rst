@@ -33,3 +33,9 @@ Status keys:
 - Link: new section points to existing content.
 - Move: narrative content moved to new canonical page.
 - Split: existing page split into conceptual/how-to/reference pages.
+
+Deferred API Reorg Notes
+========================
+
+- Reorganize the Python API section so ``Model`` and model subclasses have a
+  dedicated grouped entry/page set (tracked for later milestone work).
