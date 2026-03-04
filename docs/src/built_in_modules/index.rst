@@ -13,6 +13,7 @@ in applications.
    :maxdepth: 1
    :caption: Built-in Modules:
 
+   integrations
    /utilities/index
    /hardware/index
    /protocols/index

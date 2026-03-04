@@ -1,30 +1,53 @@
-.. _interfaces_version:
+.. _built_in_modules_integrations:
 
-====================
+========================
+Built-in Integrations
+========================
+
+This page is the canonical home for integration-oriented built-in features.
+Legacy pages under ``/interfaces`` are retained during migration.
+
+Simulation Interfaces
+=====================
+
+Rogue provides interfaces for emulating hardware data with fake memory space,
+as well as interfaces to VHDL and Verilog simulation tools.
+
+Current simulation pages:
+
+- :doc:`/interfaces/simulation/index`
+- :doc:`/interfaces/simulation/mememulate`
+- :doc:`/interfaces/simulation/pgp2b`
+- :doc:`/interfaces/simulation/sideband`
+
+SQL Logging Interface
+=====================
+
+SQL logging integration documentation currently remains in a minimal state and
+is retained at:
+
+- :doc:`/interfaces/sql`
+
 Rogue Version Helper
 ====================
-
-This page is retained during migration.
-Canonical integration docs are being organized under
-:doc:`/built_in_modules/integrations`.
 
 Rogue provides version/query helpers through ``rogue::Version`` in C++ and
 ``rogue.Version`` in Python.
 
 The helper is useful for:
 
-* logging the currently installed Rogue version
-* enforcing minimum/maximum/exact version requirements
-* retrieving parsed version components (major/minor/maint/devel)
+- logging the currently installed Rogue version
+- enforcing minimum/maximum/exact version requirements
+- retrieving parsed version components (major/minor/maint/devel)
 
 Notes
 -----
 
-* ``current()`` returns the compiled Rogue version string (typically prefixed
+- ``current()`` returns the compiled Rogue version string (typically prefixed
   with ``v``, for example ``v6.3.0-0-g<hash>``).
-* comparison helpers (``greaterThanEqual``, ``minVersion``, etc.) expect
+- comparison helpers (``greaterThanEqual``, ``minVersion``, etc.) expect
   version strings in ``major.minor.maint`` form (for example ``"6.3.0"``).
-* ``pythonVersion()`` returns a Python-style version string (for example
+- ``pythonVersion()`` returns a Python-style version string (for example
   ``"6.3.0"`` or ``"6.3.0.dev4"``).
 
 Python examples
@@ -100,3 +123,5 @@ C++ examples
        }
        return 0;
    }
+
+Legacy source retained at :doc:`/interfaces/version`.

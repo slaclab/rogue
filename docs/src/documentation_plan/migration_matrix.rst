@@ -35,6 +35,12 @@ This matrix tracks where content is moving as the revamp proceeds.
 +---------------------------------------------------+--------------------------------------------+--------+-----------+-------------+
 | /interfaces/pyrogue/index narrative               | /pyrogue_core/client_access                | Move   | Docs Team | M2 Narrative|
 +---------------------------------------------------+--------------------------------------------+--------+-----------+-------------+
+| /interfaces/simulation/index narrative            | /built_in_modules/integrations             | Move   | Docs Team | M2 Narrative|
++---------------------------------------------------+--------------------------------------------+--------+-----------+-------------+
+| /interfaces/version narrative                     | /built_in_modules/integrations             | Move   | Docs Team | M2 Narrative|
++---------------------------------------------------+--------------------------------------------+--------+-----------+-------------+
+| /interfaces/sql narrative                         | /built_in_modules/integrations             | Move   | Docs Team | M2 Narrative|
++---------------------------------------------------+--------------------------------------------+--------+-----------+-------------+
 | /api/cpp/interfaces/memory/transaction            | /memory_interface/transactions             | Move   | Docs Team | M2 Narrative|
 +---------------------------------------------------+--------------------------------------------+--------+-----------+-------------+
 | /advanced_examples/index                          | /cookbook/index                            | Link   | Docs Team | M3 Coverage |
