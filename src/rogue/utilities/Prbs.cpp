@@ -257,7 +257,7 @@ uint32_t ru::Prbs::getRxCount() {
 }
 
 //! Get rx bytes
-uint32_t ru::Prbs::getRxBytes() {
+uint64_t ru::Prbs::getRxBytes() {
     return (rxBytes_);
 }
 
@@ -302,7 +302,7 @@ double ru::Prbs::getTxBw() {
 }
 
 //! Get TX bytes
-uint32_t ru::Prbs::getTxBytes() {
+uint64_t ru::Prbs::getTxBytes() {
     return (txBytes_);
 }
 
@@ -397,8 +397,8 @@ void ru::Prbs::genFrame(uint32_t size) {
     txBytes_ += size;
 
     if ((per = updateTime(&lastTxTime_)) > 0.0) {
-        txRate_      = static_cast<float>(txCount_ - lastTxCount_) / per;
-        txBw_        = static_cast<float>(txBytes_ - lastTxBytes_) / per;
+        txRate_      = static_cast<double>(txCount_ - lastTxCount_) / per;
+        txBw_        = static_cast<double>(txBytes_ - lastTxBytes_) / per;
         lastTxCount_ = txCount_;
         lastTxBytes_ = txBytes_;
     }
@@ -511,8 +511,8 @@ void ru::Prbs::acceptFrame(ris::FramePtr frame) {
     rxBytes_ += size;
 
     if ((per = updateTime(&lastRxTime_)) > 0.0) {
-        rxRate_      = static_cast<float>(rxCount_ - lastRxCount_) / per;
-        rxBw_        = static_cast<float>(rxBytes_ - lastRxBytes_) / per;
+        rxRate_      = static_cast<double>(rxCount_ - lastRxCount_) / per;
+        rxBw_        = static_cast<double>(rxBytes_ - lastRxBytes_) / per;
         lastRxCount_ = rxCount_;
         lastRxBytes_ = rxBytes_;
     }

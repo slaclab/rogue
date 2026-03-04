@@ -77,7 +77,7 @@ class Prbs : public rogue::interfaces::stream::Slave, public rogue::interfaces::
     uint32_t rxCount_;
 
     // Rx bytes
-    uint32_t rxBytes_;
+    uint64_t rxBytes_;
 
     // tx sequence tracking
     uint32_t txSeq_;
@@ -92,7 +92,7 @@ class Prbs : public rogue::interfaces::stream::Slave, public rogue::interfaces::
     uint32_t txCount_;
 
     // TX bytes
-    uint32_t txBytes_;
+    uint64_t txBytes_;
 
     // Check payload
     bool checkPl_;
@@ -111,13 +111,13 @@ class Prbs : public rogue::interfaces::stream::Slave, public rogue::interfaces::
 
     // Stats
     uint32_t lastRxCount_;
-    uint32_t lastRxBytes_;
+    uint64_t lastRxBytes_;
     struct timeval lastRxTime_;
     double rxRate_;
     double rxBw_;
 
     uint32_t lastTxCount_;
-    uint32_t lastTxBytes_;
+    uint64_t lastTxBytes_;
     struct timeval lastTxTime_;
     double txRate_;
     double txBw_;
@@ -246,7 +246,7 @@ class Prbs : public rogue::interfaces::stream::Slave, public rogue::interfaces::
      * @brief Returns RX byte count.
      * @return Total received payload bytes.
      */
-    uint32_t getRxBytes();
+    uint64_t getRxBytes();
 
     /**
      * @brief Returns computed RX frame rate.
@@ -300,7 +300,7 @@ class Prbs : public rogue::interfaces::stream::Slave, public rogue::interfaces::
      * @brief Returns TX byte count.
      * @return Total transmitted payload bytes.
      */
-    uint32_t getTxBytes();
+    uint64_t getTxBytes();
 
     /**
      * @brief Enables or disables payload checking.
