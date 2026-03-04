@@ -7,6 +7,13 @@ API Reference
 This page is a single entry point to generated API content from Python
 docstrings/autodoc and C++ Doxygen output.
 
+API pages are reference-focused. For conceptual and usage documentation, start
+with:
+
+- :doc:`/pyrogue_core/index`
+- :doc:`/stream_interface/index`
+- :doc:`/memory_interface/index`
+
 Python API
 ==========
 

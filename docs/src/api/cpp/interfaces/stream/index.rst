@@ -5,6 +5,7 @@ Stream Interface Class Descriptions
 ===================================
 
 The following are detailed descriptions of the various C++ classes that make up the Rogue stream interface.
+For conceptual and usage documentation, start with :doc:`/stream_interface/index`.
 
 .. toctree::
    :maxdepth: 1
@@ -25,4 +26,3 @@ The following are detailed descriptions of the various C++ classes that make up 
    rateDrop
    buffer
    pool
-

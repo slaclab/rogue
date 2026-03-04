@@ -5,6 +5,7 @@ Memory Interface Class Descriptions
 ===================================
 
 The following are detailed descriptions of the various C++ classes that make up the Rogue memory interface.
+For conceptual usage guidance, start with :doc:`/memory_interface/index`.
 
 .. toctree::
    :maxdepth: 1
@@ -20,4 +21,3 @@ The following are detailed descriptions of the various C++ classes that make up 
    hub
    tcpClient
    tcpServer
-

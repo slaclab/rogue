@@ -102,7 +102,8 @@ and user-facing workflows.
 * :ref:`PyDM GUI support <pydm>` for Rogue channel integration and custom
   widgets used to monitor and control device trees.
 
-To continue, proceed to the :doc:`/getting_started/index`, or explore the topics in the sidebar.
+To continue, proceed to :doc:`/quick_start/index`, or explore the sections in
+the sidebar.
 
 
 .. toctree::
@@ -111,17 +112,19 @@ To continue, proceed to the :doc:`/getting_started/index`, or explore the topics
    :caption: Contents:
 
    Introduction <self>
-   /getting_started/index
-   /advanced_examples/index
-   /pyrogue_tree/index
+   /quick_start/index
+   /tutorials/index
+   /pyrogue_core/index
+   /stream_interface/index
+   /memory_interface/index
    /interfaces/index
    /utilities/index
    /hardware/index
    /protocols/index
-   /logging/index
-   /custom_module/index
-   /pydm/index
-   /migration/index
-   /documentation_index
+   /cookbook/index
    /installing/index
    /api/index
+   /operations/index
+   /migration/index
+   /documentation_plan/index
+   /documentation_index

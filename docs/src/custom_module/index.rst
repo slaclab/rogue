@@ -7,6 +7,9 @@ Creating Custom Modules
 This section describes to to create, compile and wrap a custom c++
 module for use in PyRogue.
 
+This content is part of the :doc:`/stream_interface/index` section in the
+revamped documentation flow.
+
 .. toctree::
    :maxdepth: 1
    :caption: Example:
@@ -15,4 +18,3 @@ module for use in PyRogue.
    makefile
    wrapper
    testing
-

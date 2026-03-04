@@ -16,6 +16,10 @@ bus, with the address being adjusted appropriately based upon its connection at 
 may forward the transaction onward, but also has the ability to conver the single transaction
 into multiple downstream transactions, providing a mechanism for handling complex memory space.
 
+Conceptual memory documentation is organized under
+:doc:`/memory_interface/index`, including transaction lifecycle details in
+:doc:`/memory_interface/transactions`.
+
 C++ API details for memory classes are documented in
 :doc:`/api/cpp/interfaces/memory/index`.
 

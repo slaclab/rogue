@@ -19,6 +19,9 @@ threads.
 The flexibility of this interface allows Stream and Memory modules to be first
 prototyped in Python and then re-implemented in C++ for performance.
 
+In the revamped structure, conceptual entry points are available in
+:doc:`/stream_interface/index` and :doc:`/memory_interface/index`.
+
 .. toctree::
    :maxdepth: 1
    :caption: Interfaces:
