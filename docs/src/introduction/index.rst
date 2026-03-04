@@ -1,8 +1,8 @@
 .. _introduction:
 
-============
-Introduction
-============
+=================================
+Welcome to Rogue's documentation!
+=================================
 
 Rogue is a mixed C++/Python framework for building hardware control and data
 acquisition applications. It provides reusable interfaces for moving streaming
@@ -102,5 +102,26 @@ and user-facing workflows.
 * :ref:`PyDM GUI support <pydm>` for Rogue channel integration and custom
   widgets used to monitor and control device trees.
 
-To continue, see :ref:`interfaces` for transport-level APIs and
-:ref:`starting_tutorials` for a hands-on starting path.
+To continue, proceed to the :ref:`getting_started` guide, or explore the topics in the sidebar.
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: 3
+   :caption: Contents:
+
+   Introduction <self>
+   /getting_started/index
+   /advanced_examples/index
+   /pyrogue_tree/index
+   /interfaces/index
+   /utilities/index
+   /hardware/index
+   /protocols/index
+   /logging/index
+   /custom_module/index
+   /pydm/index
+   /migration/index
+   /documentation_index
+   /installing/index
+   /api/index

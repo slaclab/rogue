@@ -55,8 +55,8 @@ templates_path = ['_templates']
 # source_suffix = ['.rst', '.md']
 source_suffix = '.rst'
 
-# The master toctree document.
-master_doc = 'index'
+# The master toctree document (top landing page).
+master_doc = 'introduction/index'
 
 # General information about the project.
 project = 'Rogue'
