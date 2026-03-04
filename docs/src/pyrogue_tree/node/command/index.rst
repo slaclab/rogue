@@ -32,7 +32,7 @@ Subtypes
    local_command/index
    remote_command/index
 
-BaseCommand Class Documentation
+BaseCommand API Reference
 ===============================
 
 See :doc:`/api/python/basecommand` for generated API details.

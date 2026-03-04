@@ -44,7 +44,7 @@ Example
 
                self.Message.setDisp('Done')
 
-Process Class Documentation
+Process API Reference
 ===========================
 
 See :doc:`/api/python/process` for generated API details.

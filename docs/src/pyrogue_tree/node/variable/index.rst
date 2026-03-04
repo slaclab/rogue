@@ -67,7 +67,7 @@ See also:
 * :ref:`interfaces_memory_blocks`
 * :ref:`interfaces_memory_classes`
 
-BaseVariable Class Documentation
+BaseVariable API Reference
 ================================
 
 See :doc:`/api/python/basevariable` for generated API details.

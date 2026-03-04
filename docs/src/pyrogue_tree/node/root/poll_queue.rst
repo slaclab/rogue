@@ -91,7 +91,7 @@ Temporarily block polling during a critical sequence
        root.MyDevice.SomeControl.set(1)
        root.MyDevice.OtherControl.set(0)
 
-PollQueue Class Documentation
+PollQueue API Reference
 =============================
 
 See :doc:`/api/python/pollqueue` for generated API details.

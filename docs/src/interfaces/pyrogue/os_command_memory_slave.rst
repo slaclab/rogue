@@ -4,7 +4,7 @@
 OsCommandMemorySlave
 ====================
 
-Python OsCommandMemorySlave Class Documentation
+Python OsCommandMemorySlave API Reference
 ===============================================
 
 See :doc:`/api/python/interfaces_oscommandmemoryslave` for generated API details.

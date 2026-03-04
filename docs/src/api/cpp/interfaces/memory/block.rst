@@ -4,10 +4,11 @@
 Block
 =====
 
-The memory interface Block class provides a mirror for the hardware register space as well as serving as a translater between python types and hardware bits and bytes.
+For conceptual guidance on block behavior and variable-to-transaction mapping,
+see:
 
-For a usage-focused overview of how blocks are used within the PyRogue tree,
-see :ref:`pyrogue_tree_node_block`.
+- :ref:`pyrogue_tree_node_block`
+- :doc:`/memory_interface/overview`
 
 
 Block objects in C++ are referenced by the following shared pointer typedef:

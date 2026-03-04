@@ -245,7 +245,7 @@ There are several specialized device classes available:
    special_devices/stream_writer
    special_devices/process
 
-Device Class Documentation
+Device API Reference
 ==========================
 
 See :doc:`/api/python/device` for generated API details.

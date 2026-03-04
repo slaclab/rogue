@@ -10,7 +10,7 @@ replay into a live stream graph.
 It includes basic file controls and exposes a stream master interface so decoded
 frames can be connected to downstream consumers.
 
-StreamReader Class Documentation
+StreamReader API Reference
 ================================
 
 See :doc:`/api/python/utilities_fileio_streamreader` for generated API details.

@@ -39,7 +39,7 @@ Example
            # Optional: project-specific handling using parsed header
            _ = header
 
-DataReceiver Class Documentation
+DataReceiver API Reference
 ================================
 
 See :doc:`/api/python/datareceiver` for generated API details.

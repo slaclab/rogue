@@ -34,11 +34,13 @@ Example
            # Device-specific software sequence
            pass
 
-LocalCommand (BaseCommand Alias) Class Documentation
-====================================================
+LocalCommand (BaseCommand Alias) API Reference
+==============================================
 
 `LocalCommand` is an alias-style specialization of
 :py:class:`pyrogue.BaseCommand`.
 
 For full API documentation (including inherited members), see:
-:ref:`pyrogue_tree_node_command`.
+
+- :doc:`/api/python/basecommand`
+- :doc:`/pyrogue_tree/node/command/index`

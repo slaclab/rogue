@@ -106,7 +106,7 @@ Example
    # Variable-specific transaction (targets variable._block)
    myDevice.writeBlocks(variable=myDevice.MyReg, checkEach=True)
 
-Block/LocalBlock Class Documentation
+Block/LocalBlock API Reference
 ====================================
 
 See :doc:`/api/python/localblock` for generated API details.

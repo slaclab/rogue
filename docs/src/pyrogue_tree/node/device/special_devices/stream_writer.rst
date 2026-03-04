@@ -14,7 +14,7 @@ Key points:
 * can emit configuration/status frames at open/close
 * supports options such as raw mode and error-frame handling
 
-StreamWriter Class Documentation
+StreamWriter API Reference
 ================================
 
 See :doc:`/api/python/utilities_fileio_streamwriter` for generated API details.

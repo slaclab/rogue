@@ -46,7 +46,7 @@ Example
                function=pr.BaseCommand.toggle,
            ))
 
-RemoteCommand Class Documentation
+RemoteCommand API Reference
 =================================
 
 See :doc:`/api/python/remotecommand` for generated API details.

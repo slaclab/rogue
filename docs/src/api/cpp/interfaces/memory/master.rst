@@ -6,7 +6,10 @@ Master
 
 The memory interface Master class is the interface for initiating a memory transaction.
 Each Master class object will be coupled with one or more :ref:`interfaces_memory_slave` objects.
-See :doc:`/memory_interface/transactions` for transaction lifecycle behavior.
+For conceptual guidance on transaction lifecycle and memory-bus flow, see:
+
+- :doc:`/memory_interface/transactions`
+- :doc:`/memory_interface/overview`
 
 
 Master objects in C++ are referenced by the following shared pointer typedef:

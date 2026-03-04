@@ -10,7 +10,7 @@ into a single convenience container.
 It is useful for loopback tests and end-to-end PRBS validation where both
 transmit and receive control should live under one node.
 
-PrbsPair Class Documentation
+PrbsPair API Reference
 ============================
 
 See :doc:`/api/python/utilities_prbs_prbspair` for generated API details.

@@ -4,7 +4,7 @@
 Python Stream Variable
 ======================
 
-Python Stream Variable Class Documentation
+Python Stream Variable API Reference
 ==========================================
 
 See :doc:`/api/python/interfaces_stream_variable` for generated API details.

@@ -48,7 +48,7 @@ Example
        def _set_is_running(self, value):
            self._is_running = bool(value)
 
-LocalVariable Class Documentation
+LocalVariable API Reference
 =================================
 
 See :doc:`/api/python/localvariable` for generated API details.

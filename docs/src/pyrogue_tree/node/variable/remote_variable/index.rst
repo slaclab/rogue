@@ -131,7 +131,7 @@ segments:
                base=pr.UInt,
            ))
 
-RemoteVariable Class Documentation
+RemoteVariable API Reference
 ==================================
 
 See :doc:`/api/python/remotevariable` for generated API details.

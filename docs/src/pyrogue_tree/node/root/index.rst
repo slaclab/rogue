@@ -271,7 +271,7 @@ The following :py:class:`pyrogue.LocalVariable` objects are all created when the
 * **LocalTime**: Local time.
 * **PollEn**: Polling worker.
 
-Root Class Documentation
+Root API Reference
 ------------------------
 
 See :doc:`/api/python/root` for generated API details.
