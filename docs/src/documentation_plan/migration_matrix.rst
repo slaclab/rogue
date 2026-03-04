@@ -41,6 +41,12 @@ This matrix tracks where content is moving as the revamp proceeds.
 +---------------------------------------------------+--------------------------------------------+--------+-----------+-------------+
 | /interfaces/sql narrative                         | /built_in_modules/integrations             | Move   | Docs Team | M2 Narrative|
 +---------------------------------------------------+--------------------------------------------+--------+-----------+-------------+
+| /utilities/index narrative                        | /built_in_modules/overview                 | Move   | Docs Team | M2 Narrative|
++---------------------------------------------------+--------------------------------------------+--------+-----------+-------------+
+| /hardware/index narrative                         | /built_in_modules/overview                 | Move   | Docs Team | M2 Narrative|
++---------------------------------------------------+--------------------------------------------+--------+-----------+-------------+
+| /protocols/index narrative                        | /built_in_modules/overview                 | Move   | Docs Team | M2 Narrative|
++---------------------------------------------------+--------------------------------------------+--------+-----------+-------------+
 | /api/cpp/interfaces/memory/transaction            | /memory_interface/transactions             | Move   | Docs Team | M2 Narrative|
 +---------------------------------------------------+--------------------------------------------+--------+-----------+-------------+
 | /advanced_examples/index                          | /cookbook/index                            | Link   | Docs Team | M3 Coverage |

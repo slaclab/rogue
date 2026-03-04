@@ -4,6 +4,10 @@
 Protocols
 ==========
 
+This page is retained during migration.
+Canonical built-in module docs are being organized under
+:doc:`/built_in_modules/index`.
+
 Protocol documentation is being expanded as part of the revamp.
 
 Current status:
