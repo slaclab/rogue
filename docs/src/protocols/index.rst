@@ -4,7 +4,18 @@
 Protocols
 ==========
 
-.. Placeholder for future text
+Protocol documentation is being expanded as part of the revamp.
+
+Current status:
+
+- Core protocol reference pages are present and linked below.
+- Several pages still need deeper narrative guidance and practical examples.
+
+Planned expansion areas:
+
+- Protocol selection guidance and tradeoffs
+- End-to-end usage examples
+- Operational notes and troubleshooting
 
 .. toctree::
    :maxdepth: 1

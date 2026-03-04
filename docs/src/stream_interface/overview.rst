@@ -4,8 +4,17 @@
 Stream Interface Overview
 =========================
 
-The Rogue stream interface moves bulk data between modules using
-``Master -> Frame -> Slave`` flow.
+The stream interface provides a mechanism for moving bulk data between modules
+within Rogue.
+
+A stream interface consists of:
+
+- a ``Master`` as the source of a Rogue frame
+- a ``Slave`` as the destination of the frame
+- a ``Frame`` container that carries a series of payload buffers
+
+This page is now the canonical conceptual home for stream architecture
+guidance. Legacy narrative remains available at :doc:`/interfaces/stream/index`.
 
 Main usage and examples:
 

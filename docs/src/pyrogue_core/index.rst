@@ -23,3 +23,5 @@ kept in :doc:`/api/index`.
    model_api
    built_in_devices
    advanced_patterns
+   /interfaces/clients/index
+   /interfaces/pyrogue/index

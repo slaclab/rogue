@@ -27,3 +27,21 @@ The sidebar follows milestone freezes:
 1. Freeze structure inside a milestone.
 2. Allow structural changes between milestones.
 3. Keep in-milestone changes additive and low risk.
+
+Narrative Preservation Rule
+===========================
+
+During the current revamp phase, do not remove existing narrative text from the
+documentation.
+
+Allowed actions:
+
+1. Move narrative content to a more appropriate section/page.
+2. Add links and structure around existing narrative.
+3. Apply minor wording edits for clarity or consistency.
+
+Required practice:
+
+- If minor wording edits are made to existing narrative, call them out in the
+  change summary.
+- Prefer preserving original narrative blocks verbatim when relocating content.
