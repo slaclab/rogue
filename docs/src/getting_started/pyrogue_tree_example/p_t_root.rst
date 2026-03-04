@@ -1,7 +1,7 @@
 .. _tutorials_p_t_root:
 
 ========================================
-Step 1: Build Your First PyRogue Root
+Build Your First PyRogue Root
 ========================================
 
 This page walks through creating a functional PyRogue root tree from scratch.

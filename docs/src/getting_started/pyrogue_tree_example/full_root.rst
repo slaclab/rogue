@@ -1,7 +1,7 @@
 .. _full_root_definition:
 
 ========================================
-Step 3: Review the Complete Root Example
+Review the Complete Root Example
 ========================================
 
 This page collects the full example root in one listing so you can compare

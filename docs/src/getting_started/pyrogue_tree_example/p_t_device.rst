@@ -1,7 +1,7 @@
 .. _tutorials_p_t_device:
 
 ==========================================
-Step 2: Create a Custom PyRogue Device
+Create a Custom PyRogue Device
 ==========================================
 
 This page shows a representative custom `pyrogue.Device` implementation.
