@@ -3,6 +3,11 @@
 Root
 ====
 
+For conceptual usage and system-level behavior, see:
+
+- :doc:`/pyrogue_tree/node/root/index`
+- :doc:`/pyrogue_core/polling`
+
 .. autoclass:: pyrogue.Root
    :members:
    :member-order: bysource

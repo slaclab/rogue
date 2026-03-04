@@ -4,6 +4,10 @@
 Buffer
 ======
 
+For conceptual guidance on frame and buffer data handling, see:
+
+- :doc:`/stream_interface/overview`
+
 The list of Buffer objects in a Frame is iterated using a the following typedef:
 
    rogue::interfaces::stream::Frame::BufferIterator

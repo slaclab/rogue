@@ -4,6 +4,11 @@
 Master
 ======
 
+For conceptual guidance on stream architecture and data flow, see:
+
+- :doc:`/stream_interface/overview`
+- :doc:`/interfaces/stream/sending`
+
 Master objects in C++ are referenced by the following shared pointer typedef:
 
 .. doxygentypedef:: rogue::interfaces::stream::MasterPtr

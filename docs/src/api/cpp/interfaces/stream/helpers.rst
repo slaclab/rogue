@@ -4,6 +4,10 @@
 Frame Helpers
 =============
 
+For conceptual guidance on stream frame access patterns, see:
+
+- :doc:`/stream_interface/overview`
+
 The following inline functions are provided to assist in moving single data values into
 and out of a :ref:`interfaces_stream_frame` using a :ref:`interfaces_stream_frame_iterator`.
 

@@ -3,6 +3,10 @@
 BaseVariable
 ============
 
+For conceptual variable behavior and subtype selection, see:
+
+- :doc:`/pyrogue_tree/node/variable/index`
+
 .. autoclass:: pyrogue.BaseVariable
    :members:
    :member-order: bysource

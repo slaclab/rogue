@@ -4,6 +4,10 @@
 Frame Iterator
 ==============
 
+For conceptual guidance on frame traversal and payload handling, see:
+
+- :doc:`/stream_interface/overview`
+
 The FrameIterator class is also aliased as a Frame::iterator
 
    rogue::interfaces::stream::Frame::iterator
