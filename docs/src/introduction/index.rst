@@ -118,9 +118,7 @@ the sidebar.
    /stream_interface/index
    /memory_interface/index
    /interfaces/index
-   /utilities/index
-   /hardware/index
-   /protocols/index
+   /built_in_modules/index
    /cookbook/index
    /installing/index
    /api/index

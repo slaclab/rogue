@@ -19,6 +19,14 @@ This matrix tracks where content is moving as the revamp proceeds.
 +---------------------------------------------------+--------------------------------------------+--------+-----------+-------------+
 | /interfaces/memory/index                          | /memory_interface/index                    | Link   | Docs Team | M1 Skeleton |
 +---------------------------------------------------+--------------------------------------------+--------+-----------+-------------+
+| /utilities/index, /hardware/index, /protocols/index | /built_in_modules/index                  | Link   | Docs Team | M2 IA       |
++---------------------------------------------------+--------------------------------------------+--------+-----------+-------------+
+| /interfaces/clients/*, /interfaces/pyrogue/*      | /pyrogue_core/index                        | Move   | Docs Team | M2 IA       |
++---------------------------------------------------+--------------------------------------------+--------+-----------+-------------+
+| /interfaces/stream/*                              | /stream_interface/index                    | Move   | Docs Team | M2 IA       |
++---------------------------------------------------+--------------------------------------------+--------+-----------+-------------+
+| /interfaces/memory/*                              | /memory_interface/index                    | Move   | Docs Team | M2 IA       |
++---------------------------------------------------+--------------------------------------------+--------+-----------+-------------+
 | /api/cpp/interfaces/memory/transaction            | /memory_interface/transactions             | Move   | Docs Team | M2 Narrative|
 +---------------------------------------------------+--------------------------------------------+--------+-----------+-------------+
 | /advanced_examples/index                          | /cookbook/index                            | Link   | Docs Team | M3 Coverage |
