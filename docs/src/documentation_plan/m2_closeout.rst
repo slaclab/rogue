@@ -1,8 +1,8 @@
 .. _documentation_plan_m2_closeout:
 
-==========
+===========
 M2 Closeout
-==========
+===========
 
 M2 objective
 ============
