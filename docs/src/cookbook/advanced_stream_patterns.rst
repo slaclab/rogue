@@ -6,9 +6,9 @@ Advanced Stream Pattern Recipes
 
 Recipe entry points for advanced stream implementations:
 
-- :doc:`/stream_interface/usingFifo`
-- :doc:`/stream_interface/usingFilter`
-- :doc:`/stream_interface/usingRateDrop`
+- :doc:`/stream_interface/fifo`
+- :doc:`/stream_interface/filter`
+- :doc:`/stream_interface/rate_drop`
 - :doc:`/stream_interface/debugStreams`
 - :doc:`/custom_module/index`
 

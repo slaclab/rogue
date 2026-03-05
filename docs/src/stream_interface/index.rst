@@ -137,9 +137,9 @@ Core API reference:
    sending
    receiving
    built_in_modules
-   usingFifo
-   usingFilter
-   usingRateDrop
-   usingTcp
+   fifo
+   filter
+   rate_drop
+   tcp_bridge
    debugStreams
    /custom_module/index

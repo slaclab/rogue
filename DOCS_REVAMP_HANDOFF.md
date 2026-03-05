@@ -84,6 +84,9 @@ There are uncommitted local changes in protocol pages related to lifecycle/threa
 - M4 continued: files under ``interfaces/stream`` and ``interfaces/memory``
   were physically moved into ``stream_interface/legacy_stream`` and
   ``memory_interface/legacy_memory``, and links were updated.
+- M4 continued: ``stream_interface/legacy_stream`` was fully integrated into
+  parent ``stream_interface`` narrative pages; links/toctrees were updated and
+  ``legacy_stream`` was removed.
 - M4 continued: remaining ``interfaces`` content was physically moved:
   ``interfaces/simulation/*`` -> ``built_in_modules/simulation/*``,
   ``interfaces/sql`` -> ``built_in_modules/sql``, ``interfaces/version`` ->
@@ -118,4 +121,4 @@ Continue M4 harmonization and release-freeze cleanup.
 - `docs/src/protocols/batcher/index.rst`
 - `docs/src/protocols/epicsV4/index.rst`
 - `docs/src/pyrogue_core/client_access.rst`
-- `docs/src/stream_interface/overview.rst`
+- `docs/src/stream_interface/index.rst`

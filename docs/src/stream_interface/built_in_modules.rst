@@ -4,34 +4,43 @@
 Built-in Stream Modules
 =======================
 
-Common built-in modules include FIFO, Filter, RateDrop, Debug, and TCP bridge
-components.
+Rogue includes reusable stream modules for buffering, channel/error filtering,
+rate limiting, inspection, and network bridging.
 
-Module roles at a glance
-========================
+Module roles
+============
 
-- FIFO: absorb burstiness and decouple producer/consumer timing.
-- Filter: transform or select frame content.
-- RateDrop: bound downstream processing by dropping at policy-defined rates.
-- Debug: inspect frame flow and metadata during bring-up.
-- TCP bridge: connect stream paths across processes or hosts.
+- ``Fifo``: queue-based buffering with optional copy/trim behavior.
+- ``Filter``: pass only selected frame channel values, with optional error-drop.
+- ``RateDrop``: reduce downstream rate using count-based or time-based policy.
+- ``Slave`` debug mode: inspect frames without writing a custom receiver.
+- ``TcpServer``/``TcpClient``: full-duplex stream bridge over two TCP ports.
 
-Selection and ordering guidance
-===============================
+Constructor quick reference
+===========================
 
-- Put flow-control modules (FIFO/RateDrop) near rate boundaries.
-- Put transformation modules (Filter) before expensive consumers.
-- Keep debug modules easy to enable/disable for operations.
+- ``ris.Fifo(maxDepth, trimSize, noCopy)``
+  maxDepth controls queue drop threshold, trimSize limits copied bytes,
+  noCopy selects pass-by-reference vs copy.
+- ``ris.Filter(dropErrors, channel)``
+  forwards only matching-channel frames; optional drop of errored frames.
+- ``ris.RateDrop(period, value)``
+  period mode uses seconds between forwarded frames; count mode forwards one
+  frame then suppresses ``value`` frames.
+- ``ris.TcpServer(addr, port)`` / ``ris.TcpClient(addr, port)``
+  bridge stream traffic over two consecutive TCP ports.
 
-Usage docs:
+Detailed usage pages
+====================
 
-- :doc:`/stream_interface/legacy_stream/usingFifo`
-- :doc:`/stream_interface/legacy_stream/usingFilter`
-- :doc:`/stream_interface/legacy_stream/usingRateDrop`
-- :doc:`/stream_interface/legacy_stream/debugStreams`
-- :doc:`/stream_interface/legacy_stream/usingTcp`
+- :doc:`/stream_interface/fifo`
+- :doc:`/stream_interface/filter`
+- :doc:`/stream_interface/rate_drop`
+- :doc:`/stream_interface/debugStreams`
+- :doc:`/stream_interface/tcp_bridge`
 
-API reference:
+API reference
+=============
 
 - :doc:`/api/cpp/interfaces/stream/fifo`
 - :doc:`/api/cpp/interfaces/stream/filter`
@@ -39,3 +48,11 @@ API reference:
 - :doc:`/api/cpp/interfaces/stream/tcpCore`
 - :doc:`/api/cpp/interfaces/stream/tcpClient`
 - :doc:`/api/cpp/interfaces/stream/tcpServer`
+
+What to explore next
+====================
+
+- Connection patterns: :doc:`/stream_interface/connecting`
+- Send/receive frame patterns: :doc:`/stream_interface/sending`,
+  :doc:`/stream_interface/receiving`
+- Frame semantics and metadata: :doc:`/stream_interface/frame_model`
