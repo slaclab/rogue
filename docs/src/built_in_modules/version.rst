@@ -90,9 +90,15 @@ C++ examples
        try {
            rogue::Version::maxVersion("7.0.0");
            rogue::Version::exactVersion("6.3.0");
-       } catch (const rogue::GeneralError& e) {
+   } catch (const rogue::GeneralError& e) {
            std::cerr << "Version check failed: " << e.what() << "\n";
            return 1;
        }
        return 0;
    }
+
+Where to explore next
+=====================
+
+- Built-in section overview: :doc:`/built_in_modules/index`
+- Deployment and environment setup: :doc:`/installing/index`

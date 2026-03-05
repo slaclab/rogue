@@ -4,18 +4,41 @@
 Built-in Modules
 ================
 
-This section collects Rogue's built-in, batteries-included capabilities.
+Built-in Modules collects core Rogue components that are commonly assembled
+into complete systems: hardware interfaces, protocol stacks, utilities, and
+integration helpers.
 
-It groups production modules and integrations that are commonly used directly
-in applications.
-It is the canonical top-level home for Utilities, Hardware, and Protocols.
+In practice, these modules are where transport and integration work gets done:
+
+- hardware links to FPGA/driver interfaces
+- protocol layers for framing, reliability, and remote register access
+- utility blocks for recording, playback, PRBS, and data conditioning
+- simulation and operations integrations used during development and testing
+
+Most deployments combine this section with :doc:`/stream_interface/index`,
+:doc:`/memory_interface/index`, and :doc:`/pyrogue_core/index`.
+
+Key integration topics
+======================
+
+- Simulation helpers for memory and link emulation:
+  :doc:`/built_in_modules/simulation/index`
+- SQL variable/system-log capture:
+  :doc:`/built_in_modules/sql`
+- Version checks and compatibility guards:
+  :doc:`/built_in_modules/version`
+
+Where to explore next
+=====================
+
+- Utility modules: :doc:`/utilities/index`
+- Hardware modules: :doc:`/hardware/index`
+- Protocol modules: :doc:`/protocols/index`
 
 .. toctree::
    :maxdepth: 1
    :caption: Built-in Modules:
 
-   overview
-   integrations
    simulation/index
    sql
    version

@@ -90,6 +90,10 @@ There are uncommitted local changes in protocol pages related to lifecycle/threa
 - M4 continued: ``memory_interface/legacy_memory`` was fully integrated into
   parent ``memory_interface`` narrative pages; links/toctrees were updated and
   ``legacy_memory`` was removed.
+- M4 continued: ``built_in_modules`` routing pages were collapsed into a
+  narrative-first ``built_in_modules/index``; ``overview``/``integrations``
+  were removed, and simulation/sql pages were expanded from placeholders into
+  code-backed guidance.
 - M4 continued: remaining ``interfaces`` content was physically moved:
   ``interfaces/simulation/*`` -> ``built_in_modules/simulation/*``,
   ``interfaces/sql`` -> ``built_in_modules/sql``, ``interfaces/version`` ->

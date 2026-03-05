@@ -350,6 +350,11 @@ This matrix tracks where content is moving as the revamp proceeds.
      - Move
      - Docs Team
      - M4 Harmonization [done]
+   * - Built-in modules routing-page cleanup and simulation narrative integration
+     - /built_in_modules/index (expanded); removed /built_in_modules/overview and /built_in_modules/integrations; expanded /built_in_modules/simulation/* and /built_in_modules/sql
+     - Move
+     - Docs Team
+     - M4 Harmonization [done]
    * - Move remaining interface integration pages into canonical sections
      - /interfaces/simulation/* -> /built_in_modules/simulation/*; /interfaces/sql -> /built_in_modules/sql; /interfaces/version -> /built_in_modules/version; /interfaces/cpp_api -> /pyrogue_core/cpp_api_wrapper
      - Move
