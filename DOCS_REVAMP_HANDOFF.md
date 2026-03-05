@@ -64,37 +64,25 @@ There are uncommitted local changes in protocol pages related to lifecycle/threa
 - PyRogue Core / Stream / Memory narrative section scaffolding.
 - Cookbook section created and seeded.
 - Protocol sections for RSSI/SRP/Xilinx/Batcher/EPICSv4 substantially expanded.
+- Protocol sections for UDP/Packetizer/UART expanded with code-backed content.
+- C++ API protocol wrappers for UDP and Packetizer converted from placeholders
+  to reference-oriented pages.
 
 ### Remaining high-value M3 work
 
-1. Replace remaining protocol placeholders/TODO narrative pages with code-backed content:
-   - `docs/src/protocols/udp/index.rst`
-   - `docs/src/protocols/udp/client.rst`
-   - `docs/src/protocols/udp/server.rst`
-   - `docs/src/protocols/packetizer/index.rst`
-   - `docs/src/protocols/packetizer/core.rst`
-   - `docs/src/protocols/packetizer/coreV2.rst`
-   - `docs/src/protocols/uart.rst`
+1. Continue API<->narrative cross-link hardening (both directions).
 
-2. Replace C++ protocol API placeholder wrappers where still generic/TODO:
-   - `docs/src/api/cpp/protocols/udp/*`
-   - `docs/src/api/cpp/protocols/packetizer/*`
-
-3. Continue API<->narrative cross-link hardening (both directions).
-
-4. Python API organization deferred item:
-   - regroup `pyrogue` API index around `Command`, `Variable`, `Model`, `helper functions` (or equivalent sorted grouping).
-
-5. M4-prep item already flagged in migration matrix:
+2. M4-prep item already flagged in migration matrix:
    - `interfaces/index` broad conceptual narrative harmonization and final placement decisions.
+
+3. Run docs build with warnings enabled in a Sphinx-enabled environment and
+   resolve warnings introduced during protocol/API cleanup passes.
 
 ## 7) Suggested Next Execution Order (One Section at a Time)
 
-1. `protocols/udp` narrative (index, client, server) using code/tests/examples.
-2. `protocols/packetizer` narrative (index, core, coreV2) similarly.
-3. `protocols/uart` narrative.
-4. Matching C++ API protocol pages cleanup for UDP/packetizer.
-5. Re-run docs build, then update migration matrix and add M3 closeout notes incrementally.
+1. API<->narrative cross-link hardening for protocol sections (bidirectional).
+2. `interfaces/index` conceptual harmonization decisions (M4-prep).
+3. Re-run docs build, then update migration matrix and add M3 closeout notes incrementally.
 
 ## 8) Fast Validation Checklist
 

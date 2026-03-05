@@ -235,6 +235,16 @@ This matrix tracks where content is moving as the revamp proceeds.
      - Move
      - Docs Team
      - M3 Coverage [done]
+   * - /api/cpp/protocols/udp placeholder wrapper cleanup
+     - /api/cpp/protocols/udp/index, /api/cpp/protocols/udp/core, /api/cpp/protocols/udp/client, /api/cpp/protocols/udp/server
+     - Move
+     - Docs Team
+     - M3 Coverage [done]
+   * - /api/cpp/protocols/packetizer placeholder wrapper cleanup
+     - /api/cpp/protocols/packetizer/index, /api/cpp/protocols/packetizer/core, /api/cpp/protocols/packetizer/coreV2, /api/cpp/protocols/packetizer/controller, /api/cpp/protocols/packetizer/controllerV1, /api/cpp/protocols/packetizer/controllerV2, /api/cpp/protocols/packetizer/application, /api/cpp/protocols/packetizer/transport
+     - Move
+     - Docs Team
+     - M3 Coverage [done]
    * - /protocols/epicsV4 and /protocols/uart narrative expansion
      - /protocols/epicsV4/index and /protocols/uart
      - Move
@@ -275,6 +285,11 @@ This matrix tracks where content is moving as the revamp proceeds.
      - Move
      - Docs Team
      - M3 Coverage [done]
+   * - /api/python/index regroup by role
+     - /api/python/index
+     - Move
+     - Docs Team
+     - M3 Coverage [done]
    * - /cookbook recipe expansion
      - /cookbook/index, /cookbook/pyrogue_devices_and_variables, /cookbook/advanced_stream_patterns
      - Split
@@ -305,13 +320,13 @@ Execution guardrail for current phase:
 Deferred API Reorg Notes
 ========================
 
-- Reorganize the Python API section so ``Model`` and model subclasses have a
-  dedicated grouped entry/page set (tracked for later milestone work).
+- Python API regrouping around core roles (including ``Model`` and model
+  subclasses) is complete in ``/api/python/index``.
 
 Deferred Content Expansion Notes
 ================================
 
 - Expand cookbook breadth with additional recipes for polling, YAML workflows,
   built-in devices, and stream transport integration.
-- Continue protocol depth in remaining topical pages and C++ protocol API
-  placeholders where narrative-to-reference boundaries are still rough.
+- Continue protocol/API cross-link hardening where narrative-to-reference
+  boundaries are still rough.
