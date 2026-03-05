@@ -120,9 +120,6 @@ the sidebar.
    /interfaces/index
    /built_in_modules/index
    /cookbook/index
-   /installing/index
-   /logging/index
-   /pydm/index
    /api/index
    /operations/index
    /migration/index

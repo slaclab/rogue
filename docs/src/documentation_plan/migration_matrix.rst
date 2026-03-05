@@ -310,6 +310,11 @@ This matrix tracks where content is moving as the revamp proceeds.
      - Move
      - Docs Team
      - M4 Harmonization [done]
+   * - Top-level nav dedupe for operations topics
+     - /introduction/index and /documentation_index (canonical /operations/index)
+     - Move
+     - Docs Team
+     - M4 Harmonization [done]
 
 Status keys:
 

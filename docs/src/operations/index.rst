@@ -6,8 +6,14 @@ Operations
 
 Operational documentation for installation, logging, and user tooling.
 
-During M2, these pages are also surfaced directly as top-level sections for
-navigation review.
+In M4 harmonization, this section is the canonical top-level home for these
+topics.
+
+Legacy direct-entry pages remain available:
+
+- :doc:`/installing/index`
+- :doc:`/logging/index`
+- :doc:`/pydm/index`
 
 .. toctree::
    :maxdepth: 1
