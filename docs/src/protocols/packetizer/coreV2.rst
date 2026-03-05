@@ -4,31 +4,41 @@
 Packetizer Protocol CoreV2
 ==========================
 
-Legacy Status
-=============
+``CoreV2`` is the packetizer v2 wiring class. It creates a ``Transport``
+endpoint and a v2 controller, then exposes ``application(dest)`` endpoints for
+channel-based application routing.
 
-This is a legacy page retained during migration.
-Canonical entry point: :doc:`/built_in_modules/index`.
+Behavior summary
+================
 
-TODO
-
-Status
-======
-
-Legacy placeholder content retained.
-Detailed protocol narrative and examples are planned in a later expansion pass.
-
-Role
-====
-
-``Packetizer CoreV2`` is the newer packetizer core variant for systems that
-require updated packetizer protocol behavior.
+- Constructor arguments:
+  ``enIbCrc`` enables inbound CRC checking,
+  ``enObCrc`` enables outbound CRC generation,
+  ``enSsi`` controls SSI behavior.
+- ``transport()`` returns the stream edge for lower-layer connection.
+- ``application(dest)`` lazily allocates per-destination application endpoints.
+- ``getDropCount()`` exposes controller-reported dropped-frame count.
+- ``setTimeout()`` forwards timeout tuning into controller behavior.
 
 When to prefer CoreV2
 =====================
 
 - New designs where packetizer version selection is open.
-- Integrations that require v2-compatible endpoint behavior.
+- Integrations requiring packetizer v2 behavior or CRC configuration control.
+
+Code-backed example
+===================
+
+.. code-block:: python
+
+   import rogue.protocols.packetizer
+
+   pkt = rogue.protocols.packetizer.CoreV2(True, True, True)
+   pkt.application(0) >> reg_sink
+   data_source >> pkt.application(1)
+
+   # Attach transport side to lower protocol layer
+   # lower_layer == pkt.transport()
 
 Compatibility note
 ==================
@@ -41,3 +51,4 @@ See also
 
 - :doc:`/protocols/packetizer/index`
 - :doc:`/protocols/packetizer/core`
+- :doc:`/api/cpp/protocols/packetizer/coreV2`
