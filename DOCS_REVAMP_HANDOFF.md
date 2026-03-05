@@ -70,6 +70,8 @@ There are uncommitted local changes in protocol pages related to lifecycle/threa
   to reference-oriented pages.
 - `interfaces/index` conceptual harmonization completed as a transitional map to
   canonical section homes.
+- M4 started: canonical section toctrees cleaned to remove stale legacy-path
+  entries while preserving explicit links to legacy integration pages.
 
 ### Remaining high-value M3 work
 

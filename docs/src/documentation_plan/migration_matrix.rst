@@ -305,6 +305,11 @@ This matrix tracks where content is moving as the revamp proceeds.
      - Link
      - Docs Team
      - M1 Skeleton
+   * - /pyrogue_core, /stream_interface, /memory_interface toctree legacy-path cleanup
+     - /pyrogue_core/index, /stream_interface/index, /memory_interface/index
+     - Move
+     - Docs Team
+     - M4 Harmonization [done]
 
 Status keys:
 
