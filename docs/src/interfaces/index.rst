@@ -14,6 +14,14 @@ Canonical homes for core interface documentation:
 
 Use this section for remaining integration references that are not yet migrated.
 
+Narrative Fit Note (M3)
+=======================
+
+The broad conceptual narrative below overlaps with canonical content now owned
+by :doc:`/pyrogue_core/index`, :doc:`/stream_interface/index`, and
+:doc:`/memory_interface/index`. Keep it as legacy source text for now, then
+either redistribute or trim during M4 harmonization.
+
 Legacy Notes (Old Content)
 ==========================
 

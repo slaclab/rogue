@@ -10,6 +10,28 @@ Advanced PyRogue usage commonly includes:
 - Complex ``RemoteVariable`` bit mappings
 - Computed ``LinkVariable`` dependencies
 
+Design principles
+=================
+
+- Keep base ``Device`` classes predictable; isolate special behavior in narrow
+  overrides.
+- Favor declarative variable definitions over implicit runtime mutation.
+- Keep link-variable dependency graphs shallow and well documented.
+
+Common failure modes
+====================
+
+- Hidden side effects inside command callbacks.
+- Overloaded variables that mix control intent and status reporting.
+- Circular or fragile link-variable dependencies.
+
+Validation checklist
+====================
+
+- Commands are deterministic for the same input state.
+- Variable update flows are understandable from docs and code together.
+- Unit and range semantics are explicitly documented.
+
 Starting points:
 
 - :doc:`/pyrogue_tree/node/device/index`

@@ -20,6 +20,28 @@ Primary interfaces:
 - Simple client: :doc:`/interfaces/clients/simple`
 - Virtual client: :doc:`/interfaces/clients/virtual`
 
+Connection model
+================
+
+1. Application starts a tree rooted at ``Root``.
+2. A server-side interface (commonly ZMQ) exposes the tree endpoints.
+3. Clients connect and perform reads, writes, and command operations.
+4. GUI and automation tools share the same conceptual access path.
+
+Choosing a client interface
+===========================
+
+- Use Simple Client for direct scripting and operator workflows.
+- Use Virtual Client when you need a local proxy object model.
+- Use PyDM integration when building monitoring/control panels.
+
+Operational notes
+=================
+
+- Treat remote command paths as part of your public control surface.
+- Keep variable naming stable to reduce client-side breakage.
+- Document expected polling/update cadence for remote consumers.
+
 Python interface adapters
 =========================
 

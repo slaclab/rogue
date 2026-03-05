@@ -209,37 +209,57 @@ This matrix tracks where content is moving as the revamp proceeds.
      - /cookbook/index
      - Link
      - Docs Team
-     - M3 Coverage
+     - M3 Coverage [done]
    * - /custom_module/index
      - /stream_interface/index
      - Move
      - Docs Team
-     - M3 Coverage
+     - M3 Coverage [done]
    * - /quick_start first-success and checks content
      - /quick_start/first_success_path and /quick_start/common_checks
      - Move
      - Docs Team
-     - M3 Coverage [in progress]
+     - M3 Coverage [done]
    * - /tutorials workflow content
      - /tutorials/device_workflow_tutorial and /tutorials/system_integration_tutorial
      - Move
      - Docs Team
-     - M3 Coverage [in progress]
+     - M3 Coverage [done]
    * - /protocols/udp narrative expansion
      - /protocols/udp/index, /protocols/udp/client, /protocols/udp/server
      - Move
      - Docs Team
-     - M3 Coverage [in progress]
+     - M3 Coverage [done]
    * - /protocols/packetizer narrative expansion
      - /protocols/packetizer/index, /protocols/packetizer/core, /protocols/packetizer/coreV2
      - Move
      - Docs Team
-     - M3 Coverage [in progress]
+     - M3 Coverage [done]
    * - /protocols/epicsV4 and /protocols/uart narrative expansion
      - /protocols/epicsV4/index and /protocols/uart
      - Move
      - Docs Team
-     - M3 Coverage [in progress]
+     - M3 Coverage [done]
+   * - /pyrogue_core narrative expansion
+     - /pyrogue_core/tree_architecture, /pyrogue_core/client_access, /pyrogue_core/variables_and_streams, /pyrogue_core/polling, /pyrogue_core/yaml_state_config, /pyrogue_core/model_api, /pyrogue_core/built_in_devices, /pyrogue_core/advanced_patterns
+     - Move
+     - Docs Team
+     - M3 Coverage [done]
+   * - /stream_interface narrative expansion
+     - /stream_interface/overview, /stream_interface/built_in_modules, /stream_interface/example_pipelines, /stream_interface/python_bindings
+     - Move
+     - Docs Team
+     - M3 Coverage [done]
+   * - /cookbook recipe expansion
+     - /cookbook/index, /cookbook/pyrogue_devices_and_variables, /cookbook/advanced_stream_patterns
+     - Split
+     - Docs Team
+     - M3 Coverage [done]
+   * - /interfaces/index broad conceptual narrative
+     - /pyrogue_core/index, /stream_interface/index, /memory_interface/index
+     - Move
+     - Docs Team
+     - M3 Coverage [marked for M4 harmonization]
    * - /logging/*, /pydm/*, /installing/*
      - /operations/index
      - Link
@@ -254,7 +274,8 @@ Status keys:
 
 Execution guardrail for current phase:
 
-- Preserve existing narrative text; move/relink it rather than deleting it.
+- Narrative can be revised, cleaned up, and expanded.
+- If narrative is no longer a good fit, mark it explicitly and track relocation.
 
 Deferred API Reorg Notes
 ========================
@@ -265,7 +286,7 @@ Deferred API Reorg Notes
 Deferred Content Expansion Notes
 ================================
 
-- Expand Quick Start and Tutorials with distinct, non-overlapping content:
-  Quick Start for first success path, Tutorials for deeper workflows.
-- Expand Protocol pages that currently have minimal narrative into full concept
-  and example coverage.
+- Expand cookbook breadth with additional recipes for polling, YAML workflows,
+  built-in devices, and stream transport integration.
+- Continue protocol family depth for sections not yet expanded in M3 (for
+  example SRP, RSSI, batcher, and Xilinx pages).

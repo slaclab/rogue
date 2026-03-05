@@ -7,6 +7,22 @@ Built-in Stream Modules
 Common built-in modules include FIFO, Filter, RateDrop, Debug, and TCP bridge
 components.
 
+Module roles at a glance
+========================
+
+- FIFO: absorb burstiness and decouple producer/consumer timing.
+- Filter: transform or select frame content.
+- RateDrop: bound downstream processing by dropping at policy-defined rates.
+- Debug: inspect frame flow and metadata during bring-up.
+- TCP bridge: connect stream paths across processes or hosts.
+
+Selection and ordering guidance
+===============================
+
+- Put flow-control modules (FIFO/RateDrop) near rate boundaries.
+- Put transformation modules (Filter) before expensive consumers.
+- Keep debug modules easy to enable/disable for operations.
+
 Usage docs:
 
 - :doc:`/interfaces/stream/usingFifo`
