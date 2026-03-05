@@ -4,20 +4,9 @@
 Client
 ======
 
-Legacy Status
-=============
-
-This is a legacy page retained during migration.
-Canonical entry point: :doc:`/protocols/udp/index`.
-
-TODO
-
-Status
-======
-
-Legacy placeholder content retained.
-Detailed API notes are planned in a later expansion pass.
-
+``Client`` is the outbound UDP endpoint class that maps stream frames to
+datagrams and inbound datagrams to stream frames. This page is reference-only;
+for deployment patterns see :doc:`/protocols/udp/client`.
 
 Client objects in C++ are referenced by the following shared pointer typedef:
 

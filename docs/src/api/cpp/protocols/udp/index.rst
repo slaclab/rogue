@@ -4,21 +4,11 @@
 UDP Protocol Class Descriptions
 ===============================
 
-Legacy Status
-=============
+This section provides C++ API reference pages for
+``rogue::protocols::udp`` classes.
 
-This is a legacy page retained during migration.
-Canonical entry point: :doc:`/protocols/udp/index`.
-
-TODO
-
-Status
-======
-
-Legacy placeholder content retained.
-Detailed API notes are planned in a later expansion pass.
-
-The following are detailed descriptions of the various C++ classes that make up the Rogue UDP protocol.
+For conceptual guidance, lifecycle notes, and integration examples, see
+:doc:`/protocols/udp/index`.
 
 .. toctree::
    :maxdepth: 1

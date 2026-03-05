@@ -4,20 +4,9 @@
 Server
 ======
 
-Legacy Status
-=============
-
-This is a legacy page retained during migration.
-Canonical entry point: :doc:`/protocols/udp/index`.
-
-TODO
-
-Status
-======
-
-Legacy placeholder content retained.
-Detailed API notes are planned in a later expansion pass.
-
+``Server`` is the UDP bind/listen endpoint class and supports querying the
+active bound port via ``getPort()``. This page is reference-only; for usage
+patterns see :doc:`/protocols/udp/server`.
 
 Server objects in C++ are referenced by the following shared pointer typedef:
 

@@ -4,43 +4,79 @@
 UDP Protocol Client
 ===================
 
-Legacy Status
+``rogue::protocols::udp::Client`` is a UDP endpoint for outbound connections to
+a specific remote host/port. It converts Rogue stream frames to UDP datagrams
+and converts inbound datagrams back into Rogue frames.
+
+Role in stack
 =============
 
-This is a legacy page retained during migration.
-Canonical entry point: :doc:`/built_in_modules/index`.
+Use ``Client`` when Rogue software should initiate traffic to a known peer
+(common for software-to-FPGA links when firmware listens on a fixed port).
 
-TODO
-
-Status
-======
-
-Legacy placeholder content retained.
-Detailed protocol narrative and examples are planned in a later expansion pass.
-
-Purpose
-=======
-
-The UDP client role sends datagrams to a remote endpoint and receives response
-traffic from that endpoint. In many Rogue deployments this client role is used
-when software connects outbound to FPGA firmware.
-
-Typical deployment
+Data path behavior
 ==================
+
+- Outbound:
+  ``acceptFrame()`` iterates frame buffers and transmits each non-empty buffer
+  as a UDP datagram.
+- Inbound:
+  a background thread continuously calls ``recvfrom()`` and publishes received
+  payloads through stream-master output.
+- Oversize datagrams are dropped with warning logs if payload exceeds available
+  frame space.
+
+Construction and lifecycle
+==========================
+
+- Constructor behavior:
+  resolves host address, opens socket, initializes frame pool sizing, starts
+  RX thread.
+- ``stop()``:
+  disables RX thread, joins thread, and closes socket.
+- ``maxPayload()``:
+  inherited from ``udp::Core`` and depends on jumbo vs standard MTU mode.
+
+Timeout and backpressure behavior
+=================================
+
+Outbound writes use ``select()`` with the configured timeout before ``sendmsg``.
+If timeout elapses, a critical log is emitted and transmit retry loop continues.
+Tune timeout using ``setTimeout()`` from ``udp::Core`` when needed.
+
+Typical deployment pattern
+==========================
 
 - Software host runs Rogue UDP client.
 - FPGA/remote endpoint listens on a fixed port.
 - RSSI/packetizer layers sit above this transport path.
 
-Configuration checklist
-=======================
+Code-backed example
+===================
+
+.. code-block:: python
+
+   import rogue.protocols.udp
+   import rogue.protocols.rssi
+
+   udp = rogue.protocols.udp.Client("10.0.0.5", 8192, True)
+   rssi = rogue.protocols.rssi.Client(udp.maxPayload() - 8)
+
+   udp == rssi.transport()
+   rssi._start()
+
+Practical checklist
+===================
 
 - Confirm target host/IP and port.
 - Confirm MTU/jumbo-frame assumptions match both endpoints.
 - Confirm firewall and routing allow bidirectional UDP traffic.
+- Ensure upper protocol payload sizing fits ``maxPayload()`` budget.
 
 Related docs
 ============
 
 - :doc:`/protocols/udp/index`
 - :doc:`/protocols/network`
+- :doc:`/protocols/rssi/index`
+- :doc:`/api/cpp/protocols/udp/client`

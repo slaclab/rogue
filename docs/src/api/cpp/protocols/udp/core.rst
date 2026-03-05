@@ -4,20 +4,9 @@
 Core
 ====
 
-Legacy Status
-=============
-
-This is a legacy page retained during migration.
-Canonical entry point: :doc:`/protocols/udp/index`.
-
-TODO
-
-Status
-======
-
-Legacy placeholder content retained.
-Detailed API notes are planned in a later expansion pass.
-
+``Core`` provides shared UDP transport configuration used by ``Client`` and
+``Server``. This page is reference-only; for usage guidance see
+:doc:`/protocols/udp/index`.
 
 Core objects in C++ are referenced by the following shared pointer typedef:
 
