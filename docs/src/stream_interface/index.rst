@@ -21,3 +21,4 @@ Legacy references remain available in legacy sections, including
    example_pipelines
    python_bindings
    /custom_module/index
+   /interfaces/stream/index

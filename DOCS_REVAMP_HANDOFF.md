@@ -75,6 +75,9 @@ There are uncommitted local changes in protocol pages related to lifecycle/threa
   introduction/documentation index/core section landing pages.
 - M4 nav decision update: restored `Installing`/`Logging`/`PyDM` as top-level
   entries.
+- M4 continued: legacy ``interfaces`` index pages for client/pyrogue/stream/
+  memory were re-homed into canonical section toctrees (PyRogue Core, Stream
+  Interface, Memory Interface).
 
 ### Remaining high-value M4 work
 

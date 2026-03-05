@@ -325,6 +325,11 @@ This matrix tracks where content is moving as the revamp proceeds.
      - Move
      - Docs Team
      - M4 Harmonization [done]
+   * - Re-home legacy interface index pages to canonical section toctrees
+     - /pyrogue_core/index, /stream_interface/index, /memory_interface/index
+     - Move
+     - Docs Team
+     - M4 Harmonization [done]
 
 Status keys:
 

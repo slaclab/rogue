@@ -18,3 +18,4 @@ including :doc:`/interfaces/memory/index`.
    overview
    model_types
    transactions
+   /interfaces/memory/index
