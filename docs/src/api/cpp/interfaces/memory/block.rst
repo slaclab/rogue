@@ -8,7 +8,7 @@ For conceptual guidance on block behavior and variable-to-transaction mapping,
 see:
 
 - :ref:`pyrogue_tree_node_block`
-- :doc:`/memory_interface/overview`
+- :doc:`/memory_interface/index`
 
 
 Block objects in C++ are referenced by the following shared pointer typedef:

@@ -66,7 +66,7 @@ This matrix tracks where content is moving as the revamp proceeds.
      - Docs Team
      - M2 Narrative [done]
    * - /interfaces/memory/index narrative
-     - /memory_interface/overview
+     - /memory_interface/index
      - Move
      - Docs Team
      - M2 Narrative [done]
@@ -196,7 +196,7 @@ This matrix tracks where content is moving as the revamp proceeds.
      - Docs Team
      - M2 Narrative [done]
    * - /interfaces/memory/hub TBD links
-     - /interfaces/memory/hub
+     - /memory_interface/hub
      - Move
      - Docs Team
      - M2 Narrative [done]
@@ -336,12 +336,17 @@ This matrix tracks where content is moving as the revamp proceeds.
      - Docs Team
      - M4 Harmonization [done]
    * - Move interface stream/memory docs into canonical section trees
-     - /interfaces/stream/* -> /stream_interface/*; /interfaces/memory/* -> /memory_interface/legacy_memory/*
+     - /interfaces/stream/* -> /stream_interface/*; /interfaces/memory/* -> /memory_interface/*
      - Move
      - Docs Team
      - M4 Harmonization [done]
    * - Integrate legacy stream subfolder into parent stream narrative
      - /stream_interface/legacy_stream/* -> /stream_interface/* (folder removed)
+     - Move
+     - Docs Team
+     - M4 Harmonization [done]
+   * - Integrate legacy memory subfolder into parent memory narrative
+     - /memory_interface/legacy_memory/* -> /memory_interface/* (folder removed)
      - Move
      - Docs Team
      - M4 Harmonization [done]

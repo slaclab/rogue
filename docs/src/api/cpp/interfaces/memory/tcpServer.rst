@@ -6,8 +6,8 @@ TcpServer
 
 For conceptual guidance on memory transport usage, see:
 
-- :doc:`/memory_interface/overview`
-- :doc:`/memory_interface/legacy_memory/usingTcp`
+- :doc:`/memory_interface/index`
+- :doc:`/memory_interface/tcp_bridge`
 
 TcpServer objects in C++ are referenced by the following shared pointer typedef:
 

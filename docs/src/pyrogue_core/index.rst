@@ -24,6 +24,7 @@ section.
    polling
    yaml_state_config
    model_api
+   model_types
    built_in_devices
    advanced_patterns
    cpp_api_wrapper

@@ -7,7 +7,7 @@ Hub
 For conceptual guidance on address translation and transaction fan-out, see:
 
 - :doc:`/memory_interface/transactions`
-- :doc:`/memory_interface/overview`
+- :doc:`/memory_interface/index`
 
 Hub objects in C++ are referenced by the following shared pointer typedef:
 

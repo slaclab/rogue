@@ -42,7 +42,7 @@ Threading and locking model
 Integration references
 ----------------------
 
-- :doc:`/memory_interface/legacy_memory/usingTcp`
+- :doc:`/memory_interface/tcp_bridge`
 - :doc:`/hardware/axi/stream`
 
 Python usage examples

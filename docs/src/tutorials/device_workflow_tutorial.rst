@@ -20,7 +20,7 @@ Workflow
 3. Add command behavior patterns from:
    :doc:`/pyrogue_tree/node/command/index`
 4. Apply model choices and type mapping guidance from:
-   :doc:`/memory_interface/model_types`
+   :doc:`/pyrogue_core/model_types`
 5. Validate full behavior with:
    :doc:`/getting_started/pyrogue_tree_example/full_root`
 

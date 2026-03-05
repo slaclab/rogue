@@ -9,7 +9,7 @@ Each Master class object will be coupled with one or more :ref:`interfaces_memor
 For conceptual guidance on transaction lifecycle and memory-bus flow, see:
 
 - :doc:`/memory_interface/transactions`
-- :doc:`/memory_interface/overview`
+- :doc:`/memory_interface/index`
 
 
 Master objects in C++ are referenced by the following shared pointer typedef:

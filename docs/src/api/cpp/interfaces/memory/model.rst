@@ -9,7 +9,7 @@ and remote variables.
 
 For conceptual guidance, see:
 
-- :doc:`/memory_interface/model_types`
+- :doc:`/pyrogue_core/model_types`
 - :ref:`pyrogue_tree_model`
 
 Primary API reference pages:

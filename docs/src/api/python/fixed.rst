@@ -5,7 +5,7 @@ Fixed
 
 For conceptual model usage and type mapping, see:
 
-- :doc:`/memory_interface/model_types`
+- :doc:`/pyrogue_core/model_types`
 
 .. autoclass:: pyrogue.Fixed
    :members:

@@ -87,6 +87,9 @@ There are uncommitted local changes in protocol pages related to lifecycle/threa
 - M4 continued: ``stream_interface/legacy_stream`` was fully integrated into
   parent ``stream_interface`` narrative pages; links/toctrees were updated and
   ``legacy_stream`` was removed.
+- M4 continued: ``memory_interface/legacy_memory`` was fully integrated into
+  parent ``memory_interface`` narrative pages; links/toctrees were updated and
+  ``legacy_memory`` was removed.
 - M4 continued: remaining ``interfaces`` content was physically moved:
   ``interfaces/simulation/*`` -> ``built_in_modules/simulation/*``,
   ``interfaces/sql`` -> ``built_in_modules/sql``, ``interfaces/version`` ->

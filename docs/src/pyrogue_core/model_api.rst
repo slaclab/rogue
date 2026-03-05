@@ -30,7 +30,7 @@ model details only when custom encoding or advanced mapping is required.
 Conceptual docs:
 
 - :doc:`/pyrogue_tree/model/index`
-- :doc:`/memory_interface/model_types`
+- :doc:`/pyrogue_core/model_types`
 
 Reference docs:
 

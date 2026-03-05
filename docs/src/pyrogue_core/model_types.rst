@@ -1,8 +1,9 @@
+.. _pyrogue_core_model_types:
 .. _memory_interface_model_types:
 
-==================
-Memory Model Types
-==================
+===========
+Model Types
+===========
 
 Rogue model types define how bits and bytes in a block map to Python-facing
 values.
@@ -12,7 +13,7 @@ not directly interact with low-level memory model internals.
 
 For broader context, see:
 
-- :doc:`/memory_interface/overview`
+- :doc:`/pyrogue_core/model_api`
 - :doc:`/pyrogue_tree/blocks`
 
 Common model families
