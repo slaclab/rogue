@@ -12,6 +12,12 @@ Canonical entry point: :doc:`/protocols/udp/index`.
 
 TODO
 
+Status
+======
+
+Legacy placeholder content retained.
+Detailed API notes are planned in a later expansion pass.
+
 
 Client objects in C++ are referenced by the following shared pointer typedef:
 

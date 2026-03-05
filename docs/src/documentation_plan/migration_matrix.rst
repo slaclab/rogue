@@ -44,167 +44,167 @@ This matrix tracks where content is moving as the revamp proceeds.
      - /built_in_modules/index
      - Link
      - Docs Team
-     - M2 IA
+     - M2 IA [done]
    * - /interfaces/clients/*, /interfaces/pyrogue/*
      - /pyrogue_core/index
      - Move
      - Docs Team
-     - M2 IA
+     - M2 IA [done]
    * - /interfaces/stream/*
      - /stream_interface/index
      - Move
      - Docs Team
-     - M2 IA
+     - M2 IA [done]
    * - /interfaces/memory/*
      - /memory_interface/index
      - Move
      - Docs Team
-     - M2 IA
+     - M2 IA [done]
    * - /interfaces/stream/index narrative
      - /stream_interface/overview
      - Move
      - Docs Team
-     - M2 Narrative
+     - M2 Narrative [done]
    * - /interfaces/memory/index narrative
      - /memory_interface/overview
      - Move
      - Docs Team
-     - M2 Narrative
+     - M2 Narrative [done]
    * - /interfaces/clients/index narrative
      - /pyrogue_core/client_access
      - Move
      - Docs Team
-     - M2 Narrative
+     - M2 Narrative [done]
    * - /interfaces/pyrogue/index narrative
      - /pyrogue_core/client_access
      - Move
      - Docs Team
-     - M2 Narrative
+     - M2 Narrative [done]
    * - /interfaces/simulation/index narrative
      - /built_in_modules/integrations
      - Move
      - Docs Team
-     - M2 Narrative
+     - M2 Narrative [done]
    * - /interfaces/version narrative
      - /built_in_modules/integrations
      - Move
      - Docs Team
-     - M2 Narrative
+     - M2 Narrative [done]
    * - /interfaces/sql narrative
      - /built_in_modules/integrations
      - Move
      - Docs Team
-     - M2 Narrative
+     - M2 Narrative [done]
    * - /utilities/index narrative
      - /built_in_modules/overview
      - Move
      - Docs Team
-     - M2 Narrative
+     - M2 Narrative [done]
    * - /hardware/index narrative
      - /built_in_modules/overview
      - Move
      - Docs Team
-     - M2 Narrative
+     - M2 Narrative [done]
    * - /protocols/index narrative
      - /built_in_modules/overview
      - Move
      - Docs Team
-     - M2 Narrative
+     - M2 Narrative [done]
    * - /installing/index narrative
      - /operations/overview
      - Move
      - Docs Team
-     - M2 Narrative
+     - M2 Narrative [done]
    * - /logging/index narrative
      - /operations/overview
      - Move
      - Docs Team
-     - M2 Narrative
+     - M2 Narrative [done]
    * - /pydm/index narrative
      - /operations/overview
      - Move
      - Docs Team
-     - M2 Narrative
+     - M2 Narrative [done]
    * - /interfaces/simulation/mememulate placeholder
      - /built_in_modules/integrations
      - Link
      - Docs Team
-     - M2 Narrative
+     - M2 Narrative [done]
    * - /interfaces/simulation/pgp2b placeholder
      - /built_in_modules/integrations
      - Link
      - Docs Team
-     - M2 Narrative
+     - M2 Narrative [done]
    * - /interfaces/simulation/sideband placeholder
      - /built_in_modules/integrations
      - Link
      - Docs Team
-     - M2 Narrative
+     - M2 Narrative [done]
    * - /protocols/udp/index placeholder
      - /protocols/udp/index
      - Link
      - Docs Team
-     - M2 Narrative
+     - M2 Narrative [done]
    * - /protocols/udp/client placeholder
      - /protocols/udp/client
      - Link
      - Docs Team
-     - M2 Narrative
+     - M2 Narrative [done]
    * - /protocols/udp/server placeholder
      - /protocols/udp/server
      - Link
      - Docs Team
-     - M2 Narrative
+     - M2 Narrative [done]
    * - /protocols/packetizer/index placeholder
      - /protocols/packetizer/index
      - Link
      - Docs Team
-     - M2 Narrative
+     - M2 Narrative [done]
    * - /protocols/packetizer/core placeholder
      - /protocols/packetizer/core
      - Link
      - Docs Team
-     - M2 Narrative
+     - M2 Narrative [done]
    * - /protocols/packetizer/coreV2 placeholder
      - /protocols/packetizer/coreV2
      - Link
      - Docs Team
-     - M2 Narrative
+     - M2 Narrative [done]
    * - /protocols/epicsV4/index placeholder
      - /protocols/epicsV4/index
      - Link
      - Docs Team
-     - M2 Narrative
+     - M2 Narrative [done]
    * - /protocols/uart placeholder
      - /protocols/uart
      - Link
      - Docs Team
-     - M2 Narrative
+     - M2 Narrative [done]
    * - /api/cpp/protocols/udp/* placeholder
      - /api/cpp/protocols/udp/*
      - Link
      - Docs Team
-     - M2 Narrative
+     - M2 Narrative [done]
    * - /api/cpp/protocols/packetizer/* placeholder
      - /api/cpp/protocols/packetizer/*
      - Link
      - Docs Team
-     - M2 Narrative
+     - M2 Narrative [done]
    * - /migration/rogue_v6 TBD links
      - /migration/rogue_v6
      - Move
      - Docs Team
-     - M2 Narrative
+     - M2 Narrative [done]
    * - /interfaces/memory/hub TBD links
      - /interfaces/memory/hub
      - Move
      - Docs Team
-     - M2 Narrative
+     - M2 Narrative [done]
    * - /api/cpp/interfaces/memory/transaction
      - /memory_interface/transactions
      - Move
      - Docs Team
-     - M2 Narrative
+     - M2 Narrative [done]
    * - /advanced_examples/index
      - /cookbook/index
      - Link

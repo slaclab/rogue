@@ -12,6 +12,12 @@ Canonical entry point: :doc:`/protocols/packetizer/index`.
 
 TODO
 
+Status
+======
+
+Legacy placeholder content retained.
+Detailed API notes are planned in a later expansion pass.
+
 
 ControllerV1 objects in C++ are referenced by the following shared pointer typedef:
 
