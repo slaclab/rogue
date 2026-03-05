@@ -47,7 +47,4 @@ Key constructor parameters:
 RunControl Class Documentation
 ==============================
 
-.. autoclass:: pyrogue.RunControl
-   :members:
-   :member-order: bysource
-   :inherited-members:
+See :doc:`/api/python/runcontrol` for generated API details.

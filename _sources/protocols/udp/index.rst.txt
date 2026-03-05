@@ -6,6 +6,8 @@ UDP Protocol
 
 TODO
 
+C++ API details for UDP protocol classes are documented in
+:doc:`/api/cpp/protocols/udp/index`.
 
 .. toctree::
    :maxdepth: 1
@@ -13,5 +15,3 @@ TODO
 
    client
    server
-   classes/index
-

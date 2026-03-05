@@ -1,0 +1,282 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fifo &mdash; Rogue v6.8.4 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css?v=f9c5c301" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=2d182aeb"></script>
+      <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link rel="next" title="TcpCore" href="tcpCore.html" />
+    <link rel="prev" title="Slave" href="slave.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../introduction/index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../../introduction/index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../getting_started/index.html">PyRogue Tree Getting Started Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../advanced_examples/index.html">Advanced Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../interfaces/index.html">Interfaces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../utilities/index.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../hardware/index.html">Hardware</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../protocols/index.html">Protocols</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../custom_module/index.html">Creating Custom Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pydm/index.html">Using the PyDM Gui</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_index.html">Table of Contents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../../index.html#python-api">Python API</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../../../index.html#c-api">C++ API</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../../hardware/axi/index.html">AXI Hardware Interface Class Descriptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../hardware/raw/index.html">Hardware Interface Class Descriptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../memory/index.html">Memory Interface Class Descriptions</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">Stream Interface Class Descriptions</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="frame.html">Frame</a></li>
+<li class="toctree-l4"><a class="reference internal" href="frameLock.html">Frame Lock</a></li>
+<li class="toctree-l4"><a class="reference internal" href="frameIterator.html">Frame Iterator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="frameAccessor.html">Frame Accessor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="helpers.html">Frame Helpers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="master.html">Master</a></li>
+<li class="toctree-l4"><a class="reference internal" href="slave.html">Slave</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Fifo</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcpCore.html">TcpCore</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcpClient.html">TcpClient</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcpServer.html">TcpServer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="filter.html">Filter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="rateDrop.html">RateDrop</a></li>
+<li class="toctree-l4"><a class="reference internal" href="buffer.html">Buffer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pool.html">Pool</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../protocols/batcher/index.html">Batcher Protocol Class Descriptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../protocols/packetizer/index.html">Packetizer Protocol Class Descriptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../protocols/rssi/index.html">RSSI Protocol Class Descriptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../protocols/srp/index.html">SRP Protocol Class Descriptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../protocols/udp/index.html">UDP Protocol Class Descriptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../protocols/xilinx/index.html">Xilinx Protocol Class Descriptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../utilities/compression/index.html">Compression Classes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../utilities/fileio/index.html">File Operation Classes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../utilities/prbs/index.html">PRBS Utilities</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../introduction/index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../introduction/index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../documentation_index.html">Table of Contents</a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">API Reference</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Stream Interface Class Descriptions</a></li>
+      <li class="breadcrumb-item active">Fifo</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../_sources/api/cpp/interfaces/stream/fifo.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="fifo">
+<span id="interfaces-stream-fifo"></span><h1>Fifo<a class="headerlink" href="#fifo" title="Link to this heading"></a></h1>
+<p>Examples of using a Fifo are described in <a class="reference internal" href="../../../../interfaces/stream/usingFifo.html#interfaces-stream-using-fifo"><span class="std std-ref">Using A Fifo</span></a>.</p>
+<p>Fifo objects in C++ are referenced by the following shared pointer typedef:</p>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream7FifoPtrE">
+<span id="_CPPv3N5rogue10interfaces6stream7FifoPtrE"></span><span id="_CPPv2N5rogue10interfaces6stream7FifoPtrE"></span><span id="rogue::interfaces::stream::FifoPtr"></span><span class="target" id="namespacerogue_1_1interfaces_1_1stream_1a1781f0b2c229df84c6aa57a5c731b897"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream4FifoE" title="rogue::interfaces::stream::Fifo"><span class="n"><span class="pre">Fifo</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">FifoPtr</span></span></span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream7FifoPtrE" title="Link to this definition"></a><br /></dt>
+<dd><p>Shared pointer alias for <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Fifo"><span class="std std-ref"><span class="pre">Fifo</span></span></a></code>. </p>
+</dd></dl>
+
+<p>The class description is shown below:</p>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream4FifoE">
+<span id="_CPPv3N5rogue10interfaces6stream4FifoE"></span><span id="_CPPv2N5rogue10interfaces6stream4FifoE"></span><span id="rogue::interfaces::stream::Fifo"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Fifo"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Fifo</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="master.html#_CPPv4N5rogue10interfaces6stream6MasterE" title="rogue::interfaces::stream::Master"><span class="n"><span class="pre">Master</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="slave.html#_CPPv4N5rogue10interfaces6stream5SlaveE" title="rogue::interfaces::stream::Slave"><span class="n"><span class="pre">Slave</span></span></a><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream4FifoE" title="Link to this definition"></a><br /></dt>
+<dd><p>Stream frame FIFO. </p>
+<p>Buffers incoming frames and forwards them to downstream slaves from a worker thread. For each accepted frame:<ul class="simple">
+<li><p>If <code class="docutils literal notranslate"><span class="pre">noCopy</span></code> is <code class="docutils literal notranslate"><span class="pre">true</span></code>, the original frame object is queued (no payload copy, no trim).</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">noCopy</span></code> is <code class="docutils literal notranslate"><span class="pre">false</span></code>, a new frame is allocated and payload bytes are copied.</p></li>
+<li><p>In copy mode, <code class="docutils literal notranslate"><span class="pre">trimSize</span></code> can cap copied payload length.</p></li>
+</ul>
+</p>
+<p>Queue backpressure/drop behavior is controlled by <code class="docutils literal notranslate"><span class="pre">maxDepth</span></code>:<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">maxDepth</span> <span class="pre">&gt;</span> <span class="pre">0</span></code>: once queue depth reaches <code class="docutils literal notranslate"><span class="pre">maxDepth</span></code>, new incoming frames are dropped.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">maxDepth</span> <span class="pre">==</span> <span class="pre">0</span></code>: no busy/drop threshold is applied by this FIFO (queue can continue growing).</p></li>
+</ul>
+</p>
+<p>Trim behavior:<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">trimSize</span> <span class="pre">&gt;</span> <span class="pre">0</span></code> and <code class="docutils literal notranslate"><span class="pre">noCopy</span> <span class="pre">==</span> <span class="pre">false</span></code>: copied payload is limited to <code class="docutils literal notranslate"><span class="pre">min(payload,</span> <span class="pre">trimSize)</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">trimSize</span> <span class="pre">==</span> <span class="pre">0</span></code>: copied payload is not trimmed.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">noCopy</span> <span class="pre">==</span> <span class="pre">true</span></code>: <code class="docutils literal notranslate"><span class="pre">trimSize</span></code> is ignored. </p></li>
+</ul>
+</p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream4Fifo4FifoE8uint32_t8uint32_tb">
+<span id="_CPPv3N5rogue10interfaces6stream4Fifo4FifoE8uint32_t8uint32_tb"></span><span id="_CPPv2N5rogue10interfaces6stream4Fifo4FifoE8uint32_t8uint32_tb"></span><span id="rogue::interfaces::stream::Fifo::Fifo__uint32_t.uint32_t.b"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Fifo_1ac9df79442320fa6d863d5678632231f0"></span><span class="sig-name descname"><span class="n"><span class="pre">Fifo</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">maxDepth</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">trimSize</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">noCopy</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream4Fifo4FifoE8uint32_t8uint32_tb" title="Link to this definition"></a><br /></dt>
+<dd><p>Constructs a FIFO stream buffer. </p>
+<p>This constructor is a low-level C++ allocation path. Prefer <code class="docutils literal notranslate"><a class="reference internal" href="master.html#classrogue_1_1interfaces_1_1stream_1_1Master_1a3c6558447ac572d910c4db8a6d8ecc6d"><span class="std std-ref"><span class="pre">create()</span></span></a></code> when shared ownership or Python exposure is required.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>maxDepth</strong> – Queue busy/drop threshold in frames. <code class="docutils literal notranslate"><span class="pre">0</span></code> disables threshold-based drops. </p></li>
+<li><p><strong>trimSize</strong> – Payload trim limit in copy mode. <code class="docutils literal notranslate"><span class="pre">0</span></code> disables trimming. </p></li>
+<li><p><strong>noCopy</strong> – Set to <code class="docutils literal notranslate"><span class="pre">true</span></code> to queue original frames; when <code class="docutils literal notranslate"><span class="pre">true</span></code>, <code class="docutils literal notranslate"><span class="pre">trimSize</span></code> is ignored. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream4FifoD0Ev">
+<span id="_CPPv3N5rogue10interfaces6stream4FifoD0Ev"></span><span id="_CPPv2N5rogue10interfaces6stream4FifoD0Ev"></span><span id="rogue::interfaces::stream::Fifo::~Fifo"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Fifo_1add3d0712e1e3358ab13715a47eb1e80c"></span><span class="sig-name descname"><span class="n"><span class="pre">~Fifo</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream4FifoD0Ev" title="Link to this definition"></a><br /></dt>
+<dd><p>Destroys the FIFO and stops internal worker thread. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream4Fifo4sizeEv">
+<span id="_CPPv3N5rogue10interfaces6stream4Fifo4sizeEv"></span><span id="_CPPv2N5rogue10interfaces6stream4Fifo4sizeEv"></span><span id="rogue::interfaces::stream::Fifo::size"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Fifo_1a4365e37d6f395e39fb2697c6a863cd18"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">size</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream4Fifo4sizeEv" title="Link to this definition"></a><br /></dt>
+<dd><p>Returns current FIFO queue depth. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK5rogue10interfaces6stream4Fifo7dropCntEv">
+<span id="_CPPv3NK5rogue10interfaces6stream4Fifo7dropCntEv"></span><span id="_CPPv2NK5rogue10interfaces6stream4Fifo7dropCntEv"></span><span id="rogue::interfaces::stream::Fifo::dropCntC"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Fifo_1a7ed02712a30a53b79a7567dfd7b1f3bf"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dropCnt</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK5rogue10interfaces6stream4Fifo7dropCntEv" title="Link to this definition"></a><br /></dt>
+<dd><p>Returns the total dropped-frame counter. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream4Fifo8clearCntEv">
+<span id="_CPPv3N5rogue10interfaces6stream4Fifo8clearCntEv"></span><span id="_CPPv2N5rogue10interfaces6stream4Fifo8clearCntEv"></span><span id="rogue::interfaces::stream::Fifo::clearCnt"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Fifo_1a8f44ae7ea2e8bdd257595557bdc998bf"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">clearCnt</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream4Fifo8clearCntEv" title="Link to this definition"></a><br /></dt>
+<dd><p>Clears FIFO counters (including dropped-frame count). </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream4Fifo11acceptFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE">
+<span id="_CPPv3N5rogue10interfaces6stream4Fifo11acceptFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE"></span><span id="_CPPv2N5rogue10interfaces6stream4Fifo11acceptFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE"></span><span id="rogue::interfaces::stream::Fifo::acceptFrame__std::shared_ptr:rogue::interfaces::stream::Frame:"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Fifo_1a301b2f55ce5802ce5aa9d6d3018288c0"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">acceptFrame</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="frame.html#_CPPv4N5rogue10interfaces6stream5FrameE" title="rogue::interfaces::stream::Frame"><span class="n"><span class="pre">Frame</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">frame</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream4Fifo11acceptFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE" title="Link to this definition"></a><br /></dt>
+<dd><p>Receives a frame from upstream and enqueues or drops it. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>frame</strong> – Incoming frame. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-static-functions">Public Static Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream4Fifo6createE8uint32_t8uint32_tb">
+<span id="_CPPv3N5rogue10interfaces6stream4Fifo6createE8uint32_t8uint32_tb"></span><span id="_CPPv2N5rogue10interfaces6stream4Fifo6createE8uint32_t8uint32_tb"></span><span id="rogue::interfaces::stream::Fifo::create__uint32_t.uint32_t.b"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Fifo_1a6144813b4d785eb2218d7d077e13aedb"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream4FifoE" title="rogue::interfaces::stream::Fifo"><span class="n"><span class="pre">Fifo</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">create</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">maxDepth</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">trimSize</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">noCopy</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream4Fifo6createE8uint32_t8uint32_tb" title="Link to this definition"></a><br /></dt>
+<dd><p>Creates a FIFO stream buffer. </p>
+<p>Parameter semantics are identical to the constructor; see <code class="docutils literal notranslate"><span class="pre">Fifo()</span></code> for queue-depth and trim behavior details.</p>
+<p>Exposed as <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Fifo"><span class="std std-ref"><span class="pre">rogue.interfaces.stream.Fifo()</span></span></a></code> in Python.</p>
+<p>This static factory is the preferred construction path when the object is shared across Rogue graph connections or exposed to Python. It returns <code class="docutils literal notranslate"><span class="pre">std::shared_ptr</span></code> ownership compatible with Rogue pointer typedefs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>maxDepth</strong> – Queue busy/drop threshold in frames. <code class="docutils literal notranslate"><span class="pre">0</span></code> disables threshold-based drops. </p></li>
+<li><p><strong>trimSize</strong> – Payload trim limit in copy mode. <code class="docutils literal notranslate"><span class="pre">0</span></code> disables trimming. </p></li>
+<li><p><strong>noCopy</strong> – Set to <code class="docutils literal notranslate"><span class="pre">true</span></code> to queue original frames; when <code class="docutils literal notranslate"><span class="pre">true</span></code>, <code class="docutils literal notranslate"><span class="pre">trimSize</span></code> is ignored. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Shared pointer to the created FIFO. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream4Fifo12setup_pythonEv">
+<span id="_CPPv3N5rogue10interfaces6stream4Fifo12setup_pythonEv"></span><span id="_CPPv2N5rogue10interfaces6stream4Fifo12setup_pythonEv"></span><span id="rogue::interfaces::stream::Fifo::setup_python"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Fifo_1a33287176d57ef19fa4eafa381d2b47d2"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setup_python</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream4Fifo12setup_pythonEv" title="Link to this definition"></a><br /></dt>
+<dd><p>Registers this type with Python bindings. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="slave.html" class="btn btn-neutral float-left" title="Slave" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tcpCore.html" class="btn btn-neutral float-right" title="TcpCore" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

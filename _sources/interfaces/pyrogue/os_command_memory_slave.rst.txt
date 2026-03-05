@@ -7,7 +7,4 @@ OsCommandMemorySlave
 Python OsCommandMemorySlave Class Documentation
 ===============================================
 
-.. autoclass:: pyrogue.interfaces.OsCommandMemorySlave
-   :members:
-   :member-order: bysource
-   :inherited-members:
+See :doc:`/api/python/interfaces_oscommandmemoryslave` for generated API details.

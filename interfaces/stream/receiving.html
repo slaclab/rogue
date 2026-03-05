@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Receiving Frames &mdash; Rogue v6.8.3 documentation</title>
+  <title>Receiving Frames &mdash; Rogue v6.8.4 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=e691ba26"></script>
+      <script src="../../_static/documentation_options.js?v=2d182aeb"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -35,7 +35,7 @@
 
           
           
-          <a href="../../index.html" class="icon icon-home">
+          <a href="../../introduction/index.html" class="icon icon-home">
             Rogue
           </a>
 <div role="search">
@@ -49,8 +49,8 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../introduction/index.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/index.html">PyRogue Tree Getting Started Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../advanced_examples/index.html">Advanced Tutorials</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyrogue_tree/index.html">PyRogue Tree</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">Interfaces</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../clients/index.html">Client Interfaces</a></li>
@@ -67,7 +67,6 @@
 <li class="toctree-l3"><a class="reference internal" href="usingFilter.html">Using A Filter</a></li>
 <li class="toctree-l3"><a class="reference internal" href="usingRateDrop.html">Using A Rate Drop Object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="debugStreams.html">Debugging Streams</a></li>
-<li class="toctree-l3"><a class="reference internal" href="classes/index.html">Stream Interface Class Descriptions</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../memory/index.html">Memory Interface</a></li>
@@ -85,6 +84,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../../custom_module/index.html">Creating Custom Modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pydm/index.html">Using the PyDM Gui</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../documentation_index.html">Table of Contents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">API Reference</a></li>
 </ul>
 
         </div>
@@ -93,14 +95,14 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../index.html">Rogue</a>
+          <a href="../../introduction/index.html">Rogue</a>
       </nav>
 
       <div class="wy-nav-content">
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li><a href="../../introduction/index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../index.html">Interfaces</a></li>
           <li class="breadcrumb-item"><a href="index.html">Stream Interface</a></li>
       <li class="breadcrumb-item active">Receiving Frames</li>
@@ -115,7 +117,7 @@
              
   <section id="receiving-frames">
 <span id="interfaces-stream-receiving"></span><h1>Receiving Frames<a class="headerlink" href="#receiving-frames" title="Link to this heading"></a></h1>
-<p>Frames are received by a subclass of the <a class="reference internal" href="classes/slave.html#interfaces-stream-slave"><span class="std std-ref">Slave</span></a> class in rogue.
+<p>Frames are received by a subclass of the <a class="reference internal" href="../../api/cpp/interfaces/stream/slave.html#interfaces-stream-slave"><span class="std std-ref">Slave</span></a> class in rogue.
 This subclass can be created either in python or in c++. In either case a received frame
 results in the execution of the the acceptFrame method in the subclass instance. Python
 and C++ subclasses of the Slave class can be used interchangeably, allowing c++ subclasses
@@ -217,7 +219,7 @@ Frames. For example when receiving large data frames from a UDP interface, the i
 exist within a number of 1500 byte Buffers which may exist at random locations in memory.</p>
 <p>This however comes at a performance penalty as the iterator is updated on each access to the underlying Frame data. In
 order to move data in the most effecient way, it is best to use std::memcpy with the data pointer interface
-provided by the Buffer class.  The Rogue <a class="reference internal" href="classes/frameIterator.html#interfaces-stream-frame-iterator"><span class="std std-ref">Frame Iterator</span></a> provides
+provided by the Buffer class.  The Rogue <a class="reference internal" href="../../api/cpp/interfaces/stream/frameIterator.html#interfaces-stream-frame-iterator"><span class="std std-ref">Frame Iterator</span></a> provides
 mechanisms for iterating through each contiguous buffer. The following example performs a data copy from
 a passed data buffer into the Rogue frame, ensuring that the most efficient copy methods are used:</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="c1">// Get an iterator to the start of the Frame</span>
@@ -236,7 +238,7 @@ a passed data buffer into the Rogue frame, ensuring that the most efficient copy
 </pre></div>
 </div>
 <p>Alternatively if the user wishes to access individual values in the data frame at various offsets,
-they can make use of the fromFrame helper function defined in <a class="reference internal" href="classes/helpers.html#interfaces-stream-helpers"><span class="std std-ref">Frame Helpers</span></a>.</p>
+they can make use of the fromFrame helper function defined in <a class="reference internal" href="../../api/cpp/interfaces/stream/helpers.html#interfaces-stream-helpers"><span class="std std-ref">Frame Helpers</span></a>.</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">data64</span><span class="p">;</span>
 <span class="kt">uint32_t</span><span class="w"> </span><span class="n">data32</span><span class="p">;</span>
 <span class="kt">uint8_t</span><span class="w">  </span><span class="n">data8</span><span class="p">;</span>
@@ -253,14 +255,14 @@ they can make use of the fromFrame helper function defined in <a class="referenc
 <span class="n">fromFrame</span><span class="p">(</span><span class="n">it</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">data8</span><span class="p">);</span>
 </pre></div>
 </div>
-<p>In some cases the user will need high performance element level access to the frame data. The <a class="reference internal" href="classes/frameAccessor.html#interfaces-stream-frame-accessor"><span class="std std-ref">Frame Accessor</span></a>
+<p>In some cases the user will need high performance element level access to the frame data. The <a class="reference internal" href="../../api/cpp/interfaces/stream/frameAccessor.html#interfaces-stream-frame-accessor"><span class="std std-ref">Frame Accessor</span></a>
 provides a memory pointer mapped view of the frame data. There is a limitation in the use of a FrameAccessor in that it can
 only map frame data that is represented by a single buffer. If the range to be accessed spans multiple buffers, attempting
-to use a FrameAccessor will throw an exception. Luckily there is a helper in the <a class="reference internal" href="classes/master.html#interfaces-stream-master"><span class="std std-ref">Master</span></a> class
+to use a FrameAccessor will throw an exception. Luckily there is a helper in the <a class="reference internal" href="../../api/cpp/interfaces/stream/master.html#interfaces-stream-master"><span class="std std-ref">Master</span></a> class
 class which will verify that a given frame is representated by a single buffer. If this is not the case it create a copy of the
 Frame into a new Frame which is made up of a single buffer.</p>
 <p>The user must be carefull to not “flatten” a frame that is purposely segmented into multiple buffers (i.e. createa a frame for
-sending over a UDP interface). The <a class="reference internal" href="classes/frameAccessor.html#interfaces-stream-frame-accessor"><span class="std std-ref">Frame Accessor</span></a> in combination with the ensureSingleBuffer() call on
+sending over a UDP interface). The <a class="reference internal" href="../../api/cpp/interfaces/stream/frameAccessor.html#interfaces-stream-frame-accessor"><span class="std std-ref">Frame Accessor</span></a> in combination with the ensureSingleBuffer() call on
 received frames.</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="c1">// First lets make sure the frame is made up of a single buffer</span>
 <span class="c1">// Set the request enable flag to true, allowing a new frame to</span>
@@ -280,7 +282,7 @@ received frames.</p>
 <span class="n">acc</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">value2</span><span class="p">;</span>
 </pre></div>
 </div>
-<p>Further study of the <a class="reference internal" href="classes/frame.html#interfaces-stream-frame"><span class="std std-ref">Frame</span></a> and <a class="reference internal" href="classes/buffer.html#interfaces-stream-buffer"><span class="std std-ref">Buffer</span></a> APIs will reveal more
+<p>Further study of the <a class="reference internal" href="../../api/cpp/interfaces/stream/frame.html#interfaces-stream-frame"><span class="std std-ref">Frame</span></a> and <a class="reference internal" href="../../api/cpp/interfaces/stream/buffer.html#interfaces-stream-buffer"><span class="std std-ref">Buffer</span></a> APIs will reveal more
 advanced methods of access frame and buffer data.</p>
 </section>
 </section>
@@ -296,7 +298,7 @@ advanced methods of access frame and buffer data.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2025, SLAC National Accelerator Laboratory.</p>
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

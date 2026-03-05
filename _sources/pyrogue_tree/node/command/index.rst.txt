@@ -35,7 +35,4 @@ Subtypes
 BaseCommand Class Documentation
 ===============================
 
-.. autoclass:: pyrogue.BaseCommand
-   :members:
-   :member-order: bysource
-   :inherited-members:
+See :doc:`/api/python/basecommand` for generated API details.

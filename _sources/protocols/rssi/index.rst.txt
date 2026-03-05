@@ -117,6 +117,8 @@ See also
 
 * :ref:`protocols_network`
 
+C++ API details for RSSI protocol classes are documented in
+:doc:`/api/cpp/protocols/rssi/index`.
 
 .. toctree::
    :maxdepth: 1
@@ -124,4 +126,3 @@ See also
 
    client
    server
-   classes/index

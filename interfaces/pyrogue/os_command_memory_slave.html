@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>OsCommandMemorySlave &mdash; Rogue v6.8.3 documentation</title>
+  <title>OsCommandMemorySlave &mdash; Rogue v6.8.4 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=e691ba26"></script>
+      <script src="../../_static/documentation_options.js?v=2d182aeb"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -23,7 +23,7 @@
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Python ZMQServer" href="zmq_server.html" />
+    <link rel="next" title="OsMemMaster Device Example" href="osmemmaster.html" />
     <link rel="prev" title="Python Stream Variable" href="memory_stream_variable.html" /> 
 </head>
 
@@ -35,7 +35,7 @@
 
           
           
-          <a href="../../index.html" class="icon icon-home">
+          <a href="../../introduction/index.html" class="icon icon-home">
             Rogue
           </a>
 <div role="search">
@@ -49,8 +49,8 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../introduction/index.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/index.html">PyRogue Tree Getting Started Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../advanced_examples/index.html">Advanced Tutorials</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyrogue_tree/index.html">PyRogue Tree</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">Interfaces</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../clients/index.html">Client Interfaces</a></li>
@@ -63,6 +63,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#python-oscommandmemoryslave-class-documentation">Python OsCommandMemorySlave Class Documentation</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="osmemmaster.html">OsMemMaster Device Example</a></li>
 <li class="toctree-l3"><a class="reference internal" href="zmq_server.html">Python ZMQServer</a></li>
 </ul>
 </li>
@@ -78,6 +79,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../../custom_module/index.html">Creating Custom Modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pydm/index.html">Using the PyDM Gui</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../documentation_index.html">Table of Contents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">API Reference</a></li>
 </ul>
 
         </div>
@@ -86,14 +90,14 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../index.html">Rogue</a>
+          <a href="../../introduction/index.html">Rogue</a>
       </nav>
 
       <div class="wy-nav-content">
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li><a href="../../introduction/index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../index.html">Interfaces</a></li>
           <li class="breadcrumb-item"><a href="index.html">Python Interfaces</a></li>
       <li class="breadcrumb-item active">OsCommandMemorySlave</li>
@@ -110,49 +114,7 @@
 <span id="interfaces-python-os-command-memory-slave"></span><h1>OsCommandMemorySlave<a class="headerlink" href="#oscommandmemoryslave" title="Link to this heading"></a></h1>
 <section id="python-oscommandmemoryslave-class-documentation">
 <h2>Python OsCommandMemorySlave Class Documentation<a class="headerlink" href="#python-oscommandmemoryslave-class-documentation" title="Link to this heading"></a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="pyrogue.interfaces.OsCommandMemorySlave">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pyrogue.interfaces.</span></span><span class="sig-name descname"><span class="pre">OsCommandMemorySlave</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">minWidth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxSize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1024</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/interfaces/_OsCommandMemorySlave.html#OsCommandMemorySlave"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.OsCommandMemorySlave" title="Link to this definition"></a></dt>
-<dd><p>Memory slave that maps transactions to Python functions via address-based commands.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>minWidth</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>, </em><em>optional</em>) – Minimum access width in bytes.</p></li>
-<li><p><strong>maxSize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>, </em><em>optional</em>) – Maximum transaction size in bytes.</p></li>
-</ul>
-</dd>
-</dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="pyrogue.interfaces.OsCommandMemorySlave.command">
-<span class="sig-name descname"><span class="pre">command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">addr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/interfaces/_OsCommandMemorySlave.html#OsCommandMemorySlave.command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.OsCommandMemorySlave.command" title="Link to this definition"></a></dt>
-<dd><p>Decorator to register a function as a command at the given address.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>addr</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Memory-mapped address for this command.</p></li>
-<li><p><strong>base</strong> (<a class="reference internal" href="../../pyrogue_tree/model/index.html#pyrogue.Model" title="pyrogue.Model"><em>pyrogue.Model</em></a>) – Object with fromBytes/toBytes for argument serialization.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Decorator that registers the wrapped function.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>callable</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyrogue.interfaces.OsCommandMemorySlave.setName">
-<span class="sig-name descname"><span class="pre">setName</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(Slave)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(str)arg2</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#pyrogue.interfaces.OsCommandMemorySlave.setName" title="Link to this definition"></a></dt>
-<dd><dl class="simple">
-<dt>C++ signature :</dt><dd><p>void setName(rogue::interfaces::memory::Slave {lvalue},std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;)</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
+<p>See <a class="reference internal" href="../../api/python/interfaces_oscommandmemoryslave.html"><span class="doc">OsCommandMemorySlave</span></a> for generated API details.</p>
 </section>
 </section>
 
@@ -161,13 +123,13 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="memory_stream_variable.html" class="btn btn-neutral float-left" title="Python Stream Variable" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="zmq_server.html" class="btn btn-neutral float-right" title="Python ZMQServer" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="osmemmaster.html" class="btn btn-neutral float-right" title="OsMemMaster Device Example" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2025, SLAC National Accelerator Laboratory.</p>
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

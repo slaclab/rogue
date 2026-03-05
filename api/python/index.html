@@ -1,0 +1,229 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Python API &mdash; Rogue v6.8.4 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=f9c5c301" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=2d182aeb"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="BaseCommand" href="basecommand.html" />
+    <link rel="prev" title="API Reference" href="../index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../introduction/index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../introduction/index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/index.html">PyRogue Tree Getting Started Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../advanced_examples/index.html">Advanced Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../interfaces/index.html">Interfaces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../utilities/index.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../hardware/index.html">Hardware</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../protocols/index.html">Protocols</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../custom_module/index.html">Creating Custom Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pydm/index.html">Using the PyDM Gui</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../documentation_index.html">Table of Contents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html#python-api">Python API</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Python API</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pyrogue">pyrogue</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pyrogue-interfaces">pyrogue.interfaces</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pyrogue-interfaces-stream">pyrogue.interfaces.stream</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pyrogue-protocols-epicsv4">pyrogue.protocols.epicsV4</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pyrogue-utilities-fileio">pyrogue.utilities.fileio</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pyrogue-utilities-prbs">pyrogue.utilities.prbs</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#c-api">C++ API</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../introduction/index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../introduction/index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../documentation_index.html">Table of Contents</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">API Reference</a></li>
+      <li class="breadcrumb-item active">Python API</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/api/python/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="python-api">
+<span id="api-python"></span><h1>Python API<a class="headerlink" href="#python-api" title="Link to this heading"></a></h1>
+<p>Canonical generated Python API reference pages, grouped by package.</p>
+<section id="pyrogue">
+<h2>pyrogue<a class="headerlink" href="#pyrogue" title="Link to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="basecommand.html">BaseCommand</a></li>
+<li class="toctree-l1"><a class="reference internal" href="basevariable.html">BaseVariable</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bool.html">Bool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bytecount.html">byteCount</a></li>
+<li class="toctree-l1"><a class="reference internal" href="datareceiver.html">DataReceiver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="datawriter.html">DataWriter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="double.html">Double</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fixed.html">Fixed</a></li>
+<li class="toctree-l1"><a class="reference internal" href="float.html">Float</a></li>
+<li class="toctree-l1"><a class="reference internal" href="int.html">Int</a></li>
+<li class="toctree-l1"><a class="reference internal" href="linkvariable.html">LinkVariable</a></li>
+<li class="toctree-l1"><a class="reference internal" href="localblock.html">LocalBlock</a></li>
+<li class="toctree-l1"><a class="reference internal" href="localvariable.html">LocalVariable</a></li>
+<li class="toctree-l1"><a class="reference internal" href="model.html">Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="node.html">Node</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pollqueue.html">PollQueue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="process.html">Process</a></li>
+<li class="toctree-l1"><a class="reference internal" href="remotecommand.html">RemoteCommand</a></li>
+<li class="toctree-l1"><a class="reference internal" href="remotevariable.html">RemoteVariable</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reversebits.html">reverseBits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="root.html">Root</a></li>
+<li class="toctree-l1"><a class="reference internal" href="runcontrol.html">RunControl</a></li>
+<li class="toctree-l1"><a class="reference internal" href="string.html">String</a></li>
+<li class="toctree-l1"><a class="reference internal" href="twoscomplement.html">twosComplement</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ufixed.html">UFixed</a></li>
+<li class="toctree-l1"><a class="reference internal" href="uint.html">UInt</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wordcount.html">wordCount</a></li>
+</ul>
+</div>
+</section>
+<section id="pyrogue-interfaces">
+<h2>pyrogue.interfaces<a class="headerlink" href="#pyrogue-interfaces" title="Link to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="interfaces_oscommandmemoryslave.html">OsCommandMemorySlave</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interfaces_simpleclient.html">SimpleClient</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interfaces_virtualclient.html">VirtualClient</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interfaces_zmqserver.html">ZmqServer</a></li>
+</ul>
+</div>
+</section>
+<section id="pyrogue-interfaces-stream">
+<h2>pyrogue.interfaces.stream<a class="headerlink" href="#pyrogue-interfaces-stream" title="Link to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="interfaces_stream_variable.html">Variable</a></li>
+</ul>
+</div>
+</section>
+<section id="pyrogue-protocols-epicsv4">
+<h2>pyrogue.protocols.epicsV4<a class="headerlink" href="#pyrogue-protocols-epicsv4" title="Link to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="protocols_epicsv4_epicspvholder.html">EpicsPvHolder</a></li>
+<li class="toctree-l1"><a class="reference internal" href="protocols_epicsv4_epicspvserver.html">EpicsPvServer</a></li>
+</ul>
+</div>
+</section>
+<section id="pyrogue-utilities-fileio">
+<h2>pyrogue.utilities.fileio<a class="headerlink" href="#pyrogue-utilities-fileio" title="Link to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="utilities_fileio_filereader.html">FileReader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utilities_fileio_rogueheader.html">RogueHeader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utilities_fileio_streamreader.html">StreamReader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utilities_fileio_streamwriter.html">StreamWriter</a></li>
+</ul>
+</div>
+</section>
+<section id="pyrogue-utilities-prbs">
+<h2>pyrogue.utilities.prbs<a class="headerlink" href="#pyrogue-utilities-prbs" title="Link to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="utilities_prbs_prbspair.html">PrbsPair</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utilities_prbs_prbsrx.html">PrbsRx</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utilities_prbs_prbstx.html">PrbsTx</a></li>
+</ul>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../index.html" class="btn btn-neutral float-left" title="API Reference" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="basecommand.html" class="btn btn-neutral float-right" title="BaseCommand" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -5,17 +5,35 @@ Building Rogue Inside Miniforge
 ===============================
 
 This section provides instructions for downloading and building rogue inside an miniforge environment. These
-instructions are relevant for Linux
+instructions are relevant for Linux and macOS arm64.
+
+Prerequisites
+=============
+
+On macOS, install Apple Command Line Tools before creating the environment:
+
+.. code::
+
+   $ xcode-select --install
 
 Getting Miniforge
 ==================
 
 Download and install miniforge if you don't already have it installed on your machine. Choose an install location with a lot of available diskspace (> 5GB). Miniforge appears to only work reliably in the bash shell.
 
+*Linux*
+
 .. code::
 
    $ wget https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh
    $ bash Miniforge3-Linux-x86_64.sh
+
+*macOS (arm64)*
+
+.. code::
+
+   $ curl -L -O https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-MacOSX-arm64.sh
+   $ bash Miniforge3-MacOSX-arm64.sh
 
 Use the following command to add miniforge to your environment. This can be added to your .bash_profile.
 
@@ -63,7 +81,7 @@ Once the rogue environment is activated, you can build and install rogue
    $ mkdir build
    $ cd build
    $ cmake ..
-   $ make -j$(nproc)
+   $ make 
    $ make install
 
 The Rogue build system will automatically detect that it is in a conda environment and it will be installed
@@ -99,7 +117,7 @@ If you want to update and re-install rogue, run the following commands.
    $ mkdir build
    $ cd build
    $ cmake ..
-   $ make
+   $ cmake --build .
    $ make install
 
 Building and Viewing the Docs
@@ -111,10 +129,10 @@ Note: if edits are made to the source files, the full build process needs to be 
 
    # build the docs
    $ cd ../docs/
-   $ make html
+   $ make clean html
 
    # view output on web browser
-   $ google-chrome build/html/index.html
+   $ open build/html/index.html
 
 Deleting Miniforge Environment
 ==============================

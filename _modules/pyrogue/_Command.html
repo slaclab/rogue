@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue._Command &mdash; Rogue v6.8.3 documentation</title>
+  <title>pyrogue._Command &mdash; Rogue v6.8.4 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -14,7 +14,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=e691ba26"></script>
+      <script src="../../_static/documentation_options.js?v=2d182aeb"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -32,7 +32,7 @@
 
           
           
-          <a href="../../index.html" class="icon icon-home">
+          <a href="../../introduction/index.html" class="icon icon-home">
             Rogue
           </a>
 <div role="search">
@@ -46,8 +46,8 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../introduction/index.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/index.html">PyRogue Tree Getting Started Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../advanced_examples/index.html">Advanced Tutorials</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyrogue_tree/index.html">PyRogue Tree</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../interfaces/index.html">Interfaces</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../utilities/index.html">Utilities</a></li>
@@ -57,6 +57,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../../custom_module/index.html">Creating Custom Modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pydm/index.html">Using the PyDM Gui</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../documentation_index.html">Table of Contents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">API Reference</a></li>
 </ul>
 
         </div>
@@ -65,14 +68,14 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../index.html">Rogue</a>
+          <a href="../../introduction/index.html">Rogue</a>
       </nav>
 
       <div class="wy-nav-content">
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li><a href="../../introduction/index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
       <li class="breadcrumb-item active">pyrogue._Command</li>
       <li class="wy-breadcrumbs-aside">
@@ -114,7 +117,7 @@
 
 
 <div class="viewcode-block" id="BaseCommand">
-<a class="viewcode-back" href="../../pyrogue_tree/node/command/index.html#pyrogue.BaseCommand">[docs]</a>
+<a class="viewcode-back" href="../../api/python/basecommand.html#pyrogue.BaseCommand">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">BaseCommand</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">BaseVariable</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for PyRogue commands.</span>
 
@@ -263,7 +266,7 @@
             <span class="k">raise</span> <span class="n">e</span>
 
 <div class="viewcode-block" id="BaseCommand.call">
-<a class="viewcode-back" href="../../pyrogue_tree/node/command/index.html#pyrogue.BaseCommand.call">[docs]</a>
+<a class="viewcode-back" href="../../api/python/basecommand.html#pyrogue.BaseCommand.call">[docs]</a>
     <span class="nd">@pr</span><span class="o">.</span><span class="n">expose</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Invoke the command and return the raw result.</span>
@@ -277,7 +280,7 @@
 
 
 <div class="viewcode-block" id="BaseCommand.callDisp">
-<a class="viewcode-back" href="../../pyrogue_tree/node/command/index.html#pyrogue.BaseCommand.callDisp">[docs]</a>
+<a class="viewcode-back" href="../../api/python/basecommand.html#pyrogue.BaseCommand.callDisp">[docs]</a>
     <span class="nd">@pr</span><span class="o">.</span><span class="n">expose</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">callDisp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Invoke the command and return the display-formatted result.</span>
@@ -291,7 +294,7 @@
 
 
 <div class="viewcode-block" id="BaseCommand.nothing">
-<a class="viewcode-back" href="../../pyrogue_tree/node/command/index.html#pyrogue.BaseCommand.nothing">[docs]</a>
+<a class="viewcode-back" href="../../api/python/basecommand.html#pyrogue.BaseCommand.nothing">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">nothing</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;No-op command handler.&quot;&quot;&quot;</span>
@@ -299,7 +302,7 @@
 
 
 <div class="viewcode-block" id="BaseCommand.read">
-<a class="viewcode-back" href="../../pyrogue_tree/node/command/index.html#pyrogue.BaseCommand.read">[docs]</a>
+<a class="viewcode-back" href="../../api/python/basecommand.html#pyrogue.BaseCommand.read">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">read</span><span class="p">(</span><span class="n">cmd</span><span class="p">:</span> <span class="n">BaseCommand</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Read the command variable.</span>
@@ -313,7 +316,7 @@
 
 
 <div class="viewcode-block" id="BaseCommand.setArg">
-<a class="viewcode-back" href="../../pyrogue_tree/node/command/index.html#pyrogue.BaseCommand.setArg">[docs]</a>
+<a class="viewcode-back" href="../../api/python/basecommand.html#pyrogue.BaseCommand.setArg">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">setArg</span><span class="p">(</span><span class="n">cmd</span><span class="p">:</span> <span class="n">BaseCommand</span><span class="p">,</span> <span class="n">arg</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the command argument.</span>
@@ -329,7 +332,7 @@
 
 
 <div class="viewcode-block" id="BaseCommand.setAndVerifyArg">
-<a class="viewcode-back" href="../../pyrogue_tree/node/command/index.html#pyrogue.BaseCommand.setAndVerifyArg">[docs]</a>
+<a class="viewcode-back" href="../../api/python/basecommand.html#pyrogue.BaseCommand.setAndVerifyArg">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">setAndVerifyArg</span><span class="p">(</span><span class="n">cmd</span><span class="p">:</span> <span class="n">BaseCommand</span><span class="p">,</span> <span class="n">arg</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the argument and verify by reading it back.</span>
@@ -348,7 +351,7 @@
 
 
 <div class="viewcode-block" id="BaseCommand.createToggle">
-<a class="viewcode-back" href="../../pyrogue_tree/node/command/index.html#pyrogue.BaseCommand.createToggle">[docs]</a>
+<a class="viewcode-back" href="../../api/python/basecommand.html#pyrogue.BaseCommand.createToggle">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">createToggle</span><span class="p">(</span><span class="n">sets</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">BaseCommand</span><span class="p">],</span> <span class="kc">None</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a toggle function that iterates over provided values.</span>
@@ -366,7 +369,7 @@
 
 
 <div class="viewcode-block" id="BaseCommand.toggle">
-<a class="viewcode-back" href="../../pyrogue_tree/node/command/index.html#pyrogue.BaseCommand.toggle">[docs]</a>
+<a class="viewcode-back" href="../../api/python/basecommand.html#pyrogue.BaseCommand.toggle">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">toggle</span><span class="p">(</span><span class="n">cmd</span><span class="p">:</span> <span class="n">BaseCommand</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Toggle a command by writing 1 then 0.</span>
@@ -381,7 +384,7 @@
 
 
 <div class="viewcode-block" id="BaseCommand.createTouch">
-<a class="viewcode-back" href="../../pyrogue_tree/node/command/index.html#pyrogue.BaseCommand.createTouch">[docs]</a>
+<a class="viewcode-back" href="../../api/python/basecommand.html#pyrogue.BaseCommand.createTouch">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">createTouch</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">BaseCommand</span><span class="p">],</span> <span class="kc">None</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a touch function that writes a fixed value.</span>
@@ -398,7 +401,7 @@
 
 
 <div class="viewcode-block" id="BaseCommand.touch">
-<a class="viewcode-back" href="../../pyrogue_tree/node/command/index.html#pyrogue.BaseCommand.touch">[docs]</a>
+<a class="viewcode-back" href="../../api/python/basecommand.html#pyrogue.BaseCommand.touch">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">touch</span><span class="p">(</span><span class="n">cmd</span><span class="p">:</span> <span class="n">BaseCommand</span><span class="p">,</span> <span class="n">arg</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Touch the command with a provided argument or 1.</span>
@@ -417,7 +420,7 @@
 
 
 <div class="viewcode-block" id="BaseCommand.touchZero">
-<a class="viewcode-back" href="../../pyrogue_tree/node/command/index.html#pyrogue.BaseCommand.touchZero">[docs]</a>
+<a class="viewcode-back" href="../../api/python/basecommand.html#pyrogue.BaseCommand.touchZero">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">touchZero</span><span class="p">(</span><span class="n">cmd</span><span class="p">:</span> <span class="n">BaseCommand</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Touch the command with 0.</span>
@@ -431,7 +434,7 @@
 
 
 <div class="viewcode-block" id="BaseCommand.touchOne">
-<a class="viewcode-back" href="../../pyrogue_tree/node/command/index.html#pyrogue.BaseCommand.touchOne">[docs]</a>
+<a class="viewcode-back" href="../../api/python/basecommand.html#pyrogue.BaseCommand.touchOne">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">touchOne</span><span class="p">(</span><span class="n">cmd</span><span class="p">:</span> <span class="n">BaseCommand</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Touch the command with 1.</span>
@@ -445,7 +448,7 @@
 
 
 <div class="viewcode-block" id="BaseCommand.createPostedTouch">
-<a class="viewcode-back" href="../../pyrogue_tree/node/command/index.html#pyrogue.BaseCommand.createPostedTouch">[docs]</a>
+<a class="viewcode-back" href="../../api/python/basecommand.html#pyrogue.BaseCommand.createPostedTouch">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">createPostedTouch</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">BaseCommand</span><span class="p">],</span> <span class="kc">None</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a posted touch function for asynchronous writes.</span>
@@ -462,7 +465,7 @@
 
 
 <div class="viewcode-block" id="BaseCommand.postedTouch">
-<a class="viewcode-back" href="../../pyrogue_tree/node/command/index.html#pyrogue.BaseCommand.postedTouch">[docs]</a>
+<a class="viewcode-back" href="../../api/python/basecommand.html#pyrogue.BaseCommand.postedTouch">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">postedTouch</span><span class="p">(</span><span class="n">cmd</span><span class="p">:</span> <span class="n">BaseCommand</span><span class="p">,</span> <span class="n">arg</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Post a command value without waiting for completion.</span>
@@ -478,7 +481,7 @@
 
 
 <div class="viewcode-block" id="BaseCommand.postedTouchOne">
-<a class="viewcode-back" href="../../pyrogue_tree/node/command/index.html#pyrogue.BaseCommand.postedTouchOne">[docs]</a>
+<a class="viewcode-back" href="../../api/python/basecommand.html#pyrogue.BaseCommand.postedTouchOne">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">postedTouchOne</span><span class="p">(</span><span class="n">cmd</span><span class="p">:</span> <span class="n">BaseCommand</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Post a value of 1.</span>
@@ -492,7 +495,7 @@
 
 
 <div class="viewcode-block" id="BaseCommand.postedTouchZero">
-<a class="viewcode-back" href="../../pyrogue_tree/node/command/index.html#pyrogue.BaseCommand.postedTouchZero">[docs]</a>
+<a class="viewcode-back" href="../../api/python/basecommand.html#pyrogue.BaseCommand.postedTouchZero">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">postedTouchZero</span><span class="p">(</span><span class="n">cmd</span><span class="p">:</span> <span class="n">BaseCommand</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Post a value of 0.</span>
@@ -506,7 +509,7 @@
 
 
 <div class="viewcode-block" id="BaseCommand.replaceFunction">
-<a class="viewcode-back" href="../../pyrogue_tree/node/command/index.html#pyrogue.BaseCommand.replaceFunction">[docs]</a>
+<a class="viewcode-back" href="../../api/python/basecommand.html#pyrogue.BaseCommand.replaceFunction">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">replaceFunction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">function</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Replace the command callback function.</span>
 
@@ -544,7 +547,7 @@
         <span class="k">return</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="BaseCommand.get">
-<a class="viewcode-back" href="../../pyrogue_tree/node/command/index.html#pyrogue.BaseCommand.get">[docs]</a>
+<a class="viewcode-back" href="../../api/python/basecommand.html#pyrogue.BaseCommand.get">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">read</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the cached command argument value.</span>
 
@@ -581,7 +584,7 @@
 
 
 <div class="viewcode-block" id="RemoteCommand">
-<a class="viewcode-back" href="../../pyrogue_tree/node/command/remote_command/index.html#pyrogue.RemoteCommand">[docs]</a>
+<a class="viewcode-back" href="../../api/python/remotecommand.html#pyrogue.RemoteCommand">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">RemoteCommand</span><span class="p">(</span><span class="n">BaseCommand</span><span class="p">,</span> <span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Remote command backed by a memory-mapped variable.</span>
 
@@ -680,7 +683,7 @@
             <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 <div class="viewcode-block" id="RemoteCommand.set">
-<a class="viewcode-back" href="../../pyrogue_tree/node/command/remote_command/index.html#pyrogue.RemoteCommand.set">[docs]</a>
+<a class="viewcode-back" href="../../api/python/remotecommand.html#pyrogue.RemoteCommand.set">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>  <span class="n">index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">write</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Write a value to the remote command variable.</span>
 
@@ -707,7 +710,7 @@
 
 
 <div class="viewcode-block" id="RemoteCommand.get">
-<a class="viewcode-back" href="../../pyrogue_tree/node/command/remote_command/index.html#pyrogue.RemoteCommand.get">[docs]</a>
+<a class="viewcode-back" href="../../api/python/remotecommand.html#pyrogue.RemoteCommand.get">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">read</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Read a value from the remote command variable.</span>
 
@@ -758,7 +761,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2025, SLAC National Accelerator Laboratory.</p>
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

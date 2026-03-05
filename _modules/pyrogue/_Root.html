@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue._Root &mdash; Rogue v6.8.3 documentation</title>
+  <title>pyrogue._Root &mdash; Rogue v6.8.4 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -14,7 +14,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=e691ba26"></script>
+      <script src="../../_static/documentation_options.js?v=2d182aeb"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -32,7 +32,7 @@
 
           
           
-          <a href="../../index.html" class="icon icon-home">
+          <a href="../../introduction/index.html" class="icon icon-home">
             Rogue
           </a>
 <div role="search">
@@ -46,8 +46,8 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../introduction/index.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/index.html">PyRogue Tree Getting Started Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../advanced_examples/index.html">Advanced Tutorials</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyrogue_tree/index.html">PyRogue Tree</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../interfaces/index.html">Interfaces</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../utilities/index.html">Utilities</a></li>
@@ -57,6 +57,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../../custom_module/index.html">Creating Custom Modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pydm/index.html">Using the PyDM Gui</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../documentation_index.html">Table of Contents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">API Reference</a></li>
 </ul>
 
         </div>
@@ -65,14 +68,14 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../index.html">Rogue</a>
+          <a href="../../introduction/index.html">Rogue</a>
       </nav>
 
       <div class="wy-nav-content">
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li><a href="../../introduction/index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
       <li class="breadcrumb-item active">pyrogue._Root</li>
       <li class="wy-breadcrumbs-aside">
@@ -229,7 +232,7 @@
                 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;------------------------------------------------&quot;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Root">
-<a class="viewcode-back" href="../../pyrogue_tree/node/root/index.html#pyrogue.Root">[docs]</a>
+<a class="viewcode-back" href="../../api/python/root.html#pyrogue.Root">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Root</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Class which serves as the root of a tree of Nodes.</span>
@@ -442,7 +445,7 @@
 
 
 <div class="viewcode-block" id="Root.start">
-<a class="viewcode-back" href="../../pyrogue_tree/node/root/index.html#pyrogue.Root.start">[docs]</a>
+<a class="viewcode-back" href="../../api/python/root.html#pyrogue.Root.start">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Setup the tree and start background threads for pollQueue and updateQueue.</span>
 <span class="sd">        Call Device._start() recursively on child Nodes.</span>
@@ -521,7 +524,7 @@
 
 
 <div class="viewcode-block" id="Root.stop">
-<a class="viewcode-back" href="../../pyrogue_tree/node/root/index.html#pyrogue.Root.stop">[docs]</a>
+<a class="viewcode-back" href="../../api/python/root.html#pyrogue.Root.stop">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Stop background threads. Must be called for clean exit.</span>
 <span class="sd">        Call Device._stop() to recursively stop all Devices in the tree.</span>
@@ -544,7 +547,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_running</span>
 
 <div class="viewcode-block" id="Root.addVarListener">
-<a class="viewcode-back" href="../../pyrogue_tree/node/root/index.html#pyrogue.Root.addVarListener">[docs]</a>
+<a class="viewcode-back" href="../../api/python/root.html#pyrogue.Root.addVarListener">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">addVarListener</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">,</span> <span class="n">pr</span><span class="o">.</span><span class="n">VariableValue</span><span class="p">],</span> <span class="kc">None</span><span class="p">],</span>
@@ -594,7 +597,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">addVarListener</span><span class="p">(</span><span class="k">lambda</span> <span class="n">path</span><span class="p">,</span> <span class="n">varValue</span><span class="p">:</span> <span class="n">func</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">varValue</span><span class="o">.</span><span class="n">valueDisp</span><span class="p">),</span> <span class="n">done</span><span class="o">=</span><span class="n">done</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Root.updateGroup">
-<a class="viewcode-back" href="../../pyrogue_tree/node/root/index.html#pyrogue.Root.updateGroup">[docs]</a>
+<a class="viewcode-back" href="../../api/python/root.html#pyrogue.Root.updateGroup">[docs]</a>
     <span class="nd">@contextmanager</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">updateGroup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">period</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="kc">None</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a context manager within which many Variable updates will be broadcast as one.</span>
@@ -628,7 +631,7 @@
 
 
 <div class="viewcode-block" id="Root.pollBlock">
-<a class="viewcode-back" href="../../pyrogue_tree/node/root/index.html#pyrogue.Root.pollBlock">[docs]</a>
+<a class="viewcode-back" href="../../api/python/root.html#pyrogue.Root.pollBlock">[docs]</a>
     <span class="nd">@contextmanager</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">pollBlock</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="kc">None</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -648,7 +651,7 @@
 
 
 <div class="viewcode-block" id="Root.waitOnUpdate">
-<a class="viewcode-back" href="../../pyrogue_tree/node/root/index.html#pyrogue.Root.waitOnUpdate">[docs]</a>
+<a class="viewcode-back" href="../../api/python/root.html#pyrogue.Root.waitOnUpdate">[docs]</a>
     <span class="nd">@pr</span><span class="o">.</span><span class="n">expose</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">waitOnUpdate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Wait until all update queue items have been processed.&quot;&quot;&quot;</span>
@@ -656,7 +659,7 @@
 
 
 <div class="viewcode-block" id="Root.hardReset">
-<a class="viewcode-back" href="../../pyrogue_tree/node/root/index.html#pyrogue.Root.hardReset">[docs]</a>
+<a class="viewcode-back" href="../../api/python/root.html#pyrogue.Root.hardReset">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">hardReset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate a hard reset on all devices.</span>
 
@@ -672,7 +675,7 @@
         <span class="k">return</span> <span class="n">pr</span><span class="o">.</span><span class="n">Node</span><span class="o">.</span><span class="n">__reduce__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Root.getNode">
-<a class="viewcode-back" href="../../pyrogue_tree/node/root/index.html#pyrogue.Root.getNode">[docs]</a>
+<a class="viewcode-back" href="../../api/python/root.html#pyrogue.Root.getNode">[docs]</a>
     <span class="nd">@ft</span><span class="o">.</span><span class="n">lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">getNode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pr</span><span class="o">.</span><span class="n">Node</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a Node of the tree by its path string</span>
@@ -707,7 +710,7 @@
 
 
 <div class="viewcode-block" id="Root.saveAddressMap">
-<a class="viewcode-back" href="../../pyrogue_tree/node/root/index.html#pyrogue.Root.saveAddressMap">[docs]</a>
+<a class="viewcode-back" href="../../api/python/root.html#pyrogue.Root.saveAddressMap">[docs]</a>
     <span class="nd">@pr</span><span class="o">.</span><span class="n">expose</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">saveAddressMap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Dump the tree address map to a file</span>
@@ -789,7 +792,7 @@
 
 
 <div class="viewcode-block" id="Root.saveVariableList">
-<a class="viewcode-back" href="../../pyrogue_tree/node/root/index.html#pyrogue.Root.saveVariableList">[docs]</a>
+<a class="viewcode-back" href="../../api/python/root.html#pyrogue.Root.saveVariableList">[docs]</a>
     <span class="nd">@pr</span><span class="o">.</span><span class="n">expose</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">saveVariableList</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -876,7 +879,7 @@
         <span class="k">return</span> <span class="kc">True</span>
 
 <div class="viewcode-block" id="Root.saveYaml">
-<a class="viewcode-back" href="../../pyrogue_tree/node/root/index.html#pyrogue.Root.saveYaml">[docs]</a>
+<a class="viewcode-back" href="../../api/python/root.html#pyrogue.Root.saveYaml">[docs]</a>
     <span class="nd">@pr</span><span class="o">.</span><span class="n">expose</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">saveYaml</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -936,7 +939,7 @@
 
 
 <div class="viewcode-block" id="Root.loadYaml">
-<a class="viewcode-back" href="../../pyrogue_tree/node/root/index.html#pyrogue.Root.loadYaml">[docs]</a>
+<a class="viewcode-back" href="../../api/python/root.html#pyrogue.Root.loadYaml">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">loadYaml</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
@@ -1040,7 +1043,7 @@
 
 
 <div class="viewcode-block" id="Root.treeDict">
-<a class="viewcode-back" href="../../pyrogue_tree/node/root/index.html#pyrogue.Root.treeDict">[docs]</a>
+<a class="viewcode-back" href="../../api/python/root.html#pyrogue.Root.treeDict">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">treeDict</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">modes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span> <span class="s1">&#39;RO&#39;</span><span class="p">,</span> <span class="s1">&#39;WO&#39;</span><span class="p">],</span>
@@ -1072,7 +1075,7 @@
 
 
 <div class="viewcode-block" id="Root.treeYaml">
-<a class="viewcode-back" href="../../pyrogue_tree/node/root/index.html#pyrogue.Root.treeYaml">[docs]</a>
+<a class="viewcode-back" href="../../api/python/root.html#pyrogue.Root.treeYaml">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">treeYaml</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">modes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span> <span class="s1">&#39;RO&#39;</span><span class="p">,</span> <span class="s1">&#39;WO&#39;</span><span class="p">],</span>
@@ -1105,7 +1108,7 @@
 
 
 <div class="viewcode-block" id="Root.setYaml">
-<a class="viewcode-back" href="../../pyrogue_tree/node/root/index.html#pyrogue.Root.setYaml">[docs]</a>
+<a class="viewcode-back" href="../../api/python/root.html#pyrogue.Root.setYaml">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">setYaml</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">yml</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -1143,7 +1146,7 @@
 
 
 <div class="viewcode-block" id="Root.remoteVariableDump">
-<a class="viewcode-back" href="../../pyrogue_tree/node/root/index.html#pyrogue.Root.remoteVariableDump">[docs]</a>
+<a class="viewcode-back" href="../../api/python/root.html#pyrogue.Root.remoteVariableDump">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">remoteVariableDump</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
@@ -1314,7 +1317,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2025, SLAC National Accelerator Laboratory.</p>
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
