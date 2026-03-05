@@ -3,6 +3,10 @@
 UInt
 ====
 
+For conceptual model usage and type mapping, see:
+
+- :doc:`/memory_interface/model_types`
+
 .. autoclass:: pyrogue.UInt
    :members:
    :member-order: bysource

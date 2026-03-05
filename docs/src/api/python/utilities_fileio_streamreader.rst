@@ -3,6 +3,10 @@
 StreamReader
 ============
 
+For conceptual utility usage, see:
+
+- :doc:`/utilities/fileio/index`
+
 .. autoclass:: pyrogue.utilities.fileio.StreamReader
    :members:
    :member-order: bysource

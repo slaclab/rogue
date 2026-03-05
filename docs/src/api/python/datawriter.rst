@@ -3,6 +3,11 @@
 DataWriter
 ==========
 
+For conceptual built-in device behavior, see:
+
+- :doc:`/pyrogue_core/built_in_devices`
+- :doc:`/pyrogue_tree/node/device/special_devices/data_writer`
+
 .. autoclass:: pyrogue.DataWriter
    :members:
    :member-order: bysource

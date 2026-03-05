@@ -3,6 +3,10 @@
 PrbsPair
 ========
 
+For conceptual utility usage, see:
+
+- :doc:`/utilities/prbs/index`
+
 .. autoclass:: pyrogue.utilities.prbs.PrbsPair
    :members:
    :member-order: bysource

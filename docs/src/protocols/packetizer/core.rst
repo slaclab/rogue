@@ -4,9 +4,11 @@
 Packetizer Protocol Core
 ========================
 
-This page is retained during migration.
-Canonical built-in module docs are being organized under
-:doc:`/built_in_modules/index`.
+Legacy Status
+=============
+
+This is a legacy page retained during migration.
+Canonical entry point: :doc:`/built_in_modules/index`.
 
 TODO
 
@@ -15,4 +17,3 @@ Status
 
 Legacy placeholder content retained.
 Detailed protocol narrative and examples are planned in a later expansion pass.
-

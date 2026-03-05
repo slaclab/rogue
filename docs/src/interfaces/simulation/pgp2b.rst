@@ -4,9 +4,11 @@
 PGP2B Simulation
 ================
 
-This page is retained during migration.
-Canonical integration docs are being organized under
-:doc:`/built_in_modules/integrations`.
+Legacy Status
+=============
+
+This is a legacy page retained during migration.
+Canonical entry point: :doc:`/built_in_modules/integrations`.
 
 Status
 ======

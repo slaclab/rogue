@@ -3,6 +3,10 @@
 StreamWriter
 ============
 
+For conceptual utility usage, see:
+
+- :doc:`/utilities/fileio/index`
+
 .. autoclass:: pyrogue.utilities.fileio.StreamWriter
    :members:
    :member-order: bysource

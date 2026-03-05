@@ -4,6 +4,10 @@
 Frame Lock
 ==========
 
+For conceptual guidance on asynchronous frame access patterns, see:
+
+- :doc:`/stream_interface/overview`
+
 FrameLock objects in C++ are referenced by the following shared pointer typedef:
 
 .. doxygentypedef:: rogue::interfaces::stream::FrameLockPtr

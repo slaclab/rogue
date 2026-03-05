@@ -4,8 +4,11 @@
 UDP Protocol Class Descriptions
 ===============================
 
-This page is retained during migration.
-Canonical protocol docs are organized under :doc:`/protocols/udp/index`.
+Legacy Status
+=============
+
+This is a legacy page retained during migration.
+Canonical entry point: :doc:`/protocols/udp/index`.
 
 TODO
 

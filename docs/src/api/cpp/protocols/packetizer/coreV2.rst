@@ -4,8 +4,11 @@
 CoreV2
 ======
 
-This page is retained during migration.
-For conceptual protocol guidance, see :doc:`/protocols/packetizer/index`.
+Legacy Status
+=============
+
+This is a legacy page retained during migration.
+Canonical entry point: :doc:`/protocols/packetizer/index`.
 
 TODO
 

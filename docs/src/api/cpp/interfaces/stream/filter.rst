@@ -4,7 +4,10 @@
 Filter
 ======
 
-Examples of using a Filter are described in :ref:`interfaces_stream_using_filter`.
+For conceptual guidance and examples, see:
+
+- :doc:`/stream_interface/built_in_modules`
+- :ref:`interfaces_stream_using_filter`
 
 
 Filter objects in C++ are referenced by the following shared pointer typedef:

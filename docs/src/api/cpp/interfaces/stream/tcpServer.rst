@@ -4,7 +4,10 @@
 TcpServer
 =========
 
-Examples of using a TCP stream bridge are described in :ref:`interfaces_stream_using_tcp`.
+For conceptual guidance and examples, see:
+
+- :doc:`/stream_interface/built_in_modules`
+- :ref:`interfaces_stream_using_tcp`
 
 
 TcpServer objects in C++ are referenced by the following shared pointer typedef:

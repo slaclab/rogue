@@ -3,6 +3,10 @@
 EpicsPvHolder
 =============
 
+For conceptual protocol usage, see:
+
+- :doc:`/protocols/epicsV4/index`
+
 .. autoclass:: pyrogue.protocols.epicsV4.EpicsPvHolder
    :members:
    :member-order: bysource
