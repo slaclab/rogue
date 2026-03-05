@@ -50,7 +50,4 @@ The following :py:class:`pyrogue.LocalVariable` objects are created when
 DataWriter Class Documentation
 ==============================
 
-.. autoclass:: pyrogue.DataWriter
-   :members:
-   :member-order: bysource
-   :inherited-members:
+See :doc:`/api/python/datawriter` for generated API details.

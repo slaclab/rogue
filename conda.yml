@@ -1,9 +1,9 @@
 channels:
   - conda-forge
 dependencies:
-  - python>=3.7
-  - gcc_linux-64
-  - gxx_linux-64
+  - python
+  - c-compiler
+  - cxx-compiler
   - make
   - git
   - git-lfs
@@ -19,6 +19,9 @@ dependencies:
   - zeromq
   - sphinx
   - sphinx_rtd_theme
+  - sphinx-autodoc-typehints
+  - sphinx-copybutton
+  - sphinxcontrib-napoleon
   - breathe
   - pyserial
   - p4p
@@ -27,4 +30,4 @@ dependencies:
   - matplotlib
   - pytest
   - pytest-cov
-  - pyqt=5.12
+  - pyqt>=5.15

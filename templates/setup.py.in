@@ -19,12 +19,36 @@ from setuptools import setup, find_packages
 
 rawVersion = '${ROGUE_VERSION}'
 
-fields = rawVersion[1:].split('-')
+def normalize_version(raw):
+    # Expected git-describe formats:
+    #   vX.Y.Z
+    #   vX.Y.Z-N-g<sha>
+    #   vX.Y.Z-dirty
+    #   vX.Y.Z-N-g<sha>-dirty
+    core = raw[1:] if raw.startswith('v') else raw
+    fields = core.split('-')
 
-if len(fields) == 1:
-    pyVersion = fields[0]
-else:
-    pyVersion = fields[0] + '.dev' + fields[1]
+    if len(fields) == 1:
+        return fields[0]
+
+    base = fields[0]
+    if fields[1].isdigit():
+        dev = fields[1]
+        local_fields = fields[2:]
+    else:
+        dev = "0"
+        local_fields = fields[1:]
+
+    version = f"{base}.dev{dev}"
+
+    if local_fields:
+        # PEP 440 local version labels allow [a-zA-Z0-9.] segments.
+        local = ".".join(local_fields).replace("_", ".").replace("-", ".")
+        version = f"{version}+{local}"
+
+    return version
+
+pyVersion = normalize_version(rawVersion)
 
 setup (
     name='rogue',
@@ -34,4 +58,3 @@ setup (
     package_data={'':['../rogue.so'], 'pyrogue.pydm':['examples/*.ui']},
     include_package_data=True,
 )
-

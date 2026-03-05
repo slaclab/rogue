@@ -4,10 +4,11 @@
 Installing Rogue With Miniforge
 ===============================
 
-The following instructions describe how to install a pre-built Rogue package inside an miniforge environment. These instructions are relevant for Linux, Ubuntu on Windows and MacOS.
+The following instructions describe how to install a pre-built Rogue package inside an miniforge environment.
+These instructions are relevant for Linux and Ubuntu on Windows.
 
-Windows installations will require you to install Ubuntu. Reference the section :ref:`installing_windows` for required steps. 
-Mac is not currently supported for rogue, and a VM or docker image is needed. Proceed to :ref:`installing_docker`. 
+Windows installations will require you to install Ubuntu. Reference the section :ref:`installing_windows` for required steps.
+For macOS arm64, build from source inside miniforge using :ref:`installing_miniforge_build`.
 
 Instructions for s3df setup are also available on `Confluence <https://confluence.slac.stanford.edu/spaces/ppareg/pages/591664140/Configure+miniforge+conda+and+Rogue+on+S3DF>`. 
 
@@ -105,4 +106,3 @@ Run the following commands to delete the miniforge environment.
 .. code::
 
    $ conda env remove -n rogue_tag
-

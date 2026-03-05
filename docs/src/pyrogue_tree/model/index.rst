@@ -15,54 +15,36 @@ Related Documentation
 =====================
 
 For advanced block/variable interaction details, see
-:doc:`/interfaces/memory/blocks_advanced`.
+:doc:`/pyrogue_tree/blocks_advanced`.
 
 Utility Functions
 =================
 
-.. autofunction:: pyrogue.wordCount
-.. autofunction:: pyrogue.byteCount
-.. autofunction:: pyrogue.reverseBits
-.. autofunction:: pyrogue.twosComplement
+See :doc:`/api/python/wordcount` for generated API details.
+See :doc:`/api/python/bytecount` for generated API details.
+See :doc:`/api/python/reversebits` for generated API details.
+See :doc:`/api/python/twoscomplement` for generated API details.
 
 Base Model
 ==========
 
-.. autoclass:: pyrogue.Model
-   :members:
-   :member-order: bysource
+See :doc:`/api/python/model` for generated API details.
 
 Common Built-in Models
 ======================
 
-.. autoclass:: pyrogue.UInt
-   :members:
-   :member-order: bysource
+See :doc:`/api/python/uint` for generated API details.
 
-.. autoclass:: pyrogue.Int
-   :members:
-   :member-order: bysource
+See :doc:`/api/python/int` for generated API details.
 
-.. autoclass:: pyrogue.Bool
-   :members:
-   :member-order: bysource
+See :doc:`/api/python/bool` for generated API details.
 
-.. autoclass:: pyrogue.String
-   :members:
-   :member-order: bysource
+See :doc:`/api/python/string` for generated API details.
 
-.. autoclass:: pyrogue.Float
-   :members:
-   :member-order: bysource
+See :doc:`/api/python/float` for generated API details.
 
-.. autoclass:: pyrogue.Double
-   :members:
-   :member-order: bysource
+See :doc:`/api/python/double` for generated API details.
 
-.. autoclass:: pyrogue.Fixed
-   :members:
-   :member-order: bysource
+See :doc:`/api/python/fixed` for generated API details.
 
-.. autoclass:: pyrogue.UFixed
-   :members:
-   :member-order: bysource
+See :doc:`/api/python/ufixed` for generated API details.

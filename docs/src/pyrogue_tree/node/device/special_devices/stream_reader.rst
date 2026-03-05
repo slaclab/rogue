@@ -13,7 +13,4 @@ frames can be connected to downstream consumers.
 StreamReader Class Documentation
 ================================
 
-.. autoclass:: pyrogue.utilities.fileio.StreamReader
-   :members:
-   :member-order: bysource
-   :inherited-members:
+See :doc:`/api/python/utilities_fileio_streamreader` for generated API details.

@@ -109,6 +109,4 @@ Example
 Block/LocalBlock Class Documentation
 ====================================
 
-.. autoclass:: pyrogue.LocalBlock
-   :members:
-   :member-order: bysource
+See :doc:`/api/python/localblock` for generated API details.
