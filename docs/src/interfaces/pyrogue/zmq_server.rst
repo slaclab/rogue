@@ -86,7 +86,4 @@ Notes
 Class API
 =========
 
-.. autoclass:: pyrogue.interfaces.ZmqServer
-   :members:
-   :member-order: bysource
-   :inherited-members:
+See :doc:`/api/python/interfaces_zmqserver` for generated API details.

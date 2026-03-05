@@ -7,7 +7,4 @@ Python Stream Variable
 Python Stream Variable Class Documentation
 ==========================================
 
-.. autoclass:: pyrogue.interfaces.stream.Variable
-   :members:
-   :member-order: bysource
-   :inherited-members:
+See :doc:`/api/python/interfaces_stream_variable` for generated API details.

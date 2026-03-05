@@ -1,68 +1,127 @@
 .. _introduction:
 
-============
-Introduction
-============
+=================================
+Welcome to Rogue's documentation!
+=================================
 
-This should be a paragraph/abstract that defines what rogue is at a quick glance.
-This section goes into depth about what rogue is, and situations in which you might use it.
-This is where I should put starter information and include various notes from the powerpoint slide.
+Rogue is a mixed C++/Python framework for building hardware control and data
+acquisition applications. It provides reusable interfaces for moving streaming
+data, accessing register maps, organizing systems into a hierarchical device
+tree, and exposing that tree to tools such as GUIs, scripting, and higher-level
+DAQ software.
+
+In practice, Rogue is most useful when you need to combine:
+
+* High-throughput data paths that run in C++ threads
+* Structured hardware control and orchestration in Python
+* A clean abstraction boundary between hardware transports and application logic
+
+Whether you are bringing up a single board or coordinating a distributed
+multi-server system, Rogue is designed to let you start quickly and scale
+without rewriting core architecture.
 
 
 Goals of Rogue
 ==============
 
-Provide a system to facilitate hardware development and intermediate daq systems for interfacing to hardware
+The primary goal of Rogue is to accelerate data acquisition (DAQ) system
+development while keeping performance and integration requirements manageable.
 
-* Support a number of hardware & software interface technologies, including ones that don’t yet exist
-* Easy to understand mechanisms for connecting independent management and data processing modules together using a set of well defined, easy to understand interfaces
-* Allow data paths to exist in independent high performance threads
-   
-   * While also allowing data access to python for visualization
+* Speed up system bring-up with reusable interfaces and building blocks.
+* Support heterogeneous hardware and software connections through consistent
+  transport and control abstractions.
+* Provide easy-to-use abstractions for common access patterns such as register
+  access, streaming data flow, and device orchestration.
+* Preserve fine-grained operational control when detailed behavior tuning is
+  required.
+* Keep control logic decoupled from transport details so systems remain
+  maintainable as requirements evolve.
+* Scale from single-board setups to multi-node, multi-server deployments.
+* Integrate with higher-level control ecosystems, including:
 
-* Flexible structure for creating a hierarchy of system components
-   
-   * Independent of the network and hardware hierarchies
-
-* Internode coordination and management of multi-server systems (RCE clusters)
-* Support data file writing & configuration archiving
-* Interface independently to a number of management layers, sometimes in parallel
-   
-   * EPICS
-   * CODA
-   * Ignition (mysql)
-   * EuDaq
-
-
+  * EPICS, CODA, Ignition (MySQL), EuDaq
 
 Structure of Rogue
 ==================
 
 
-* Mixed C++/Python codebase using boost::python library
+Rogue uses a layered architecture that combines low-level performance with
+high-level application development.
 
-   * C++ base classes expose most of their methods to Python layer
-   * C++ threads are used for data path and underlying communication mechanisms
-   * Allows rapid development in Python with ability to drop into C++ for performance
-   * Most development with Rogue is done in Python
+Mixed C++/Python Codebase
+-------------------------
 
-* Low level (C++) base structures
+Rogue combines Python ergonomics with C++ performance. User-facing APIs are
+exposed in Python, and most applications can be developed entirely in Python.
+For performance-critical paths, equivalent C++ APIs are available when native
+execution is required.
 
-   * :ref:`Stream Interface <interfaces_stream>` for bulk data movement and asynchronous messages.
+* C++ base classes expose core methods into Python.
+* C++ threads handle bulk transport and communication mechanisms.
+* Python enables rapid iteration, orchestration, and system composition.
+* Performance-critical components can be implemented or migrated to C++.
 
-      * Rogue::interfaces::stream
+High-Level Python Interfaces
+----------------------------
 
-   * :ref:`Memory Interface <interfaces_memory>` for register access.
+At the application layer, Rogue uses a tree model that keeps system structure
+explicit and manageable.
 
-      * Rogue::interfaces::memory
+* :ref:`Tree-based <pyrogue_tree>` structure for hierarchical system
+  organization.
+* Devices can contain Variables, Commands, and other Devices.
+* These objects derive from the :ref:`Node <pyrogue_tree_node>` base class.
+* :ref:`Variables <pyrogue_tree_node_variable>` describe register data
+  (addressing, type, access behavior, and display semantics).
+* :ref:`Commands <pyrogue_tree_node_command>` define operational procedures
+  and control actions.
 
-* Higher level (Python) :ref:`interfaces` for organizing systems.
+Low-Level C++ Interfaces
+------------------------
 
-   * :ref:`Tree-based <pyrogue_tree>` class structure for hierarchical organization.
-   * Devices contain Variables, Commands, and other Devices
+Below the Python layer, core interfaces provide deterministic access to data
+movement and register transactions.
 
-      * These are all a part of the :ref:`Node <pyrogue_tree_node>` base class
+* :ref:`Stream Interface <interfaces_stream>` for bulk data movement and
+  asynchronous messaging.
+* :ref:`Memory Interface <interfaces_memory>` for register and memory-mapped
+  access.
 
-   * Variables describe registers - Address, data type, etc: :ref:`pyrogue_tree_node_variable`
-   * Commands describe common sequences of operations on a Device :ref:`pyrogue_tree_node_command`
+Additional Modules and Ecosystem Components
+-------------------------------------------
 
+Rogue also includes ecosystem modules that round out integration, operations,
+and user-facing workflows.
+
+* :ref:`Utilities <utilities>` for file I/O, PRBS tools, compression, and
+  other support functions used during development and operations.
+* :ref:`Protocols <protocols>` for transport and control integrations such
+  as UDP, RSSI, SRP, packetizer, EPICS, and related protocol layers.
+* :ref:`Hardware <hardware>` for hardware-facing drivers and interfaces,
+  including AXI and raw memory-mapped access paths.
+* :ref:`PyDM GUI support <pydm>` for Rogue channel integration and custom
+  widgets used to monitor and control device trees.
+
+To continue, proceed to the :doc:`/getting_started/index`, or explore the topics in the sidebar.
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: 3
+   :caption: Contents:
+
+   Introduction <self>
+   /getting_started/index
+   /advanced_examples/index
+   /pyrogue_tree/index
+   /interfaces/index
+   /utilities/index
+   /hardware/index
+   /protocols/index
+   /logging/index
+   /custom_module/index
+   /pydm/index
+   /migration/index
+   /documentation_index
+   /installing/index
+   /api/index

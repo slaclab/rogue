@@ -42,7 +42,4 @@ Example
 DataReceiver Class Documentation
 ================================
 
-.. autoclass:: pyrogue.DataReceiver
-   :members:
-   :member-order: bysource
-   :inherited-members:
+See :doc:`/api/python/datareceiver` for generated API details.

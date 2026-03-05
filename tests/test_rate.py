@@ -14,7 +14,12 @@ import pyrogue as pr
 import pyrogue.interfaces.simulation
 import rogue.interfaces.memory
 import time
-import hwcounter
+
+try:
+    import hwcounter
+    HAS_HWCOUNTER = True
+except ImportError:
+    HAS_HWCOUNTER = False
 
 #import cProfile, pstats, io
 #from pstats import SortKey
@@ -24,6 +29,7 @@ import hwcounter
 #logger = logging.getLogger('pyrogue')
 #logger.setLevel(logging.DEBUG)
 
+# Pre-existing tuned thresholds from the original x86/hwcounter-based test.
 MaxCycles = { 'remoteSetRate'   : 8.0e9,
               'remoteSetNvRate' : 7.0e9,
               'remoteGetRate'   : 6.0e9,
@@ -31,6 +37,16 @@ MaxCycles = { 'remoteSetRate'   : 8.0e9,
               'localGetRate'    : 6.0e9,
               'linkedSetRate'   : 9.0e9,
               'linkedGetRate'   : 8.0e9 }
+
+BENCH_COUNT = 100000
+NOMINAL_CPU_HZ = 3.0e9
+
+# Cross-platform fallback thresholds in ns/op derived from MaxCycles assuming
+# NOMINAL_CPU_HZ and BENCH_COUNT.
+MaxAvgNs = {
+    k: (v * 1.0e9) / (NOMINAL_CPU_HZ * BENCH_COUNT)
+    for k, v in MaxCycles.items()
+}
 
 class LocalDev(pr.Device):
 
@@ -106,83 +122,74 @@ class DummyTree(pr.Root):
         ))
 
 
+def _run_update_loop(root, count, operation):
+    with root.updateGroup():
+        for i in range(count):
+            operation(i)
+
+
+def _measure_operation(root, count, operation):
+    start_ns = time.perf_counter_ns()
+    start_cycles = hwcounter.count() if HAS_HWCOUNTER else None
+    _run_update_loop(root, count, operation)
+    elapsed_ns = time.perf_counter_ns() - start_ns
+
+    result = {
+        'avg_ns': float(elapsed_ns) / count,
+        'rate_hz': int(count / (elapsed_ns / 1.0e9)),
+    }
+
+    if HAS_HWCOUNTER:
+        result['cycles'] = float(hwcounter.count_end() - start_cycles)
+
+    return result
+
+
 def test_rate():
 
     #pr = cProfile.Profile()
     #pr.enable()
 
     with DummyTree() as root:
-        count = 100000
-        resultRate = {}
-        resultCycles = {}
+        count = BENCH_COUNT
+        operations = {
+            'remoteSetRate': lambda i: root.LocalDev.TestRemote.set(i),
+            'remoteSetNvRate': lambda i: root.LocalDev.TestRemoteNoVerify.set(i),
+            'remoteGetRate': lambda i: root.LocalDev.TestRemote.get(),
+            'localSetRate': lambda i: root.LocalDev.TestLocal.set(i),
+            'localGetRate': lambda i: root.LocalDev.TestLocal.get(),
+            'linkedSetRate': lambda i: root.LocalDev.TestLink.set(i),
+            'linkedGetRate': lambda i: root.LocalDev.TestLink.get(i),
+        }
 
-        stime = time.time()
-        scount = hwcounter.count()
-        with root.updateGroup():
-            for i in range(count):
-                root.LocalDev.TestRemote.set(i)
-        resultCycles['remoteSetRate'] = float(hwcounter.count_end() - scount)
-        resultRate['remoteSetRate'] = int(1/((time.time()-stime) / count))
+        failures = []
 
-        stime = time.time()
-        scount = hwcounter.count()
-        with root.updateGroup():
-            for i in range(count):
-                root.LocalDev.TestRemoteNoVerify.set(i)
-        resultCycles['remoteSetNvRate'] = float(hwcounter.count_end() - scount)
-        resultRate['remoteSetNvRate'] = int(1/((time.time()-stime) / count))
+        for name, operation in operations.items():
+            result = _measure_operation(root, count, operation)
 
-        stime = time.time()
-        scount = hwcounter.count()
-        with root.updateGroup():
-            for i in range(count):
-                root.LocalDev.TestRemote.get()
-        resultCycles['remoteGetRate'] = float(hwcounter.count_end() - scount)
-        resultRate['remoteGetRate'] = int(1/((time.time()-stime) / count))
+            msg = (
+                f"{name}: avg {result['avg_ns']:.2e} ns/op, "
+                f"maximum {MaxAvgNs[name]:.2e} ns/op, "
+                f"rate {result['rate_hz']:.2e} ops/s"
+            )
+            if HAS_HWCOUNTER:
+                msg += (
+                    f", cycles {result['cycles']:.2e} cycles, "
+                    f"maximum {MaxCycles[name]:.2e} cycles"
+                )
+            print(msg)
 
-        stime = time.time()
-        scount = hwcounter.count()
-        with root.updateGroup():
-            for i in range(count):
-                root.LocalDev.TestLocal.set(i)
-        resultCycles['localSetRate'] = float(hwcounter.count_end() - scount)
-        resultRate['localSetRate'] = int(1/((time.time()-stime) / count))
+            if HAS_HWCOUNTER:
+                if result['cycles'] > MaxCycles[name]:
+                    failures.append(
+                        f"{name}: cycles {result['cycles']:.2e} > {MaxCycles[name]:.2e}"
+                    )
+            elif result['avg_ns'] > MaxAvgNs[name]:
+                failures.append(
+                    f"{name}: avg_ns {result['avg_ns']:.2e} > {MaxAvgNs[name]:.2e}"
+                )
 
-        stime = time.time()
-        scount = hwcounter.count()
-        with root.updateGroup():
-            for i in range(count):
-                root.LocalDev.TestLocal.get()
-        resultCycles['localGetRate'] = float(hwcounter.count_end() - scount)
-        resultRate['localGetRate'] = int(1/((time.time()-stime) / count))
-
-        stime = time.time()
-        scount = hwcounter.count()
-        with root.updateGroup():
-            for i in range(count):
-                root.LocalDev.TestLink.set(i)
-        resultCycles['linkedSetRate'] = float(hwcounter.count_end() - scount)
-        resultRate['linkedSetRate'] = int(1/((time.time()-stime) / count))
-
-        stime = time.time()
-        scount = hwcounter.count()
-        with root.updateGroup():
-            for i in range(count):
-                root.LocalDev.TestLink.get(i)
-        resultCycles['linkedGetRate'] = float(hwcounter.count_end() - scount)
-        resultRate['linkedGetRate'] = int(1/((time.time()-stime) / count))
-
-        passed = True
-
-        for k,v in MaxCycles.items():
-
-            print(f"{k} cyles {resultCycles[k]:.2e}, maximum {v:.2e}, rate {resultRate[k]}")
-
-            if resultCycles[k] > v:
-                passed = False
-
-        if passed is False:
-            raise AssertionError('Rate check failed')
+        assert not failures, "Rate check failed:\n" + "\n".join(failures)
 
 
     #pr.disable()

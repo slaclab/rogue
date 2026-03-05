@@ -182,7 +182,4 @@ ADC Conversion with Multiple Dependencies (Read-Only)
 LinkVariable Class Documentation
 ================================
 
-.. autoclass:: pyrogue.LinkVariable
-   :members:
-   :member-order: bysource
-   :inherited-members:
+See :doc:`/api/python/linkvariable` for generated API details.

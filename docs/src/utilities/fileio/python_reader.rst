@@ -65,18 +65,15 @@ In some cases the data file contains frames that are "batched" using the Batcher
          print(f"Data time = {fd.configValue['root.Time']}")
 
 
-
 FileReader Description
 ======================
 
 The class description for the SimpleClient class is included below:
 
-.. autoclass:: pyrogue.utilities.fileio.FileReader
-   :members:
-   :member-order: bysource
+See :doc:`/api/python/utilities_fileio_filereader` for generated API details.
 
 
 The header data record is described below:
 
-.. autoclass:: pyrogue.utilities.fileio.RogueHeader
+See :doc:`/api/python/utilities_fileio_rogueheader` for generated API details.
 

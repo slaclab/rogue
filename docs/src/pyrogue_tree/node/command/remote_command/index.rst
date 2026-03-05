@@ -49,7 +49,4 @@ Example
 RemoteCommand Class Documentation
 =================================
 
-.. autoclass:: pyrogue.RemoteCommand
-   :members:
-   :member-order: bysource
-   :inherited-members:
+See :doc:`/api/python/remotecommand` for generated API details.

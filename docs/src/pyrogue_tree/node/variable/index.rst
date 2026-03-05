@@ -70,7 +70,4 @@ See also:
 BaseVariable Class Documentation
 ================================
 
-.. autoclass:: pyrogue.BaseVariable
-   :members:
-   :member-order: bysource
-   :inherited-members:
+See :doc:`/api/python/basevariable` for generated API details.

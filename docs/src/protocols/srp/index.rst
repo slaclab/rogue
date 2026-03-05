@@ -15,6 +15,8 @@ specifications are maintained externally:
 - SRPv0: https://confluence.slac.stanford.edu/x/aRmVD
 - SRPv3: https://confluence.slac.stanford.edu/x/cRmVD
 
+C++ API details for SRP protocol classes are documented in
+:doc:`/api/cpp/protocols/srp/index`.
 
 .. toctree::
    :maxdepth: 1
@@ -23,4 +25,3 @@ specifications are maintained externally:
    srpV0
    srpV3
    cmd
-   classes/index

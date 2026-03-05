@@ -16,6 +16,9 @@ bus, with the address being adjusted appropriately based upon its connection at 
 may forward the transaction onward, but also has the ability to conver the single transaction
 into multiple downstream transactions, providing a mechanism for handling complex memory space.
 
+C++ API details for memory classes are documented in
+:doc:`/api/cpp/interfaces/memory/index`.
+
 .. toctree::
    :maxdepth: 1
    :caption: Using The Memory Interface:
@@ -25,7 +28,3 @@ into multiple downstream transactions, providing a mechanism for handling comple
    slave
    hub
    usingTcp
-   blocks
-   blocks_advanced
-   classes/index
-

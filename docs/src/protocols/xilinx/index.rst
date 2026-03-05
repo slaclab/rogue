@@ -94,15 +94,9 @@ also be subclassed directly in C++ for custom transports:
 API references
 --------------
 
-C++ API reference pages are collected in :doc:`classes/index`:
+C++ API reference pages are collected in :doc:`/api/cpp/protocols/xilinx/index`:
 
-- :doc:`classes/xvc`
-- :doc:`classes/jtagDriver`
-- :doc:`classes/xvcServer`
-- :doc:`classes/xvcConnection`
-
-.. toctree::
-   :maxdepth: 1
-   :hidden:
-
-   classes/index
+- :doc:`/api/cpp/protocols/xilinx/xvc`
+- :doc:`/api/cpp/protocols/xilinx/jtagDriver`
+- :doc:`/api/cpp/protocols/xilinx/xvcServer`
+- :doc:`/api/cpp/protocols/xilinx/xvcConnection`
