@@ -61,7 +61,7 @@ This matrix tracks where content is moving as the revamp proceeds.
      - Docs Team
      - M2 IA [done]
    * - /interfaces/stream/index narrative
-     - /stream_interface/overview
+     - /stream_interface/index
      - Move
      - Docs Team
      - M2 Narrative [done]
@@ -281,7 +281,7 @@ This matrix tracks where content is moving as the revamp proceeds.
      - Docs Team
      - M3 Coverage [done]
    * - /stream_interface narrative expansion
-     - /stream_interface/overview, /stream_interface/built_in_modules, /stream_interface/example_pipelines, /stream_interface/python_bindings
+     - /stream_interface/index, /stream_interface/built_in_modules, /stream_interface/example_pipelines, /stream_interface/python_bindings
      - Move
      - Docs Team
      - M3 Coverage [done]
@@ -336,7 +336,12 @@ This matrix tracks where content is moving as the revamp proceeds.
      - Docs Team
      - M4 Harmonization [done]
    * - Move interface stream/memory docs into canonical section trees
-     - /interfaces/stream/* -> /stream_interface/legacy_stream/*; /interfaces/memory/* -> /memory_interface/legacy_memory/*
+     - /interfaces/stream/* -> /stream_interface/*; /interfaces/memory/* -> /memory_interface/legacy_memory/*
+     - Move
+     - Docs Team
+     - M4 Harmonization [done]
+   * - Integrate legacy stream subfolder into parent stream narrative
+     - /stream_interface/legacy_stream/* -> /stream_interface/* (folder removed)
      - Move
      - Docs Team
      - M4 Harmonization [done]
@@ -373,5 +378,8 @@ Deferred Content Expansion Notes
 
 - Expand cookbook breadth with additional recipes for polling, YAML workflows,
   built-in devices, and stream transport integration.
+- Expand stream/threading cookbook coverage: threaded receive workers, queue
+  backpressure policies, shutdown/lifecycle-safe worker patterns, and C++
+  analogs.
 - Continue protocol/API cross-link hardening where narrative-to-reference
   boundaries are still rough.

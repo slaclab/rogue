@@ -6,7 +6,7 @@ Pool
 
 For conceptual guidance on frame/buffer pool usage, see:
 
-- :doc:`/stream_interface/overview`
+- :doc:`/stream_interface/index`
 
 Pool objects in C++ are referenced by the following shared pointer typedef:
 

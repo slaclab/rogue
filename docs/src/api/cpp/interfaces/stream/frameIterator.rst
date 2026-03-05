@@ -6,7 +6,7 @@ Frame Iterator
 
 For conceptual guidance on frame traversal and payload handling, see:
 
-- :doc:`/stream_interface/overview`
+- :doc:`/stream_interface/index`
 
 The FrameIterator class is also aliased as a Frame::iterator
 

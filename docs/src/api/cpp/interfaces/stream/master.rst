@@ -6,8 +6,8 @@ Master
 
 For conceptual guidance on stream architecture and data flow, see:
 
-- :doc:`/stream_interface/overview`
-- :doc:`/stream_interface/legacy_stream/sending`
+- :doc:`/stream_interface/index`
+- :doc:`/stream_interface/sending`
 
 Master objects in C++ are referenced by the following shared pointer typedef:
 

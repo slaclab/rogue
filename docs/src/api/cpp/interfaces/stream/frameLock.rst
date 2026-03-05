@@ -6,7 +6,7 @@ Frame Lock
 
 For conceptual guidance on asynchronous frame access patterns, see:
 
-- :doc:`/stream_interface/overview`
+- :doc:`/stream_interface/index`
 
 FrameLock objects in C++ are referenced by the following shared pointer typedef:
 

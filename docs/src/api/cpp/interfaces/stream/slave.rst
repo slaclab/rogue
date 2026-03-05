@@ -6,8 +6,8 @@ Slave
 
 For conceptual guidance on stream architecture and receive-side behavior, see:
 
-- :doc:`/stream_interface/overview`
-- :doc:`/stream_interface/legacy_stream/receiving`
+- :doc:`/stream_interface/index`
+- :doc:`/stream_interface/receiving`
 
 Slave objects in C++ are referenced by the following shared pointer typedef:
 

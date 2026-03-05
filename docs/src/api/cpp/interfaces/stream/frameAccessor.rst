@@ -6,7 +6,7 @@ Frame Accessor
 
 For conceptual guidance on frame data access patterns, see:
 
-- :doc:`/stream_interface/overview`
+- :doc:`/stream_interface/index`
 
 The class description is shown below:
 

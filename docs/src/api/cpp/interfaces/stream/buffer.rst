@@ -6,7 +6,7 @@ Buffer
 
 For conceptual guidance on frame and buffer data handling, see:
 
-- :doc:`/stream_interface/overview`
+- :doc:`/stream_interface/index`
 
 The list of Buffer objects in a Frame is iterated using a the following typedef:
 
