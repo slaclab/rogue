@@ -1,38 +1,54 @@
 .. _protocols_epicsv4:
+.. _protocols_epics:
 
 ================
 EPICSV4 Protocol
 ================
 
-Legacy Status
-=============
+This section covers EPICS-facing protocol integration in Rogue/PyRogue.
 
-This is a legacy page retained during migration.
-Canonical entry point: :doc:`/built_in_modules/index`.
+Use these pages for conceptual behavior and integration patterns. API object
+details remain in the Python API reference.
 
-TODO
+How the EPICS integration is structured
+=======================================
 
-Status
-======
+The EPICS V4 integration has two primary components:
 
-Legacy placeholder content retained.
-Detailed protocol narrative and examples are planned in a later expansion pass.
+- ``EpicsPvServer``:
+  scans the running PyRogue tree, selects variables to expose, and creates the
+  EPICS PV namespace.
+- ``EpicsPvHolder``:
+  represents one served PV, handling value updates, type mapping, and EPICS
+  put/rpc behavior for its bound variable.
 
-Overview
-========
+In practice, ``EpicsPvServer`` owns many ``EpicsPvHolder`` instances.
 
-The EPICSV4 protocol integration exposes PyRogue tree data and control through
-EPICS PV Access interfaces.
+Recommended reading order
+=========================
 
-Common usage
-============
+1. Start with :doc:`epicspvserver` to understand server setup and PV mapping.
+2. Then read :doc:`epicspvholder` for per-variable behavior details.
 
-- Publish selected tree variables into EPICS.
-- Integrate Rogue-controlled systems with EPICS-based control rooms/tools.
+Typical workflow
+================
+
+1. Start a PyRogue root and ensure variables are in the intended include/exclude groups.
+2. Create ``EpicsPvServer(base=..., root=..., incGroups=..., excGroups=..., pvMap=...)``.
+3. Register it with the root protocol lifecycle and validate mappings with
+   ``list()`` / ``dump()``.
+4. Validate end-to-end behavior with an EPICS client (see ``tests/test_epics.py``).
 
 Related docs
 ============
 
-- :doc:`/protocols/pyrogue/epicspvserver`
-- :doc:`/protocols/pyrogue/epicspvholder`
 - :doc:`/api/python/protocols_epicsv4_epicspvserver`
+- :doc:`/api/python/protocols_epicsv4_epicspvholder`
+- :doc:`/protocols/index`
+
+.. toctree::
+   :maxdepth: 1
+   :caption: EPICSV4 Protocol
+
+   epicspvserver
+   epicspvholder

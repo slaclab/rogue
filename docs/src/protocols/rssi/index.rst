@@ -101,7 +101,7 @@ explicitly. The following pattern is used in wrappers such as
    s_rssi.application() == s_pack.transport()
 
    # Client side
-   c_udp = rogue.protocols.udp.Client("127.0.0.1", s_udp.port(), True)
+   c_udp = rogue.protocols.udp.Client("127.0.0.1", s_udp.getPort(), True)
    c_rssi = rogue.protocols.rssi.Client(c_udp.maxPayload() - 8)
    c_pack = rogue.protocols.packetizer.CoreV2(True, True, True)
 

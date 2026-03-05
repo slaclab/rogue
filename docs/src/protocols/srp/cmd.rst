@@ -10,3 +10,21 @@ It is distinct from SRPv0/SRPv3 register-access transactions.
 
 The class remains under ``rogue.protocols.srp`` for API compatibility.
 
+When to use ``Cmd``
+===================
+
+- Use for simple action requests that do not require a register readback path.
+- Use when endpoint logic expects opcode/context messages instead of memory
+  transactions.
+- Avoid for stateful register control where SRPv0/SRPv3 semantics are needed.
+
+Design note
+===========
+
+Keep command opcodes stable and documented, since these become part of the
+control contract between software and firmware.
+
+API reference
+=============
+
+- C++: :doc:`/api/cpp/protocols/srp/cmd`

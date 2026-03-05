@@ -18,6 +18,21 @@ specifications are maintained externally:
 C++ API details for SRP protocol classes are documented in
 :doc:`/api/cpp/protocols/srp/index`.
 
+Choosing SRP version
+====================
+
+- Use :doc:`srpV3` for current systems unless compatibility requires v0.
+- Use :doc:`srpV0` only when endpoint firmware is locked to v0 framing.
+- Use :doc:`cmd` for lightweight command opcodes rather than register access.
+
+Integration boundaries
+======================
+
+- SRP bridges memory transactions to stream transport.
+- Tree-facing configuration and register semantics remain in PyRogue device
+  definitions.
+- Stream transport tuning belongs in :doc:`/stream_interface/index`.
+
 .. toctree::
    :maxdepth: 1
    :caption: SRP Protocol

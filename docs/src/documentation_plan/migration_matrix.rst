@@ -240,6 +240,31 @@ This matrix tracks where content is moving as the revamp proceeds.
      - Move
      - Docs Team
      - M3 Coverage [done]
+   * - /protocols/srp narrative expansion
+     - /protocols/srp/index, /protocols/srp/srpV0, /protocols/srp/srpV3, /protocols/srp/cmd
+     - Move
+     - Docs Team
+     - M3 Coverage [done]
+   * - /protocols/rssi narrative expansion
+     - /protocols/rssi/index, /protocols/rssi/client, /protocols/rssi/server
+     - Move
+     - Docs Team
+     - M3 Coverage [done]
+   * - /protocols/batcher narrative expansion
+     - /protocols/batcher/index, /protocols/batcher/inverter, /protocols/batcher/splitter
+     - Move
+     - Docs Team
+     - M3 Coverage [done]
+   * - /protocols/xilinx narrative expansion
+     - /protocols/xilinx/index
+     - Move
+     - Docs Team
+     - M3 Coverage [done]
+   * - /protocols/epics narrative expansion
+     - /protocols/epicsV4/index, /protocols/epicsV4/epicspvholder, /protocols/epicsV4/epicspvserver
+     - Move
+     - Docs Team
+     - M3 Coverage [done]
    * - /pyrogue_core narrative expansion
      - /pyrogue_core/tree_architecture, /pyrogue_core/client_access, /pyrogue_core/variables_and_streams, /pyrogue_core/polling, /pyrogue_core/yaml_state_config, /pyrogue_core/model_api, /pyrogue_core/built_in_devices, /pyrogue_core/advanced_patterns
      - Move
@@ -288,5 +313,5 @@ Deferred Content Expansion Notes
 
 - Expand cookbook breadth with additional recipes for polling, YAML workflows,
   built-in devices, and stream transport integration.
-- Continue protocol family depth for sections not yet expanded in M3 (for
-  example SRP, RSSI, batcher, and Xilinx pages).
+- Continue protocol depth in remaining topical pages and C++ protocol API
+  placeholders where narrative-to-reference boundaries are still rough.

@@ -32,3 +32,23 @@ Example (Python):
    # Start controller state machine
    rssi._start()
 
+Code-backed behavior notes
+==========================
+
+- ``Client`` is a thin bundle around ``Transport``, ``Application``, and a
+  client-role ``Controller`` created in ``src/rogue/protocols/rssi/Client.cpp``.
+- Python bindings expose ``_start()`` / ``_stop()`` (wrapping ``start()`` /
+  ``stop()``), plus negotiated/runtime counters such as ``getOpen()``,
+  ``getRetranCount()``, and ``getDropCount()``.
+- The end-to-end UDP/RSSI/packetizer pattern used by regression tests is in
+  ``tests/test_udpPacketizer.py`` and validates link bring-up plus frame
+  integrity under injected out-of-order traffic.
+
+
+
+Related pages
+=============
+
+- Overview and full topology: :doc:`index`
+- Transport recommendations: :doc:`/protocols/network`
+- C++ API: :doc:`/api/cpp/protocols/rssi/client`

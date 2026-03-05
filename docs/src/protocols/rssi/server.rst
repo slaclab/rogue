@@ -31,3 +31,23 @@ Example (Python):
 
    # Start controller state machine
    rssi._start()
+
+Code-backed behavior notes
+==========================
+
+- ``Server`` is a thin bundle around ``Transport``, ``Application``, and a
+  server-role ``Controller`` created in ``src/rogue/protocols/rssi/Server.cpp``.
+- Python bindings expose ``_start()`` / ``_stop()`` plus the same status and
+  tuning APIs as client role (open state, counters, local parameter setters).
+- In direct usage and in ``pyrogue.protocols.UdpRssiPack``, the server is
+  connected as ``udp == rssi.transport()`` with upper protocols wired through
+  ``rssi.application()``.
+
+
+
+Related pages
+=============
+
+- Overview and full topology: :doc:`index`
+- Transport recommendations: :doc:`/protocols/network`
+- C++ API: :doc:`/api/cpp/protocols/rssi/server`

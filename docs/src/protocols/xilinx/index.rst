@@ -27,6 +27,13 @@ At a high level:
 The XVC bridge is typically connected to a bidirectional Rogue stream path to
 hardware firmware that implements the corresponding JTAG bridge endpoint.
 
+When to use this stack
+----------------------
+
+- You need remote JTAG/ILA access from Vivado over TCP.
+- Your firmware exposes an AxisToJtag-compatible endpoint.
+- Rogue is already the integration layer for the transport path.
+
 Typical usage
 -------------
 
@@ -100,3 +107,4 @@ C++ API reference pages are collected in :doc:`/api/cpp/protocols/xilinx/index`:
 - :doc:`/api/cpp/protocols/xilinx/jtagDriver`
 - :doc:`/api/cpp/protocols/xilinx/xvcServer`
 - :doc:`/api/cpp/protocols/xilinx/xvcConnection`
+

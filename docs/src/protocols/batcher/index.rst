@@ -37,6 +37,20 @@ The classes in ``rogue::protocols::batcher`` are composable:
 
 Choose V1 or V2 classes to match the firmware protocol version.
 
+Choosing splitter vs inverter
+=============================
+
+- Use ``SplitterV1/V2`` when downstream processing expects one frame per record.
+- Use ``InverterV1/V2`` when you need an in-place framing transform while
+  preserving one output frame per input super-frame.
+
+Version compatibility
+=====================
+
+- Match v1 classes with v1 firmware stream format.
+- Match v2 classes with v2 firmware stream format.
+- Do not mix v1 and v2 parsers/transforms in the same processing path.
+
 Usage examples
 ==============
 
@@ -88,7 +102,5 @@ C++ API details for batcher protocol classes are documented in
    :maxdepth: 1
    :caption: Batcher Protocol
 
-   inverterV1
-   inverterV2
-   splitterV1
-   splitterV2
+   inverter
+   splitter
