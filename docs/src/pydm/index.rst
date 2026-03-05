@@ -8,7 +8,7 @@ Legacy Status
 =============
 
 This is a legacy page retained during migration.
-Canonical entry point: :doc:`/operations/index`.
+This page is a top-level documentation entry for PyDM usage.
 
 Rogue makes use of the PyDM platform for its GUI. While Rogue provides a default debug GUI that auto populates, the user should consider creating custom GUIs using the numerous PyDYM widgets and other features.
 

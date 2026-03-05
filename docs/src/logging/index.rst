@@ -8,7 +8,7 @@ Legacy Status
 =============
 
 This is a legacy page retained during migration.
-Canonical entry point: :doc:`/operations/index`.
+This page is a top-level documentation entry for logging workflows.
 
 The following table are the known logging paths for entities within Rogue. Values in brackets
 are dynamic values dervied from the instance.

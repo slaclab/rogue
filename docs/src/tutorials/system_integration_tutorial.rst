@@ -21,7 +21,9 @@ Workflow
    :doc:`/stream_interface/index`
 4. Add built-in devices and operational tooling:
    :doc:`/pyrogue_core/built_in_devices`
-   :doc:`/operations/index`
+   :doc:`/installing/index`
+   :doc:`/logging/index`
+   :doc:`/pydm/index`
 5. Review full architecture context:
    :doc:`/pyrogue_core/tree_architecture`
 

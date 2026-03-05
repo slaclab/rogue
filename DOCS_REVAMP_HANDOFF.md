@@ -25,9 +25,7 @@ Use these first; they are the authoritative plan artifacts created during this e
 - API pages should be reference-first; narrative belongs in main docs.
 - Sidebar can evolve at milestone boundaries (freeze inside milestone).
 - `API Reference` remains top-level.
-- `Operations` is the canonical top-level home for install,
-  logging, and PyDM topics; direct legacy pages remain available but are no
-  longer duplicated in root toctrees.
+- `Installing`, `Logging`, and `PyDM` are top-level documentation sections.
 - `utilities + hardware + protocols` were grouped under `built_in_modules` as part of IA.
 - No accidental narrative deletion policy was enforced in M2.
 - M3 policy update from user: revising/expanding narrative is now allowed; call out meaningful revisions; if narrative no longer fits, mark and report it.
@@ -73,6 +71,10 @@ There are uncommitted local changes in protocol pages related to lifecycle/threa
   canonical section homes.
 - M4 started: canonical section toctrees cleaned to remove stale legacy-path
   entries while preserving explicit links to legacy integration pages.
+- M4 continued: landing-page terminology/order harmonization was applied across
+  introduction/documentation index/core section landing pages.
+- M4 nav decision update: restored `Installing`/`Logging`/`PyDM` as top-level
+  entries.
 
 ### Remaining high-value M3 work
 

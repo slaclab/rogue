@@ -8,6 +8,7 @@ This section collects Rogue's built-in, batteries-included capabilities.
 
 It groups production modules and integrations that are commonly used directly
 in applications.
+It is the canonical top-level home for Utilities, Hardware, and Protocols.
 
 .. toctree::
    :maxdepth: 1

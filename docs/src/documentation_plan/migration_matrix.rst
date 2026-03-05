@@ -301,17 +301,27 @@ This matrix tracks where content is moving as the revamp proceeds.
      - Docs Team
      - M3 Coverage [done]
    * - /logging/*, /pydm/*, /installing/*
-     - /operations/index
-     - Link
+     - /logging/index, /pydm/index, /installing/index
+     - Move
      - Docs Team
-     - M1 Skeleton
+     - M4 Harmonization [done]
    * - /pyrogue_core, /stream_interface, /memory_interface toctree legacy-path cleanup
      - /pyrogue_core/index, /stream_interface/index, /memory_interface/index
      - Move
      - Docs Team
      - M4 Harmonization [done]
    * - Top-level nav dedupe for operations topics
-     - /introduction/index and /documentation_index (canonical /operations/index)
+     - /introduction/index and /documentation_index
+     - Move
+     - Docs Team
+     - M4 Harmonization [done; superseded by decision reversal]
+   * - Top-level operations nav decision reversal
+     - /introduction/index and /documentation_index (restore /installing/index, /logging/index, /pydm/index as top-level)
+     - Move
+     - Docs Team
+     - M4 Harmonization [done]
+   * - Landing-page terminology and ordering harmonization
+     - /introduction/index, /documentation_index, /built_in_modules/index
      - Move
      - Docs Team
      - M4 Harmonization [done]

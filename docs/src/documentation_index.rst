@@ -10,6 +10,7 @@ Use the left sidebar to navigate sections and search documentation content.
    :maxdepth: 3
    :caption: Contents:
 
+   /introduction/index
    /quick_start/index
    /tutorials/index
    /pyrogue_core/index
@@ -18,7 +19,9 @@ Use the left sidebar to navigate sections and search documentation content.
    /interfaces/index
    /built_in_modules/index
    /cookbook/index
+   /installing/index
+   /logging/index
+   /pydm/index
    /api/index
-   /operations/index
    /migration/index
    /documentation_plan/index

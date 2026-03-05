@@ -8,7 +8,7 @@ Legacy Status
 =============
 
 This is a legacy page retained during migration.
-Canonical entry point: :doc:`/operations/index`.
+This page is a top-level documentation entry for install/compile workflows.
 
 This section describes how to obtain and install Rogue. 
 After installation is completed, consider following our :doc:`/getting_started/index` guide to learn the basics. 
