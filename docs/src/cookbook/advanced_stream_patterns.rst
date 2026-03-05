@@ -6,10 +6,10 @@ Advanced Stream Pattern Recipes
 
 Recipe entry points for advanced stream implementations:
 
-- :doc:`/interfaces/stream/usingFifo`
-- :doc:`/interfaces/stream/usingFilter`
-- :doc:`/interfaces/stream/usingRateDrop`
-- :doc:`/interfaces/stream/debugStreams`
+- :doc:`/stream_interface/legacy_stream/usingFifo`
+- :doc:`/stream_interface/legacy_stream/usingFilter`
+- :doc:`/stream_interface/legacy_stream/usingRateDrop`
+- :doc:`/stream_interface/legacy_stream/debugStreams`
 - :doc:`/custom_module/index`
 
 Recipe 1: Stabilize a bursty producer

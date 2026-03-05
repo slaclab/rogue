@@ -37,7 +37,7 @@ Related integration pages
 =========================
 
 - AXI stream + SRPv3 usage: :doc:`/hardware/axi/stream`
-- TCP memory bridge usage: :doc:`/interfaces/memory/usingTcp`
+- TCP memory bridge usage: :doc:`/memory_interface/legacy_memory/usingTcp`
 
 .. toctree::
    :maxdepth: 1

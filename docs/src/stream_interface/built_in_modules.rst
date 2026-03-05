@@ -25,11 +25,11 @@ Selection and ordering guidance
 
 Usage docs:
 
-- :doc:`/interfaces/stream/usingFifo`
-- :doc:`/interfaces/stream/usingFilter`
-- :doc:`/interfaces/stream/usingRateDrop`
-- :doc:`/interfaces/stream/debugStreams`
-- :doc:`/interfaces/stream/usingTcp`
+- :doc:`/stream_interface/legacy_stream/usingFifo`
+- :doc:`/stream_interface/legacy_stream/usingFilter`
+- :doc:`/stream_interface/legacy_stream/usingRateDrop`
+- :doc:`/stream_interface/legacy_stream/debugStreams`
+- :doc:`/stream_interface/legacy_stream/usingTcp`
 
 API reference:
 

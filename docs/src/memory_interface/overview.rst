@@ -22,9 +22,9 @@ Most users interact through PyRogue tree abstractions rather than direct
 low-level memory APIs.
 
 This page is now the canonical conceptual home for memory architecture
-guidance. Legacy narrative remains available at :doc:`/interfaces/memory/index`.
+guidance. Legacy narrative remains available at :doc:`/memory_interface/legacy_memory/index`.
 
 Start with:
 
-- :doc:`/interfaces/memory/index`
+- :doc:`/memory_interface/legacy_memory/index`
 - :doc:`/memory_interface/transactions`

@@ -30,11 +30,11 @@ Design guidance
 - Prefer architectural docs for flow design; use API docs for contracts.
 
 This page is now the canonical conceptual home for stream architecture
-guidance. Legacy narrative remains available at :doc:`/interfaces/stream/index`.
+guidance. Legacy narrative remains available at :doc:`/stream_interface/legacy_stream/index`.
 
 Main usage and examples:
 
-- :doc:`/interfaces/stream/index`
+- :doc:`/stream_interface/legacy_stream/index`
 
 Core API reference:
 

@@ -117,7 +117,6 @@ the sidebar.
    /pyrogue_core/index
    /stream_interface/index
    /memory_interface/index
-   /interfaces/index
    /built_in_modules/index
    /cookbook/index
    /installing/index

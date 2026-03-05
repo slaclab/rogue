@@ -10,8 +10,8 @@ configuration, and model behavior.
 Use this section for conceptual and task-focused documentation. API details are
 kept in :doc:`/api/index`.
 
-Legacy references remain available under :doc:`/interfaces/index`,
-including :doc:`/interfaces/clients/index` and :doc:`/interfaces/pyrogue/index`.
+Client and Python interface legacy content has been re-homed under this
+section.
 
 .. toctree::
    :maxdepth: 2
@@ -26,5 +26,6 @@ including :doc:`/interfaces/clients/index` and :doc:`/interfaces/pyrogue/index`.
    model_api
    built_in_devices
    advanced_patterns
-   /interfaces/clients/index
-   /interfaces/pyrogue/index
+   cpp_api_wrapper
+   client_interfaces/index
+   python_interfaces/index

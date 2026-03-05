@@ -16,6 +16,9 @@ It is the canonical top-level home for Utilities, Hardware, and Protocols.
 
    overview
    integrations
+   simulation/index
+   sql
+   version
    /utilities/index
    /hardware/index
    /protocols/index

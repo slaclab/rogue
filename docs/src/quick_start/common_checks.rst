@@ -22,8 +22,8 @@ Runtime checks
 Client checks
 =============
 
-- Simple client connectivity succeeds: :doc:`/interfaces/clients/simple`
-- Optional virtual client path behaves as expected: :doc:`/interfaces/clients/virtual`
+- Simple client connectivity succeeds: :doc:`/pyrogue_core/client_interfaces/simple`
+- Optional virtual client path behaves as expected: :doc:`/pyrogue_core/client_interfaces/virtual`
 
 If checks fail
 ==============

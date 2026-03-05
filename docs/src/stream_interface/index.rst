@@ -9,7 +9,7 @@ patterns. Class-by-class C++ details are in
 :doc:`/api/cpp/interfaces/stream/index`.
 
 Legacy references remain available in legacy sections, including
-:doc:`/interfaces/index`, :doc:`/interfaces/stream/index`, and
+:doc:`/stream_interface/legacy_stream/index`, and
 :doc:`/custom_module/index`.
 
 .. toctree::
@@ -21,4 +21,4 @@ Legacy references remain available in legacy sections, including
    example_pipelines
    python_bindings
    /custom_module/index
-   /interfaces/stream/index
+   /stream_interface/legacy_stream/index

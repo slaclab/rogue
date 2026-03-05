@@ -78,6 +78,17 @@ There are uncommitted local changes in protocol pages related to lifecycle/threa
 - M4 continued: legacy ``interfaces`` index pages for client/pyrogue/stream/
   memory were re-homed into canonical section toctrees (PyRogue Core, Stream
   Interface, Memory Interface).
+- M4 continued: files under ``interfaces/clients`` and ``interfaces/pyrogue``
+  were physically moved into ``pyrogue_core/client_interfaces`` and
+  ``pyrogue_core/python_interfaces``, and links were updated.
+- M4 continued: files under ``interfaces/stream`` and ``interfaces/memory``
+  were physically moved into ``stream_interface/legacy_stream`` and
+  ``memory_interface/legacy_memory``, and links were updated.
+- M4 continued: remaining ``interfaces`` content was physically moved:
+  ``interfaces/simulation/*`` -> ``built_in_modules/simulation/*``,
+  ``interfaces/sql`` -> ``built_in_modules/sql``, ``interfaces/version`` ->
+  ``built_in_modules/version``, and ``interfaces/cpp_api`` ->
+  ``pyrogue_core/cpp_api_wrapper``.
 
 ### Remaining high-value M4 work
 

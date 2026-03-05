@@ -12,13 +12,13 @@ and the PyDM-based Rogue GUI.
 
 This page is now the canonical conceptual home for client connectivity
 guidance. Legacy narrative remains available at
-:doc:`/interfaces/clients/index`.
+:doc:`/pyrogue_core/client_interfaces/index`.
 
 Primary interfaces:
 
-- ZMQ server: :doc:`/interfaces/pyrogue/zmq_server`
-- Simple client: :doc:`/interfaces/clients/simple`
-- Virtual client: :doc:`/interfaces/clients/virtual`
+- ZMQ server: :doc:`/pyrogue_core/python_interfaces/zmq_server`
+- Simple client: :doc:`/pyrogue_core/client_interfaces/simple`
+- Virtual client: :doc:`/pyrogue_core/client_interfaces/virtual`
 
 Connection model
 ================
@@ -48,9 +48,9 @@ Python interface adapters
 Rogue also provides built-in Python interface adapters for stream-variable and
 OS-backed integration patterns:
 
-- :doc:`/interfaces/pyrogue/memory_stream_variable`
-- :doc:`/interfaces/pyrogue/os_command_memory_slave`
-- :doc:`/interfaces/pyrogue/osmemmaster`
+- :doc:`/pyrogue_core/python_interfaces/memory_stream_variable`
+- :doc:`/pyrogue_core/python_interfaces/os_command_memory_slave`
+- :doc:`/pyrogue_core/python_interfaces/osmemmaster`
 
 Related API reference:
 

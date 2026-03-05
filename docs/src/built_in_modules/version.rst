@@ -4,12 +4,6 @@
 Rogue Version Helper
 ====================
 
-Legacy Status
-=============
-
-This is a legacy page retained during migration.
-Canonical entry point: :doc:`/built_in_modules/integrations`.
-
 Rogue provides version/query helpers through ``rogue::Version`` in C++ and
 ``rogue.Version`` in Python.
 

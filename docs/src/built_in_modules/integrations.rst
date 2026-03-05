@@ -5,7 +5,6 @@ Built-in Integrations
 ========================
 
 This page is the canonical home for integration-oriented built-in features.
-Legacy pages under ``/interfaces`` are retained during migration.
 
 Simulation Interfaces
 =====================
@@ -15,10 +14,10 @@ as well as interfaces to VHDL and Verilog simulation tools.
 
 Current simulation pages:
 
-- :doc:`/interfaces/simulation/index`
-- :doc:`/interfaces/simulation/mememulate`
-- :doc:`/interfaces/simulation/pgp2b`
-- :doc:`/interfaces/simulation/sideband`
+- :doc:`/built_in_modules/simulation/index`
+- :doc:`/built_in_modules/simulation/mememulate`
+- :doc:`/built_in_modules/simulation/pgp2b`
+- :doc:`/built_in_modules/simulation/sideband`
 
 SQL Logging Interface
 =====================
@@ -26,7 +25,7 @@ SQL Logging Interface
 SQL logging integration documentation currently remains in a minimal state and
 is retained at:
 
-- :doc:`/interfaces/sql`
+- :doc:`/built_in_modules/sql`
 
 Rogue Version Helper
 ====================
@@ -124,4 +123,4 @@ C++ examples
        return 0;
    }
 
-Legacy source retained at :doc:`/interfaces/version`.
+Reference page: :doc:`/built_in_modules/version`.

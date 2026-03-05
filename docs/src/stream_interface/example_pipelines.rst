@@ -18,6 +18,6 @@ Use this page as a recipe gateway. For deeper guidance, pair these examples
 with :doc:`/stream_interface/overview` and
 :doc:`/stream_interface/built_in_modules`.
 
-- :doc:`/interfaces/stream/connecting`
-- :doc:`/interfaces/stream/sending`
-- :doc:`/interfaces/stream/receiving`
+- :doc:`/stream_interface/legacy_stream/connecting`
+- :doc:`/stream_interface/legacy_stream/sending`
+- :doc:`/stream_interface/legacy_stream/receiving`

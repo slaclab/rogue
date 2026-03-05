@@ -330,6 +330,26 @@ This matrix tracks where content is moving as the revamp proceeds.
      - Move
      - Docs Team
      - M4 Harmonization [done]
+   * - Move interface client/pyrogue docs into canonical PyRogue Core tree
+     - /interfaces/clients/* -> /pyrogue_core/client_interfaces/*; /interfaces/pyrogue/* -> /pyrogue_core/python_interfaces/*
+     - Move
+     - Docs Team
+     - M4 Harmonization [done]
+   * - Move interface stream/memory docs into canonical section trees
+     - /interfaces/stream/* -> /stream_interface/legacy_stream/*; /interfaces/memory/* -> /memory_interface/legacy_memory/*
+     - Move
+     - Docs Team
+     - M4 Harmonization [done]
+   * - Move remaining interface integration pages into canonical sections
+     - /interfaces/simulation/* -> /built_in_modules/simulation/*; /interfaces/sql -> /built_in_modules/sql; /interfaces/version -> /built_in_modules/version; /interfaces/cpp_api -> /pyrogue_core/cpp_api_wrapper
+     - Move
+     - Docs Team
+     - M4 Harmonization [done]
+   * - Remove interfaces transitional index from primary navigation
+     - /introduction/index and canonical section landing pages
+     - Move
+     - Docs Team
+     - M4 Harmonization [done]
 
 Status keys:
 

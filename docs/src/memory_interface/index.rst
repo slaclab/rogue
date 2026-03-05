@@ -8,8 +8,8 @@ The memory interface documentation explains the transaction model, memory bus
 composition, and practical usage. Low-level class reference remains in
 :doc:`/api/cpp/interfaces/memory/index`.
 
-Legacy references remain available under :doc:`/interfaces/index`,
-including :doc:`/interfaces/memory/index`.
+Legacy references remain available under
+:doc:`/memory_interface/legacy_memory/index`.
 
 .. toctree::
    :maxdepth: 1
@@ -18,4 +18,4 @@ including :doc:`/interfaces/memory/index`.
    overview
    model_types
    transactions
-   /interfaces/memory/index
+   /memory_interface/legacy_memory/index

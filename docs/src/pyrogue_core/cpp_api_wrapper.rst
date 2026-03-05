@@ -1,4 +1,5 @@
 .. _interfaces_cpp_api:
+.. _pyrogue_core_cpp_api_wrapper:
 
 =====================
 Wrapping Rogue In C++

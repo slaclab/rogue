@@ -58,7 +58,7 @@ Similiar to the zmqServer, the sql logger is now removed to be an external inter
 
 More information can be found in:
 
-- :doc:`/interfaces/sql`
+- :doc:`/built_in_modules/sql`
 - ``python/pyrogue/interfaces/_SqlLogging.py``
 
 

@@ -35,7 +35,7 @@ processing paths or external interfaces.
 Start with:
 
 - :doc:`/pyrogue_tree/node/variable/index`
-- :doc:`/interfaces/pyrogue/memory_stream_variable`
+- :doc:`/pyrogue_core/python_interfaces/memory_stream_variable`
 
 API reference:
 
