@@ -28,6 +28,18 @@ The sidebar follows milestone freezes:
 2. Allow structural changes between milestones.
 3. Keep in-milestone changes additive and low risk.
 
+M2 Freeze Record
+================
+
+M2 information architecture and navigation structure are frozen.
+
+During freeze:
+
+1. Keep legacy pages available and explicitly labeled.
+2. Route readers to canonical entry points without deleting narrative content.
+3. Defer structural relocation decisions to M3 unless required to resolve build
+   errors.
+
 Narrative Preservation Rule
 ===========================
 

@@ -14,3 +14,4 @@ status for the current revamp.
    policies
    page_templates
    migration_matrix
+   m2_closeout
