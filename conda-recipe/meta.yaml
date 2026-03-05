@@ -28,7 +28,6 @@ requirements:
    run:
      - python
      - boost
-     - libboost-python
      - bzip2
      - zeromq
      - numpy>=2.0
