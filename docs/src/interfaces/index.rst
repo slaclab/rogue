@@ -32,6 +32,10 @@ What moved where
    :maxdepth: 1
    :caption: Legacy Integration Pages:
 
+   clients/index
+   pyrogue/index
+   stream/index
+   memory/index
    simulation/index
    sql.rst
    cpp_api.rst

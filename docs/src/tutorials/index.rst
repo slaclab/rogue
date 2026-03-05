@@ -12,15 +12,16 @@ Scope of Tutorials:
 - Explain tradeoffs and design patterns, not just first use
 - Bridge into architecture-level sections after hands-on examples
 
+Legacy step-by-step examples remain available in:
+
+- :doc:`/getting_started/index`
+- :doc:`/advanced_examples/index`
+
 .. toctree::
    :maxdepth: 1
    :caption: Tutorials:
 
    device_workflow_tutorial
    system_integration_tutorial
-   /getting_started/pyrogue_tree_example/p_t_root
-   /getting_started/pyrogue_tree_example/p_t_device
-   /getting_started/pyrogue_tree_example/full_root
-   /advanced_examples/index
 
 If you have not yet completed a basic setup, start with :doc:`/quick_start/index`.

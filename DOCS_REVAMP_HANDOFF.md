@@ -76,9 +76,9 @@ There are uncommitted local changes in protocol pages related to lifecycle/threa
 - M4 nav decision update: restored `Installing`/`Logging`/`PyDM` as top-level
   entries.
 
-### Remaining high-value M3 work
+### Remaining high-value M4 work
 
-M3 closeout complete. Remaining work shifts to M4 harmonization.
+Continue M4 harmonization and release-freeze cleanup.
 
 ## 7) Suggested Next Execution Order (One Section at a Time)
 

@@ -111,20 +111,20 @@ This matrix tracks where content is moving as the revamp proceeds.
      - Docs Team
      - M2 Narrative [done]
    * - /installing/index narrative
-     - /operations/overview
+     - /installing/index
      - Move
      - Docs Team
-     - M2 Narrative [done]
+     - M4 Harmonization [done]
    * - /logging/index narrative
-     - /operations/overview
+     - /logging/index
      - Move
      - Docs Team
-     - M2 Narrative [done]
+     - M4 Harmonization [done]
    * - /pydm/index narrative
-     - /operations/overview
+     - /pydm/index
      - Move
      - Docs Team
-     - M2 Narrative [done]
+     - M4 Harmonization [done]
    * - /interfaces/simulation/mememulate placeholder
      - /built_in_modules/integrations
      - Link

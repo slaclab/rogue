@@ -4,24 +4,7 @@
 Table of Contents
 =================
 
-Use the left sidebar to navigate sections and search documentation content.
+Canonical navigation is rooted at :doc:`/introduction/index`.
 
-.. toctree::
-   :maxdepth: 3
-   :caption: Contents:
-
-   /introduction/index
-   /quick_start/index
-   /tutorials/index
-   /pyrogue_core/index
-   /stream_interface/index
-   /memory_interface/index
-   /interfaces/index
-   /built_in_modules/index
-   /cookbook/index
-   /installing/index
-   /logging/index
-   /pydm/index
-   /api/index
-   /migration/index
-   /documentation_plan/index
+Use the left sidebar (generated from that root toctree) to browse sections and
+search documentation content.

@@ -20,3 +20,4 @@ Legacy references remain available in legacy sections, including
    built_in_modules
    example_pipelines
    python_bindings
+   /custom_module/index
