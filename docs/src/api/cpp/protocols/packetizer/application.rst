@@ -4,19 +4,10 @@
 Application
 ===========
 
-Legacy Status
-=============
-
-This is a legacy page retained during migration.
-Canonical entry point: :doc:`/protocols/packetizer/index`.
-
-TODO
-
-Status
-======
-
-Legacy placeholder content retained.
-Detailed API notes are planned in a later expansion pass.
+``Application`` is the per-destination packetizer endpoint used by upper-layer
+protocol/application stream paths.
+This page is reference-only; for conceptual context see
+:doc:`/protocols/packetizer/index`.
 
 
 Application objects in C++ are referenced by the following shared pointer typedef:

@@ -4,19 +4,10 @@
 CoreV2
 ======
 
-Legacy Status
-=============
-
-This is a legacy page retained during migration.
-Canonical entry point: :doc:`/protocols/packetizer/index`.
-
-TODO
-
-Status
-======
-
-Legacy placeholder content retained.
-Detailed API notes are planned in a later expansion pass.
+``CoreV2`` is the packetizer v2 wiring object with CRC configuration controls
+for inbound and outbound processing.
+This page is reference-only; for integration guidance see
+:doc:`/protocols/packetizer/coreV2`.
 
 
 CoreV2 objects in C++ are referenced by the following shared pointer typedef:

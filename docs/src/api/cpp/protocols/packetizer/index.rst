@@ -4,21 +4,11 @@
 Packetizer Protocol Class Descriptions
 ======================================
 
-Legacy Status
-=============
+This section provides C++ API reference pages for
+``rogue::protocols::packetizer`` classes.
 
-This is a legacy page retained during migration.
-Canonical entry point: :doc:`/protocols/packetizer/index`.
-
-TODO
-
-Status
-======
-
-Legacy placeholder content retained.
-Detailed API notes are planned in a later expansion pass.
-
-The following are detailed descriptions of the various C++ classes that make up the Rogue Packetizer protocol.
+For conceptual guidance and version-selection notes, see
+:doc:`/protocols/packetizer/index`.
 
 .. toctree::
    :maxdepth: 1
