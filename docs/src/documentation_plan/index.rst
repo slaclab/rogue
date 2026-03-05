@@ -15,3 +15,4 @@ status for the current revamp.
    page_templates
    migration_matrix
    m2_closeout
+   m3_closeout

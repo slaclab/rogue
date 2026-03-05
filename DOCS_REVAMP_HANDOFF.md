@@ -1,6 +1,6 @@
 # Rogue Docs Revamp Handoff
 
-Last updated: 2026-03-04 (local workspace time)
+Last updated: 2026-03-05 (local workspace time)
 
 ## 1) Canonical Plan and Artifacts
 Use these first; they are the authoritative plan artifacts created during this effort:
@@ -10,13 +10,14 @@ Use these first; they are the authoritative plan artifacts created during this e
 - `docs/src/documentation_plan/page_templates.rst`
 - `docs/src/documentation_plan/migration_matrix.rst`
 - `docs/src/documentation_plan/m2_closeout.rst`
+- `docs/src/documentation_plan/m3_closeout.rst`
 
 ## 2) Milestone Status
 
 - M1 Skeleton IA: complete
 - M2 Narrative migration + boundary cleanup: complete (frozen and closeout recorded)
-- M3 Coverage expansion: in progress (active)
-- M4 Harmonization: not started
+- M3 Coverage expansion: complete (closeout recorded)
+- M4 Harmonization: active (next)
 
 ## 3) Key Decisions to Preserve
 
@@ -72,13 +73,15 @@ There are uncommitted local changes in protocol pages related to lifecycle/threa
 
 ### Remaining high-value M3 work
 
-1. Run docs build with warnings enabled in a Sphinx-enabled environment and
-   resolve warnings introduced during protocol/API cleanup passes.
+M3 closeout complete. Remaining work shifts to M4 harmonization.
 
 ## 7) Suggested Next Execution Order (One Section at a Time)
 
-1. Re-run docs build with warnings enabled and fix any new warnings.
-2. Update migration matrix/handoff with final M3 closeout notes after build validation.
+1. M4 harmonization sweep: normalize naming/ordering and remove stale navigation
+   paths where safe.
+2. Final consistency pass across section landing pages (terminology and
+   cross-links).
+3. Release-ready freeze/update of plan artifacts after M4 decisions land.
 
 ## 8) Fast Validation Checklist
 
