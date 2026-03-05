@@ -6,6 +6,7 @@ Transport
 
 ``Transport`` is the lower RSSI stream endpoint. It exchanges RSSI frames
 between the controller and the underlying link transport.
+For conceptual guidance, see :doc:`/protocols/rssi/index`.
 
 
 Transport objects in C++ are referenced by the following shared pointer typedef:

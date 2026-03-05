@@ -67,3 +67,10 @@ V2
    dst = MyTransformedFrameSink()
 
    src >> inv >> dst
+
+Related docs
+============
+
+- :doc:`/protocols/batcher/index`
+- :doc:`/api/cpp/protocols/batcher/inverterV1`
+- :doc:`/api/cpp/protocols/batcher/inverterV2`

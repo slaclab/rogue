@@ -7,6 +7,7 @@ Client
 ``Client`` is the role-specific convenience wrapper that owns and wires the
 RSSI ``Transport``, ``Application``, and ``Controller`` objects for client
 operation.
+For conceptual guidance, see :doc:`/protocols/rssi/client`.
 
 Threading and Lifecycle
 =======================

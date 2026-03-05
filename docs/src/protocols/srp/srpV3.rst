@@ -97,3 +97,9 @@ Root + Device(memBase=srp) with AXI Stream DMA
                memBase=self.srp,
                expand=True,
            ))
+
+Related docs
+------------
+
+- :doc:`/protocols/srp/index`
+- C++ API: :doc:`/api/cpp/protocols/srp/srpV3`

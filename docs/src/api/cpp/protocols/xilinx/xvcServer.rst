@@ -4,6 +4,8 @@
 XvcServer
 =========
 
+For conceptual guidance, see :doc:`/protocols/xilinx/index`.
+
 The class description is shown below:
 
 .. doxygenclass:: rogue::protocols::xilinx::XvcServer

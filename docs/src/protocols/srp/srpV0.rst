@@ -86,3 +86,9 @@ The common PyRogue pattern is to construct the transport and ``SrpV0`` inside a
                memBase=self.srp,
                expand=True,
            ))
+
+Related docs
+------------
+
+- :doc:`/protocols/srp/index`
+- C++ API: :doc:`/api/cpp/protocols/srp/srpV0`

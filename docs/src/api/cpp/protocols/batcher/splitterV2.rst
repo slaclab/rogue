@@ -6,6 +6,7 @@ SplitterV2
 
 ``SplitterV2`` decodes a Batcher v2 super-frame and emits one Rogue stream
 frame per record.
+For conceptual guidance, see :doc:`/protocols/batcher/splitter`.
 
 Protocol reference: https://confluence.slac.stanford.edu/x/L2VlK
 

@@ -62,3 +62,10 @@ V2
    dst = MyRecordSink()
 
    src >> split >> filt >> dst
+
+Related docs
+============
+
+- :doc:`/protocols/batcher/index`
+- :doc:`/api/cpp/protocols/batcher/splitterV1`
+- :doc:`/api/cpp/protocols/batcher/splitterV2`
