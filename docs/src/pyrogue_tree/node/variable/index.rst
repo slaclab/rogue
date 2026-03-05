@@ -64,8 +64,8 @@ This means:
 See also:
 
 * :ref:`pyrogue_tree_node_block`
-* :ref:`interfaces_memory_blocks`
-* :ref:`interfaces_memory_classes`
+* :doc:`/pyrogue_tree/blocks`
+* :doc:`/memory_interface/index`
 
 BaseVariable API Reference
 ================================

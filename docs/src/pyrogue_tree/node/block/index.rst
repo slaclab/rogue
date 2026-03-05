@@ -89,10 +89,10 @@ multi-level device trees with address translation.
 
 For deeper internals and extension patterns, see:
 
-* :ref:`interfaces_memory_blocks`
-* :ref:`interfaces_memory_hub`
-* :ref:`interfaces_memory_hub_ex`
-* :ref:`interfaces_memory_classes`
+* :doc:`/pyrogue_tree/blocks`
+* :doc:`/pyrogue_tree/blocks_advanced`
+* :doc:`/memory_interface/hub`
+* :doc:`/api/cpp/interfaces/memory/index`
 
 Example
 =======

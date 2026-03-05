@@ -5,36 +5,29 @@
 Blocks & Models
 ===============
 
-In the Rogue memory interface, the block provides a representation of the underlying hardware memory
-space, hosting one or more Variable objects. It is in the Block where native python types are converted
-into the bits and byte that are ultimately written to the hardware devices.
+In Rogue, a block represents a hardware-accessible byte region and hosts one or
+more variables that map into that region. It is the level where Python-facing
+values are converted into bytes and where read/write transactions are issued to
+hardware.
 
-When Variables are created in a Device they are arranged into Blocks which may host multiple variables. The
-mapping of Variables to Blocks is determined by the minimum register transaction size supported by the
-hardware. For example if the hardware requires a minimum transaction size of 32-bits, a set of Variables
-which access space in a single 32-bit register will be mapped to the same Block. The user may also
-pre-build blocks in Device with a specific size in order to enforece a larger grouping of Variables into
-a Block.
+When variables are added to a device, PyRogue groups compatible variables into
+blocks. Grouping is constrained by the minimum access size of the underlying
+memory path. For example, if hardware requires 32-bit accesses, variables that
+share one 32-bit register are typically placed into the same block.
 
-The Block object will keep track of the "stale" state of the shadow memory space. This allows the various
-Variables in a Block to be updated, followed by a single transaction that commits the Block memory space
-to hardware. For very large Blocks which are much larger than the minimum transaction size, the user may
-initiate sub-block transactions which only update the "stale" portion of the Block space. This allows the
-user to perform high rate, low overhead transactions to individual sections of a Block while also supporting
-larger burst transactions when the entire Block is read from or written to memory.
+Blocks also track shadow state (including stale bytes). This allows multiple
+variable updates to be staged first, then committed with block transactions.
+For larger blocks, sub-range transactions can update only the changed portion
+while still allowing full-block bursts when needed.
 
-In most cases the user will simply add Variables to a Device with little attention to how the Blocks are
-created and assigned to Variables. In some cases the user may want to set the size of specific
-Blocks for performance reasons. In more advanced cases the user can also sub-class a Block, creating
-a custom device which allows new types of transactions, and also allows lower level complex register
-transactions to occur at a lower level in the Block.
+Most users can rely on automatic block creation. For performance-sensitive
+cases, you can pre-allocate blocks or customize block behavior.
 
-See :ref:`interfaces_memory_blocks_advanced` for more information about the advanced features of the Block class.
+See :doc:`/pyrogue_tree/blocks_advanced` for more information about advanced
+Block features.
 
-The translation of native python types to lower level bits and bytes is controlled by the Model class, which is
-a special Python class in Rogue which defines how a register type is converted, accessed and displayed. The Model
-class works closely with the Block, with the Block having lower level routines which are directly associated
-with the standard set of Rogue Models.
+The translation from Python values to packed bytes is controlled by ``Model``
+classes. Blocks apply those models during conversion and transaction flow.
 
 How Variables, Models, and Block Methods Tie Together
 -----------------------------------------------------
@@ -61,6 +54,30 @@ Conceptually:
 
 This separation is important: conversion selects how bytes are interpreted, while transport selects when bytes move
 to/from hardware.
+
+PyRogue Block Helper Functions
+------------------------------
+
+PyRogue exposes block helper functions that operate on one block or a list of
+blocks:
+
+- ``pyrogue.startTransaction(...)``
+- ``pyrogue.checkTransaction(...)``
+- ``pyrogue.writeBlocks(...)``
+- ``pyrogue.verifyBlocks(...)``
+- ``pyrogue.readBlocks(...)``
+- ``pyrogue.checkBlocks(...)``
+- ``pyrogue.writeAndVerifyBlocks(...)``
+- ``pyrogue.readAndCheckBlocks(...)``
+
+These helpers are primarily used by variable/device classes to control hardware
+IO paths:
+
+- variable ``get``/``set`` operations drive parent device block operations
+- device bulk methods enqueue block transactions and later check completion
+
+Most users do not call these helpers directly except when implementing custom
+device sequencing or specialized transaction workflows.
 
 The following Models are currently supported in Rogue:
 
@@ -92,107 +109,13 @@ The following Models are currently supported in Rogue:
 | :ref:`interfaces_memory_model_fixed`        | fixed point           | float             | unconstrained  | Not fully functional yet                       |
 +---------------------------------------------+-----------------------+-------------------+----------------+------------------------------------------------+
 
-Most of the above types perform the python to byte conversions in low level C++ calls in the Block class for performance reasons.
-An exception to this is UInt and Int types that exceed 64-bits. These conversions are performed in the Model class at the python
-level.
+Most of the above types perform Python-to-byte conversions in low-level C++
+Block paths for performance. An exception is very wide integer handling
+(``UInt``/``Int`` beyond native C++ conversion widths), where Python model
+logic is used.
 
-Custom Models
--------------
+For custom model definitions, model-driven conversion behavior, and block
+pre-allocation patterns, see :doc:`/pyrogue_tree/blocks_advanced`.
 
-The user has the ability to create application specific data types by sub-classing the Model in python and providing the
-toByte and fromBytes functions that are called by the Block to perform the data conversions. This allows for a quick method to
-support odd data types.
-
-The block class also supports any of the above Models as a list. See the Variable class description for more details.
-
-Below is an example of a user defined Model for a special data type:
-
-.. code-block:: python
-
-    import pyrogue
-    import rogue.interfaces.memory
-
-    # Create a sub-class of a model
-    class MyUInt(pyrogue.Model):
-
-        # Setup the class parameters
-        ptype = int
-        defaultdisp = '{:#x}'
-        modelId = rogue.interfaces.memory.PyFunc
-
-       def __init__(self, bitsize):
-         super().__init__(bitsize)
-
-       # This function receives the native python type and converts it to a byte array
-       def toBytes(self, value):
-           return value.to_bytes(byteCount(self.bitSize), 'little', signed=False)
-
-       # This function receives a byte array and converts it to the native python type
-       def fromBytes(self, ba):
-           return int.from_bytes(ba, 'little', signed=False)
-
-       # Convert a string representation to the python native type
-       def fromString(self, string):
-           return int(string, 0)
-
-       # Return the minimum value
-       def minValue(self):
-           return 0
-
-       # Return the maximum value
-       def maxValue(self):
-           return (2**32)-1
-
-The user may also want to perform the python type conversion in lower level C++. In order to do this they
-must sub-class the Block class and add it to a user specific library. They can then use a modeId in the
-range 0x80 - 0xFF.  See :ref:`interfaces_memory_blocks_advanced` for more information about the advanced features of the Block class.
-
-
-Using Custom Models
--------------------
-
-The following shows an example of using the above custom model in Rogue. The code blow is executed during the
-creation of a custom Device class. See xxxx for more details.
-
-.. code-block:: python
-
-   # Create a variable using my custom Model
-   self.add(pyrogue.RemoteVariable(
-      name="MyRegister",
-      description="My register with my model",
-      offset=0x1000,
-      bitSize=32,
-      bitOffset=0,
-      base=MyUInt,
-      mode="RW"))
-
-The custom model is passed to the RemoteVariable base parameter. A Block of the appropriate size will be created
-and assocaited with the above RemoteVariable as approprite.
-
-Pre-Allocating Blocks
----------------------
-
-In some cases the user may want to pre-create blocks of a specific size to better group Variables that are more
-effeciently accessed in larger burst transactions. With larger blocks the user can initiate transactions
-on a sub-portion of the block by accessing the variable directly, or the user can force larger burst transactions
-of the larger block in operations which require it.
-
-The following shows an example of pre-allocating a block for association with a Variable. The Variables are assigned to
-blocks the overlap their address space. The code blow is executed during the creation of a custom Device class. See xxxx for more details.
-
-.. code-block:: python
-
-   # Pre-Allocate a large block to hold our variables, offset = 0x1000, size = 128
-   self.addCustomBlock(rogue.interfaces.memory.Block(0x1000,128))
-
-   # Create a variable using my custom Model
-   self.add(pyrogue.RemoteVariable(
-      name="MyRegister",
-      description="My register with my model",
-      offset=0x1000,
-      bitSize=32,
-      bitOffset=0,
-      base=MyUInt,
-      mode="RW"))
-
-For more information see the :ref:`interfaces_memory_block` and :ref:`interfaces_memory_model` class descriptions.
+For model family reference and API entry points, see
+:doc:`/pyrogue_tree/model/index` and :doc:`/pyrogue_core/model_types`.

@@ -180,64 +180,21 @@ Notes:
 * binding to ``127.0.0.1`` keeps the server local to the host
 * non-local deployments can bind to another interface/address as needed
 
-Yaml File Configuration
------------------------
+For broader client/interface selection and deployment patterns, see
+:doc:`/pyrogue_core/client_access`,
+:doc:`/pyrogue_core/python_interfaces/zmq_server`,
+:doc:`/pyrogue_core/client_interfaces/simple`, and
+:doc:`/pyrogue_core/client_interfaces/virtual`.
 
-Saving and Restoring Configurations
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+YAML Configuration and Bulk Operations
+--------------------------------------
 
-System-wide state/configuration can be exported to YAML text/files and loaded
-back with:
+Root YAML config/state workflows and array-matching rules are documented in:
 
-* :py:meth:`pyrogue.Node.getYaml` (Note: inherited from :py:class:`pyrogue.Node` class.)
-* :py:meth:`pyrogue.Root.setYaml`
-* :py:meth:`pyrogue.Root.saveYaml`
-* :py:meth:`pyrogue.Root.loadYaml`
+- :doc:`/pyrogue_tree/node/root/yaml_configuration`
 
-Built-in Groups
-^^^^^^^^^^^^^^^
-
-PyRogue root-level configuration/state commands use group filtering to include or exclude
-variables and commands from bulk operations.
-
-Common built-in group names:
-
-* ``NoConfig``: excluded from configuration save/load operations.
-* ``NoState``: excluded from state snapshot/export operations.
-* ``Hidden``: hidden from normal GUI views unless explicitly included.
-
-See :ref:`pyrogue_tree_node_groups` for full built-in group behavior and filtering semantics.
-
-Configuration Array Matching
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-YAML load supports node-array style matching and slicing.
-For example:
-
-* AmcCard[0] - DacEnable[0], DacEnable[1]
-* AmcCard[1] - DacEnable[0], DacEnable[1]
-* AmcCard[2] - DacEnable[0], DacEnable[1]
-
-Use Python-like slicing and wildcards:
-
-* Enable DAC channel 0 in all cards:
-
-
-  * ``AmcCard[:]:DacEnable[0]: True``
-
-* Enable both DAC channels in cards 1 and 2:
-
-  * ``AmcCard[1:3]: DacEnable: True``
-
-* List slicing behavior:
-
-  * ``AmcCard[1:3]`` -> cards 1 and 2
-  * ``AmcCard[:2]`` -> cards 0 and 1
-  * ``AmcCard[:]`` -> all cards
-
-* Wildcards:
-
-  * ``AmcCard`` -> all cards
-  * ``AmcCard[*]`` -> all cards
+That page also covers bulk enqueue/check behavior and related root settings
+(``ForceWrite``, ``InitAfterConfig``).
 
 Included Command Objects
 ------------------------
@@ -265,7 +222,7 @@ The following :py:class:`pyrogue.LocalVariable` objects are all created when the
 
 * **RogueVersion**: Rogue version string.
 * **RogueDirectory**: Rogue Library Directory.
-* **SystemLog**: String containing newline separated system logic entries. Allows remote management interfaces to know when an error has occurred. This string contains a summary of the error while the full trace method is dumped to the console.
+* **SystemLog**: String containing newline-separated system log entries. Allows remote client interfaces to know when an error has occurred. This string contains a summary of the error while the full traceback is dumped to the console.
 * **SystemLogLast**: String containing last system log entry.
 * **ForceWrite**: Controls how system level writes are handled. Configuration flag to always write non stale blocks for WriteAll, LoadConfig and setYaml.
 * **InitAfterConfig**: Configuration flag to execute initialize after LoadConfig or setYaml.

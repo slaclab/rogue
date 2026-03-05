@@ -71,3 +71,88 @@ layout metadata:
 
 Because every typed method funnels through these helpers, custom subclasses can extend behavior
 while preserving the same packing model.
+
+Custom Models (Complete Example)
+--------------------------------
+
+Custom models are a good fit when built-in model classes do not match the
+desired encoding/decoding behavior.
+
+The example below defines a complete ``MyUInt`` custom model and then uses it
+in a ``RemoteVariable``.
+
+.. code-block:: python
+
+   import pyrogue as pr
+   import rogue.interfaces.memory as rim
+
+   class MyUInt(pr.Model):
+       ptype = int
+       defaultdisp = '{:#x}'
+       modelId = rim.PyFunc
+
+       def __init__(self, bitsize):
+           super().__init__(bitsize)
+
+       def toBytes(self, value):
+           return int(value).to_bytes(pr.byteCount(self.bitSize), 'little', signed=False)
+
+       def fromBytes(self, ba):
+           return int.from_bytes(ba, 'little', signed=False)
+
+       def fromString(self, string):
+           return int(string, 0)
+
+       def minValue(self):
+           return 0
+
+       def maxValue(self):
+           return (1 << self.bitSize) - 1
+
+   class MyDevice(pr.Device):
+       def __init__(self, **kwargs):
+           super().__init__(**kwargs)
+           self.add(pr.RemoteVariable(
+               name='MyRegister',
+               description='Register with custom model',
+               offset=0x1000,
+               bitSize=32,
+               bitOffset=0,
+               base=MyUInt,
+               mode='RW',
+           ))
+
+``RemoteVariable(base=MyUInt, ...)`` binds this model to block conversion for
+that variable.
+
+Pre-Allocating Blocks
+---------------------
+
+When you need a specific transaction grouping, pre-create a block and then add
+variables that overlap that address range.
+
+.. code-block:: python
+
+   import pyrogue as pr
+   import rogue.interfaces.memory as rim
+
+   class MyDevice(pr.Device):
+       def __init__(self, **kwargs):
+           super().__init__(**kwargs)
+
+           # Pre-allocate a 128-byte block at offset 0x1000.
+           self.addCustomBlock(rim.Block(0x1000, 128))
+
+           self.add(pr.RemoteVariable(
+               name='MyRegister',
+               offset=0x1000,
+               bitSize=32,
+               bitOffset=0,
+               base=pr.UInt,
+               mode='RW',
+           ))
+
+This can improve throughput for use cases that benefit from larger grouped
+transactions.
+
+For C++ Block API details, see :doc:`/api/cpp/interfaces/memory/block`.

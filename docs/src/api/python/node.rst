@@ -5,7 +5,7 @@ Node
 
 For conceptual hierarchy and node behavior, see:
 
-- :doc:`/pyrogue_tree/node/index`
+- :doc:`/pyrogue_tree/index`
 
 .. autoclass:: pyrogue.Node
    :members:

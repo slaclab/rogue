@@ -189,10 +189,10 @@ Conceptual transaction path:
 
 For deeper memory-stack behavior, see:
 
-* :ref:`interfaces_memory_blocks`
-* :ref:`interfaces_memory_hub`
-* :ref:`interfaces_memory_hub_ex`
-* :ref:`interfaces_memory_classes`
+* :doc:`/pyrogue_tree/blocks`
+* :doc:`/memory_interface/hub`
+* :doc:`/memory_interface/slave`
+* :doc:`/api/cpp/interfaces/memory/index`
 
 Custom Read/Write Operations
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^

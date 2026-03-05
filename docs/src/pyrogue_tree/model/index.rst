@@ -17,6 +17,9 @@ Related Documentation
 For advanced block/variable interaction details, see
 :doc:`/pyrogue_tree/blocks_advanced`.
 
+For practical custom-model examples (definition + variable binding), see the
+``Custom Models`` section in :doc:`/pyrogue_tree/blocks_advanced`.
+
 Utility Functions
 =================
 
