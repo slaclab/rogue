@@ -4,6 +4,13 @@
 Xvc
 ===
 
+Threading and Lifecycle
+=======================
+
+- ``Xvc`` runs a background server thread for TCP XVC clients.
+- Implements Managed Interface Lifecycle:
+  :ref:`pyrogue_tree_node_device_managed_interfaces`
+
 Xvc objects in C++ are referenced by the following shared pointer typedef:
 
 .. doxygentypedef:: rogue::protocols::xilinx::XvcPtr

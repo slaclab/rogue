@@ -11,6 +11,12 @@ For SRPv0 packet-level protocol details, see:
 
 - https://confluence.slac.stanford.edu/x/aRmVD
 
+Threading and locking summary
+=============================
+
+- ``doTransaction()`` and ``acceptFrame()`` may run in different contexts.
+- In-flight map access is managed by base memory-slave synchronization.
+- Per-transaction payload access is guarded via transaction locking.
 
 SrpV0 objects in C++ are referenced by the following shared pointer typedef:
 

@@ -8,6 +8,14 @@ Client
 RSSI ``Transport``, ``Application``, and ``Controller`` objects for client
 operation.
 
+Threading and Lifecycle
+=======================
+
+- Delegates protocol-state execution to ``Controller`` and does not create a
+  dedicated ``Client`` worker thread.
+- Implements Managed Interface Lifecycle:
+  :ref:`pyrogue_tree_node_device_managed_interfaces`
+
 
 Client objects in C++ are referenced by the following shared pointer typedef:
 

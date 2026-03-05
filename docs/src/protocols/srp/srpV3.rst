@@ -25,8 +25,25 @@ Implementation notes
   configured software timeout (see ``Master.setTimeout()``, microseconds).
 - Late responses that arrive after timeout are treated as expired and ignored.
 - SRPv3 also carries a hardware timeout field in the request header
-  (``SrpV3.setHardwareTimeout()``), which is separate from Rogue software wait
+  (C++: ``setHardwareTimeout()``, Python binding: ``_setHardwareTimeout()``),
+  which is separate from Rogue software wait
   timeout handling.
+- ``SrpV3`` enforces 4-byte alignment and defaults to a 4096-byte max
+  transaction size (from constructor ``memory::Slave(4, 4096)``).
+
+Threading and locking model
+---------------------------
+
+- ``doTransaction()`` and ``acceptFrame()`` can be invoked from different
+  runtime contexts.
+- In-flight transaction matching is protected by the base memory-slave mutex.
+- Per-transaction payload/state access is protected via ``TransactionLock``.
+
+Integration references
+----------------------
+
+- :doc:`/interfaces/memory/usingTcp`
+- :doc:`/hardware/axi/stream`
 
 Python usage examples
 ---------------------
@@ -71,7 +88,7 @@ Root + Device(memBase=srp) with AXI Stream DMA
            self.regStream == self.srp
 
            # Optional protocol timeout field encoded into SRPv3 header.
-           self.srp._setHardwareTimeout(0x0A)  # SRPv3 header timeout field.
+           self.srp._setHardwareTimeout(0x0A)  # Python binding name.
 
            # Attach register map device to SRPv3 memory slave interface.
            self.add(MyRegs(

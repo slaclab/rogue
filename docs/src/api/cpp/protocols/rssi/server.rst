@@ -8,6 +8,14 @@ Server
 RSSI ``Transport``, ``Application``, and ``Controller`` objects for server
 operation.
 
+Threading and Lifecycle
+=======================
+
+- Delegates protocol-state execution to ``Controller`` and does not create a
+  dedicated ``Server`` worker thread.
+- Implements Managed Interface Lifecycle:
+  :ref:`pyrogue_tree_node_device_managed_interfaces`
+
 
 Server objects in C++ are referenced by the following shared pointer typedef:
 

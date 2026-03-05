@@ -98,6 +98,16 @@ also be subclassed directly in C++ for custom transports:
 - subclass reports transport vector limit (``getMaxVectorSize``)
 - base class handles protocol framing, retries, query, and vector chunking
 
+Threading and Lifecycle
+-----------------------
+
+- ``Xvc`` runs a background server thread for TCP XVC clients.
+- Incoming Rogue reply frames are queued for synchronous consumption by
+  ``Xvc::xfer()``.
+- ``Xvc`` uses an internal mutex around response-buffer copy paths.
+- Implements Managed Interface Lifecycle:
+  :ref:`pyrogue_tree_node_device_managed_interfaces`
+
 API references
 --------------
 
@@ -107,4 +117,3 @@ C++ API reference pages are collected in :doc:`/api/cpp/protocols/xilinx/index`:
 - :doc:`/api/cpp/protocols/xilinx/jtagDriver`
 - :doc:`/api/cpp/protocols/xilinx/xvcServer`
 - :doc:`/api/cpp/protocols/xilinx/xvcConnection`
-

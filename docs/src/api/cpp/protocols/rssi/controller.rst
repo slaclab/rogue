@@ -8,6 +8,13 @@ Controller
 transitions, negotiated-parameter management, retransmission behavior, and
 flow-control decisions while bridging ``Transport`` and ``Application`` paths.
 
+Threading and Lifecycle
+=======================
+
+- ``Controller`` owns protocol-state progression and internal worker behavior.
+- Implements Managed Interface Lifecycle:
+  :ref:`pyrogue_tree_node_device_managed_interfaces`
+
 
 Controller objects in C++ are referenced by the following shared pointer typedef:
 
