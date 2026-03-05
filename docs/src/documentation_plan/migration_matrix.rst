@@ -215,6 +215,16 @@ This matrix tracks where content is moving as the revamp proceeds.
      - Move
      - Docs Team
      - M3 Coverage
+   * - /quick_start first-success and checks content
+     - /quick_start/first_success_path and /quick_start/common_checks
+     - Move
+     - Docs Team
+     - M3 Coverage [in progress]
+   * - /tutorials workflow content
+     - /tutorials/device_workflow_tutorial and /tutorials/system_integration_tutorial
+     - Move
+     - Docs Team
+     - M3 Coverage [in progress]
    * - /logging/*, /pydm/*, /installing/*
      - /operations/index
      - Link

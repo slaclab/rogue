@@ -18,6 +18,8 @@ Scope of Quick Start:
    :maxdepth: 1
    :caption: Quick Start Path:
 
+   first_success_path
+   common_checks
    /getting_started/index
 
 Next step after Quick Start: :doc:`/tutorials/index`.

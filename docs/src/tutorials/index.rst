@@ -16,6 +16,8 @@ Scope of Tutorials:
    :maxdepth: 1
    :caption: Tutorials:
 
+   device_workflow_tutorial
+   system_integration_tutorial
    /getting_started/pyrogue_tree_example/p_t_root
    /getting_started/pyrogue_tree_example/p_t_device
    /getting_started/pyrogue_tree_example/full_root
