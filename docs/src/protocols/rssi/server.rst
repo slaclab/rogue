@@ -43,7 +43,17 @@ Code-backed behavior notes
   connected as ``udp == rssi.transport()`` with upper protocols wired through
   ``rssi.application()``.
 
+Threading and Lifecycle
+=======================
 
+- ``Server`` is a wrapper; protocol-state execution runs in its internal
+  ``Controller`` object.
+- Concurrency-sensitive link state and counters are managed by the controller
+  and surfaced through ``Server`` APIs.
+- Implements a protocol-state machine internally via ``Controller`` and does
+  not spin up a dedicated ``Server`` worker thread.
+- Implements Managed Interface Lifecycle:
+  :ref:`pyrogue_tree_node_device_managed_interfaces`
 
 Related pages
 =============

@@ -38,6 +38,16 @@ The ``rogue::protocols::rssi`` classes are layered as follows:
 * ``Header``:
   helper codec/container for parsing and encoding RSSI frame headers.
 
+Threading and lifecycle notes
+=============================
+
+- Implements Managed Interface Lifecycle:
+  :ref:`pyrogue_tree_node_device_managed_interfaces`
+- ``Controller`` owns RSSI protocol-state progression and link-management
+  behavior.
+- ``Transport`` and ``Application`` are connected data-path endpoints without
+  standalone managed lifecycle control.
+
 Typical stream topology:
 
 .. code-block:: text
