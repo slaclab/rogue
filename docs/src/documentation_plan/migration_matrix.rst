@@ -47,6 +47,18 @@ This matrix tracks where content is moving as the revamp proceeds.
 +---------------------------------------------------+--------------------------------------------+--------+-----------+-------------+
 | /protocols/index narrative                        | /built_in_modules/overview                 | Move   | Docs Team | M2 Narrative|
 +---------------------------------------------------+--------------------------------------------+--------+-----------+-------------+
+| /installing/index narrative                       | /operations/overview                       | Move   | Docs Team | M2 Narrative|
++---------------------------------------------------+--------------------------------------------+--------+-----------+-------------+
+| /logging/index narrative                          | /operations/overview                       | Move   | Docs Team | M2 Narrative|
++---------------------------------------------------+--------------------------------------------+--------+-----------+-------------+
+| /pydm/index narrative                             | /operations/overview                       | Move   | Docs Team | M2 Narrative|
++---------------------------------------------------+--------------------------------------------+--------+-----------+-------------+
+| /interfaces/simulation/mememulate placeholder     | /built_in_modules/integrations             | Link   | Docs Team | M2 Narrative|
++---------------------------------------------------+--------------------------------------------+--------+-----------+-------------+
+| /interfaces/simulation/pgp2b placeholder          | /built_in_modules/integrations             | Link   | Docs Team | M2 Narrative|
++---------------------------------------------------+--------------------------------------------+--------+-----------+-------------+
+| /interfaces/simulation/sideband placeholder       | /built_in_modules/integrations             | Link   | Docs Team | M2 Narrative|
++---------------------------------------------------+--------------------------------------------+--------+-----------+-------------+
 | /api/cpp/interfaces/memory/transaction            | /memory_interface/transactions             | Move   | Docs Team | M2 Narrative|
 +---------------------------------------------------+--------------------------------------------+--------+-----------+-------------+
 | /advanced_examples/index                          | /cookbook/index                            | Link   | Docs Team | M3 Coverage |

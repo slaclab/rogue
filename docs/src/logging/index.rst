@@ -4,6 +4,10 @@
 Logging In Rogue
 ================
 
+This page is retained during migration.
+Canonical operational docs are being organized under
+:doc:`/operations/index`.
+
 The following table are the known logging paths for entities within Rogue. Values in brackets
 are dynamic values dervied from the instance.
 
@@ -64,5 +68,4 @@ are dynamic values dervied from the instance.
 +------+-----------------------+-------------------+------------------------------------------------+
 | C++  |                       | LibraryBase       | pyrogue.LibraryBase                            |
 +------+-----------------------+-------------------+------------------------------------------------+
-
 

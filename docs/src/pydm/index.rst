@@ -4,6 +4,10 @@
 Using the PyDM Gui
 ==================
 
+This page is retained during migration.
+Canonical operational docs are being organized under
+:doc:`/operations/index`.
+
 Rogue makes use of the PyDM platform for its GUI. While Rogue provides a default debug GUI that auto populates, the user should consider creating custom GUIs using the numerous PyDYM widgets and other features.
 
 Documentation on the PyDM platform can be found here:
@@ -24,4 +28,3 @@ Additionally Rogue provides a few custom widgets which can be used to visualize 
    timeplot_gui
    channel_urls
    rogue_widgets
-

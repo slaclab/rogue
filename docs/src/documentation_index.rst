@@ -19,6 +19,8 @@ Use the left sidebar to navigate sections and search documentation content.
    /built_in_modules/index
    /cookbook/index
    /installing/index
+   /logging/index
+   /pydm/index
    /api/index
    /operations/index
    /migration/index

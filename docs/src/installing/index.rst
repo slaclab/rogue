@@ -4,6 +4,10 @@
 Installing & Compiling Rogue
 ============================
 
+This page is retained during migration.
+Canonical operational docs are being organized under
+:doc:`/operations/index`.
+
 This section describes how to obtain and install Rogue. 
 After installation is completed, consider following our :doc:`/getting_started/index` guide to learn the basics. 
 
