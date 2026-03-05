@@ -299,7 +299,7 @@ This matrix tracks where content is moving as the revamp proceeds.
      - /pyrogue_core/index, /stream_interface/index, /memory_interface/index
      - Move
      - Docs Team
-     - M3 Coverage [marked for M4 harmonization]
+     - M3 Coverage [done]
    * - /logging/*, /pydm/*, /installing/*
      - /operations/index
      - Link

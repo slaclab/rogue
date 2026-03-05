@@ -67,22 +67,18 @@ There are uncommitted local changes in protocol pages related to lifecycle/threa
 - Protocol sections for UDP/Packetizer/UART expanded with code-backed content.
 - C++ API protocol wrappers for UDP and Packetizer converted from placeholders
   to reference-oriented pages.
+- `interfaces/index` conceptual harmonization completed as a transitional map to
+  canonical section homes.
 
 ### Remaining high-value M3 work
 
-1. Continue API<->narrative cross-link hardening (both directions).
-
-2. M4-prep item already flagged in migration matrix:
-   - `interfaces/index` broad conceptual narrative harmonization and final placement decisions.
-
-3. Run docs build with warnings enabled in a Sphinx-enabled environment and
+1. Run docs build with warnings enabled in a Sphinx-enabled environment and
    resolve warnings introduced during protocol/API cleanup passes.
 
 ## 7) Suggested Next Execution Order (One Section at a Time)
 
-1. API<->narrative cross-link hardening for protocol sections (bidirectional).
-2. `interfaces/index` conceptual harmonization decisions (M4-prep).
-3. Re-run docs build, then update migration matrix and add M3 closeout notes incrementally.
+1. Re-run docs build with warnings enabled and fix any new warnings.
+2. Update migration matrix/handoff with final M3 closeout notes after build validation.
 
 ## 8) Fast Validation Checklist
 
