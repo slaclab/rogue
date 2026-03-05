@@ -33,6 +33,12 @@ Integration boundaries
   definitions.
 - Stream transport tuning belongs in :doc:`/stream_interface/index`.
 
+Related integration pages
+=========================
+
+- AXI stream + SRPv3 usage: :doc:`/hardware/axi/stream`
+- TCP memory bridge usage: :doc:`/interfaces/memory/usingTcp`
+
 .. toctree::
    :maxdepth: 1
    :caption: SRP Protocol

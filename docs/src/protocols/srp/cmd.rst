@@ -24,6 +24,12 @@ Design note
 Keep command opcodes stable and documented, since these become part of the
 control contract between software and firmware.
 
+Practical note
+==============
+
+Unlike ``SrpV0``/``SrpV3``, ``Cmd`` is not a memory-transaction bridge. Use it
+only when firmware defines an explicit opcode/context command path.
+
 API reference
 =============
 

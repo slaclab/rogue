@@ -107,7 +107,8 @@ When :py:meth:`pyrogue.Root.start` is called:
 
 #. Calls :py:meth:`pyrogue.Device._start` on the root device recursively.
    This is where managed interfaces/protocols (added with
-   :py:meth:`pyrogue.Device.addInterface`) get their ``_start()`` callback.
+   :py:meth:`pyrogue.Device.addInterface`) get their ``_start()`` callback
+   under the :ref:`Managed Interface Lifecycle <pyrogue_tree_node_device_managed_interfaces>`.
    See :ref:`pyrogue_tree_node_device_managed_interfaces`.
 #. Optionally performs initial full-tree read/write depending on root settings.
 #. Starts :py:class:`pyrogue.PollQueue` and applies ``PollEn``.
@@ -120,7 +121,8 @@ When :py:meth:`pyrogue.Root.stop` is called:
 #. Clears ``running`` and stops the update worker.
 #. Stops :py:class:`pyrogue.PollQueue`.
 #. Calls :py:meth:`pyrogue.Device._stop` recursively from the root.
-   This is where managed interfaces/protocols receive ``_stop()``.
+   This is where managed interfaces/protocols receive ``_stop()`` under the
+   :ref:`Managed Interface Lifecycle <pyrogue_tree_node_device_managed_interfaces>`.
 
 ``_rootAttached()`` in root startup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -275,4 +277,3 @@ Root API Reference
 ------------------------
 
 See :doc:`/api/python/root` for generated API details.
-

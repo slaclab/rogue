@@ -77,6 +77,11 @@ Managed Interfaces: ``addInterface()`` and ``addProtocol()``
 Devices can own stream/memory/protocol helper objects that need coordinated
 startup/shutdown with the device tree.
 
+Canonical term used in this documentation:
+``Managed Interface Lifecycle``.
+This refers to the ``_start()`` / ``_stop()`` callback contract for objects
+registered through :py:meth:`pyrogue.Device.addInterface`.
+
 Use :py:meth:`pyrogue.Device.addInterface` (or alias
 :py:meth:`pyrogue.Device.addProtocol`) to register:
 
