@@ -225,6 +225,21 @@ This matrix tracks where content is moving as the revamp proceeds.
      - Move
      - Docs Team
      - M3 Coverage [in progress]
+   * - /protocols/udp narrative expansion
+     - /protocols/udp/index, /protocols/udp/client, /protocols/udp/server
+     - Move
+     - Docs Team
+     - M3 Coverage [in progress]
+   * - /protocols/packetizer narrative expansion
+     - /protocols/packetizer/index, /protocols/packetizer/core, /protocols/packetizer/coreV2
+     - Move
+     - Docs Team
+     - M3 Coverage [in progress]
+   * - /protocols/epicsV4 and /protocols/uart narrative expansion
+     - /protocols/epicsV4/index and /protocols/uart
+     - Move
+     - Docs Team
+     - M3 Coverage [in progress]
    * - /logging/*, /pydm/*, /installing/*
      - /operations/index
      - Link
