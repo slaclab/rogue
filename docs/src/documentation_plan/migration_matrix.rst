@@ -59,6 +59,22 @@ This matrix tracks where content is moving as the revamp proceeds.
 +---------------------------------------------------+--------------------------------------------+--------+-----------+-------------+
 | /interfaces/simulation/sideband placeholder       | /built_in_modules/integrations             | Link   | Docs Team | M2 Narrative|
 +---------------------------------------------------+--------------------------------------------+--------+-----------+-------------+
+| /protocols/udp/index placeholder                  | /protocols/udp/index                       | Link   | Docs Team | M2 Narrative|
++---------------------------------------------------+--------------------------------------------+--------+-----------+-------------+
+| /protocols/udp/client placeholder                 | /protocols/udp/client                      | Link   | Docs Team | M2 Narrative|
++---------------------------------------------------+--------------------------------------------+--------+-----------+-------------+
+| /protocols/udp/server placeholder                 | /protocols/udp/server                      | Link   | Docs Team | M2 Narrative|
++---------------------------------------------------+--------------------------------------------+--------+-----------+-------------+
+| /protocols/packetizer/index placeholder           | /protocols/packetizer/index                | Link   | Docs Team | M2 Narrative|
++---------------------------------------------------+--------------------------------------------+--------+-----------+-------------+
+| /protocols/packetizer/core placeholder            | /protocols/packetizer/core                 | Link   | Docs Team | M2 Narrative|
++---------------------------------------------------+--------------------------------------------+--------+-----------+-------------+
+| /protocols/packetizer/coreV2 placeholder          | /protocols/packetizer/coreV2               | Link   | Docs Team | M2 Narrative|
++---------------------------------------------------+--------------------------------------------+--------+-----------+-------------+
+| /protocols/epicsV4/index placeholder              | /protocols/epicsV4/index                   | Link   | Docs Team | M2 Narrative|
++---------------------------------------------------+--------------------------------------------+--------+-----------+-------------+
+| /protocols/uart placeholder                       | /protocols/uart                            | Link   | Docs Team | M2 Narrative|
++---------------------------------------------------+--------------------------------------------+--------+-----------+-------------+
 | /api/cpp/interfaces/memory/transaction            | /memory_interface/transactions             | Move   | Docs Team | M2 Narrative|
 +---------------------------------------------------+--------------------------------------------+--------+-----------+-------------+
 | /advanced_examples/index                          | /cookbook/index                            | Link   | Docs Team | M3 Coverage |
