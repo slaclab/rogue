@@ -75,6 +75,14 @@ This matrix tracks where content is moving as the revamp proceeds.
 +---------------------------------------------------+--------------------------------------------+--------+-----------+-------------+
 | /protocols/uart placeholder                       | /protocols/uart                            | Link   | Docs Team | M2 Narrative|
 +---------------------------------------------------+--------------------------------------------+--------+-----------+-------------+
+| /api/cpp/protocols/udp/* placeholder              | /api/cpp/protocols/udp/*                   | Link   | Docs Team | M2 Narrative|
++---------------------------------------------------+--------------------------------------------+--------+-----------+-------------+
+| /api/cpp/protocols/packetizer/* placeholder       | /api/cpp/protocols/packetizer/*            | Link   | Docs Team | M2 Narrative|
++---------------------------------------------------+--------------------------------------------+--------+-----------+-------------+
+| /migration/rogue_v6 TBD links                     | /migration/rogue_v6                        | Move   | Docs Team | M2 Narrative|
++---------------------------------------------------+--------------------------------------------+--------+-----------+-------------+
+| /interfaces/memory/hub TBD links                  | /interfaces/memory/hub                     | Move   | Docs Team | M2 Narrative|
++---------------------------------------------------+--------------------------------------------+--------+-----------+-------------+
 | /api/cpp/interfaces/memory/transaction            | /memory_interface/transactions             | Move   | Docs Team | M2 Narrative|
 +---------------------------------------------------+--------------------------------------------+--------+-----------+-------------+
 | /advanced_examples/index                          | /cookbook/index                            | Link   | Docs Team | M3 Coverage |

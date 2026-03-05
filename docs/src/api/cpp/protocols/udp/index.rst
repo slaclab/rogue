@@ -4,6 +4,9 @@
 UDP Protocol Class Descriptions
 ===============================
 
+This page is retained during migration.
+Canonical protocol docs are organized under :doc:`/protocols/udp/index`.
+
 TODO
 
 The following are detailed descriptions of the various C++ classes that make up the Rogue UDP protocol.
@@ -15,4 +18,3 @@ The following are detailed descriptions of the various C++ classes that make up 
    core
    server
    client
-

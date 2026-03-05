@@ -4,6 +4,9 @@
 Transport
 =========
 
+This page is retained during migration.
+For conceptual protocol guidance, see :doc:`/protocols/packetizer/index`.
+
 TODO
 
 

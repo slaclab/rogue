@@ -4,6 +4,9 @@
 Client
 ======
 
+This page is retained during migration.
+For conceptual protocol guidance, see :doc:`/protocols/udp/index`.
+
 TODO
 
 

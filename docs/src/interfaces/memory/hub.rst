@@ -125,7 +125,8 @@ Python Device Hub Example
 Below is an example of implementing the above example in a Device subclass. This allows
 the Hub to interact in a standard PyRogue tree. It will have its own base address and
 size in the downstream address map, but expose a separate upstream address map for
-translated transactions. More information about the Device class is included at TBD.
+translated transactions. More information about the Device class is included at
+:doc:`/pyrogue_tree/node/device/index`.
 
 .. code-block:: python
 
@@ -164,7 +165,8 @@ Using Python Device Hub
 =======================
 
 Below is an example of how the above Device would be used in a PyRogue tree.
-More information about the PyRogue Root class is included at TBD.
+More information about the PyRogue Root class is included at
+:doc:`/pyrogue_tree/node/root/index`.
 
 .. code-block:: python
 
@@ -297,4 +299,3 @@ transaction is complete. Instead it may be better to create a new buffer and cop
 as is done in the Python example. See the :ref:`interfaces_memory_slave_ex` example for
 ways to store and later retrieve the Transaction record while the downstream transaction is
 in progress.
-
