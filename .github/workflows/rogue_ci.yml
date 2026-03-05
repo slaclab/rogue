@@ -137,6 +137,56 @@ jobs:
 
 # ----------------------------------------------------------------------------
 
+  macos_arm64_build_test:
+    name: macOS arm64 Build Test
+    runs-on: macos-15
+    timeout-minutes: 60
+    steps:
+
+      # This step checks out a copy of your repository.
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup Miniforge Environment
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          miniforge-variant: Miniforge3
+          miniforge-version: latest
+          auto-activate-base: false
+          activate-environment: rogue_build
+          environment-file: conda.yml
+          use-mamba: true
+
+      - name: Install Python test/documentation dependencies
+        shell: bash -el {0}
+        run: |
+          python -m pip install -r pip_requirements.txt
+
+      # Rogue
+      - name: Build Rogue
+        shell: bash -el {0}
+        run: |
+          python -c "import numpy; print(numpy.get_include())"
+          mkdir build; cd build
+          cmake .. -DROGUE_INSTALL=conda
+          cmake --build . -j$(sysctl -n hw.ncpu)
+          make install
+
+      - name: Rogue Import Smoke Test
+        shell: bash -el {0}
+        run: |
+          python -c "import rogue, pyrogue; print('rogue import ok')"
+
+      # Run Python tests (exclude separate C++ api_test job on macOS)
+      - name: Rogue Tests
+        shell: bash -el {0}
+        run: |
+          python -m pytest
+
+
+# ----------------------------------------------------------------------------
+
   gen_release:
     needs: [full_build_test, small_build_test]
     uses: slaclab/ruckus/.github/workflows/gen_release.yml@main

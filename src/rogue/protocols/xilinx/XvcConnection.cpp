@@ -21,6 +21,7 @@
 #include <netinet/tcp.h>
 #include <sys/select.h>
 
+#include <cinttypes>
 #include <cstdio>
 
 namespace rpx = rogue::protocols::xilinx;
@@ -169,7 +170,8 @@ void rpx::XvcConnection::run() {
 
                 drv_->query();  // informs the driver that there is a new connection
 
-                tl_ = snprintf(reinterpret_cast<char*>(&txb_[0]), txb_.size(), "xvcServer_v1.0:%ld\n", maxVecLen_);
+                tl_ = snprintf(
+                    reinterpret_cast<char*>(&txb_[0]), txb_.size(), "xvcServer_v1.0:%" PRIu64 "\n", maxVecLen_);
 
                 bump(8);
             } else if (0 == ::memcmp(rp_, "se", 2)) {
