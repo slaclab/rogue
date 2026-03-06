@@ -71,7 +71,7 @@ Related Example
 
 For a complete paired example, see:
 
-- :doc:`/pyrogue_tree/builtin_devices/osmemmaster`
+- :doc:`/built_in_modules/os_memory_bridge/osmemmaster`
 
 API reference
 =============

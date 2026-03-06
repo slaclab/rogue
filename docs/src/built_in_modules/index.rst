@@ -29,6 +29,8 @@ Key integration topics
   :doc:`/built_in_modules/version`
 - C++ wrapper entry point for embedding Rogue:
   :doc:`/built_in_modules/cpp_api_wrapper`
+- OS-backed memory bridge components:
+  :doc:`/built_in_modules/os_memory_bridge/index`
 
 Where to explore next
 =====================
@@ -45,6 +47,7 @@ Where to explore next
    sql
    version
    cpp_api_wrapper
+   os_memory_bridge/index
    /utilities/index
    /hardware/index
    /protocols/index

@@ -46,7 +46,7 @@ Common patterns:
 * Isolate conversion/formatting at the adapter boundary
 
 For the stream-variable interface layer, see
-:doc:`/stream_interface/memory_stream_variable`.
+:doc:`/pyrogue_tree/core/memory_variable_stream`.
 
 Common attributes and behavior
 ==============================

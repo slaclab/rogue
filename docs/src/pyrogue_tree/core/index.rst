@@ -95,6 +95,7 @@ Where to explore next
 * Device composition and managed interfaces: :doc:`/pyrogue_tree/core/device`
 * Variable behavior and types: :doc:`/pyrogue_tree/core/variable`
 * Command behavior and invocation patterns: :doc:`/pyrogue_tree/core/command`
+* Variable-to-stream adapter behavior: :doc:`/pyrogue_tree/core/memory_variable_stream`
 * Block transaction behavior: :doc:`/pyrogue_tree/core/block`
 * Model conversion behavior: :doc:`/pyrogue_tree/core/model`
 
@@ -105,6 +106,7 @@ Where to explore next
    root
    device
    variable
+   memory_variable_stream
    command
    block
    model

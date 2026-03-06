@@ -132,4 +132,4 @@ Related APIs
 
 - :doc:`/api/python/device`
 - :doc:`/api/python/remotevariable`
-- :doc:`/memory_interface/os_command_memory_slave`
+- :doc:`/built_in_modules/os_memory_bridge/os_command_memory_slave`

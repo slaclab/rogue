@@ -24,7 +24,6 @@ Use cases commonly include:
 * PRBS transmit/receive test pipelines
 * Stream capture and replay workflows
 * Process supervision and script orchestration
-* Host-metric projection through memory-backed Device examples
 
 Relationship to Core and interfaces
 ===================================
@@ -43,7 +42,6 @@ Where to explore next
 * Data receive/read path: :doc:`data_receiver` and :doc:`stream_reader`
 * PRBS testing devices: :doc:`prbsrx`, :doc:`prbstx`, and :doc:`prbspair`
 * External process integration: :doc:`process`
-* OS memory-backed example device: :doc:`osmemmaster`
 
 .. toctree::
    :maxdepth: 1
@@ -58,4 +56,3 @@ Where to explore next
    stream_reader
    stream_writer
    process
-   osmemmaster
