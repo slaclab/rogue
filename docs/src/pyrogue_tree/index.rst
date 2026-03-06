@@ -1,4 +1,5 @@
 .. _pyrogue_tree:
+.. _pyrogue_tree_node:
 
 ============
 PyRogue Tree
@@ -107,5 +108,6 @@ Where to explore next
    node/device/index
    node/command/index
    node/variable/index
+   node/groups
    model
    blocks

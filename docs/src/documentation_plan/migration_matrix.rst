@@ -356,7 +356,7 @@ This matrix tracks where content is moving as the revamp proceeds.
      - Docs Team
      - M4 Harmonization [done]
    * - Move remaining interface integration pages into canonical sections
-     - /interfaces/simulation/* -> /built_in_modules/simulation/*; /interfaces/sql -> /built_in_modules/sql; /interfaces/version -> /built_in_modules/version; /interfaces/cpp_api -> /pyrogue_core/cpp_api_wrapper
+     - /interfaces/simulation/\* -> /built_in_modules/simulation/\*; /interfaces/sql -> /built_in_modules/sql; /interfaces/version -> /built_in_modules/version; /interfaces/cpp_api -> /pyrogue_core/cpp_api_wrapper
      - Move
      - Docs Team
      - M4 Harmonization [done]
