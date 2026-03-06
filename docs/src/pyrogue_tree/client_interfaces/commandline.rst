@@ -1,101 +1,97 @@
 .. _interfaces_clients_commandline:
 
-================================
-Using The Command Line Interface
-================================
+==============================
+Using the Command Line Client
+==============================
 
-Rogue provides a client interface which is able to interface to a currently running Rogue instances. In
-order to utilize the client interface the Rogue Root class must be started with the serverPort argument
-set to 0 (auto assign) or a specific value. The client interface is accessed with the following
-command:
+PyRogue provides a command-line client entry point for quick access to the
+running tree:
 
-.. code::
+.. code-block:: bash
 
-   $ python -m pyrogue --help
+   python -m pyrogue --help
 
-The above command will print out the list of available commands and options.
+The CLI connects to a running server (typically ``ZmqServer``) and supports
+common get/set/exec/monitor operations.
 
-By default the client will attempt to interface to the Rogue server on the localhost interface, using the
-default serverPort value of 9099. Alternatively the --server argument can be used to specifiy a host.
-The values passed to this argument can either be a host:port pair or a comman seperated list of host:port
-values. The host:port list is only used when starting the PyDM GUI.
+Connecting to a server
+======================
 
-.. code::
+By default, the CLI connects to ``localhost:9099``.
+Use ``--server`` to select another endpoint:
 
-   $ python -m pyrogue --server=localhost:9099
+.. code-block:: bash
 
-or
+   python -m pyrogue --server=localhost:9099
 
-.. code::
+For GUI mode, ``--server`` may also be a comma-separated host list:
 
-   $ python -m pyrogue --server=localhost:9099,otherHost:9099
+.. code-block:: bash
 
-The command line client expects a cmd to the passed, with an optional path and value for some commands.
-The possible command/path/value combinations are:
+   python -m pyrogue --server=localhost:9099,otherHost:9099 gui
+
+Command forms
+=============
 
 +---------------+-----------------+-----------------+----------------------------------------------------------------------------------+
 | Cmd           | Path            | Value           | Operation                                                                        |
 +===============+=================+=================+==================================================================================+
 | gui           | NA              | NA              | Start the PyDM GUI                                                               |
 +---------------+-----------------+-----------------+----------------------------------------------------------------------------------+
-| syslog        | NA              | NA              | Dump the current syslog contents and listen for more syslog entries              |
+| syslog        | NA              | NA              | Dump current syslog and continue streaming updates                               |
 +---------------+-----------------+-----------------+----------------------------------------------------------------------------------+
-| monitor       | variable_path   | NA              | Display the current value of the passed variable path and monitor for updates    |
+| monitor       | variable_path   | NA              | Display current Variable value and monitor updates                               |
 +---------------+-----------------+-----------------+----------------------------------------------------------------------------------+
-| get           | variable_path   | NA              | Display the current value of the passed variable, performing a read operation    |
+| get           | variable_path   | NA              | Read and display current Variable value                                          |
 +---------------+-----------------+-----------------+----------------------------------------------------------------------------------+
-| value         | variable_path   | NA              | Display the current value of the passed variable, without performing a read      |
+| value         | variable_path   | NA              | Display cached/shadow Variable value (no read)                                   |
 +---------------+-----------------+-----------------+----------------------------------------------------------------------------------+
-| set           | variable_path   | variable_value  | Set the variable_value to the passed variable.                                   |
+| set           | variable_path   | variable_value  | Set Variable value                                                               |
 +---------------+-----------------+-----------------+----------------------------------------------------------------------------------+
-| exec          | command_path    | command_arg     | Execute the passed command with the provided optional command_arg value          |
+| exec          | command_path    | command_arg     | Execute Command with optional argument                                           |
 +---------------+-----------------+-----------------+----------------------------------------------------------------------------------+
 
-For example the PyDM GUI can be started with the following command:
+Examples
+========
 
-.. code::
+Start GUI:
 
-   $ python -m pyrogue --server=localhost:9099 gui
+.. code-block:: bash
 
-To dump the current syslog contents and monitor the syslog for updates:
+   python -m pyrogue --server=localhost:9099 gui
 
-.. code::
+Watch syslog:
 
-   $ python -m pyrogue --server=localhost:9099 syslog
+.. code-block:: bash
 
-To monitor a Rogue variable:
+   python -m pyrogue --server=localhost:9099 syslog
 
-.. code::
+Monitor a Variable:
 
-   $ python -m pyrogue --server=localhost:9099 monitor root.LocalTime
+.. code-block:: bash
 
-To get a Rogue variable, forcing a read operation.
+   python -m pyrogue --server=localhost:9099 monitor root.LocalTime
 
-.. code::
+Read a Variable (forces read):
 
-   $ python -m pyrogue --server=localhost:9099 get root.RogueVersion
+.. code-block:: bash
 
-To display the value of a Rogue variable, without forcing a read operation:
+   python -m pyrogue --server=localhost:9099 get root.RogueVersion
 
-.. code::
+Read cached value only:
 
-   $ python -m pyrogue --server=localhost:9099 value root.AxiVersion.ScratchPad
+.. code-block:: bash
 
-To set a new vale to a Rogue variable.
+   python -m pyrogue --server=localhost:9099 value root.AxiVersion.ScratchPad
 
-.. code::
+Set a Variable:
 
-   $ python -m pyrogue --server=localhost:9099 set root.AxiVersion.ScratchPad 0x1000
+.. code-block:: bash
 
-To execute a command without a passed argument.
+   python -m pyrogue --server=localhost:9099 set root.AxiVersion.ScratchPad 0x1000
 
-.. code::
+Execute a Command:
 
-   $ python -m pyrogue --server=localhost:9099 exec root.SomeCommand
+.. code-block:: bash
 
-To execute a command with a passed argument.
-
-.. code::
-
-   $ python -m pyrogue --server=localhost:9099 exec root.SomeCommand 0x55
-
+   python -m pyrogue --server=localhost:9099 exec root.SomeCommand 0x55

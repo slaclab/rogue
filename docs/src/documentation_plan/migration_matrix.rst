@@ -71,12 +71,12 @@ This matrix tracks where content is moving as the revamp proceeds.
      - Docs Team
      - M2 Narrative [done]
    * - /interfaces/clients/index narrative
-     - /pyrogue_tree/client_interfaces/client_access
+     - /pyrogue_tree/client_interfaces/index
      - Move
      - Docs Team
      - M2 Narrative [done]
    * - /interfaces/pyrogue/index narrative
-     - /pyrogue_tree/client_interfaces/client_access
+     - /pyrogue_tree/client_interfaces/index
      - Move
      - Docs Team
      - M2 Narrative [done]
@@ -276,7 +276,7 @@ This matrix tracks where content is moving as the revamp proceeds.
      - Docs Team
      - M3 Coverage [done]
    * - /pyrogue_core narrative expansion
-     - /pyrogue_tree/index, /pyrogue_tree/client_interfaces/client_access, /pyrogue_tree/node/variable/index, /pyrogue_tree/node/root/poll_queue, /pyrogue_tree/node/root/yaml_configuration, /pyrogue_tree/model, /pyrogue_core/built_in_devices, /pyrogue_core/advanced_patterns
+     - /pyrogue_tree/index, /pyrogue_tree/client_interfaces/index, /pyrogue_tree/node/variable/index, /pyrogue_tree/node/root/poll_queue, /pyrogue_tree/node/root/yaml_configuration, /pyrogue_tree/model, /pyrogue_core/built_in_devices, /pyrogue_core/advanced_patterns
      - Move
      - Docs Team
      - M3 Coverage [done]

@@ -1,75 +1,67 @@
 .. _interfaces_clients_simple:
 
-========================
+=======================
 Simple Client Interface
-========================
+=======================
 
-The Rogue SimpleClient class is a lightweight python class which can be used on its own
-with minimal dependencies, requiring only the zmq library. This file is fully portable and
-can be used outside of the greater Rogue package.
+The Rogue ``SimpleClient`` is a lightweight Python client for direct access to
+a running tree over the ZMQ server endpoint.
 
-Most client interfaces will make use of the :ref:`interfaces_clients_virtual` which
-provides an exact mirror of the Rogue tree allowing a more powerfull interface to
-a running Rogue core. The SimpleClient is targetted towards clients which require only
-a limited type of access to top level command and variable access.
+It is a good fit when you need:
 
-The most current file can be downloaded from:
+* script-friendly read/write/exec operations
+* minimal dependencies
+* string-path based access without constructing a mirrored local tree
 
-https://github.com/slaclab/rogue/blob/master/python/pyrogue/interfaces/_SimpleClient.py
+Compared to :doc:`/pyrogue_tree/client_interfaces/virtual`, ``SimpleClient``
+is intentionally narrower in scope but faster to adopt in small scripts.
 
-Below is an example of using the SimpleClient in a python script:
-
-.. code-block:: python
-
-   with SimpleClient(addr="localhost",port=9099) as client:
-
-      # Get a variable value with a read, this returns the native value
-      ret = client.get("root.RogueVersion")
-      print(f"Version = {ret}")
-
-      # Get the string representation a variable value with a read
-      ret = client.getDisp("root.RogueVersion")
-      print(f"Version = {ret}")
-
-      # Get a variable value without a read, this returns the native value
-      ret = client.value("root.RogueVersion")
-      print(f"Version = {ret}")
-
-      # Get the string representation a variable value without a read
-      ret = client.valueDisp("root.RogueVersion")
-      print(f"Version = {ret}")
-
-      # Set a variable value using the native value
-      client.set("root.AxiVersion.ScratchPad",0x100)
-
-      # Set a variable value using the string representation of the value
-      client.setDisp("root.AxiVersion.ScratchPad","0x100")
-
-      # Execute a command with an optional argument, passing either the native or string value
-      client.exec("root.SomeCommand","0x100")
-
-
-The SimpleClient interface also provides a mechanism to provide a callback function which is
-called anytime a Rogue variable is updated. The call back function is called once for each
-of the updated variables reported by the Rogue server.
+Basic usage
+===========
 
 .. code-block:: python
 
-   def myCallBack(path,value):
-      print(f"Got updated value for {path} = {value}")
+   from pyrogue.interfaces import SimpleClient
 
+   with SimpleClient(addr='localhost', port=9099) as client:
+       # Read with hardware access
+       print(client.get('root.RogueVersion'))
+       print(client.getDisp('root.RogueVersion'))
 
-   with SimpleClient(addr="localhost",port=9099,cb=myCallBack) as client:
+       # Read cached/shadow value only
+       print(client.value('root.RogueVersion'))
+       print(client.valueDisp('root.RogueVersion'))
 
-      # Any variale updates received while this interface is activate will
-      # be passed to the myCallBack function
+       # Set values
+       client.set('root.AxiVersion.ScratchPad', 0x100)
+       client.setDisp('root.AxiVersion.ScratchPad', '0x100')
 
+       # Execute a command
+       client.exec('root.SomeCommand', '0x100')
 
-SimpleClient Description
-========================
+Update callbacks
+================
 
-The class description for the SimpleClient class is included below:
+``SimpleClient`` can register a callback that is invoked for each Variable
+update published by the server.
 
-See :doc:`/api/python/interfaces_simpleclient` for generated API details.
+.. code-block:: python
 
-   See :doc:`/api/python/interfaces_simpleclient` for method details, including ``_stop``.
+   import time
+   from pyrogue.interfaces import SimpleClient
+
+   def on_update(path, value):
+       print(f'{path} = {value}')
+
+   with SimpleClient(addr='localhost', port=9099, cb=on_update):
+       print('Monitoring updates. Press Ctrl+C to stop.')
+       try:
+           while True:
+               time.sleep(1.0)
+       except KeyboardInterrupt:
+           print('Stopping monitor.')
+
+API Reference
+==============
+
+:doc:`/api/python/interfaces_simpleclient`

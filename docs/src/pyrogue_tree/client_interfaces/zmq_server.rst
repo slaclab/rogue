@@ -5,7 +5,7 @@ Python ZMQServer
 ================
 
 The :py:class:`pyrogue.interfaces.ZmqServer` interface exposes a running
-PyRogue root tree to external client programs over ZeroMQ sockets carried on
+PyRogue ``Root`` tree to external client programs over ZeroMQ sockets carried on
 TCP. In practice, this is the primary remote-control path used by tools such
 as PyDM GUIs, :ref:`interfaces_clients_simple`, and
 :ref:`interfaces_clients_virtual`.
@@ -20,9 +20,9 @@ port:
 * ``base+1``: binary request/reply path (used by full-featured clients)
 * ``base+2``: string request/reply path (used by lightweight clients)
 
-From the client perspective, this gives remote access to the same tree content
-you have inside the process: read/write variables, call commands, and monitor
-value changes.
+From the client perspective, this gives access to the same tree content
+available inside the Root process: read/write Variables, execute Commands, and
+monitor value updates.
 
 Common usage pattern
 ====================
@@ -46,7 +46,15 @@ Create the server in ``Root.__init__`` and register it as an interface:
            )
            self.addInterface(self.zmqServer)
 
-After ``root.start()``, the selected port range can be inspected with
+Notes
+=====
+
+* ``addr='127.0.0.1'`` keeps access local to the host.
+* ``addr='*'`` binds all interfaces.
+* ``port=0`` auto-selects an available base port (starting near ``9099``).
+* Group filtering can be applied with ``incGroups``/``excGroups`` to control
+  which Variable updates are published.
+* After ``root.start()``, inspect the selected port range with
 ``root.zmqServer.port()`` and ``root.zmqServer.address``.
 
 Client access examples
@@ -74,14 +82,7 @@ Virtual client (mirrored remote tree):
        print(root.RogueVersion.valueDisp())
        root.AxiVersion.ScratchPad.set(0x100)
 
-Notes
-=====
 
-* ``addr='127.0.0.1'`` keeps access local to the host.
-* ``addr='*'`` binds all interfaces.
-* ``port=0`` auto-selects an available base port (starting near ``9099``).
-* Group filtering can be applied with ``incGroups``/``excGroups`` to control
-  which variable updates are published.
 
 Class API
 =========

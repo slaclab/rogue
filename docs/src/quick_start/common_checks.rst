@@ -30,4 +30,4 @@ If checks fail
 
 - Revisit installation steps: :doc:`/installing/index`
 - Review root-level concepts: :doc:`/pyrogue_tree/node/root/index`
-- Review client connectivity: :doc:`/pyrogue_tree/client_interfaces/client_access`
+- Review client connectivity: :doc:`/pyrogue_tree/client_interfaces/index`

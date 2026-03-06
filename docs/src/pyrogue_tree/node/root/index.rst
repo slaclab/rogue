@@ -181,7 +181,7 @@ Notes:
 * non-local deployments can bind to another interface/address as needed
 
 For broader client/interface selection and deployment patterns, see
-:doc:`/pyrogue_tree/client_interfaces/client_access`,
+:doc:`/pyrogue_tree/client_interfaces/index`,
 :doc:`/pyrogue_tree/client_interfaces/zmq_server`,
 :doc:`/pyrogue_tree/client_interfaces/simple`, and
 :doc:`/pyrogue_tree/client_interfaces/virtual`.

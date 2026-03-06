@@ -4,105 +4,96 @@
 Virtual Client Interface
 ========================
 
-The Rogue VirtualClient class provides a powerfull client interface to a running Rogue
-tree. The VirtualClient is designed to fully replicate the Rogue tree in the client,
-providing the same level of access to Rogue nodes as is available inside the core Rogue
-python code. Variables, Commands and even the Root classes are fully mirrored in the
-client, supporting access to the same methods and attributes as defined in the Rogue
-tree API.
+``VirtualClient`` mirrors a running remote tree into a local client-side object
+model, so client code can use familiar ``Device``/``Variable``/``Command`` access patterns.
 
-This allows functions and other sequences of Rogue operations to exist either in the client
-or core Rogue tree, enabling complex functions to be first developed in a client script
-using the VirtualClient and then inserted into the Rogue core.
+Use ``VirtualClient`` when you need:
 
-Unlike the :ref:`interfaces_clients_simple` which operates as a standalone class, the Virtual
-client uses much of the Rogue libraries and requires a full Rogue installation to operate.
+* tree-like object access from the client (``client.root.Device.Var`` style)
+* richer metadata and listener behavior
+* a path to prototype complex workflows in client code before moving logic into
+  the server-side tree
 
-Below is an example of using the VirtualClient in a python script:
+Unlike :doc:`/pyrogue_tree/client_interfaces/simple`, ``VirtualClient`` depends
+on broader Rogue/PyRogue libraries.
 
-.. code-block:: python
-
-   with VirtualClient(addr="localhost",port=9099) as client:
-
-      # Get the reference to the root node
-      root = client.root
-
-      # Get a variable value with a read, this returns the native value
-      ret = root.RogueVersion.get()
-      print(f"Version = {ret}")
-
-      # Get the string representation a variable value with a read
-      ret = root.RogueVersion.disp()
-      print(f"Version = {ret}")
-
-      # Get a variable value without a read, this returns the native value
-      ret = root.RogueVersion.value()
-      print(f"Version = {ret}")
-
-      # Get the string representation a variable value without a read
-      ret = root.RogueVersion.valueDisp()
-      print(f"Version = {ret}")
-
-      # Set a variable value using the native value
-      root.AxiVersion.ScratchPad.set(0x100)
-
-      # Set a variable value using the string representation of the value
-      root.AxiVersion.ScratchPad.setDisp("0x100")
-
-      # Execute a command with an optional argument, passing either the native or string value
-      root.SomeCommand.exec("0x100")
-
-
-Unlike the SimpleClient the VirtualClient provides access to all of the attributes to the Rogue classes:
+Basic usage
+===========
 
 .. code-block:: python
 
-   print(f"Type  = {root.AxiVersion.ScratchPad.typeStr}")
-   print(f"Mode  = {root.AxiVersion.ScratchPad.mode}")
-   print(f"Units = {root.AxiVersion.ScratchPad.units}")
-   print(f"Min   = {root.AxiVersion.ScratchPad.minimum}")
-   print(f"Max   = {root.AxiVersion.ScratchPad.maximum}")
+   from pyrogue.interfaces import VirtualClient
 
-Update callbacks can be attached to a Variable as in the Rogue tree:
+   with VirtualClient(addr='localhost', port=9099) as client:
+       root = client.root
 
-.. code-block:: python
+       print(root.RogueVersion.get())
+       print(root.RogueVersion.valueDisp())
 
-   def listener(path,varValue):
-      print(f"{path} = {varValue.value}")
+       root.AxiVersion.ScratchPad.set(0x100)
+       root.AxiVersion.ScratchPad.setDisp('0x100')
+       root.SomeCommand.exec('0x100')
 
-   root.UpTime.addListener(listener)
+Access to metadata and listeners
+================================
 
-The VariableWait helper function can also be used.
-
-.. code-block:: python
-
-   # Wait for the uptime to be greater than 1000 seconds
-   VariableWait([root.AxiVersion.UpTime], lambda varValues: varValues[0].value > 1000)
-
-The VirtualClient maintains a connection to the Rogue core. The status of this connection
-can be directly accessed through the linked attribute. Additionally a callback function
-can be added to be called any time the link state changes.
+Because the tree is mirrored, you can inspect Variable metadata and attach
+listeners in the same style as server-side code.
 
 .. code-block:: python
 
-   # create a callback function to be notified of link state changes
-   def linkMonitor(state):
-      print(f"Link state is now {state}")
+   from pyrogue.interfaces import VirtualClient
 
-   # Add a link monitor
-   client.addLinkMonitor(linkMonitor)
+   with VirtualClient(addr='localhost', port=9099) as client:
+       root = client.root
 
-   # Remove a link monitor
-   client.remLinkMonitor(linkMonitor)
+       print(root.AxiVersion.ScratchPad.typeStr)
+       print(root.AxiVersion.ScratchPad.mode)
+       print(root.AxiVersion.ScratchPad.units)
 
-   # Get the current link state
-   print(f"Current link state is {client.linked}")
+       def listener(path, varValue):
+           print(f'{path} = {varValue.value}')
+
+       root.UpTime.addListener(listener)
+
+Waiting on Variable conditions
+==============================
+
+``VariableWait`` is useful when client logic needs to block until one or more
+Variable conditions are satisfied.
+
+.. code-block:: python
+
+   from pyrogue.interfaces import VirtualClient, VariableWait
+
+   with VirtualClient(addr='localhost', port=9099) as client:
+       root = client.root
+
+       # Wait until uptime exceeds 1000 seconds
+       VariableWait(
+           [root.AxiVersion.UpTime],
+           lambda values: values[0].value > 1000,
+       )
 
 
-VirtualClient Description
-=========================
+Link-state monitoring
+=====================
 
-The class description for the VirtualClient class is included below:
+``VirtualClient`` exposes connection state and link monitor callbacks.
+
+.. code-block:: python
+
+   from pyrogue.interfaces import VirtualClient
+
+   with VirtualClient(addr='localhost', port=9099) as client:
+       def link_monitor(state):
+           print(f'Link state is now {state}')
+
+       client.addLinkMonitor(link_monitor)
+       print(client.linked)
+       client.remLinkMonitor(link_monitor)
+
+API reference
+=============
 
 See :doc:`/api/python/interfaces_virtualclient` for generated API details.
-
