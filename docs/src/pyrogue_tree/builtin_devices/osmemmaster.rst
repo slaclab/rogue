@@ -4,9 +4,13 @@
 OsMemMaster Device Example
 ==========================
 
-`OsMemMaster` is an optional example of a memory-backed monitoring device.
-It demonstrates how to map host-level metrics into a standard PyRogue device
-interface.
+``OsMemMaster`` is an example ``Device`` that exposes host OS metrics as
+``RemoteVariable`` entries through a memory-backed path.
+
+It demonstrates how to map non-hardware data sources into the normal PyRogue
+tree model so they can be read, monitored, and grouped like other Variables.
+
+The implementation lives in ``python/pyrogue/examples/_OsMemMaster.py``.
 
 .. code-block:: python
 
@@ -77,3 +81,8 @@ interface.
                 base         = pr.UInt,
                 mode         = 'RW',
             ))
+
+Related APIs:
+
+- :doc:`/api/python/device`
+- :doc:`/api/python/remotevariable`

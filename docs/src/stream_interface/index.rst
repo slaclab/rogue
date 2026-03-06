@@ -122,6 +122,7 @@ Where to go next
 - Custom transmitters: :doc:`/stream_interface/sending`
 - Custom receivers: :doc:`/stream_interface/receiving`
 - Built-in modules: :doc:`/stream_interface/built_in_modules`
+- Variable update stream adapter: :doc:`/stream_interface/memory_stream_variable`
 
 Core API reference:
 
@@ -143,4 +144,5 @@ Core API reference:
    rate_drop
    tcp_bridge
    debugStreams
+   memory_stream_variable
    /custom_module/index

@@ -55,16 +55,6 @@ Operational notes
 - Prefer ``127.0.0.1`` for local-only deployments and explicit non-loopback
   binds for remote access.
 
-Python interface adapters
-=========================
-
-Rogue also provides built-in Python interface adapters for stream-variable and
-OS-backed integration patterns:
-
-- :doc:`memory_stream_variable`
-- :doc:`os_command_memory_slave`
-- :doc:`osmemmaster`
-
 Related API references
 ======================
 
@@ -99,6 +89,3 @@ Minimal setup pattern
    simple
    virtual
    commandline
-   memory_stream_variable
-   os_command_memory_slave
-   osmemmaster

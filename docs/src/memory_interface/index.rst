@@ -53,6 +53,7 @@ Where to go next
 - Custom slave patterns: :doc:`/memory_interface/slave`
 - Hub translation patterns: :doc:`/memory_interface/hub`
 - TCP bridge usage: :doc:`/memory_interface/tcp_bridge`
+- OS-backed command adapter: :doc:`/memory_interface/os_command_memory_slave`
 
 
 .. toctree::
@@ -65,3 +66,4 @@ Where to go next
    hub
    tcp_bridge
    transactions
+   os_command_memory_slave
