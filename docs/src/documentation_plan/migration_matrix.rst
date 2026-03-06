@@ -71,12 +71,12 @@ This matrix tracks where content is moving as the revamp proceeds.
      - Docs Team
      - M2 Narrative [done]
    * - /interfaces/clients/index narrative
-     - /pyrogue_core/client_access
+     - /pyrogue_tree/client_interfaces/client_access
      - Move
      - Docs Team
      - M2 Narrative [done]
    * - /interfaces/pyrogue/index narrative
-     - /pyrogue_core/client_access
+     - /pyrogue_tree/client_interfaces/client_access
      - Move
      - Docs Team
      - M2 Narrative [done]
@@ -276,7 +276,7 @@ This matrix tracks where content is moving as the revamp proceeds.
      - Docs Team
      - M3 Coverage [done]
    * - /pyrogue_core narrative expansion
-     - /pyrogue_tree/index, /pyrogue_core/client_access, /pyrogue_tree/node/variable/index, /pyrogue_tree/node/root/poll_queue, /pyrogue_tree/node/root/yaml_configuration, /pyrogue_tree/model, /pyrogue_core/built_in_devices, /pyrogue_core/advanced_patterns
+     - /pyrogue_tree/index, /pyrogue_tree/client_interfaces/client_access, /pyrogue_tree/node/variable/index, /pyrogue_tree/node/root/poll_queue, /pyrogue_tree/node/root/yaml_configuration, /pyrogue_tree/model, /pyrogue_core/built_in_devices, /pyrogue_core/advanced_patterns
      - Move
      - Docs Team
      - M3 Coverage [done]
@@ -330,8 +330,8 @@ This matrix tracks where content is moving as the revamp proceeds.
      - Move
      - Docs Team
      - M4 Harmonization [done]
-   * - Move interface client/pyrogue docs into canonical PyRogue Core tree
-     - /interfaces/clients/* -> /pyrogue_core/client_interfaces/*; /interfaces/pyrogue/* -> /pyrogue_core/python_interfaces/*
+   * - Move interface client/pyrogue docs into canonical tree/client-interface sections
+     - /interfaces/clients/* -> /pyrogue_tree/client_interfaces/*; /interfaces/pyrogue/zmq_server -> /pyrogue_tree/client_interfaces/zmq_server; remaining /interfaces/pyrogue/* -> /pyrogue_core/python_interfaces/*
      - Move
      - Docs Team
      - M4 Harmonization [done]

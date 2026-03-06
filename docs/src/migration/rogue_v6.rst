@@ -34,7 +34,7 @@ Similiarly the previous feature which allowed the user to pass the root class to
 More information can be found in:
 
 - :doc:`/api/python/interfaces_zmqserver`
-- :doc:`/pyrogue_core/client_access`
+- :doc:`/pyrogue_tree/client_interfaces/client_access`
 
 
 SqlLogger

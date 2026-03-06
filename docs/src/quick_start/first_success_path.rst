@@ -26,7 +26,7 @@ Steps
 3. Validate your final structure against:
    :doc:`/getting_started/pyrogue_tree_example/full_root`
 4. Verify client access basics:
-   :doc:`/pyrogue_core/client_interfaces/simple`
+   :doc:`/pyrogue_tree/client_interfaces/simple`
 
 Validation checklist
 ====================

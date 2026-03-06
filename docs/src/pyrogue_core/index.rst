@@ -18,12 +18,11 @@ section.
    :caption: PyRogue Core:
 
    /pyrogue_tree/index
-   client_access
+   /pyrogue_tree/client_interfaces/index
    /pyrogue_tree/node/root/poll_queue
    /pyrogue_tree/node/root/yaml_configuration
    /pyrogue_tree/model
    built_in_devices
    advanced_patterns
    cpp_api_wrapper
-   client_interfaces/index
    python_interfaces/index

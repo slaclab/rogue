@@ -181,10 +181,10 @@ Notes:
 * non-local deployments can bind to another interface/address as needed
 
 For broader client/interface selection and deployment patterns, see
-:doc:`/pyrogue_core/client_access`,
-:doc:`/pyrogue_core/python_interfaces/zmq_server`,
-:doc:`/pyrogue_core/client_interfaces/simple`, and
-:doc:`/pyrogue_core/client_interfaces/virtual`.
+:doc:`/pyrogue_tree/client_interfaces/client_access`,
+:doc:`/pyrogue_tree/client_interfaces/zmq_server`,
+:doc:`/pyrogue_tree/client_interfaces/simple`, and
+:doc:`/pyrogue_tree/client_interfaces/virtual`.
 
 Built-in Groups
 ---------------

@@ -1,30 +1,29 @@
-.. _pyrogue_core_client_access:
+.. _pyrogue_tree_root_client_access:
+.. _pyrogue_tree_client_access:
 
 ===================
 Client Connectivity
 ===================
 
-PyRogue exposes tree access using built-in client/server interfaces.
+PyRogue exposes tree access using built-in client/server interfaces attached at
+the ``Root`` boundary.
 
-Rogue provides a mechanism for remote clients to access a PyRogue tree over a
-network interface. This includes script interfaces, command-line interfaces,
-and the PyDM-based Rogue GUI.
+Rogue provides a mechanism for remote clients to access a running PyRogue tree
+over network interfaces. This includes script interfaces, command-line
+interfaces, and the PyDM-based Rogue GUI.
 
-This page is now the canonical conceptual home for client connectivity
-guidance. Legacy narrative remains available at
-:doc:`/pyrogue_core/client_interfaces/index`.
+Primary interfaces
+==================
 
-Primary interfaces:
-
-- ZMQ server: :doc:`/pyrogue_core/python_interfaces/zmq_server`
-- Simple client: :doc:`/pyrogue_core/client_interfaces/simple`
-- Virtual client: :doc:`/pyrogue_core/client_interfaces/virtual`
+- ZMQ server: :doc:`/pyrogue_tree/client_interfaces/zmq_server`
+- Simple client: :doc:`/pyrogue_tree/client_interfaces/simple`
+- Virtual client: :doc:`/pyrogue_tree/client_interfaces/virtual`
 
 Connection model
 ================
 
 1. Application starts a tree rooted at ``Root``.
-2. A server-side interface (commonly ZMQ) exposes the tree endpoints.
+2. A server-side interface (commonly ZMQ) exposes tree endpoints.
 3. Clients connect and perform reads, writes, and command operations.
 4. GUI and automation tools share the same conceptual access path.
 
@@ -39,7 +38,7 @@ Operational notes
 =================
 
 - Treat remote command paths as part of your public control surface.
-- Keep variable naming stable to reduce client-side breakage.
+- Keep Variable naming stable to reduce client-side breakage.
 - Document expected polling/update cadence for remote consumers.
 
 Python interface adapters
@@ -52,7 +51,8 @@ OS-backed integration patterns:
 - :doc:`/pyrogue_core/python_interfaces/os_command_memory_slave`
 - :doc:`/pyrogue_core/python_interfaces/osmemmaster`
 
-Related API reference:
+Related API references
+======================
 
 - :doc:`/api/python/interfaces_zmqserver`
 - :doc:`/api/python/interfaces_simpleclient`

@@ -22,12 +22,12 @@ Runtime checks
 Client checks
 =============
 
-- Simple client connectivity succeeds: :doc:`/pyrogue_core/client_interfaces/simple`
-- Optional virtual client path behaves as expected: :doc:`/pyrogue_core/client_interfaces/virtual`
+- Simple client connectivity succeeds: :doc:`/pyrogue_tree/client_interfaces/simple`
+- Optional virtual client path behaves as expected: :doc:`/pyrogue_tree/client_interfaces/virtual`
 
 If checks fail
 ==============
 
 - Revisit installation steps: :doc:`/installing/index`
 - Review root-level concepts: :doc:`/pyrogue_tree/node/root/index`
-- Review client connectivity: :doc:`/pyrogue_core/client_access`
+- Review client connectivity: :doc:`/pyrogue_tree/client_interfaces/client_access`

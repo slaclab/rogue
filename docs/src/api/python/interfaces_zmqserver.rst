@@ -5,8 +5,8 @@ ZmqServer
 
 For conceptual client/server connectivity guidance, see:
 
-- :doc:`/pyrogue_core/client_access`
-- :doc:`/pyrogue_core/python_interfaces/zmq_server`
+- :doc:`/pyrogue_tree/client_interfaces/client_access`
+- :doc:`/pyrogue_tree/client_interfaces/zmq_server`
 
 .. autoclass:: pyrogue.interfaces.ZmqServer
    :members:

@@ -28,7 +28,7 @@ This enables workflows such as:
 
 These clients connect to the same server-side tree and observe a consistent
 Device/Variable/Command model.
-For client interface specifics, see :doc:`/pyrogue_core/client_access`.
+For client interface specifics, see :doc:`/pyrogue_tree/client_interfaces/index`.
 
 Minimal tree example
 ====================
@@ -112,6 +112,7 @@ Where to explore next
    :caption: PyRogue Tree:
 
    node/root/index
+   client_interfaces/index
    node/root/poll_queue
    node/root/yaml_configuration
    node/device/index

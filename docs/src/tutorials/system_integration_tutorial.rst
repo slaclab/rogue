@@ -16,7 +16,7 @@ Workflow
 1. Start with the root composition example:
    :doc:`/getting_started/pyrogue_tree_example/p_t_root`
 2. Add client/server interfaces:
-   :doc:`/pyrogue_core/client_access`
+   :doc:`/pyrogue_tree/client_interfaces/client_access`
 3. Add stream pipeline components:
    :doc:`/stream_interface/index`
 4. Add built-in devices and operational tooling:
