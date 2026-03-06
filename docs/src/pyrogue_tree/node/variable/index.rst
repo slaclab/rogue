@@ -32,6 +32,22 @@ When to use each type
 * :py:class:`pyrogue.LinkVariable`: value is derived from one or more dependency
   variables via custom getter/setter logic.
 
+Variable stream adapters
+========================
+
+Use variable stream adapters when value updates should feed downstream stream
+processing or external consumers, instead of relying only on direct tree
+queries.
+
+Common patterns:
+
+* push Variable changes into stream pipelines for asynchronous processing
+* bridge selected telemetry into stream-capable transport/recording paths
+* isolate conversion/formatting at the adapter boundary
+
+For the stream-variable interface layer, see
+:doc:`/pyrogue_core/python_interfaces/memory_stream_variable`.
+
 Common attributes and behavior
 ==============================
 

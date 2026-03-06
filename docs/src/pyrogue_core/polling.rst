@@ -24,7 +24,7 @@ Common pattern
 Related topics
 ==============
 
-- Tree structure and variable placement: :doc:`/pyrogue_core/tree_architecture`
+- Tree structure and variable placement: :doc:`/pyrogue_tree/index`
 - Client-facing behavior: :doc:`/pyrogue_core/client_access`
 
 Primary reference page:

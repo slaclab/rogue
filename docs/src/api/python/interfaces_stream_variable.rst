@@ -6,7 +6,7 @@ Variable
 For conceptual interface usage, see:
 
 - :doc:`/pyrogue_core/python_interfaces/memory_stream_variable`
-- :doc:`/pyrogue_core/variables_and_streams`
+- :doc:`/pyrogue_tree/node/variable/index`
 
 .. autoclass:: pyrogue.interfaces.stream.Variable
    :members:

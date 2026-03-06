@@ -4,8 +4,8 @@
 PyRogue Core
 ============
 
-PyRogue Core covers tree architecture, client access, variables, commands,
-configuration, and model behavior.
+PyRogue Core covers client access, configuration/state workflows, built-in
+devices, advanced usage patterns, and Python/client interface topics.
 
 Use this section for conceptual and task-focused documentation. API details are
 kept in :doc:`/api/index`.
@@ -18,9 +18,7 @@ section.
    :caption: PyRogue Core:
 
    /pyrogue_tree/index
-   tree_architecture
    client_access
-   variables_and_streams
    polling
    yaml_state_config
    /pyrogue_tree/model

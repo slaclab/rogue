@@ -25,7 +25,7 @@ Workflow
    :doc:`/logging/index`
    :doc:`/pydm/index`
 5. Review full architecture context:
-   :doc:`/pyrogue_core/tree_architecture`
+   :doc:`/pyrogue_tree/index`
 
 What this tutorial emphasizes
 =============================

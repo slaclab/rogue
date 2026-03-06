@@ -89,6 +89,15 @@ Concrete node categories:
 - :ref:`pyrogue_tree_node_block`
 - :ref:`pyrogue_tree_node_groups`
 
+Common design workflow
+======================
+
+1. Define one ``Root`` for lifecycle, top-level interfaces, and system actions.
+2. Partition the design into ``Device`` subtrees by hardware/function boundary.
+3. Add ``Variable`` and ``Command`` nodes for control and telemetry procedures.
+4. Confirm memory mapping/transaction behavior through ``Block`` and ``Model``.
+5. Expose remote access patterns for GUIs, scripts, notebooks, and clients.
+
 Where to explore next
 =====================
 
