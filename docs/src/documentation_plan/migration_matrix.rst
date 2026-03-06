@@ -26,7 +26,7 @@ This matrix tracks where content is moving as the revamp proceeds.
      - Docs Team
      - M1 Skeleton
    * - /pyrogue_tree/index
-     - /pyrogue_core/index
+     - /pyrogue_tree/index
      - Link
      - Docs Team
      - M1 Skeleton
@@ -46,7 +46,7 @@ This matrix tracks where content is moving as the revamp proceeds.
      - Docs Team
      - M2 IA [done]
    * - /interfaces/clients/*, /interfaces/pyrogue/*
-     - /pyrogue_core/index
+     - /pyrogue_tree/index
      - Move
      - Docs Team
      - M2 IA [done]
@@ -276,7 +276,7 @@ This matrix tracks where content is moving as the revamp proceeds.
      - Docs Team
      - M3 Coverage [done]
    * - /pyrogue_core narrative expansion
-     - /pyrogue_tree/index, /pyrogue_tree/client_interfaces/index, /pyrogue_tree/core/variable, /pyrogue_tree/core/poll_queue, /pyrogue_tree/core/yaml_configuration, /pyrogue_tree/core/model, /pyrogue_core/built_in_devices, /pyrogue_core/advanced_patterns
+     - /pyrogue_tree/index, /pyrogue_tree/client_interfaces/index, /pyrogue_tree/core/variable, /pyrogue_tree/core/poll_queue, /pyrogue_tree/core/yaml_configuration, /pyrogue_tree/core/model, /pyrogue_tree/builtin_devices/index, /cookbook/advanced_pyrogue_patterns
      - Move
      - Docs Team
      - M3 Coverage [done]
@@ -296,7 +296,7 @@ This matrix tracks where content is moving as the revamp proceeds.
      - Docs Team
      - M3 Coverage [done]
    * - /interfaces/index broad conceptual narrative
-     - /pyrogue_core/index, /stream_interface/index, /memory_interface/index
+     - /pyrogue_tree/index, /stream_interface/index, /memory_interface/index
      - Move
      - Docs Team
      - M3 Coverage [done]
@@ -306,7 +306,7 @@ This matrix tracks where content is moving as the revamp proceeds.
      - Docs Team
      - M4 Harmonization [done]
    * - /pyrogue_core, /stream_interface, /memory_interface toctree legacy-path cleanup
-     - /pyrogue_core/index, /stream_interface/index, /memory_interface/index
+     - /pyrogue_tree/index, /stream_interface/index, /memory_interface/index
      - Move
      - Docs Team
      - M4 Harmonization [done]
@@ -326,12 +326,12 @@ This matrix tracks where content is moving as the revamp proceeds.
      - Docs Team
      - M4 Harmonization [done]
    * - Re-home legacy interface index pages to canonical section toctrees
-     - /pyrogue_core/index, /stream_interface/index, /memory_interface/index
+     - /pyrogue_tree/index, /stream_interface/index, /memory_interface/index
      - Move
      - Docs Team
      - M4 Harmonization [done]
    * - Move interface client/pyrogue docs into canonical tree/client-interface sections
-     - /interfaces/clients/* -> /pyrogue_tree/client_interfaces/*; /interfaces/pyrogue/zmq_server -> /pyrogue_tree/client_interfaces/zmq_server; remaining /interfaces/pyrogue/* -> /pyrogue_core/python_interfaces/*
+     - /interfaces/clients/* -> /pyrogue_tree/client_interfaces/*; /interfaces/pyrogue/zmq_server -> /pyrogue_tree/client_interfaces/zmq_server; remaining /interfaces/pyrogue/* -> /pyrogue_tree/client_interfaces/*
      - Move
      - Docs Team
      - M4 Harmonization [done]
@@ -356,7 +356,7 @@ This matrix tracks where content is moving as the revamp proceeds.
      - Docs Team
      - M4 Harmonization [done]
    * - Move remaining interface integration pages into canonical sections
-     - /interfaces/simulation/\* -> /built_in_modules/simulation/\*; /interfaces/sql -> /built_in_modules/sql; /interfaces/version -> /built_in_modules/version; /interfaces/cpp_api -> /pyrogue_core/cpp_api_wrapper
+     - /interfaces/simulation/\* -> /built_in_modules/simulation/\*; /interfaces/sql -> /built_in_modules/sql; /interfaces/version -> /built_in_modules/version; /interfaces/cpp_api -> /built_in_modules/cpp_api_wrapper
      - Move
      - Docs Team
      - M4 Harmonization [done]

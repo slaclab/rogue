@@ -10,7 +10,7 @@ docstrings/autodoc and C++ Doxygen output.
 API pages are reference-focused. For conceptual and usage documentation, start
 with:
 
-- :doc:`/pyrogue_core/index`
+- :doc:`/pyrogue_tree/index`
 - :doc:`/stream_interface/index`
 - :doc:`/memory_interface/index`
 

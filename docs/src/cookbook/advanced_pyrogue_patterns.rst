@@ -1,4 +1,4 @@
-.. _pyrogue_core_advanced_patterns:
+.. _cookbook_advanced_pyrogue_patterns:
 
 =================
 Advanced Patterns

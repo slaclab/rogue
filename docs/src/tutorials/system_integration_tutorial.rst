@@ -20,7 +20,7 @@ Workflow
 3. Add stream pipeline components:
    :doc:`/stream_interface/index`
 4. Add built-in devices and operational tooling:
-   :doc:`/pyrogue_core/built_in_devices`
+   :doc:`/pyrogue_tree/builtin_devices/index`
    :doc:`/installing/index`
    :doc:`/logging/index`
    :doc:`/pydm/index`

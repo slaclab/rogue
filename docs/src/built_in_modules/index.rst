@@ -16,7 +16,7 @@ In practice, these modules are where transport and integration work gets done:
 - Simulation and operations integrations used during development and testing
 
 Most deployments combine this section with :doc:`/stream_interface/index`,
-:doc:`/memory_interface/index`, and :doc:`/pyrogue_core/index`.
+:doc:`/memory_interface/index`, and :doc:`/pyrogue_tree/index`.
 
 Key integration topics
 ======================
@@ -27,6 +27,8 @@ Key integration topics
   :doc:`/built_in_modules/sql`
 - Version checks and compatibility guards:
   :doc:`/built_in_modules/version`
+- C++ wrapper entry point for embedding Rogue:
+  :doc:`/built_in_modules/cpp_api_wrapper`
 
 Where to explore next
 =====================
@@ -42,6 +44,7 @@ Where to explore next
    simulation/index
    sql
    version
+   cpp_api_wrapper
    /utilities/index
    /hardware/index
    /protocols/index

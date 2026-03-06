@@ -24,5 +24,6 @@ Each recipe should answer:
    :caption: Recipes:
 
    pyrogue_devices_and_variables
+   advanced_pyrogue_patterns
    advanced_stream_patterns
    /advanced_examples/index

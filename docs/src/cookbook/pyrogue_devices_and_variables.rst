@@ -50,5 +50,5 @@ Procedure
 Deep dive
 =========
 
-- :doc:`/pyrogue_core/advanced_patterns`
+- :doc:`/cookbook/advanced_pyrogue_patterns`
 - :doc:`/pyrogue_tree/core/poll_queue`

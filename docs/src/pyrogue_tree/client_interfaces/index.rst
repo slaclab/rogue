@@ -61,9 +61,9 @@ Python interface adapters
 Rogue also provides built-in Python interface adapters for stream-variable and
 OS-backed integration patterns:
 
-- :doc:`/pyrogue_core/python_interfaces/memory_stream_variable`
-- :doc:`/pyrogue_core/python_interfaces/os_command_memory_slave`
-- :doc:`/pyrogue_core/python_interfaces/osmemmaster`
+- :doc:`memory_stream_variable`
+- :doc:`os_command_memory_slave`
+- :doc:`osmemmaster`
 
 Related API references
 ======================
@@ -99,3 +99,6 @@ Minimal setup pattern
    simple
    virtual
    commandline
+   memory_stream_variable
+   os_command_memory_slave
+   osmemmaster
