@@ -46,7 +46,7 @@ Start with these pages:
 - :doc:`/pyrogue_tree/node/device/index`
 - :doc:`/pyrogue_tree/node/variable/index`
 - :doc:`/pyrogue_tree/node/command/index`
-- :doc:`/pyrogue_tree/model/index`
+- :doc:`/pyrogue_tree/model`
 
 API reference:
 

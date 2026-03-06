@@ -95,7 +95,7 @@ Where to explore next
 - Device composition and managed interfaces: :doc:`/pyrogue_tree/node/device/index`
 - Variable behavior and types: :doc:`/pyrogue_tree/node/variable/index`
 - Block/model conversion internals: :doc:`/pyrogue_tree/blocks`
-- Model reference overview: :doc:`/pyrogue_tree/model/index`
+- Model reference overview: :doc:`/pyrogue_tree/model`
 
 .. toctree::
    :maxdepth: 2
@@ -107,6 +107,5 @@ Where to explore next
    node/device/index
    node/command/index
    node/variable/index
-   model/index
+   model
    blocks
-   blocks_advanced

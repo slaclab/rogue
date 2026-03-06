@@ -67,10 +67,10 @@ Bulk commit is queued recursively using tree/device order:
 
 After enqueue:
 
-- verify transactions are queued
+- ``verify`` transactions are queued
 - ``check`` phase waits for queued operations to complete and surfaces errors
 
-In other words, PyRogue separates enqueue from completion. The completion/wait
+In other words, PyRogue separates transaction initiation from completion. The completion/wait
 step is called ``check`` in API naming.
 
 Array matching and slicing in YAML keys
@@ -114,4 +114,4 @@ Where to explore next
 - Polling behavior: :doc:`/pyrogue_tree/node/root/poll_queue`
 - Group filtering semantics: :doc:`/pyrogue_tree/node/groups`
 - Device/block transaction paths: :doc:`/pyrogue_tree/node/device/index`,
-  :doc:`/pyrogue_tree/block`
+  :doc:`/pyrogue_tree/node/block/index`
