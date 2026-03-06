@@ -4,7 +4,7 @@
 DataReceiver Device Class
 =========================
 
-:py:class:`pyrogue.DataReceiver` is a device/stream-slave hybrid used to accept
+:py:class:`~pyrogue.DataReceiver` is a device/stream-slave hybrid used to accept
 incoming frames and expose them through PyRogue variables.
 
 Core behavior:
@@ -14,7 +14,7 @@ Core behavior:
 * toggles ``Updated`` when new data arrives
 * supports ``RxEnable`` gating
 
-Override :py:meth:`pyrogue.DataReceiver.process` to customize payload parsing.
+Override :py:meth:`~pyrogue.DataReceiver.process` to customize payload parsing.
 
 Example
 =======

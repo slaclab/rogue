@@ -4,7 +4,7 @@
 LinkVariable
 ============
 
-:py:class:`pyrogue.LinkVariable` exposes a derived value backed by one or more
+:py:class:`~pyrogue.LinkVariable` exposes a derived value backed by one or more
 dependency Variables. It is useful for unit conversion, bit-field composition,
 and user-friendly computed views.
 

@@ -7,7 +7,7 @@ Device
 Device Definition
 =================
 
-A :py:class:`pyrogue.Device` is the primary composition unit in a PyRogue tree.
+A :py:class:`~pyrogue.Device` is the primary composition unit in a PyRogue tree.
 Devices can contain:
 
 * child Devices
@@ -58,16 +58,16 @@ Key Methods
 
 Commonly used methods:
 
-* :py:meth:`pyrogue.Device.add`
-* :py:meth:`pyrogue.Device.addRemoteVariables`
-* :py:meth:`pyrogue.Device.hideVariables`
-* :py:meth:`pyrogue.Device.initialize`
-* :py:meth:`pyrogue.Device.hardReset`
-* :py:meth:`pyrogue.Device.countReset`
-* :py:meth:`pyrogue.Device.writeBlocks`
-* :py:meth:`pyrogue.Device.verifyBlocks`
-* :py:meth:`pyrogue.Device.readBlocks`
-* :py:meth:`pyrogue.Device.checkBlocks`
+* :py:meth:`~pyrogue.Device.add`
+* :py:meth:`~pyrogue.Device.addRemoteVariables`
+* :py:meth:`~pyrogue.Device.hideVariables`
+* :py:meth:`~pyrogue.Device.initialize`
+* :py:meth:`~pyrogue.Device.hardReset`
+* :py:meth:`~pyrogue.Device.countReset`
+* :py:meth:`~pyrogue.Device.writeBlocks`
+* :py:meth:`~pyrogue.Device.verifyBlocks`
+* :py:meth:`~pyrogue.Device.readBlocks`
+* :py:meth:`~pyrogue.Device.checkBlocks`
 
 .. _pyrogue_tree_node_device_managed_interfaces:
 
@@ -80,10 +80,10 @@ startup/shutdown with the Device tree.
 Canonical term used in this documentation:
 ``Managed Interface Lifecycle``.
 This refers to the ``_start()`` / ``_stop()`` callback contract for objects
-registered through :py:meth:`pyrogue.Device.addInterface`.
+registered through :py:meth:`~pyrogue.Device.addInterface`.
 
-Use :py:meth:`pyrogue.Device.addInterface` (or alias
-:py:meth:`pyrogue.Device.addProtocol`) to register:
+Use :py:meth:`~pyrogue.Device.addInterface` (or alias
+:py:meth:`~pyrogue.Device.addProtocol`) to register:
 
 * Rogue memory or stream interface objects
 * protocol servers/clients
@@ -91,9 +91,9 @@ Use :py:meth:`pyrogue.Device.addInterface` (or alias
 
 At runtime:
 
-* :py:meth:`pyrogue.Device._start` calls ``_start()`` on each managed object if
+* :py:meth:`~pyrogue.Device._start` calls ``_start()`` on each managed object if
   the method exists
-* :py:meth:`pyrogue.Device._stop` calls ``_stop()`` on each managed object if
+* :py:meth:`~pyrogue.Device._stop` calls ``_stop()`` on each managed object if
   the method exists
 * both then recurse to child Devices
 
@@ -109,14 +109,14 @@ through Device Block APIs.
 Default behavior of Block APIs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-* :py:meth:`pyrogue.Device.writeBlocks`
+* :py:meth:`~pyrogue.Device.writeBlocks`
   initiates write transactions for this Device's Blocks (bulk-enabled Blocks by
   default), then optionally recurses into child Devices.
-* :py:meth:`pyrogue.Device.verifyBlocks`
+* :py:meth:`~pyrogue.Device.verifyBlocks`
   initiates verify transactions, then optionally recurses.
-* :py:meth:`pyrogue.Device.readBlocks`
+* :py:meth:`~pyrogue.Device.readBlocks`
   initiates read transactions, then optionally recurses.
-* :py:meth:`pyrogue.Device.checkBlocks`
+* :py:meth:`~pyrogue.Device.checkBlocks`
   waits/checks completion of initiated transactions, then optionally recurses.
 
 All four methods also support a ``variable=...`` path for targeted operations
@@ -154,10 +154,10 @@ Method-specific parameters:
 
 Direct API references:
 
-* :py:meth:`pyrogue.Device.writeBlocks`
-* :py:meth:`pyrogue.Device.verifyBlocks`
-* :py:meth:`pyrogue.Device.readBlocks`
-* :py:meth:`pyrogue.Device.checkBlocks`
+* :py:meth:`~pyrogue.Device.writeBlocks`
+* :py:meth:`~pyrogue.Device.verifyBlocks`
+* :py:meth:`~pyrogue.Device.readBlocks`
+* :py:meth:`~pyrogue.Device.checkBlocks`
 * :doc:`/api/python/device`
 
 Where these methods are invoked
@@ -168,11 +168,11 @@ application code.
 
 Single-variable access path:
 
-* :py:meth:`pyrogue.RemoteVariable.set` calls
+* :py:meth:`~pyrogue.RemoteVariable.set` calls
   ``parent.writeBlocks(..., variable=self)`` and, depending on arguments,
   ``parent.verifyBlocks(..., variable=self)`` and
   ``parent.checkBlocks(..., variable=self)``.
-* :py:meth:`pyrogue.RemoteVariable.get` calls
+* :py:meth:`~pyrogue.RemoteVariable.get` calls
   ``parent.readBlocks(..., variable=self)`` and optionally
   ``parent.checkBlocks(..., variable=self)``.
 
@@ -190,19 +190,19 @@ normal extension point for hardware-specific sequencing behavior.
 Lifecycle Hooks and Override Guidance
 -------------------------------------
 
-During :py:meth:`pyrogue.Root.start`, Device lifecycle progresses in this order:
+During :py:meth:`~pyrogue.Root.start`, Device lifecycle progresses in this order:
 
-#. :py:meth:`pyrogue.Device._rootAttached`
-#. :py:meth:`pyrogue.Node._finishInit` recursion
-#. :py:meth:`pyrogue.Device._start`
+#. :py:meth:`~pyrogue.Device._rootAttached`
+#. :py:meth:`~pyrogue.Node._finishInit` recursion
+#. :py:meth:`~pyrogue.Device._start`
 
-During :py:meth:`pyrogue.Root.stop`, Root calls
-:py:meth:`pyrogue.Device._stop` recursively.
+During :py:meth:`~pyrogue.Root.stop`, Root calls
+:py:meth:`~pyrogue.Device._stop` recursively.
 
 Guidance by hook
 ^^^^^^^^^^^^^^^^
 
-* :py:meth:`pyrogue.Device._rootAttached`
+* :py:meth:`~pyrogue.Device._rootAttached`
 
   * This is when ``self.root`` becomes valid and path/parent context is attached.
   * Default behavior also attaches children, builds Device Blocks, and applies
@@ -212,7 +212,7 @@ Guidance by hook
   * In most subclasses, do not override unless you need custom attach semantics.
     If you override, call ``super()._rootAttached(parent, root)``.
 
-* :py:meth:`pyrogue.Node._finishInit`
+* :py:meth:`~pyrogue.Node._finishInit`
 
   * Runs after full attach; Variables use this stage to finalize defaults and
     poll/dependency metadata.
@@ -220,7 +220,7 @@ Guidance by hook
     static construction and ``_start()`` for runtime actions.
   * If overridden, keep it lightweight and call ``super()._finishInit()``.
 
-* :py:meth:`pyrogue.Device._start`
+* :py:meth:`~pyrogue.Device._start`
 
   * Runtime start hook called from Root after attach/init and worker startup.
   * Use for: starting Device-owned threads, enabling runtime subscriptions, and
@@ -229,7 +229,7 @@ Guidance by hook
   * If overridden, preserve default managed-interface behavior by calling
     ``super()._start()`` unless you intentionally replace it.
 
-* :py:meth:`pyrogue.Device._stop`
+* :py:meth:`~pyrogue.Device._stop`
 
   * Runtime teardown hook called during Root stop.
   * Use for: stopping threads/services and releasing runtime resources.
@@ -239,15 +239,15 @@ Operational hooks and Block sequencing hooks
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 * Operational hooks:
-  :py:meth:`pyrogue.Device.initialize`,
-  :py:meth:`pyrogue.Device.hardReset`,
-  :py:meth:`pyrogue.Device.countReset`,
-  :py:meth:`pyrogue.Device.enableChanged`
+  :py:meth:`~pyrogue.Device.initialize`,
+  :py:meth:`~pyrogue.Device.hardReset`,
+  :py:meth:`~pyrogue.Device.countReset`,
+  :py:meth:`~pyrogue.Device.enableChanged`
 * Block sequencing hooks:
-  :py:meth:`pyrogue.Device.writeBlocks`,
-  :py:meth:`pyrogue.Device.verifyBlocks`,
-  :py:meth:`pyrogue.Device.readBlocks`,
-  :py:meth:`pyrogue.Device.checkBlocks`
+  :py:meth:`~pyrogue.Device.writeBlocks`,
+  :py:meth:`~pyrogue.Device.verifyBlocks`,
+  :py:meth:`~pyrogue.Device.readBlocks`,
+  :py:meth:`~pyrogue.Device.checkBlocks`
 
 ``initialize``/``hardReset``/``countReset`` are invoked by Root-level command
 workflows, not automatically by ``Root.start()``/``Root.stop()``.
@@ -308,10 +308,10 @@ Common reasons to override:
 
 If a Device needs custom sequencing around default Block operations, override:
 
-* :py:meth:`pyrogue.Device.writeBlocks`
-* :py:meth:`pyrogue.Device.verifyBlocks`
-* :py:meth:`pyrogue.Device.readBlocks`
-* :py:meth:`pyrogue.Device.checkBlocks`
+* :py:meth:`~pyrogue.Device.writeBlocks`
+* :py:meth:`~pyrogue.Device.verifyBlocks`
+* :py:meth:`~pyrogue.Device.readBlocks`
+* :py:meth:`~pyrogue.Device.checkBlocks`
 
 General override pattern
 """"""""""""""""""""""""
@@ -407,7 +407,7 @@ For deeper memory-stack behavior, see:
 Device Command Decorators
 -------------------------
 
-Device supports decorators that create :py:class:`pyrogue.LocalCommand` Nodes.
+Device supports decorators that create :py:class:`~pyrogue.LocalCommand` Nodes.
 You can use decorators on local functions created in ``__init__``.
 
 .. code-block:: python

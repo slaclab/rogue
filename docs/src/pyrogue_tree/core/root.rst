@@ -4,7 +4,7 @@
 Root
 ====
 
-The :py:class:`pyrogue.Root` class is the top-level Node in a PyRogue tree.
+The :py:class:`~pyrogue.Root` class is the top-level Node in a PyRogue tree.
 It owns the application lifecycle, coordinates bulk read/write operations,
 manages background workers (poll and update), and provides APIs for YAML
 save/load and external listeners.
@@ -19,7 +19,7 @@ In practice, ``Root`` is also where hardware connections are usually created and
 bound into the tree. A typical pattern is:
 
 * create a memory interface (for example AXI PCIe, TCP simulation, etc.)
-* register it with :py:meth:`pyrogue.Root.addInterface`
+* register it with :py:meth:`~pyrogue.Root.addInterface`
 * pass that interface as ``memBase`` when adding top-level Devices
 * optionally add management/control interfaces (such as ZMQ) to the same Root
 
@@ -62,13 +62,13 @@ Lifecycle and Startup Sequence
 ------------------------------
 
 ``Root`` controls startup and shutdown for the full tree.
-The two calls that matter operationally are :py:meth:`pyrogue.Root.start` and
-:py:meth:`pyrogue.Root.stop`.
+The two calls that matter operationally are :py:meth:`~pyrogue.Root.start` and
+:py:meth:`~pyrogue.Root.stop`.
 
 ``Root.start()`` sequence
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-When :py:meth:`pyrogue.Root.start` runs, it performs bring-up in this order:
+When :py:meth:`~pyrogue.Root.start` runs, it performs bring-up in this order:
 
 #. Verifies the Root is not already running (raises if it is).
 #. Calls ``Root._rootAttached()``.
@@ -87,14 +87,14 @@ When :py:meth:`pyrogue.Root.start` runs, it performs bring-up in this order:
    default value.
 #. Sets ``running=True`` and starts the update worker thread.
 #. Starts heartbeat thread if enabled.
-#. Calls :py:meth:`pyrogue.Device._start` on Root.
+#. Calls :py:meth:`~pyrogue.Device._start` on Root.
 
    * For each Device, managed interfaces/protocols receive ``_start()`` first.
    * Then ``_start()`` recurses into child Devices.
 
 #. Runs optional startup read (``_initRead``) via ``Root._read()``.
 #. Runs optional startup write/verify/check (``_initWrite``) via ``Root._write()``.
-#. Starts :py:class:`pyrogue.PollQueue` and then applies ``PollEn`` state.
+#. Starts :py:class:`~pyrogue.PollQueue` and then applies ``PollEn`` state.
 
 After this sequence, the tree is live for client access, polling, and normal
 read/write workflows.
@@ -102,12 +102,12 @@ read/write workflows.
 ``Root.stop()`` sequence
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-When :py:meth:`pyrogue.Root.stop` runs:
+When :py:meth:`~pyrogue.Root.stop` runs:
 
 #. Sets ``running=False``.
 #. Pushes stop sentinel to the update queue and joins the update worker thread.
-#. Stops :py:class:`pyrogue.PollQueue`.
-#. Calls :py:meth:`pyrogue.Device._stop` on Root.
+#. Stops :py:class:`~pyrogue.PollQueue`.
+#. Calls :py:meth:`~pyrogue.Device._stop` on Root.
 
    * For each Device, managed interfaces/protocols receive ``_stop()`` first.
    * Then ``_stop()`` recurses into child Devices.
@@ -115,14 +115,14 @@ When :py:meth:`pyrogue.Root.stop` runs:
 ``getNode`` path lookup
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-:py:meth:`pyrogue.Root.getNode` resolves dotted paths such as
+:py:meth:`~pyrogue.Root.getNode` resolves dotted paths such as
 ``EvalBoard.AxiVersion.ScratchPad`` and is commonly used by tooling and
 client-facing helpers.
 
 Temporarily Blocking Polling
 ----------------------------
 
-Use :py:meth:`pyrogue.Root.pollBlock` when you need a short critical section
+Use :py:meth:`~pyrogue.Root.pollBlock` when you need a short critical section
 that should not race with background poll reads.
 
 .. code-block:: python
@@ -134,13 +134,13 @@ that should not race with background poll reads.
 ZmqServer Interface
 -------------------
 
-:py:class:`pyrogue.interfaces.ZmqServer` exposes the root over a ZeroMQ control
+:py:class:`~pyrogue.interfaces.ZmqServer` exposes the root over a ZeroMQ control
 channel used by tools such as PyDM-based GUIs and external clients.
 
 Common initialization pattern in ``Root.__init__``:
 
 * create server: ``pyrogue.interfaces.ZmqServer(root=self, addr='127.0.0.1', port=0)``
-* add to root with :py:meth:`pyrogue.Root.addInterface`
+* add to root with :py:meth:`~pyrogue.Root.addInterface`
 
 Notes:
 
@@ -183,7 +183,7 @@ That page also covers bulk initiate/check behavior and related Root settings
 Included Command Objects
 ------------------------
 
-The following :py:class:`pyrogue.LocalCommand` objects are all created when the Root Node is created.
+The following :py:class:`~pyrogue.LocalCommand` objects are all created when the Root Node is created.
 
 * **WriteAll**: Write every Variable value to hardware (hidden from the GUI).
 * **ReadAll**: Read every Variable value from hardware.
@@ -202,7 +202,7 @@ The following :py:class:`pyrogue.LocalCommand` objects are all created when the 
 
 Included Variable Objects
 -------------------------
-The following :py:class:`pyrogue.LocalVariable` objects are created when the
+The following :py:class:`~pyrogue.LocalVariable` objects are created when the
 Root Node is created.
 
 * **RogueVersion**: Rogue version string.

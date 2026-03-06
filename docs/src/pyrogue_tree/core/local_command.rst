@@ -4,7 +4,7 @@
 LocalCommand
 ============
 
-:py:class:`pyrogue.LocalCommand` is used for Command behavior implemented purely
+:py:class:`~pyrogue.LocalCommand` is used for Command behavior implemented purely
 in Python application logic.
 
 Typical use cases:
@@ -38,7 +38,7 @@ LocalCommand (BaseCommand Alias) API Reference
 ==============================================
 
 `LocalCommand` is an alias-style specialization of
-:py:class:`pyrogue.BaseCommand`.
+:py:class:`~pyrogue.BaseCommand`.
 
 For full API documentation (including inherited members), see:
 

@@ -4,7 +4,7 @@
 PrbsPair Device Class
 =====================
 
-:py:class:`pyrogue.utilities.prbs.PrbsPair` combines a PRBS TX and RX device
+:py:class:`~pyrogue.utilities.prbs.PrbsPair` combines a PRBS TX and RX device
 into a single convenience container.
 
 It is useful for loopback tests and end-to-end PRBS validation where both

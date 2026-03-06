@@ -4,7 +4,7 @@
 RemoteVariable
 ==============
 
-:py:class:`pyrogue.RemoteVariable` maps a Variable to hardware-accessible memory.
+:py:class:`~pyrogue.RemoteVariable` maps a Variable to hardware-accessible memory.
 For example, a register in an attached FPGA
 It is the standard choice for register-style control and monitoring.
 

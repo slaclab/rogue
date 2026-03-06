@@ -4,7 +4,7 @@
 Process Device Class
 ====================
 
-:py:class:`pyrogue.Process` is a helper device for long-running or multi-step
+:py:class:`~pyrogue.Process` is a helper device for long-running or multi-step
 operations that should be managed as part of the tree.
 
 It provides:

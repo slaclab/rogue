@@ -4,7 +4,7 @@
 RemoteCommand
 =============
 
-:py:class:`pyrogue.RemoteCommand` represents Command semantics backed by a
+:py:class:`~pyrogue.RemoteCommand` represents Command semantics backed by a
 hardware register field. It combines Command invocation behavior with remote
 Variable mapping.
 
@@ -23,7 +23,7 @@ A RemoteCommand typically includes:
 * a Command function (for example ``pr.BaseCommand.toggle``)
 * optional argument/default value semantics
 
-Common helper functions in :py:class:`pyrogue.BaseCommand` include operations
+Common helper functions in :py:class:`~pyrogue.BaseCommand` include operations
 such as ``toggle``, ``touchOne``, and posted variants.
 
 Example

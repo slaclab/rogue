@@ -4,11 +4,11 @@
 PollQueue
 =========
 
-:py:class:`pyrogue.PollQueue` is the Root-owned scheduler that drives periodic
+:py:class:`~pyrogue.PollQueue` is the Root-owned scheduler that drives periodic
 reads for polled Variables.
 
 In most applications you do not instantiate it directly. It is created by
-:py:class:`pyrogue.Root` and controlled through Root-level APIs/Variables such
+:py:class:`~pyrogue.Root` and controlled through Root-level APIs/Variables such
 as ``PollEn`` and Variable ``pollInterval``.
 
 Polling strategy
@@ -55,10 +55,10 @@ Special case for Variables without a hardware Block:
 Control and Lifecycle
 =====================
 
-* Poll thread starts during :py:meth:`pyrogue.Root.start`.
+* Poll thread starts during :py:meth:`~pyrogue.Root.start`.
 * ``Root.PollEn`` controls pause/unpause (enabled when ``True``).
-* Poll thread exits during :py:meth:`pyrogue.Root.stop`.
-* :py:meth:`pyrogue.Root.pollBlock` can temporarily block polling inside a
+* Poll thread exits during :py:meth:`~pyrogue.Root.stop`.
+* :py:meth:`~pyrogue.Root.pollBlock` can temporarily block polling inside a
   context manager.
 
 Usage Examples

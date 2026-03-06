@@ -4,7 +4,7 @@
 HLS Register Interface Parser
 ==============================
 
-The module :py:mod:`pyrogue.utilities.hls._RegInterfParser` parses HLS-generated
+The module :py:mod:`~pyrogue.utilities.hls._RegInterfParser` parses HLS-generated
 register header macros and generates a starter Rogue application file
 (``application.py``) containing `RemoteVariable`, `RemoteCommand`, or
 `MemoryDevice` definitions.

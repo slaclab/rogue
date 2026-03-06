@@ -27,9 +27,9 @@ PyRogue provides three primary Variable subtypes:
 When to use each type
 =====================
 
-* :py:class:`pyrogue.LocalVariable`: value is computed/stored locally in Python.
-* :py:class:`pyrogue.RemoteVariable`: value maps to hardware memory/register space.
-* :py:class:`pyrogue.LinkVariable`: value is derived from one or more dependency
+* :py:class:`~pyrogue.LocalVariable`: value is computed/stored locally in Python.
+* :py:class:`~pyrogue.RemoteVariable`: value maps to hardware memory/register space.
+* :py:class:`~pyrogue.LinkVariable`: value is derived from one or more dependency
   Variables via custom getter/setter logic.
 
 Variable stream adapters
@@ -66,7 +66,7 @@ and usage patterns.
 Implementation Boundary (Python and C++)
 ========================================
 
-For :py:class:`pyrogue.RemoteVariable`, the public Python object wraps a
+For :py:class:`~pyrogue.RemoteVariable`, the public Python object wraps a
 lower-level memory Variable implementation from ``rogue.interfaces.memory``.
 
 This means:

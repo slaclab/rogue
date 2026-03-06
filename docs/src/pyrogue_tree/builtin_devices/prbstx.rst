@@ -4,7 +4,7 @@
 PrbsTx Device Class
 ===================
 
-:py:class:`pyrogue.utilities.prbs.PrbsTx` is a PRBS transmitter device wrapper.
+:py:class:`~pyrogue.utilities.prbs.PrbsTx` is a PRBS transmitter device wrapper.
 
 It exposes TX controls and counters through variables/commands such as
 ``txEnable``, ``txSize``, ``txPeriod``, ``genFrame``, and throughput/error

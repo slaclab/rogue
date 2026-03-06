@@ -29,7 +29,7 @@ When Devices attach to a Root, compatible ``RemoteVariable`` instances are
 grouped into Blocks. Grouping follows address/size compatibility and memory
 path constraints (for example minimum access width).
 
-For :py:class:`pyrogue.RemoteVariable`:
+For :py:class:`~pyrogue.RemoteVariable`:
 
 * each Variable defines offset/bit mapping metadata
 * during Device attach/build, Device logic groups compatible remote Variables
@@ -38,9 +38,9 @@ For :py:class:`pyrogue.RemoteVariable`:
 * transaction methods on Device/Root call Block transactions, not per-Variable
   raw bus operations
 
-For :py:class:`pyrogue.LocalVariable`:
+For :py:class:`~pyrogue.LocalVariable`:
 
-* each Variable uses a local software Block (:py:class:`pyrogue.LocalBlock`)
+* each Variable uses a local software Block (:py:class:`~pyrogue.LocalBlock`)
   for in-memory set/get behavior
 
 Implications of Block grouping:
@@ -105,14 +105,14 @@ Block helper functions
 
 PyRogue exposes helper functions used by Variable/Device/Root flow:
 
-* :py:func:`pyrogue.startTransaction`
-* :py:func:`pyrogue.checkTransaction`
-* :py:func:`pyrogue.writeBlocks`
-* :py:func:`pyrogue.verifyBlocks`
-* :py:func:`pyrogue.readBlocks`
-* :py:func:`pyrogue.checkBlocks`
-* :py:func:`pyrogue.writeAndVerifyBlocks`
-* :py:func:`pyrogue.readAndCheckBlocks`
+* :py:func:`~pyrogue.startTransaction`
+* :py:func:`~pyrogue.checkTransaction`
+* :py:func:`~pyrogue.writeBlocks`
+* :py:func:`~pyrogue.verifyBlocks`
+* :py:func:`~pyrogue.readBlocks`
+* :py:func:`~pyrogue.checkBlocks`
+* :py:func:`~pyrogue.writeAndVerifyBlocks`
+* :py:func:`~pyrogue.readAndCheckBlocks`
 
 Most users call these indirectly through ``Device``/``Root`` methods. Direct
 use is mainly for custom transaction sequencing.

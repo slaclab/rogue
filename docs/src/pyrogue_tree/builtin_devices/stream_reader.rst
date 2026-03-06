@@ -4,7 +4,7 @@
 StreamReader Device Class
 =========================
 
-:py:class:`pyrogue.utilities.fileio.StreamReader` provides file-backed stream
+:py:class:`~pyrogue.utilities.fileio.StreamReader` provides file-backed stream
 replay into a live stream graph.
 
 It includes basic file controls and exposes a stream master interface so decoded

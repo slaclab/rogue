@@ -4,7 +4,7 @@
 Python ZMQServer
 ================
 
-The :py:class:`pyrogue.interfaces.ZmqServer` interface exposes a running
+The :py:class:`~pyrogue.interfaces.ZmqServer` interface exposes a running
 PyRogue ``Root`` tree to external client programs over ZeroMQ sockets carried on
 TCP. In practice, this is the primary remote-control path used by tools such
 as PyDM GUIs, :ref:`interfaces_clients_simple`, and

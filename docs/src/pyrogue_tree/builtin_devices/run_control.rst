@@ -4,7 +4,7 @@
 RunControl Device Class
 =======================
 
-:py:class:`pyrogue.RunControl` is a :py:class:`pyrogue.Device` subclass for
+:py:class:`~pyrogue.RunControl` is a :py:class:`~pyrogue.Device` subclass for
 software-driven run state management.
 
 Use it directly for most software-driven data acquisition, or subclass it for

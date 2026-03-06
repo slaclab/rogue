@@ -4,7 +4,7 @@
 StreamWriter Device Class
 =========================
 
-:py:class:`pyrogue.utilities.fileio.StreamWriter` is a concrete
+:py:class:`~pyrogue.utilities.fileio.StreamWriter` is a concrete
 :ref:`DataWriter <pyrogue_tree_node_device_datawriter>` implementation for
 recording one or more stream channels to file.
 

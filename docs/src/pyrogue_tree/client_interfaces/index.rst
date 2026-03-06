@@ -9,7 +9,7 @@ Client Interfaces
 PyRogue client interfaces expose a running ``Root`` to external tools for
 automation, monitoring, and operations.
 
-Most deployments use :py:class:`pyrogue.interfaces.ZmqServer` as the server-side
+Most deployments use :py:class:`~pyrogue.interfaces.ZmqServer` as the server-side
 transport. The server is added to the ``Root`` and clients connect over TCP.
 
 Connection model

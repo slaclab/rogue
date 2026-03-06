@@ -4,7 +4,7 @@
 LocalVariable
 =============
 
-:py:class:`pyrogue.LocalVariable` is used for values that are owned by Python
+:py:class:`~pyrogue.LocalVariable` is used for values that are owned by Python
 logic rather than directly mapped to hardware registers.
 
 Typical use cases:

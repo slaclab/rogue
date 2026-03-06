@@ -4,10 +4,10 @@
 DataWriter Device Class
 =======================
 
-:py:class:`pyrogue.DataWriter` is a base device for writing received stream
+:py:class:`~pyrogue.DataWriter` is a base device for writing received stream
 frames to files.
 
-For application use, :py:class:`pyrogue.utilities.fileio.StreamWriter` is the
+For application use, :py:class:`~pyrogue.utilities.fileio.StreamWriter` is the
 concrete subclass you should typically instantiate.
 
 Custom data writers can be created by subclassing ``DataWriter``.
@@ -17,13 +17,13 @@ Key Methods
 The following methods control the operation of the file writer and are typical
 override points in a custom writer:
 
-* :py:meth:`pyrogue.DataWriter._setBufferSize`
-* :py:meth:`pyrogue.DataWriter._setMaxFileSize`
-* :py:meth:`pyrogue.DataWriter._getFrameCount`
+* :py:meth:`~pyrogue.DataWriter._setBufferSize`
+* :py:meth:`~pyrogue.DataWriter._setMaxFileSize`
+* :py:meth:`~pyrogue.DataWriter._getFrameCount`
 
 Included Command Objects
 ------------------------
-The following :py:class:`pyrogue.LocalCommand` objects are created when
+The following :py:class:`~pyrogue.LocalCommand` objects are created when
 ``DataWriter`` is instantiated.
 
 * **Open**: Open data file. The new file name will be the contents of
@@ -33,7 +33,7 @@ The following :py:class:`pyrogue.LocalCommand` objects are created when
 
 Included Variable Objects
 -------------------------
-The following :py:class:`pyrogue.LocalVariable` objects are created when
+The following :py:class:`~pyrogue.LocalVariable` objects are created when
 ``DataWriter`` is instantiated.
 
 * **DataFile**: Data file for storing frames for connected streams. This is the

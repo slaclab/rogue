@@ -4,7 +4,7 @@
 PrbsRx Device Class
 ===================
 
-:py:class:`pyrogue.utilities.prbs.PrbsRx` is a PRBS receiver device wrapper.
+:py:class:`~pyrogue.utilities.prbs.PrbsRx` is a PRBS receiver device wrapper.
 
 It exposes receiver controls and counters as PyRogue variables/commands, for
 example ``rxEnable``, ``rxErrors``, ``rxCount``, ``rxRate``, and payload-check
