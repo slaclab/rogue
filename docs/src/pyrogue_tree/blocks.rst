@@ -3,34 +3,75 @@
 .. _interfaces_memory_blocks:
 .. _interfaces_memory_blocks_advanced:
 
-===============
-Blocks & Models
-===============
+======
+Blocks
+======
 
-A block is the transaction unit used by PyRogue memory access. Variables map
-bit fields into block byte ranges, and hardware reads/writes execute at block
+A Block is the transaction unit used by PyRogue memory access. Variables map
+bit fields into Block byte ranges, and hardware reads/writes execute at Block
 level.
 
-What a block does
-=================
+Why blocks exist
+================
 
-Each block combines two roles:
+Blocks separate two concerns:
 
-1. value staging and conversion (pack/unpack variable values into bytes)
-2. transaction transport (enqueue/check read/write/verify operations)
+1. value staging and conversion (pack/unpack Variable values into bytes)
+2. transport sequencing (initiate/check read/write/verify operations)
 
-This separation is important:
+This separation lets Variable APIs stay high-level while transaction handling
+stays efficient and ordered.
 
-* model selection defines how bytes represent values
-* block APIs define when bytes move to and from hardware
+How Variables Connect to Blocks
+===============================
+
+When Devices attach to a Root, compatible ``RemoteVariable`` instances are
+grouped into Blocks. Grouping follows address/size compatibility and memory
+path constraints (for example minimum access width).
+
+For :py:class:`pyrogue.RemoteVariable`:
+
+* each Variable defines offset/bit mapping metadata
+* during Device attach/build, Device logic groups compatible remote Variables
+  into Blocks
+* each Variable gets ``_block`` pointing to the Block that services it
+* transaction methods on Device/Root call Block transactions, not per-Variable
+  raw bus operations
+
+For :py:class:`pyrogue.LocalVariable`:
+
+* each Variable uses a local software Block (:py:class:`pyrogue.LocalBlock`)
+  for in-memory set/get behavior
+
+Implications of Block grouping:
+
+* several Variables can share one Block transaction
+* partial updates can target changed sub-ranges
+* grouped Block operations reduce transaction overhead
+
+Access Path (RemoteVariable)
+============================
+
+Typical read/write path:
+
+* user/API calls ``set`` or ``get`` on a Variable
+* Device/Root APIs initiate Block transactions
+* Block reads/writes memory through the Device's memory interface
+* completion/check updates Variable state and notifications
+
+In bulk operations, many Variables can share one Block transaction, improving
+access efficiency versus isolated per-Variable transfers.
+
+Block APIs and Transaction Flow
+===============================
 
 Conversion vs Transaction
-=========================
+-------------------------
 
 The Block API has two layers:
 
 * Conversion layer:
-  ``set*/get*`` methods convert between native types and staged block bytes.
+  ``set*/get*`` methods convert between native types and staged Block bytes.
 * Transaction layer:
   ``write/read/startTransaction/checkTransaction`` moves staged bytes to and
   from hardware.
@@ -45,86 +86,24 @@ A typed get call similarly performs:
 1. ``Block::read()``
 2. conversion from staged bytes via a bound ``Block`` method
 
-Packing Rules and Variable Layout
-=================================
-
-The internal ``setBytes``/``getBytes`` helpers are used by all typed methods
-and apply variable layout metadata:
-
-* bit offsets and bit sizes (including disjoint fields)
-* list semantics (``numValues``, ``valueStride``)
-* fast contiguous byte-copy optimization when possible
-* byte reversal and bit-order constraints
-
-Because every typed method funnels through these helpers, custom subclasses can
-extend behavior while preserving the same packing model.
-
-How variables map into blocks
-=============================
-
-When devices attach to a root, compatible ``RemoteVariable`` instances are
-grouped into blocks. Grouping follows address/size compatibility and memory
-path constraints (for example minimum access width).
-
-Implications:
-
-* several variables can share one block transaction
-* partial updates can target changed sub-ranges
-* grouped block operations reduce transaction overhead
-
-``LocalVariable`` is not hardware-backed and uses ``LocalBlock`` behavior.
-
-How Variables Use Blocks
-========================
-
-For :py:class:`pyrogue.RemoteVariable`:
-
-* each variable defines offset/bit mapping metadata
-* during device attach/build, device logic groups compatible remote variables
-  into blocks
-* each variable gets ``_block`` pointing to the block that services it
-* transaction methods on Device/Root call block transactions, not per-variable
-  raw bus operations
-
-For :py:class:`pyrogue.LocalVariable`:
-
-* each variable uses a local software block (:py:class:`pyrogue.LocalBlock`)
-  for in-memory set/get behavior
-
-Access Path (RemoteVariable)
-============================
-
-Typical read/write path:
-
-* user/API calls ``set`` or ``get`` on a variable
-* Device/Root APIs enqueue block transactions
-* block reads/writes memory through the device's memory interface
-* completion/check updates variable state and notifications
-
-In bulk operations, many variables can share one block transaction, improving
-access efficiency versus isolated per-variable transfers.
-
-Transaction flow
-================
-
 Typical write path:
 
-1. variable ``set`` updates staged block bytes using model conversion
-2. write (and optional verify) transactions are enqueued
+1. Variable ``set`` updates staged Block bytes using Model conversion
+2. write (and optional verify) transactions are initiated
 3. completion is checked
 
 Typical read path:
 
-1. read transactions are enqueued
+1. read transactions are initiated
 2. completion is checked
-3. bytes are decoded back into variable values
+3. bytes are decoded back into Variable values
 
 In PyRogue terminology, waiting for operation responses is called ``check``.
 
-PyRogue block helper functions
-==============================
+Block helper functions
+----------------------
 
-PyRogue exposes helper functions used by variable/device/root flow:
+PyRogue exposes helper functions used by Variable/Device/Root flow:
 
 * :py:func:`pyrogue.startTransaction`
 * :py:func:`pyrogue.checkTransaction`
@@ -140,45 +119,37 @@ use is mainly for custom transaction sequencing.
 
 .. code-block:: python
 
-   # Bulk read all blocks attached to a device
+   # Bulk read all Blocks attached to a Device
    myDevice.readBlocks(recurse=True)
    myDevice.checkBlocks(recurse=True)
 
-   # Write only the block backing one variable
+   # Write only the Block backing one Variable
    myDevice.writeBlocks(variable=myDevice.MyReg, checkEach=True)
 
-Implementation Boundary (Python and C++)
-========================================
+Packing Rules and Variable Layout
+---------------------------------
 
-The block API called from PyRogue maps to the ``rogue.interfaces.memory``
-runtime layer.
+The internal ``setBytes``/``getBytes`` helpers are used by all typed methods
+and apply Variable layout metadata:
 
-In practice:
+* bit offsets and bit sizes (including disjoint fields)
+* list semantics (``numValues``, ``valueStride``)
+* fast contiguous byte-copy optimization when possible
+* byte reversal and bit-order constraints
 
-* Python code invokes methods on ``pyrogue.Device`` / ``pyrogue.RemoteVariable``
-* these route into block/variable objects exposed by
-  ``rogue.interfaces.memory``
-* underlying C++ block/variable code handles transaction staging,
-  read/write/verify behavior, stale tracking, packing/unpacking, and update
-  notification triggers
+Because every typed method funnels through these helpers, custom subclasses can
+extend behavior while preserving the same packing model.
 
-Hub interaction
-===============
+Models in Block Conversion
+==========================
 
-Blocks are transaction sources; Hubs are transaction routers.
+Blocks use ``Model`` definitions to translate between Python-facing value types
+and hardware bit/byte representation.
 
-During a transaction, Hub logic:
+Canonical model documentation is in :doc:`/pyrogue_tree/model`.
 
-* offsets addresses by local hub/device base
-* forwards transactions to downstream memory slaves
-* splits transactions into sub-transactions when request size exceeds
-  downstream max-access capability
-
-This is why variable-to-block transactions continue to work cleanly across
-multi-level device trees with address translation.
-
-Model-driven block method dispatch
-==================================
+Model-driven Block method dispatch
+----------------------------------
 
 ``Variable`` instances bind to typed ``Block`` conversion methods based on
 model and size constraints.
@@ -206,9 +177,10 @@ model and size constraints.
 +--------------------+-----------------------------+-------------------------------+----------------------------------------------+
 
 Built-in model families
-=======================
+-----------------------
 
 The following built-in model families are commonly used with blocks:
+
 Canonical model coverage is in :doc:`/pyrogue_tree/model`.
 
 +---------------------------------------------+-----------------------+-------------------+----------------+------------------------------------------------+
@@ -241,9 +213,39 @@ Canonical model coverage is in :doc:`/pyrogue_tree/model`.
 | :ref:`interfaces_memory_model_ufixed`       | fixed point           | float             | unconstrained  | Unsigned fixed-point conversion                |
 +---------------------------------------------+-----------------------+-------------------+----------------+------------------------------------------------+
 
-Most model conversions run in low-level C++ block paths for performance. An
+Most model conversions run in low-level C++ Block paths for performance. An
 important exception is very wide integer handling, where Python model logic is
 used when values exceed native conversion widths.
+
+Implementation Boundary (Python and C++)
+========================================
+
+The Block API called from PyRogue maps to the ``rogue.interfaces.memory``
+runtime layer.
+
+In practice:
+
+* Python code invokes methods on ``pyrogue.Device`` / ``pyrogue.RemoteVariable``
+* these route into Block/Variable objects exposed by
+  ``rogue.interfaces.memory``
+* underlying C++ Block/Variable code handles transaction staging,
+  read/write/verify behavior, stale tracking, packing/unpacking, and update
+  notification triggers
+
+Hub interaction
+===============
+
+Blocks are transaction sources; Hubs are transaction routers.
+
+During a transaction, Hub logic:
+
+* offsets addresses by local Hub/Device base
+* forwards transactions to downstream memory slaves
+* splits transactions into sub-transactions when request size exceeds
+  downstream max-access capability
+
+This is why Variable-to-Block transactions continue to work cleanly across
+multi-level Device trees with address translation.
 
 Advanced patterns
 =================
@@ -298,13 +300,13 @@ in a ``RemoteVariable``.
                mode='RW',
            ))
 
-``RemoteVariable(base=MyUInt, ...)`` binds this model to block conversion for
-that variable.
+``RemoteVariable(base=MyUInt, ...)`` binds this model to Block conversion for
+that Variable.
 
 Pre-Allocating Blocks
 ---------------------
 
-When you need a specific transaction grouping, pre-create a block and then add
+When you need a specific transaction grouping, pre-create a Block and then add
 variables that overlap that address range.
 
 .. code-block:: python
@@ -315,7 +317,7 @@ variables that overlap that address range.
    class GroupedDevice(pr.Device):
        def __init__(self, **kwargs):
            super().__init__(**kwargs)
-           # Pre-allocate a 128-byte block at offset 0x1000.
+           # Pre-allocate a 128-byte Block at offset 0x1000.
            self.addCustomBlock(rim.Block(0x1000, 128))
            self.add(pr.RemoteVariable(
                name='MyRegister',
@@ -334,5 +336,5 @@ Where to explore next
 
 * Model API and utility helpers: :doc:`/pyrogue_tree/model`
 * Root bulk write/read/check sequencing: :doc:`/pyrogue_tree/node/root/index`
-* C++ block reference: :doc:`/api/cpp/interfaces/memory/block`
+* C++ Block reference: :doc:`/api/cpp/interfaces/memory/block`
 * Python LocalBlock reference: :doc:`/api/python/localblock`

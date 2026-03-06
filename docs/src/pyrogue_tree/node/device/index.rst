@@ -145,19 +145,19 @@ effects or custom sequencing.
 Device Read/Write Operations
 ----------------------------
 
-Bulk config/read/write operations traverse the tree and issue block transactions
-through device block APIs.
+Bulk config/read/write operations traverse the tree and issue Block transactions
+through Device Block APIs.
 
 Typical write flow:
 
-* update variable shadow value
-* enqueue write transaction
-* optionally enqueue verify transaction
+* update Variable shadow value
+* initiate write transaction
+* optionally initiate verify transaction
 * check completion and publish updates
 
 Typical read flow:
 
-* enqueue read transaction
+* initiate read transaction
 * check completion
 * return/publish updated values
 
@@ -168,7 +168,7 @@ From a Python API perspective, you use ``pyrogue.Device`` methods such as
 ``readBlocks`` and ``writeBlocks``.
 
 Under the hood, ``pyrogue.Device`` is built on the Rogue memory interface
-hub/master/slave stack. In particular, a device participates in memory routing
+Hub/Master/Slave stack. In particular, a Device participates in memory routing
 as a Hub, and forwards block transactions toward downstream memory slaves.
 
 Where Hub fits in transaction flow
@@ -184,8 +184,8 @@ The C++ Hub implementation (``src/rogue/interfaces/memory/Hub.cpp``):
 
 Conceptual transaction path:
 
-* variable operation -> block transaction -> device/hub routing ->
-  downstream slave access -> completion/check -> variable update notify
+* Variable operation -> Block transaction -> Device/Hub routing ->
+  downstream slave access -> completion/check -> Variable update notify
 
 For deeper memory-stack behavior, see:
 

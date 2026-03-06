@@ -13,8 +13,8 @@ stream transports can be wired for performance while the tree stays focused on
 clear operator-facing structure and workflow.
 
 A typical hierarchy starts at one ``Root`` and fans into multiple ``Device``
-subtrees. Each device can contain child devices, variables, and commands.
-At runtime, the root coordinates startup, background polling, and system-wide
+subtrees. Each Device can contain child Devices, Variables, and Commands.
+At runtime, the Root coordinates startup, background polling, and system-wide
 read/write operations across that hierarchy.
 
 The tree is also the boundary where client/server interfaces are attached so
@@ -26,7 +26,7 @@ This enables workflows such as:
 - GUI clients for live monitoring and operations
 
 These clients connect to the same server-side tree and observe a consistent
-device/variable/command model.
+Device/Variable/Command model.
 For client interface specifics, see :doc:`/pyrogue_core/client_access`.
 
 Minimal tree example
@@ -76,7 +76,7 @@ Core responsibilities include:
 
 - stable hierarchical addressing and lookup
 - group tagging/filtering support
-- lifecycle attachment to a root context
+- lifecycle attachment to a Root context
 - shared logging/path conventions across all subclasses
 
 Concrete node categories:

@@ -41,14 +41,14 @@ For ``loadYaml(..., writeEach=False)`` and ``setYaml(..., writeEach=False)``,
 the workflow is:
 
 1. Parse YAML input to ordered dictionaries.
-2. Traverse tree entries and assign variable display values with
+2. Traverse tree entries and assign Variable display values with
    ``setDisp(..., write=False)``.
 3. After the whole YAML payload is staged in shadow values, run root bulk
    write/verify/check (``Root._write()``).
 
 Implications:
 
-- if a variable is assigned more than once while loading, the last assignment
+- if a Variable is assigned more than once while loading, the last assignment
   wins in shadow memory before commit
 - hardware is not touched until the bulk commit step
 
@@ -58,17 +58,17 @@ is being traversed (no final consolidated ``Root._write()`` pass).
 Commit ordering
 ===============
 
-Bulk commit is queued recursively using tree/device order:
+Bulk commit is initiated recursively using tree/Device order:
 
-- device traversal follows tree child ordering
-- each device enqueues its blocks in ``self._blocks`` order
-- for auto-built blocks, ordering is typically lower-offset first because block
-  creation starts from variables sorted by ``(offset, size)``
+- Device traversal follows tree child ordering
+- each Device initiates its Blocks in ``self._blocks`` order
+- for auto-built Blocks, ordering is typically lower-offset first because Block
+  creation starts from Variables sorted by ``(offset, size)``
 
-After enqueue:
+After initiation:
 
-- ``verify`` transactions are queued
-- ``check`` phase waits for queued operations to complete and surfaces errors
+- ``verify`` transactions are initiated
+- ``check`` phase waits for initiated operations to complete and surfaces errors
 
 In other words, PyRogue separates transaction initiation from completion. The completion/wait
 step is called ``check`` in API naming.
@@ -88,18 +88,18 @@ Examples:
 - ``AmcCard[:]: DacEnable[0]: True``
 - ``AmcCard[1:3]: DacEnable: True``
 
-Bulk operations: enqueue vs check
-=================================
+Bulk operations: initiate vs check
+==================================
 
 Bulk methods intentionally decouple transaction issue from wait:
 
-- enqueue: ``writeBlocks``, ``readBlocks``, ``verifyBlocks``
+- initiate: ``writeBlocks``, ``readBlocks``, ``verifyBlocks``
 - wait/check: ``checkBlocks``
 
 This pattern allows many operations to be issued first, then checked as a
 group, which reduces per-transaction blocking overhead.
 
-``checkEach=True`` changes behavior to check completion after each block
+``checkEach=True`` changes behavior to check completion after each Block
 transaction instead of deferring checks.
 
 Related settings on Root:
@@ -113,5 +113,5 @@ Where to explore next
 - Root lifecycle/details: :doc:`/pyrogue_tree/node/root/index`
 - Polling behavior: :doc:`/pyrogue_tree/node/root/poll_queue`
 - Group filtering semantics: :doc:`/pyrogue_tree/node/groups`
-- Device/block transaction paths: :doc:`/pyrogue_tree/node/device/index`,
+- Device/Block transaction paths: :doc:`/pyrogue_tree/node/device/index`,
   :doc:`/pyrogue_tree/node/block/index`
