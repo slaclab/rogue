@@ -20,9 +20,9 @@ PyRogue provides three primary variable subtypes:
    :maxdepth: 1
    :caption: Types of Variables in the PyRogue Tree:
 
-   link_variable/index
-   local_variable/index
-   remote_variable/index
+   link_variable
+   local_variable
+   remote_variable
 
 When to use each type
 =====================
@@ -80,7 +80,7 @@ This means:
 See also:
 
 * :ref:`pyrogue_tree_node_block`
-* :doc:`/pyrogue_tree/core/blocks`
+* :doc:`/pyrogue_tree/core/block`
 * :doc:`/memory_interface/index`
 
 BaseVariable API Reference

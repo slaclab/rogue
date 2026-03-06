@@ -5,7 +5,7 @@ PollQueue
 
 For conceptual polling behavior and scheduler usage, see:
 
-- :doc:`/pyrogue_tree/core/root/poll_queue`
+- :doc:`/pyrogue_tree/core/poll_queue`
 
 .. autoclass:: pyrogue.PollQueue
    :members:

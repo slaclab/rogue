@@ -181,7 +181,7 @@ Conceptual transaction path:
 
 For deeper memory-stack behavior, see:
 
-* :doc:`/pyrogue_tree/core/blocks`
+* :doc:`/pyrogue_tree/core/block`
 * :doc:`/memory_interface/hub`
 * :doc:`/memory_interface/slave`
 * :doc:`/api/cpp/interfaces/memory/index`

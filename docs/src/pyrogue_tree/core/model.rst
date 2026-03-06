@@ -104,7 +104,7 @@ When a Variable is read or written:
 Model selection answers "how bytes map to values"; Block transactions answer
 "when bytes move."
 
-For transaction flow details, see :doc:`/pyrogue_tree/core/blocks`.
+For transaction flow details, see :doc:`/pyrogue_tree/core/block`.
 
 Custom Model example
 ====================
@@ -180,5 +180,5 @@ Reference links
 Where to explore next
 =====================
 
-* Block transaction and grouping behavior: :doc:`/pyrogue_tree/core/blocks`
-* Variable usage patterns: :doc:`/pyrogue_tree/core/variable/index`
+* Block transaction and grouping behavior: :doc:`/pyrogue_tree/core/block`
+* Variable usage patterns: :doc:`/pyrogue_tree/core/variable`

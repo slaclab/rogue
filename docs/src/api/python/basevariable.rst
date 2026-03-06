@@ -5,7 +5,7 @@ BaseVariable
 
 For conceptual variable behavior and subtype selection, see:
 
-- :doc:`/pyrogue_tree/core/variable/index`
+- :doc:`/pyrogue_tree/core/variable`
 
 .. autoclass:: pyrogue.BaseVariable
    :members:

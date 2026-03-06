@@ -16,9 +16,9 @@ Workflow
 1. Start from the custom device example:
    :doc:`/getting_started/pyrogue_tree_example/p_t_device`
 2. Refactor variable layout using:
-   :doc:`/pyrogue_tree/core/variable/index`
+   :doc:`/pyrogue_tree/core/variable`
 3. Add command behavior patterns from:
-   :doc:`/pyrogue_tree/core/command/index`
+   :doc:`/pyrogue_tree/core/command`
 4. Apply model choices and type mapping guidance from:
    :doc:`/pyrogue_tree/core/model`
 5. Validate full behavior with:

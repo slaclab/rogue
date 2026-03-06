@@ -5,7 +5,7 @@ LinkVariable
 
 For conceptual usage and dependency patterns, see:
 
-- :doc:`/pyrogue_tree/core/variable/link_variable/index`
+- :doc:`/pyrogue_tree/core/link_variable`
 
 .. autoclass:: pyrogue.LinkVariable
    :members:

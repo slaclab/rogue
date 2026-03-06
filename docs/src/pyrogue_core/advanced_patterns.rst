@@ -34,9 +34,9 @@ Validation checklist
 
 Starting points:
 
-- :doc:`/pyrogue_tree/core/device/index`
-- :doc:`/pyrogue_tree/core/variable/remote_variable/index`
-- :doc:`/pyrogue_tree/core/variable/link_variable/index`
+- :doc:`/pyrogue_tree/core/device`
+- :doc:`/pyrogue_tree/core/remote_variable`
+- :doc:`/pyrogue_tree/core/link_variable`
 
 API reference:
 

@@ -29,5 +29,5 @@ If checks fail
 ==============
 
 - Revisit installation steps: :doc:`/installing/index`
-- Review root-level concepts: :doc:`/pyrogue_tree/core/root/index`
+- Review root-level concepts: :doc:`/pyrogue_tree/core/root`
 - Review client connectivity: :doc:`/pyrogue_tree/client_interfaces/index`

@@ -5,7 +5,7 @@ BaseCommand
 
 For conceptual command behavior and command subtypes, see:
 
-- :doc:`/pyrogue_tree/core/command/index`
+- :doc:`/pyrogue_tree/core/command`
 
 .. autoclass:: pyrogue.BaseCommand
    :members:

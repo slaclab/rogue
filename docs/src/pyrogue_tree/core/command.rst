@@ -29,8 +29,8 @@ Subtypes
    :maxdepth: 1
    :caption: Command Subtypes:
 
-   local_command/index
-   remote_command/index
+   local_command
+   remote_command
 
 BaseCommand API Reference
 ===============================

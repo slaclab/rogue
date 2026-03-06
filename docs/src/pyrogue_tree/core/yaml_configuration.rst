@@ -124,8 +124,8 @@ Related settings on Root:
 Where to explore next
 =====================
 
-- Root lifecycle/details: :doc:`/pyrogue_tree/core/root/index`
-- Polling behavior: :doc:`/pyrogue_tree/core/root/poll_queue`
+- Root lifecycle/details: :doc:`/pyrogue_tree/core/root`
+- Polling behavior: :doc:`/pyrogue_tree/core/poll_queue`
 - Group filtering semantics: :doc:`/pyrogue_tree/core/groups`
-- Device/Block transaction paths: :doc:`/pyrogue_tree/core/device/index`,
-  :doc:`/pyrogue_tree/core/blocks`
+- Device/Block transaction paths: :doc:`/pyrogue_tree/core/device`,
+  :doc:`/pyrogue_tree/core/block`

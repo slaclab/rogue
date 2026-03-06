@@ -335,6 +335,6 @@ Where to explore next
 =====================
 
 * Model API and utility helpers: :doc:`/pyrogue_tree/core/model`
-* Root bulk write/read/check sequencing: :doc:`/pyrogue_tree/core/root/index`
+* Root bulk write/read/check sequencing: :doc:`/pyrogue_tree/core/root`
 * C++ Block reference: :doc:`/api/cpp/interfaces/memory/block`
 * Python LocalBlock reference: :doc:`/api/python/localblock`

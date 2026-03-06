@@ -206,7 +206,7 @@ YAML Configuration and Bulk Operations
 
 Root YAML config/state workflows and array-matching rules are documented in:
 
-- :doc:`/pyrogue_tree/core/root/yaml_configuration`
+- :doc:`/pyrogue_tree/core/yaml_configuration`
 
 That page also covers bulk initiate/check behavior and related Root settings
 (``ForceWrite``, ``InitAfterConfig``).

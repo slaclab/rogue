@@ -19,8 +19,8 @@ section.
 
    /pyrogue_tree/index
    /pyrogue_tree/client_interfaces/index
-   /pyrogue_tree/core/root/poll_queue
-   /pyrogue_tree/core/root/yaml_configuration
+   /pyrogue_tree/core/poll_queue
+   /pyrogue_tree/core/yaml_configuration
    /pyrogue_tree/core/model
    built_in_devices
    advanced_patterns

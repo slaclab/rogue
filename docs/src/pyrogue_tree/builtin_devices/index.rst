@@ -30,8 +30,8 @@ Relationship to Core and interfaces
 
 For underlying behavior, see:
 
-* :doc:`/pyrogue_tree/core/device/index`
-* :doc:`/pyrogue_tree/core/variable/index`
+* :doc:`/pyrogue_tree/core/device`
+* :doc:`/pyrogue_tree/core/variable`
 * :doc:`/pyrogue_tree/client_interfaces/index`
 
 Where to explore next

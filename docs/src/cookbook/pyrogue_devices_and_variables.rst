@@ -7,8 +7,8 @@ PyRogue Devices and Variables Recipes
 Use these recipe-oriented pages for concrete examples:
 
 - :doc:`/getting_started/pyrogue_tree_example/p_t_device`
-- :doc:`/pyrogue_tree/core/variable/remote_variable/index`
-- :doc:`/pyrogue_tree/core/variable/link_variable/index`
+- :doc:`/pyrogue_tree/core/remote_variable`
+- :doc:`/pyrogue_tree/core/link_variable`
 - :doc:`/pyrogue_tree/builtin_devices/data_receiver`
 
 Recipe 1: Add a memory-backed control variable
@@ -29,7 +29,7 @@ Procedure
 Deep dive
 =========
 
-- :doc:`/pyrogue_tree/core/variable/index`
+- :doc:`/pyrogue_tree/core/variable`
 - :doc:`/pyrogue_tree/core/model`
 
 Recipe 2: Create a computed status value
@@ -51,4 +51,4 @@ Deep dive
 =========
 
 - :doc:`/pyrogue_core/advanced_patterns`
-- :doc:`/pyrogue_tree/core/root/poll_queue`
+- :doc:`/pyrogue_tree/core/poll_queue`

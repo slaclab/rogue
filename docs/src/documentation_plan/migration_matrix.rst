@@ -276,7 +276,7 @@ This matrix tracks where content is moving as the revamp proceeds.
      - Docs Team
      - M3 Coverage [done]
    * - /pyrogue_core narrative expansion
-     - /pyrogue_tree/index, /pyrogue_tree/client_interfaces/index, /pyrogue_tree/core/variable/index, /pyrogue_tree/core/root/poll_queue, /pyrogue_tree/core/root/yaml_configuration, /pyrogue_tree/core/model, /pyrogue_core/built_in_devices, /pyrogue_core/advanced_patterns
+     - /pyrogue_tree/index, /pyrogue_tree/client_interfaces/index, /pyrogue_tree/core/variable, /pyrogue_tree/core/poll_queue, /pyrogue_tree/core/yaml_configuration, /pyrogue_tree/core/model, /pyrogue_core/built_in_devices, /pyrogue_core/advanced_patterns
      - Move
      - Docs Team
      - M3 Coverage [done]
