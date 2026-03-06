@@ -5,8 +5,8 @@ Model
 
 For conceptual model usage and type mapping, see:
 
-- :doc:`/pyrogue_core/model_api`
-- :doc:`/pyrogue_core/model_types`
+- :doc:`/pyrogue_tree/model`
+- :doc:`/pyrogue_tree/model`
 
 .. autoclass:: pyrogue.Model
    :members:

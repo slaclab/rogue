@@ -23,8 +23,7 @@ section.
    variables_and_streams
    polling
    yaml_state_config
-   model_api
-   model_types
+   /pyrogue_tree/model
    built_in_devices
    advanced_patterns
    cpp_api_wrapper

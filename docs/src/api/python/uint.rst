@@ -5,7 +5,7 @@ UInt
 
 For conceptual model usage and type mapping, see:
 
-- :doc:`/pyrogue_core/model_types`
+- :doc:`/pyrogue_tree/model`
 
 .. autoclass:: pyrogue.UInt
    :members:

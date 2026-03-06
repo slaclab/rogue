@@ -114,4 +114,4 @@ Where to explore next
 - Polling behavior: :doc:`/pyrogue_tree/node/root/poll_queue`
 - Group filtering semantics: :doc:`/pyrogue_tree/node/groups`
 - Device/Block transaction paths: :doc:`/pyrogue_tree/node/device/index`,
-  :doc:`/pyrogue_tree/node/block/index`
+  :doc:`/pyrogue_tree/blocks`

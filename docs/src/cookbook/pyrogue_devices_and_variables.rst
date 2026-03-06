@@ -30,7 +30,7 @@ Deep dive
 =========
 
 - :doc:`/pyrogue_core/variables_and_streams`
-- :doc:`/pyrogue_core/model_types`
+- :doc:`/pyrogue_tree/model`
 
 Recipe 2: Create a computed status value
 ========================================
