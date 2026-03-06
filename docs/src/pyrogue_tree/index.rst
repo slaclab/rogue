@@ -38,7 +38,7 @@ Where to explore next
 - Client/server access patterns: :doc:`/pyrogue_tree/client_interfaces/index`
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: PyRogue Tree:
 
    core/index

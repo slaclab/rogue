@@ -102,7 +102,11 @@ html_theme = 'sphinx_rtd_theme'
 # further.  For a list of options available for each theme, see the
 # documentation.
 #
-# html_theme_options = {}
+html_theme_options = {
+    # Keep sidebar navigation focused on document/page links only.
+    # This suppresses per-page heading entries in the navbar.
+    'titles_only': True,
+}
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
