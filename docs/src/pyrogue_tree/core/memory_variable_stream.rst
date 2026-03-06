@@ -11,6 +11,11 @@ This is useful when you want to bridge tree updates into an existing stream
 pipeline (for logging, forwarding, filtering, or transport) without polling
 variables manually.
 
+In the Core model, this adapter sits at the boundary between ``Variable``
+update semantics and stream transport plumbing. The ``Root``/``Variable``
+lifecycle still governs when values change; the adapter only packages those
+changes into frames.
+
 Typical behavior:
 
 - Registers a variable listener on a ``Root``.
@@ -59,6 +64,12 @@ Operational Notes
 - Use group filters to limit update volume on large trees.
 - Prefer event-driven updates over periodic full snapshots for efficiency.
 - Snapshot mode does not force hardware reads before serialization.
+
+Related topics
+==============
+
+- Variable behavior and grouping: :doc:`/pyrogue_tree/core/variable`
+- Stream topology and transport flow: :doc:`/stream_interface/index`
 
 API reference
 =============

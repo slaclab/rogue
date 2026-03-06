@@ -360,6 +360,16 @@ This matrix tracks where content is moving as the revamp proceeds.
      - Move
      - Docs Team
      - M4 Harmonization [done]
+   * - Consolidate OS memory bridge docs into one canonical page
+     - /built_in_modules/os_memory_bridge/os_command_memory_slave + /built_in_modules/os_memory_bridge/osmemmaster -> /built_in_modules/os_memory_bridge/index
+     - Move
+     - Docs Team
+     - M4 Harmonization [done]
+   * - Re-home variable stream adapter narrative into core topic flow
+     - /stream_interface/memory_stream_variable -> /pyrogue_tree/core/memory_variable_stream
+     - Move
+     - Docs Team
+     - M4 Harmonization [done]
    * - Remove interfaces transitional index from primary navigation
      - /introduction/index and canonical section landing pages
      - Move
