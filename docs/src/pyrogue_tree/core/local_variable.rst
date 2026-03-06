@@ -26,15 +26,15 @@ The callbacks allow LocalVariable to behave like a live view over software state
 Callback signatures:
 
 - ``localGet() -> Any``:
-  Called when the variable is read. Return value becomes the variable value.
+  Called when the Variable is read. Return value becomes the Variable value.
 - ``localSet(value: Any) -> None``:
-  Called when the variable is written. ``value`` is the post-conversion
-  Python value for the variable model/type.
+  Called when the Variable is written. ``value`` is the post-conversion
+  Python value for the Variable Model/type.
 
 Design guidance:
 
 - keep callbacks deterministic and low-latency
-- avoid long blocking operations in ``localGet`` when the variable is polled
+- avoid long blocking operations in ``localGet`` when the Variable is polled
 - make side effects in ``localSet`` explicit and idempotent when possible
 
 Example

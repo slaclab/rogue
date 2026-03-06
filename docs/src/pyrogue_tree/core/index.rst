@@ -7,7 +7,7 @@ Core
 
 This section defines the object model and runtime behavior of a PyRogue tree.
 It organizes control logic into a hierarchy of ``Root``, ``Device``,
-``Variable``, and ``Command`` nodes, with ``Block`` and ``Model`` providing
+``Variable``, and ``Command`` Nodes, with ``Block`` and ``Model`` providing
 memory transaction grouping and typed value conversion.
 
 A typical hierarchy starts at one ``Root`` and fans into multiple ``Device``
@@ -53,7 +53,7 @@ Minimal tree example
 
 This composition pattern is the foundation for most PyRogue applications:
 ``Root`` owns lifecycle, ``Device`` organizes hardware/application structure,
-and ``Variable``/``Command`` nodes expose state and actions.
+and ``Variable``/``Command`` Nodes expose state and actions.
 
 Core Node model
 ===============
@@ -69,7 +69,7 @@ Core responsibilities include:
 * lifecycle attachment to a Root context
 * shared logging/path conventions across all subclasses
 
-Concrete node categories
+Concrete Node categories
 ========================
 
 * :ref:`pyrogue_tree_node_root`
@@ -84,7 +84,7 @@ Common design workflow
 
 1. Define one ``Root`` for lifecycle, top-level interfaces, and system actions.
 2. Partition the design into ``Device`` subtrees by hardware/function boundary.
-3. Add ``Variable`` and ``Command`` nodes for control and telemetry procedures.
+3. Add ``Variable`` and ``Command`` Nodes for control and telemetry procedures.
 4. Confirm memory mapping/transaction behavior through ``Block`` and ``Model``.
 5. Expose remote access patterns for GUIs, scripts, notebooks, and clients.
 

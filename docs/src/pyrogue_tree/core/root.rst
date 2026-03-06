@@ -4,7 +4,7 @@
 Root
 ====
 
-The :py:class:`pyrogue.Root` class is the top-level node in a PyRogue tree.
+The :py:class:`pyrogue.Root` class is the top-level Node in a PyRogue tree.
 It owns the application lifecycle, coordinates bulk read/write operations,
 manages background workers (poll and update), and provides APIs for YAML
 save/load and external listeners.
@@ -21,7 +21,7 @@ bound into the tree. A typical pattern is:
 * create a memory interface (for example AXI PCIe, TCP simulation, etc.)
 * register it with :py:meth:`pyrogue.Root.addInterface`
 * pass that interface as ``memBase`` when adding top-level Devices
-* optionally add management/control interfaces (such as ZMQ) to the same root
+* optionally add management/control interfaces (such as ZMQ) to the same Root
 
 .. code-block:: python
 
@@ -74,7 +74,7 @@ When :py:meth:`pyrogue.Root.start` runs, it performs bring-up in this order:
 #. Calls ``Root._rootAttached()``.
 
    * Root sets its own parent/root/path fields.
-   * Root calls ``_rootAttached(parent, root)`` on all child nodes.
+   * Root calls ``_rootAttached(parent, root)`` on all child Nodes.
    * Each Device ``_rootAttached`` call recursively attaches children, builds
      Device Blocks, and applies ``_defaults`` overrides.
    * Root then builds its own Blocks and runs ``_finishInit()`` on Root-local
@@ -183,19 +183,19 @@ That page also covers bulk initiate/check behavior and related Root settings
 Included Command Objects
 ------------------------
 
-The following :py:class:`pyrogue.LocalCommand` objects are all created when the Root node is created.
+The following :py:class:`pyrogue.LocalCommand` objects are all created when the Root Node is created.
 
-* **WriteAll**: Write every variable value to hardware (hidden from the GUI).
-* **ReadAll**: Read every variable value from hardware.
+* **WriteAll**: Write every Variable value to hardware (hidden from the GUI).
+* **ReadAll**: Read every Variable value from hardware.
 * **SaveState**: Save state to file in yaml format.
 * **SaveConfig**: Save configuration to file. Data is saved in YAML format.
 * **LoadConfig**: Read configuration from file. Data is read in YAML format.
-* **RemoteVariableDump**: Save a dump of the remote variable state.
+* **RemoteVariableDump**: Save a dump of the remote Variable state.
 * **RemoteConfigDump**: Save a dump of the remote configuration state.
-* **Initialize**: Generate a soft reset to each device in the tree.
-* **HardReset**: Generate a hard reset to each device in the tree.
-* **CountReset**: Generate a count reset to each device in the tree.
-* **ClearLog**: Clear the message log contained in the SystemLog variable.
+* **Initialize**: Generate a soft reset to each Device in the tree.
+* **HardReset**: Generate a hard reset to each Device in the tree.
+* **CountReset**: Generate a count reset to each Device in the tree.
+* **ClearLog**: Clear the message log contained in the SystemLog Variable.
 * **SetYamlConfig**: Set configuration from YAML string.
 * **GetYamlConfig**: Get configuration in YAML string.
 * **GetYamlState**: Get current state as YAML string.
@@ -203,13 +203,13 @@ The following :py:class:`pyrogue.LocalCommand` objects are all created when the 
 Included Variable Objects
 -------------------------
 The following :py:class:`pyrogue.LocalVariable` objects are created when the
-Root node is created.
+Root Node is created.
 
 * **RogueVersion**: Rogue version string.
 * **RogueDirectory**: Rogue Library Directory.
 * **SystemLog**: String containing newline-separated system log entries. Allows remote client interfaces to know when an error has occurred. This string contains a summary of the error while the full traceback is dumped to the console.
 * **SystemLogLast**: String containing last system log entry.
-* **ForceWrite**: Controls how system level writes are handled. Configuration flag to always write non stale blocks for WriteAll, LoadConfig and setYaml.
+* **ForceWrite**: Controls how system level writes are handled. Configuration flag to always write non stale Blocks for WriteAll, LoadConfig and setYaml.
 * **InitAfterConfig**: Configuration flag to execute initialize after LoadConfig or setYaml.
 * **Time**: Current time in seconds since EPOCH UTC.
 * **LocalTime**: Local time.

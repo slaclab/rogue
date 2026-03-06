@@ -5,11 +5,11 @@ PollQueue
 =========
 
 :py:class:`pyrogue.PollQueue` is the Root-owned scheduler that drives periodic
-reads for polled variables.
+reads for polled Variables.
 
 In most applications you do not instantiate it directly. It is created by
-:py:class:`pyrogue.Root` and controlled through root-level APIs/variables such
-as ``PollEn`` and variable ``pollInterval``.
+:py:class:`pyrogue.Root` and controlled through Root-level APIs/Variables such
+as ``PollEn`` and Variable ``pollInterval``.
 
 Polling strategy
 ================
@@ -23,33 +23,33 @@ Common pattern
 
 1. Assign poll intervals by value volatility and operator need.
 2. Validate update rate under realistic network and load conditions.
-3. Move exceptions to event-driven paths or explicit command reads when needed.
+3. Move exceptions to event-driven paths or explicit Command reads when needed.
 
 What it does
 ============
 
 At runtime, PollQueue:
 
-* tracks poll entries per memory block (not per variable)
+* tracks poll entries per Block (not per Variable)
 * schedules reads using a time-ordered heap
-* issues block read transactions with ``startTransaction(..., Read)``
+* issues Block read transactions with ``startTransaction(..., Read)``
 * waits for completion via ``checkTransaction``
 * wraps each poll batch in ``root.updateGroup()`` so updates are coalesced
 
 Block-Level Scheduling Behavior
 ===============================
 
-Polling is organized per block:
+Polling is organized per Block:
 
-* if multiple variables share a block, the block is polled at the minimum
-  non-zero ``pollInterval`` among those variables
-* when intervals change, the corresponding block entry is updated/replaced
-* if no variables in a block have ``pollInterval > 0``, that block is removed
+* if multiple Variables share a Block, the Block is polled at the minimum
+  non-zero ``pollInterval`` among those Variables
+* when intervals change, the corresponding Block entry is updated/replaced
+* if no Variables in a Block have ``pollInterval > 0``, that Block is removed
   from the poll queue
 
-Special case for variables without a hardware block:
+Special case for Variables without a hardware Block:
 
-* for dependency-only variables (for example link variables without ``_block``),
+* for dependency-only Variables (for example LinkVariables without ``_block``),
   interval updates are propagated to dependencies
 
 Control and Lifecycle
@@ -92,7 +92,7 @@ Runtime control from Root
    root.PollEn.set(True)
    root.PollEn.set(False)
 
-   # Change polling rate dynamically for one variable
+   # Change polling rate dynamically for one Variable
    root.MyDevice.AdcRaw.setPollInterval(0.2)
 
 Temporarily block polling during a critical sequence

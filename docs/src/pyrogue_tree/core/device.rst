@@ -10,9 +10,9 @@ Device Definition
 A :py:class:`pyrogue.Device` is the primary composition unit in a PyRogue tree.
 Devices can contain:
 
-* child devices
-* variables (local, remote, link)
-* commands (local, remote)
+* child Devices
+* Variables (local, remote, link)
+* Commands (local, remote)
 
 Most user-facing hardware abstractions are implemented as ``Device`` subclasses.
 At runtime, a Device also participates in memory routing behavior through the
@@ -42,7 +42,7 @@ Device-level attributes include:
 * ``enable``
 
 The ``enable`` Variable allows tree-level logic to disable a full Device subtree
-for hardware access while keeping node metadata available.
+for hardware access while keeping Node metadata available.
 
 Relationship to Hub
 -------------------
@@ -75,7 +75,7 @@ Managed Interfaces: ``addInterface()`` and ``addProtocol()``
 -------------------------------------------------------------
 
 Devices can own stream/memory/protocol helper objects that need coordinated
-startup/shutdown with the device tree.
+startup/shutdown with the Device tree.
 
 Canonical term used in this documentation:
 ``Managed Interface Lifecycle``.
@@ -97,7 +97,7 @@ At runtime:
   the method exists
 * both then recurse to child Devices
 
-This is why top-level interfaces are commonly added at root scope using
+This is why top-level interfaces are commonly added at Root scope using
 ``root.addInterface(...)`` (``Root`` is a ``Device`` subclass).
 
 Device Read/Write Operations
@@ -106,7 +106,7 @@ Device Read/Write Operations
 Bulk config/read/write operations traverse the tree and issue Block transactions
 through Device Block APIs.
 
-Default behavior of block APIs
+Default behavior of Block APIs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 * :py:meth:`pyrogue.Device.writeBlocks`
@@ -182,7 +182,7 @@ Bulk configuration/read path:
   and then, when ``writeEach=False``, call Root ``_write()`` which performs:
   recursive ``writeBlocks`` -> ``verifyBlocks`` -> ``checkBlocks``.
 * Root ``WriteAll`` and ``ReadAll`` commands call Root ``_write()`` and
-  ``_read()``, which issue recursive all-block operations.
+  ``_read()``, which issue recursive all-Block operations.
 
 This is why overriding ``writeBlocks``/``readBlocks`` at Device scope is the
 normal extension point for hardware-specific sequencing behavior.
@@ -235,7 +235,7 @@ Guidance by hook
   * Use for: stopping threads/services and releasing runtime resources.
   * If overridden, call ``super()._stop()`` to preserve managed-interface stop.
 
-Operational hooks and block sequencing hooks
+Operational hooks and Block sequencing hooks
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 * Operational hooks:
@@ -296,7 +296,7 @@ Example: prefer ``_start()``/``_stop()`` for runtime work
 Custom Read/Write Operations
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Override block APIs when hardware requires extra ordering that is not captured
+Override Block APIs when hardware requires extra ordering that is not captured
 by standard Block traversal alone.
 
 Common reasons to override:
@@ -318,7 +318,7 @@ General override pattern
 
 Keep default traversal unless you explicitly want to replace it:
 
-* call ``super()`` for standard block behavior
+* call ``super()`` for standard Block behavior
 * preserve key arguments (``recurse``, ``variable``, ``checkEach``, ``**kwargs``)
 * add only the extra hardware-specific step(s)
 
@@ -407,7 +407,7 @@ For deeper memory-stack behavior, see:
 Device Command Decorators
 -------------------------
 
-Device supports decorators that create :py:class:`pyrogue.LocalCommand` nodes.
+Device supports decorators that create :py:class:`pyrogue.LocalCommand` Nodes.
 You can use decorators on local functions created in ``__init__``.
 
 .. code-block:: python

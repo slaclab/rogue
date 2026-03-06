@@ -12,7 +12,7 @@ Most users interact with Models indirectly through Variable ``base`` and related
 type configuration. Advanced users can use Model classes directly for custom
 encoding/decoding workflows.
 
-Why models exist
+Why Models Exist
 ================
 
 Models separate three concerns:

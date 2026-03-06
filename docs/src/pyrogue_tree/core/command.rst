@@ -4,9 +4,9 @@
 Command
 =======
 
-Commands are executable nodes used to trigger actions in the tree.
+Commands are executable Nodes used to trigger actions in the tree.
 
-A command is still a variable-like node (inherits from
+A Command is still a Variable-like Node (inherits from
 :py:class:`pyrogue.BaseVariable`), but its main purpose is invoking callable
 behavior.
 
@@ -14,8 +14,8 @@ Command types
 =============
 
 * :py:class:`pyrogue.BaseCommand`: base class
-* :py:class:`pyrogue.LocalCommand`: software-only command
-* :py:class:`pyrogue.RemoteCommand`: command tied to a hardware register write
+* :py:class:`pyrogue.LocalCommand`: software-only Command
+* :py:class:`pyrogue.RemoteCommand`: Command tied to a hardware register write
 
 Commands can be invoked either directly or with ``call``:
 

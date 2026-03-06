@@ -4,7 +4,7 @@
 RemoteVariable
 ==============
 
-:py:class:`pyrogue.RemoteVariable` maps a variable to hardware-accessible memory.
+:py:class:`pyrogue.RemoteVariable` maps a Variable to hardware-accessible memory.
 For example, a register in an attached FPGA
 It is the standard choice for register-style control and monitoring.
 
@@ -16,15 +16,15 @@ A RemoteVariable is defined by register mapping metadata such as:
 * ``offset``
 * ``bitSize``
 * ``bitOffset``
-* optional ``base``/type model and packing parameters
+* optional ``base``/type Model and packing parameters
 
 These define where the register exists in the hardware address space, and what type of value it is e.g. unsigned integer, floating point, etc.
 
-Read/write calls trigger block transactions through the device/root transaction
+Read/write calls trigger Block transactions through the Device/Root transaction
 pipeline.
 
 ``offset``, ``bitSize``, and ``bitOffset`` can each be either a single value or
-lists. List form is used when one logical variable is split across multiple
+lists. List form is used when one logical Variable is split across multiple
 register locations.
 
 Examples
@@ -64,7 +64,7 @@ the memory map:
 * ``offset=0x34`` contributes bit 15 (1 bit)
 * ``offset=0x38`` contributes bits 5:0 (6 bits)
 
-PyRogue combines those segments in list order into one variable value.
+PyRogue combines those segments in list order into one Variable value.
 
 .. code-block:: python
 

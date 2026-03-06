@@ -11,7 +11,7 @@ A Block is the transaction unit used by PyRogue memory access. Variables map
 bit fields into Block byte ranges, and hardware reads/writes execute at Block
 level.
 
-Why blocks exist
+Why Blocks Exist
 ================
 
 Blocks separate two concerns:
@@ -146,13 +146,13 @@ Models in Block Conversion
 Blocks use ``Model`` definitions to translate between Python-facing value types
 and hardware bit/byte representation.
 
-Canonical model documentation is in :doc:`/pyrogue_tree/core/model`.
+Canonical Model documentation is in :doc:`/pyrogue_tree/core/model`.
 
 Model-driven Block method dispatch
 ----------------------------------
 
 ``Variable`` instances bind to typed ``Block`` conversion methods based on
-model and size constraints.
+Model and size constraints.
 
 +--------------------+-----------------------------+-------------------------------+----------------------------------------------+
 | Model              | C++ path                    | Python path                   | Notes                                        |
@@ -173,15 +173,15 @@ model and size constraints.
 +--------------------+-----------------------------+-------------------------------+----------------------------------------------+
 | ``Fixed``          | ``set/getFixed``            | ``set/getFixedPy``            | Uses binary-point metadata.                  |
 +--------------------+-----------------------------+-------------------------------+----------------------------------------------+
-| ``PyFunc``         | (Python-focused)            | ``set/getPyFunc``             | Delegates conversion to model hooks.         |
+| ``PyFunc``         | (Python-focused)            | ``set/getPyFunc``             | Delegates conversion to Model hooks.         |
 +--------------------+-----------------------------+-------------------------------+----------------------------------------------+
 
-Built-in model families
+Built-in Model Families
 -----------------------
 
-The following built-in model families are commonly used with blocks:
+The following built-in Models are commonly used with Blocks:
 
-Canonical model coverage is in :doc:`/pyrogue_tree/core/model`.
+Canonical Model coverage is in :doc:`/pyrogue_tree/core/model`.
 
 +---------------------------------------------+-----------------------+-------------------+----------------+------------------------------------------------+
 | Model                                       | Hardware Type         | Python Type       | Bit Size       | Notes                                          |
@@ -213,8 +213,8 @@ Canonical model coverage is in :doc:`/pyrogue_tree/core/model`.
 | :ref:`interfaces_memory_model_ufixed`       | fixed point           | float             | unconstrained  | Unsigned fixed-point conversion                |
 +---------------------------------------------+-----------------------+-------------------+----------------+------------------------------------------------+
 
-Most model conversions run in low-level C++ Block paths for performance. An
-important exception is very wide integer handling, where Python model logic is
+Most Model conversions run in low-level C++ Block paths for performance. An
+important exception is very wide integer handling, where Python Model logic is
 used when values exceed native conversion widths.
 
 Implementation Boundary (Python and C++)
@@ -253,10 +253,10 @@ Advanced patterns
 Custom Models (Complete Example)
 --------------------------------
 
-Custom models are a good fit when built-in model classes do not match the
+Custom Models are a good fit when built-in Model classes do not match the
 desired encoding/decoding behavior.
 
-The example below defines a complete ``MyUInt`` custom model and then uses it
+The example below defines a complete ``MyUInt`` custom Model and then uses it
 in a ``RemoteVariable``.
 
 .. code-block:: python
@@ -292,7 +292,7 @@ in a ``RemoteVariable``.
            super().__init__(**kwargs)
            self.add(pr.RemoteVariable(
                name='MyRegister',
-               description='Register with custom model',
+               description='Register with custom Model',
                offset=0x1000,
                bitSize=32,
                bitOffset=0,
@@ -300,14 +300,14 @@ in a ``RemoteVariable``.
                mode='RW',
            ))
 
-``RemoteVariable(base=MyUInt, ...)`` binds this model to Block conversion for
+``RemoteVariable(base=MyUInt, ...)`` binds this Model to Block conversion for
 that Variable.
 
 Pre-Allocating Blocks
 ---------------------
 
 When you need a specific transaction grouping, pre-create a Block and then add
-variables that overlap that address range.
+Variables that overlap that address range.
 
 .. code-block:: python
 

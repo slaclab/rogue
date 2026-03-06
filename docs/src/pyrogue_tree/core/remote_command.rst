@@ -4,9 +4,9 @@
 RemoteCommand
 =============
 
-:py:class:`pyrogue.RemoteCommand` represents command semantics backed by a
-hardware register field. It combines command invocation behavior with remote
-variable mapping.
+:py:class:`pyrogue.RemoteCommand` represents Command semantics backed by a
+hardware register field. It combines Command invocation behavior with remote
+Variable mapping.
 
 Typical use cases:
  * Triggering a hardware reset register (e.g. a single bit in a register)
@@ -20,7 +20,7 @@ Behavior
 A RemoteCommand typically includes:
 
 * register mapping (``offset``, ``bitSize``, ``bitOffset``)
-* a command function (for example ``pr.BaseCommand.toggle``)
+* a Command function (for example ``pr.BaseCommand.toggle``)
 * optional argument/default value semantics
 
 Common helper functions in :py:class:`pyrogue.BaseCommand` include operations

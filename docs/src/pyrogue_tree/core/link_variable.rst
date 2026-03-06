@@ -5,7 +5,7 @@ LinkVariable
 ============
 
 :py:class:`pyrogue.LinkVariable` exposes a derived value backed by one or more
-dependency variables. It is useful for unit conversion, bit-field composition,
+dependency Variables. It is useful for unit conversion, bit-field composition,
 and user-friendly computed views.
 
 The most common application use case is converting raw ADC/DAC register values
@@ -17,7 +17,7 @@ Behavior
 
 ``LinkVariable`` typically uses:
 
-* ``dependencies``: source variables used by linked logic
+* ``dependencies``: source Variables used by linked logic
 * ``linkedGet``: compute displayed value from dependencies
 * ``linkedSet``: convert user value back to dependency writes
 
@@ -32,7 +32,7 @@ This is useful when:
 
 * one conversion step is reused by multiple higher-level views
 * you want to separate low-level scaling from calibration/application logic
-* derived values should remain readable and testable as independent nodes
+* derived values should remain readable and testable as independent Nodes
 
 Examples
 ========

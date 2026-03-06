@@ -27,9 +27,9 @@ Main entry points
 - ``saveYaml(...)``: write YAML to file/zip from current tree values
 - ``loadYaml(...)``: read YAML from file(s)/directory and apply to tree
 - ``setYaml(...)``: apply YAML text directly
-- ``getYaml(...)``: generate YAML text for a node/tree
+- ``getYaml(...)``: generate YAML text for a Node/tree
 
-These APIs back built-in Root commands in the tree:
+These APIs back built-in Root Commands in the tree:
 
 - ``SaveConfig`` / ``LoadConfig``
 - ``SaveState``
@@ -90,7 +90,7 @@ step is called ``check`` in API naming.
 Array matching and slicing in YAML keys
 =======================================
 
-YAML load supports array-style node matching:
+YAML load supports array-style Node matching:
 
 - ``AmcCard[0]:``
 - ``AmcCard[1:3]:``
@@ -118,7 +118,7 @@ transaction instead of deferring checks.
 
 Related settings on Root:
 
-- ``ForceWrite``: force writes of non-stale blocks in bulk config paths
+- ``ForceWrite``: force writes of non-stale Blocks in bulk config paths
 - ``InitAfterConfig``: call ``initialize()`` after config apply
 
 Where to explore next

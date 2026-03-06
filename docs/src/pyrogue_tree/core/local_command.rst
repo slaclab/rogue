@@ -4,13 +4,13 @@
 LocalCommand
 ============
 
-:py:class:`pyrogue.LocalCommand` is used for command behavior implemented purely
+:py:class:`pyrogue.LocalCommand` is used for Command behavior implemented purely
 in Python application logic.
 
 Typical use cases:
 
 * orchestration steps (load/save config, reset sequences)
-* helper operations that combine multiple variable accesses
+* helper operations that combine multiple Variable accesses
 * non-hardware actions such as file export or software state management
 
 Example
