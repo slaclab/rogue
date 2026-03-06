@@ -5,18 +5,11 @@ Model
 =====
 
 Models define how values are encoded to bytes and decoded back to Python types.
-In practice, a model is selected per variable (usually with ``base=...`` on
-``RemoteVariable``), and block transactions apply that model during read/write.
+In practice, a Model is selected per Variable (usually with ``base=...`` on
+``RemoteVariable``), and Block transactions apply that Model during read/write.
 
-=========
-Model API
-=========
-
-PyRogue models define how variable values are represented, converted to/from
-bytes, and interpreted for display/type behavior.
-
-Most users interact with models indirectly through variable ``base`` and related
-type configuration. Advanced users can use model classes directly for custom
+Most users interact with Models indirectly through Variable ``base`` and related
+type configuration. Advanced users can use Model classes directly for custom
 encoding/decoding workflows.
 
 Why models exist
@@ -26,15 +19,35 @@ Models separate three concerns:
 
 1. hardware representation (bits/bytes, endianness, signedness)
 2. Python-facing type and formatting behavior
-3. conversion logic used during block access
+3. conversion logic used during Block access
 
-This keeps variable definitions clear and lets the same conversion behavior be
+This keeps Variable definitions clear and lets the same conversion behavior be
 reused across many registers.
 
-Built-in model families
+Model selection in Variables
+============================
+
+Most users select a Model when defining each ``RemoteVariable``.
+
+.. code-block:: python
+
+   import pyrogue as pr
+
+   class MyRegs(pr.Device):
+       def __init__(self, **kwargs):
+           super().__init__(**kwargs)
+           self.add(pr.RemoteVariable(
+               name='Status',
+               offset=0x00,
+               bitSize=32,
+               mode='RO',
+               base=pr.UInt,   # Model selection
+           ))
+
+Built-in Model families
 =======================
 
-Common built-in models include:
+Common built-in Models include:
 
 * integer: ``UInt``, ``UIntBE``, ``UIntReversed``, ``Int``, ``IntBE``
 * boolean: ``Bool``
@@ -43,7 +56,7 @@ Common built-in models include:
 * fixed point: ``Fixed``, ``UFixed``
 * custom conversion hook: ``PyFunc``
 
-Built-in model types
+Built-in Model types
 ====================
 
 +---------------------------------------------+-----------------------+-------------------+----------------+------------------------------------------------+
@@ -76,50 +89,35 @@ Built-in model types
 | :ref:`interfaces_memory_model_ufixed`       | fixed point           | float             | unconstrained  | Unsigned fixed-point conversion                |
 +---------------------------------------------+-----------------------+-------------------+----------------+------------------------------------------------+
 
-For low-level model class reference and constants, see
+For low-level Model class reference and constants, see
 :doc:`/api/cpp/interfaces/memory/model`.
 
-.. code-block:: python
+Model conversion flow in Block access
+=====================================
 
-   import pyrogue as pr
+When a Variable is read or written:
 
-   class MyRegs(pr.Device):
-       def __init__(self, **kwargs):
-           super().__init__(**kwargs)
-           self.add(pr.RemoteVariable(
-               name='Status',
-               offset=0x00,
-               bitSize=32,
-               mode='RO',
-               base=pr.UInt,   # model selection
-           ))
+1. Variable logic resolves its Model and layout metadata
+2. Block conversion methods pack/unpack values for that Model
+3. Block transaction methods move bytes to/from hardware
 
-Model conversion flow
-=====================
-
-When a variable is read or written:
-
-1. variable logic resolves its model and layout metadata
-2. block conversion methods pack/unpack values for that model
-3. block transaction methods move bytes to/from hardware
-
-Model selection answers "how bytes map to values"; block transactions answer
+Model selection answers "how bytes map to values"; Block transactions answer
 "when bytes move."
 
 For transaction flow details, see :doc:`/pyrogue_tree/blocks`.
 
-Custom model example
+Custom Model example
 ====================
 
-Use a custom model when built-ins do not match an encoding format.
+Use a custom Model when built-ins do not match an encoding format.
 
 .. code-block:: python
 
    import pyrogue as pr
    import rogue.interfaces.memory as rim
 
-   class MyUInt(pr.Model):
-       ptype = int
+   class BitReversedUInt(pr.Model):
+       pytype = int
        defaultdisp = '{:#x}'
        modelId = rim.PyFunc
 
@@ -127,10 +125,14 @@ Use a custom model when built-ins do not match an encoding format.
            super().__init__(bitsize)
 
        def toBytes(self, value):
-           return int(value).to_bytes(pr.byteCount(self.bitSize), 'little', signed=False)
+           # Reverse bit order so MSB appears at bit position 0 in memory.
+           raw_normal = int(value)
+           raw_reversed = pr.reverseBits(raw_normal, self.bitSize)
+           return raw_reversed.to_bytes(pr.byteCount(self.bitSize), 'little', signed=False)
 
        def fromBytes(self, ba):
-           return int.from_bytes(ba, 'little', signed=False)
+           raw_reversed = int.from_bytes(ba, 'little', signed=False)
+           return pr.reverseBits(raw_reversed, self.bitSize)
 
        def fromString(self, string):
            return int(string, 0)
@@ -139,25 +141,39 @@ Use a custom model when built-ins do not match an encoding format.
            return 0
 
        def maxValue(self):
-           return (1 << self.bitSize) - 1
+           return (2 ** self.bitSize) - 1
 
    class MyDevice(pr.Device):
        def __init__(self, **kwargs):
            super().__init__(**kwargs)
            self.add(pr.RemoteVariable(
-               name='MyRegister',
+               name='AsicStatus',
                offset=0x1000,
-               bitSize=32,
+               bitSize=16,
                bitOffset=0,
                mode='RW',
-               base=MyUInt,
+               base=BitReversedUInt,
            ))
+
+How ``BitReversedUInt`` differs from built-in ``UInt``
+=======================================================
+
+This example shows a register layout where hardware bit order differs from
+normal integer interpretation:
+
+* built-in ``UInt`` assumes standard bit significance ordering
+* ``BitReversedUInt`` reverses bits on write/read so software uses normal
+  integer semantics while memory uses reversed bit positions
+* this is useful for some custom ASIC or I2C peripheral register definitions
+
+For examples of built-in and custom Model definitions, see
+``python/pyrogue/_Model.py``.
 
 Reference links
 ===============
 
-* Python model base/reference: :doc:`/api/python/model`
-* C++ memory model reference: :doc:`/api/cpp/interfaces/memory/model`
+* Python Model base/reference: :doc:`/api/python/model`
+* C++ memory Model reference: :doc:`/api/cpp/interfaces/memory/model`
 * Model helpers: :doc:`/api/python/wordcount`, :doc:`/api/python/bytecount`,
   :doc:`/api/python/reversebits`, :doc:`/api/python/twoscomplement`
 
