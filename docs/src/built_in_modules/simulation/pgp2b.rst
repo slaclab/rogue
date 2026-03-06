@@ -20,9 +20,9 @@ Constructor
 
 Behavior:
 
-- creates ``vcCount`` stream endpoints as ``rogue.interfaces.stream.TcpClient``
-- virtual-channel ports are ``port, port+2, ..., port+2*(vcCount-1)``
-- sideband uses a paired channel at ``port+8`` via ``SideBandSim``
+- Creates ``vcCount`` stream endpoints as ``rogue.interfaces.stream.TcpClient``
+- Virtual-channel ports are ``port, port+2, ..., port+2*(vcCount-1)``
+- Sideband uses a paired channel at ``port+8`` via ``SideBandSim``
 
 Connecting two simulated endpoints
 ==================================

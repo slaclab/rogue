@@ -32,9 +32,9 @@ When to use
 
 Use ``UdpRssiPack`` when you want:
 
-* a standard UDP + RSSI + packetizer stack with minimal setup code
-* link status/counters in the PyRogue variable tree
-* start/stop lifecycle managed through the Root interface mechanism
+* A standard UDP + RSSI + packetizer stack with minimal setup code
+* Link status/counters in the PyRogue variable tree
+* Start/stop lifecycle managed through the Root interface mechanism
 
 For most hardware systems (software talking to an FPGA RSSI endpoint), use
 ``server=False`` so Rogue acts as the RSSI/UDP client and connects outbound to

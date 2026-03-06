@@ -13,9 +13,9 @@ How group filtering works
 
 Most tree APIs that accept ``incGroups`` and ``excGroups`` use the same logic:
 
-* include check passes when ``incGroups`` is empty, or the Node is in at least one include group
-* exclude check passes when ``excGroups`` is empty, or the Node is in none of the exclude groups
-* a Node is processed only if both checks pass
+* Include check passes when ``incGroups`` is empty, or the Node is in at least one include group
+* Exclude check passes when ``excGroups`` is empty, or the Node is in none of the exclude groups
+* A Node is processed only if both checks pass
 
 Built-in group names and behavior
 =================================

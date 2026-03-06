@@ -70,9 +70,9 @@ high-rate transport and processing path in C++.
 
 Python bindings are typically used for:
 
-- rapid bring-up and topology prototyping
-- scripted integration testing and validation harnesses
-- hybrid systems where orchestration is in Python and throughput-critical path
+- Rapid bring-up and topology prototyping
+- Scripted integration testing and validation harnesses
+- Hybrid systems where orchestration is in Python and throughput-critical path
   stays in C++
 
 Practical workflow:

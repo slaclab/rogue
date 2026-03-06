@@ -41,8 +41,8 @@ Payload sizing and MTU
 
 ``udp::Core.maxPayload()`` sets frame payload limits by MTU mode:
 
-- jumbo mode (``jumbo=True``): ``8972`` bytes payload
-- standard mode (``jumbo=False``): ``1472`` bytes payload
+- Jumbo mode (``jumbo=True``): ``8972`` bytes payload
+- Standard mode (``jumbo=False``): ``1472`` bytes payload
 
 When UDP is used under RSSI, RSSI payload is typically derived from UDP payload
 budget (for example ``udp.maxPayload() - 8`` as used in integration tests and
@@ -60,8 +60,8 @@ Overview
 
 Each endpoint is both:
 
-- a stream ``Slave`` (accepts outbound frames and transmits UDP datagrams)
-- a stream ``Master`` (publishes inbound datagrams as frames)
+- A stream ``Slave`` (accepts outbound frames and transmits UDP datagrams)
+- A stream ``Master`` (publishes inbound datagrams as frames)
 
 This dual-role model allows direct insertion into Rogue stream graphs.
 

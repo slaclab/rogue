@@ -21,7 +21,7 @@ For some channels such as variables and commands a suffix can be added to the UR
 
 The following suffixes are currently supported:
 
-   - name: The PyDM widget will display the Rogue instance name instead of its value. This is usefull for labels.
-   - path: The PyDM widget will display the full Rogue path of the instance.
-   - disp: The PyDM widget will use the getDisp() call instead of get() to display the string representation of the current value. This is usefull for line edit widgets.
+   - Name: The PyDM widget will display the Rogue instance name instead of its value. This is usefull for labels.
+   - Path: The PyDM widget will display the full Rogue path of the instance.
+   - Disp: The PyDM widget will use the getDisp() call instead of get() to display the string representation of the current value. This is usefull for line edit widgets.
 

@@ -16,7 +16,7 @@ A RemoteVariable is defined by register mapping metadata such as:
 * ``offset``
 * ``bitSize``
 * ``bitOffset``
-* optional ``base``/type Model and packing parameters
+* Optional ``base``/type Model and packing parameters
 
 These define where the register exists in the hardware address space, and what type of value it is e.g. unsigned integer, floating point, etc.
 

@@ -42,8 +42,8 @@ Metadata Semantics
 ``Frame.flags`` is a 16-bit metadata field. In many AXI-Stream/SSI flows, it
 is used to carry TUSER sideband information:
 
-- bits ``[7:0]`` often represent first-tuser (SOF-side metadata)
-- bits ``[15:8]`` often represent last-tuser (EOF-side metadata)
+- Bits ``[7:0]`` often represent first-tuser (SOF-side metadata)
+- Bits ``[15:8]`` often represent last-tuser (EOF-side metadata)
 
 The exact interpretation is protocol-dependent. StreamWriter stores this value
 without modification so downstream software can decode it in the correct

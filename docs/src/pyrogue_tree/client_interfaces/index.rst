@@ -25,11 +25,11 @@ Why this matters
 
 This model allows one running tree to serve multiple concurrent workflows:
 
-* operations GUIs
-* display GUIs
-* automation scripts
+* Operations GUIs
+* Display GUIs
+* Automation scripts
 * Jupyter notebooks
-* command-line tools
+* Command-line tools
 
 Choosing an interface
 =====================

@@ -18,10 +18,10 @@ inside ``__init__``.
 In practice, ``Root`` is also where hardware connections are usually created and
 bound into the tree. A typical pattern is:
 
-* create a memory interface (for example AXI PCIe, TCP simulation, etc.)
-* register it with :py:meth:`~pyrogue.Root.addInterface`
-* pass that interface as ``memBase`` when adding top-level Devices
-* optionally add management/control interfaces (such as ZMQ) to the same Root
+* Create a memory interface (for example AXI PCIe, TCP simulation, etc.)
+* Register it with :py:meth:`~pyrogue.Root.addInterface`
+* Pass that interface as ``memBase`` when adding top-level Devices
+* Optionally add management/control interfaces (such as ZMQ) to the same Root
 
 .. code-block:: python
 
@@ -139,15 +139,15 @@ channel used by tools such as PyDM-based GUIs and external clients.
 
 Common initialization pattern in ``Root.__init__``:
 
-* create server: ``pyrogue.interfaces.ZmqServer(root=self, addr='127.0.0.1', port=0)``
-* add to root with :py:meth:`~pyrogue.Root.addInterface`
+* Create server: ``pyrogue.interfaces.ZmqServer(root=self, addr='127.0.0.1', port=0)``
+* Add to root with :py:meth:`~pyrogue.Root.addInterface`
 
 Notes:
 
 * ``port=0`` auto-selects the first available base port starting at ``9099``
   (the server then uses ``base``, ``base+1``, and ``base+2``)
-* binding to ``127.0.0.1`` keeps the server local to the host
-* non-local deployments can bind to another interface/address as needed
+* Binding to ``127.0.0.1`` keeps the server local to the host
+* Non-local deployments can bind to another interface/address as needed
 
 For broader client/interface selection and deployment patterns, see
 :doc:`/pyrogue_tree/client_interfaces/index`,

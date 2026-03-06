@@ -9,10 +9,10 @@ incoming frames and expose them through PyRogue variables.
 
 Core behavior:
 
-* counts frames, bytes, and frame errors
-* stores latest payload in ``Data``
-* toggles ``Updated`` when new data arrives
-* supports ``RxEnable`` gating
+* Counts frames, bytes, and frame errors
+* Stores latest payload in ``Data``
+* Toggles ``Updated`` when new data arrives
+* Supports ``RxEnable`` gating
 
 Override :py:meth:`~pyrogue.DataReceiver.process` to customize payload parsing.
 

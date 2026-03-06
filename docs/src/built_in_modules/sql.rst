@@ -9,9 +9,9 @@ from a running ``pyrogue.Root`` into a SQL database using SQLAlchemy.
 
 Typical uses:
 
-- run-history capture during hardware tests
-- post-run analysis of variable trends and alarms
-- centralized logging for long-running deployments
+- Run-history capture during hardware tests
+- Post-run analysis of variable trends and alarms
+- Centralized logging for long-running deployments
 
 Configuration
 =============
@@ -51,9 +51,9 @@ Recorded tables
 Operational notes
 =================
 
-- writes are queued and committed by a worker thread
-- multiple queued entries are batched into a single DB transaction
-- if DB connection is lost, logger reports the error and stops committing
+- Writes are queued and committed by a worker thread
+- Multiple queued entries are batched into a single DB transaction
+- If DB connection is lost, logger reports the error and stops committing
 
 Where to explore next
 =====================

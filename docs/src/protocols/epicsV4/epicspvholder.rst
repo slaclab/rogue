@@ -20,10 +20,10 @@ Behavior from implementation
 
 Based on ``python/pyrogue/protocols/epicsV4.py``, each holder:
 
-- infers EPICS value type from variable metadata (including enum and ndarray);
-- creates a P4P ``SharedPV`` with a handler for put/get/rpc behavior;
-- subscribes to PyRogue variable updates via ``addListener``;
-- forwards alarm status/severity and display metadata (units/limits) for
+- Infers EPICS value type from variable metadata (including enum and ndarray);
+- Creates a P4P ``SharedPV`` with a handler for put/get/rpc behavior;
+- Subscribes to PyRogue variable updates via ``addListener``;
+- Forwards alarm status/severity and display metadata (units/limits) for
   numeric types.
 
 When to use it

@@ -9,8 +9,8 @@ logic rather than directly mapped to hardware registers.
 
 Typical use cases:
 
-* software state/configuration values
-* values produced from helper libraries or external APIs
+* Software state/configuration values
+* Values produced from helper libraries or external APIs
 * GUI-facing controls that trigger custom behavior
 
 Behavior
@@ -33,9 +33,9 @@ Callback signatures:
 
 Design guidance:
 
-- keep callbacks deterministic and low-latency
-- avoid long blocking operations in ``localGet`` when the Variable is polled
-- make side effects in ``localSet`` explicit and idempotent when possible
+- Keep callbacks deterministic and low-latency
+- Avoid long blocking operations in ``localGet`` when the Variable is polled
+- Make side effects in ``localSet`` explicit and idempotent when possible
 
 Example
 =======

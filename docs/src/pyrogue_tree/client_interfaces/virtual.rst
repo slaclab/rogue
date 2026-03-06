@@ -9,9 +9,9 @@ model, so client code can use familiar ``Device``/``Variable``/``Command`` acces
 
 Use ``VirtualClient`` when you need:
 
-* tree-like object access from the client (``client.root.Device.Var`` style)
-* richer metadata and listener behavior
-* a path to prototype complex workflows in client code before moving logic into
+* Tree-like object access from the client (``client.root.Device.Var`` style)
+* Richer metadata and listener behavior
+* A path to prototype complex workflows in client code before moving logic into
   the server-side tree
 
 Unlike :doc:`/pyrogue_tree/client_interfaces/simple`, ``VirtualClient`` depends

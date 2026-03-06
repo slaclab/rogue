@@ -9,9 +9,9 @@ in Python application logic.
 
 Typical use cases:
 
-* orchestration steps (load/save config, reset sequences)
-* helper operations that combine multiple Variable accesses
-* non-hardware actions such as file export or software state management
+* Orchestration steps (load/save config, reset sequences)
+* Helper operations that combine multiple Variable accesses
+* Non-hardware actions such as file export or software state management
 
 Example
 =======

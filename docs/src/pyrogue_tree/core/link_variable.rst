@@ -30,9 +30,9 @@ engineering quantity such as power, temperature, or calibrated sensor units).
 
 This is useful when:
 
-* one conversion step is reused by multiple higher-level views
-* you want to separate low-level scaling from calibration/application logic
-* derived values should remain readable and testable as independent Nodes
+* One conversion step is reused by multiple higher-level views
+* You want to separate low-level scaling from calibration/application logic
+* Derived values should remain readable and testable as independent Nodes
 
 Examples
 ========

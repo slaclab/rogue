@@ -14,16 +14,16 @@ How these fit in a design
 Built-in Devices are ordinary ``Device`` subclasses, so they participate in the
 same tree lifecycle and transaction flow as custom devices:
 
-* add them under a parent ``Device`` or directly under ``Root``
-* bind memory/stream interfaces as needed
-* operate them through the same Variable and Command APIs as any other node
+* Add them under a parent ``Device`` or directly under ``Root``
+* Bind memory/stream interfaces as needed
+* Operate them through the same Variable and Command APIs as any other node
 
 Use cases commonly include:
 
-* run control sequencing and rate management
+* Run control sequencing and rate management
 * PRBS transmit/receive test pipelines
-* stream capture and replay workflows
-* process supervision and script orchestration
+* Stream capture and replay workflows
+* Process supervision and script orchestration
 
 Relationship to Core and interfaces
 ===================================

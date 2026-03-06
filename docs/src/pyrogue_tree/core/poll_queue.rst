@@ -30,26 +30,26 @@ What it does
 
 At runtime, PollQueue:
 
-* tracks poll entries per Block (not per Variable)
-* schedules reads using a time-ordered heap
-* issues Block read transactions with ``startTransaction(..., Read)``
-* waits for completion via ``checkTransaction``
-* wraps each poll batch in ``root.updateGroup()`` so updates are coalesced
+* Tracks poll entries per Block (not per Variable)
+* Schedules reads using a time-ordered heap
+* Issues Block read transactions with ``startTransaction(..., Read)``
+* Waits for completion via ``checkTransaction``
+* Wraps each poll batch in ``root.updateGroup()`` so updates are coalesced
 
 Block-Level Scheduling Behavior
 ===============================
 
 Polling is organized per Block:
 
-* if multiple Variables share a Block, the Block is polled at the minimum
+* If multiple Variables share a Block, the Block is polled at the minimum
   non-zero ``pollInterval`` among those Variables
-* when intervals change, the corresponding Block entry is updated/replaced
-* if no Variables in a Block have ``pollInterval > 0``, that Block is removed
+* When intervals change, the corresponding Block entry is updated/replaced
+* If no Variables in a Block have ``pollInterval > 0``, that Block is removed
   from the poll queue
 
 Special case for Variables without a hardware Block:
 
-* for dependency-only Variables (for example LinkVariables without ``_block``),
+* For dependency-only Variables (for example LinkVariables without ``_block``),
   interval updates are propagated to dependencies
 
 Control and Lifecycle

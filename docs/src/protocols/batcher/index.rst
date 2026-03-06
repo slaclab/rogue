@@ -19,8 +19,8 @@ them into fewer larger transfers.
 
 Rogue batcher support can then be used to unbatch these frames either:
 
-* inline while receiving live stream data, or
-* later when reading recorded stream files for analysis/replay.
+* Inline while receiving live stream data, or
+* Later when reading recorded stream files for analysis/replay.
 
 How the classes fit together
 ============================

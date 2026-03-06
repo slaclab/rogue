@@ -32,9 +32,9 @@ Parameter effects:
 
 Operational notes:
 
-- write/post transactions copy incoming bytes into emulated memory
-- read/verify transactions return bytes from emulated memory
-- unread addresses default to ``0x00``
+- Write/post transactions copy incoming bytes into emulated memory
+- Read/verify transactions return bytes from emulated memory
+- Unread addresses default to ``0x00``
 
 Basic usage with a Root
 =======================

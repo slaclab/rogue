@@ -10,10 +10,10 @@ integration helpers.
 
 In practice, these modules are where transport and integration work gets done:
 
-- hardware links to FPGA/driver interfaces
-- protocol layers for framing, reliability, and remote register access
-- utility blocks for recording, playback, PRBS, and data conditioning
-- simulation and operations integrations used during development and testing
+- Hardware links to FPGA/driver interfaces
+- Protocol layers for framing, reliability, and remote register access
+- Utility blocks for recording, playback, PRBS, and data conditioning
+- Simulation and operations integrations used during development and testing
 
 Most deployments combine this section with :doc:`/stream_interface/index`,
 :doc:`/memory_interface/index`, and :doc:`/pyrogue_core/index`.

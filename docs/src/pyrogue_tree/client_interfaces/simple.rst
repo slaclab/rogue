@@ -9,9 +9,9 @@ a running tree over the ZMQ server endpoint.
 
 It is a good fit when you need:
 
-* script-friendly read/write/exec operations
-* minimal dependencies
-* string-path based access without constructing a mirrored local tree
+* Script-friendly read/write/exec operations
+* Minimal dependencies
+* String-path based access without constructing a mirrored local tree
 
 Compared to :doc:`/pyrogue_tree/client_interfaces/virtual`, ``SimpleClient``
 is intentionally narrower in scope but faster to adopt in small scripts.

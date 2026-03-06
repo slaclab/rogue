@@ -9,9 +9,9 @@ hardware and link behaviors.
 
 They are most useful for:
 
-- local development without connected hardware
-- deterministic protocol bring-up and integration testing
-- fault-injection workflows (for example dropped memory transactions)
+- Local development without connected hardware
+- Deterministic protocol bring-up and integration testing
+- Fault-injection workflows (for example dropped memory transactions)
 
 Available components
 ====================

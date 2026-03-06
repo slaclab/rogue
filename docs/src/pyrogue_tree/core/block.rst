@@ -31,33 +31,33 @@ path constraints (for example minimum access width).
 
 For :py:class:`~pyrogue.RemoteVariable`:
 
-* each Variable defines offset/bit mapping metadata
-* during Device attach/build, Device logic groups compatible remote Variables
+* Each Variable defines offset/bit mapping metadata
+* During Device attach/build, Device logic groups compatible remote Variables
   into Blocks
-* each Variable gets ``_block`` pointing to the Block that services it
-* transaction methods on Device/Root call Block transactions, not per-Variable
+* Each Variable gets ``_block`` pointing to the Block that services it
+* Transaction methods on Device/Root call Block transactions, not per-Variable
   raw bus operations
 
 For :py:class:`~pyrogue.LocalVariable`:
 
-* each Variable uses a local software Block (:py:class:`~pyrogue.LocalBlock`)
+* Each Variable uses a local software Block (:py:class:`~pyrogue.LocalBlock`)
   for in-memory set/get behavior
 
 Implications of Block grouping:
 
-* several Variables can share one Block transaction
-* partial updates can target changed sub-ranges
-* grouped Block operations reduce transaction overhead
+* Several Variables can share one Block transaction
+* Partial updates can target changed sub-ranges
+* Grouped Block operations reduce transaction overhead
 
 Access Path (RemoteVariable)
 ============================
 
 Typical read/write path:
 
-* user/API calls ``set`` or ``get`` on a Variable
+* User/API calls ``set`` or ``get`` on a Variable
 * Device/Root APIs initiate Block transactions
 * Block reads/writes memory through the Device's memory interface
-* completion/check updates Variable state and notifications
+* Completion/check updates Variable state and notifications
 
 In bulk operations, many Variables can share one Block transaction, improving
 access efficiency versus isolated per-Variable transfers.
@@ -132,10 +132,10 @@ Packing Rules and Variable Layout
 The internal ``setBytes``/``getBytes`` helpers are used by all typed methods
 and apply Variable layout metadata:
 
-* bit offsets and bit sizes (including disjoint fields)
-* list semantics (``numValues``, ``valueStride``)
-* fast contiguous byte-copy optimization when possible
-* byte reversal and bit-order constraints
+* Bit offsets and bit sizes (including disjoint fields)
+* List semantics (``numValues``, ``valueStride``)
+* Fast contiguous byte-copy optimization when possible
+* Byte reversal and bit-order constraints
 
 Because every typed method funnels through these helpers, custom subclasses can
 extend behavior while preserving the same packing model.
@@ -226,9 +226,9 @@ runtime layer.
 In practice:
 
 * Python code invokes methods on ``pyrogue.Device`` / ``pyrogue.RemoteVariable``
-* these route into Block/Variable objects exposed by
+* These route into Block/Variable objects exposed by
   ``rogue.interfaces.memory``
-* underlying C++ Block/Variable code handles transaction staging,
+* Underlying C++ Block/Variable code handles transaction staging,
   read/write/verify behavior, stale tracking, packing/unpacking, and update
   notification triggers
 
@@ -239,9 +239,9 @@ Blocks are transaction sources; Hubs are transaction routers.
 
 During a transaction, Hub logic:
 
-* offsets addresses by local Hub/Device base
-* forwards transactions to downstream memory slaves
-* splits transactions into sub-transactions when request size exceeds
+* Offsets addresses by local Hub/Device base
+* Forwards transactions to downstream memory slaves
+* Splits transactions into sub-transactions when request size exceeds
   downstream max-access capability
 
 This is why Variable-to-Block transactions continue to work cleanly across

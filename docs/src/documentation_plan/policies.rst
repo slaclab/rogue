@@ -10,10 +10,10 @@ Narrative vs API Boundary
 1. Conceptual and tutorial narrative belongs in primary documentation sections.
 2. API pages are reference-first and should contain:
 
-   - signatures/types
-   - parameter/return documentation
-   - side effects and exceptions
-   - minimal usage notes
+   - Signatures/types
+   - Parameter/return documentation
+   - Side effects and exceptions
+   - Minimal usage notes
 
 3. Long-form explanations in API pages must be extracted into primary docs.
 4. Narrative pages must link to relevant API reference pages.

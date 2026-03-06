@@ -38,9 +38,9 @@ Sending and receiving
 
 Notes:
 
-- callback receives ``None`` for fields not present in a message
-- malformed frame lengths are logged as errors
-- context-manager exit stops the receive worker
+- Callback receives ``None`` for fields not present in a message
+- Malformed frame lengths are logged as errors
+- Context-manager exit stops the receive worker
 
 Where to explore next
 =====================

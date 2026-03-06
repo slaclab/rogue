@@ -20,10 +20,10 @@ Behavior from implementation
 
 Based on ``python/pyrogue/protocols/epicsV4.py``, the server:
 
-- requires a running root before startup;
-- builds PV mappings either automatically (``base:path``) or from ``pvMap``;
-- supports include/exclude group filtering (default excludes ``NoServe``);
-- creates one ``EpicsPvHolder`` per served variable and exposes list/dump
+- Requires a running root before startup;
+- Builds PV mappings either automatically (``base:path``) or from ``pvMap``;
+- Supports include/exclude group filtering (default excludes ``NoServe``);
+- Creates one ``EpicsPvHolder`` per served variable and exposes list/dump
   helpers for mapping inspection.
 
 Usage pattern from tests

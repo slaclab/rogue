@@ -10,7 +10,7 @@ Device Definition
 A :py:class:`~pyrogue.Device` is the primary composition unit in a PyRogue tree.
 Devices can contain:
 
-* child Devices
+* Child Devices
 * Variables (local, remote, link)
 * Commands (local, remote)
 
@@ -50,8 +50,8 @@ Relationship to Hub
 Conceptually, a Device behaves as a Hub in the memory routing stack:
 
 * Variable/Block transactions are addressed relative to the Device base
-* child Devices can inherit base/memory routing from parent Devices
-* a child Device can also be attached to an independent memory path when needed
+* Child Devices can inherit base/memory routing from parent Devices
+* A child Device can also be attached to an independent memory path when needed
 
 Key Methods
 -----------
@@ -86,8 +86,8 @@ Use :py:meth:`~pyrogue.Device.addInterface` (or alias
 :py:meth:`~pyrogue.Device.addProtocol`) to register:
 
 * Rogue memory or stream interface objects
-* protocol servers/clients
-* any custom object that implements ``_start()`` and/or ``_stop()``
+* Protocol servers/clients
+* Any custom object that implements ``_start()`` and/or ``_stop()``
 
 At runtime:
 
@@ -95,7 +95,7 @@ At runtime:
   the method exists
 * :py:meth:`~pyrogue.Device._stop` calls ``_stop()`` on each managed object if
   the method exists
-* both then recurse to child Devices
+* Both then recurse to child Devices
 
 This is why top-level interfaces are commonly added at Root scope using
 ``root.addInterface(...)`` (``Root`` is a ``Device`` subclass).
@@ -150,7 +150,7 @@ Method-specific parameters:
 
 * ``checkBlocks(...)``
 
-  * checks completion/acknowledgement of previously initiated transactions.
+  * Checks completion/acknowledgement of previously initiated transactions.
 
 Direct API references:
 
@@ -301,10 +301,10 @@ by standard Block traversal alone.
 
 Common reasons to override:
 
-* one register must be written before or after bulk config writes
-* paged/banked register windows need explicit page-select writes around access
-* a side-effect register must be pulsed to commit staged settings
-* custom sequencing across child Devices is required
+* One register must be written before or after bulk config writes
+* Paged/banked register windows need explicit page-select writes around access
+* A side-effect register must be pulsed to commit staged settings
+* Custom sequencing across child Devices is required
 
 If a Device needs custom sequencing around default Block operations, override:
 
@@ -318,9 +318,9 @@ General override pattern
 
 Keep default traversal unless you explicitly want to replace it:
 
-* call ``super()`` for standard Block behavior
-* preserve key arguments (``recurse``, ``variable``, ``checkEach``, ``**kwargs``)
-* add only the extra hardware-specific step(s)
+* Call ``super()`` for standard Block behavior
+* Preserve key arguments (``recurse``, ``variable``, ``checkEach``, ``**kwargs``)
+* Add only the extra hardware-specific step(s)
 
 Example: activation register after config writes
 """"""""""""""""""""""""""""""""""""""""""""""""
@@ -385,10 +385,10 @@ Where Hub fits in transaction flow
 
 The C++ Hub implementation (``src/rogue/interfaces/memory/Hub.cpp``):
 
-* applies local address offset when forwarding transactions downstream
-* can split large transactions into sub-transactions based on downstream
+* Applies local address offset when forwarding transactions downstream
+* Can split large transactions into sub-transactions based on downstream
   max-access limits
-* allows custom transaction translation by overriding ``_doTransaction`` in
+* Allows custom transaction translation by overriding ``_doTransaction`` in
   Python/C++ subclasses
 
 Conceptual transaction path:

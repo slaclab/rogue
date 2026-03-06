@@ -10,7 +10,7 @@ For conceptual guidance, see :doc:`/protocols/srp/srpV3`.
 
 For SRPv3 packet-level protocol details, see:
 
-- https://confluence.slac.stanford.edu/x/cRmVD
+- Https://confluence.slac.stanford.edu/x/cRmVD
 
 Threading and locking summary
 =============================

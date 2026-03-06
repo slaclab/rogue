@@ -10,7 +10,7 @@ For conceptual guidance, see :doc:`/protocols/srp/srpV0`.
 
 For SRPv0 packet-level protocol details, see:
 
-- https://confluence.slac.stanford.edu/x/aRmVD
+- Https://confluence.slac.stanford.edu/x/aRmVD
 
 Threading and locking summary
 =============================

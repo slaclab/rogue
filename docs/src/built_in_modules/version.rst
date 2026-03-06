@@ -9,16 +9,16 @@ Rogue provides version/query helpers through ``rogue::Version`` in C++ and
 
 The helper is useful for:
 
-* logging the currently installed Rogue version
-* enforcing minimum/maximum/exact version requirements
-* retrieving parsed version components (major/minor/maint/devel)
+* Logging the currently installed Rogue version
+* Enforcing minimum/maximum/exact version requirements
+* Retrieving parsed version components (major/minor/maint/devel)
 
 Notes
 -----
 
 * ``current()`` returns the compiled Rogue version string (typically prefixed
   with ``v``, for example ``v6.3.0-0-g<hash>``).
-* comparison helpers (``greaterThanEqual``, ``minVersion``, etc.) expect
+* Comparison helpers (``greaterThanEqual``, ``minVersion``, etc.) expect
   version strings in ``major.minor.maint`` form (for example ``"6.3.0"``).
 * ``pythonVersion()`` returns a Python-style version string (for example
   ``"6.3.0"`` or ``"6.3.0.dev4"``).

@@ -15,7 +15,7 @@ It provides built-in fields such as:
 * ``runState`` (for example ``Stopped`` / ``Running``)
 * ``runRate`` (iteration frequency)
 * ``runCount`` (loop counter)
-* optional ``cmd`` callback executed each run loop iteration
+* Optional ``cmd`` callback executed each run loop iteration
 
 Construction
 ------------

@@ -64,10 +64,10 @@ identity and hierarchy behavior (name/path/root/parent relationships).
 
 Core responsibilities include:
 
-* stable hierarchical addressing and lookup
-* group tagging/filtering support
-* lifecycle attachment to a Root context
-* shared logging/path conventions across all subclasses
+* Stable hierarchical addressing and lookup
+* Group tagging/filtering support
+* Lifecycle attachment to a Root context
+* Shared logging/path conventions across all subclasses
 
 Concrete Node categories
 ========================

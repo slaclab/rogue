@@ -10,16 +10,16 @@ PyRogue supports configuration/state import and export through YAML APIs on
 Typical YAML workflows
 ======================
 
-- configuration baselines for known-good startup values
-- captured runtime state for debug and issue reproduction
-- status snapshots for validation and operator handoff
+- Configuration baselines for known-good startup values
+- Captured runtime state for debug and issue reproduction
+- Status snapshots for validation and operator handoff
 
 Practical guidance
 ==================
 
-- separate baseline configuration from transient runtime state
-- track YAML files in source control when they represent release artifacts
-- document version compatibility when schema or naming changes occur
+- Separate baseline configuration from transient runtime state
+- Track YAML files in source control when they represent release artifacts
+- Document version compatibility when schema or naming changes occur
 
 Main entry points
 =================
@@ -40,12 +40,12 @@ Config vs state filters
 
 Typical defaults:
 
-- config operations use modes ``['RW', 'WO']`` and exclude ``NoConfig``
-- state operations use modes ``['RW', 'RO', 'WO']`` and exclude ``NoState``
+- Config operations use modes ``['RW', 'WO']`` and exclude ``NoConfig``
+- State operations use modes ``['RW', 'RO', 'WO']`` and exclude ``NoState``
 
 That means:
 
-- read-only Variables are normally ignored for config load
+- Read-only Variables are normally ignored for config load
 - Commands are ignored by YAML set/load (``BaseCommand._setDict`` is a no-op)
 
 How YAML load is applied
@@ -62,9 +62,9 @@ the workflow is:
 
 Implications:
 
-- if a Variable is assigned more than once while loading, the last assignment
+- If a Variable is assigned more than once while loading, the last assignment
   wins in shadow memory before commit
-- hardware is not touched until the bulk commit step
+- Hardware is not touched until the bulk commit step
 
 If ``writeEach=True``, each ``setDisp`` write is issued immediately while YAML
 is being traversed (no final consolidated ``Root._write()`` pass).
@@ -75,8 +75,8 @@ Commit ordering
 Bulk commit is initiated recursively using tree/Device order:
 
 - Device traversal follows tree child ordering
-- each Device initiates its Blocks in ``self._blocks`` order
-- for auto-built Blocks, ordering is typically lower-offset first because Block
+- Each Device initiates its Blocks in ``self._blocks`` order
+- For auto-built Blocks, ordering is typically lower-offset first because Block
   creation starts from Variables sorted by ``(offset, size)``
 
 After initiation:
@@ -107,8 +107,8 @@ Bulk operations: initiate vs check
 
 Bulk methods intentionally decouple transaction initiation from completion:
 
-- initiate: ``writeBlocks``, ``readBlocks``, ``verifyBlocks``
-- wait/check: ``checkBlocks``
+- Initiate: ``writeBlocks``, ``readBlocks``, ``verifyBlocks``
+- Wait/check: ``checkBlocks``
 
 This pattern allows many operations to be issued first, then checked as a
 group, which reduces per-transaction blocking overhead.

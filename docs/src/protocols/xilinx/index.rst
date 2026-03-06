@@ -94,9 +94,9 @@ JtagDriver notes
 ``JtagDriver`` is the protocol/transport abstraction used by ``Xvc``. It can
 also be subclassed directly in C++ for custom transports:
 
-- subclass implements raw transfer primitive (``xfer``)
-- subclass reports transport vector limit (``getMaxVectorSize``)
-- base class handles protocol framing, retries, query, and vector chunking
+- Subclass implements raw transfer primitive (``xfer``)
+- Subclass reports transport vector limit (``getMaxVectorSize``)
+- Base class handles protocol framing, retries, query, and vector chunking
 
 Threading and Lifecycle
 -----------------------

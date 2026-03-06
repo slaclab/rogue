@@ -19,9 +19,9 @@ Behavior
 
 A RemoteCommand typically includes:
 
-* register mapping (``offset``, ``bitSize``, ``bitOffset``)
-* a Command function (for example ``pr.BaseCommand.toggle``)
-* optional argument/default value semantics
+* Register mapping (``offset``, ``bitSize``, ``bitOffset``)
+* A Command function (for example ``pr.BaseCommand.toggle``)
+* Optional argument/default value semantics
 
 Common helper functions in :py:class:`~pyrogue.BaseCommand` include operations
 such as ``toggle``, ``touchOne``, and posted variants.

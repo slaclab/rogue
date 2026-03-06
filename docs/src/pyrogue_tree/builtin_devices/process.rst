@@ -9,10 +9,10 @@ operations that should be managed as part of the tree.
 
 It provides:
 
-* start/stop commands
-* running/progress/message status variables
-* optional argument and return variables
-* optional wrapped function callback
+* Start/stop commands
+* Running/progress/message status variables
+* Optional argument and return variables
+* Optional wrapped function callback
 
 Use it when an operation needs structured status reporting and GUI visibility.
 

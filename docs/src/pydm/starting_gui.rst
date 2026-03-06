@@ -53,9 +53,9 @@ The alternative way to start the PyDM GUI is to execute the Rogue helper functio
 
 The possible args that can be passed to the runPyDm function are:
 
-   - serverList: A string list of Rogue servers to connect to. i.e. localhost:9099,server1:9099,server2:9099
-   - root: An existing Rogue root object using a virutal client or local root
-   - ui: The path to a UI file created with the PyQT designer tool
-   - title: The title of the main window
-   - sizeX: The GUI size in the X dimension
-   - sizeY: The GUI size in the Y dimension
+   - ServerList: A string list of Rogue servers to connect to. i.e. localhost:9099,server1:9099,server2:9099
+   - Root: An existing Rogue root object using a virutal client or local root
+   - Ui: The path to a UI file created with the PyQT designer tool
+   - Title: The title of the main window
+   - SizeX: The GUI size in the X dimension
+   - SizeY: The GUI size in the Y dimension

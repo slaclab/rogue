@@ -49,12 +49,12 @@ Built-in Model families
 
 Common built-in Models include:
 
-* integer: ``UInt``, ``UIntBE``, ``UIntReversed``, ``Int``, ``IntBE``
-* boolean: ``Bool``
-* text/bytes: ``String``, ``Bytes``
-* floating point: ``Float``, ``FloatBE``, ``Double``, ``DoubleBE``
-* fixed point: ``Fixed``, ``UFixed``
-* custom conversion hook: ``PyFunc``
+* Integer: ``UInt``, ``UIntBE``, ``UIntReversed``, ``Int``, ``IntBE``
+* Boolean: ``Bool``
+* Text/bytes: ``String``, ``Bytes``
+* Floating point: ``Float``, ``FloatBE``, ``Double``, ``DoubleBE``
+* Fixed point: ``Fixed``, ``UFixed``
+* Custom conversion hook: ``PyFunc``
 
 Built-in Model types
 ====================
@@ -161,10 +161,10 @@ How ``BitReversedUInt`` differs from built-in ``UInt``
 This example shows a register layout where hardware bit order differs from
 normal integer interpretation:
 
-* built-in ``UInt`` assumes standard bit significance ordering
+* Built-in ``UInt`` assumes standard bit significance ordering
 * ``BitReversedUInt`` reverses bits on write/read so software uses normal
   integer semantics while memory uses reversed bit positions
-* this is useful for some custom ASIC or I2C peripheral register definitions
+* This is useful for some custom ASIC or I2C peripheral register definitions
 
 For examples of built-in and custom Model definitions, see
 ``python/pyrogue/_Model.py``.
