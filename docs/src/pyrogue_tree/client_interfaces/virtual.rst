@@ -93,7 +93,14 @@ Link-state monitoring
        print(client.linked)
        client.remLinkMonitor(link_monitor)
 
-API reference
+What To Explore Next
+====================
+
+- Server endpoint and port behavior: :doc:`/pyrogue_tree/client_interfaces/zmq_server`
+- Minimal string-path client usage: :doc:`/pyrogue_tree/client_interfaces/simple`
+- CLI and GUI workflows: :doc:`/pyrogue_tree/client_interfaces/commandline`
+
+API Reference
 =============
 
 See :doc:`/api/python/interfaces_virtualclient` for generated API details.

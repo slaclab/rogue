@@ -61,6 +61,13 @@ update published by the server.
        except KeyboardInterrupt:
            print('Stopping monitor.')
 
+What To Explore Next
+====================
+
+- Server-side transport setup: :doc:`/pyrogue_tree/client_interfaces/zmq_server`
+- Mirrored-tree access model: :doc:`/pyrogue_tree/client_interfaces/virtual`
+- CLI operations for quick checks: :doc:`/pyrogue_tree/client_interfaces/commandline`
+
 API Reference
 ==============
 

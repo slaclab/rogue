@@ -82,9 +82,14 @@ Virtual client (mirrored remote tree):
        print(root.RogueVersion.valueDisp())
        root.AxiVersion.ScratchPad.set(0x100)
 
+What To Explore Next
+====================
 
+- Lightweight scripting client: :doc:`/pyrogue_tree/client_interfaces/simple`
+- Mirrored tree client: :doc:`/pyrogue_tree/client_interfaces/virtual`
+- CLI/PyDM entry path: :doc:`/pyrogue_tree/client_interfaces/commandline`
 
-Class API
-=========
+API Reference
+=============
 
 See :doc:`/api/python/interfaces_zmqserver` for generated API details.

@@ -15,10 +15,10 @@ transport. The server is added to the ``Root`` and clients connect over TCP.
 Connection model
 ================
 
-1. start the server side from your ``Root`` (typically ``ZmqServer``)
-2. connect one or more clients (simple script client, virtual mirrored client,
+1. Start the server side from your ``Root`` (typically ``ZmqServer``)
+2. Connect one or more clients (simple script client, virtual mirrored client,
    CLI tools, or GUI)
-3. perform read/write/command operations against the same tree model
+3. Perform read/write/command operations against the same tree model
 
 Why this matters
 ================
@@ -80,6 +80,14 @@ Minimal setup pattern
                port=0,
            )
            self.addInterface(self.zmqServer)
+
+What To Explore Next
+====================
+
+- Server configuration details: :doc:`/pyrogue_tree/client_interfaces/zmq_server`
+- Lightweight scripting access: :doc:`/pyrogue_tree/client_interfaces/simple`
+- Mirrored-tree client workflows: :doc:`/pyrogue_tree/client_interfaces/virtual`
+- Shell and GUI entry points: :doc:`/pyrogue_tree/client_interfaces/commandline`
 
 .. toctree::
    :maxdepth: 1

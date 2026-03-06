@@ -95,3 +95,10 @@ Execute a Command:
 .. code-block:: bash
 
    python -m pyrogue --server=localhost:9099 exec root.SomeCommand 0x55
+
+What To Explore Next
+====================
+
+- Server transport and bind options: :doc:`/pyrogue_tree/client_interfaces/zmq_server`
+- Script-level client API: :doc:`/pyrogue_tree/client_interfaces/simple`
+- Mirrored-tree client API: :doc:`/pyrogue_tree/client_interfaces/virtual`
