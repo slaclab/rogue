@@ -44,8 +44,8 @@ Memory links use stream-like operators and helper functions:
 Bus topology is usually rooted in one or more protocol/gateway slaves (for
 example SRP or TCP bridges), with hubs and devices organizing address windows.
 
-Where to go next
-================
+What To Explore Next
+====================
 
 - Bus wiring patterns: :doc:`/memory_interface/connecting`
 - Transaction lifecycle details: :doc:`/memory_interface/transactions`

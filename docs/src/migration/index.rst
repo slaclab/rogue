@@ -4,7 +4,7 @@
 Migration Notes
 ===============
 
-This section includes nots for migrating between versions of Rogue.
+This section includes notes for migrating between versions of Rogue.
 
 .. toctree::
    :maxdepth: 1

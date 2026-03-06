@@ -88,8 +88,8 @@ Common design workflow
 4. Confirm memory mapping/transaction behavior through ``Block`` and ``Model``.
 5. Expose remote access patterns for GUIs, scripts, notebooks, and clients.
 
-Where to explore next
-=====================
+What To Explore Next
+====================
 
 * Root lifecycle and orchestration: :doc:`/pyrogue_tree/core/root`
 * Device composition and managed interfaces: :doc:`/pyrogue_tree/core/device`

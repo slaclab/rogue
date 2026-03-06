@@ -1,6 +1,6 @@
 # Rogue Docs Revamp Handoff
 
-Last updated: 2026-03-05 (local workspace time)
+Last updated: 2026-03-06 (local workspace time)
 
 ## 1) Canonical Plan and Artifacts
 Use these first; they are the authoritative plan artifacts created during this effort:
@@ -11,13 +11,14 @@ Use these first; they are the authoritative plan artifacts created during this e
 - `docs/src/documentation_plan/migration_matrix.rst`
 - `docs/src/documentation_plan/m2_closeout.rst`
 - `docs/src/documentation_plan/m3_closeout.rst`
+- `docs/src/documentation_plan/m4_closeout.rst`
 
 ## 2) Milestone Status
 
 - M1 Skeleton IA: complete
 - M2 Narrative migration + boundary cleanup: complete (frozen and closeout recorded)
 - M3 Coverage expansion: complete (closeout recorded)
-- M4 Harmonization: active (next)
+- M4 Harmonization: closeout preparation active
 
 ## 3) Key Decisions to Preserve
 
@@ -98,7 +99,7 @@ There are uncommitted local changes in protocol pages related to lifecycle/threa
   ``interfaces/simulation/*`` -> ``built_in_modules/simulation/*``,
   ``interfaces/sql`` -> ``built_in_modules/sql``, ``interfaces/version`` ->
   ``built_in_modules/version``, and ``interfaces/cpp_api`` ->
-  ``pyrogue_core/cpp_api_wrapper``.
+  ``built_in_modules/cpp_api_wrapper``.
 
 ### Remaining high-value M4 work
 

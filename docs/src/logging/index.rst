@@ -4,11 +4,10 @@
 Logging In Rogue
 ================
 
-Legacy Status
-=============
+Rogue logging is structured by subsystem so you can target debug output at
+specific classes and interfaces during bring-up and troubleshooting.
 
-This is a legacy page retained during migration.
-This page is a top-level documentation entry for logging workflows.
+Use this page as a reference map for common logger path names.
 
 The following table are the known logging paths for entities within Rogue. Values in brackets
 are dynamic values dervied from the instance.
@@ -70,3 +69,9 @@ are dynamic values dervied from the instance.
 +------+-----------------------+-------------------+------------------------------------------------+
 | C++  |                       | LibraryBase       | pyrogue.LibraryBase                            |
 +------+-----------------------+-------------------+------------------------------------------------+
+
+What To Explore Next
+====================
+
+- SQL-backed Variable and syslog persistence: :doc:`/built_in_modules/sql`
+- Client-side syslog monitoring workflows: :doc:`/pyrogue_tree/client_interfaces/commandline`

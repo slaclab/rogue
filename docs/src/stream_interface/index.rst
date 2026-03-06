@@ -114,8 +114,8 @@ A single ``Master`` can connect to multiple slaves.
 That ordering is important when the primary path may consume or empty a frame
 (for example, zero-copy sinks).
 
-Where to go next
-================
+What To Explore Next
+====================
 
 - Connection semantics: :doc:`/stream_interface/connecting`
 - Frame semantics and APIs: :doc:`/stream_interface/frame_model`

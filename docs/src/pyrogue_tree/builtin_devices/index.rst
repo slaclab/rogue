@@ -34,8 +34,8 @@ For underlying behavior, see:
 * :doc:`/pyrogue_tree/core/variable`
 * :doc:`/pyrogue_tree/client_interfaces/index`
 
-Where to explore next
-=====================
+What To Explore Next
+====================
 
 * Run control orchestration: :doc:`run_control`
 * Data capture/write path: :doc:`data_writer` and :doc:`stream_writer`

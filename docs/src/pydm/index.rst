@@ -4,23 +4,29 @@
 Using the PyDM Gui
 ==================
 
-Legacy Status
-=============
+Rogue integrates with the PyDM platform for GUI-based monitoring and control of
+a running PyRogue tree.
 
-This is a legacy page retained during migration.
-This page is a top-level documentation entry for PyDM usage.
+Rogue includes a default debug GUI and supports custom PyDM screens. For
+production deployments, custom screens are typically preferred so operators can
+focus on system-specific Variables and Commands.
 
-Rogue makes use of the PyDM platform for its GUI. While Rogue provides a default debug GUI that auto populates, the user should consider creating custom GUIs using the numerous PyDYM widgets and other features.
-
-Documentation on the PyDM platform can be found here:
+Documentation for the PyDM platform:
 
 http://slaclab.github.io/pydm/
 
-Rogue provides a few custom features within the PyDM platform. First it supports its own custom channel driver using the URL prefix:
+Rogue provides custom features within PyDM, including a dedicated channel
+driver URL prefix:
 
 rogue://
 
-Additionally Rogue provides a few custom widgets which can be used to visualize specific Rogue structures.
+Rogue also provides custom widgets that visualize Rogue-specific structures.
+
+What To Explore Next
+====================
+
+- CLI launch and remote target selection: :doc:`/pyrogue_tree/client_interfaces/commandline`
+- ZMQ server setup used by GUIs and remote clients: :doc:`/pyrogue_tree/client_interfaces/zmq_server`
 
 .. toctree::
    :maxdepth: 1

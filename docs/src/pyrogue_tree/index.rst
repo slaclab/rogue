@@ -30,8 +30,8 @@ In practice:
 - Built-in Devices provide production-ready composition pieces inside that tree.
 - Client interfaces expose one running Root to multiple concurrent tools.
 
-Where to explore next
-=====================
+What To Explore Next
+====================
 
 - Core Node model and lifecycle: :doc:`/pyrogue_tree/core/index`
 - Built-in Device catalog: :doc:`/pyrogue_tree/builtin_devices/index`
