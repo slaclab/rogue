@@ -1,8 +1,8 @@
 .. _pyrogue_tree_builtin_devices:
 
-===============
+================
 Built-in Devices
-===============
+================
 
 PyRogue includes reusable ``Device`` subclasses for common control, monitoring,
 and data-path tasks. These classes reduce boilerplate by packaging widely used
