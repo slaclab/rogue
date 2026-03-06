@@ -4,24 +4,9 @@
 Protocols
 ==========
 
-Legacy Status
-=============
-
-This is a legacy page retained during migration.
-Canonical entry point: :doc:`/built_in_modules/index`.
-
-Protocol documentation is being expanded as part of the revamp.
-
-Current status:
-
-- Core protocol reference pages are present and linked below.
-- Several pages still need deeper narrative guidance and practical examples.
-
-Planned expansion areas:
-
-- Protocol selection guidance and tradeoffs
-- End-to-end usage examples
-- Operational notes and troubleshooting
+This section covers transport and control protocol layers used in Rogue
+systems. These pages focus on protocol behavior, composition patterns, and
+usage notes that connect stream and memory interfaces to deployed workflows.
 
 Protocol selection quick guide
 ==============================
@@ -33,6 +18,13 @@ Protocol selection quick guide
 - Use :doc:`batcher/index` for record batching/unbatching transforms.
 - Use :doc:`xilinx/index` for XVC/JTAG-over-TCP integration.
 - Use :doc:`epicsV4/index` for EPICS PV integration helpers.
+
+What To Explore Next
+====================
+
+- Built-in modules overview and section context: :doc:`/built_in_modules/index`
+- Stream interface fundamentals and connection patterns: :doc:`/stream_interface/index`
+- Memory interface routing and transaction flow: :doc:`/memory_interface/index`
 
 .. toctree::
    :maxdepth: 1

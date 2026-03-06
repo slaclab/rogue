@@ -24,4 +24,9 @@ Legacy step-by-step examples remain available in:
    device_workflow_tutorial
    system_integration_tutorial
 
-If you have not yet completed a basic setup, start with :doc:`/quick_start/index`.
+What To Explore Next
+====================
+
+- Foundational setup and checks: :doc:`/quick_start/index`
+- Core tree architecture and lifecycle: :doc:`/pyrogue_tree/index`
+- Task-focused implementation recipes: :doc:`/cookbook/index`

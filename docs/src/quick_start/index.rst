@@ -22,4 +22,8 @@ Scope of Quick Start:
    common_checks
    /getting_started/index
 
-Next step after Quick Start: :doc:`/tutorials/index`.
+What To Explore Next
+====================
+
+- Guided end-to-end workflows: :doc:`/tutorials/index`
+- Tree model and lifecycle concepts: :doc:`/pyrogue_tree/index`
