@@ -5,7 +5,7 @@ RemoteVariable
 
 For conceptual usage, bit mapping patterns, and advanced examples, see:
 
-- :doc:`/pyrogue_tree/node/variable/remote_variable/index`
+- :doc:`/pyrogue_tree/core/variable/remote_variable/index`
 
 .. autoclass:: pyrogue.RemoteVariable
    :members:

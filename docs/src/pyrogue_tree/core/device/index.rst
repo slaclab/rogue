@@ -181,7 +181,7 @@ Conceptual transaction path:
 
 For deeper memory-stack behavior, see:
 
-* :doc:`/pyrogue_tree/blocks`
+* :doc:`/pyrogue_tree/core/blocks`
 * :doc:`/memory_interface/hub`
 * :doc:`/memory_interface/slave`
 * :doc:`/api/cpp/interfaces/memory/index`
@@ -232,15 +232,15 @@ There are several specialized device classes available:
    :maxdepth: 1
    :caption: Special Device Subtypes:
 
-   special_devices/run_control
-   special_devices/data_writer
-   special_devices/data_receiver
-   special_devices/prbsrx
-   special_devices/prbstx
-   special_devices/prbspair
-   special_devices/stream_reader
-   special_devices/stream_writer
-   special_devices/process
+   /pyrogue_tree/builtin_devices/run_control
+   /pyrogue_tree/builtin_devices/data_writer
+   /pyrogue_tree/builtin_devices/data_receiver
+   /pyrogue_tree/builtin_devices/prbsrx
+   /pyrogue_tree/builtin_devices/prbstx
+   /pyrogue_tree/builtin_devices/prbspair
+   /pyrogue_tree/builtin_devices/stream_reader
+   /pyrogue_tree/builtin_devices/stream_writer
+   /pyrogue_tree/builtin_devices/process
 
 Device API Reference
 ==========================

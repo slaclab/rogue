@@ -101,23 +101,23 @@ Common design workflow
 Where to explore next
 =====================
 
-- Root lifecycle and orchestration: :doc:`/pyrogue_tree/node/root/index`
-- Device composition and managed interfaces: :doc:`/pyrogue_tree/node/device/index`
-- Variable behavior and types: :doc:`/pyrogue_tree/node/variable/index`
-- Block/model conversion internals: :doc:`/pyrogue_tree/blocks`
-- Model reference overview: :doc:`/pyrogue_tree/model`
+- Root lifecycle and orchestration: :doc:`/pyrogue_tree/core/root/index`
+- Device composition and managed interfaces: :doc:`/pyrogue_tree/core/device/index`
+- Variable behavior and types: :doc:`/pyrogue_tree/core/variable/index`
+- Block/model conversion internals: :doc:`/pyrogue_tree/core/blocks`
+- Model reference overview: :doc:`/pyrogue_tree/core/model`
 
 .. toctree::
    :maxdepth: 2
    :caption: PyRogue Tree:
 
-   node/root/index
+   core/root/index
    client_interfaces/index
-   node/root/poll_queue
-   node/root/yaml_configuration
-   node/device/index
-   node/command/index
-   node/variable/index
-   node/groups
-   model
-   blocks
+   core/root/poll_queue
+   core/root/yaml_configuration
+   core/device/index
+   core/command/index
+   core/variable/index
+   core/groups
+   core/model
+   core/blocks

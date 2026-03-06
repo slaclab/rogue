@@ -58,6 +58,6 @@ Operational notes
 Where to explore next
 =====================
 
-- Tree variable concepts: :doc:`/pyrogue_tree/node/variable/index`
+- Tree variable concepts: :doc:`/pyrogue_tree/core/variable/index`
 - Logging subsystem overview: :doc:`/logging/index`
 - Version gating for deployments: :doc:`/built_in_modules/version`

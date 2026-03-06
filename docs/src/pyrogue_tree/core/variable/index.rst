@@ -80,7 +80,7 @@ This means:
 See also:
 
 * :ref:`pyrogue_tree_node_block`
-* :doc:`/pyrogue_tree/blocks`
+* :doc:`/pyrogue_tree/core/blocks`
 * :doc:`/memory_interface/index`
 
 BaseVariable API Reference

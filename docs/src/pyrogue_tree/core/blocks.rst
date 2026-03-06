@@ -146,7 +146,7 @@ Models in Block Conversion
 Blocks use ``Model`` definitions to translate between Python-facing value types
 and hardware bit/byte representation.
 
-Canonical model documentation is in :doc:`/pyrogue_tree/model`.
+Canonical model documentation is in :doc:`/pyrogue_tree/core/model`.
 
 Model-driven Block method dispatch
 ----------------------------------
@@ -181,7 +181,7 @@ Built-in model families
 
 The following built-in model families are commonly used with blocks:
 
-Canonical model coverage is in :doc:`/pyrogue_tree/model`.
+Canonical model coverage is in :doc:`/pyrogue_tree/core/model`.
 
 +---------------------------------------------+-----------------------+-------------------+----------------+------------------------------------------------+
 | Model                                       | Hardware Type         | Python Type       | Bit Size       | Notes                                          |
@@ -334,7 +334,7 @@ transactions.
 Where to explore next
 =====================
 
-* Model API and utility helpers: :doc:`/pyrogue_tree/model`
-* Root bulk write/read/check sequencing: :doc:`/pyrogue_tree/node/root/index`
+* Model API and utility helpers: :doc:`/pyrogue_tree/core/model`
+* Root bulk write/read/check sequencing: :doc:`/pyrogue_tree/core/root/index`
 * C++ Block reference: :doc:`/api/cpp/interfaces/memory/block`
 * Python LocalBlock reference: :doc:`/api/python/localblock`

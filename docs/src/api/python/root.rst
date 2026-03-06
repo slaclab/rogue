@@ -5,8 +5,8 @@ Root
 
 For conceptual usage and system-level behavior, see:
 
-- :doc:`/pyrogue_tree/node/root/index`
-- :doc:`/pyrogue_tree/node/root/poll_queue`
+- :doc:`/pyrogue_tree/core/root/index`
+- :doc:`/pyrogue_tree/core/root/poll_queue`
 
 .. autoclass:: pyrogue.Root
    :members:

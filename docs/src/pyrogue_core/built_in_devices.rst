@@ -31,12 +31,12 @@ Integration pattern
 
 Device guides:
 
-- :doc:`/pyrogue_tree/node/device/special_devices/data_receiver`
-- :doc:`/pyrogue_tree/node/device/special_devices/data_writer`
-- :doc:`/pyrogue_tree/node/device/special_devices/stream_reader`
-- :doc:`/pyrogue_tree/node/device/special_devices/stream_writer`
-- :doc:`/pyrogue_tree/node/device/special_devices/run_control`
-- :doc:`/pyrogue_tree/node/device/special_devices/process`
+- :doc:`/pyrogue_tree/builtin_devices/data_receiver`
+- :doc:`/pyrogue_tree/builtin_devices/data_writer`
+- :doc:`/pyrogue_tree/builtin_devices/stream_reader`
+- :doc:`/pyrogue_tree/builtin_devices/stream_writer`
+- :doc:`/pyrogue_tree/builtin_devices/run_control`
+- :doc:`/pyrogue_tree/builtin_devices/process`
 
 API reference:
 

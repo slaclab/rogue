@@ -5,7 +5,7 @@ LocalBlock
 
 For conceptual block behavior and usage patterns, see:
 
-- :doc:`/pyrogue_tree/blocks`
+- :doc:`/pyrogue_tree/core/blocks`
 - :doc:`/memory_interface/index`
 
 .. autoclass:: pyrogue.LocalBlock

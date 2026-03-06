@@ -5,7 +5,7 @@ RemoteCommand
 
 For conceptual usage and register-backed command patterns, see:
 
-- :doc:`/pyrogue_tree/node/command/remote_command/index`
+- :doc:`/pyrogue_tree/core/command/remote_command/index`
 
 .. autoclass:: pyrogue.RemoteCommand
    :members:

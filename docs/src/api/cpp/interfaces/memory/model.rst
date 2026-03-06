@@ -9,7 +9,7 @@ and remote variables.
 
 For conceptual guidance, see:
 
-- :doc:`/pyrogue_tree/model`
+- :doc:`/pyrogue_tree/core/model`
 - :ref:`pyrogue_tree_model`
 
 Primary API reference pages:
