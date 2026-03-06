@@ -55,7 +55,7 @@ Notes
 * Group filtering can be applied with ``incGroups``/``excGroups`` to control
   which Variable updates are published.
 * After ``root.start()``, inspect the selected port range with
-``root.zmqServer.port()`` and ``root.zmqServer.address``.
+  ``root.zmqServer.port()`` and ``root.zmqServer.address``.
 
 Client access examples
 ======================
