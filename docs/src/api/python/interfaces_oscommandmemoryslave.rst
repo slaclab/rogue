@@ -3,7 +3,7 @@
 OsCommandMemorySlave
 ====================
 
-For conceptual interface usage, see:
+For conceptual usage, see:
 
 - :doc:`/built_in_modules/os_memory_bridge/index`
 

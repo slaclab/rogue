@@ -3,7 +3,7 @@
 ZmqServer
 =========
 
-For conceptual client/server connectivity guidance, see:
+For conceptual usage, see:
 
 - :doc:`/pyrogue_tree/client_interfaces/index`
 - :doc:`/pyrogue_tree/client_interfaces/zmq_server`

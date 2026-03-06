@@ -3,7 +3,7 @@
 Variable
 ========
 
-For conceptual interface usage, see:
+For conceptual usage, see:
 
 - :doc:`/pyrogue_tree/core/memory_variable_stream`
 - :doc:`/pyrogue_tree/core/variable`
