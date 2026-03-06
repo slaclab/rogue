@@ -11,6 +11,20 @@ In most applications you do not instantiate it directly. It is created by
 :py:class:`pyrogue.Root` and controlled through root-level APIs/variables such
 as ``PollEn`` and variable ``pollInterval``.
 
+Polling strategy
+================
+
+- Poll only values that change over time and are operationally important.
+- Keep fast and slow update classes on separate poll intervals where possible.
+- Avoid aggressive polling on high-latency links unless required.
+
+Common pattern
+==============
+
+1. Assign poll intervals by value volatility and operator need.
+2. Validate update rate under realistic network and load conditions.
+3. Move exceptions to event-driven paths or explicit command reads when needed.
+
 What it does
 ============
 

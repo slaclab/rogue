@@ -51,4 +51,4 @@ Deep dive
 =========
 
 - :doc:`/pyrogue_core/advanced_patterns`
-- :doc:`/pyrogue_core/polling`
+- :doc:`/pyrogue_tree/node/root/poll_queue`

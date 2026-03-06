@@ -19,8 +19,8 @@ section.
 
    /pyrogue_tree/index
    client_access
-   polling
-   yaml_state_config
+   /pyrogue_tree/node/root/poll_queue
+   /pyrogue_tree/node/root/yaml_configuration
    /pyrogue_tree/model
    built_in_devices
    advanced_patterns

@@ -7,6 +7,20 @@ YAML Configuration and Bulk IO
 PyRogue supports configuration/state import and export through YAML APIs on
 ``Root``.
 
+Typical YAML workflows
+======================
+
+- configuration baselines for known-good startup values
+- captured runtime state for debug and issue reproduction
+- status snapshots for validation and operator handoff
+
+Practical guidance
+==================
+
+- separate baseline configuration from transient runtime state
+- track YAML files in source control when they represent release artifacts
+- document version compatibility when schema or naming changes occur
+
 Main entry points
 =================
 
