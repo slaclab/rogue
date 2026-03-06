@@ -81,32 +81,32 @@ This matrix tracks where content is moving as the revamp proceeds.
      - Docs Team
      - M2 Narrative [done]
    * - /interfaces/simulation/index narrative
-     - /built_in_modules/integrations
+     - /built_in_modules/simulation/index
      - Move
      - Docs Team
      - M2 Narrative [done]
    * - /interfaces/version narrative
-     - /built_in_modules/integrations
+     - /built_in_modules/version
      - Move
      - Docs Team
      - M2 Narrative [done]
    * - /interfaces/sql narrative
-     - /built_in_modules/integrations
+     - /built_in_modules/sql
      - Move
      - Docs Team
      - M2 Narrative [done]
    * - /utilities/index narrative
-     - /built_in_modules/overview
+     - /built_in_modules/index
      - Move
      - Docs Team
      - M2 Narrative [done]
    * - /hardware/index narrative
-     - /built_in_modules/overview
+     - /built_in_modules/index
      - Move
      - Docs Team
      - M2 Narrative [done]
    * - /protocols/index narrative
-     - /built_in_modules/overview
+     - /built_in_modules/index
      - Move
      - Docs Team
      - M2 Narrative [done]
@@ -126,17 +126,17 @@ This matrix tracks where content is moving as the revamp proceeds.
      - Docs Team
      - M4 Harmonization [done]
    * - /interfaces/simulation/mememulate placeholder
-     - /built_in_modules/integrations
+     - /built_in_modules/simulation/mememulate
      - Link
      - Docs Team
      - M2 Narrative [done]
    * - /interfaces/simulation/pgp2b placeholder
-     - /built_in_modules/integrations
+     - /built_in_modules/simulation/pgp2b
      - Link
      - Docs Team
      - M2 Narrative [done]
    * - /interfaces/simulation/sideband placeholder
-     - /built_in_modules/integrations
+     - /built_in_modules/simulation/sideband
      - Link
      - Docs Team
      - M2 Narrative [done]
@@ -281,7 +281,7 @@ This matrix tracks where content is moving as the revamp proceeds.
      - Docs Team
      - M3 Coverage [done]
    * - /stream_interface narrative expansion
-     - /stream_interface/index, /stream_interface/built_in_modules, /stream_interface/example_pipelines, /stream_interface/python_bindings
+     - /stream_interface/index, /stream_interface/connecting, /stream_interface/frame_model, /stream_interface/sending, /stream_interface/receiving, /stream_interface/built_in_modules
      - Move
      - Docs Team
      - M3 Coverage [done]
