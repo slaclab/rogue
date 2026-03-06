@@ -106,18 +106,86 @@ Device Read/Write Operations
 Bulk config/read/write operations traverse the tree and issue Block transactions
 through Device Block APIs.
 
-Typical write flow:
+Default behavior of block APIs
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-* update Variable shadow value
-* initiate write transaction(s)
-* optionally initiate verify transaction(s)
-* check completion and publish updates
+* :py:meth:`pyrogue.Device.writeBlocks`
+  initiates write transactions for this Device's Blocks (bulk-enabled Blocks by
+  default), then optionally recurses into child Devices.
+* :py:meth:`pyrogue.Device.verifyBlocks`
+  initiates verify transactions, then optionally recurses.
+* :py:meth:`pyrogue.Device.readBlocks`
+  initiates read transactions, then optionally recurses.
+* :py:meth:`pyrogue.Device.checkBlocks`
+  waits/checks completion of initiated transactions, then optionally recurses.
 
-Typical read flow:
+All four methods also support a ``variable=...`` path for targeted operations
+on a specific Variable's Block instead of full-device traversal.
 
-* initiate read transaction(s)
-* check completion
-* return/publish updated values
+Parameter behavior quick reference
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Shared parameters:
+
+* ``recurse``: include child Devices when ``True``.
+* ``variable``: operate on one Variable's Block instead of full-device Block traversal.
+* ``**kwargs``: forwarded to lower-level transaction helpers.
+
+Method-specific parameters:
+
+* ``writeBlocks(force=False, checkEach=False, index=-1, ...)``
+
+  * ``force``: write even when values are not marked stale.
+  * ``checkEach``: request per-transaction checking behavior (also affected by ``Device.forceCheckEach``).
+  * ``index``: index for array-variable targeted operations.
+
+* ``verifyBlocks(checkEach=False, ...)``
+
+  * ``checkEach``: request per-transaction checking behavior.
+
+* ``readBlocks(checkEach=False, index=-1, ...)``
+
+  * ``checkEach``: request per-transaction checking behavior.
+  * ``index``: index for array-variable targeted operations.
+
+* ``checkBlocks(...)``
+
+  * checks completion/acknowledgement of previously initiated transactions.
+
+Direct API references:
+
+* :py:meth:`pyrogue.Device.writeBlocks`
+* :py:meth:`pyrogue.Device.verifyBlocks`
+* :py:meth:`pyrogue.Device.readBlocks`
+* :py:meth:`pyrogue.Device.checkBlocks`
+* :doc:`/api/python/device`
+
+Where these methods are invoked
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+These APIs are usually called by higher-level workflows rather than directly by
+application code.
+
+Single-variable access path:
+
+* :py:meth:`pyrogue.RemoteVariable.set` calls
+  ``parent.writeBlocks(..., variable=self)`` and, depending on arguments,
+  ``parent.verifyBlocks(..., variable=self)`` and
+  ``parent.checkBlocks(..., variable=self)``.
+* :py:meth:`pyrogue.RemoteVariable.get` calls
+  ``parent.readBlocks(..., variable=self)`` and optionally
+  ``parent.checkBlocks(..., variable=self)``.
+
+Bulk configuration/read path:
+
+* Root ``LoadConfig`` / ``setYaml`` stage values through tree dictionary apply
+  and then, when ``writeEach=False``, call Root ``_write()`` which performs:
+  recursive ``writeBlocks`` -> ``verifyBlocks`` -> ``checkBlocks``.
+* Root ``WriteAll`` and ``ReadAll`` commands call Root ``_write()`` and
+  ``_read()``, which issue recursive all-block operations.
+
+This is why overriding ``writeBlocks``/``readBlocks`` at Device scope is the
+normal extension point for hardware-specific sequencing behavior.
 
 Lifecycle Hooks and Override Guidance
 -------------------------------------
@@ -225,6 +293,83 @@ Example: prefer ``_start()``/``_stop()`` for runtime work
                # Runtime activity here
                time.sleep(0.1)
 
+Custom Read/Write Operations
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Override block APIs when hardware requires extra ordering that is not captured
+by standard Block traversal alone.
+
+Common reasons to override:
+
+* one register must be written before or after bulk config writes
+* paged/banked register windows need explicit page-select writes around access
+* a side-effect register must be pulsed to commit staged settings
+* custom sequencing across child Devices is required
+
+If a Device needs custom sequencing around default Block operations, override:
+
+* :py:meth:`pyrogue.Device.writeBlocks`
+* :py:meth:`pyrogue.Device.verifyBlocks`
+* :py:meth:`pyrogue.Device.readBlocks`
+* :py:meth:`pyrogue.Device.checkBlocks`
+
+General override pattern
+""""""""""""""""""""""""
+
+Keep default traversal unless you explicitly want to replace it:
+
+* call ``super()`` for standard block behavior
+* preserve key arguments (``recurse``, ``variable``, ``checkEach``, ``**kwargs``)
+* add only the extra hardware-specific step(s)
+
+Example: activation register after config writes
+""""""""""""""""""""""""""""""""""""""""""""""""
+
+Some ASICs require an explicit apply/activate write after normal register
+configuration is sent.
+
+.. code-block:: python
+
+   import pyrogue as pr
+
+   class AsicDevice(pr.Device):
+       def writeBlocks(self, *, force=False, recurse=True, variable=None, checkEach=False, index=-1, **kwargs):
+           # Normal write traversal first.
+           super().writeBlocks(
+               force=force,
+               recurse=recurse,
+               variable=variable,
+               checkEach=checkEach,
+               index=index,
+               **kwargs,
+           )
+
+           # Only run activation for full-device writes.
+           if variable is None:
+               # Commit/apply staged config in ASIC.
+               self.Activate.set(1, write=True, verify=False, check=True)
+
+Example: page-select around reads
+"""""""""""""""""""""""""""""""""
+
+.. code-block:: python
+
+   import pyrogue as pr
+
+   class PagedDevice(pr.Device):
+       def readBlocks(self, *, recurse=True, variable=None, checkEach=False, index=-1, **kwargs):
+           if variable is None:
+               # Select status page before bulk read.
+               self.PageSel.set(2, write=True, verify=False, check=True)
+
+           super().readBlocks(
+               recurse=recurse,
+               variable=variable,
+               checkEach=checkEach,
+               index=index,
+               **kwargs,
+           )
+
 Implementation Boundary (Python and C++)
 ----------------------------------------
 
@@ -257,30 +402,6 @@ For deeper memory-stack behavior, see:
 * :doc:`/memory_interface/hub`
 * :doc:`/memory_interface/slave`
 * :doc:`/api/cpp/interfaces/memory/index`
-
-Custom Read/Write Operations
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-If a Device needs sequencing around default Block operations, override:
-
-* :py:meth:`pyrogue.Device.writeBlocks`
-* :py:meth:`pyrogue.Device.verifyBlocks`
-* :py:meth:`pyrogue.Device.readBlocks`
-* :py:meth:`pyrogue.Device.checkBlocks`
-
-.. code-block:: python
-
-   class SequencedDevice(pyrogue.Device):
-       def writeBlocks(self, *, force=False, recurse=True, variable=None, checkEach=False, index=-1):
-           # Pre-transaction behavior
-           super().writeBlocks(
-               force=force,
-               recurse=recurse,
-               variable=variable,
-               checkEach=checkEach,
-               index=index,
-           )
-           # Post-transaction behavior
 
 
 Device Command Decorators
