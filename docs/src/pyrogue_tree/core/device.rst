@@ -95,7 +95,7 @@ At runtime:
   the method exists
 * :py:meth:`pyrogue.Device._stop` calls ``_stop()`` on each managed object if
   the method exists
-* both then recurse to child devices
+* both then recurse to child Devices
 
 This is why top-level interfaces are commonly added at root scope using
 ``root.addInterface(...)`` (``Root`` is a ``Device`` subclass).
@@ -119,39 +119,111 @@ Typical read flow:
 * check completion
 * return/publish updated values
 
-Lifecycle Override Points for Subclasses
-----------------------------------------
+Lifecycle Hooks and Override Guidance
+-------------------------------------
 
-The following methods are intended override points when you need custom
-behavior around startup/shutdown or transaction sequencing.
+During :py:meth:`pyrogue.Root.start`, Device lifecycle progresses in this order:
 
-Lifecycle hooks
-^^^^^^^^^^^^^^^
+#. :py:meth:`pyrogue.Device._rootAttached`
+#. :py:meth:`pyrogue.Node._finishInit` recursion
+#. :py:meth:`pyrogue.Device._start`
 
-* :py:meth:`pyrogue.Device._rootAttached`:
-  called during Root startup before ``_finishInit`` and runtime workers
-* :py:meth:`pyrogue.Device._start` and :py:meth:`pyrogue.Device._stop`:
-  recursive Device lifecycle hooks that drive the
-  :ref:`Managed Interface Lifecycle <pyrogue_tree_node_device_managed_interfaces>`
+During :py:meth:`pyrogue.Root.stop`, Root calls
+:py:meth:`pyrogue.Device._stop` recursively.
 
-Operational hooks
-^^^^^^^^^^^^^^^^^
+Guidance by hook
+^^^^^^^^^^^^^^^^
 
-* :py:meth:`pyrogue.Device.initialize`
-* :py:meth:`pyrogue.Device.hardReset`
-* :py:meth:`pyrogue.Device.countReset`
-* :py:meth:`pyrogue.Device.enableChanged`
+* :py:meth:`pyrogue.Device._rootAttached`
 
-Read/write sequencing hooks
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  * This is when ``self.root`` becomes valid and path/parent context is attached.
+  * Default behavior also attaches children, builds Device Blocks, and applies
+    ``_defaults`` overrides.
+  * Use for: structural attachment-time setup that requires resolved tree context.
+  * Avoid: initiating hardware transactions or starting runtime threads/services.
+  * In most subclasses, do not override unless you need custom attach semantics.
+    If you override, call ``super()._rootAttached(parent, root)``.
 
-* :py:meth:`pyrogue.Device.writeBlocks`
-* :py:meth:`pyrogue.Device.verifyBlocks`
-* :py:meth:`pyrogue.Device.readBlocks`
-* :py:meth:`pyrogue.Device.checkBlocks`
+* :py:meth:`pyrogue.Node._finishInit`
 
-Override these when default ordering needs pre/post side effects or custom
-sequencing.
+  * Runs after full attach; Variables use this stage to finalize defaults and
+    poll/dependency metadata.
+  * For Device subclasses, overriding is uncommon. Prefer ``__init__`` for
+    static construction and ``_start()`` for runtime actions.
+  * If overridden, keep it lightweight and call ``super()._finishInit()``.
+
+* :py:meth:`pyrogue.Device._start`
+
+  * Runtime start hook called from Root after attach/init and worker startup.
+  * Use for: starting Device-owned threads, enabling runtime subscriptions, and
+    other actions that require a running system context.
+  * Avoid: mutating tree structure (adding/removing Nodes or changing Block layout).
+  * If overridden, preserve default managed-interface behavior by calling
+    ``super()._start()`` unless you intentionally replace it.
+
+* :py:meth:`pyrogue.Device._stop`
+
+  * Runtime teardown hook called during Root stop.
+  * Use for: stopping threads/services and releasing runtime resources.
+  * If overridden, call ``super()._stop()`` to preserve managed-interface stop.
+
+Operational hooks and block sequencing hooks
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+* Operational hooks:
+  :py:meth:`pyrogue.Device.initialize`,
+  :py:meth:`pyrogue.Device.hardReset`,
+  :py:meth:`pyrogue.Device.countReset`,
+  :py:meth:`pyrogue.Device.enableChanged`
+* Block sequencing hooks:
+  :py:meth:`pyrogue.Device.writeBlocks`,
+  :py:meth:`pyrogue.Device.verifyBlocks`,
+  :py:meth:`pyrogue.Device.readBlocks`,
+  :py:meth:`pyrogue.Device.checkBlocks`
+
+``initialize``/``hardReset``/``countReset`` are invoked by Root-level command
+workflows, not automatically by ``Root.start()``/``Root.stop()``.
+
+Practical note on variable access timing
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+* ``self.root`` is not valid before ``_rootAttached``.
+* RemoteVariable Block mapping is finalized during ``_rootAttached``.
+* Variable shadow values can be set before start (for example with ``write=False``),
+  but hardware-backed reads/writes should be treated as runtime operations and
+  performed after Root has started.
+
+Example: prefer ``_start()``/``_stop()`` for runtime work
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+   import pyrogue as pr
+   import threading
+   import time
+
+   class WorkerDevice(pr.Device):
+       def __init__(self, **kwargs):
+           super().__init__(**kwargs)
+           self._runWorker = False
+           self._workerThread = None
+
+       def _start(self):
+           super()._start()
+           self._runWorker = True
+           self._workerThread = threading.Thread(target=self._worker, daemon=True)
+           self._workerThread.start()
+
+       def _stop(self):
+           self._runWorker = False
+           if self._workerThread is not None:
+               self._workerThread.join(timeout=1.0)
+           super()._stop()
+
+       def _worker(self):
+           while self._runWorker:
+               # Runtime activity here
+               time.sleep(0.1)
 
 Implementation Boundary (Python and C++)
 ----------------------------------------
