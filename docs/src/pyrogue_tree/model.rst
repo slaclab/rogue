@@ -8,6 +8,17 @@ Models define how values are encoded to bytes and decoded back to Python types.
 In practice, a model is selected per variable (usually with ``base=...`` on
 ``RemoteVariable``), and block transactions apply that model during read/write.
 
+=========
+Model API
+=========
+
+PyRogue models define how variable values are represented, converted to/from
+bytes, and interpreted for display/type behavior.
+
+Most users interact with models indirectly through variable ``base`` and related
+type configuration. Advanced users can use model classes directly for custom
+encoding/decoding workflows.
+
 Why models exist
 ================
 

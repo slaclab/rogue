@@ -186,6 +186,21 @@ For broader client/interface selection and deployment patterns, see
 :doc:`/pyrogue_core/client_interfaces/simple`, and
 :doc:`/pyrogue_core/client_interfaces/virtual`.
 
+Built-in Groups
+---------------
+
+PyRogue root-level configuration/state commands use group filtering to include or exclude
+variables and commands from bulk operations.
+
+Common built-in group names:
+
+* ``NoConfig``: excluded from configuration save/load operations.
+* ``NoState``: excluded from state snapshot/export operations.
+* ``Hidden``: hidden from normal GUI views unless explicitly included.
+
+See :ref:`pyrogue_tree_node_groups` for full built-in group behavior and filtering semantics.
+
+
 YAML Configuration and Bulk Operations
 --------------------------------------
 
