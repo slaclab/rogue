@@ -226,21 +226,17 @@ You can use decorators on local functions created in ``__init__``.
 Special Device Subclasses
 =========================
 
-There are several specialized device classes available:
+PyRogue provides several built-in ``Device`` subclasses for common workflows.
+These are documented in the dedicated built-in section:
 
-.. toctree::
-   :maxdepth: 1
-   :caption: Special Device Subtypes:
+* :doc:`/pyrogue_tree/builtin_devices/index`
 
-   /pyrogue_tree/builtin_devices/run_control
-   /pyrogue_tree/builtin_devices/data_writer
-   /pyrogue_tree/builtin_devices/data_receiver
-   /pyrogue_tree/builtin_devices/prbsrx
-   /pyrogue_tree/builtin_devices/prbstx
-   /pyrogue_tree/builtin_devices/prbspair
-   /pyrogue_tree/builtin_devices/stream_reader
-   /pyrogue_tree/builtin_devices/stream_writer
-   /pyrogue_tree/builtin_devices/process
+Frequently used examples include:
+
+* :doc:`/pyrogue_tree/builtin_devices/run_control`
+* :doc:`/pyrogue_tree/builtin_devices/data_writer`
+* :doc:`/pyrogue_tree/builtin_devices/data_receiver`
+* :doc:`/pyrogue_tree/builtin_devices/prbspair`
 
 Device API Reference
 ==========================
