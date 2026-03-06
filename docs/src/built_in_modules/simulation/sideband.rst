@@ -42,7 +42,8 @@ Notes:
 - Malformed frame lengths are logged as errors
 - Context-manager exit stops the receive worker
 
-Where to explore next
-=====================
+What To Explore Next
+====================
 
 - Combined VC + sideband simulation: :doc:`/built_in_modules/simulation/pgp2b`
+- Stream transport topologies: :doc:`/stream_interface/connecting`

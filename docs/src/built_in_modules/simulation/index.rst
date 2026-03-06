@@ -23,8 +23,8 @@ Available components
 These helpers are implemented in Python in
 ``python/pyrogue/interfaces/simulation.py``.
 
-Where to explore next
-=====================
+What To Explore Next
+====================
 
 - Memory emulation patterns: :doc:`/built_in_modules/simulation/mememulate`
 - Simulated PGP2B links: :doc:`/built_in_modules/simulation/pgp2b`

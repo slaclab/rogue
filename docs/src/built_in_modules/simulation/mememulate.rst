@@ -17,7 +17,9 @@ Constructor signature:
 
 .. code-block:: python
 
-   sim = pyrogue.interfaces.simulation.MemEmulate(
+   import pyrogue.interfaces.simulation as pis
+
+   sim = pis.MemEmulate(
        minWidth=4,
        maxSize=0xFFFFFFFF,
        dropCount=0,
@@ -60,13 +62,15 @@ Retry-test pattern
 
 .. code-block:: python
 
-   sim = pyrogue.interfaces.simulation.MemEmulate(dropCount=2)
+   import pyrogue.interfaces.simulation as pis
+
+   sim = pis.MemEmulate(dropCount=2)
    # With retryCount >= 2 on variables, transient drops can still succeed.
 
 This pattern is exercised in ``tests/test_retry_memory.py``.
 
-Where to explore next
-=====================
+What To Explore Next
+====================
 
 - Memory interface transaction flow: :doc:`/memory_interface/transactions`
 - Device/hub interception patterns: :doc:`/memory_interface/hub`

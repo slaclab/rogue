@@ -39,8 +39,16 @@ Connecting two simulated endpoints
 ``connectPgp2bSim(a, b)`` links each VC pair bidirectionally and cross-connects
 sideband callbacks.
 
-Where to explore next
-=====================
+Operational Notes
+=================
+
+- Use distinct base-port ranges per endpoint to avoid overlap.
+- Keep ``vcCount`` matched between both endpoints when linking.
+- Use ``with`` context management so background resources are cleaned up
+  automatically.
+
+What To Explore Next
+====================
 
 - Sideband channel details: :doc:`/built_in_modules/simulation/sideband`
 - Stream topologies and connection operators: :doc:`/stream_interface/connecting`
