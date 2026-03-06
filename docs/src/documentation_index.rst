@@ -1,5 +1,7 @@
 .. _documentation_index:
 
+:orphan:
+
 =================
 Table of Contents
 =================

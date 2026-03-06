@@ -1,5 +1,7 @@
 .. _documentation_plan:
 
+:orphan:
+
 =========================
 Documentation Revamp Plan
 =========================
