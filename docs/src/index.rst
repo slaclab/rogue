@@ -112,18 +112,16 @@ the sidebar.
    :maxdepth: 3
    :caption: Contents:
 
-   Introduction <self>
+   self
    /quick_start/index
    /tutorials/index
-   /pyrogue_core/index
+   /cookbook/index
+   /installing/index
+   /pyrogue_tree/index
    /stream_interface/index
    /memory_interface/index
    /built_in_modules/index
-   /cookbook/index
-   /installing/index
    /logging/index
    /pydm/index
-   /api/index
    /migration/index
-   /documentation_plan/index
-   /documentation_index
+   /api/index
