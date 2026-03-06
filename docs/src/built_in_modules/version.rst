@@ -97,8 +97,8 @@ C++ examples
        return 0;
    }
 
-Where to explore next
-=====================
+What To Explore Next
+====================
 
 - Built-in section overview: :doc:`/built_in_modules/index`
 - Deployment and environment setup: :doc:`/installing/index`

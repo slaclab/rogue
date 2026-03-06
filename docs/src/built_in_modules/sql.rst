@@ -1,8 +1,8 @@
 .. _interfaces_sql:
 
-=================
+===========
 SQL Logging
-=================
+===========
 
 ``pyrogue.interfaces.SqlLogger`` records variable updates and system-log entries
 from a running ``pyrogue.Root`` into a SQL database using SQLAlchemy.
@@ -55,8 +55,8 @@ Operational notes
 - Multiple queued entries are batched into a single DB transaction
 - If DB connection is lost, logger reports the error and stops committing
 
-Where to explore next
-=====================
+What To Explore Next
+====================
 
 - Tree variable concepts: :doc:`/pyrogue_tree/core/variable`
 - Logging subsystem overview: :doc:`/logging/index`

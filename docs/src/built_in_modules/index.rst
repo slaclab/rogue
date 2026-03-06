@@ -32,8 +32,8 @@ Key integration topics
 - OS-backed memory bridge components:
   :doc:`/built_in_modules/os_memory_bridge/index`
 
-Where to explore next
-=====================
+What To Explore Next
+====================
 
 - Utility modules: :doc:`/utilities/index`
 - Hardware modules: :doc:`/hardware/index`
