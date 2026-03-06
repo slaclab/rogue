@@ -75,3 +75,10 @@ API reference
 =============
 
 See :doc:`/api/python/interfaces_stream_variable` for generated API details.
+
+What To Explore Next
+====================
+
+- Stream connection patterns: :doc:`/stream_interface/connecting`
+- Frame send/receive APIs: :doc:`/stream_interface/sending` and :doc:`/stream_interface/receiving`
+- Root client/server exposure patterns: :doc:`/pyrogue_tree/client_interfaces/index`
