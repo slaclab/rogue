@@ -5,7 +5,7 @@
 Core
 ====
 
-The Core layer defines the object model and runtime behavior of a PyRogue tree.
+This section defines the object model and runtime behavior of a PyRogue tree.
 It organizes control logic into a hierarchy of ``Root``, ``Device``,
 ``Variable``, and ``Command`` nodes, with ``Block`` and ``Model`` providing
 memory transaction grouping and typed value conversion.
@@ -94,6 +94,7 @@ Where to explore next
 * Root lifecycle and orchestration: :doc:`/pyrogue_tree/core/root`
 * Device composition and managed interfaces: :doc:`/pyrogue_tree/core/device`
 * Variable behavior and types: :doc:`/pyrogue_tree/core/variable`
+* Command behavior and invocation patterns: :doc:`/pyrogue_tree/core/command`
 * Block transaction behavior: :doc:`/pyrogue_tree/core/block`
 * Model conversion behavior: :doc:`/pyrogue_tree/core/model`
 
@@ -102,11 +103,11 @@ Where to explore next
    :caption: Core:
 
    root
+   device
+   variable
+   command
+   block
+   model
    poll_queue
    yaml_configuration
-   device
-   command
-   variable
    groups
-   model
-   block
