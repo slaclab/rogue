@@ -114,8 +114,7 @@ the sidebar.
 
    self
    /quick_start/index
-   /tutorials/index
-   /cookbook/index
+
    /installing/index
    /pyrogue_tree/index
    /stream_interface/index
@@ -123,5 +122,7 @@ the sidebar.
    /built_in_modules/index
    /logging/index
    /pydm/index
+   /tutorials/index
+   /cookbook/index
    /migration/index
    /api/index
