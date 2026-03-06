@@ -15,7 +15,7 @@ Main entry points
 - ``setYaml(...)``: apply YAML text directly
 - ``getYaml(...)``: generate YAML text for a node/tree
 
-Root commands exposed in the tree use these APIs:
+These APIs back built-in Root commands in the tree:
 
 - ``SaveConfig`` / ``LoadConfig``
 - ``SaveState``
@@ -31,8 +31,8 @@ Typical defaults:
 
 That means:
 
-- read-only variables are normally ignored for config load
-- commands are ignored by YAML set/load (``BaseCommand._setDict`` is a no-op)
+- read-only Variables are normally ignored for config load
+- Commands are ignored by YAML set/load (``BaseCommand._setDict`` is a no-op)
 
 How YAML load is applied
 ========================
@@ -43,7 +43,7 @@ the workflow is:
 1. Parse YAML input to ordered dictionaries.
 2. Traverse tree entries and assign Variable display values with
    ``setDisp(..., write=False)``.
-3. After the whole YAML payload is staged in shadow values, run root bulk
+3. After the whole YAML payload is staged in shadow values, run Root bulk
    write/verify/check (``Root._write()``).
 
 Implications:
@@ -91,7 +91,7 @@ Examples:
 Bulk operations: initiate vs check
 ==================================
 
-Bulk methods intentionally decouple transaction issue from wait:
+Bulk methods intentionally decouple transaction initiation from completion:
 
 - initiate: ``writeBlocks``, ``readBlocks``, ``verifyBlocks``
 - wait/check: ``checkBlocks``

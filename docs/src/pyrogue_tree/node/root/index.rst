@@ -12,7 +12,7 @@ save/load and external listeners.
 For polling internals and usage patterns, see
 :ref:`pyrogue_tree_root_poll_queue`.
 
-Most user applications define a subclass of ``pyrogue.Root`` and add devices
+Most user applications define a subclass of ``pyrogue.Root`` and add Devices
 inside ``__init__``.
 
 In practice, ``Root`` is also where hardware connections are usually created and
@@ -20,7 +20,7 @@ bound into the tree. A typical pattern is:
 
 * create a memory interface (for example AXI PCIe, TCP simulation, etc.)
 * register it with :py:meth:`pyrogue.Root.addInterface`
-* pass that interface as ``memBase`` when adding top-level devices
+* pass that interface as ``memBase`` when adding top-level Devices
 * optionally add management/control interfaces (such as ZMQ) to the same root
 
 .. code-block:: python
@@ -61,10 +61,10 @@ bound into the tree. A typical pattern is:
 Key Attributes
 --------------
 
-Along with inherited :ref:`Node <pyrogue_tree_node>` attributes, root adds:
+Along with inherited :ref:`Node <pyrogue_tree_node>` attributes, Root adds:
 
 * ``running``: ``True`` when :py:meth:`pyrogue.Root.start` has been called.
-* system commands and variables that support whole-tree control
+* system Commands and Variables that support whole-tree control
   (see sections below).
 
 Key Methods
@@ -81,8 +81,8 @@ Key Methods
 
 ``getNode`` resolves dotted paths such as ``EvalBoard.AxiVersion.ScratchPad``.
 
-Lifecycle: ``start()``, ``stop()``, and ``_rootAttached()``
-------------------------------------------------------------
+Lifecycle and Startup Sequence
+------------------------------
 
 ``Root`` owns the runtime lifecycle of the full tree.
 The call to :py:meth:`pyrogue.Root.start` is more than "start threads"; it
@@ -189,8 +189,8 @@ For broader client/interface selection and deployment patterns, see
 Built-in Groups
 ---------------
 
-PyRogue root-level configuration/state commands use group filtering to include or exclude
-variables and commands from bulk operations.
+PyRogue Root-level configuration/state Commands use group filtering to include
+or exclude Variables and Commands from bulk operations.
 
 Common built-in group names:
 
@@ -233,7 +233,8 @@ The following :py:class:`pyrogue.LocalCommand` objects are all created when the 
 
 Included Variable Objects
 -------------------------
-The following :py:class:`pyrogue.LocalVariable` objects are all created when the Root node is created.
+The following :py:class:`pyrogue.LocalVariable` objects are created when the
+Root node is created.
 
 * **RogueVersion**: Rogue version string.
 * **RogueDirectory**: Rogue Library Directory.

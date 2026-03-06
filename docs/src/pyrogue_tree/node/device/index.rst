@@ -15,7 +15,7 @@ Devices can contain:
 * commands (local, remote)
 
 Most user-facing hardware abstractions are implemented as ``Device`` subclasses.
-At runtime, a device also participates in memory routing behavior through the
+At runtime, a Device also participates in memory routing behavior through the
 Rogue memory hub stack.
 
 .. code-block:: python
@@ -35,23 +35,23 @@ Key Attributes
 --------------
 
 In addition to inherited :ref:`Node <pyrogue_tree_node>` attributes, common
-device-level attributes include:
+Device-level attributes include:
 
 * ``offset`` / ``address``
 * ``memBase``
 * ``enable``
 
-The ``enable`` variable allows tree-level logic to disable a full device subtree
+The ``enable`` Variable allows tree-level logic to disable a full Device subtree
 for hardware access while keeping node metadata available.
 
 Relationship to Hub
 -------------------
 
-Conceptually, a device behaves as a hub in the memory routing stack:
+Conceptually, a Device behaves as a Hub in the memory routing stack:
 
-* variable/block transactions are addressed relative to the device base
-* child devices can inherit base/memory routing from parent devices
-* a child device can also be attached to an independent memory path when needed
+* Variable/Block transactions are addressed relative to the Device base
+* child Devices can inherit base/memory routing from parent Devices
+* a child Device can also be attached to an independent memory path when needed
 
 Key Methods
 -----------
@@ -100,48 +100,6 @@ At runtime:
 This is why top-level interfaces are commonly added at root scope using
 ``root.addInterface(...)`` (``Root`` is a ``Device`` subclass).
 
-Lifecycle Override Points for Subclasses
-----------------------------------------
-
-The following methods are intended override points when you need custom
-behavior around startup/shutdown or transaction sequencing.
-
-Start/Stop hooks
-^^^^^^^^^^^^^^^^
-
-* :py:meth:`pyrogue.Device._start`:
-  Called recursively from :py:meth:`pyrogue.Root.start`.
-  Typical use: open sockets/threads/resources, then call ``super()._start()``.
-* :py:meth:`pyrogue.Device._stop`:
-  Called recursively from :py:meth:`pyrogue.Root.stop`.
-  Typical use: stop custom resources and call ``super()._stop()`` to preserve
-  managed interface and child-device shutdown.
-* :py:meth:`pyrogue.Device._rootAttached`:
-  Called during root startup before ``_finishInit`` and before runtime threads.
-  Typical use: finalize path/root-dependent setup after calling
-  ``super()._rootAttached(parent, root)``.
-
-Operational hooks
-^^^^^^^^^^^^^^^^^
-
-* :py:meth:`pyrogue.Device.initialize`
-* :py:meth:`pyrogue.Device.hardReset`
-* :py:meth:`pyrogue.Device.countReset`
-* :py:meth:`pyrogue.Device.enableChanged`
-
-These are commonly overridden to implement device-specific control behavior.
-
-Read/write sequencing hooks
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-* :py:meth:`pyrogue.Device.writeBlocks`
-* :py:meth:`pyrogue.Device.verifyBlocks`
-* :py:meth:`pyrogue.Device.readBlocks`
-* :py:meth:`pyrogue.Device.checkBlocks`
-
-Override these when the default transaction ordering needs pre/post side
-effects or custom sequencing.
-
 Device Read/Write Operations
 ----------------------------
 
@@ -151,15 +109,49 @@ through Device Block APIs.
 Typical write flow:
 
 * update Variable shadow value
-* initiate write transaction
-* optionally initiate verify transaction
+* initiate write transaction(s)
+* optionally initiate verify transaction(s)
 * check completion and publish updates
 
 Typical read flow:
 
-* initiate read transaction
+* initiate read transaction(s)
 * check completion
 * return/publish updated values
+
+Lifecycle Override Points for Subclasses
+----------------------------------------
+
+The following methods are intended override points when you need custom
+behavior around startup/shutdown or transaction sequencing.
+
+Lifecycle hooks
+^^^^^^^^^^^^^^^
+
+* :py:meth:`pyrogue.Device._rootAttached`:
+  called during Root startup before ``_finishInit`` and runtime workers
+* :py:meth:`pyrogue.Device._start` and :py:meth:`pyrogue.Device._stop`:
+  recursive Device lifecycle hooks that drive the
+  :ref:`Managed Interface Lifecycle <pyrogue_tree_node_device_managed_interfaces>`
+
+Operational hooks
+^^^^^^^^^^^^^^^^^
+
+* :py:meth:`pyrogue.Device.initialize`
+* :py:meth:`pyrogue.Device.hardReset`
+* :py:meth:`pyrogue.Device.countReset`
+* :py:meth:`pyrogue.Device.enableChanged`
+
+Read/write sequencing hooks
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+* :py:meth:`pyrogue.Device.writeBlocks`
+* :py:meth:`pyrogue.Device.verifyBlocks`
+* :py:meth:`pyrogue.Device.readBlocks`
+* :py:meth:`pyrogue.Device.checkBlocks`
+
+Override these when default ordering needs pre/post side effects or custom
+sequencing.
 
 Implementation Boundary (Python and C++)
 ----------------------------------------
@@ -197,7 +189,7 @@ For deeper memory-stack behavior, see:
 Custom Read/Write Operations
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-If a device needs sequencing around default block operations, override:
+If a Device needs sequencing around default Block operations, override:
 
 * :py:meth:`pyrogue.Device.writeBlocks`
 * :py:meth:`pyrogue.Device.verifyBlocks`
