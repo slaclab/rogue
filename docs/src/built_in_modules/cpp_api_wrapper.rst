@@ -87,4 +87,4 @@ What To Explore Next
 
 - PyRogue tree structure and lifecycle: :doc:`/pyrogue_tree/index`
 - Core Root/Device/Variable behavior: :doc:`/pyrogue_tree/core/index`
-- Full C++ API class reference: :doc:`/api/cpp/interfaces/api/index`
+- Full API entry point (Python + C++): :doc:`/api/index`
