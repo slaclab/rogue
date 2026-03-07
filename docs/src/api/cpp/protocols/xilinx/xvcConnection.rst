@@ -4,7 +4,7 @@
 XvcConnection
 =============
 
-For conceptual guidance, see :doc:`/protocols/xilinx/index`.
+For conceptual guidance, see :doc:`/built_in_modules/protocols/xilinx/index`.
 
 The class description is shown below:
 

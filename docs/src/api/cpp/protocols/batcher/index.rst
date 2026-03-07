@@ -5,7 +5,7 @@ Batcher Protocol Class Descriptions
 ===================================
 
 The following are detailed descriptions of the various C++ classes that make up the Rogue Batcher protocol.
-For conceptual guidance and usage patterns, see :doc:`/protocols/batcher/index`.
+For conceptual guidance and usage patterns, see :doc:`/built_in_modules/protocols/batcher/index`.
 
 .. toctree::
    :maxdepth: 1

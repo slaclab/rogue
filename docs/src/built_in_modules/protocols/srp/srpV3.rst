@@ -1,31 +1,35 @@
-.. _protocols_srp_srpV0:
+.. _protocols_srp_srpV3:
 
 ======================
-SRP Protocol Version 0
+SRP Protocol Version 3
 ======================
 
-`SrpV0` converts Rogue memory transactions into SRPv0 stream frames and decodes
+`SrpV3` converts Rogue memory transactions into SRPv3 stream frames and decodes
 responses from hardware. In a typical system, those SRP frames are carried over
 Rogue stream transports and terminate at FPGA/ASIC SRP logic that performs
 register access.
 
-Rogue does not re-document the SRPv0 wire format here. Use the protocol
+Rogue does not re-document the SRPv3 wire format here. Use the protocol
 specification for packet-level details:
 
-- SRPv0 reference: https://confluence.slac.stanford.edu/x/aRmVD
+- SRPv3 reference: https://confluence.slac.stanford.edu/x/cRmVD
 
 Implementation notes
 --------------------
 
-- Rogue can issue multiple SRPv0 requests before responses return; these are
+- Rogue can issue multiple SRPv3 requests before responses return; these are
   tracked as in-flight transactions by transaction ID.
 - Responses are matched by ID, so response order does not need to match request
   order.
 - If a response is missing, the initiating memory master times out based on the
   configured software timeout (see ``Master.setTimeout()``, microseconds).
 - Late responses that arrive after timeout are treated as expired and ignored.
-- ``SrpV0`` enforces 4-byte alignment and defaults to a 2048-byte max
-  transaction size (from constructor ``memory::Slave(4, 2048)``).
+- SRPv3 also carries a hardware timeout field in the request header
+  (C++: ``setHardwareTimeout()``, Python binding: ``_setHardwareTimeout()``),
+  which is separate from Rogue software wait
+  timeout handling.
+- ``SrpV3`` enforces 4-byte alignment and defaults to a 4096-byte max
+  transaction size (from constructor ``memory::Slave(4, 4096)``).
 
 Threading and locking model
 ---------------------------
@@ -39,13 +43,17 @@ Integration references
 ----------------------
 
 - :doc:`/memory_interface/tcp_bridge`
-- :doc:`/hardware/axi/stream`
+- :doc:`/built_in_modules/hardware/axi/stream`
 
-Python usage example
---------------------
+Python usage examples
+---------------------
 
-The common PyRogue pattern is to construct the transport and ``SrpV0`` inside a
-``Root`` subclass, then pass the SRP object as ``memBase`` when adding devices.
+The most common PyRogue pattern is to construct the transport and ``SrpV3``
+inside a ``Root`` subclass, then pass the SRP object as ``memBase`` when adding
+devices.
+
+Root + Device(memBase=srp) with AXI Stream DMA
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: python
 
@@ -70,16 +78,19 @@ The common PyRogue pattern is to construct the transport and ``SrpV0`` inside a
        def __init__(self, dev='/dev/datadev_0', **kwargs):
            super().__init__(timeout=2.0, **kwargs)
 
-           # Stream transport carrying SRPv0 frames (register channel).
+           # Stream transport carrying SRPv3 frames (register channel).
            self.regStream = rogue.hardware.axi.AxiStreamDma(dev, 0, True)
 
-           # SRPv0 protocol bridge.
-           self.srp = rogue.protocols.srp.SrpV0()
+           # SRPv3 protocol bridge.
+           self.srp = rogue.protocols.srp.SrpV3()
 
-           # Bidirectional stream connection: transport <-> SRPv0.
+           # Bidirectional stream connection: transport <-> SRPv3.
            self.regStream == self.srp
 
-           # Attach register map device to SRPv0 memory slave interface.
+           # Optional protocol timeout field encoded into SRPv3 header.
+           self.srp._setHardwareTimeout(0x0A)  # Python binding name.
+
+           # Attach register map device to SRPv3 memory slave interface.
            self.add(MyRegs(
                name='Regs',
                offset=0x00000000,
@@ -90,5 +101,5 @@ The common PyRogue pattern is to construct the transport and ``SrpV0`` inside a
 Related docs
 ------------
 
-- :doc:`/protocols/srp/index`
-- C++ API: :doc:`/api/cpp/protocols/srp/srpV0`
+- :doc:`/built_in_modules/protocols/srp/index`
+- C++ API: :doc:`/api/cpp/protocols/srp/srpV3`

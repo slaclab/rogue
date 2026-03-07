@@ -71,6 +71,6 @@ V2
 Related docs
 ============
 
-- :doc:`/protocols/batcher/index`
+- :doc:`/built_in_modules/protocols/batcher/index`
 - :doc:`/api/cpp/protocols/batcher/inverterV1`
 - :doc:`/api/cpp/protocols/batcher/inverterV2`

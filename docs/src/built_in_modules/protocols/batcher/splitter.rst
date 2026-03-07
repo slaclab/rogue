@@ -66,6 +66,6 @@ V2
 Related docs
 ============
 
-- :doc:`/protocols/batcher/index`
+- :doc:`/built_in_modules/protocols/batcher/index`
 - :doc:`/api/cpp/protocols/batcher/splitterV1`
 - :doc:`/api/cpp/protocols/batcher/splitterV2`

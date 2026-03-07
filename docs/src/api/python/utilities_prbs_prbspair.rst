@@ -5,7 +5,7 @@ PrbsPair
 
 For conceptual utility usage, see:
 
-- :doc:`/utilities/prbs/index`
+- :doc:`/built_in_modules/utilities/prbs/index`
 
 .. autoclass:: pyrogue.utilities.prbs.PrbsPair
    :members:

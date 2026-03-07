@@ -49,6 +49,6 @@ version alignment across firmware and software.
 See also
 ========
 
-- :doc:`/protocols/packetizer/index`
-- :doc:`/protocols/packetizer/core`
+- :doc:`/built_in_modules/protocols/packetizer/index`
+- :doc:`/built_in_modules/protocols/packetizer/core`
 - :doc:`/api/cpp/protocols/packetizer/coreV2`

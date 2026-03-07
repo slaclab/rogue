@@ -6,7 +6,7 @@ Application
 
 ``Application`` is the upper RSSI stream endpoint. It carries payload frames
 between user protocol layers and the RSSI controller.
-For conceptual guidance, see :doc:`/protocols/rssi/index`.
+For conceptual guidance, see :doc:`/built_in_modules/protocols/rssi/index`.
 
 
 Application objects in C++ are referenced by the following shared pointer typedef:

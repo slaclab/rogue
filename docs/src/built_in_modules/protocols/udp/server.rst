@@ -74,7 +74,7 @@ Practical checklist
 Related docs
 ============
 
-- :doc:`/protocols/udp/index`
-- :doc:`/protocols/network`
-- :doc:`/protocols/rssi/index`
+- :doc:`/built_in_modules/protocols/udp/index`
+- :doc:`/built_in_modules/protocols/network`
+- :doc:`/built_in_modules/protocols/rssi/index`
 - :doc:`/api/cpp/protocols/udp/server`

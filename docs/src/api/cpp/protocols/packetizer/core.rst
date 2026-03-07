@@ -7,7 +7,7 @@ Core
 ``Core`` is the packetizer v1 wiring object that owns the transport endpoint,
 controller, and destination-indexed application endpoints.
 This page is reference-only; for integration guidance see
-:doc:`/protocols/packetizer/core`.
+:doc:`/built_in_modules/protocols/packetizer/core`.
 
 
 Core objects in C++ are referenced by the following shared pointer typedef:

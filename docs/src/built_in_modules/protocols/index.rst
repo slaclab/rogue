@@ -1,12 +1,14 @@
 .. _protocols:
+.. _built_in_modules_protocols:
 
 ==========
 Protocols
 ==========
 
-This section covers transport and control protocol layers used in Rogue
-systems. These pages focus on protocol behavior, composition patterns, and
-usage notes that connect stream and memory interfaces to deployed workflows.
+This subsection of :doc:`/built_in_modules/index` covers transport and control
+protocol layers used in Rogue systems. These pages focus on protocol behavior,
+composition patterns, and usage notes that connect stream and memory
+interfaces to deployed workflows.
 
 Protocol selection quick guide
 ==============================

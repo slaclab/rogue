@@ -1,12 +1,14 @@
 .. _hardware:
+.. _built_in_modules_hardware:
 
 ========
 Hardware
 ========
 
-This section describes the hardware which is supported by Rogue with the
-help of a Linux Kernel device driver. The device driver required to use
-the interfaces described in this section can be found at:
+This subsection of :doc:`/built_in_modules/index` describes Rogue hardware
+interfaces that operate with Linux kernel device drivers.
+
+The driver stack required to use these interfaces is available at:
 
 https://github.com/slaclab/aes-stream-drivers
 

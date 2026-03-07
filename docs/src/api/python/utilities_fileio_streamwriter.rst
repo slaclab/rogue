@@ -5,7 +5,7 @@ StreamWriter
 
 For conceptual utility usage, see:
 
-- :doc:`/utilities/fileio/index`
+- :doc:`/built_in_modules/utilities/fileio/index`
 
 .. autoclass:: pyrogue.utilities.fileio.StreamWriter
    :members:

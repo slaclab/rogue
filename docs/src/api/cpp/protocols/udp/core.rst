@@ -6,7 +6,7 @@ Core
 
 ``Core`` provides shared UDP transport configuration used by ``Client`` and
 ``Server``. This page is reference-only; for usage guidance see
-:doc:`/protocols/udp/index`.
+:doc:`/built_in_modules/protocols/udp/index`.
 
 Core objects in C++ are referenced by the following shared pointer typedef:
 

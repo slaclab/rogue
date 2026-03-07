@@ -5,7 +5,7 @@ EpicsPvServer
 
 For conceptual protocol usage, see:
 
-- :doc:`/protocols/epicsV4/index`
+- :doc:`/built_in_modules/protocols/epicsV4/index`
 
 .. autoclass:: pyrogue.protocols.epicsV4.EpicsPvServer
    :members:

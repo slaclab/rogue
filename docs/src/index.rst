@@ -94,12 +94,14 @@ Additional Modules and Ecosystem Components
 Rogue also includes ecosystem modules that round out integration, operations,
 and user-facing workflows.
 
-* :ref:`Utilities <utilities>` for file I/O, PRBS tools, compression, and
-  other support functions used during development and operations.
-* :ref:`Protocols <protocols>` for transport and control integrations such
-  as UDP, RSSI, SRP, packetizer, EPICS, and related protocol layers.
-* :ref:`Hardware <hardware>` for hardware-facing drivers and interfaces,
-  including AXI and raw memory-mapped access paths.
+* :doc:`/built_in_modules/index` groups reusable integration modules,
+  including:
+  :ref:`Utilities <utilities>` for file I/O, PRBS tools, compression, and
+  other support functions,
+  :ref:`Protocols <protocols>` for transport/control integrations such as UDP,
+  RSSI, SRP, and packetizer,
+  and :ref:`Hardware <hardware>` interfaces for AXI and raw memory-mapped
+  access paths.
 * :ref:`PyDM GUI support <pydm>` for Rogue channel integration and custom
   widgets used to monitor and control device trees.
 

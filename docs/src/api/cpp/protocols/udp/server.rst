@@ -6,7 +6,7 @@ Server
 
 ``Server`` is the UDP bind/listen endpoint class and supports querying the
 active bound port via ``getPort()``. This page is reference-only; for usage
-patterns see :doc:`/protocols/udp/server`.
+patterns see :doc:`/built_in_modules/protocols/udp/server`.
 
 Server objects in C++ are referenced by the following shared pointer typedef:
 

@@ -4,7 +4,7 @@
 JtagDriver
 ==========
 
-For conceptual guidance, see :doc:`/protocols/xilinx/index`.
+For conceptual guidance, see :doc:`/built_in_modules/protocols/xilinx/index`.
 
 JtagDriver objects in C++ are referenced by the following shared pointer typedef:
 

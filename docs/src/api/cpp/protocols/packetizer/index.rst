@@ -8,7 +8,7 @@ This section provides C++ API reference pages for
 ``rogue::protocols::packetizer`` classes.
 
 For conceptual guidance and version-selection notes, see
-:doc:`/protocols/packetizer/index`.
+:doc:`/built_in_modules/protocols/packetizer/index`.
 
 .. toctree::
    :maxdepth: 1

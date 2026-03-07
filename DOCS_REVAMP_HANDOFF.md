@@ -53,9 +53,9 @@ Use these first; they are the authoritative plan artifacts created during this e
 
 There are uncommitted local changes in protocol pages related to lifecycle/threading cleanup. New agent should inspect before additional refactors:
 
-- `docs/src/protocols/rssi/index.rst`
-- `docs/src/protocols/rssi/client.rst`
-- `docs/src/protocols/rssi/server.rst`
+- `docs/src/built_in_modules/protocols/rssi/index.rst`
+- `docs/src/built_in_modules/protocols/rssi/client.rst`
+- `docs/src/built_in_modules/protocols/rssi/server.rst`
 
 ## 6) What Is Done vs Remaining
 
@@ -123,10 +123,10 @@ Continue M4 harmonization and release-freeze cleanup.
 
 ## 9) Helpful Existing Pages to Reuse While Writing New Narrative
 
-- `docs/src/protocols/network.rst`
-- `docs/src/protocols/rssi/index.rst`
-- `docs/src/protocols/srp/index.rst`
-- `docs/src/protocols/batcher/index.rst`
-- `docs/src/protocols/epicsV4/index.rst`
+- `docs/src/built_in_modules/protocols/network.rst`
+- `docs/src/built_in_modules/protocols/rssi/index.rst`
+- `docs/src/built_in_modules/protocols/srp/index.rst`
+- `docs/src/built_in_modules/protocols/batcher/index.rst`
+- `docs/src/built_in_modules/protocols/epicsV4/index.rst`
 - `docs/src/pyrogue_core/client_access.rst`
 - `docs/src/stream_interface/index.rst`

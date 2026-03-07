@@ -7,7 +7,7 @@ Transport
 ``Transport`` is the lower packetizer endpoint that bridges packetizer frames
 to and from the underlying stream transport.
 This page is reference-only; for conceptual context see
-:doc:`/protocols/packetizer/index`.
+:doc:`/built_in_modules/protocols/packetizer/index`.
 
 
 Transport objects in C++ are referenced by the following shared pointer typedef:

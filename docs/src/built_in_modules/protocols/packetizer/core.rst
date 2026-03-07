@@ -40,6 +40,6 @@ Code-backed example
 See also
 ========
 
-- :doc:`/protocols/packetizer/index`
-- :doc:`/protocols/packetizer/coreV2`
+- :doc:`/built_in_modules/protocols/packetizer/index`
+- :doc:`/built_in_modules/protocols/packetizer/coreV2`
 - :doc:`/api/cpp/protocols/packetizer/core`

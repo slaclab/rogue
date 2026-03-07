@@ -60,5 +60,5 @@ Related pages
 =============
 
 - Overview and full topology: :doc:`index`
-- Transport recommendations: :doc:`/protocols/network`
+- Transport recommendations: :doc:`/built_in_modules/protocols/network`
 - C++ API: :doc:`/api/cpp/protocols/rssi/client`

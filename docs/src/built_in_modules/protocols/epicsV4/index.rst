@@ -44,7 +44,7 @@ Related docs
 
 - :doc:`/api/python/protocols_epicsv4_epicspvserver`
 - :doc:`/api/python/protocols_epicsv4_epicspvholder`
-- :doc:`/protocols/index`
+- :doc:`/built_in_modules/protocols/index`
 
 .. toctree::
    :maxdepth: 1

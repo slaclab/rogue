@@ -32,12 +32,12 @@ Key integration topics
 - OS-backed memory bridge components:
   :doc:`/built_in_modules/os_memory_bridge/index`
 
-What To Explore Next
-====================
+Built-in Module Subgroups
+=========================
 
-- Utility modules: :doc:`/utilities/index`
-- Hardware modules: :doc:`/hardware/index`
-- Protocol modules: :doc:`/protocols/index`
+- Utility modules: :doc:`/built_in_modules/utilities/index`
+- Hardware modules: :doc:`/built_in_modules/hardware/index`
+- Protocol modules: :doc:`/built_in_modules/protocols/index`
 
 .. toctree::
    :maxdepth: 1
@@ -48,6 +48,6 @@ What To Explore Next
    version
    cpp_api_wrapper
    os_memory_bridge/index
-   /utilities/index
-   /hardware/index
-   /protocols/index
+   /built_in_modules/utilities/index
+   /built_in_modules/hardware/index
+   /built_in_modules/protocols/index

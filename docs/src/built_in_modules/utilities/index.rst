@@ -1,11 +1,13 @@
 .. _utilities:
+.. _built_in_modules_utilities:
 
 ==========
 Utilities
 ==========
 
-This section describes the various utilities available in Rogue to support
-file operations, PRBS transmit and receive as well as stream compression.
+This subsection of :doc:`/built_in_modules/index` describes the utility modules
+available in Rogue to support file operations, PRBS transmit/receive, and
+stream compression workflows.
 
 .. Rogue Utilities
 

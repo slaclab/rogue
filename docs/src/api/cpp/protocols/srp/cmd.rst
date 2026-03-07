@@ -7,7 +7,7 @@ Cmd
 `rogue::protocols::srp::Cmd` transmits lightweight opcode/context stream
 commands for fire-and-forget control paths. It is not an SRP register protocol,
 but remains in the ``srp`` namespace for API compatibility.
-For conceptual guidance, see :doc:`/protocols/srp/cmd`.
+For conceptual guidance, see :doc:`/built_in_modules/protocols/srp/cmd`.
 
 Cmd objects in C++ are referenced by the following shared pointer typedef:
 

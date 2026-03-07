@@ -109,10 +109,10 @@ Related docs
 ============
 
 - :ref:`protocols_network`
-- :doc:`/protocols/network`
-- :doc:`/protocols/rssi/index`
-- :doc:`/protocols/packetizer/index`
-- :doc:`/protocols/srp/index`
+- :doc:`/built_in_modules/protocols/network`
+- :doc:`/built_in_modules/protocols/rssi/index`
+- :doc:`/built_in_modules/protocols/packetizer/index`
+- :doc:`/built_in_modules/protocols/srp/index`
 
 C++ API details for UDP protocol classes are documented in
 :doc:`/api/cpp/protocols/udp/index`.

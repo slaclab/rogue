@@ -37,7 +37,7 @@ Related pages
 =============
 
 - EPICS server integration: :doc:`epicspvserver`
-- General protocol organization: :doc:`/protocols/index`
+- General protocol organization: :doc:`/built_in_modules/protocols/index`
 - Usage validation: ``tests/test_epics.py``
 
 EPICS PvHolder API Reference

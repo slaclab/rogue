@@ -6,7 +6,7 @@ Client
 
 ``Client`` is the outbound UDP endpoint class that maps stream frames to
 datagrams and inbound datagrams to stream frames. This page is reference-only;
-for deployment patterns see :doc:`/protocols/udp/client`.
+for deployment patterns see :doc:`/built_in_modules/protocols/udp/client`.
 
 Client objects in C++ are referenced by the following shared pointer typedef:
 

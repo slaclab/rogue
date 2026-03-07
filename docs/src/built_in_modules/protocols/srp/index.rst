@@ -36,7 +36,7 @@ Integration boundaries
 Related integration pages
 =========================
 
-- AXI stream + SRPv3 usage: :doc:`/hardware/axi/stream`
+- AXI stream + SRPv3 usage: :doc:`/built_in_modules/hardware/axi/stream`
 - TCP memory bridge usage: :doc:`/memory_interface/tcp_bridge`
 
 .. toctree::

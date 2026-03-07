@@ -75,9 +75,9 @@ When to use
 Related docs
 ============
 
-- :doc:`/protocols/network`
-- :doc:`/protocols/rssi/index`
-- :doc:`/protocols/udp/index`
+- :doc:`/built_in_modules/protocols/network`
+- :doc:`/built_in_modules/protocols/rssi/index`
+- :doc:`/built_in_modules/protocols/udp/index`
 - :doc:`/stream_interface/index`
 
 C++ API details for packetizer protocol classes are documented in

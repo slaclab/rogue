@@ -6,7 +6,7 @@ SrpV0
 
 `rogue::protocols::srp::SrpV0` bridges Rogue memory transactions to SRPv0
 stream frames that are transported to hardware SRP endpoints.
-For conceptual guidance, see :doc:`/protocols/srp/srpV0`.
+For conceptual guidance, see :doc:`/built_in_modules/protocols/srp/srpV0`.
 
 For SRPv0 packet-level protocol details, see:
 

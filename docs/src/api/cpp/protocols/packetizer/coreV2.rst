@@ -7,7 +7,7 @@ CoreV2
 ``CoreV2`` is the packetizer v2 wiring object with CRC configuration controls
 for inbound and outbound processing.
 This page is reference-only; for integration guidance see
-:doc:`/protocols/packetizer/coreV2`.
+:doc:`/built_in_modules/protocols/packetizer/coreV2`.
 
 
 CoreV2 objects in C++ are referenced by the following shared pointer typedef:
