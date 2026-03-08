@@ -60,4 +60,4 @@ What To Explore Next
 
 - Tree variable concepts: :doc:`/pyrogue_tree/core/variable`
 - Logging subsystem overview: :doc:`/logging/index`
-- Version gating for deployments: :doc:`/built_in_modules/version`
+- Version gating for deployments: :doc:`/built_in_modules/interfaces/version`

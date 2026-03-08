@@ -5,7 +5,7 @@ OsCommandMemorySlave
 
 For conceptual usage, see:
 
-- :doc:`/built_in_modules/os_memory_bridge/index`
+- :doc:`/built_in_modules/interfaces/os_memory_bridge`
 
 .. autoclass:: pyrogue.interfaces.OsCommandMemorySlave
    :members:

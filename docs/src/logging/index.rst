@@ -73,5 +73,5 @@ are dynamic values dervied from the instance.
 What To Explore Next
 ====================
 
-- SQL-backed Variable and syslog persistence: :doc:`/built_in_modules/sql`
+- SQL-backed Variable and syslog persistence: :doc:`/built_in_modules/interfaces/sql`
 - Client-side syslog monitoring workflows: :doc:`/pyrogue_tree/client_interfaces/commandline`
