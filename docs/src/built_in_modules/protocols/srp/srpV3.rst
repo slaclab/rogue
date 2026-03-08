@@ -43,7 +43,7 @@ Integration references
 ----------------------
 
 - :doc:`/memory_interface/tcp_bridge`
-- :doc:`/built_in_modules/hardware/axi/stream`
+- :doc:`/built_in_modules/hardware/dma/stream`
 
 Python usage examples
 ---------------------

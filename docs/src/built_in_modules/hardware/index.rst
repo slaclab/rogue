@@ -25,6 +25,6 @@ depending on data path type.
    :maxdepth: 1
    :caption: Hardware:
 
-   axi/index
+   dma/index
 
    raw/index

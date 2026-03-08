@@ -7,7 +7,7 @@ Raw Hardware Interface
 
 The raw hardware path provides direct memory mapping through ``/dev/mem`` style
 interfaces. It is useful for tightly scoped local register windows, but most
-systems should prefer :doc:`/built_in_modules/hardware/axi/index` when AXI
+systems should prefer :doc:`/built_in_modules/hardware/dma/index` when AXI
 driver support is available.
 
 C++ API details for raw hardware interfaces are documented in
