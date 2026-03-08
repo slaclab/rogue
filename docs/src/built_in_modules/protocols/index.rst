@@ -5,10 +5,13 @@
 Protocols
 ==========
 
-This subsection of :doc:`/built_in_modules/index` covers transport and control
-protocol layers used in Rogue systems. These pages focus on protocol behavior,
-composition patterns, and usage notes that connect stream and memory
-interfaces to deployed workflows.
+Protocol modules define how stream and memory traffic is carried, framed, and
+interpreted between software and firmware endpoints. They are the transport and
+control layer between interface primitives and deployed system behavior.
+
+Most Rogue systems use more than one protocol module. A common pattern is to
+pair a transport protocol with a framing or transaction protocol, then map that
+stack onto Stream or Memory interfaces.
 
 Protocol selection quick guide
 ==============================
@@ -16,17 +19,16 @@ Protocol selection quick guide
 - Use :doc:`udp/index` for lightweight datagram transport endpoints.
 - Use :doc:`rssi/index` when link reliability and ordered delivery are required.
 - Use :doc:`srp/index` for register/memory transaction transport over streams.
-- Use :doc:`packetizer/index` for framing/multiplexing control.
+- Use :doc:`packetizer/index` for framing, virtual channels, and packet
+  routing control.
 - Use :doc:`batcher/index` for record batching/unbatching transforms.
 - Use :doc:`xilinx/index` for XVC/JTAG-over-TCP integration.
 - Use :doc:`epicsV4/index` for EPICS PV integration helpers.
+- Use :doc:`uart` for UART-backed stream/memory transport paths.
 
-What To Explore Next
-====================
-
-- Built-in modules overview and section context: :doc:`/built_in_modules/index`
-- Stream interface fundamentals and connection patterns: :doc:`/stream_interface/index`
-- Memory interface routing and transaction flow: :doc:`/memory_interface/index`
+These protocol pages are most useful alongside
+:doc:`/stream_interface/index` and :doc:`/memory_interface/index`, where link
+construction and transaction flow are covered end to end.
 
 .. toctree::
    :maxdepth: 1

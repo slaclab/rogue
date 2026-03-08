@@ -4,22 +4,26 @@
 Interfaces
 ==========
 
-This subsection groups built-in interface adapters and integration helpers that
-connect PyRogue trees to external services, storage, or C++ embedding paths.
+Interface modules are the adapters that connect a running PyRogue tree to
+other processes, external services, and deployment tooling. They are often the
+boundary where control software, data persistence, and host integration meet.
 
-Included topics:
+In practice, these modules are used when a system needs to expose tree state
+outside the process boundary, persist operational data, or embed PyRogue
+control into a larger C++ runtime.
 
-- SQL-backed logging for Variables and syslog streams.
-- Version helpers for deployment gating and compatibility checks.
-- C++ API wrapper patterns for embedding/controlling a PyRogue root.
-- OS memory bridge patterns using command-backed memory transactions.
+Use this subsection to choose the integration path:
 
-What To Explore Next
-====================
+- Use :doc:`sql` for SQL-backed logging of Variable values and syslog events.
+- Use :doc:`version` for version-gating and compatibility checks at startup.
+- Use :doc:`cpp_api_wrapper` when embedding and controlling a PyRogue Root
+  from C++.
+- Use :doc:`os_memory_bridge` when exposing OS-level commands through a memory
+  transaction interface.
 
-- Simulation-backed integration helpers: :doc:`/built_in_modules/simulation/index`
-- Core tree lifecycle and behavior: :doc:`/pyrogue_tree/core/index`
-- API reference entry point: :doc:`/api/index`
+These modules are typically combined with the Core tree model in
+:doc:`/pyrogue_tree/core/index`, and with transport layers from
+:doc:`/stream_interface/index` or :doc:`/memory_interface/index`.
 
 .. toctree::
    :maxdepth: 1

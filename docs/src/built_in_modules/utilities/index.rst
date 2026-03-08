@@ -5,17 +5,22 @@
 Utilities
 ==========
 
-This subsection of :doc:`/built_in_modules/index` describes the utility modules
-available in Rogue to support file operations, PRBS transmit/receive, and
-stream compression workflows.
+Utility modules provide reusable processing and tooling components that are
+commonly inserted into stream pipelines or support infrastructure tasks.
+They are used to generate test patterns, record traffic, integrate HLS blocks,
+and add compression/decompression stages.
 
-.. Rogue Utilities
+These modules are building blocks rather than complete transport stacks, and
+are typically composed with hardware and protocol modules.
 
-What To Explore Next
-====================
+Common use cases include:
 
-- Built-in modules overview and integration context: :doc:`/built_in_modules/index`
-- Stream interface narrative and usage patterns: :doc:`/stream_interface/index`
+- File capture and playback during integration and debug.
+- PRBS source/sink chains for BER and link-validation testing.
+- Stream adaptation around HLS-generated processing components.
+- Compression stages for bandwidth-sensitive transport paths.
+
+For pipeline construction details, see :doc:`/stream_interface/index`.
 
 .. toctree::
    :maxdepth: 1
