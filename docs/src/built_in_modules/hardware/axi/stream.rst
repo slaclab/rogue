@@ -1,115 +1,190 @@
 .. _hardware_axi_stream:
+.. _hardware_axi_features:
 
-============================
-Using The AxiStreamDma Class
-============================
+============
+AxiStreamDma
+============
 
-The AxiStreamDma class allows you to connect stream sources and destinations to
-a channel on the PCI Express board or Zynq FPGA fabric using the generic
-AXI Stream drivers. The set of hardware which use this include but are not
-limited to:
+``AxiStreamDma`` wraps ``aes-stream-drivers`` DMA channels as Rogue Stream
+interfaces. This lets hardware channels participate directly in Rogue stream
+topologies with normal ``>>``, ``<<``, and ``==`` connection semantics.
 
-- PgpCard3 with the AXI Stream DMA engine
-- KCU1500 board
-- Zynq7000 FPGA with TID-AIRs RCe core firmware
+The ``AxiStreamDma`` class allows you to connect stream sources and
+destinations to a channel on a PCIe board or Zynq FPGA fabric using the
+generic AXI stream drivers. Hardware that uses this pattern includes, but is
+not limited to:
 
-A single instances of the AxiStreamDma class will be used for each data channel
-on the underlying firmware. The data channel is identified by a destination ID.
+- PgpCard3 with the AXI stream DMA engine.
+- KCU1500.
+- Zynq7000 FPGA with TID-AIR RCE firmware.
 
-The following examples assume there are two destination fields in the underlying
-hardware. One which will be associated with a register protocol (SRPV3 in this case)
-and the other will be a bi-directional data channel. This channel will be connected to
-the custom sender and receiver described in :ref:`interfaces_stream_sending` and
-:ref:`interfaces_stream_receiving`. The example also uses the memory master
-created in :ref:`interfaces_memory_master_ex`.
+A single ``AxiStreamDma`` instance is typically used for each data channel in
+the underlying firmware. The data channel is identified by a destination ID.
 
-See :ref:`hardware_axi_axi_stream_dma` for more information about the AxiStreamDma class methods.
+The examples below assume two destination IDs in the hardware: one for a
+register protocol path (SRPv3) and one for a bidirectional data channel.
+The data channel is connected to custom sender/receiver implementations as
+described in :ref:`interfaces_stream_sending` and
+:ref:`interfaces_stream_receiving`, and the register path uses the memory
+master model shown in :ref:`interfaces_memory_master_ex`.
+
+Parameter summary
+=================
+
+``AxiStreamDma(path, dest, ssiEnable)``:
+
+- ``path`` Parameter: Linux device path, commonly ``/dev/datadev_0``.
+- ``dest`` Parameter: Destination/channel selector used by firmware/driver routing.
+- ``ssiEnable`` Parameter: Enables SSI SOF/EOFE handling for stream frames.
+
+The class includes an internal RX thread. TX occurs when frames are accepted
+from upstream.
 
 Python AxiStreamDma Example
 ===========================
 
-This Python example does the following:
-
-#. Opens DMA destination 0 and connects it bi-directionally to an SRPv3 endpoint for register access.
-#. Connects a memory master to the SRPv3 memory slave interface so register reads and writes can be issued.
-#. Opens DMA destination 1 as a data path and routes a custom stream master through DMA into a custom stream slave.
-
 .. code-block:: python
 
-   import pyrogue
-   import rogue.hardware.axi
-   import rogue.protocols.srp
+   import rogue.hardware.axi as rha
+   import rogue.protocols.srp as rps
 
-   # If you want to disable zero copy execute this command first.
-   # Normally you want zero copy enabled
-   rogue.hardware.axi.AxiStreamDma.zeroCopyDisable('/dev/datadev_0')
+   # Optional: disable zero-copy globally for this device path.
+   # Normally you keep zero-copy enabled.
+   rha.AxiStreamDma.zeroCopyDisable('/dev/datadev_0')
 
-   # First attach to destination 0 for register traffic, ssi enabled
-   regChan = rogue.hardware.axi.AxiStreamDma('/dev/datadev_0', 0, True)
+   # Destination 0: register/control channel
+   reg_chan = rha.AxiStreamDma('/dev/datadev_0', 0, True)
+   srp = rps.SrpV3()
+   reg_chan == srp
 
-   # Create an SRP engine
-   srp = rogue.protocols.srp.SrpV3()
+   # Memory transactions route through SRP
+   mem_mast = MyMemMaster()
+   mem_mast >> srp
 
-   # Connect the SRP engine to the register DMA
-   regChan == srp
-
-   # Create a memory master
-   memMast = MyMemMaster()
-
-   # Connect memory master to SRP
-   memMast >> srp
-
-   # Next attach to destination 1 for data traffic, ssi enabled
-   dataChan = rogue.hardware.axi.AxiStreamDma('/dev/datadev_0', 1, True)
-
-   # Create a master
-   myMast = MyCustomMaster()
-
-   # Create a slave
-   mySlave = MyCustomSlave()
-
-   # Connect the stream interface
-   myMast >> dataChan >> mySlave
+   # Destination 1: data channel
+   data_chan = rha.AxiStreamDma('/dev/datadev_0', 1, True)
+   my_mast = MyCustomMaster()
+   my_slave = MyCustomSlave()
+   my_mast >> data_chan >> my_slave
 
 C++ AxiStreamDma Example
 ========================
-
-The C++ example performs the same sequence as the Python example: connect SRPv3 to DMA destination 0 for register
-traffic, attach the memory master to SRPv3, then route custom stream traffic through DMA destination 1.
 
 .. code-block:: cpp
 
    #include <rogue/hardware/axi/AxiStreamDma.h>
    #include <rogue/protocols/srp/SrpV3.h>
 
-   // If you want to disable zero copy execute this command first.
-   // Normally you want zero copy enabled
-   rogue::hardware::axi::AxiStreamDma::zeroCopyDisable("/dev/datadev_0");
+   namespace rha = rogue::hardware::axi;
+   namespace rps = rogue::protocols::srp;
 
-   // First attach to destination 0 for register traffic, ssi enabled
-   rogue::hardware::axi::AxiStreamDmaPtr regChan = rogue::hardware::axi::AxiStreamDma::create("/dev/datadev_0", 0, true);
+   // Optional: disable zero-copy globally for this device path.
+   // This must be called before creating any AxiStreamDma on the path.
+   rha::AxiStreamDma::zeroCopyDisable("/dev/datadev_0");
 
-   // Create an SRP engine
-   rogue::protocols::srp::SrpV3Ptr srp = rogue::protocols::srp::SrpV3::create();
+   // Destination 0: register/control channel.
+   auto regChan = rha::AxiStreamDma::create("/dev/datadev_0", 0, true);
 
-   // Connect the SRP engine to the register DMA
+   // SRPv3 converts stream frames <-> memory transactions.
+   auto srp = rps::SrpV3::create();
    *regChan == srp;
 
-   // Create a memory master
-   MyMemMasterPtr memMast = MyMemMaster::create();
-
-   // Connect memory master to SRP
+   // Upstream memory master talks to SRPv3 for register accesses.
+   auto memMast = MyMemMaster::create();
    *memMast >> srp;
 
-   // Next attach to destination 1 for data traffic, ssi enabled
-   rogue::hardware::axi::AxiStreamDmaPtr dataChan = rogue::hardware::axi::AxiStreamDma::create("/dev/datadev_0", 1, true);
+   // Destination 1: data channel.
+   auto dataChan = rha::AxiStreamDma::create("/dev/datadev_0", 1, true);
 
-   // Create a master
-   MyCustomMasterPtr myMast = MyCustomMaster::create();
-
-   // Create a slave
-   MyCustomSlavePtr mySlave = MyCustomSlave::create();
-
-   // Connect the custom master and slave to the data DMA channel
+   // Example data source and sink attached to the data DMA channel.
+   auto myMast = MyCustomMaster::create();
+   auto mySlave = MyCustomSlave::create();
    *myMast >> dataChan >> mySlave;
 
+Additional AxiStreamDma Features
+================================
+
+Kernel Module Debug
+-------------------
+
+Enable driver-level debug logging for the DMA path.
+
+Python:
+
+.. code-block:: python
+
+   axi_stream.setDriverDebug(1)
+
+C++:
+
+.. code-block:: cpp
+
+   axiStream->setDriverDebug(1);
+
+View output with:
+
+.. code-block:: bash
+
+   dmesg
+
+Zero-Copy Control
+-----------------
+
+``AxiStreamDma`` uses zero-copy buffers by default when supported by the
+driver and device path. Disable this globally per device path before creating
+any ``AxiStreamDma`` instance for that path.
+
+Python:
+
+.. code-block:: python
+
+   import rogue.hardware.axi as rha
+   rha.AxiStreamDma.zeroCopyDisable('/dev/datadev_0')
+
+C++:
+
+.. code-block:: cpp
+
+   rogue::hardware::axi::AxiStreamDma::zeroCopyDisable("/dev/datadev_0");
+
+DMA Acknowledge
+---------------
+
+Some driver/firmware combinations expose a DMA acknowledge pulse for custom
+handshake schemes.
+
+Python:
+
+.. code-block:: python
+
+   axi_stream.dmaAck()
+
+C++:
+
+.. code-block:: cpp
+
+   axiStream->dmaAck();
+
+Frame Send Timeout
+------------------
+
+When buffer allocation or frame send blocks, timeout warnings are emitted at a
+configurable interval (microseconds).
+
+Python:
+
+.. code-block:: python
+
+   axi_stream.setTimeout(1500)
+
+C++:
+
+.. code-block:: cpp
+
+   axiStream->setTimeout(1500);
+
+API references
+==============
+
+- :doc:`/api/cpp/hardware/axi/axiStreamDma`
+- :doc:`/api/cpp/interfaces/stream/index`

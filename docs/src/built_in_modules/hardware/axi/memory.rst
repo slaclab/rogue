@@ -1,54 +1,64 @@
 .. _hardware_axi_memory:
 
-=========================
-Using The AxiMemMap Class
-=========================
+============
+AxiMemMap
+============
 
-The AxiMemMap class allows you to connect memory masters to PCI-Express and
-Zynq7000 based FPGA firmware which utilize the generic AXI Stream drivers. 
-The set of hardware which use this include but are not limited to:
+``AxiMemMap`` wraps the ``aes-stream-drivers`` memory access path as a Rogue
+Memory interface endpoint. Memory masters can initiate transactions through it
+using standard Rogue memory semantics.
 
-- PgpCard3 with the AXI Stream DMA engine
-- KCU1500 board
-- Zynq7000 FPGA with TID-AIRs RCe core firmware
+The ``AxiMemMap`` class allows you to connect memory masters to PCIe and
+Zynq7000-based FPGA firmware that uses the generic AXI stream drivers.
+Hardware that uses this pattern includes, but is not limited to:
 
-The following example assumes a single card is being accessed by a single master,
-with the master being the device created in the :ref:`interfaces_memory_master_ex`.
+- PgpCard3 with the AXI stream DMA engine.
+- KCU1500.
+- Zynq7000 FPGA with TID-AIR RCE firmware.
 
-See :ref:`hardware_axi_axi_mem_map` for more information about the AxiMemMap class methods.
+The example below assumes a single card is being accessed by a single master,
+with the master being the device model shown in
+:ref:`interfaces_memory_master_ex`.
+
+``AxiMemMap`` processes queued transactions in a worker thread and executes
+driver register operations underneath. Transactions are 32-bit word based
+(4-byte alignment), matching the class memory-slave configuration and driver
+register access model.
+
+Use ``AxiMemMap`` when your firmware exposes register access through the
+driver path and you want a direct Rogue Memory endpoint.
 
 Python AxiMemMap Example
 ========================
 
 .. code-block:: python
 
-   import pyrogue
-   import rogue.hardware.axi
+   import rogue.hardware.axi as rha
 
-   # Create memory mapped AXI interface
-   memMap = rogue.hardware.axi.AxiMemmap('/dev/datadev_0')
-
-   # Create a memory master
-   memMast = MyMemMaster()
-
-   # Connect memory master to memory map
-   memMast >> memMap
+   mem_map = rha.AxiMemMap('/dev/datadev_0')
+   mem_mast = MyMemMaster()
+   mem_mast >> mem_map
 
 C++ AxiMemMap Example
 =====================
 
-The equivalent code in C++ is show below:
-
-.. code-block:: c
+.. code-block:: cpp
 
    #include <rogue/hardware/axi/AxiMemMap.h>
 
-   // Create memory mapped AXI interface
-   rogue::hardware::axi::AxiMemMapPtr memMap = rogue::hardware::axi::AxiMemMap::create("/dev/datadev_0");
+   namespace rha = rogue::hardware::axi;
 
-   // Create a memory master
-   MyMemMasterPtr memMast = MyMemMaster.create();
+   // Open AXI memory-mapped driver endpoint.
+   auto memMap = rha::AxiMemMap::create("/dev/datadev_0");
 
-   // Connect memory master to memory map
+   // Create an upstream Rogue memory master.
+   auto memMast = MyMemMaster::create();
+
+   // Route memory transactions from master into AXI memory map endpoint.
    *memMast >> memMap;
 
+API references
+==============
+
+- :doc:`/api/cpp/hardware/axi/axiMemMap`
+- :doc:`/api/cpp/interfaces/memory/index`
