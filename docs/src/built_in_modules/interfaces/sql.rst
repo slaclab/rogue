@@ -24,11 +24,15 @@ Configuration
        def __init__(self):
            super().__init__(name='MyRoot')
 
+           # Attach SQL logger as a root interface.
            self.addInterface(
                pyrogue.interfaces.SqlLogger(
                    root=self,
+                   # SQLAlchemy URL: sqlite:///..., postgresql://..., etc.
                    url='sqlite:///rogue_run.db',
+                   # Optional include filter for variable groups.
                    incGroups=None,
+                   # Exclude groups tagged as NoSql.
                    excGroups=['NoSql'],
                )
            )

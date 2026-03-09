@@ -34,14 +34,14 @@ lookup:
 
 .. code-block:: cpp
 
-   // Read variable (no forced hardware read).
+   // Read variable from local cached value (no forced hardware read).
    std::string localTime = bsp["LocalTime"].get();
 
-   // Write + readback.
+   // Write variable and then force readback.
    bsp["AxiVersion"]["ScratchPad"].setWrite("0x1111");
    std::string scratch = bsp["AxiVersion"]["ScratchPad"].readGet();
 
-   // Full-path access returns a shared pointer wrapper.
+   // Full-path lookup returns a shared pointer wrapper.
    auto node = bsp.getNode("ExampleRoot.AxiVersion.ScratchPad");
    std::string scratch2 = node->get();
 
@@ -52,11 +52,11 @@ Command nodes are invoked through ``operator()`` or ``execute()``:
 
 .. code-block:: cpp
 
-   // Execute commands without argument.
+   // Execute commands without arguments.
    bsp["WriteAll"]();
    bsp["ReadAll"]();
 
-   // Execute command with argument.
+   // Execute command with argument string.
    std::string yaml = bsp["GetYamlConfig"]("True");
 
 Variable listeners (root only)
@@ -67,10 +67,12 @@ Variable listeners can be attached only on a root wrapper:
 .. code-block:: cpp
 
    void varListener(std::string path, std::string value) {
+       // Called for each variable update pushed to this listener.
        printf("Var Listener: %s = %s\n", path.c_str(), value.c_str());
    }
 
    void varDone() {
+       // Called when the current listener batch is complete.
        printf("Var Done\n");
    }
 

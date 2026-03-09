@@ -30,6 +30,7 @@ Python examples
 
    import rogue
 
+   # Report installed Rogue build and parsed components.
    print("Rogue current:", rogue.Version.current())
    print("Rogue pythonVersion:", rogue.Version.pythonVersion())
    print("major/minor/maint/devel:",
@@ -38,10 +39,11 @@ Python examples
          rogue.Version.maint(),
          rogue.Version.devel())
 
+   # Boolean check without raising.
    if not rogue.Version.greaterThanEqual("6.0.0"):
        raise RuntimeError("Rogue >= 6.0.0 is required")
 
-   # Raises if the requirement is not met.
+   # Hard guard: raises if the requirement is not met.
    rogue.Version.minVersion("6.0.0")
 
 .. code-block:: python
@@ -49,6 +51,7 @@ Python examples
    import rogue
 
    try:
+       # Hard guard for exact deployed version.
        rogue.Version.exactVersion("6.3.0")
        print("Exact version match")
    except Exception as exc:
@@ -64,12 +67,14 @@ C++ examples
    #include <iostream>
 
    int main() {
+       // Report installed Rogue build and parsed components.
        std::cout << "Rogue current: " << rogue::Version::current() << "\n";
        std::cout << "major.minor.maint: "
                  << rogue::Version::getMajor() << "."
                  << rogue::Version::getMinor() << "."
                  << rogue::Version::getMaint() << "\n";
 
+       // Boolean check without throwing.
        if (!rogue::Version::greaterThanEqual("6.0.0")) {
            std::cerr << "Rogue >= 6.0.0 is required\n";
            return 1;
@@ -88,6 +93,7 @@ C++ examples
 
    int main() {
        try {
+           // Guard upper bound and exact requirement.
            rogue::Version::maxVersion("7.0.0");
            rogue::Version::exactVersion("6.3.0");
    } catch (const rogue::GeneralError& e) {

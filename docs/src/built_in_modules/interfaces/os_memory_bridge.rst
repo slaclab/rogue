@@ -35,6 +35,16 @@ How mapping works:
 
 Commands are registered with ``@self.command(addr=..., base=...)``.
 
+Method and Mapping Overview
+---------------------------
+
+- ``@self.command(addr=..., base=...)`` registers one address callback.
+- ``addr`` defines the transaction-mapped register offset.
+- ``base`` defines encode/decode model for read/write payload conversion.
+- Callback ``arg`` behavior:
+  - ``arg is None`` on read transactions.
+  - ``arg`` contains decoded write value on write/post transactions.
+
 .. code-block:: python
 
    import os
