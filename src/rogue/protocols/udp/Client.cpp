@@ -21,6 +21,7 @@
 #include <inttypes.h>
 #include <unistd.h>
 
+#include <cerrno>
 #include <cstdlib>
 #include <cstring>
 #include <memory>
@@ -171,7 +172,11 @@ void rpu::Client::acceptFrame(ris::FramePtr frame) {
                                   timeout_.tv_usec);
                 res = 0;
             } else if ((res = sendmsg(fd_, &msg, 0)) < 0) {
-                udpLog_->warning("UDP Write Call Failed");
+                udpLog_->warning(
+                    "UDP write call failed for %s: %s",
+                    address_.c_str(),
+                    std::strerror(errno)
+                );
             }
         } while (res == 0);  // Continue while write result was zero
     }
@@ -203,7 +208,7 @@ void rpu::Client::runThread(std::weak_ptr<int> lockPtr) {
         if (res > 0) {
             // Message was too big
             if (res > avail) {
-                udpLog_->warning("Receive data was too large. Rx=%i, avail=%i Dropping.", res, avail);
+                udpLog_->warning("Receive data was too large. Rx=%i, avail=%i. Dropping.", res, avail);
             } else {
                 buff->setPayload(res);
                 sendFrame(frame);
