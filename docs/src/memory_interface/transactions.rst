@@ -43,6 +43,24 @@ wait logic marks it as a timeout error.
 Timer refresh logic can extend active transactions in multi-stage flows to
 reduce false expirations on slower links.
 
+Logging
+=======
+
+The transaction runtime uses a Rogue C++ logger:
+
+- Logger name: ``pyrogue.memory.Transaction``
+
+This logger is created in quiet mode and is mainly an internal runtime aid for
+timeout/correlation behavior rather than a primary user-facing debug surface.
+
+In practice, transaction debugging is usually more effective through the
+surrounding module loggers:
+
+- ``pyrogue.memory.Master`` for request issue paths
+- ``pyrogue.memory.Hub`` for routing/splitting paths
+- ``pyrogue.memory.block.*`` for Variable/Block transaction flow
+- protocol-specific loggers such as ``pyrogue.SrpV3``
+
 Subtransactions
 ===============
 
