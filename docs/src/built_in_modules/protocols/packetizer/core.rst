@@ -103,6 +103,26 @@ C++ example
        return 0;
    }
 
+Logging
+=======
+
+Packetizer logging is emitted by the shared controller via Rogue C++ logging.
+
+Static logger name:
+
+- ``pyrogue.packetizer.Controller``
+
+Enable it before constructing packetizer objects:
+
+.. code-block:: python
+
+   import rogue
+
+   rogue.Logging.setFilter('pyrogue.packetizer', rogue.Logging.Debug)
+
+This logger is the main source for packet drop, framing, and queue timeout
+messages. There is no additional per-instance debug helper on ``Core``.
+
 See also
 ========
 

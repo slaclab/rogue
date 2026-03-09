@@ -170,6 +170,20 @@ Available helper methods/commands
 * ``start`` / ``stop``:
   local commands exported by the wrapper device for link control.
 
+Logging
+=======
+
+``UdpRssiPack`` itself is a PyRogue ``Device``, so any wrapper-level Python log
+messages follow normal PyRogue logger naming. Most transport/protocol debug
+output, however, comes from the underlying Rogue C++ modules:
+
+- ``pyrogue.udp.Client`` / ``pyrogue.udp.Server``
+- ``pyrogue.rssi.controller``
+- ``pyrogue.packetizer.Controller``
+
+In practice, enable logging on those underlying logger families rather than on
+the wrapper itself when debugging link behavior.
+
 See also
 ========
 

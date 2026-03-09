@@ -140,6 +140,27 @@ Threading and Lifecycle
   and avoid manual start/stop calls.
 - In standalone scripts, call ``_start()``/``_stop()`` explicitly on ``Xvc``.
 
+Logging
+-------
+
+Xilinx/XVC support uses Rogue C++ logging.
+
+Static logger names:
+
+- ``pyrogue.xilinx.xvc``
+- ``pyrogue.xilinx.jtag``
+
+Use ``pyrogue.xilinx.xvc`` for TCP server / frame-bridge activity and
+``pyrogue.xilinx.jtag`` for protocol-level JTAG query/shift debugging.
+
+Enable before object construction:
+
+.. code-block:: python
+
+   import rogue
+
+   rogue.Logging.setFilter('pyrogue.xilinx', rogue.Logging.Debug)
+
 API references
 --------------
 

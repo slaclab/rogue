@@ -85,6 +85,35 @@ API reference
 - :doc:`/api/cpp/interfaces/memory/tcpServer`
 - :doc:`/api/cpp/interfaces/memory/tcpClient`
 
+Logging
+=======
+
+The memory TCP bridge uses Rogue C++ logging.
+
+Logger name patterns are:
+
+- ``pyrogue.memory.TcpServer.<addr>.<port>``
+- ``pyrogue.memory.TcpClient.<addr>.<port>``
+
+Examples:
+
+- ``pyrogue.memory.TcpServer.*.8000``
+- ``pyrogue.memory.TcpClient.127.0.0.1.8000``
+
+Enable logging with ``rogue.Logging.setFilter(...)`` before constructing the
+bridge object:
+
+.. code-block:: python
+
+   import rogue
+   import rogue.interfaces.memory as rim
+
+   rogue.Logging.setFilter('pyrogue.memory.TcpServer', rogue.Logging.Debug)
+   server = rim.TcpServer('*', 8000)
+
+At debug level these classes log socket setup and transaction forwarding
+details. There is no additional per-instance runtime debug helper.
+
 What to explore next
 ====================
 

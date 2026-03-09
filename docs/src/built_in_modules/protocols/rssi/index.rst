@@ -141,6 +141,28 @@ explicitly. The following pattern is used in wrappers such as
 Managed lifecycle reference:
 :ref:`pyrogue_tree_node_device_managed_interfaces`
 
+Logging
+=======
+
+RSSI protocol-state logging is emitted by the internal controller via Rogue C++
+logging.
+
+Static logger name:
+
+- ``pyrogue.rssi.controller``
+
+Enable it before constructing RSSI objects:
+
+.. code-block:: python
+
+   import rogue
+
+   rogue.Logging.setFilter('pyrogue.rssi', rogue.Logging.Debug)
+
+This is the most useful logger when debugging link bring-up, retransmission,
+and state transitions. The ``Client`` and ``Server`` wrappers themselves do not
+add a separate module-specific logger.
+
 See also
 ========
 
