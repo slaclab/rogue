@@ -68,6 +68,24 @@ Design notes
   carefully and check ``expired()`` before completion.
 - Prefer device-level composition unless raw hub control is required.
 
+Logging
+=======
+
+The base Rogue memory hub uses Rogue C++ logging with the static logger name:
+
+- ``pyrogue.memory.Hub``
+
+Enable it before constructing hub objects:
+
+.. code-block:: python
+
+   import rogue
+
+   rogue.Logging.setFilter('pyrogue.memory.Hub', rogue.Logging.Debug)
+
+For custom hub subclasses, it is often worth adding a second subclass-specific
+logger in addition to the base hub logger if your translation logic is complex.
+
 What to explore next
 ====================
 

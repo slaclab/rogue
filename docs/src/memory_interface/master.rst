@@ -83,6 +83,26 @@ Notes
 - Higher-level PyRogue locking and device models should coordinate shared
   access when required.
 
+Logging
+=======
+
+The base Rogue memory master uses Rogue C++ logging with the static logger
+name:
+
+- ``pyrogue.memory.Master``
+
+Enable it before constructing or using the master:
+
+.. code-block:: python
+
+   import rogue
+
+   rogue.Logging.setFilter('pyrogue.memory.Master', rogue.Logging.Debug)
+
+This logger is useful for transaction-request and error-path debugging in
+custom master implementations. The base ``Master`` class does not provide a
+separate runtime debug helper.
+
 What to explore next
 ====================
 
