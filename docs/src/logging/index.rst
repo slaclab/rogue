@@ -171,11 +171,15 @@ Dynamic example:
 That dynamic pattern is constructed in
 [src/rogue/interfaces/stream/TcpCore.cpp](/Users/bareese/rogue/src/rogue/interfaces/stream/TcpCore.cpp).
 
-You can query the fully-qualified emitted name from the C++ logger object:
+If a Python wrapper exposes the C++ logger as ``obj._log``, use the same
+standard helper API rather than calling into the logger object directly:
 
 .. code-block:: python
 
-   print(cpp_obj._log.name())
+   print(pyrogue.logName(cpp_obj))
+
+Direct ``cpp_obj._log.name()`` access still works for wrappers that expose the
+underlying ``rogue.Logging`` instance, but it is not the preferred interface.
 
 How To Enable C++ Logging
 -------------------------
@@ -216,7 +220,8 @@ How To Find The Right Logger Name
 
 This is the main usability problem today. The most reliable approaches are:
 
-1. For Python objects, use ``obj.logName()`` or ``pyrogue.logName(obj)``.
+1. For Python objects and wrapped C++ objects, use ``obj.logName()`` when it is
+   available, or ``pyrogue.logName(obj)`` as the generic helper.
 
 .. code-block:: python
 
