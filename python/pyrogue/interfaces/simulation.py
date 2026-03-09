@@ -40,7 +40,7 @@ class SideBandSim():
         self._sbPull = self._ctx.socket(zmq.PULL)
         self._sbPull.connect(f"tcp://{host}:{port}")
 
-        self._log.info("Connected to port {} on host {}".format(port,host))
+        self._log.info("Connected to port %s on host %s", port, host)
 
         self._recvCb = self._defaultRecvCb
         self._lock = threading.Lock()
@@ -84,7 +84,7 @@ class SideBandSim():
             ba[3] = remData
 
         self._sbPush.send(ba)
-        self._log.debug(f'Sent opCode: {opCode} remData: {remData}')
+        self._log.debug("Sent opCode=%s remData=%s", opCode, remData)
 
     def _stop(self) -> None:
         """Stop the receive thread."""
@@ -115,7 +115,7 @@ class SideBandSim():
                 ba = self._sbPull.recv()
 
                 if len(ba) != 4:
-                    self._log.error(f'Got bad size frame: {ba} size: {len(ba)}')
+                    self._log.error("Got bad size frame: %r size: %s", ba, len(ba))
 
                 # Got normal data
                 opCode = None
@@ -125,7 +125,7 @@ class SideBandSim():
                 if ba[2] == 0x01:
                     remData = ba[3]
 
-                self._log.debug(f'Received opCode: {opCode}, remData {remData}')
+                self._log.debug("Received opCode=%s remData=%s", opCode, remData)
                 self._recvCb(opCode, remData)
 
 

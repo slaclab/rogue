@@ -436,13 +436,16 @@ class VirtualClient(rogue.interfaces.ZmqClient):
 
             if self._link and (time.time() - self._ltime) > 10.0:
                 self._link = False
-                self._log.warning(f"I have not heard from {self._root.name} in 10 seconds. It may be busy, continuing to wait...")
+                self._log.warning(
+                    "I have not heard from %s in 10 seconds. It may be busy, continuing to wait...",
+                    self._root.name,
+                )
                 for mon in self._monitors:
                     mon(self._link)
 
             elif (not self._link) and (time.time() - self._ltime) < 10.0:
                 self._link = True
-                self._log.warning(f"I have finally heard from {self._root.name}. All is good!")
+                self._log.warning("I have finally heard from %s. All is good!", self._root.name)
                 for mon in self._monitors:
                     mon(self._link)
 

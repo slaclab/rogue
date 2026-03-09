@@ -154,7 +154,7 @@ class FileReader(object):
 
             # Not enough data left in the file
             if (self._fileSize - self._currFile.tell()) < RogueHeaderSize:
-                self._log.warning(f'File under run reading {self._currFName}')
+                self._log.warning("File underrun reading %s", self._currFName)
                 return False
 
             self._header = RogueHeader(*struct.unpack(RogueHeaderPack, self._currFile.read(RogueHeaderSize)))
@@ -165,7 +165,7 @@ class FileReader(object):
 
             # Sanity check
             if recEnd > self._fileSize:
-                self._log.warning(f"File under run reading {self._currFName}")
+                self._log.warning("File underrun reading %s", self._currFName)
                 return False
 
             # Process meta data
@@ -198,7 +198,7 @@ class FileReader(object):
             self._currFName = fn
             self._currCount = 0
 
-            self._log.debug(f"Processing data records from {self._currFName}")
+            self._log.debug("Processing data records from %s", self._currFName)
             with open(fn,'rb') as f:
                 self._currFile = f
 
@@ -251,9 +251,9 @@ class FileReader(object):
 
                         yield (self._header, data)
 
-            self._log.debug(f"Processed {self._currCount} data records from {self._currFName}")
+            self._log.debug("Processed %s data records from %s", self._currCount, self._currFName)
 
-        self._log.debug(f"Processed a total of {self._totCount} data records")
+        self._log.debug("Processed a total of %s data records", self._totCount)
 
     @property
     def currCount(self) -> int:

@@ -483,7 +483,10 @@ class Node(object):
 
         # Add some checking for characters which will make lookups problematic
         if re.match('^[\\w_\\[\\]]+$',node.name) is None:
-            self._log.warning('Node {} with one or more special characters will cause lookup errors.'.format(node.name))
+            self._log.warning(
+                "Node %s with one or more special characters will cause lookup errors.",
+                node.name,
+            )
 
         # Detect and add array nodes
         self._addArrayNode(node)
@@ -504,7 +507,7 @@ class Node(object):
         keys  = fields[1:-1]
 
         if not all([key.isdigit() for key in keys]):
-            self._log.warning('Array node {} with non numeric key will cause lookup errors.'.format(node.name))
+            self._log.warning("Array node %s with non numeric key will cause lookup errors.", node.name)
             return
 
         # Detect collisions
@@ -983,13 +986,13 @@ class Node(object):
         # If keys is not none, someone tried to access this node with array
         # attributes incorrectly. This should only happen in the variable class.
         if keys is not None:
-            self._log.error(f"Entry {self.name} with key {keys} not found")
+            self._log.error("Entry %s with key %s not found", self.name, keys)
         else:
             for key, value in d.items():
                 nodes,keys = self.nodeMatch(key)
 
                 if len(nodes) == 0:
-                    self._log.error("Entry {} not found".format(key))
+                    self._log.error("Entry %s not found", key)
                 else:
                     for n in nodes:
                         if n.filterByGroup(incGroups,excGroups):

@@ -362,6 +362,8 @@ class Root(pr.Device):
         if self._running:
             raise pr.NodeError("Root is already started! Can't restart!")
 
+        self._log.info("Starting root lifecycle")
+
         # Call special root level rootAttached
         self._rootAttached()
 
@@ -381,9 +383,14 @@ class Root(pr.Device):
         # Look for overlaps
         for i in range(1,len(tmpList)):
 
-            self._log.debug("Comparing {} with address={:#x} to {} with address={:#x} and size={}".format(
-                            tmpList[i].path,  tmpList[i].address,
-                            tmpList[i-1].path,tmpList[i-1].address, tmpList[i-1].size))
+            self._log.debug(
+                "Comparing %s with address=%#x to %s with address=%#x and size=%s",
+                tmpList[i].path,
+                tmpList[i].address,
+                tmpList[i-1].path,
+                tmpList[i-1].address,
+                tmpList[i-1].size,
+            )
 
             # Detect overlaps
             if (tmpList[i].size != 0) and (tmpList[i]._reqSlaveId() == tmpList[i-1]._reqSlaveId()) and \
@@ -400,7 +407,10 @@ class Root(pr.Device):
 
         # Detect large timeout
         if self._timeout > 10.0:
-            self._log.warning(f"Large timeout value of {self._timeout} seconds detected. This may cause unexpected system behavior.")
+            self._log.warning(
+                "Large timeout value of %s seconds detected. This may cause unexpected system behavior.",
+                self._timeout,
+            )
 
         # Start update thread
         self._running = True
@@ -427,6 +437,7 @@ class Root(pr.Device):
         # Start poller if enabled
         self._pollQueue._start()
         self.PollEn.set(self._pollEn)
+        self._log.info("Root lifecycle started")
 
 
     def stop(self) -> None:
@@ -434,6 +445,7 @@ class Root(pr.Device):
         Call Device._stop() to recursively stop all Devices in the tree.
         """
 
+        self._log.info("Stopping root lifecycle")
         self._running = False
         self._updateQueue.put(None)
         self._updateThread.join()
@@ -442,6 +454,7 @@ class Root(pr.Device):
             self._pollQueue._stop()
 
         pr.Device._stop(self)
+        self._log.info("Root lifecycle stopped")
 
     @pr.expose
     @property
@@ -1079,7 +1092,7 @@ class Root(pr.Device):
             if node is not None:
                 node._setDict(d=value,writeEach=writeEach,modes=modes,incGroups=incGroups,excGroups=excGroups,keys=None)
             else:
-                self._log.error("Entry {} not found".format(key))
+                self._log.error("Entry %s not found", key)
 
 
     def _clearLog(self) -> None:
@@ -1127,7 +1140,11 @@ class Root(pr.Device):
 
             # Process list
             elif len(uvars) > 0:
-                self._log.debug(F'Process update group. Length={len(uvars)}. Entry={list(uvars.keys())[0]}')
+                self._log.debug(
+                    "Process update group. Length=%s. Entry=%s",
+                    len(uvars),
+                    list(uvars.keys())[0],
+                )
 
                 # Copy list and add listeners
                 nvars = uvars.copy()
@@ -1164,7 +1181,11 @@ class Root(pr.Device):
                             except Exception as e:
                                 pr.logException(self._log,e)
 
-                self._log.debug(F"Done update group. Length={len(uvars)}. Entry={list(uvars.keys())[0]}")
+                self._log.debug(
+                    "Done update group. Length=%s. Entry=%s",
+                    len(uvars),
+                    list(uvars.keys())[0],
+                )
 
             # Set done
             self._updateQueue.task_done()
