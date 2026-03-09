@@ -4,83 +4,94 @@
 Reading Frames From A File
 ==========================
 
-Frames can be read in a streaming fashion using the :ref:`utilities_fileio_reader` class. This
-class will output frames using the standard stream interface, with a Frame object created for
-each data blob in the Frame, with the same format and with the same flags when it was originally
-written. Since multiple "channels" may have been used when writing the file, generated frames will
-be tagged with a channel ID to match the channel value when written. A :ref:`interfaces_stream_filter`
-object can be used to direct the Frames based upon their channel IDs.
+``rogue.utilities.fileio.StreamReader`` replays captured Rogue files as stream
+frames. Frame metadata (channel, flags, error) is reconstructed and propagated
+with each emitted frame.
 
-For the canonical on-disk record format consumed by StreamReader, see
+Frames can be read in a streaming fashion using ``StreamReader``. Each data
+record is emitted as a Rogue ``Frame`` with payload and metadata preserved from
+the original file capture. If multiple channels were used during writing, the
+replayed frames retain those channel IDs. A stream filter stage can then route
+replayed frames by channel as needed.
+
+For file-format details consumed by the reader, see
 :ref:`utilities_fileio_format`.
 
-There is also a python utilitiy for reading frames in python using a non-streaming method.
+Method Overview
+===============
 
-The following code block describes how to create and connect a file reader in python:
+The examples below use the core ``StreamReader`` methods:
+
+- ``open(path)``: Opens an input file and starts background replay.
+- ``closeWait()``: Blocks until replay finishes, then closes the reader.
+- ``close()``: Stops replay immediately and closes the reader.
+
+When the input name ends with ``.1``, the reader automatically attempts
+``.2``, ``.3``, and so on as a split-file sequence.
+
+Python StreamReader Example
+===========================
 
 .. code-block:: python
 
-   import pyrogue
-   import rogue.utilities.fileio
+   import rogue.utilities.fileio as ruf
 
-   # First we create a file reader instance
-   fread = rogue.utilities.fileio.StreamReader()
+   # Create the file-to-stream replay source.
+   fread = ruf.StreamReader()
 
-   # Assuming we already have a frame receiver, we can connect the reader
-   # instance to the receiver
-   receiver << fread
+   # Connect reader output to an existing stream slave.
+   fread >> receiver
 
-   # We can then open the file. As soon as the file is opened the read frames
-   # will be streamed to the receiver until all frames are read. If the file
-   # was written using the maxSize attribute, you can include the index of the
-   # first file, and all of the seperate files in the split sequence will be written
-   # in order:
+   # Opening .1 auto-advances through split files (.2, .3, ...).
    fread.open("myFile.dat.1")
-
-   # After all of the files are read, you can then close the file. The closeWait() command
-   # is a blocking command that will wait until all the frames are read, and then close() the
-   # file
    fread.closeWait()
 
+   # Or call close() for immediate stop.
+   # fread.close()
 
-A Rogue Device wrapper is provided for including the StreamReader class as part of the Rogue tree. This allows the StreamReader to be
-present in the Rogue PyDM GUI, providing an interface for opening and closing files.
+PyRogue StreamReader Device Wrapper
+===================================
 
-The following code is an example of using the Rogue StreamReader wrapper in the Rogue tree.
-
-TODO python class reference
+``pyrogue.utilities.fileio.StreamReader`` wraps the reader for use in a
+``Root`` tree and GUI/client control.
 
 .. code-block:: python
 
-   import pyrogue
-   import pyrogue.utilities.fileio
+   import pyrogue.utilities.fileio as puf
 
-   # First we create a file reader instance, use the python wrapper
-   fread = pyrogue.utilities.fileio.StreamReader()
-
-   # Add the file reader to the Rogue tree.
+   # Add a tree-managed reader so file replay can be controlled by clients/GUI.
+   fread = puf.StreamReader()
    root.add(fread)
 
-   # Assuming we already have a frame receiver, we can connect the reader
-   # instance to the receiver
-   receiver << fread
+   # Route replayed frames to a downstream stream consumer.
+   fread >> receiver
 
+   # Configure and run replay via Device variables/commands.
+   fread.DataFile.set("myFile.dat.1")
+   fread.Open()
+   fread.Close()
 
-The following code shows how to use a StreamReader in c++.
+C++ StreamReader Example
+========================
 
-.. code-block:: c
+.. code-block:: cpp
 
    #include <rogue/utilities/fileio/StreamReader.h>
 
-   // First we create a file reader instance
-   rogue::utilities::fileio::StreamReaderPtr fwrite = rogue::utilities::fileio::StreamReaderPtr::create();
+   namespace ruf = rogue::utilities::fileio;
 
-   // Connect the reader to an existing receiver
-   receiver << fread;
+   // Create the file-to-stream replay source.
+   auto fread = ruf::StreamReader::create();
 
-   // Open the data file
+   // Connect reader output to an existing stream slave.
+   fread >> receiver;
+
+   // Open split-file sequence and wait for completion.
    fread->open("myFile.dat.1");
-
-   // Close the data file after all frames are read
    fread->closeWait();
 
+Related References
+==================
+
+- :doc:`/api/cpp/utilities/fileio/reader`
+- :doc:`/api/python/utilities_fileio_streamreader`

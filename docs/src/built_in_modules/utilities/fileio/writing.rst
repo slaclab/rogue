@@ -4,130 +4,114 @@
 Writing Frames To A File
 ========================
 
-Frames can be written to a data file using the :ref:`utilities_fileio_writer` class. This
-file writer supports multiple incoming streams, which are then deliniated in the written
-data file. The Channel 0 interface can be used to write frames which may have a non-zero
-channel ID field value set. If this value is non-zero the Frame's channel ID will be used
-when writing the file.
+``rogue.utilities.fileio.StreamWriter`` captures incoming stream frames into a
+Rogue file format that preserves payload bytes plus frame metadata.
 
-For the canonical on-disk record format (headers, flags/error encoding, raw mode,
-and split-file behavior), see :ref:`utilities_fileio_format`.
+For the on-disk format details (header words, channel/flags/error encoding,
+raw mode, and split-file behavior), see :ref:`utilities_fileio_format`.
 
-The following code block describes how to create and connect a file writer in python:
+Method Overview
+===============
+
+The examples below use a small set of core ``StreamWriter`` methods:
+
+- ``setBufferSize(bytes)``: Sets the in-memory staging buffer used before
+  flushing writes to the OS. Larger values can improve throughput.
+- ``setMaxSize(bytes)``: Enables split-file output when non-zero
+  (``file.dat.1``, ``file.dat.2``, ...), rolling over before a write would
+  exceed the limit.
+- ``setDropErrors(bool)``: Controls whether incoming frames with non-zero frame
+  error are discarded instead of written.
+- ``getChannel(index)``: Returns the per-channel stream sink used to attach
+  stream sources.
+  Channel behavior is special for ``index=0``:
+  ``getChannel(0)`` uses each incoming frame's own channel metadata
+  (``frame.getChannel()``) when writing the file header.
+  ``getChannel(N)`` with ``N>0`` forces file channel ``N`` for all frames sent
+  through that sink, regardless of frame metadata.
+- ``open(path)``: Opens the output file and starts capture.
+- ``close()``: Flushes buffered data and closes the file.
+
+In the PyRogue wrapper flow, the same operations are exposed through tree
+variables/commands such as ``DataFile``, ``Open``, and ``Close``.
+
+Python StreamWriter Example
+===========================
 
 .. code-block:: python
 
-   import pyrogue
-   import rogue.utilities.fileio
+   import rogue.utilities.fileio as ruf
 
-   # Assume we have to incoming data streams, streamA and streamB coming from a pair
-   # of stream Masters
-   # streamA
-   # streamB
+   # Assume streamA and streamB are existing stream masters.
+   fwrite = ruf.StreamWriter()
 
-   # First we create a file writer instance
-   fwrite = rogue.utilities.fileio.StreamWriter()
-
-   # Next we set the buffer size which controls how much data to cache in memory
-   # before forming a burst write to the operating system. Larger writes help
-   # in file operation performance
+   # Buffer size controls staged write size before flushing to the OS.
    fwrite.setBufferSize(10000)
 
-   # We can also set a maximum file size for each file. If this value is non-zero
-   # the passed file name will be appended with a numeric value starting from 1.
-   # As the max size is reached a new file will be opened with the next index value
-   # 100MBytes
+   # Split output file at 100 MB boundaries: myFile.dat.1, .2, ...
    fwrite.setMaxSize(100000000)
 
-   # By default all frames are written, even if the incoming error field is set. You
-   # can choose to ignore errored frames using the following call:
+   # Drop incoming frames with non-zero frame error.
    fwrite.setDropErrors(True)
 
-   # Connect stream A to the file writer channel 0
+   # Map each source to a writer channel.
    streamA >> fwrite.getChannel(0)
-
-   # Connect stream B to the file writer channel 1
    streamB >> fwrite.getChannel(1)
 
-   # Open the data file
    fwrite.open("myFile.dat")
-
-   # Close the data file
+   # ... stream traffic is captured while file is open ...
    fwrite.close()
 
+PyRogue StreamWriter Device Wrapper
+===================================
 
-A Rogue Device wrapper is provided for including the StreamWriter class as part of the Rogue tree. This allows the StreamWriter to be
-present in the Rogue PyDM GUI, providing an interface for opening and closing files.
-
-The following code is an example of using the Rogue StreamWriter wrapper in the Rogue tree.
-
-TODO python class reference
+``pyrogue.utilities.fileio.StreamWriter`` wraps the writer for use in a
+``Root`` tree and GUI/client control.
 
 .. code-block:: python
 
-   import pyrogue
-   import pyrogue.utilities.fileio
+   import pyrogue.utilities.fileio as puf
 
-   # Assume we have to incoming data streams, streamA and streamB coming from a pair
-   # of stream Masters
-   # streamA
-   # streamB
-
-   # First we create a file writer instance, use the python wrapper
-   fwrite = pyrogue.utilities.fileio.StreamWriter()
-
-   # Add the file writer to the Rogue tree.
+   # Optional config/status streams can be mapped by channel.
+   # Those channels are emitted as YAML metadata on open/close.
+   fwrite = puf.StreamWriter(configStream={1: statusStream})
    root.add(fwrite)
 
-   # Don't set any other parameters as you will use the Rogue tree to set the
-   # file parameters and open/close files
-
-   # Connect stream A to the file writer channel 0
    streamA >> fwrite.getChannel(0)
+   streamB >> fwrite.getChannel(2)
 
-   # Connect stream B to the file writer channel 1
-   streamB >> fwrite.getChannel(1)
+   # File control can be performed through Device variables/commands.
+   fwrite.DataFile.set("myFile.dat")
+   fwrite.Open()
+   # ...
+   fwrite.Close()
 
+C++ StreamWriter Example
+========================
 
-The following code shows how to use a StreamWriter in c++.
-
-.. code-block:: c
+.. code-block:: cpp
 
    #include <rogue/utilities/fileio/StreamWriter.h>
    #include <rogue/utilities/fileio/StreamWriterChannel.h>
 
-   // Assume we have to incoming data streams, streamA and streamB coming from a pair
-   // of stream Masters
-   // streamA
-   // streamB
+   namespace ruf = rogue::utilities::fileio;
 
-   // First we create a file writer instance
-   rogue::utilities::fileio::StreamWriterPtr fwrite = rogue::utilities::fileio::StreamWriterPtr::create()
+   // Assume streamA and streamB are existing stream masters.
+   auto fwrite = ruf::StreamWriter::create();
 
-   // Next we set the buffer size which controls how much data to cache in memory
-   // before forming a burst write to the operating system. Larger writes help
-   // in file operation performance
    fwrite->setBufferSize(10000);
-
-   // We can also set a maximum file size for each file. If this value is non-zero
-   // the passed file name will be appended with a numeric value starting from 1.
-   // As the max size is reached a new file will be opened with the next index value
-   // 100MBytes
    fwrite->setMaxSize(100000000);
-
-   // By default all frames are written, even if the incoming error field is set. You
-   // can choose to ignore errored frames using the following call:
    fwrite->setDropErrors(true);
 
-   // Connect stream A to the file writer channel 0
    streamA >> fwrite->getChannel(0);
-
-   // Connect stream B to the file writer channel 1
    streamB >> fwrite->getChannel(1);
 
-   // Open the data file
    fwrite->open("myFile.dat");
-
-   // Close the data file
+   // ... stream traffic is captured while file is open ...
    fwrite->close();
 
+Related References
+==================
+
+- :doc:`/api/cpp/utilities/fileio/writer`
+- :doc:`/api/python/utilities_fileio_streamwriter`

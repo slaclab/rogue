@@ -57,3 +57,36 @@ Required practice:
 - If minor wording edits are made to existing narrative, call them out in the
   change summary.
 - Prefer preserving original narrative blocks verbatim when relocating content.
+
+The Cleanup Procedure Directive
+===============================
+
+When a task explicitly requests "The Cleanup Procedure", apply the following
+rules in addition to the general policy above.
+
+Primary preservation requirement
+--------------------------------
+
+1. Do not remove existing explanatory narrative text unless it is strictly
+   redundant with nearby text.
+2. Prefer keeping original explanatory passages and improving them in place.
+3. If edits are needed, limit them to grammar, clarity, and style consistency.
+4. Add new explanatory content when useful, but do not replace existing useful
+   explanation just to shorten or rephrase it.
+
+Example quality requirement
+---------------------------
+
+1. Python and C++ examples should both include meaningful inline comments.
+2. Comments should explain intent and dataflow, not restate syntax.
+3. Keep example behavior aligned between Python and C++ when both are present.
+4. Verify examples against current code/API before finalizing edits.
+
+Cleanup execution checklist
+---------------------------
+
+1. Ensure each section index provides narrative exposition, not only links.
+2. Preserve and integrate legacy explanatory text into coherent flow.
+3. Improve grammar/style while retaining original explanatory intent.
+4. Update references/toctrees and keep links valid after moves/renames.
+5. Keep API examples concrete, accurate, and commented in both languages.

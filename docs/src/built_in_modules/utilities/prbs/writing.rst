@@ -4,103 +4,95 @@
 Generating PRBS Frames
 ======================
 
-The PRBS object can either be used in its raw form or with either the PrbsTx or PrbsRx
-Rogue Device wrappers. Using the Rogue Device wrapper allows the PRBS transmitter and receiver to
-be controlled and monitor in the Rogue PyDM GUI.
+Use ``rogue.utilities.Prbs`` when a lightweight generator/checker endpoint is
+needed directly in a stream topology.
 
-The following code block describes how to create and connect a PRBS generator to a file writer in python:
+Use ``pyrogue.utilities.prbs.PrbsTx`` when you want generator control and
+counters as part of a ``Root`` tree.
+
+Method Overview
+===============
+
+Common PRBS generator calls shown below:
+
+- ``genFrame(size)``: Generates and transmits one PRBS frame of ``size`` bytes.
+- ``PrbsTx`` wrapper: Exposes generator controls and counters as ``Variables``
+  and ``Commands`` in a tree.
+
+Python PRBS Generator Example
+=============================
 
 .. code-block:: python
 
-   import pyrogue
-   import rogue.utilities.fileio
+   import rogue.utilities as ru
+   import rogue.utilities.fileio as ruf
 
-   # Create a file writer, buffer size = 1000, max file size = 1MB
-   fwrite = rogue.utilities.fileio.StreamWriter()
+   # Capture generated test traffic to file.
+   fwrite = ruf.StreamWriter()
    fwrite.setBufferSize(1000)
-   fwrite.setMaxSize(1000000)
+   fwrite.setMaxSize(1_000_000)
 
-   # Create a PRBS instance to be used as a generator
-   prbs = rogue.utilities.Prbs()
+   # Create PRBS source endpoint.
+   prbs = ru.Prbs()
 
-   # Connect the generator to the file writer
+   # Route generated frames into writer channel 0.
    prbs >> fwrite.getChannel(0)
 
-   # Open the data file
+   # Capture 1000 test frames of 1000 bytes each.
    fwrite.open("test.dat")
-
-   # Generate 1000 frames of PRBS data, 1000 bytes each
    for _ in range(1000):
       prbs.genFrame(1000)
-
-   # Close the data file
    fwrite.close()
 
-
-The following code is an example of connecting a PRBS generator to a file writer for control under
-a Rogue tree.
-
-TODO python class reference
+PyRogue PRBS Transmitter Wrapper
+================================
 
 .. code-block:: python
 
-   import pyrogue
-   import pyrogue.utilities
-   import pyrogue.utilities.fileio
+   import pyrogue.utilities.fileio as puf
+   import pyrogue.utilities.prbs as pup
 
-   # First we create a file writer instance, use the python wrapper
-   fwrite = pyrogue.utilities.fileio.StreamWriter()
-
-   # Add the file writer to the Rogue tree.
+   # Add tree-managed file writer and PRBS transmitter.
+   fwrite = puf.StreamWriter()
    root.add(fwrite)
 
-   # Create a PRBS generator
-   prbs = pyrogue.utilities.PrbsTx()
+   prbs = pup.PrbsTx()
+   root.add(prbs)
 
-   # Add the prbs generator to the Rogue tree.
-   self.add(prbs)
-
-   # Connect the generator to the file writer
+   # Transmit PRBS stream into writer channel 0.
    prbs >> fwrite.getChannel(0)
 
+C++ PRBS Generator Example
+==========================
 
-The following code shows how to connect a PRBS generator to a StreamWriter in c++.
-
-.. code-block:: c
+.. code-block:: cpp
 
    #include <rogue/utilities/Prbs.h>
    #include <rogue/utilities/fileio/StreamWriter.h>
    #include <rogue/utilities/fileio/StreamWriterChannel.h>
 
-   // First we create a file writer instance
-   rogue::utilities::fileio::StreamWriterPtr fwrite = rogue::utilities::fileio::StreamWriterPtr::create():
+   namespace ru  = rogue::utilities;
+   namespace ruf = rogue::utilities::fileio;
 
-   // Next we set the buffer size which controls how much data to cache in memory
-   // before forming a burst write to the operating system. Larger writes help
-   // in file operation performance
+   // Capture generated test traffic to file.
+   auto fwrite = ruf::StreamWriter::create();
    fwrite->setBufferSize(10000);
-
-   // We can also set a maximum file size for each file. If this value is non-zero
-   // the passed file name will be appended with a numeric value starting from 1.
-   // As the max size is reached a new file will be opened with the next index value 100MBytes
    fwrite->setMaxSize(100000000);
-
-   // By default all frames are written, even if the incoming error field is set. You
-   // can choose to ignore errored frames using the following call:
    fwrite->setDropErrors(true);
 
-   // Create a PRBS generator
-   rogue::utilities::PrbsPtr prbs = rogue::utilities::Prbs::create();
+   // Create PRBS source endpoint.
+   auto prbs = ru::Prbs::create();
 
-   // Connect prbs to file writer
+   // Route PRBS output to writer channel 0.
    prbs >> fwrite->getChannel(0);
 
-   // Open the data file
-   fwrite->open("test.dat"):
+   // Capture 1000 test frames of 1000 bytes each.
+   fwrite->open("test.dat");
+   for (int i = 0; i < 1000; ++i) prbs->genFrame(1000);
+   fwrite->close();
 
-   # Generate 1000 frames of PRBS data, 1000 bytes each
-   for (i=0; i < 1000; i++ ) prbs->genFrame(1000):
+Related References
+==================
 
-   // Close the data file
-   fwrite->close():
-
+- :doc:`/api/cpp/utilities/prbs/prbs`
+- :doc:`/pyrogue_tree/builtin_devices/prbstx`

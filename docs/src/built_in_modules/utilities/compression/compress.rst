@@ -4,84 +4,77 @@
 Compressing Frames
 ==================
 
-The following code block describes how to create and connect a PRBS generator to a compression engine and then on to a file writer in python:
+``rogue.utilities.StreamZip`` compresses frame payload bytes in-line in a
+stream pipeline while preserving frame metadata.
+
+Method Overview
+===============
+
+The examples use a simple linear topology:
+
+- ``Prbs`` generates deterministic test payloads.
+- ``StreamZip`` compresses each frame payload.
+- ``StreamWriter`` records compressed frames for replay/analysis.
+
+Python Compression Pipeline
+===========================
 
 .. code-block:: python
 
-   import pyrogue
-   import rogue.utilities.fileio
+   import rogue.utilities as ru
+   import rogue.utilities.fileio as ruf
 
-   # Create a file writer, buffer size = 1000, max file size = 1MB
-   fwrite = rogue.utilities.fileio.StreamWriter()
+   # Capture compressed output to file.
+   fwrite = ruf.StreamWriter()
    fwrite.setBufferSize(1000)
-   fwrite.setMaxSize(1000000)
+   fwrite.setMaxSize(1_000_000)
 
-   # Create a compression instance
-   comp = rogue.utilities.StreamZip()
+   # Source generator and compression stage.
+   prbs = ru.Prbs()
+   comp = ru.StreamZip()
 
-   # Create a PRBS instance to be used as a generator
-   prbs = rogue.utilities.Prbs()
+   # Pipeline: PRBS source -> compressor -> file sink.
+   prbs >> comp >> fwrite.getChannel(0)
 
-   # Connect the generator to the compression engine
-   prbs >> comp
-
-   # Connect the compression engine to the file writer
-   comp >> fwrite.getChannel(0)
-
-   # Open the data file
+   # Generate and capture compressed traffic.
    fwrite.open("test.dat")
-
-   # Generate 1000 frames of PRBS data, 1000 bytes each
    for _ in range(1000):
       prbs.genFrame(1000)
-
-   # Close the data file
    fwrite.close()
 
-The following code shows how to connect a PRBS generator to a compression engine and then on to a StreamWriter in c++.
+C++ Compression Pipeline
+========================
 
-.. code-block:: c
+.. code-block:: cpp
 
    #include <rogue/utilities/Prbs.h>
    #include <rogue/utilities/StreamZip.h>
    #include <rogue/utilities/fileio/StreamWriter.h>
    #include <rogue/utilities/fileio/StreamWriterChannel.h>
 
-   // First we create a file writer instance
-   rogue::utilities::fileio::StreamWriterPtr fwrite = rogue::utilities::fileio::StreamWriterPtr::create():
+   namespace ru  = rogue::utilities;
+   namespace ruf = rogue::utilities::fileio;
 
-   // Next we set the buffer size which controls how much data to cache in memory
-   // before forming a burst write to the operating system. Larger writes help
-   // in file operation performance
+   // Capture compressed output to file.
+   auto fwrite = ruf::StreamWriter::create();
    fwrite->setBufferSize(10000);
-
-   // We can also set a maximum file size for each file. If this value is non-zero
-   // the passed file name will be appended with a numeric value starting from 1.
-   // As the max size is reached a new file will be opened with the next index value 100MBytes
    fwrite->setMaxSize(100000000);
-
-   // By default all frames are written, even if the incoming error field is set. You
-   // can choose to ignore errored frames using the following call:
    fwrite->setDropErrors(true);
 
-   // Create a PRBS generator
-   rogue::utilities::PrbsPtr prbs = rogue::utilities::Prbs::create();
+   // Source generator and compression stage.
+   auto prbs = ru::Prbs::create();
+   auto comp = ru::StreamZip::create();
 
-   // Create a compression block
-   rogue::utilities::StreamZipPtr comp = rogue::utilities::StreamZip::create();
+   // Pipeline: PRBS source -> compressor -> file sink.
+   *prbs >> comp >> fwrite->getChannel(0);
 
-   // Connect prbs to file writer
-   prbs >> comp;
+   // Generate and capture compressed traffic.
+   fwrite->open("test.dat");
+   for (int i = 0; i < 1000; ++i) prbs->genFrame(1000);
+   fwrite->close();
 
-   // Connect compression block to the stream writer
-   comp >> fwrite->getChannel(0);
+Related References
+==================
 
-   // Open the data file
-   fwrite->open("test.dat"):
-
-   # Generate 1000 frames of PRBS data, 1000 bytes each
-   for (i=0; i < 1000; i++ ) prbs->genFrame(1000):
-
-   // Close the data file
-   fwrite->close():
-
+- :doc:`/api/cpp/utilities/compression/zip`
+- :doc:`decompress`

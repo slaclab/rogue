@@ -4,86 +4,89 @@
 Receiving PRBS Frames
 =====================
 
-The PRBS object can either be used in its raw form or with either the `PrbsRx <pyrogue_tree_node_device_prbsrx>` or `PrbsTx <pyrogue_tree_node_device_prbstx>`
-Rogue Device wrappers. Using the Rogue Device wrapper allows the PRBS transmitter and receiver to
-be controlled and monitor in the Rogue PyDM GUI.
+PRBS receive paths are used to verify stream data integrity and collect error
+counters after a transport or processing chain.
 
-The following code block describes how to create and connect a PRBS receiver to a file writer in python:
+Method Overview
+===============
+
+Common receiver-side calls shown below:
+
+- ``getRxCount()``: Returns received frame count.
+- ``getRxErrors()``: Returns detected PRBS error count.
+- ``PrbsRx`` wrapper: Exposes PRBS receive controls/counters in a tree.
+
+Python PRBS Receiver Example
+============================
 
 .. code-block:: python
 
-   import pyrogue
-   import rogue.utilities.fileio
+   import rogue.utilities as ru
+   import rogue.utilities.fileio as ruf
 
-   # First we create a file reader instance
-   fread = rogue.utilities.fileio.StreamReader()
+   # Replay captured frames from file.
+   fread = ruf.StreamReader()
 
-   # Create a PRBS instance to be used as a receiver
-   prbs = rogue.utilities.Prbs()
+   # Create PRBS checker endpoint.
+   prbs = ru.Prbs()
 
-   # Connect the two together
+   # Feed replayed stream into checker.
    prbs << fread
 
-   # Open the file and push data to the prbs receiver
+   # Replay full split-file sequence and wait for completion.
    fread.open("myFile.dat.1")
+   fread.closeWait()
 
-   # Wait until reader is done
-   fread.closeWait();
+   # Summarize checker statistics.
+   print(f"Received {prbs.getRxCount()} frames")
+   print(f"Received {prbs.getRxErrors()} errors")
 
-   # Display the results
-   print(f"Got {prbs.getRxCount()} frames")
-   print(f"Got {prbs.getRxErrors()} errors")
-
-
-The following code is an example of connecting a PRBS receiver to a file reader for control under
-a Rogue tree.
-
-TODO python class reference
+PyRogue PRBS Receiver Wrapper
+=============================
 
 .. code-block:: python
 
-   import pyrogue
-   import pyrogue.utilities
-   import pyrogue.utilities.fileio
+   import pyrogue.utilities.fileio as puf
+   import pyrogue.utilities.prbs as pup
 
-   # First we create a file reader instance, use the python wrapper
-   fread = pyrogue.utilities.fileio.StreamReader()
-
-   # Add the file reader to the Rogue tree.
+   # Add tree-managed replay source and PRBS receiver.
+   fread = puf.StreamReader()
    root.add(fread)
 
-   # Create a PRBS receiver
-   prbs = pyrogue.utilities.PrbsRx()
+   prbs = pup.PrbsRx()
+   root.add(prbs)
 
-   # Add the prbs receiver to the Rogue tree.
-   self.add(prbs)
-
-   # Connect the receiver to the file reader
+   # Route replayed stream into tree-managed PRBS checker.
    fread >> prbs
 
-The following code shows how to connect a PRBS receiver to a StreamReader in c++.
+C++ PRBS Receiver Example
+=========================
 
-.. code-block:: c
+.. code-block:: cpp
 
    #include <rogue/utilities/fileio/StreamReader.h>
    #include <rogue/utilities/Prbs.h>
 
-   // First we create a file reader instance
-   rogue::utilities::fileio::StreamReaderPtr fwrite = rogue::utilities::fileio::StreamReaderPtr::create();
+   namespace ru  = rogue::utilities;
+   namespace ruf = rogue::utilities::fileio;
 
-   // Create a PRBS receiver
-   rogue::utilities::PrbsPtr prbs = rogue::utilities::Prbs::create();
+   // Create replay source and PRBS checker.
+   auto fread = ruf::StreamReader::create();
+   auto prbs  = ru::Prbs::create();
 
-   // Connect prbs to file reader
-   prbs << fread;
+   // Feed replayed stream into checker.
+   *prbs << fread;
 
-   // Open the data file
+   // Replay full split-file sequence and wait for completion.
    fread->open("myFile.dat.1");
-
-   // Close the data file after all frames are read
    fread->closeWait();
 
-   // Display the results
-   printf("Got %i frames\n",prbs.getRxCount());
-   printf("Got %i errors\n",prbs.getRxErrors());
+   // Summarize checker statistics.
+   printf("Received %u frames\n", prbs->getRxCount());
+   printf("Received %u errors\n", prbs->getRxErrors());
 
+Related References
+==================
+
+- :doc:`/api/cpp/utilities/prbs/prbs`
+- :doc:`/pyrogue_tree/builtin_devices/prbsrx`

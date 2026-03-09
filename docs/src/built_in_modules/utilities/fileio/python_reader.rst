@@ -4,76 +4,69 @@
 Python File Reader
 ==================
 
-The Rogue FileReader class is a lightweight python class which can be used on its own
-with minimal dependencies. The file reader supports processing store data frame by
-frame and supports automatic extraction of configuration and status information which may
-exist in a specificed "config channel". The passed file parameter can be a single file or
-a list of segemented data files.
+``pyrogue.utilities.fileio.FileReader`` provides direct Python iteration over
+Rogue file records without constructing a live stream topology.
 
-The most current file can be downloaded from:
+The Rogue ``FileReader`` class is a lightweight Python class that can be used
+on its own with minimal dependencies. It supports processing stored data
+frame-by-frame, and supports automatic extraction of configuration/status data
+that may exist in a specified ``configChan`` channel. The ``files`` parameter
+can be a single file or a list of segmented data files.
 
-https://github.com/slaclab/rogue/blob/master/python/pyrogue/utilities/fileio/_FileReader.py
+It is useful for offline analysis, quick inspection scripts, and extracting
+metadata/configuration records from captured files.
 
-Below is an example of using the FileReader in a python script:
-
-.. code-block:: python
-
-   with FileReader(files="mydata.dat",configChan=1) as fd:
-
-      # Loop through the file data
-      for header,data in fd.records():
-
-         # Look at record header data
-         print(f"Processing record. Total={fd.totCount}, Current={fd.currCount}")
-         print(f"Record size    = {header.size}")
-         print(f"Record channel = {header.channel}")
-         print(f"Record flags   = {header.flags:#x}")
-         print(f"Record error   = {header.error:#x}")
-
-         # Do something with the data here:
-         for i in range(header.size):
-            print(f" Byte {i} = {data[i]:#x}")
-
-         # At any time you can access the current config and status state
-         print(f"Data time = {fd.configValue['root.Time']}")
-
-In some cases the data file contains frames that are "batched" using the BatcherV1 protocol:
+Basic Usage
+===========
 
 .. code-block:: python
 
-   with FileReader(files="mydata.dat",configChan=1,batched=True) as fd:
+   from pyrogue.utilities.fileio import FileReader
 
-      # Loop through the file data
-      for header,bHeader,data in fd.records():
+   with FileReader(files="mydata.dat", configChan=1) as fd:
+      for header, data in fd.records():
+         print(f"Record {fd.currCount}/{fd.totCount}")
+         print(f"  Channel = {header.channel}")
+         print(f"  Size    = {header.size}")
+         print(f"  Flags   = {header.flags:#x}")
+         print(f"  Error   = {header.error:#x}")
 
-         # Look at record header data
-         print(f"Processing record. Total={fd.totCount}, Current={fd.currCount}")
-         print(f"Record size    = {header.size}")
-         print(f"Record channel = {header.channel}")
-         print(f"Record flags   = {header.flags:#x}")
-         print(f"Record error   = {header.error:#x}")
-         print(f"Batcher size   = {bHeader.size}")
-         print(f"Batcher tdest  = {bHeader.tdest:#x}")
-         print(f"Batcher fUser  = {bHeader.fUser:#x}")
-         print(f"Batcher lUser  = {bHeader.lUser:#x}")
+         # data is a numpy array view of payload bytes
+         print(f"  First byte = {data[0]:#x}")
 
-         # Do something with the data here:
-         for i in range(header.size):
-            print(f" Byte {i} = {data[i]:#x}")
+      # Configuration/status state decoded from config channel frames
+      print(fd.configDict.get("root.Time"))
 
-         # At any time you can access the current config and status state
-         print(f"Data time = {fd.configValue['root.Time']}")
+Batcher-Aware Usage
+===================
 
+For files containing batcher-formatted records, enable ``batched=True``.
+This mode is used when a single Rogue file record contains one or more
+sub-records packed with Batcher protocol headers. In that case, the iterator
+returns ``(header, batchHeader, data)`` for each unpacked sub-record so you can
+analyze per-subframe metadata (for example ``tdest`` and user fields) instead
+of treating the payload as one opaque byte block.
 
-FileReader Description
-======================
+For protocol background, see :doc:`/built_in_modules/protocols/batcher/index`.
 
-The class description for the SimpleClient class is included below:
+.. code-block:: python
 
-See :doc:`/api/python/utilities_fileio_filereader` for generated API details.
+   from pyrogue.utilities.fileio import FileReader
 
+   with FileReader(files="mydata.dat", configChan=1, batched=True) as fd:
+      for header, bheader, data in fd.records():
+         print(f"Channel = {header.channel}, RecordBytes = {header.size}")
+         print(f"BatchBytes = {bheader.size}, TDest = {bheader.tdest:#x}")
 
-The header data record is described below:
+Behavior Notes
+==============
 
-See :doc:`/api/python/utilities_fileio_rogueheader` for generated API details.
+- ``files`` may be a single file path or a list of file paths.
+- ``configChan=None`` disables YAML config/status extraction.
+- ``records()`` yields NumPy arrays for payload bytes.
 
+Related References
+==================
+
+- :doc:`/api/python/utilities_fileio_filereader`
+- :doc:`/api/python/utilities_fileio_rogueheader`
