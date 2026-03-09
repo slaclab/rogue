@@ -25,6 +25,7 @@ Protocol selection quick guide
 - Use :doc:`xilinx/index` for XVC/JTAG-over-TCP integration.
 - Use :doc:`epicsV4/index` for EPICS PV integration helpers.
 - Use :doc:`uart` for UART-backed stream/memory transport paths.
+- Use :doc:`gpib` for SCPI-style lab instrument control over GPIB.
 
 These protocol pages are most useful alongside
 :doc:`/stream_interface/index` and :doc:`/memory_interface/index`, where link
@@ -43,3 +44,4 @@ construction and transaction flow are covered end to end.
    srp/index
    xilinx/index
    uart
+   gpib
