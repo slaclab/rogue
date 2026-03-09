@@ -32,7 +32,7 @@ Construction and lifecycle
 - Constructor behavior:
   resolves host address, opens socket, initializes frame pool sizing, starts
   RX thread.
-- ``stop()``:
+- C++ ``stop()`` / Python ``_stop()``:
   disables RX thread, joins thread, and closes socket.
 - ``maxPayload()``:
   inherited from ``udp::Core`` and depends on jumbo vs standard MTU mode.
@@ -50,6 +50,8 @@ Typical deployment pattern
 - Software host runs Rogue UDP client.
 - FPGA/remote endpoint listens on a fixed port.
 - RSSI/packetizer layers sit above this transport path.
+- Standalone UDP deployment is less common for control/config paths because UDP
+  itself does not provide reliability or in-order delivery guarantees.
 
 Code-backed example
 ===================
@@ -57,13 +59,27 @@ Code-backed example
 .. code-block:: python
 
    import rogue.protocols.udp
-   import rogue.protocols.rssi
 
+   src = MyFrameSource()  # Application stream source.
+   dst = MyFrameSink()    # Application stream sink.
    udp = rogue.protocols.udp.Client("10.0.0.5", 8192, True)
-   rssi = rogue.protocols.rssi.Client(udp.maxPayload() - 8)
 
-   udp == rssi.transport()
-   rssi._start()
+   # Outbound application traffic: source -> UDP datagrams.
+   src >> udp
+
+   # Inbound application traffic: UDP datagrams -> sink.
+   udp >> dst
+
+Lifecycle usage modes:
+
+- Root-managed mode:
+  register transport/protocol objects with ``Root.addInterface(...)`` and let
+  Managed Interface Lifecycle stop them during tree shutdown.
+- Standalone script mode:
+  call ``_stop()`` explicitly on UDP endpoints during script teardown.
+
+Managed lifecycle reference:
+:ref:`pyrogue_tree_node_device_managed_interfaces`
 
 Practical checklist
 ===================

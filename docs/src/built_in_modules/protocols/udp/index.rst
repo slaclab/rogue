@@ -6,7 +6,8 @@ UDP Protocol
 
 UDP provides datagram transport for stream traffic. In Rogue systems, UDP is
 normally used as a transport layer under RSSI and packetizer rather than as a
-standalone reliability layer.
+standalone reliability layer. Direct UDP-only deployment is typically limited
+to data paths where dropped/out-of-order packets are acceptable.
 
 Where UDP fits in the stack
 ===========================
@@ -52,7 +53,7 @@ Threading and lifecycle
 =======================
 
 - ``Client`` and ``Server`` each start a background RX thread at construction.
-- ``stop()`` joins the thread and closes the socket.
+- C++ ``stop()`` (Python ``_stop()``) joins the thread and closes the socket.
 - ``Core`` does not define a separate managed start/stop state machine.
 
 Overview
@@ -79,6 +80,8 @@ When not to use directly
   UDP instead of raw UDP-only application flows.
 - If you need transaction-level memory semantics, use SRP on top of stream
   transport rather than direct UDP framing.
+- For most FPGA control/configuration links, do not deploy raw UDP-only paths;
+  use RSSI (and usually packetizer/SRP) above UDP.
 
 Code-backed integration example
 ===============================

@@ -29,16 +29,37 @@ Example (Python):
    # Link-layer stream connection
    udp == rssi.transport()
 
-   # Start controller state machine
+Lifecycle usage modes
+=====================
+
+- Root-managed mode:
+  register interfaces with ``Root.addInterface(...)`` and let Managed
+  Interface Lifecycle start/stop them.
+- Standalone script mode:
+  when no ``Root`` manages lifecycle, start and stop explicitly.
+
+Standalone script pattern:
+
+.. code-block:: python
+
+   udp = rogue.protocols.udp.Client("127.0.0.1", 8200, True)
+   rssi = rogue.protocols.rssi.Client(udp.maxPayload() - 8)
+   udp == rssi.transport()
+
    rssi._start()
+   try:
+       # Connect upper-layer protocols and run application logic.
+       pass
+   finally:
+       rssi._stop()
+       udp._stop()
 
 Code-backed behavior notes
 ==========================
 
 - ``Client`` is a thin bundle around ``Transport``, ``Application``, and a
   client-role ``Controller`` created in ``src/rogue/protocols/rssi/Client.cpp``.
-- Python bindings expose ``_start()`` / ``_stop()`` (wrapping ``start()`` /
-  ``stop()``), plus negotiated/runtime counters such as ``getOpen()``,
+- Python bindings expose negotiated/runtime counters such as ``getOpen()``,
   ``getRetranCount()``, and ``getDropCount()``.
 - The end-to-end UDP/RSSI/packetizer pattern used by regression tests is in
   ``tests/test_udpPacketizer.py`` and validates link bring-up plus frame

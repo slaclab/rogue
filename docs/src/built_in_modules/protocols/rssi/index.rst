@@ -48,6 +48,16 @@ Threading and lifecycle notes
 - ``Transport`` and ``Application`` are connected data-path endpoints without
   standalone managed lifecycle control.
 
+Lifecycle usage modes
+=====================
+
+- Root-managed mode:
+  add interfaces to a ``Root`` with ``Root.addInterface(...)`` and let
+  Managed Interface Lifecycle handle startup/shutdown.
+- Standalone script mode:
+  for direct stream-graph scripts without a ``Root``, start/stop RSSI
+  endpoints explicitly in application code.
+
 Typical stream topology:
 
 .. code-block:: text
@@ -118,9 +128,18 @@ explicitly. The following pattern is used in wrappers such as
    c_udp == c_rssi.transport()
    c_rssi.application() == c_pack.transport()
 
-   # Start RSSI state machines (Python binding names)
+   # If using a Root-managed application, register interfaces with:
+   # root.addInterface(s_udp, s_rssi, c_udp, c_rssi)
+   #
+   # If using a standalone script (no Root), manage lifecycle directly:
    s_rssi._start()
    c_rssi._start()
+   # ... run traffic ...
+   c_rssi._stop()
+   s_rssi._stop()
+
+Managed lifecycle reference:
+:ref:`pyrogue_tree_node_device_managed_interfaces`
 
 See also
 ========

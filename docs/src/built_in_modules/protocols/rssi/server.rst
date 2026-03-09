@@ -29,16 +29,38 @@ Example (Python):
    # Link-layer stream connection
    udp == rssi.transport()
 
-   # Start controller state machine
+Lifecycle usage modes
+=====================
+
+- Root-managed mode:
+  register interfaces with ``Root.addInterface(...)`` and let Managed
+  Interface Lifecycle start/stop them.
+- Standalone script mode:
+  when no ``Root`` manages lifecycle, start and stop explicitly.
+
+Standalone script pattern:
+
+.. code-block:: python
+
+   udp = rogue.protocols.udp.Server(0, True)
+   rssi = rogue.protocols.rssi.Server(udp.maxPayload() - 8)
+   udp == rssi.transport()
+
    rssi._start()
+   try:
+       # Connect upper-layer protocols and run application logic.
+       pass
+   finally:
+       rssi._stop()
+       udp._stop()
 
 Code-backed behavior notes
 ==========================
 
 - ``Server`` is a thin bundle around ``Transport``, ``Application``, and a
   server-role ``Controller`` created in ``src/rogue/protocols/rssi/Server.cpp``.
-- Python bindings expose ``_start()`` / ``_stop()`` plus the same status and
-  tuning APIs as client role (open state, counters, local parameter setters).
+- Python bindings expose the same status and tuning APIs as client role (open
+  state, counters, local parameter setters).
 - In direct usage and in ``pyrogue.protocols.UdpRssiPack``, the server is
   connected as ``udp == rssi.transport()`` with upper protocols wired through
   ``rssi.application()``.

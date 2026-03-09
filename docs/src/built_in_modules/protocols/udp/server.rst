@@ -33,7 +33,7 @@ Construction and lifecycle
   creates socket, binds local port, starts RX thread.
 - Dynamic port assignment:
   passing ``port=0`` requests an OS-assigned port, retrievable via ``getPort()``.
-- ``stop()``:
+- C++ ``stop()`` / Python ``_stop()``:
   disables RX thread, joins thread, and closes socket.
 
 Timeout behavior
@@ -48,6 +48,8 @@ Typical deployment pattern
 - Rogue process binds a local UDP port.
 - Remote endpoint initiates traffic toward that port.
 - Upper layers (RSSI/packetizer) use the server transport endpoint.
+- Standalone UDP deployment is less common for control/config paths because UDP
+  itself does not provide reliability or in-order delivery guarantees.
 
 Code-backed example
 ===================
@@ -55,13 +57,27 @@ Code-backed example
 .. code-block:: python
 
    import rogue.protocols.udp
-   import rogue.protocols.rssi
 
+   src = MyFrameSource()  # Application stream source.
+   dst = MyFrameSink()    # Application stream sink.
    udp = rogue.protocols.udp.Server(0, True)
-   rssi = rogue.protocols.rssi.Server(udp.maxPayload() - 8)
 
-   udp == rssi.transport()
-   rssi._start()
+   # Outbound application traffic: source -> UDP datagrams.
+   src >> udp
+
+   # Inbound application traffic: UDP datagrams -> sink.
+   udp >> dst
+
+Lifecycle usage modes:
+
+- Root-managed mode:
+  register transport/protocol objects with ``Root.addInterface(...)`` and let
+  Managed Interface Lifecycle stop them during tree shutdown.
+- Standalone script mode:
+  call ``_stop()`` explicitly on UDP endpoints during script teardown.
+
+Managed lifecycle reference:
+:ref:`pyrogue_tree_node_device_managed_interfaces`
 
 Practical checklist
 ===================
