@@ -14,6 +14,19 @@ Key points:
 * Can emit configuration/status frames at open/close
 * Supports options such as raw mode and error-frame handling
 
+Logging
+=======
+
+The underlying Rogue ``StreamWriter`` instance uses Rogue C++ logging.
+
+- Logger name: ``pyrogue.fileio.StreamWriter``
+- Configuration API:
+  ``rogue.Logging.setFilter('pyrogue.fileio.StreamWriter', rogue.Logging.Debug)``
+
+The PyRogue Device wrapper itself is mainly a control wrapper, so capture-path
+diagnostics usually come from the underlying C++ writer rather than from a
+separate Python logger on the wrapper.
+
 StreamWriter API Reference
 ================================
 

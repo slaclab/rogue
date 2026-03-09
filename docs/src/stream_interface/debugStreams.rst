@@ -14,6 +14,20 @@ Parameter behavior
 - ``maxBytes``: maximum payload bytes shown per received frame.
 - ``name``: logger name prefix used in emitted debug messages.
 
+Logging
+=======
+
+``setDebug(maxBytes, name)`` uses Rogue C++ logging, not Python ``logging``.
+
+- Dynamic logger pattern: ``pyrogue.<name>``
+- Example: ``dbg.setDebug(100, 'stream.debug')`` logs through
+  ``pyrogue.stream.debug``
+- Configuration API:
+  ``rogue.Logging.setFilter('pyrogue.stream.debug', rogue.Logging.Debug)``
+
+Set the filter before calling ``setDebug(...)``. The helper creates the logger
+instance when debug mode is enabled.
+
 Python example
 ==============
 
@@ -55,6 +69,8 @@ Notes
 =====
 
 - Base ``Slave`` debug mode increments internal frame/byte counters.
+- The logger name is chosen entirely by the ``name`` argument passed to
+  ``setDebug(...)``.
 - If a custom C++ slave overrides ``acceptFrame`` and still needs base
   counters/debug behavior, call ``Slave::acceptFrame(frame)`` or implement
   equivalent logic.

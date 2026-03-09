@@ -65,6 +65,18 @@ Behavior Notes
 - ``configChan=None`` disables YAML config/status extraction.
 - ``records()`` yields NumPy arrays for payload bytes.
 
+Logging
+=======
+
+``FileReader`` uses Python logging, not Rogue C++ logging.
+
+- Default logger name: ``pyrogue.FileReader``
+- Configuration API:
+  ``logging.getLogger('pyrogue.FileReader').setLevel(logging.DEBUG)``
+
+If you pass a custom ``log=...`` object into ``FileReader``, that logger is
+used instead of the default.
+
 Related References
 ==================
 

@@ -38,6 +38,19 @@ Parameter overview:
 Transactions presented to this endpoint are interpreted relative to the mapped
 base, so sizing and alignment choices should match the target register map.
 
+Logging
+=======
+
+``MemMap`` uses Rogue C++ logging.
+
+- Logger name: ``pyrogue.MemMap``
+- Configuration API:
+  ``rogue.Logging.setFilter('pyrogue.MemMap', rogue.Logging.Debug)``
+- Typical messages: mapped-range creation, issued transactions, and transaction
+  timeout warnings
+
+Set the filter before constructing the ``MemMap`` object.
+
 Python MemMap Example
 =====================
 

@@ -35,6 +35,23 @@ The examples below use a small set of core ``StreamWriter`` methods:
 In the PyRogue wrapper flow, the same operations are exposed through tree
 variables/commands such as ``DataFile``, ``Open``, and ``Close``.
 
+Logging
+=======
+
+The underlying C++ ``StreamWriter`` uses Rogue C++ logging.
+
+- Logger name: ``pyrogue.fileio.StreamWriter``
+- Configuration API:
+  ``rogue.Logging.setFilter('pyrogue.fileio.StreamWriter', rogue.Logging.Debug)``
+- Typical messages: file open/close flow, split-file rollover, and write-path
+  operational diagnostics
+
+Set the filter before constructing the writer object.
+
+The PyRogue wrapper itself is primarily a control surface around that C++
+writer, so the most useful logging usually comes from the underlying
+``StreamWriter`` logger.
+
 Python StreamWriter Example
 ===========================
 

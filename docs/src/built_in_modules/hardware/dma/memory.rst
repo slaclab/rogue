@@ -28,6 +28,18 @@ register access model.
 Use ``AxiMemMap`` when your firmware exposes register access through the
 driver path and you want a direct Rogue Memory endpoint.
 
+Logging
+=======
+
+``AxiMemMap`` uses Rogue C++ logging.
+
+- Logger name: ``pyrogue.axi.AxiMemMap``
+- Configuration API:
+  ``rogue.Logging.setFilter('pyrogue.axi.AxiMemMap', rogue.Logging.Debug)``
+- Typical messages: transaction issue/completion flow and transaction timeouts
+
+Set the filter before constructing the ``AxiMemMap`` object.
+
 Python AxiMemMap Example
 ========================
 

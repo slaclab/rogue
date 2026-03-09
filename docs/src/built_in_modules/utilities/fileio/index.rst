@@ -27,6 +27,28 @@ Common workflows include:
 - Reading records directly in Python for offline analysis.
 - Extending the base writer for custom DAQ output formats.
 
+Logging
+=======
+
+The file I/O utilities use both Rogue C++ logging and Python logging,
+depending on the object:
+
+- ``rogue.utilities.fileio.StreamWriter`` uses Rogue C++ logging with logger
+  name ``pyrogue.fileio.StreamWriter``.
+- ``pyrogue.utilities.fileio.FileReader`` uses Python logging with logger
+  name ``pyrogue.FileReader`` by default.
+
+This means capture-path debugging and offline-analysis debugging use different
+configuration APIs:
+
+.. code-block:: python
+
+   import logging
+   import rogue
+
+   rogue.Logging.setFilter('pyrogue.fileio.StreamWriter', rogue.Logging.Debug)
+   logging.getLogger('pyrogue.FileReader').setLevel(logging.DEBUG)
+
 Subtopic Guide
 ==============
 

@@ -29,6 +29,21 @@ The examples below use the core ``StreamReader`` methods:
 When the input name ends with ``.1``, the reader automatically attempts
 ``.2``, ``.3``, and so on as a split-file sequence.
 
+Logging
+=======
+
+``StreamReader`` does not expose a dedicated file-reader logger in the same way
+that ``StreamWriter`` does.
+
+For replay debugging, the practical approaches are:
+
+- Attach a downstream debug ``Slave`` and use ``setDebug(maxBytes, name)`` to
+  inspect replayed frames.
+- Use application-level logging in the downstream stream consumer if replay
+  behavior needs to be correlated with higher-level processing.
+
+See :doc:`/stream_interface/debugStreams` for the standard debug-tap pattern.
+
 Python StreamReader Example
 ===========================
 

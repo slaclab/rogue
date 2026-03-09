@@ -166,6 +166,21 @@ with ``setDebug(maxBytes, name)`` to print frame summaries and byte dumps.
 
 See :doc:`/stream_interface/debugStreams`.
 
+Logging
+=======
+
+Most custom receive code uses one of two logging patterns:
+
+- Python subclasses usually use normal Python ``logging`` inside
+  ``_acceptFrame()``.
+- C++ subclasses usually create a Rogue logger with
+  ``rogue::Logging::create(...)`` inside the receiver class.
+
+If you want quick byte-dump logging without writing a custom receiver, attach a
+base ``Slave`` and call ``setDebug(maxBytes, name)``. That helper creates a
+Rogue C++ logger named ``pyrogue.<name>``. For example,
+``dbg.setDebug(128, 'stream.rx.tap')`` emits through ``pyrogue.stream.rx.tap``.
+
 What to explore next
 ====================
 

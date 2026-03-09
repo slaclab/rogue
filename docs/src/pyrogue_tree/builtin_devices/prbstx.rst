@@ -10,6 +10,18 @@ It exposes TX controls and counters through variables/commands such as
 ``txEnable``, ``txSize``, ``txPeriod``, ``genFrame``, and throughput/error
 counters.
 
+Logging
+=======
+
+The underlying Rogue PRBS engine uses Rogue C++ logging.
+
+- Logger name: ``pyrogue.prbs.tx``
+- Configuration API:
+  ``rogue.Logging.setFilter('pyrogue.prbs.tx', rogue.Logging.Debug)``
+
+Set the filter before constructing the PRBS object if you want detailed
+transmit-path diagnostics.
+
 PrbsTx API Reference
 ==========================
 

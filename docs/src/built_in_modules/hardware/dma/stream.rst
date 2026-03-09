@@ -40,6 +40,22 @@ Parameter summary
 The class includes an internal RX thread. TX occurs when frames are accepted
 from upstream.
 
+Logging
+=======
+
+``AxiStreamDma`` uses Rogue C++ logging and also exposes a separate driver
+debug path.
+
+- Logger name: ``pyrogue.axi.AxiStreamDma``
+- Configuration API:
+  ``rogue.Logging.setFilter('pyrogue.axi.AxiStreamDma', rogue.Logging.Debug)``
+- Typical Rogue messages: DMA channel creation, send/receive timeouts, and
+  errored-frame handling
+- Driver debug helper: ``setDriverDebug(level)``
+
+``setDriverDebug(...)`` enables Linux driver diagnostics, which usually appear
+in ``dmesg`` rather than in Rogue's own logger output.
+
 Python AxiStreamDma Example
 ===========================
 

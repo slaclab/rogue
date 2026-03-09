@@ -10,6 +10,18 @@ It exposes receiver controls and counters as PyRogue variables/commands, for
 example ``rxEnable``, ``rxErrors``, ``rxCount``, ``rxRate``, and payload-check
 controls.
 
+Logging
+=======
+
+The underlying Rogue PRBS engine uses Rogue C++ logging.
+
+- Logger name: ``pyrogue.prbs.rx``
+- Configuration API:
+  ``rogue.Logging.setFilter('pyrogue.prbs.rx', rogue.Logging.Debug)``
+
+Set the filter before constructing the PRBS object if you want detailed
+receive-path diagnostics.
+
 PrbsRx API Reference
 ==========================
 
