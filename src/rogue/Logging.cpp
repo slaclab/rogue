@@ -56,6 +56,9 @@ std::mutex rogue::Logging::levelMtx_;
 // Filter list
 std::vector<rogue::LogFilter*> rogue::Logging::filters_;
 
+// Active loggers
+std::vector<rogue::Logging*> rogue::Logging::loggers_;
+
 // Crate logger
 rogue::LoggingPtr rogue::Logging::create(const std::string& name, bool quiet) {
     rogue::LoggingPtr log = std::make_shared<rogue::Logging>(name, quiet);
@@ -69,44 +72,67 @@ std::string rogue::Logging::normalizeName(const std::string& name) {
 }
 
 rogue::Logging::Logging(const std::string& name, bool quiet) {
-    std::vector<rogue::LogFilter*>::iterator it;
-
     name_ = normalizeName(name);
 
     levelMtx_.lock();
+    updateLevelLocked();
+    loggers_.push_back(this);
+    levelMtx_.unlock();
 
-    level_ = gblLevel_;
+    if (!quiet) warning("Starting logger with level = %" PRIu32, level_.load());
+}
 
-    for (it = filters_.begin(); it < filters_.end(); it++) {
-        if (name_.find((*it)->name_) == 0) {
-            if ((*it)->level_ < level_) level_ = (*it)->level_;
+rogue::Logging::~Logging() {
+    std::vector<rogue::Logging*>::iterator it;
+
+    levelMtx_.lock();
+    for (it = loggers_.begin(); it < loggers_.end(); ++it) {
+        if (*it == this) {
+            loggers_.erase(it);
+            break;
         }
     }
     levelMtx_.unlock();
-
-    if (!quiet) warning("Starting logger with level = %" PRIu32, level_);
 }
 
-rogue::Logging::~Logging() {}
+void rogue::Logging::updateLevelLocked() {
+    std::vector<rogue::LogFilter*>::iterator it;
+    uint32_t level = gblLevel_;
+
+    for (it = filters_.begin(); it < filters_.end(); ++it) {
+        if (name_.find((*it)->name_) == 0) {
+            if ((*it)->level_ < level) level = (*it)->level_;
+        }
+    }
+
+    level_.store(level);
+}
 
 void rogue::Logging::setLevel(uint32_t level) {
+    std::vector<rogue::Logging*>::iterator it;
+
     levelMtx_.lock();
     gblLevel_ = level;
+    for (it = loggers_.begin(); it < loggers_.end(); ++it) (*it)->updateLevelLocked();
     levelMtx_.unlock();
 }
 
 void rogue::Logging::setFilter(const std::string& name, uint32_t level) {
+    std::vector<rogue::Logging*>::iterator it;
+
     levelMtx_.lock();
 
     rogue::LogFilter* flt = new rogue::LogFilter(normalizeName(name), level);
 
     filters_.push_back(flt);
 
+    for (it = loggers_.begin(); it < loggers_.end(); ++it) (*it)->updateLevelLocked();
+
     levelMtx_.unlock();
 }
 
 void rogue::Logging::intLog(uint32_t level, const char* fmt, va_list args) {
-    if (level < level_) return;
+    if (level < level_.load()) return;
 
     struct timeval tme;
     char buffer[1000];
@@ -196,6 +222,6 @@ void rogue::Logging::setup_python() {
         .def_readonly("Warning", &rogue::Logging::Warning)
         .def_readonly("Info", &rogue::Logging::Info)
         .def_readonly("Debug", &rogue::Logging::Debug)
-        .def("name", &rogue::Logging::name);
+        .def("name", &rogue::Logging::name, bp::return_value_policy<bp::copy_const_reference>());
 #endif
 }

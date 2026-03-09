@@ -20,6 +20,7 @@
 
 #include <stdint.h>
 
+#include <atomic>
 #include <exception>
 #include <memory>
 #include <mutex>
@@ -65,10 +66,15 @@ class Logging {
     // Name/level filters
     static std::vector<rogue::LogFilter*> filters_;
 
+    // Active logger instances
+    static std::vector<rogue::Logging*> loggers_;
+
     void intLog(uint32_t level, const char* format, va_list args);
 
+    void updateLevelLocked();
+
     // Local logger level
-    uint32_t level_;
+    std::atomic<uint32_t> level_;
 
     // Logger name
     std::string name_;
