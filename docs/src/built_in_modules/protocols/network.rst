@@ -181,8 +181,18 @@ output, however, comes from the underlying Rogue C++ modules:
 - ``pyrogue.rssi.controller``
 - ``pyrogue.packetizer.Controller``
 
-In practice, enable logging on those underlying logger families rather than on
-the wrapper itself when debugging link behavior.
+Configuration example:
+
+.. code-block:: python
+
+   import rogue
+
+   rogue.Logging.setFilter('pyrogue.udp', rogue.Logging.Debug)
+   rogue.Logging.setFilter('pyrogue.rssi', rogue.Logging.Debug)
+   rogue.Logging.setFilter('pyrogue.packetizer', rogue.Logging.Debug)
+
+In practice, enable the underlying protocol loggers rather than relying on any
+wrapper-level Python logging when debugging link behavior.
 
 See also
 ========

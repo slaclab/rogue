@@ -86,12 +86,13 @@ Notes
 Logging
 =======
 
-The base Rogue memory master uses Rogue C++ logging with the static logger
-name:
+The base Rogue memory master uses Rogue C++ logging.
 
-- ``pyrogue.memory.Master``
+- Logger name: ``pyrogue.memory.Master``
+- Configuration API:
+  ``rogue.Logging.setFilter('pyrogue.memory.Master', rogue.Logging.Debug)``
 
-Enable it before constructing or using the master:
+Set the filter before constructing the master:
 
 .. code-block:: python
 
@@ -100,8 +101,8 @@ Enable it before constructing or using the master:
    rogue.Logging.setFilter('pyrogue.memory.Master', rogue.Logging.Debug)
 
 This logger is useful for transaction-request and error-path debugging in
-custom master implementations. The base ``Master`` class does not provide a
-separate runtime debug helper.
+custom master implementations. ``Master`` does not provide a separate runtime
+debug helper.
 
 What to explore next
 ====================

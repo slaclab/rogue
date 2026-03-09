@@ -99,9 +99,9 @@ C++ skeleton example
 Logging
 =======
 
-The base ``memory.Slave`` interface does not define a dedicated logger name of
-its own. Logging is typically implemented by concrete subclasses or bridge
-layers built on top of ``Slave``.
+``memory.Slave`` does not define a dedicated logger of its own. Logging is
+typically implemented by concrete subclasses or bridge layers built on top of
+``Slave``.
 
 Examples elsewhere in Rogue include:
 
@@ -109,9 +109,12 @@ Examples elsewhere in Rogue include:
 - ``pyrogue.SrpV3``
 - ``pyrogue.memory.TcpClient.<addr>.<port>``
 
-For custom slaves, the recommended pattern is to add your own Python logger
-(``self._log`` in Python) or your own ``rogue::Logging::create("...")`` logger
-in C++ so users have a stable name to filter.
+For custom slaves, the recommended pattern is:
+
+- Python: add ``self._log`` with ``pyrogue.logInit(...)``
+- C++: add ``rogue::Logging::create("...")``
+
+This gives users a stable logger name they can filter.
 
 What to explore next
 ====================

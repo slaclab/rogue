@@ -71,11 +71,13 @@ Design notes
 Logging
 =======
 
-The base Rogue memory hub uses Rogue C++ logging with the static logger name:
+The base Rogue memory hub uses Rogue C++ logging.
 
-- ``pyrogue.memory.Hub``
+- Logger name: ``pyrogue.memory.Hub``
+- Configuration API:
+  ``rogue.Logging.setFilter('pyrogue.memory.Hub', rogue.Logging.Debug)``
 
-Enable it before constructing hub objects:
+Set the filter before constructing the hub:
 
 .. code-block:: python
 

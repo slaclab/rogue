@@ -13,8 +13,8 @@ transmit and receive control should live under one node.
 Logging
 =======
 
-``PrbsPair`` combines the same underlying PRBS transmitter and receiver
-loggers used by :doc:`prbstx` and :doc:`prbsrx`:
+``PrbsPair`` uses the same underlying Rogue C++ PRBS loggers as
+:doc:`prbstx` and :doc:`prbsrx`:
 
 - ``pyrogue.prbs.tx``
 - ``pyrogue.prbs.rx``
