@@ -39,7 +39,8 @@ Typical usage
 
 1. Create an ``Xvc`` instance on a local TCP port.
 2. Connect it bidirectionally to a Rogue stream transport path to hardware.
-3. Start the XVC server thread.
+3. Start lifecycle (managed by ``Root.addInterface(...)`` or explicitly in
+   standalone scripts).
 4. Connect Vivado/XVC client to the local TCP port.
 
 Python example
@@ -64,8 +65,32 @@ Python example
            # Bidirectional stream connection.
            self.jtagStream == self.xvc
 
-           # Register interfaces for start/stop.
+           # Register interfaces for Managed Interface Lifecycle.
            self.addInterface(self.jtagStream, self.xvc)
+
+Standalone Python script pattern
+--------------------------------
+
+Use explicit lifecycle calls when no ``Root`` is managing interfaces.
+
+.. code-block:: python
+
+   import rogue.hardware.axi as rha
+   import rogue.protocols.xilinx as rpx
+
+   jtag_stream = rha.AxiStreamDma("/dev/datadev_0", 2, True)
+   xvc = rpx.Xvc(2542)
+
+   jtag_stream == xvc
+
+   xvc._start()
+   try:
+       # Keep process alive while XVC clients connect.
+       # Your application loop goes here.
+       pass
+   finally:
+       xvc._stop()
+       jtag_stream._stop()
 
 
 C++ example
@@ -77,11 +102,15 @@ C++ example
    #include <rogue/protocols/xilinx/Xvc.h>
 
    int main() {
+       // Hardware-facing stream endpoint for firmware JTAG bridge channel.
        auto jtagStream = rogue::hardware::axi::AxiStreamDma::create("/dev/datadev_0", 2, true);
+       // Tool-facing XVC TCP server bridge.
        auto xvc        = rogue::protocols::xilinx::Xvc::create(2542);
 
+       // Bidirectional stream connection between transport and XVC bridge.
        *jtagStream == xvc;
 
+       // Standalone lifecycle control in C++.
        xvc->start();
        // Application loop...
        xvc->stop();
@@ -107,6 +136,9 @@ Threading and Lifecycle
 - ``Xvc`` uses an internal mutex around response-buffer copy paths.
 - Implements Managed Interface Lifecycle:
   :ref:`pyrogue_tree_node_device_managed_interfaces`
+- In Root-managed PyRogue applications, register with ``Root.addInterface(...)``
+  and avoid manual start/stop calls.
+- In standalone scripts, call ``_start()``/``_stop()`` explicitly on ``Xvc``.
 
 API references
 --------------
@@ -117,3 +149,10 @@ C++ API reference pages are collected in :doc:`/api/cpp/protocols/xilinx/index`:
 - :doc:`/api/cpp/protocols/xilinx/jtagDriver`
 - :doc:`/api/cpp/protocols/xilinx/xvcServer`
 - :doc:`/api/cpp/protocols/xilinx/xvcConnection`
+
+What To Explore Next
+--------------------
+
+- Stream transport wiring patterns: :doc:`/stream_interface/connecting`
+- DMA transport details: :doc:`/built_in_modules/hardware/dma/stream`
+- Device-tree lifecycle integration: :doc:`/pyrogue_tree/core/device`
