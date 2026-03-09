@@ -108,6 +108,66 @@ API reference
 - :doc:`/api/cpp/interfaces/stream/tcpServer`
 - :doc:`/api/cpp/interfaces/stream/tcpClient`
 
+Logging
+=======
+
+``TcpCore`` uses Rogue C++ logging, not Python ``logging``.
+
+Logger name pattern
+-------------------
+
+The logger name is constructed dynamically from address, mode, and port in
+[TcpCore.cpp](/Users/bareese/rogue/src/rogue/interfaces/stream/TcpCore.cpp).
+The resulting names are:
+
+- ``pyrogue.stream.TcpCore.<addr>.Server.<port>``
+- ``pyrogue.stream.TcpCore.<addr>.Client.<port>``
+
+Examples:
+
+- ``pyrogue.stream.TcpCore.127.0.0.1.Server.8000``
+- ``pyrogue.stream.TcpCore.192.168.1.10.Client.8000``
+
+How to enable it
+----------------
+
+Use ``rogue.Logging.setFilter(...)`` before constructing the bridge object:
+
+.. code-block:: python
+
+   import rogue
+   import rogue.interfaces.stream as ris
+
+   rogue.Logging.setFilter('pyrogue.stream.TcpCore', rogue.Logging.Debug)
+
+   tcp = ris.TcpClient('127.0.0.1', 8000)
+
+You can also target one specific instance if the full dynamic name is known:
+
+.. code-block:: python
+
+   rogue.Logging.setFilter(
+       'pyrogue.stream.TcpCore.127.0.0.1.Client.8000',
+       rogue.Logging.Debug,
+   )
+
+What it logs
+------------
+
+At debug level, ``TcpCore`` logs bridge setup details and frame movement, such
+as:
+
+- client/server socket creation
+- bind/connect address selection
+- pushed frame sizes
+- pulled frame sizes
+- worker-thread identity
+
+There is no additional per-instance ``setDebug(...)`` helper on ``TcpCore``.
+For byte-level frame inspection, add a separate debug ``Slave`` or use
+``setDebug(...)`` on a plain ``rogue.interfaces.stream.Slave`` tap elsewhere in
+the stream graph.
+
 Operational notes
 =================
 
