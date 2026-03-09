@@ -10,6 +10,9 @@ needed directly in a stream topology.
 Use ``pyrogue.utilities.prbs.PrbsTx`` when you want generator control and
 counters as part of a ``Root`` tree.
 
+This transmit path is commonly used to drive PRBS into FPGA firmware/VHDL
+checkers during link bring-up and integration testing.
+
 Method Overview
 ===============
 
@@ -96,3 +99,4 @@ Related References
 
 - :doc:`/api/cpp/utilities/prbs/prbs`
 - :doc:`/pyrogue_tree/builtin_devices/prbstx`
+- :doc:`/pyrogue_tree/builtin_devices/prbspair`
