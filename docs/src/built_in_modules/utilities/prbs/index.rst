@@ -80,7 +80,7 @@ two static logger names:
 - ``pyrogue.prbs.tx``
 - ``pyrogue.prbs.rx``
 
-Enable them before constructing the PRBS object:
+Enable them with:
 
 .. code-block:: python
 

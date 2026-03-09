@@ -131,7 +131,7 @@ Examples:
 How to enable it
 ----------------
 
-Use ``rogue.Logging.setFilter(...)`` before constructing the bridge object:
+Use ``rogue.Logging.setFilter(...)`` to enable it:
 
 .. code-block:: python
 

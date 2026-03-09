@@ -77,7 +77,7 @@ The base Rogue memory hub uses Rogue C++ logging.
 - Configuration API:
   ``rogue.Logging.setFilter('pyrogue.memory.Hub', rogue.Logging.Debug)``
 
-Set the filter before constructing the hub:
+Set the filter with:
 
 .. code-block:: python
 

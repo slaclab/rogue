@@ -38,7 +38,7 @@ Logging
   ``rogue.Logging.setFilter('pyrogue.axi.AxiMemMap', rogue.Logging.Debug)``
 - Typical messages: transaction issue/completion flow and transaction timeouts
 
-Set the filter before constructing the ``AxiMemMap`` object.
+Set the filter with:
 
 Python AxiMemMap Example
 ========================

@@ -153,7 +153,7 @@ Static logger names:
 Use ``pyrogue.xilinx.xvc`` for TCP server / frame-bridge activity and
 ``pyrogue.xilinx.jtag`` for protocol-level JTAG query/shift debugging.
 
-Enable before object construction:
+Enable with:
 
 .. code-block:: python
 

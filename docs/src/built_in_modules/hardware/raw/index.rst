@@ -49,7 +49,7 @@ Logging
 - Typical messages: mapped-range creation, issued transactions, and transaction
   timeout warnings
 
-Set the filter before constructing the ``MemMap`` object.
+Set the filter with:
 
 Python MemMap Example
 =====================

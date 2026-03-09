@@ -118,7 +118,7 @@ Static logger names:
 - ``pyrogue.udp.Client``
 - ``pyrogue.udp.Server``
 
-Enable one side or the whole subsystem before constructing objects:
+Enable one side or the whole subsystem with:
 
 .. code-block:: python
 

@@ -151,7 +151,7 @@ Static logger name:
 
 - ``pyrogue.rssi.controller``
 
-Enable it before constructing RSSI objects:
+Enable it with:
 
 .. code-block:: python
 

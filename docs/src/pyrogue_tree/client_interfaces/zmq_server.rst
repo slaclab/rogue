@@ -106,7 +106,7 @@ Example:
    rogue.Logging.setFilter('pyrogue.ZmqServer', rogue.Logging.Debug)
    server = pyrogue.interfaces.ZmqServer(root=root, addr='127.0.0.1', port=9099)
 
-Set the filter before constructing the server object.
+Set the filter with:
 
 Separately, ``ZmqServer._start()`` prints the selected ports and example client
 commands to stdout. Those startup messages are not controlled by the logging

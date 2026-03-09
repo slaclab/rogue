@@ -114,7 +114,7 @@ Packetizer v2 logs through the shared packetizer controller logger:
 
 - ``pyrogue.packetizer.Controller``
 
-Enable it before constructing the ``CoreV2`` object:
+Enable it with:
 
 .. code-block:: python
 

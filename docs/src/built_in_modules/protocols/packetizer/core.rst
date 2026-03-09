@@ -112,7 +112,7 @@ Static logger name:
 
 - ``pyrogue.packetizer.Controller``
 
-Enable it before constructing packetizer objects:
+Enable it with:
 
 .. code-block:: python
 

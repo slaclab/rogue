@@ -92,7 +92,7 @@ The base Rogue memory master uses Rogue C++ logging.
 - Configuration API:
   ``rogue.Logging.setFilter('pyrogue.memory.Master', rogue.Logging.Debug)``
 
-Set the filter before constructing the master:
+Set the filter with:
 
 .. code-block:: python
 

@@ -110,7 +110,7 @@ Logging
 
 - ``pyrogue.stream.Fifo``
 
-Enable it before constructing the object:
+Enable it with:
 
 .. code-block:: python
 

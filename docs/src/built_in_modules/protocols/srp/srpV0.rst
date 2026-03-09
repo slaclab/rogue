@@ -52,8 +52,7 @@ Logging
 - Typical messages: transmitted request headers, received response headers,
   undersized frames, bad headers, expired transactions, and error tails
 
-Set the filter before constructing the ``SrpV0`` object. Rogue C++ loggers
-copy their level when the logger instance is created.
+Set the filter with:
 
 Python usage example
 --------------------

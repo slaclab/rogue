@@ -46,7 +46,7 @@ The underlying C++ ``StreamWriter`` uses Rogue C++ logging.
 - Typical messages: file open/close flow, split-file rollover, and write-path
   operational diagnostics
 
-Set the filter before constructing the writer object.
+Set the filter with:
 
 The PyRogue wrapper itself is primarily a control surface around that C++
 writer, so the most useful logging usually comes from the underlying

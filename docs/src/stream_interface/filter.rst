@@ -100,7 +100,7 @@ Logging
 
 - ``pyrogue.stream.Filter``
 
-Enable it before constructing the filter:
+Enable it with:
 
 .. code-block:: python
 

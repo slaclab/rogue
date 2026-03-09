@@ -100,8 +100,7 @@ Examples:
 - ``pyrogue.memory.TcpServer.*.8000``
 - ``pyrogue.memory.TcpClient.127.0.0.1.8000``
 
-Enable logging with ``rogue.Logging.setFilter(...)`` before constructing the
-bridge object:
+Enable logging with ``rogue.Logging.setFilter(...)``:
 
 .. code-block:: python
 

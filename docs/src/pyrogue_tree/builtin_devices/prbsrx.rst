@@ -19,7 +19,7 @@ The underlying Rogue PRBS engine uses Rogue C++ logging.
 - Configuration API:
   ``rogue.Logging.setFilter('pyrogue.prbs.rx', rogue.Logging.Debug)``
 
-Set the filter before constructing the PRBS object if you want detailed
+Set the filter if you want detailed
 receive-path diagnostics.
 
 PrbsRx API Reference
