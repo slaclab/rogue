@@ -53,6 +53,19 @@ Related pages
 - General protocol organization: :doc:`/built_in_modules/protocols/index`
 - Usage validation: ``tests/test_epics.py``
 
+Logging
+=======
+
+``EpicsPvHolder`` does not create a separate logger. Each holder reuses the
+server logger passed in from ``EpicsPvServer``:
+
+- Logger name: ``pyrogue.EpicsPvServer``
+- Configuration API:
+  ``logging.getLogger('pyrogue.EpicsPvServer').setLevel(logging.DEBUG)``
+
+That means put/get/rpc handling errors reported by a holder appear under the
+server logger rather than a per-PV logger.
+
 EPICS PvHolder API Reference
 ==================================
 

@@ -96,6 +96,18 @@ Integration guidance
 - Document which PVs are authoritative control points versus status mirrors.
 - Pair with tree-side validation and polling strategy docs as needed.
 
+Logging
+=======
+
+``EpicsPvServer`` uses Python logging.
+
+- Logger name: ``pyrogue.EpicsPvServer``
+- Configuration API:
+  ``logging.getLogger('pyrogue.EpicsPvServer').setLevel(logging.DEBUG)``
+
+This logger is used for PV mapping errors and other server-side operational
+messages emitted by the Python implementation.
+
 EpicsPvServer API Reference
 =================================
 

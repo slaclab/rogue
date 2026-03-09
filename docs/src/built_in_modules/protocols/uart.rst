@@ -77,3 +77,25 @@ Integration notes
 - Validate buffering/timing behavior when bridging UART into stream or command
   workflows.
 - Keep transactions aligned to 32-bit words for predictable behavior.
+
+Logging
+=======
+
+``UartMemory`` uses Python logging.
+
+The logger name includes the serial device path:
+
+- Pattern: ``pyrogue.UartMemory.<device>``
+- Example: ``pyrogue.UartMemory./dev/ttyUSB0``
+
+Configuration API:
+
+.. code-block:: python
+
+   import logging
+
+   logging.getLogger('pyrogue.UartMemory').setLevel(logging.DEBUG)
+
+The current implementation has several transaction-level debug statements in
+the code commented out, so enabling the logger is most useful when those debug
+calls are active or when additional UART diagnostics are added.
