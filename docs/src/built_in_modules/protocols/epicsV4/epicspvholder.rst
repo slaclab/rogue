@@ -26,6 +26,19 @@ Based on ``python/pyrogue/protocols/epicsV4.py``, each holder:
 - Forwards alarm status/severity and display metadata (units/limits) for
   numeric types.
 
+Lifecycle role in the server
+============================
+
+``EpicsPvHolder`` instances are created and owned by ``EpicsPvServer``.
+Each holder binds one tree variable/command to one EPICS PV and remains active
+for the server lifetime.
+
+Per-holder responsibilities:
+
+- Determine EPICS-facing value type from PyRogue metadata.
+- Create backing ``SharedPV`` and handler for put/get/rpc operations.
+- Subscribe to variable updates and post translated values/alarms.
+
 When to use it
 ==============
 

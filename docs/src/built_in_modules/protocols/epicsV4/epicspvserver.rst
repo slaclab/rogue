@@ -26,6 +26,51 @@ Based on ``python/pyrogue/protocols/epicsV4.py``, the server:
 - Creates one ``EpicsPvHolder`` per served variable and exposes list/dump
   helpers for mapping inspection.
 
+Constructor and mapping overview
+================================
+
+``EpicsPvServer(base=..., root=..., incGroups=..., excGroups=..., pvMap=...)``
+uses two mapping modes:
+
+- Automatic mode (``pvMap=None``):
+  serves variables that pass group filters using
+  ``<base>:<path.with.colons>`` naming.
+- Explicit mode (``pvMap`` dict):
+  serves only mapped variable paths with user-defined PV names.
+
+Default exclusion is ``['NoServe']`` when ``excGroups`` is not provided.
+
+Code-backed setup example
+=========================
+
+.. code-block:: python
+
+   import pyrogue as pr
+   import pyrogue.protocols.epicsV4 as pep
+
+   class MyRoot(pr.Root):
+       def __init__(self):
+           super().__init__(name='MyRoot')
+           # Add variables/devices here as usual.
+
+           # Build EPICS server with automatic path-based naming.
+           self.epics = pep.EpicsPvServer(
+               base='MyIoc',
+               root=self,
+               incGroups=None,
+               excGroups=['NoServe'],
+               pvMap=None,
+           )
+
+           # Register as protocol so Root lifecycle starts/stops it.
+           self.addProtocol(self.epics)
+
+   with MyRoot() as root:
+       # Inspect active mapping.
+       root.epics.dump()
+       # Optionally write mapping to file for IOC/client integration.
+       root.epics.dump('epics_map.txt')
+
 Usage pattern from tests
 ========================
 

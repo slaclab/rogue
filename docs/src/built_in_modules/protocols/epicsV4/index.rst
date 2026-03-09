@@ -39,6 +39,20 @@ Typical workflow
    ``list()`` / ``dump()``.
 4. Validate end-to-end behavior with an EPICS client (see ``tests/test_epics.py``).
 
+Group filtering model
+=====================
+
+Variable exposure is controlled by normal PyRogue group filtering:
+
+- ``incGroups`` includes only matching variables when set.
+- ``excGroups`` excludes matching variables (default includes ``NoServe``).
+
+This lets you keep one tree model while exposing only the intended EPICS PV
+surface for a given deployment.
+
+For group semantics and filtering behavior in the tree model, see
+:doc:`/pyrogue_tree/core/groups`.
+
 Related docs
 ============
 

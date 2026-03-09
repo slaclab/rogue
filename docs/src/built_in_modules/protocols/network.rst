@@ -44,20 +44,20 @@ Key constructor arguments
 =========================
 
 * ``server``:
-  choose server mode (``True``) or client mode (``False``). Typical FPGA
+  Choose server mode (``True``) or client mode (``False``). Typical FPGA
   register/data links use ``False``.
 * ``host``/``port``:
-  remote endpoint for client mode, or bind port for server mode.
+  Remote endpoint for client mode, or bind port for server mode.
 * ``jumbo``:
-  enable jumbo-MTU path assumptions in UDP setup.
+  Enable jumbo-MTU path assumptions in UDP setup.
 * ``packVer``:
-  packetizer version, ``1`` or ``2``.
+  Packetizer version, ``1`` or ``2``.
 * ``enSsi``:
-  enable SSI handling in packetizer.
+  Enable SSI handling in packetizer.
 * ``wait``:
-  in client mode, wait for RSSI link-up during startup.
+  In client mode, wait for RSSI link-up during startup.
 * ``defaults`` (via ``kwargs``):
-  optional RSSI parameter overrides such as ``locMaxBuffers``,
+  Optional RSSI parameter overrides such as ``locMaxBuffers``,
   ``locCumAckTout``, ``locRetranTout``, ``locNullTout``,
   ``locMaxRetran``, ``locMaxCumAck``.
 
@@ -78,6 +78,7 @@ Root start/stop sequencing manages the transport lifecycle.
        def __init__(self):
            super().__init__(name='MyRoot')
 
+           # Add bundled UDP + RSSI + packetizer stack.
            self.add(pyrogue.protocols.UdpRssiPack(
                name='Net',
                server=False,
@@ -87,6 +88,7 @@ Root start/stop sequencing manages the transport lifecycle.
                packVer=2,
                enSsi=True,
            ))
+           # Register managed interface lifecycle with Root.
            self.addInterface(self.Net)
 
            # VC 0: register/memory path (for Device memBase)
