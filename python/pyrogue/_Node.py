@@ -23,6 +23,7 @@ from collections import OrderedDict as odict
 from typing import Any, Callable, Iterable, OrderedDict
 
 import pyrogue as pr
+import rogue
 
 
 def logException(log: logging.Logger, e: Exception) -> None:
@@ -95,6 +96,69 @@ def logInit(
         ln += f'.{name}'
 
     return logging.getLogger(ln)
+
+
+def _classLogName(cls: type[pr.Node]) -> str:
+    """Return the canonical Python logger name for a PyRogue Node class."""
+    baseClasses = odict({pr.BaseCommand: 'Command', pr.BaseVariable: 'Variable',
+                         pr.Root: 'Root', pr.Device: 'Device'})
+
+    ln = 'pyrogue'
+
+    for k, v in baseClasses.items():
+        if issubclass(cls, k):
+            ln += f'.{v}'
+            break
+
+    return f'{ln}.{cls.__name__}'
+
+
+def logName(target: Any) -> str:
+    """Return the normalized logger name for a logger, Node, class, or string."""
+    if isinstance(target, str):
+        return rogue.Logging.normalizeName(target)
+
+    if isinstance(target, logging.Logger):
+        return target.name
+
+    if inspect.isclass(target) and issubclass(target, pr.Node):
+        return _classLogName(target)
+
+    log = getattr(target, '_log', None)
+    if log is not None:
+        name = getattr(log, 'name', None)
+        if callable(name):
+            return name()
+        if isinstance(name, str):
+            return name
+
+    raise AttributeError(f'Object {target!r} does not expose a logger name')
+
+
+def setLogLevel(
+    target: Any,
+    level: int | str,
+    *,
+    includePython: bool = True,
+    includeRogue: bool = True,
+) -> str:
+    """Set Python and/or Rogue logging level for a logger target."""
+    if isinstance(level, str):
+        pyLevel = logging.getLevelName(level.upper())
+        if not isinstance(pyLevel, int):
+            raise ValueError(f'Unknown logging level: {level}')
+    else:
+        pyLevel = level
+
+    name = logName(target)
+
+    if includePython:
+        logging.getLogger(name).setLevel(pyLevel)
+
+    if includeRogue:
+        rogue.Logging.setFilter(name, pyLevel)
+
+    return name
 
 
 def expose(item: Any) -> Any:
@@ -192,6 +256,36 @@ class Node(object):
     def __repr__(self) -> str:
         """Return a concise class/path representation."""
         return f'{self.__class__} - {self.path}'
+
+    @classmethod
+    def classLogName(cls) -> str:
+        """Return the canonical Python logger name for this Node class."""
+        return _classLogName(cls)
+
+    @classmethod
+    def setClassLogLevel(
+        cls,
+        level: int | str,
+        *,
+        includePython: bool = True,
+        includeRogue: bool = True,
+    ) -> str:
+        """Set logging level for this Node class logger family."""
+        return setLogLevel(cls, level, includePython=includePython, includeRogue=includeRogue)
+
+    def logName(self) -> str:
+        """Return the logger name for this Node instance."""
+        return logName(self)
+
+    def setLogLevel(
+        self,
+        level: int | str,
+        *,
+        includePython: bool = True,
+        includeRogue: bool = True,
+    ) -> str:
+        """Set logging level for this Node instance logger."""
+        return setLogLevel(self, level, includePython=includePython, includeRogue=includeRogue)
 
     @property
     def nodeCount(self) -> int:

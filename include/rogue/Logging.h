@@ -131,6 +131,13 @@ class Logging {
     static void setFilter(const std::string& filter, uint32_t level);
 
     /**
+     * @brief Normalizes logger names to the emitted Rogue namespace.
+     * @param name Logger name or prefix.
+     * @return Name prefixed with ``pyrogue.`` when required.
+     */
+    static std::string normalizeName(const std::string& name);
+
+    /**
      * @brief Emits a formatted log message at a specified level.
      * @param level Severity level.
      * @param fmt `printf`-style format string.
@@ -150,6 +157,9 @@ class Logging {
 
     /** @brief Emits the current thread id through this logger. */
     void logThreadId();
+
+    /** @brief Returns the fully-qualified emitted logger name. */
+    const std::string& name() const;
 
     /** @brief Registers Python bindings for `Logging`. */
     static void setup_python();

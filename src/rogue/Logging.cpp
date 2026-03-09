@@ -62,10 +62,16 @@ rogue::LoggingPtr rogue::Logging::create(const std::string& name, bool quiet) {
     return log;
 }
 
+std::string rogue::Logging::normalizeName(const std::string& name) {
+    if (name.rfind("pyrogue.", 0) == 0) return name;
+    if (name == "pyrogue") return name;
+    return "pyrogue." + name;
+}
+
 rogue::Logging::Logging(const std::string& name, bool quiet) {
     std::vector<rogue::LogFilter*>::iterator it;
 
-    name_ = "pyrogue." + name;
+    name_ = normalizeName(name);
 
     levelMtx_.lock();
 
@@ -92,7 +98,7 @@ void rogue::Logging::setLevel(uint32_t level) {
 void rogue::Logging::setFilter(const std::string& name, uint32_t level) {
     levelMtx_.lock();
 
-    rogue::LogFilter* flt = new rogue::LogFilter(name, level);
+    rogue::LogFilter* flt = new rogue::LogFilter(normalizeName(name), level);
 
     filters_.push_back(flt);
 
@@ -171,6 +177,10 @@ void rogue::Logging::logThreadId() {
     this->log(Thread, "PID=%" PRIu32 ", TID=%" PRIu32, getpid(), tid);
 }
 
+const std::string& rogue::Logging::name() const {
+    return name_;
+}
+
 void rogue::Logging::setup_python() {
 #ifndef NO_PYTHON
     bp::class_<rogue::Logging, rogue::LoggingPtr, boost::noncopyable>("Logging", bp::no_init)
@@ -178,11 +188,14 @@ void rogue::Logging::setup_python() {
         .staticmethod("setLevel")
         .def("setFilter", &rogue::Logging::setFilter)
         .staticmethod("setFilter")
+        .def("normalizeName", &rogue::Logging::normalizeName)
+        .staticmethod("normalizeName")
         .def_readonly("Critical", &rogue::Logging::Critical)
         .def_readonly("Error", &rogue::Logging::Error)
         .def_readonly("Thread", &rogue::Logging::Thread)
         .def_readonly("Warning", &rogue::Logging::Warning)
         .def_readonly("Info", &rogue::Logging::Info)
-        .def_readonly("Debug", &rogue::Logging::Debug);
+        .def_readonly("Debug", &rogue::Logging::Debug)
+        .def("name", &rogue::Logging::name);
 #endif
 }
