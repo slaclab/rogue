@@ -23,12 +23,21 @@ Available components
 These helpers are implemented in Python in
 ``python/pyrogue/interfaces/simulation.py``.
 
+Selection guidance
+==================
+
+- Use ``MemEmulate`` when validating memory-transaction behavior (read/write,
+  verify, and retry flows) without hardware.
+- Use ``Pgp2bSim`` when testing multi-VC stream links and paired sideband
+  behavior together.
+- Use ``SideBandSim`` when testing sideband control/data paths without hardware.
+
+
 What To Explore Next
 ====================
 
 - Memory emulation patterns: :doc:`/built_in_modules/simulation/mememulate`
 - Simulated PGP2B links: :doc:`/built_in_modules/simulation/pgp2b`
-- Sideband-only workflows: :doc:`/built_in_modules/simulation/sideband`
 - Memory transaction model details: :doc:`/memory_interface/index`
 - Stream connection patterns: :doc:`/stream_interface/connecting`
 
@@ -38,4 +47,3 @@ What To Explore Next
 
    mememulate
    pgp2b
-   sideband

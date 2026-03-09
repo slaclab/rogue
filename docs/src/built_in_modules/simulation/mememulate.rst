@@ -38,6 +38,13 @@ Operational notes:
 - Read/verify transactions return bytes from emulated memory
 - Unread addresses default to ``0x00``
 
+When to use MemEmulate
+======================
+
+Use ``MemEmulate`` when you need deterministic memory behavior during software
+integration and want to isolate tree/protocol logic from hardware timing and
+transport effects.
+
 Basic usage with a Root
 =======================
 
@@ -50,9 +57,11 @@ Basic usage with a Root
        def __init__(self):
            super().__init__(name='MyRoot', timeout=1.0, pollEn=False)
 
+           # Create emulated memory endpoint.
            sim = pis.MemEmulate(minWidth=4, maxSize=0x1000)
            self.addInterface(sim)
 
+           # Attach a Device so RemoteVariables transact through emulated memory.
            self.add(MyDevice(name='Dev', offset=0x0, memBase=sim))
 
 Retry-test pattern
