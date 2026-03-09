@@ -61,6 +61,20 @@ update published by the server.
        except KeyboardInterrupt:
            print('Stopping monitor.')
 
+Logging
+=======
+
+``SimpleClient`` does not expose a dedicated Python or Rogue logger.
+
+In practice, troubleshooting usually relies on:
+
+- Exceptions raised by failed request/reply operations
+- Logging on the server side, especially :doc:`zmq_server`
+- Application-level prints or Python logging around client calls
+
+If you need richer client-side observability, :doc:`virtual` is the better
+interface because it exposes a Python logger and richer mirrored-tree state.
+
 What To Explore Next
 ====================
 

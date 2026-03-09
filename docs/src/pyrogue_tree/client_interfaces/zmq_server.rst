@@ -82,6 +82,36 @@ Virtual client (mirrored remote tree):
        print(root.RogueVersion.valueDisp())
        root.AxiVersion.ScratchPad.set(0x100)
 
+Logging
+=======
+
+There are two separate behaviors here:
+
+- Transport logging from the underlying C++ ZMQ server
+- Startup/help text printed by the Python wrapper
+
+For transport logging, enable the Rogue C++ logger:
+
+- Logger name: ``pyrogue.ZmqServer``
+- Configuration API:
+  ``rogue.Logging.setFilter('pyrogue.ZmqServer', rogue.Logging.Debug)``
+
+Example:
+
+.. code-block:: python
+
+   import rogue
+   import pyrogue.interfaces
+
+   rogue.Logging.setFilter('pyrogue.ZmqServer', rogue.Logging.Debug)
+   server = pyrogue.interfaces.ZmqServer(root=root, addr='127.0.0.1', port=9099)
+
+Set the filter before constructing the server object.
+
+Separately, ``ZmqServer._start()`` prints the selected ports and example client
+commands to stdout. Those startup messages are not controlled by the logging
+API.
+
 What To Explore Next
 ====================
 
