@@ -92,3 +92,5 @@ Related docs
 
 - :doc:`/built_in_modules/protocols/srp/index`
 - C++ API: :doc:`/api/cpp/protocols/srp/srpV0`
+- Preferred newer protocol: :doc:`srpV3`
+- Command-only path: :doc:`cmd`

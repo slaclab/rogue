@@ -103,3 +103,5 @@ Related docs
 
 - :doc:`/built_in_modules/protocols/srp/index`
 - C++ API: :doc:`/api/cpp/protocols/srp/srpV3`
+- SRPv0 comparison: :doc:`srpV0`
+- Command-only path: :doc:`cmd`

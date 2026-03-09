@@ -9,6 +9,11 @@ the stream API. Memory reads/writes are serialized into SRP stream frames,
 transported over a link (for example DMA or TCP), and consumed by FPGA/ASIC
 logic that implements the SRP protocol for register access.
 
+In most deployed systems, SRP is not used by itself. It is usually combined
+with a transport/reliability stack such as ``UDP -> RSSI -> Packetizer`` or a
+DMA-backed stream path, with SRP providing the register-transaction semantics
+on top of that stream path.
+
 Rogue documentation focuses on integration and usage. The wire-format protocol
 specifications are maintained externally:
 
@@ -32,6 +37,19 @@ Integration boundaries
 - Tree-facing configuration and register semantics remain in PyRogue device
   definitions.
 - Stream transport tuning belongs in :doc:`/stream_interface/index`.
+
+Common integration patterns
+===========================
+
+- PyRogue tree pattern:
+  create ``SrpV0`` or ``SrpV3``, connect it to stream transport, then pass the
+  SRP object as ``memBase`` when constructing Devices.
+- Standalone script pattern:
+  use SRP + stream transport directly without a ``Root`` when you only need a
+  narrow read/write utility path.
+- Command path pattern:
+  use :doc:`cmd` for opcode/context control channels that are intentionally
+  separate from register-access transactions.
 
 Related integration pages
 =========================

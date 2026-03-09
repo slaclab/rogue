@@ -34,3 +34,5 @@ API reference
 =============
 
 - C++: :doc:`/api/cpp/protocols/srp/cmd`
+- SRP overview: :doc:`index`
+- Register-transaction protocols: :doc:`srpV3`, :doc:`srpV0`
