@@ -27,6 +27,19 @@ Internally, it wires the stream graph as:
 Because it is a ``pyrogue.Device``, RSSI status and configuration variables are
 exposed directly in the PyRogue tree.
 
+Implementation details from ``_Network.py``
+===========================================
+
+- ``server=False``:
+  creates ``udp.Client(host, port, jumbo)`` and ``rssi.Client(...)``.
+- ``server=True``:
+  creates ``udp.Server(port, jumbo)`` and ``rssi.Server(...)``.
+- Packetizer selection by ``packVer``:
+  ``packVer=1`` uses ``packetizer.Core(enSsi)``;
+  ``packVer=2`` uses ``packetizer.CoreV2(False, True, enSsi)``.
+- RSSI segment size is derived from transport payload budget:
+  ``udp.maxPayload() - 8``.
+
 When to use
 ===========
 
@@ -60,6 +73,19 @@ Key constructor arguments
   Optional RSSI parameter overrides such as ``locMaxBuffers``,
   ``locCumAckTout``, ``locRetranTout``, ``locNullTout``,
   ``locMaxRetran``, ``locMaxCumAck``.
+
+Startup behavior
+================
+
+During ``UdpRssiPack._start()``:
+
+- RSSI is started first.
+- In client mode with ``wait=True``, startup waits for link-open.
+- After link bring-up, UDP RX buffer count is tuned from negotiated RSSI
+  buffer depth (``udp.setRxBufferCount(rssi.curMaxBuffers())``).
+
+This startup behavior is why using the wrapper through Root-managed lifecycle
+is preferred for full applications.
 
 Typical Root integration
 ========================
@@ -104,6 +130,17 @@ Root start/stop sequencing manages the transport lifecycle.
            # Example memory-mapped device:
            self.add(MyDevice(name='Dev', memBase=srp, offset=0x0))
 
+Lifecycle notes
+===============
+
+- Root-managed mode:
+  add ``UdpRssiPack`` to the tree and register it via ``Root.addInterface(...)``.
+- Standalone mode:
+  direct scripts can call wrapper ``start``/``stop`` commands (or ``_start`` /
+  ``_stop``) when no Root lifecycle manager is present.
+- Managed Interface Lifecycle reference:
+  :ref:`pyrogue_tree_node_device_managed_interfaces`
+
 Server mode (less common)
 =========================
 
@@ -131,7 +168,7 @@ Available helper methods/commands
 * ``countReset()``:
   reset RSSI counters.
 * ``start`` / ``stop``:
-  local commands exported by the wrapper device.
+  local commands exported by the wrapper device for link control.
 
 See also
 ========
