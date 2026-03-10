@@ -19,6 +19,7 @@
 #include "rogue/protocols/udp/Client.h"
 
 #include <inttypes.h>
+#include <arpa/inet.h>
 #include <unistd.h>
 
 #include <cerrno>
@@ -98,6 +99,11 @@ rpu::Client::Client(std::string host, uint16_t port, bool jumbo) : rpu::Core(jum
     threadEn_ = true;
     thread_   = new std::thread(&rpu::Client::runThread, this, std::weak_ptr<int>(scopePtr));
 
+    udpLog_->info("UDP client ready. remote=%s:%" PRIu16 ", maxPayload=%" PRIu32,
+                  address_.c_str(),
+                  port_,
+                  maxPayload());
+
     // Set a thread name
 #ifndef __MACH__
     pthread_setname_np(thread_->native_handle(), "UdpClient");
@@ -113,6 +119,7 @@ void rpu::Client::stop() {
     if (threadEn_) {
         threadEn_ = false;
         thread_->join();
+        udpLog_->info("Stopping UDP client for remote %s:%" PRIu16, address_.c_str(), port_);
 
         ::close(fd_);
     }
@@ -143,7 +150,10 @@ void rpu::Client::acceptFrame(ris::FramePtr frame) {
 
     // Drop errored frames
     if (frame->getError()) {
-        udpLog_->warning("Client::acceptFrame: Dumping errored frame");
+        udpLog_->warning("Dropping errored outbound frame. remote=%s:%" PRIu16 ", error=0x%" PRIx8,
+                         address_.c_str(),
+                         port_,
+                         frame->getError());
         return;
     }
 
@@ -208,7 +218,12 @@ void rpu::Client::runThread(std::weak_ptr<int> lockPtr) {
         if (res > 0) {
             // Message was too big
             if (res > avail) {
-                udpLog_->warning("Receive data was too large. Rx=%i, avail=%i. Dropping.", res, avail);
+                udpLog_->warning("Receive data was too large. remote=%s:%" PRIu16 ", rx=%i, avail=%" PRIu32
+                                 ". Dropping.",
+                                 address_.c_str(),
+                                 port_,
+                                 res,
+                                 avail);
             } else {
                 buff->setPayload(res);
                 sendFrame(frame);
