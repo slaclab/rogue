@@ -184,15 +184,27 @@ if ( NOT ROGUE_VERSION )
    if (GIT_FOUND)
       execute_process (
          COMMAND ${GIT_EXECUTABLE} --git-dir=${CMAKE_SOURCE_DIR}/.git --work-tree=${CMAKE_SOURCE_DIR} describe --tags --dirty
-         OUTPUT_VARIABLE ROGUE_VERSION
+         RESULT_VARIABLE ROGUE_GIT_DESCRIBE_RESULT
+         OUTPUT_VARIABLE ROGUE_GIT_DESCRIBE_OUTPUT
+         ERROR_QUIET
          OUTPUT_STRIP_TRAILING_WHITESPACE)
+      if (ROGUE_GIT_DESCRIBE_RESULT EQUAL 0 AND NOT "${ROGUE_GIT_DESCRIBE_OUTPUT}" STREQUAL "")
+         set(ROGUE_VERSION "${ROGUE_GIT_DESCRIBE_OUTPUT}")
+      else()
+         set(ROGUE_VERSION "v0.0.0")
+         message(WARNING "git describe failed; defaulting ROGUE_VERSION to ${ROGUE_VERSION}")
+      endif()
    else()
       message("")
       message(FATAL_ERROR "Git is required to build rogue!")
    endif()
 endif()
 
-string(REGEX MATCH "^v([0-9]+)\\.([0-9]+)" ROGUE_SOVER ${ROGUE_VERSION})
+string(REGEX MATCH "^v?([0-9]+)\\.([0-9]+)" ROGUE_SOVER "${ROGUE_VERSION}")
+if (NOT ROGUE_SOVER)
+   set(ROGUE_SOVER "0.0")
+   message(WARNING "Unable to parse SOVERSION from ROGUE_VERSION='${ROGUE_VERSION}', defaulting to ${ROGUE_SOVER}")
+endif()
 
 #####################################
 # Setup Type and Directories
