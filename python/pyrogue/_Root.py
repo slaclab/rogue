@@ -215,8 +215,7 @@ class Root(pr.Device):
         self._doHeartbeat     = True # Backdoor flag
 
         if self._unifyLogs:
-            rogue.Logging.setForwardPython(True)
-            rogue.Logging.setEmitStdout(False)
+            pr.setUnifiedLogging(True)
 
         # Create log listener to add to SystemLog variable
         formatter = logging.Formatter("%(msg)s")

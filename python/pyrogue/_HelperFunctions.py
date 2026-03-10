@@ -24,10 +24,28 @@ import inspect
 from typing import Any, Callable, Mapping, MutableMapping, Sequence
 
 import pyrogue as pr
+import rogue
 import rogue.interfaces.stream as ris
 import rogue.interfaces.memory as rim
 
 from collections import OrderedDict as odict
+
+
+def setUnifiedLogging(enable: bool = True) -> None:
+    """Enable or disable unified Rogue C++ -> Python logging.
+
+    When enabled, Rogue C++ log records are forwarded into Python logging and
+    the native Rogue stdout sink is disabled to avoid duplicate output.
+    When disabled, forwarding is removed and the native Rogue stdout sink is
+    restored.
+    """
+    rogue.Logging.setForwardPython(enable)
+    rogue.Logging.setEmitStdout(not enable)
+
+
+def unifiedLoggingEnabled() -> bool:
+    """Return True when unified Rogue C++ -> Python logging is enabled."""
+    return rogue.Logging.forwardPython() and not rogue.Logging.emitStdout()
 
 
 def addLibraryPath(path: str | list[str]) -> None:
