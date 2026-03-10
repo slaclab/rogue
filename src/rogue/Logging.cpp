@@ -63,6 +63,9 @@ std::vector<rogue::Logging*> rogue::Logging::loggers_;
 // Python forwarding enable
 bool rogue::Logging::forwardPython_ = false;
 
+// Stdout emission enable
+bool rogue::Logging::emitStdout_ = true;
+
 // Crate logger
 rogue::LoggingPtr rogue::Logging::create(const std::string& name, bool quiet) {
     rogue::LoggingPtr log = std::make_shared<rogue::Logging>(name, quiet);
@@ -149,6 +152,20 @@ bool rogue::Logging::forwardPython() {
     return enable;
 }
 
+void rogue::Logging::setEmitStdout(bool enable) {
+    levelMtx_.lock();
+    emitStdout_ = enable;
+    levelMtx_.unlock();
+}
+
+bool rogue::Logging::emitStdout() {
+    bool enable;
+    levelMtx_.lock();
+    enable = emitStdout_;
+    levelMtx_.unlock();
+    return enable;
+}
+
 void rogue::Logging::intLog(uint32_t level, const char* fmt, va_list args) {
     if (level < level_.load()) return;
 
@@ -156,11 +173,13 @@ void rogue::Logging::intLog(uint32_t level, const char* fmt, va_list args) {
     char buffer[1000];
     vsnprintf(buffer, sizeof(buffer), fmt, args);
     gettimeofday(&tme, NULL);
-    printf("%" PRIi64 ".%06" PRIi64 ":%s: %s\n",
-           static_cast<int64_t>(tme.tv_sec),
-           static_cast<int64_t>(tme.tv_usec),
-           name_.c_str(),
-           buffer);
+    if (emitStdout()) {
+        printf("%" PRIi64 ".%06" PRIi64 ":%s: %s\n",
+               static_cast<int64_t>(tme.tv_sec),
+               static_cast<int64_t>(tme.tv_usec),
+               name_.c_str(),
+               buffer);
+    }
 
 #ifndef NO_PYTHON
     if (forwardPython()) {
@@ -245,6 +264,10 @@ void rogue::Logging::setup_python() {
         .staticmethod("setForwardPython")
         .def("forwardPython", &rogue::Logging::forwardPython)
         .staticmethod("forwardPython")
+        .def("setEmitStdout", &rogue::Logging::setEmitStdout)
+        .staticmethod("setEmitStdout")
+        .def("emitStdout", &rogue::Logging::emitStdout)
+        .staticmethod("emitStdout")
         .def("normalizeName", &rogue::Logging::normalizeName)
         .staticmethod("normalizeName")
         .def_readonly("Critical", &rogue::Logging::Critical)

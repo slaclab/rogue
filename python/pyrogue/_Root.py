@@ -165,6 +165,9 @@ class Root(pr.Device):
         Enable polling on start.
     maxLog : int, optional (default = 1000)
         Maximum log entries to retain.
+    unifyLogs : bool, optional (default = False)
+        Forward Rogue C++ logs into Python logging and disable the native Rogue
+        stdout sink to avoid duplicate output in mixed PyRogue applications.
     """
 
     def __enter__(self) -> Root:
@@ -184,7 +187,8 @@ class Root(pr.Device):
                  initRead: bool = False,
                  initWrite: bool = False,
                  pollEn: bool = True,
-                 maxLog: int = 1000) -> None:
+                 maxLog: int = 1000,
+                 unifyLogs: bool = False) -> None:
         """Initialize the root node, workers, and built-in variables/commands."""
         rogue.interfaces.stream.Master.__init__(self)
 
@@ -194,7 +198,12 @@ class Root(pr.Device):
         self._initWrite       = initWrite
         self._pollEn          = pollEn
         self._maxLog          = maxLog
+        self._unifyLogs       = unifyLogs
         self._doHeartbeat     = True # Backdoor flag
+
+        if self._unifyLogs:
+            rogue.Logging.setForwardPython(True)
+            rogue.Logging.setEmitStdout(False)
 
         # Create log listener to add to SystemLog variable
         formatter = logging.Formatter("%(msg)s")

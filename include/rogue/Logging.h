@@ -72,6 +72,9 @@ class Logging {
     // Optional forwarding of Rogue C++ logs into Python logging
     static bool forwardPython_;
 
+    // Optional emission of Rogue C++ logs to stdout
+    static bool emitStdout_;
+
     void intLog(uint32_t level, const char* format, va_list args);
 
     void updateLevelLocked();
@@ -150,6 +153,18 @@ class Logging {
      * @brief Returns whether Rogue C++ logs are currently forwarded to Python logging.
      */
     static bool forwardPython();
+
+    /**
+     * @brief Enables or disables direct stdout emission of Rogue C++ logs.
+     * @param enable When false, Rogue C++ logs are not printed directly by the
+     *               native logger sink.
+     */
+    static void setEmitStdout(bool enable);
+
+    /**
+     * @brief Returns whether Rogue C++ logs are currently emitted to stdout.
+     */
+    static bool emitStdout();
 
     /**
      * @brief Normalizes logger names to the emitted Rogue namespace.

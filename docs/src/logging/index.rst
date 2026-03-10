@@ -103,6 +103,24 @@ This is what powers:
 - ``pyrogue.interfaces.SystemLogMonitor``
 - SQL log capture via ``SqlLogger``
 
+For a PyRogue application that wants one unified logging path for both Python
+and Rogue C++ modules, prefer enabling it at the Root:
+
+.. code-block:: python
+
+   import pyrogue as pr
+
+   class MyRoot(pr.Root):
+       def __init__(self, **kwargs):
+           super().__init__(name='MyRoot', unifyLogs=True, **kwargs)
+
+With ``unifyLogs=True``:
+
+- Rogue C++ logs are forwarded into Python logging.
+- Native Rogue stdout emission is disabled to avoid duplicate output.
+- The forwarded records can flow into ``Root.SystemLog`` through the normal
+  Python handler path.
+
 Important limitation:
 Python log records under the ``pyrogue`` logger hierarchy are captured there,
 but Rogue C++ ``rogue.Logging`` output is not mirrored into ``SystemLog``
@@ -128,6 +146,7 @@ The Python-visible API is:
    rogue.Logging.setFilter('udp', rogue.Logging.Debug)
    rogue.Logging.setFilter('pyrogue.packetizer', rogue.Logging.Debug)
    rogue.Logging.setForwardPython(True)
+   rogue.Logging.setEmitStdout(False)
 
 Severity constants are:
 
@@ -226,16 +245,20 @@ Rogue C++ logging can also be forwarded into Python ``logging``:
    import rogue
 
    rogue.Logging.setForwardPython(True)
+   rogue.Logging.setEmitStdout(False)
 
 When enabled:
 
-- Rogue C++ log messages are still emitted through the normal C++ logging path.
-- They are also forwarded into Python ``logging`` using the same
+- Rogue C++ log messages can be forwarded into Python ``logging`` using the same
   fully-qualified logger name.
 - In a PyRogue application with a running ``Root``, those forwarded records can
   then flow into ``Root.SystemLog`` through the normal Python handler path.
+- If you also call ``rogue.Logging.setEmitStdout(False)``, the native C++
+  console print path is disabled so the forwarded Python record becomes the only
+  visible copy.
 
-This is disabled by default to avoid changing existing application behavior.
+Both forwarding and stdout suppression are disabled by default to avoid changing
+existing application behavior.
 
 How To Find The Right Logger Name
 =================================
@@ -303,6 +326,7 @@ For mixed Python + C++ applications:
    logging.getLogger('pyrogue').setLevel(logging.DEBUG)
    rogue.Logging.setFilter('rssi', rogue.Logging.Debug)
    rogue.Logging.setForwardPython(True)
+   rogue.Logging.setEmitStdout(False)
 
    # If you have a PyRogue node object, one call can configure both.
    pyrogue.setLogLevel(root.MyDevice, 'DEBUG')
