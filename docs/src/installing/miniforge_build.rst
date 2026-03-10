@@ -4,8 +4,8 @@
 Building Rogue Inside Miniforge
 ===============================
 
-This path builds Rogue from source inside a Miniforge environment. It is the
-recommended workflow when you need local source changes, documentation work, or
+Building Rogue from source inside a Miniforge environment is the recommended
+workflow when you need local source changes, documentation work, or
 development against the current repository state.
 
 These instructions are relevant for Linux and macOS arm64.

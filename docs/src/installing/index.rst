@@ -4,7 +4,8 @@
 Installing & Compiling Rogue
 ============================
 
-This section covers supported installation and build workflows for Rogue.
+Rogue supports several installation and build workflows, depending on whether
+you want a prebuilt package, a source build, or a containerized runtime.
 
 Most users should start with a Miniforge-based workflow. It gives Rogue a
 managed Python environment, keeps dependencies predictable, and matches how the

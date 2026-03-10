@@ -4,7 +4,7 @@
 Installing Rogue With Miniforge
 ===============================
 
-This path installs a pre-built Rogue package into a Miniforge environment. It
+A pre-built Rogue package can be installed into a Miniforge environment. This
 is the simplest way to get a working Rogue installation on Linux or on Ubuntu
 running under Windows WSL2.
 
