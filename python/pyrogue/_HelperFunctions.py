@@ -265,7 +265,7 @@ def yamlToData(stream: str = '', fName: str | None = None) -> Any:
         base = fName.split('.zip')[0] + '.zip'
         sub = fName.split('.zip')[1][1:] # Strip leading '/'
 
-        log.debug("loading {} from zipfile {}".format(sub,base))
+        log.debug("loading %s from zipfile %s", sub, base)
 
         with zipfile.ZipFile(base, 'r', compression=zipfile.ZIP_LZMA) as myzip:
             with myzip.open(sub) as myfile:
@@ -273,7 +273,7 @@ def yamlToData(stream: str = '', fName: str | None = None) -> Any:
 
     # Non zip file
     else:
-        log.debug("loading {}".format(fName))
+        log.debug("loading %s", fName)
         with open(fName,'r') as f:
             return yaml.load(f.read(),Loader=PyrogueLoader)
 
