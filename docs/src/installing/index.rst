@@ -6,8 +6,8 @@ Installing & Compiling Rogue
 
 This section covers supported installation and build workflows for Rogue.
 
-After installation, continue with :doc:`/quick_start/index` for first-run
-validation and basic workflow checks.
+After installation, continue with :doc:`/tutorials/index` for guided end-to-end
+workflows and integration examples.
 
 The recommended method for installing Rogue is through
 :ref:`installing_miniforge` and
@@ -25,7 +25,6 @@ Windows users should use Ubuntu (WSL) or Docker.
 What To Explore Next
 ====================
 
-- First-run validation and common checks: :doc:`/quick_start/index`
 - Guided end-to-end workflows: :doc:`/tutorials/index`
 
 

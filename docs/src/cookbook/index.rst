@@ -6,6 +6,10 @@ Cookbook
 
 The cookbook provides short, task-driven recipes.
 
+This section is still a work in progress. Some recipes are placeholders or
+early drafts, and the overall scope may change as the main documentation
+structure continues to settle.
+
 Recipes are intentionally concise and link back to conceptual documentation
 when deeper context is needed.
 

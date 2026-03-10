@@ -27,6 +27,5 @@ Legacy step-by-step examples remain available in:
 What To Explore Next
 ====================
 
-- Foundational setup and checks: :doc:`/quick_start/index`
 - Core tree architecture and lifecycle: :doc:`/pyrogue_tree/index`
-- Task-focused implementation recipes: :doc:`/cookbook/index`
+- Installation and build workflows: :doc:`/installing/index`
