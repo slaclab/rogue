@@ -364,15 +364,34 @@ class UdpRssiPack(pr.Device):
                         cnt += 1
 
                     if cnt < 10:
-                        self._log.warning("host=%s, port=%d -> Establishing link ..." % (self._host,self._port))
+                        self._log.warning("host=%s, port=%d -> Establishing link ...", self._host, self._port)
 
                     else:
-                        self._log.warning('host=%s, port=%d -> Failing to connect using jumbo frames! Be sure to check interface MTU settings with ifconig -a' % (self._host,self._port))
+                        self._log.warning(
+                            "host=%s, port=%d -> Failing to connect using jumbo frames. "
+                            "Check interface MTU settings with ifconfig -a",
+                            self._host,
+                            self._port,
+                        )
+
+            self._log.info(
+                "host=%s, port=%d -> Link established. jumbo=%s, maxPayload=%s",
+                self._host,
+                self._port,
+                self._jumbo,
+                self._udp.maxPayload(),
+            )
 
 
         # Sleep is bad, nee to figure this out
         time.sleep(0.25)
         self._udp.setRxBufferCount(self._rssi.curMaxBuffers())
+        self._log.info(
+            "host=%s, port=%d -> Configured UDP RX buffer count to %s",
+            self._host,
+            self._port,
+            self._rssi.curMaxBuffers(),
+        )
 
         super()._start()
 
