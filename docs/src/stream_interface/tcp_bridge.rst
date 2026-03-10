@@ -157,11 +157,11 @@ What it logs
 At debug level, ``TcpCore`` logs bridge setup details and frame movement, such
 as:
 
-- client/server socket creation
-- bind/connect address selection
-- pushed frame sizes
-- pulled frame sizes
-- worker-thread identity
+- Client/server socket creation
+- Bind/connect address selection
+- Pushed frame sizes
+- Pulled frame sizes
+- Worker-thread identity
 
 There is no additional per-instance ``setDebug(...)`` helper on ``TcpCore``.
 For byte-level frame inspection, add a separate debug ``Slave`` or use

@@ -17,9 +17,9 @@ Why Models Exist
 
 Models separate three concerns:
 
-1. hardware representation (bits/bytes, endianness, signedness)
+1. Hardware representation (bits/bytes, endianness, signedness)
 2. Python-facing type and formatting behavior
-3. conversion logic used during Block access
+3. Conversion logic used during Block access
 
 This keeps Variable definitions clear and lets the same conversion behavior be
 reused across many registers.

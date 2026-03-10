@@ -5,10 +5,9 @@
 Core
 ====
 
-This section defines the object model and runtime behavior of a PyRogue tree.
-It organizes control logic into a hierarchy of ``Root``, ``Device``,
-``Variable``, and ``Command`` Nodes, with ``Block`` and ``Model`` providing
-memory transaction grouping and typed value conversion.
+A PyRogue tree is defined by the object model and runtime behavior of
+``Root``, ``Device``, ``Variable``, and ``Command`` Nodes, with ``Block`` and
+``Model`` providing memory transaction grouping and typed value conversion.
 
 A typical hierarchy starts at one ``Root`` and fans into multiple ``Device``
 subtrees. Each Device can contain child Devices, Variables, and Commands.

@@ -59,7 +59,7 @@ surrounding module loggers:
 - ``pyrogue.memory.Master`` for request issue paths
 - ``pyrogue.memory.Hub`` for routing/splitting paths
 - ``pyrogue.memory.block.*`` for Variable/Block transaction flow
-- protocol-specific loggers such as ``pyrogue.SrpV3``
+- Protocol-specific loggers such as ``pyrogue.SrpV3``
 
 Subtransactions
 ===============

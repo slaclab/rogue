@@ -30,9 +30,9 @@ running Root. A typical workflow is:
 3. Open either the stock debug GUI or a custom PyDM screen,
 4. Use Rogue-specific channels and widgets to interact with the tree.
 
-This section is therefore not just about launching a GUI. It also defines how
-PyDM addresses Rogue nodes, how multi-server sessions are named, and which
-widgets are available when building custom displays.
+PyDM support in Rogue is therefore not just about launching a GUI. It also
+defines how PyDM addresses Rogue nodes, how multi-server sessions are named,
+and which widgets are available when building custom displays.
 
 When To Use The Default GUI vs A Custom Screen
 ==============================================

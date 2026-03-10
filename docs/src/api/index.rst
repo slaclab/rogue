@@ -4,8 +4,8 @@
 API Reference
 =============
 
-This page is a single entry point to generated API content from Python
-docstrings/autodoc and C++ Doxygen output.
+Generated API content from Python docstrings/autodoc and C++ Doxygen output is
+collected here in one entry point.
 
 API pages are reference-focused. For conceptual and usage documentation, start
 with:

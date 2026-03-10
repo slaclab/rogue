@@ -4,10 +4,10 @@
 Migration Notes
 ===============
 
-This section collects version-to-version upgrade notes for Rogue and PyRogue.
-Use it when an existing application or Device library needs to move forward
-across a release boundary and you want to identify behavioral changes, removed
-APIs, and the newer patterns that replace them.
+Migration notes collect version-to-version upgrade guidance for Rogue and
+PyRogue. Use them when an existing application or Device library needs to move
+forward across a release boundary and you want to identify behavioral changes,
+removed APIs, and the newer patterns that replace them.
 
 Migration notes are intentionally narrower than the main narrative
 documentation. The rest of the manual explains how the current APIs and

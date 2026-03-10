@@ -4,6 +4,6 @@
 Advanced Tutorials
 ==================
 
-This section will collect advanced end-to-end Rogue tutorial content.
+Advanced end-to-end Rogue tutorial content will be collected here.
 
 .. Rogue Tutorials
