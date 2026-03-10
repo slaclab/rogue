@@ -86,10 +86,11 @@ Example forwarded ``SystemLog`` entry:
 Legacy C++ Logging
 ==================
 
-The direct ``rogue.Logging`` API is still supported. It exists because many
-older Rogue C++ modules were originally configured that way, and users may
-still encounter it in existing applications, standalone scripts, or older
-examples.
+Rogue C++ code implements its own logging framework. In previous Rogue
+releases, this logging had to be configured separately from Python
+``logging``. That direct ``rogue.Logging`` API is still supported, and users
+may still encounter it in older code, existing applications, standalone
+transport scripts, or low-level debugging examples.
 
 Today it is mainly useful for:
 
@@ -122,7 +123,9 @@ Severity constants are:
 - ``rogue.Logging.Thread`` = 35
 - ``rogue.Logging.Warning`` = 30
 - ``rogue.Logging.Info`` = 20
-- ``rogue.Logging.Debug`` = 10Filter matching is prefix-based. These are equivalent:
+- ``rogue.Logging.Debug`` = 10
+
+Filter matching is prefix-based. These are equivalent:
 
 .. code-block:: python
 
