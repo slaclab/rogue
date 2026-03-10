@@ -44,6 +44,7 @@ Use the section class indexes for curated C++ APIs, grouped by namespace.
 
 * :doc:`/api/cpp/interfaces/memory/index`
 * :doc:`/api/cpp/interfaces/stream/index`
+* :doc:`/api/cpp/interfaces/zmqClient`
 * :doc:`/api/cpp/interfaces/api/index`
 
 ``rogue::protocols``
@@ -54,6 +55,12 @@ Use the section class indexes for curated C++ APIs, grouped by namespace.
 * :doc:`/api/cpp/protocols/srp/index`
 * :doc:`/api/cpp/protocols/udp/index`
 * :doc:`/api/cpp/protocols/xilinx/index`
+
+``rogue``
+
+* :doc:`/api/cpp/version`
+* :doc:`/api/cpp/logging`
+* :doc:`/api/cpp/generalerror`
 
 ``rogue::utilities``
 
@@ -68,9 +75,12 @@ Use the section class indexes for curated C++ APIs, grouped by namespace.
    /api/cpp/hardware/axi/index
    /api/cpp/hardware/raw/index
    /api/cpp/version
+   /api/cpp/logging
+   /api/cpp/generalerror
    /api/cpp/interfaces/api/index
    /api/cpp/interfaces/memory/index
    /api/cpp/interfaces/stream/index
+   /api/cpp/interfaces/zmqClient
    /api/cpp/protocols/batcher/index
    /api/cpp/protocols/packetizer/index
    /api/cpp/protocols/rssi/index

@@ -9,7 +9,15 @@ between the controller and the underlying link transport.
 For conceptual guidance, see :doc:`/built_in_modules/protocols/rssi/index`.
 
 
-Transport objects in C++ are referenced by the following shared pointer typedef:
+Python binding
+--------------
+
+This C++ class is also exported into Python as ``rogue.protocols.rssi.Transport``.
+
+Python API page:
+- :doc:`/api/python/protocols_rssi_transport`
+
+objects in C++ are referenced by the following shared pointer typedef:
 
 .. doxygentypedef:: rogue::protocols::rssi::TransportPtr
 

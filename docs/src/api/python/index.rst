@@ -70,7 +70,18 @@ Helpers
    bytecount
    reversebits
    twoscomplement
+
+rogue
+-----
+
+General utility and runtime classes exported directly from Rogue C++.
+
+.. toctree::
+   :maxdepth: 1
+
    version
+   logging
+   generalerror
 
 pyrogue.interfaces
 ------------------
@@ -85,6 +96,7 @@ Client/server and interface wrappers for remote access and integration.
    interfaces_sqlreader
    interfaces_simpleclient
    interfaces_virtualclient
+   interfaces_zmqclient
    interfaces_zmqserver
 
 pyrogue.interfaces.stream
@@ -133,6 +145,56 @@ EPICS PV integration classes.
 
    protocols_epicsv4_epicspvholder
    protocols_epicsv4_epicspvserver
+
+rogue.protocols.udp
+-------------------
+
+Python-visible UDP transport classes exported from Rogue C++.
+
+.. toctree::
+   :maxdepth: 1
+
+   protocols_udp_core
+   protocols_udp_client
+   protocols_udp_server
+
+rogue.protocols.rssi
+--------------------
+
+Python-visible RSSI classes exported from Rogue C++.
+
+.. toctree::
+   :maxdepth: 1
+
+   protocols_rssi_application
+   protocols_rssi_transport
+   protocols_rssi_client
+   protocols_rssi_server
+
+rogue.protocols.srp
+-------------------
+
+Python-visible SRP classes exported from Rogue C++.
+
+.. toctree::
+   :maxdepth: 1
+
+   protocols_srp_srpv0
+   protocols_srp_srpv3
+   protocols_srp_cmd
+
+rogue.protocols.packetizer
+--------------------------
+
+Python-visible packetizer classes exported from Rogue C++.
+
+.. toctree::
+   :maxdepth: 1
+
+   protocols_packetizer_application
+   protocols_packetizer_transport
+   protocols_packetizer_core
+   protocols_packetizer_corev2
 
 pyrogue.utilities.fileio
 ------------------------

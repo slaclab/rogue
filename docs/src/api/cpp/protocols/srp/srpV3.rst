@@ -19,7 +19,15 @@ Threading and locking summary
 - In-flight map access is managed by base memory-slave synchronization.
 - Per-transaction payload access is guarded via transaction locking.
 
-SrpV3 objects in C++ are referenced by the following shared pointer typedef:
+Python binding
+--------------
+
+This C++ class is also exported into Python as ``rogue.protocols.srp.SrpV3``.
+
+Python API page:
+- :doc:`/api/python/protocols_srp_srpv3`
+
+objects in C++ are referenced by the following shared pointer typedef:
 
 .. doxygentypedef:: rogue::protocols::srp::SrpV3Ptr
 

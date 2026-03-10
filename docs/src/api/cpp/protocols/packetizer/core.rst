@@ -10,7 +10,15 @@ This page is reference-only; for integration guidance see
 :doc:`/built_in_modules/protocols/packetizer/core`.
 
 
-Core objects in C++ are referenced by the following shared pointer typedef:
+Python binding
+--------------
+
+This C++ class is also exported into Python as ``rogue.protocols.packetizer.Core``.
+
+Python API page:
+- :doc:`/api/python/protocols_packetizer_core`
+
+objects in C++ are referenced by the following shared pointer typedef:
 
 .. doxygentypedef:: rogue::protocols::packetizer::CorePtr
 
