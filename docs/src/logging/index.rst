@@ -91,7 +91,7 @@ That handler mirrors Python log records into:
 
 This is what powers:
 
-- the PyDM System Log widget
+- The PyDM System Log widget
 - ``pyrogue.interfaces.SystemLogMonitor``
 - SQL log capture via ``SqlLogger``
 

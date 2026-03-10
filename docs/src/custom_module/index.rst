@@ -4,8 +4,7 @@
 Creating Custom Modules
 =======================
 
-This section describes to to create, compile and wrap a custom c++
-module for use in PyRogue.
+Create, compile, and wrap a custom C++ module here for use in PyRogue.
 
 This content is part of the :doc:`/stream_interface/index` section in the
 revamped documentation flow.

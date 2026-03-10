@@ -5,7 +5,8 @@
 EPICSV4 Protocol
 ================
 
-This section covers EPICS-facing protocol integration in Rogue/PyRogue.
+EPICS-facing protocol integration in Rogue/PyRogue is built around serving
+selected PyRogue Variables into an EPICS V4 namespace.
 
 Use these pages for conceptual behavior and integration patterns. API object
 details remain in the Python API reference.

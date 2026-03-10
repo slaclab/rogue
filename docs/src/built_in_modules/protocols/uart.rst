@@ -4,9 +4,9 @@
 UART Protocol
 =============
 
-This page covers UART-based memory access used by
-``pyrogue.protocols.UartMemory`` in ``python/pyrogue/protocols/_uart.py``.
-The interface adapts text-based serial register commands into Rogue memory
+UART-based memory access in Rogue is implemented by
+``pyrogue.protocols.UartMemory`` in ``python/pyrogue/protocols/_uart.py``. The
+interface adapts text-based serial register commands into Rogue memory
 transactions.
 
 Overview
