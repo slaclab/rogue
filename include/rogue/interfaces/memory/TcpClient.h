@@ -23,6 +23,7 @@
 #include <memory>
 #include <string>
 #include <thread>
+#include <condition_variable>
 
 #include "rogue/Logging.h"
 #include "rogue/interfaces/memory/Slave.h"
@@ -78,6 +79,15 @@ class TcpClient : public rogue::interfaces::memory::Slave {
     // Lock
     std::mutex bridgeMtx_;
 
+    // Probe state
+    std::mutex probeMtx_;
+    std::condition_variable probeCond_;
+    uint32_t probeSeq_;
+    uint32_t probeId_;
+    bool probeDone_;
+    std::string probeResult_;
+    bool waitReadyOnStart_;
+
   public:
     /**
      * @brief Creates a TCP memory bridge client.
@@ -92,9 +102,11 @@ class TcpClient : public rogue::interfaces::memory::Slave {
      *
      * @param addr Remote server address.
      * @param port Base TCP port number.
+     * @param waitReady If `true`, configure the instance so `_start()` waits
+     *                  for bridge readiness before returning.
      * @return Shared pointer to the created client.
      */
-    static std::shared_ptr<rogue::interfaces::memory::TcpClient> create(std::string addr, uint16_t port);
+    static std::shared_ptr<rogue::interfaces::memory::TcpClient> create(std::string addr, uint16_t port, bool waitReady = false);
 
     /**
      * @brief Registers this type with Python bindings.
@@ -111,11 +123,16 @@ class TcpClient : public rogue::interfaces::memory::Slave {
      *
      * This constructor is a low-level C++ allocation path.
      * Prefer `create()` when shared ownership or Python exposure is required.
+     * `waitReady` does not block in the constructor itself; it configures
+     * whether `_start()` should perform readiness probing later.
      *
      * @param addr Remote server address.
      * @param port Base TCP port number.
+     * @param waitReady If `true`, record that `_start()` should block until
+     *                  the bridge request/response path responds to a
+     *                  readiness probe.
      */
-    TcpClient(std::string addr, uint16_t port);
+    TcpClient(std::string addr, uint16_t port, bool waitReady = false);
 
     /**
      * @brief Destroys the TCP client and releases transport resources.
@@ -133,6 +150,31 @@ class TcpClient : public rogue::interfaces::memory::Slave {
      * @brief Stops the bridge interface and worker thread.
      */
     void stop();
+
+    /**
+     * @brief Wait for the remote TcpServer path to respond to a bridge probe.
+     *
+     * @details
+     * This sends a lightweight internal control transaction through the bridge
+     * and waits for the remote `TcpServer` to acknowledge it. It verifies that
+     * the request/response path is usable, which is stronger than a local
+     * socket-connect state.
+     *
+     * @param timeout Maximum wait time in seconds.
+     * @param period Retry period in seconds.
+     * @return `true` if the probe succeeds before timeout, otherwise `false`.
+     */
+    bool waitReady(double timeout, double period);
+
+    /**
+     * @brief Managed-lifecycle startup hook.
+     *
+     * @details
+     * If this instance was constructed with `waitReady=true`, `_start()`
+     * blocks until the bridge request/response path responds to a readiness
+     * probe. Otherwise it is a no-op.
+     */
+    void start();
 
     /**
      * @brief Processes a transaction received from the upstream master.

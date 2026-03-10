@@ -77,7 +77,8 @@ class LocalRoot(pr.Root):
         sim << ms
 
         # Create a memory gateway
-        mc = rogue.interfaces.memory.TcpClient("127.0.0.1",9070)
+        mc = rogue.interfaces.memory.TcpClient("127.0.0.1",9070, True)
+        self.memClient = mc
         self.addInterface(mc)
 
         # Add Device
