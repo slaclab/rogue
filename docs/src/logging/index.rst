@@ -9,9 +9,10 @@ Rogue currently has two logging systems:
 - Python/PyRogue code uses the standard Python ``logging`` module.
 - Many C++ modules exposed to Python use Rogue's C++ ``rogue.Logging`` class.
 
-As a user, this split is the main thing to understand. The APIs are different,
-the logger names are constructed differently, and only the Python logging path
-feeds the PyRogue ``Root.SystemLog`` mechanism.
+As a user, this split is the main thing to understand. The low-level APIs are
+different, the logger names are constructed differently, and only the Python
+logging path feeds the PyRogue ``Root.SystemLog`` mechanism. The recommended
+Python-facing API for new code is now the unified PyRogue helper path.
 
 How To Think About It
 =====================
@@ -21,7 +22,8 @@ When you are debugging a problem, first identify which side emitted the message:
 - Pure Python / PyRogue class:
   configure it with Python ``logging``.
 - C++-backed Rogue object:
-  configure it with ``rogue.Logging``.
+  in new Python code, use ``pyrogue.setUnifiedLogging(True)`` and Python
+  ``logging``; use direct ``rogue.Logging`` only for legacy or standalone use.
 
 If you are not sure, the practical rule is:
 
@@ -104,17 +106,26 @@ This is what powers:
 - SQL log capture via ``SqlLogger``
 
 For a PyRogue application that wants one unified logging path for both Python
-and Rogue C++ modules, prefer enabling it at the Root:
+and Rogue C++ modules, prefer enabling it through the PyRogue helper:
 
 .. code-block:: python
 
+   import logging
    import pyrogue as pr
+
+   pr.setUnifiedLogging(True)
+   logging.getLogger('pyrogue').setLevel(logging.DEBUG)
+
+If you are already constructing a ``Root``, ``unifyLogs=True`` is a
+convenience wrapper around the same behavior:
+
+.. code-block:: python
 
    class MyRoot(pr.Root):
        def __init__(self, **kwargs):
            super().__init__(name='MyRoot', unifyLogs=True, **kwargs)
 
-With ``unifyLogs=True``:
+With unified logging enabled:
 
 - Rogue C++ logs are forwarded into Python logging.
 - Native Rogue stdout emission is disabled to avoid duplicate output.
@@ -145,6 +156,44 @@ Example forwarded ``SystemLog`` record:
      "rogueComponent": "udp"
    }
 
+Recommended Style For New Code
+------------------------------
+
+All new Python code written against Rogue should use the unified PyRogue
+logging style:
+
+.. code-block:: python
+
+   import logging
+   import pyrogue as pr
+
+   pr.setUnifiedLogging(True)
+   logging.getLogger('pyrogue').setLevel(logging.DEBUG)
+
+This routes both Python loggers and Rogue C++ loggers through Python logging.
+In a PyRogue application with a running ``Root``, those records can then flow
+into ``Root.SystemLog`` and the associated monitoring tools.
+
+Legacy C++ Logging Style
+------------------------
+
+Direct ``rogue.Logging`` configuration is still supported and is how older code
+and standalone low-level transport tests typically work:
+
+- Configure C++ logs directly with ``rogue.Logging.setFilter(...)``.
+- Messages are emitted by the native Rogue logger sink to stdout.
+- Messages do not appear in ``Root.SystemLog`` unless forwarding is also enabled.
+- Best fit for standalone scripts and low-level debugging outside a PyRogue tree.
+
+.. code-block:: python
+
+   import rogue
+
+   rogue.Logging.setFilter('udp', rogue.Logging.Debug)
+
+This legacy style remains available, but it is no longer the recommended
+starting point for new Python code.
+
 Important limitation:
 Python log records under the ``pyrogue`` logger hierarchy are captured there,
 but Rogue C++ ``rogue.Logging`` output is not mirrored into ``SystemLog``
@@ -164,13 +213,14 @@ The Python-visible API is:
 
 .. code-block:: python
 
+   import pyrogue
    import rogue
 
+   pyrogue.setUnifiedLogging(True)
    rogue.Logging.setLevel(rogue.Logging.Warning)
    rogue.Logging.setFilter('udp', rogue.Logging.Debug)
    rogue.Logging.setFilter('pyrogue.packetizer', rogue.Logging.Debug)
-   rogue.Logging.setForwardPython(True)
-   rogue.Logging.setEmitStdout(False)
+   pyrogue.setUnifiedLogging(False)
 
 Severity constants are:
 
@@ -228,7 +278,20 @@ underlying ``rogue.Logging`` instance, but it is not the preferred interface.
 How To Enable C++ Logging
 -------------------------
 
-Global level:
+For new Python code, start with unified logging:
+
+.. code-block:: python
+
+   import logging
+   import pyrogue
+
+   pyrogue.setUnifiedLogging(True)
+   logging.getLogger('pyrogue').setLevel(logging.DEBUG)
+
+If you need direct C++ control, the legacy ``rogue.Logging`` API is still
+available.
+
+Global C++ level:
 
 .. code-block:: python
 
@@ -262,7 +325,9 @@ existing ``rogue.Logging`` instances as well as future ones.
 Optional Python forwarding
 --------------------------
 
-Rogue C++ logging can also be forwarded into Python ``logging``:
+If you need to control forwarding manually instead of using
+``pyrogue.setUnifiedLogging(True)``, Rogue C++ logging can also be forwarded
+into Python ``logging``:
 
 .. code-block:: python
 
@@ -281,6 +346,7 @@ When enabled:
   console print path is disabled so the forwarded Python record becomes the only
   visible copy.
 - Forwarded records include metadata on the Python ``LogRecord`` such as:
+
   The CLI monitor and PyDM ``SystemLog`` widget can use these fields to show
   C++ badges, component names, and thread/process ids.
 
@@ -341,26 +407,26 @@ For Python/PyRogue classes:
    my_device.setLogLevel('DEBUG', includeRogue=False)
    pyrogue.setLogLevel(my_device, 'INFO', includeRogue=False)
 
-For C++ Rogue modules:
+For C++ Rogue modules in new Python code:
 
 .. code-block:: python
 
-   import rogue
+   import logging
+   import pyrogue
 
-   rogue.Logging.setFilter('udp', rogue.Logging.Debug)
+   pyrogue.setUnifiedLogging(True)
+   logging.getLogger('pyrogue.udp').setLevel(logging.DEBUG)
 
 For mixed Python + C++ applications:
 
 .. code-block:: python
 
    import logging
-   import rogue
    import pyrogue
 
+   pyrogue.setUnifiedLogging(True)
    logging.getLogger('pyrogue').setLevel(logging.DEBUG)
-   rogue.Logging.setFilter('rssi', rogue.Logging.Debug)
-   rogue.Logging.setForwardPython(True)
-   rogue.Logging.setEmitStdout(False)
+   logging.getLogger('pyrogue.rssi').setLevel(logging.DEBUG)
 
    # If you have a PyRogue node object, one call can configure both.
    pyrogue.setLogLevel(root.MyDevice, 'DEBUG')
@@ -370,8 +436,9 @@ Current Rough Edges
 
 The codebase works today, but there are a few real pain points:
 
-- Python and C++ logging still use different APIs even though they now share
-  some helper methods.
+- The recommended unified Python-side API is simpler now, but the low-level
+  direct ``rogue.Logging`` API still exists and must still be understood when
+  working outside the unified path.
 - C++ logger names are not easy to discover unless you inspect source.
 - C++ log forwarding into Python/SystemLog is opt-in rather than automatic.
 
