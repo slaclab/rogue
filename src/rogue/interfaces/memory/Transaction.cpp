@@ -235,11 +235,14 @@ std::string rim::Transaction::wait() {
             done_  = true;
             error_ = "Timeout waiting for register transaction " + std::to_string(id_) + " message response.";
 
-            log_->debug("Transaction timeout. type=%" PRIu32 " id=%" PRIu32 ", address=0x%" PRIx64 ", size=%" PRIu32,
+            log_->debug("Transaction timeout. type=%" PRIu32 " id=%" PRIu32
+                        ", address=0x%" PRIx64 ", size=%" PRIu32 ", timeout=%ld.%06lds",
                         type_,
                         id_,
                         address_,
-                        size_);
+                        size_,
+                        static_cast<long>(timeout_.tv_sec),
+                        static_cast<long>(timeout_.tv_usec));
         } else {
             cond_.wait_for(lock, std::chrono::microseconds(1000));
         }
@@ -274,11 +277,13 @@ void rim::Transaction::refreshTimer(rim::TransactionPtr ref) {
             warnTime_ = endTime_;
         } else if (timercmp(&warnTime_, &currTime, >=)) {
             log_->warning("Transaction timer refresh! Possible slow link! type=%" PRIu32 " id=%" PRIu32
-                          ", address=0x%016" PRIx64 ", size=%" PRIu32,
+                          ", address=0x%016" PRIx64 ", size=%" PRIu32 ", timeout=%ld.%06lds",
                           type_,
                           id_,
                           address_,
-                          size_);
+                          size_,
+                          static_cast<long>(timeout_.tv_sec),
+                          static_cast<long>(timeout_.tv_usec));
             warnTime_ = endTime_;
         }
     }
