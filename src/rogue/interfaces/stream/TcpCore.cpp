@@ -211,12 +211,10 @@ void ris::TcpCore::acceptFrame(ris::FramePtr frame) {
     // Send data
     for (x = 0; x < 4; x++) {
         if (zmq_sendmsg(this->zmqPush_, &(msg[x]), (x == 3) ? 0 : ZMQ_SNDMORE) < 0)
-            bridgeLog_->warning(
-                "Failed to push message with size %" PRIu32 " on %s: %s",
-                frame->getPayload(),
-                this->pushAddr_.c_str(),
-                zmq_strerror(zmq_errno())
-            );
+            bridgeLog_->warning("Failed to push message with size %" PRIu32 " on %s: %s",
+                                frame->getPayload(),
+                                this->pushAddr_.c_str(),
+                                zmq_strerror(zmq_errno()));
     }
     bridgeLog_->debug("Pushed TCP frame with size %" PRIu32 " on %s", frame->getPayload(), this->pushAddr_.c_str());
 }
@@ -266,8 +264,7 @@ void ris::TcpCore::runThread() {
                     "Bad message sizes. flags=%zu channel=%zu error=%zu",
                     zmq_msg_size(&(msg[0])),
                     zmq_msg_size(&(msg[1])),
-                    zmq_msg_size(&(msg[2]))
-                );
+                    zmq_msg_size(&(msg[2])));
                 for (x = 0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
                 continue;  // while (1)
             }

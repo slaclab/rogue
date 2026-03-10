@@ -179,11 +179,9 @@ void rpu::Server::acceptFrame(ris::FramePtr frame) {
                                   timeout_.tv_usec);
                 res = 0;
             } else if ((res = sendmsg(fd_, &msg, 0)) < 0) {
-                udpLog_->warning(
-                    "UDP write call failed on server port %" PRIu16 ": %s",
-                    port_,
-                    std::strerror(errno)
-                );
+                udpLog_->warning("UDP write call failed on server port %" PRIu16 ": %s",
+                                 port_,
+                                 std::strerror(errno));
             }
         } while (res == 0);  // Continue while write result was zero
     }

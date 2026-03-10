@@ -181,8 +181,7 @@ void rim::TcpServer::runThread() {
                     zmq_msg_size(&(msg[0])),
                     zmq_msg_size(&(msg[1])),
                     zmq_msg_size(&(msg[2])),
-                    zmq_msg_size(&(msg[3]))
-                );
+                    zmq_msg_size(&(msg[3])));
                 for (x = 0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
                 continue;  // while (1)
             }

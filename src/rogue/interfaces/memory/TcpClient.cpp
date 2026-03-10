@@ -196,13 +196,11 @@ void rim::TcpClient::doTransaction(rim::TransactionPtr tran) {
     // Send message
     for (x = 0; x < msgCnt; x++) {
         if (zmq_sendmsg(this->zmqReq_, &(msg[x]), ((x == (msgCnt - 1) ? 0 : ZMQ_SNDMORE)) | ZMQ_DONTWAIT) < 0) {
-            bridgeLog_->warning(
-                "Failed to send transaction %" PRIu32 ", msg %" PRIu32 " on %s: %s",
-                id,
-                x,
-                this->reqAddr_.c_str(),
-                zmq_strerror(zmq_errno())
-            );
+            bridgeLog_->warning("Failed to send transaction %" PRIu32 ", msg %" PRIu32 " on %s: %s",
+                                id,
+                                x,
+                                this->reqAddr_.c_str(),
+                                zmq_strerror(zmq_errno()));
         }
     }
 }
@@ -256,8 +254,7 @@ void rim::TcpClient::runThread() {
                     zmq_msg_size(&(msg[1])),
                     zmq_msg_size(&(msg[2])),
                     zmq_msg_size(&(msg[3])),
-                    zmq_msg_size(&(msg[5]))
-                );
+                    zmq_msg_size(&(msg[5])));
                 for (x = 0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
                 continue;  // while (1)
             }

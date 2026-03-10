@@ -188,14 +188,12 @@ std::string rogue::interfaces::ZmqClient::sendString(const std::string& path, co
     while (1) {
         zmq_msg_init(&msg);
         if (zmq_recvmsg(this->zmqReq_, &msg, 0) <= 0) {
-            seconds += static_cast<double>(timeout_) / 1000.0;
-            if (waitRetry_) {
-                    log_->warning(
-                        "Timeout waiting for response after %d seconds. Server may be busy. Continuing to wait...",
-                        static_cast<int>(seconds)
-                    );
-                zmq_msg_close(&msg);
-            } else {
+                seconds += static_cast<double>(timeout_) / 1000.0;
+                if (waitRetry_) {
+                    log_->warning("Timeout waiting for response after %d seconds. Server may be busy. Continuing to wait...",
+                                  static_cast<int>(seconds));
+                    zmq_msg_close(&msg);
+                } else {
                 throw rogue::GeneralError::create("ZmqClient::sendString",
                                                   "Timeout waiting for response after %d Seconds.",
                                                   static_cast<int>(seconds));
@@ -255,10 +253,8 @@ bp::object rogue::interfaces::ZmqClient::send(bp::object value) {
             if (zmq_recvmsg(this->zmqReq_, &rxMsg, 0) <= 0) {
                 seconds += static_cast<double>(timeout_) / 1000.0;
                 if (waitRetry_) {
-                    log_->warning(
-                        "Timeout waiting for response after %d seconds. Server may be busy. Continuing to wait...",
-                        static_cast<int>(seconds)
-                    );
+                    log_->warning("Timeout waiting for response after %d seconds. Server may be busy. Continuing to wait...",
+                                  static_cast<int>(seconds));
                     zmq_msg_close(&rxMsg);
                 } else {
                     throw rogue::GeneralError::create(
