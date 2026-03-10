@@ -4,11 +4,12 @@
 Wrapping Custom Module With PyRogue Device
 ==========================================
 
-The following demonstrates the implementation of a PyRogue Device wrapper for
-the classes contained within the :ref:`custom_sourcefile`. The variables and commands
-associated with the custom module are exposed to the PyRogue management layer. This
-file can be created as MyWrapper.py and included in the same python directory as
-the output of the :ref:`custom_makefile` step.
+The example below wraps the classes from :ref:`custom_sourcefile` in PyRogue
+``Device`` objects. That wrapper is what exposes Variables, Commands, and
+stream connection hooks to the rest of the PyRogue management layer.
+
+In practice, this file can be created as ``MyWrapper.py`` in the same Python
+directory as the shared library produced by :ref:`custom_makefile`.
 
 .. code:: python
 
@@ -24,7 +25,7 @@ the output of the :ref:`custom_makefile` step.
 
           pyrogue.Device.__init__(self, name=name, description='My Custom Stream Slave', **kwargs)
 
-          # Create an instance of MyCustomSlave from MyModule
+          # Create the underlying C++ slave object from MyModule
           self._mySlave = MyModule.MyCustomSlave()
 
           # Add read only frame count variable
@@ -52,7 +53,7 @@ the output of the :ref:`custom_makefile` step.
 
           pyrogue.Device.__init__(self, name=name, description='My Custom Stream Master', **kwargs)
 
-          # Create an instance of MyCustomSlave from MyModule
+          # Create the underlying C++ master object from MyModule
           self._myMast = MyModule.MyCustomMaster()
 
           # Add read only frame count variable
@@ -84,3 +85,8 @@ the output of the :ref:`custom_makefile` step.
           pyrogue.streamConnect(self,other)
           return other
 
+What To Explore Next
+====================
+
+- Testing the wrapped module: :ref:`custom_testing`
+- Stream interface composition patterns: :doc:`/stream_interface/index`
