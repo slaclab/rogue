@@ -101,9 +101,9 @@ rim::TcpServer::TcpServer(std::string addr, uint16_t port) {
     threadEn_     = true;
     this->thread_ = new std::thread(&rim::TcpServer::runThread, this);
 
-    this->bridgeLog_->info("TCP memory bridge ready. request=%s response=%s",
-                           this->reqAddr_.c_str(),
-                           this->respAddr_.c_str());
+    this->bridgeLog_->debug("TCP memory bridge ready. request=%s response=%s",
+                            this->reqAddr_.c_str(),
+                            this->respAddr_.c_str());
 
     // Set a thread name
 #ifndef __MACH__
@@ -125,9 +125,9 @@ void rim::TcpServer::stop() {
         rogue::GilRelease noGil;
         threadEn_ = false;
         thread_->join();
-        this->bridgeLog_->info("Stopping TCP memory bridge. request=%s response=%s",
-                               this->reqAddr_.c_str(),
-                               this->respAddr_.c_str());
+        this->bridgeLog_->debug("Stopping TCP memory bridge. request=%s response=%s",
+                                this->reqAddr_.c_str(),
+                                this->respAddr_.c_str());
         zmq_close(this->zmqResp_);
         zmq_close(this->zmqReq_);
         zmq_ctx_destroy(this->zmqCtx_);

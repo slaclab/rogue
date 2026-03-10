@@ -99,11 +99,11 @@ void rogue::interfaces::ZmqServer::start() {
                                               this->addr_.c_str()));
     }
 
-    log_->info("Started Rogue server on %s at ports %" PRIu16 ":%" PRIu16 ":%" PRIu16,
-               this->addr_.c_str(),
-               this->basePort_,
-               this->basePort_ + 1,
-               this->basePort_ + 2);
+    log_->debug("Started Rogue server on %s at ports %" PRIu16 ":%" PRIu16 ":%" PRIu16,
+                this->addr_.c_str(),
+                this->basePort_,
+                this->basePort_ + 1,
+                this->basePort_ + 2);
 
     this->threadEn_ = true;
     this->rThread_  = new std::thread(&rogue::interfaces::ZmqServer::runThread, this);

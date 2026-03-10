@@ -95,7 +95,7 @@ rpu::Server::Server(uint16_t port, bool jumbo) : rpu::Core(jumbo) {
     threadEn_ = true;
     thread_   = new std::thread(&rpu::Server::runThread, this, std::weak_ptr<int>(scopePtr));
 
-    udpLog_->info("UDP server ready. localPort=%" PRIu16 ", maxPayload=%" PRIu32, port_, maxPayload());
+    udpLog_->debug("UDP server ready. localPort=%" PRIu16 ", maxPayload=%" PRIu32, port_, maxPayload());
 
     // Set a thread name
 #ifndef __MACH__
@@ -112,7 +112,7 @@ void rpu::Server::stop() {
     if (threadEn_) {
         threadEn_ = false;
         thread_->join();
-        udpLog_->info("Stopping UDP server on local port %" PRIu16, port_);
+        udpLog_->debug("Stopping UDP server on local port %" PRIu16, port_);
 
         ::close(fd_);
     }
@@ -234,12 +234,12 @@ void rpu::Server::runThread(std::weak_ptr<int> lockPtr) {
                 std::lock_guard<std::mutex> lock(udpMtx_);
                 char tmpIp[INET_ADDRSTRLEN];
                 if (inet_ntop(AF_INET, &(tmpAddr.sin_addr), tmpIp, sizeof(tmpIp)) != NULL) {
-                    udpLog_->info("UDP server peer updated on local port %" PRIu16 " to %s:%" PRIu16,
-                                  port_,
-                                  tmpIp,
-                                  ntohs(tmpAddr.sin_port));
+                    udpLog_->debug("UDP server peer updated on local port %" PRIu16 " to %s:%" PRIu16,
+                                   port_,
+                                   tmpIp,
+                                   ntohs(tmpAddr.sin_port));
                 } else {
-                    udpLog_->info("UDP server peer updated on local port %" PRIu16, port_);
+                    udpLog_->debug("UDP server peer updated on local port %" PRIu16, port_);
                 }
                 remAddr_ = tmpAddr;
             }

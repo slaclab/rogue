@@ -99,10 +99,10 @@ rpu::Client::Client(std::string host, uint16_t port, bool jumbo) : rpu::Core(jum
     threadEn_ = true;
     thread_   = new std::thread(&rpu::Client::runThread, this, std::weak_ptr<int>(scopePtr));
 
-    udpLog_->info("UDP client ready. remote=%s:%" PRIu16 ", maxPayload=%" PRIu32,
-                  address_.c_str(),
-                  port_,
-                  maxPayload());
+    udpLog_->debug("UDP client ready. remote=%s:%" PRIu16 ", maxPayload=%" PRIu32,
+                   address_.c_str(),
+                   port_,
+                   maxPayload());
 
     // Set a thread name
 #ifndef __MACH__
@@ -119,7 +119,7 @@ void rpu::Client::stop() {
     if (threadEn_) {
         threadEn_ = false;
         thread_->join();
-        udpLog_->info("Stopping UDP client for remote %s:%" PRIu16, address_.c_str(), port_);
+        udpLog_->debug("Stopping UDP client for remote %s:%" PRIu16, address_.c_str(), port_);
 
         ::close(fd_);
     }
