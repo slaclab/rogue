@@ -48,7 +48,7 @@ Integration references
 Logging
 -------
 
-``SrpV3`` uses Rogue C++ logging, not Python ``logging``.
+``SrpV3`` uses Rogue C++ logging.
 
 - Logger name: ``pyrogue.SrpV3``
 - Unified Logging API:

@@ -10,4 +10,5 @@ This section includes notes for migrating between versions of Rogue.
    :maxdepth: 1
    :caption: Migration:
 
+   logging_unified
    rogue_v6

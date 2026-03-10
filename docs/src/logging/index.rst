@@ -194,6 +194,8 @@ module you are debugging.
   :doc:`/pydm/index`
 - Root behavior and ``unifyLogs``:
   :doc:`/pyrogue_tree/core/root`
+- Migration note for the unified logging style:
+  :doc:`/migration/logging_unified`
 
 .. toctree::
    :hidden:

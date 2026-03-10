@@ -17,7 +17,7 @@ Parameter behavior
 Logging
 =======
 
-``setDebug(maxBytes, name)`` uses Rogue C++ logging, not Python ``logging``.
+``setDebug(maxBytes, name)`` uses Rogue C++ logging.
 
 - Dynamic logger pattern: ``pyrogue.<name>``
 - Example: ``dbg.setDebug(100, 'stream.debug')`` logs through

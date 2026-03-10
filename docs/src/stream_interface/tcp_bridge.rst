@@ -111,7 +111,7 @@ API reference
 Logging
 =======
 
-``TcpCore`` uses Rogue C++ logging, not Python ``logging``.
+``TcpCore`` uses Rogue C++ logging.
 
 Logger name pattern
 -------------------
