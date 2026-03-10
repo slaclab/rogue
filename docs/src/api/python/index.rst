@@ -70,6 +70,7 @@ Helpers
    bytecount
    reversebits
    twoscomplement
+   version
 
 pyrogue.interfaces
 ------------------
@@ -80,6 +81,8 @@ Client/server and interface wrappers for remote access and integration.
    :maxdepth: 1
 
    interfaces_oscommandmemoryslave
+   interfaces_sqllogger
+   interfaces_sqlreader
    interfaces_simpleclient
    interfaces_virtualclient
    interfaces_zmqserver

@@ -84,6 +84,11 @@ Reference example
 See ``tests/api_test/src/api_test.cpp`` for a complete working example that
 matches the current ``Bsp`` API.
 
+API references
+--------------
+
+- :doc:`/api/cpp/interfaces/api/bsp`
+
 Related Topics
 ==============
 

@@ -44,6 +44,7 @@ Use the section class indexes for curated C++ APIs, grouped by namespace.
 
 * :doc:`/api/cpp/interfaces/memory/index`
 * :doc:`/api/cpp/interfaces/stream/index`
+* :doc:`/api/cpp/interfaces/api/index`
 
 ``rogue::protocols``
 
@@ -66,6 +67,8 @@ Use the section class indexes for curated C++ APIs, grouped by namespace.
 
    /api/cpp/hardware/axi/index
    /api/cpp/hardware/raw/index
+   /api/cpp/version
+   /api/cpp/interfaces/api/index
    /api/cpp/interfaces/memory/index
    /api/cpp/interfaces/stream/index
    /api/cpp/protocols/batcher/index

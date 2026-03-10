@@ -103,6 +103,12 @@ C++ examples
        return 0;
    }
 
+API references
+--------------
+
+- :doc:`/api/python/version`
+- :doc:`/api/cpp/version`
+
 Related Topics
 ==============
 
