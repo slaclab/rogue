@@ -21,8 +21,10 @@ Legacy step-by-step examples remain available in:
    :maxdepth: 1
    :caption: Tutorials:
 
+   /getting_started/index
    device_workflow_tutorial
    system_integration_tutorial
+   /advanced_examples/index
 
 Related Topics
 ==============

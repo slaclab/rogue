@@ -19,5 +19,6 @@ For conceptual usage guidance, start with :doc:`/memory_interface/index`.
    block
    model
    hub
+   emulate
    tcpClient
    tcpServer
