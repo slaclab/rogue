@@ -25,16 +25,16 @@ Rogue also provides custom widgets that visualize Rogue-specific structures.
 In practice, Rogue PyDM support is the operator-facing layer on top of a
 running Root. A typical workflow is:
 
-1. start or connect to a PyRogue Root,
-2. expose it through the normal client interface path,
-3. open either the stock debug GUI or a custom PyDM screen,
-4. use Rogue-specific channels and widgets to interact with the tree.
+1. Start or connect to a PyRogue Root,
+2. Expose it through the normal client interface path,
+3. Open either the stock debug GUI or a custom PyDM screen,
+4. Use Rogue-specific channels and widgets to interact with the tree.
 
 This section is therefore not just about launching a GUI. It also defines how
 PyDM addresses Rogue nodes, how multi-server sessions are named, and which
 widgets are available when building custom displays.
 
-When to use the default GUI vs a custom screen
+When To Use The Default GUI vs A Custom Screen
 ==============================================
 
 - Use the default debug GUI during bring-up, integration, and debugging when
@@ -44,15 +44,15 @@ When to use the default GUI vs a custom screen
 - Use the timeplot GUI when the main task is trend visualization of polled
   values rather than full-tree browsing.
 
-Relationship to client interfaces
+Relationship To Client Interfaces
 =================================
 
 PyDM connects through the same client/server model used by other remote tools.
 That usually means:
 
-- a running :doc:`/pyrogue_tree/client_interfaces/zmq_server`
-- one or more GUI sessions using Rogue channel URLs
-- optional coexistence with scripts, notebooks, or other clients attached to
+- A running :doc:`/pyrogue_tree/client_interfaces/zmq_server`
+- One or more GUI sessions using Rogue channel URLs
+- Optional coexistence with scripts, notebooks, or other clients attached to
   the same Root
 
 What To Explore In This Section
