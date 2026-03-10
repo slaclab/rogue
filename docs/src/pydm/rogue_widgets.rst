@@ -51,6 +51,11 @@ inspection. Use custom screens with Rogue widgets when you want:
 - A system-specific workflow,
 - Or a custom layout that focuses on the important Variables and Commands.
 
+For code-constructed displays, the normal top-level object is a
+:py:class:`pydm.Display` subclass. Rogue's widgets are then added to that
+display just like any other Qt/PyDM widget tree. The launcher details for that
+pattern are covered in :doc:`starting_gui`.
+
 What To Explore Next
 ====================
 

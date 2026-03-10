@@ -54,6 +54,46 @@ This is the normal way to deploy a custom PyDM screen against a Rogue server.
 The Rogue plugin and channel handling still come from the same runtime support
 as the stock GUI.
 
+Custom Python Top-Level Displays
+================================
+
+PyDM also supports top-level displays implemented directly in Python. The usual
+pattern is to subclass :py:class:`pydm.Display`, build the layout in code, and
+return ``None`` from ``ui_filepath()``:
+
+.. code-block:: python
+
+   from pydm import Display
+   from qtpy.QtWidgets import QVBoxLayout
+   from pyrogue.pydm.widgets import DebugTree, SystemWindow
+
+   class MyTop(Display):
+       def __init__(self, parent=None, args=None, macros=None):
+           super().__init__(parent=parent, args=args, macros=macros)
+
+           layout = QVBoxLayout(self)
+           layout.addWidget(SystemWindow(parent=None, init_channel='rogue://0/root'))
+           layout.addWidget(DebugTree(parent=None, init_channel='rogue://0/root'))
+
+       def ui_filepath(self):
+           return None
+
+To launch that display, pass the Python file path through ``ui=``:
+
+.. code-block:: python
+
+   import pyrogue.pydm
+
+   pyrogue.pydm.runPyDM(
+       serverList='localhost:9099',
+       ui='path/to/my_top.py',
+       title='My System',
+   )
+
+This is slightly awkward, but it reflects how PyDM loads custom top-level
+displays today. Rogue is forwarding that loader mechanism rather than defining
+a separate display-construction API of its own.
+
 Starting From Python
 ====================
 
@@ -94,7 +134,8 @@ Important Runtime Options
 The main :py:func:`pyrogue.pydm.runPyDM` options are:
 
 - ``serverList``: Comma-separated list of ``host:port`` server addresses.
-- ``ui``: Optional custom ``.ui`` file or Python PyDM top-level file.
+- ``ui``: Optional custom ``.ui`` file or Python file containing a
+  :py:class:`pydm.Display` top-level.
 - ``title``: Window title.
 - ``sizeX`` and ``sizeY``: Initial window size.
 - ``maxListExpand`` and ``maxListSize``: Limits used by the debug-tree view.
