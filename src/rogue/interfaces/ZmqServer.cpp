@@ -99,7 +99,11 @@ void rogue::interfaces::ZmqServer::start() {
                                               this->addr_.c_str()));
     }
 
-    log_->info("Started Rogue server at ports %" PRIu16 ":%" PRIu16, this->basePort_, this->basePort_ + 1);
+    log_->info("Started Rogue server on %s at ports %" PRIu16 ":%" PRIu16 ":%" PRIu16,
+               this->addr_.c_str(),
+               this->basePort_,
+               this->basePort_ + 1,
+               this->basePort_ + 2);
 
     this->threadEn_ = true;
     this->rThread_  = new std::thread(&rogue::interfaces::ZmqServer::runThread, this);
@@ -169,7 +173,7 @@ bool rogue::interfaces::ZmqServer::tryConnect() {
         zmq_close(this->zmqPub_);
         zmq_close(this->zmqRep_);
         zmq_close(this->zmqStr_);
-        log_->debug("Failed to bind publish socket to port %" PRIu16, this->basePort_);
+        log_->debug("Failed to bind publish socket to %s: %s", temp.c_str(), zmq_strerror(zmq_errno()));
         return false;
     }
 
@@ -183,7 +187,7 @@ bool rogue::interfaces::ZmqServer::tryConnect() {
         zmq_close(this->zmqPub_);
         zmq_close(this->zmqRep_);
         zmq_close(this->zmqStr_);
-        log_->debug("Failed to bind request socket to port %" PRIu16, this->basePort_ + 1);
+        log_->debug("Failed to bind request socket to %s: %s", temp.c_str(), zmq_strerror(zmq_errno()));
         return false;
     }
 
@@ -197,7 +201,7 @@ bool rogue::interfaces::ZmqServer::tryConnect() {
         zmq_close(this->zmqPub_);
         zmq_close(this->zmqRep_);
         zmq_close(this->zmqStr_);
-        log_->debug("Failed to bind string request socket to port %" PRIu16, this->basePort_ + 2);
+        log_->debug("Failed to bind string request socket to %s: %s", temp.c_str(), zmq_strerror(zmq_errno()));
         return false;
     }
 
