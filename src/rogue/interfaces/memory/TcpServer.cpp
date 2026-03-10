@@ -169,7 +169,13 @@ void rim::TcpServer::runThread() {
             // Check sizes
             if ((zmq_msg_size(&(msg[0])) != 4) || (zmq_msg_size(&(msg[1])) != 8) || (zmq_msg_size(&(msg[2])) != 4) ||
                 (zmq_msg_size(&(msg[3])) != 4)) {
-                bridgeLog_->warning("Bad message sizes");
+                bridgeLog_->warning(
+                    "Bad message sizes. id=%zu addr=%zu size=%zu type=%zu",
+                    zmq_msg_size(&(msg[0])),
+                    zmq_msg_size(&(msg[1])),
+                    zmq_msg_size(&(msg[2])),
+                    zmq_msg_size(&(msg[3]))
+                );
                 for (x = 0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
                 continue;  // while (1)
             }

@@ -169,7 +169,7 @@ bool rogue::interfaces::ZmqServer::tryConnect() {
         zmq_close(this->zmqPub_);
         zmq_close(this->zmqRep_);
         zmq_close(this->zmqStr_);
-        log_->debug("Failed to bind publish to port %" PRIu16, this->basePort_);
+        log_->debug("Failed to bind publish socket to port %" PRIu16, this->basePort_);
         return false;
     }
 
@@ -183,7 +183,7 @@ bool rogue::interfaces::ZmqServer::tryConnect() {
         zmq_close(this->zmqPub_);
         zmq_close(this->zmqRep_);
         zmq_close(this->zmqStr_);
-        log_->debug("Failed to bind resp to port %" PRIu16, this->basePort_ + 1);
+        log_->debug("Failed to bind request socket to port %" PRIu16, this->basePort_ + 1);
         return false;
     }
 
@@ -197,7 +197,7 @@ bool rogue::interfaces::ZmqServer::tryConnect() {
         zmq_close(this->zmqPub_);
         zmq_close(this->zmqRep_);
         zmq_close(this->zmqStr_);
-        log_->debug("Failed to bind str resp to port %" PRIu16, this->basePort_ + 2);
+        log_->debug("Failed to bind string request socket to port %" PRIu16, this->basePort_ + 2);
         return false;
     }
 
