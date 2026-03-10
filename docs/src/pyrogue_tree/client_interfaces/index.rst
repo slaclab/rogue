@@ -81,8 +81,8 @@ Minimal setup pattern
            )
            self.addInterface(self.zmqServer)
 
-What To Explore Next
-====================
+Related Topics
+==============
 
 - Server configuration details: :doc:`/pyrogue_tree/client_interfaces/zmq_server`
 - Lightweight scripting access: :doc:`/pyrogue_tree/client_interfaces/simple`

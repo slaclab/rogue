@@ -75,8 +75,8 @@ In practice, troubleshooting usually relies on:
 If you need richer client-side observability, :doc:`virtual` is the better
 interface because it exposes a Python logger and richer mirrored-tree state.
 
-What To Explore Next
-====================
+Related Topics
+==============
 
 - Server-side transport setup: :doc:`/pyrogue_tree/client_interfaces/zmq_server`
 - Mirrored-tree access model: :doc:`/pyrogue_tree/client_interfaces/virtual`

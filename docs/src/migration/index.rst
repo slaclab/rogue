@@ -31,8 +31,8 @@ What To Explore In This Section
 - :doc:`rogue_v6` for the major interface and API transitions introduced in
   Rogue V6
 
-What To Explore Next
-====================
+Related Topics
+==============
 
 - Current PyRogue tree model and lifecycle behavior: :doc:`/pyrogue_tree/index`
 - Built-in interface and protocol documentation: :doc:`/built_in_modules/index`

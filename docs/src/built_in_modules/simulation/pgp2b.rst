@@ -175,8 +175,8 @@ Example:
    logging.getLogger('pyrogue.SideBandSim').setLevel(logging.DEBUG)
    rogue.Logging.setFilter('pyrogue.stream.TcpCore', rogue.Logging.Debug)
 
-What To Explore Next
-====================
+Related Topics
+==============
 
 - Stream topologies and connection operators: :doc:`/stream_interface/connecting`
 - TCP stream transport behavior: :doc:`/stream_interface/tcp_bridge`

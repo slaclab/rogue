@@ -78,8 +78,8 @@ Retry-test pattern
 
 This pattern is exercised in ``tests/test_retry_memory.py``.
 
-What To Explore Next
-====================
+Related Topics
+==============
 
 - Memory interface transaction flow: :doc:`/memory_interface/transactions`
 - Device/hub interception patterns: :doc:`/memory_interface/hub`

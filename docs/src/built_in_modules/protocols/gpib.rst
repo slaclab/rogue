@@ -183,8 +183,8 @@ such as:
 - ``Read Sending <command?>``
 - ``Read Got: <response>``
 
-What To Explore Next
-====================
+Related Topics
+==============
 
 - PyRogue Variable behavior: :doc:`/pyrogue_tree/core/variable`
 - Model conversion rules: :doc:`/pyrogue_tree/core/model`

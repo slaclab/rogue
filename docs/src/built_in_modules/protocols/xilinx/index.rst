@@ -171,8 +171,8 @@ C++ API reference pages are collected in :doc:`/api/cpp/protocols/xilinx/index`:
 - :doc:`/api/cpp/protocols/xilinx/xvcServer`
 - :doc:`/api/cpp/protocols/xilinx/xvcConnection`
 
-What To Explore Next
---------------------
+Related Topics
+--------------
 
 - Stream transport wiring patterns: :doc:`/stream_interface/connecting`
 - DMA transport details: :doc:`/built_in_modules/hardware/dma/stream`

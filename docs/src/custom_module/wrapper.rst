@@ -85,8 +85,8 @@ directory as the shared library produced by :ref:`custom_makefile`.
           pyrogue.streamConnect(self,other)
           return other
 
-What To Explore Next
-====================
+Related Topics
+==============
 
 - Testing the wrapped module: :ref:`custom_testing`
 - Stream interface composition patterns: :doc:`/stream_interface/index`

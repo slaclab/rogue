@@ -39,8 +39,8 @@ Recommended Reading Order
    wrapper
    testing
 
-What To Explore Next
-====================
+Related Topics
+==============
 
 - Stream interface patterns and connection semantics: :doc:`/stream_interface/index`
 - PyRogue tree integration and Device structure: :doc:`/pyrogue_tree/index`

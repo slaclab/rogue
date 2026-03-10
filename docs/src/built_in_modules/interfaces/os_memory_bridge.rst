@@ -208,8 +208,8 @@ API references
 - :doc:`/api/python/device`
 - :doc:`/api/python/remotevariable`
 
-What To Explore Next
-====================
+Related Topics
+==============
 
 - Memory transaction topology and routing: :doc:`/memory_interface/index`
 - Device lifecycle and block operations: :doc:`/pyrogue_tree/core/device`

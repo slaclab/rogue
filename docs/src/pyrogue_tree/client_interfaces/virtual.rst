@@ -106,8 +106,8 @@ This logger is useful for client-side connection/setup issues and for
 understanding mirrored-tree behavior. It complements, rather than replaces,
 the server-side transport logging on the ZMQ server.
 
-What To Explore Next
-====================
+Related Topics
+==============
 
 - Server endpoint and port behavior: :doc:`/pyrogue_tree/client_interfaces/zmq_server`
 - Minimal string-path client usage: :doc:`/pyrogue_tree/client_interfaces/simple`

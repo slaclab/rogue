@@ -42,8 +42,8 @@ What This Section Covers
 - Packaging-oriented notes such as Yocto integration and external application
   builds
 
-What To Explore Next
-====================
+Related Topics
+==============
 
 - Guided end-to-end workflows: :doc:`/tutorials/index`
 - PyRogue tree architecture and lifecycle: :doc:`/pyrogue_tree/index`

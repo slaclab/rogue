@@ -32,8 +32,8 @@ Each recipe should answer:
    advanced_stream_patterns
    /advanced_examples/index
 
-What To Explore Next
-====================
+Related Topics
+==============
 
 - Core architecture and lifecycle detail: :doc:`/pyrogue_tree/index`
 - Stream interface composition patterns: :doc:`/stream_interface/index`

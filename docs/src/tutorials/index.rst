@@ -24,8 +24,8 @@ Legacy step-by-step examples remain available in:
    device_workflow_tutorial
    system_integration_tutorial
 
-What To Explore Next
-====================
+Related Topics
+==============
 
 - Core tree architecture and lifecycle: :doc:`/pyrogue_tree/index`
 - Installation and build workflows: :doc:`/installing/index`

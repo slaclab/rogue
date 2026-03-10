@@ -37,8 +37,8 @@ Subsection guide
   Reusable utility components for file I/O, PRBS, compression, and related
   support workflows.
 
-What To Explore Next
-====================
+Related Topics
+==============
 
 - Stream dataflow architecture: :doc:`/stream_interface/index`
 - Memory transaction architecture: :doc:`/memory_interface/index`

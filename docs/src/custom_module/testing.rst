@@ -220,8 +220,8 @@ You can then start the server:
 
    $ python myEpicsGuiTest.py
 
-What To Explore Next
-====================
+Related Topics
+==============
 
 - Stream interface narrative and examples: :doc:`/stream_interface/index`
 - EPICS integration details: :doc:`/built_in_modules/protocols/epicsV4/index`

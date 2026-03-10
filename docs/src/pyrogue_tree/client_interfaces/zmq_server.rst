@@ -112,8 +112,8 @@ Separately, ``ZmqServer._start()`` prints the selected ports and example client
 commands to stdout. Those startup messages are not controlled by the logging
 API.
 
-What To Explore Next
-====================
+Related Topics
+==============
 
 - Lightweight scripting client: :doc:`/pyrogue_tree/client_interfaces/simple`
 - Mirrored tree client: :doc:`/pyrogue_tree/client_interfaces/virtual`

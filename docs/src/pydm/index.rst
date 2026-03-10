@@ -63,8 +63,8 @@ What To Explore In This Section
 - :doc:`channel_urls` for the Rogue-specific PyDM channel syntax
 - :doc:`rogue_widgets` for the widget set used in custom screens
 
-What To Explore Next
-====================
+Related Topics
+==============
 
 - CLI launch and remote target selection: :doc:`/pyrogue_tree/client_interfaces/commandline`
 - ZMQ server setup used by GUIs and remote clients: :doc:`/pyrogue_tree/client_interfaces/zmq_server`
