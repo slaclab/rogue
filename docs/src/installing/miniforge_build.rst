@@ -4,8 +4,11 @@
 Building Rogue Inside Miniforge
 ===============================
 
-This section provides instructions for downloading and building rogue inside an miniforge environment. These
-instructions are relevant for Linux and macOS arm64.
+This path builds Rogue from source inside a Miniforge environment. It is the
+recommended workflow when you need local source changes, documentation work, or
+development against the current repository state.
+
+These instructions are relevant for Linux and macOS arm64.
 
 Prerequisites
 =============
@@ -19,7 +22,9 @@ On macOS, install Apple Command Line Tools before creating the environment:
 Getting Miniforge
 ==================
 
-Download and install miniforge if you don't already have it installed on your machine. Choose an install location with a lot of available diskspace (> 5GB). Miniforge appears to only work reliably in the bash shell.
+Download and install Miniforge if you do not already have it installed. Choose
+an install location with adequate free disk space, typically more than 5 GB.
+Miniforge generally works best from a Bash shell.
 
 *Linux*
 
@@ -35,13 +40,14 @@ Download and install miniforge if you don't already have it installed on your ma
    $ curl -L -O https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-MacOSX-arm64.sh
    $ bash Miniforge3-MacOSX-arm64.sh
 
-Use the following command to add miniforge to your environment. This can be added to your .bash_profile.
+Use the following command to add Miniforge to your shell environment. This can
+be added to your ``.bash_profile``.
 
 .. code::
 
    $ source /path/to/my/miniforge3/etc/profile.d/conda.sh
 
-Set your local miniforge to use the update solver:
+Set your local Miniforge to use the current solver:
 
 .. code::
 
@@ -53,7 +59,7 @@ Set your local miniforge to use the update solver:
 Downloading Rogue & Creating Miniforge Environment
 ==================================================
 
-The next step is to download rogue and create a rogue compatible miniforge environment.
+The next step is to clone Rogue and create a compatible Miniforge environment.
 
 .. code::
 
@@ -62,9 +68,11 @@ The next step is to download rogue and create a rogue compatible miniforge envir
    $ conda activate
    $ conda env create -n rogue_build -f conda.yml
 
-You now have an miniforge environment named rogue_build which contains all of the packages required to build and run rogue.
+You now have a Miniforge environment named ``rogue_build`` containing the
+packages required to build and run Rogue.
 
-You can alternatively clone the git repo with `git clone git@github.com:slaclab/rogue.git`.
+You can alternatively clone the repository with
+``git clone git@github.com:slaclab/rogue.git``.
 To activate this environment:
 
 .. code::
@@ -72,9 +80,9 @@ To activate this environment:
    $ conda activate rogue_build
 
 Building Rogue In Miniforge
-============================
+===========================
 
-Once the rogue environment is activated, you can build and install rogue
+Once the environment is activated, build and install Rogue:
 
 .. code::
 
@@ -84,13 +92,14 @@ Once the rogue environment is activated, you can build and install rogue
    $ make 
    $ make install
 
-The Rogue build system will automatically detect that it is in a conda environment and it will be installed
-within the miniforge rogue environment.
+The Rogue build system automatically detects the Conda environment and installs
+Rogue into that Miniforge environment.
 
 Using Rogue In Miniforge
-=========================
+========================
 
-No additional setup scripts need to be run rogue in an miniforge environment. To activate and de-activate the rogue environment you can use the following commands:
+No additional setup script is needed inside a Miniforge environment. Activate
+and deactivate the environment with the usual Conda commands:
 
 To activate:
 
@@ -107,7 +116,7 @@ To deactivate:
 Updating Rogue In Miniforge
 ===========================
 
-If you want to update and re-install rogue, run the following commands.
+If you want to update and reinstall Rogue, run the following commands:
 
 .. code::
 
@@ -120,10 +129,11 @@ If you want to update and re-install rogue, run the following commands.
    $ cmake --build .
    $ make install
 
-Building and Viewing the Docs
+Building And Viewing The Docs
 =============================
 
-Note: if edits are made to the source files, the full build process needs to be run for changes to reflect in documentation.
+If edits are made to the C++ or Python source files, rebuild Rogue before
+expecting those changes to appear in generated documentation output.
 
 .. code::
 
@@ -137,7 +147,7 @@ Note: if edits are made to the source files, the full build process needs to be 
 Deleting Miniforge Environment
 ==============================
 
-Run the following commands to delete the miniforge environment.
+Run the following command to delete the Miniforge environment.
 
 .. code::
 

@@ -6,26 +6,46 @@ Installing & Compiling Rogue
 
 This section covers supported installation and build workflows for Rogue.
 
-After installation, continue with :doc:`/tutorials/index` for guided end-to-end
-workflows and integration examples.
+Most users should start with a Miniforge-based workflow. It gives Rogue a
+managed Python environment, keeps dependencies predictable, and matches how the
+project is commonly developed and tested.
 
-The recommended method for installing Rogue is through
-:ref:`installing_miniforge` and
-:ref:`installing_miniforge_build`.
-If you choose to build Rogue from source instead of using Miniforge, the following list
-is the recommendation for each operating system.
+In practice there are three main paths:
 
-**Note:** Native source builds are currently supported on Linux and macOS arm64.
-Windows users should use Ubuntu (WSL) or Docker.
+- Install a prebuilt Rogue package into Miniforge:
+  :ref:`installing_miniforge`
+- Build Rogue from source inside Miniforge:
+  :ref:`installing_miniforge_build`
+- Build Rogue from source outside Miniforge:
+  :ref:`installing_full_build`
 
-* Linux - :ref:`installing_full_build`
-* Windows - :ref:`installing_docker`
-* Mac (arm64) - :ref:`installing_miniforge_build`
+Recommended choices by platform are:
+
+- Linux: :ref:`installing_miniforge` or :ref:`installing_miniforge_build`
+- macOS arm64: :ref:`installing_miniforge_build`
+- Windows: :ref:`installing_windows`, then use
+  :ref:`installing_miniforge` inside WSL2 or use
+  :ref:`installing_docker`
+
+Native source builds outside Miniforge are mainly for environments that already
+have their own dependency and deployment model. For most application users,
+Miniforge is the simpler path.
+
+What This Section Covers
+========================
+
+- Miniforge install and source-build workflows
+- Native source builds
+- Docker-based usage
+- Platform-specific notes such as WSL2 and firewall constraints
+- Packaging-oriented notes such as Yocto integration and external application
+  builds
 
 What To Explore Next
 ====================
 
 - Guided end-to-end workflows: :doc:`/tutorials/index`
+- PyRogue tree architecture and lifecycle: :doc:`/pyrogue_tree/index`
 
 
 .. toctree::

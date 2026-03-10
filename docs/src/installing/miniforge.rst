@@ -4,19 +4,31 @@
 Installing Rogue With Miniforge
 ===============================
 
-The following instructions describe how to install a pre-built Rogue package inside an miniforge environment.
-These instructions are relevant for Linux and Ubuntu on Windows.
+This path installs a pre-built Rogue package into a Miniforge environment. It
+is the simplest way to get a working Rogue installation on Linux or on Ubuntu
+running under Windows WSL2.
 
-Windows installations will require you to install Ubuntu. Reference the section :ref:`installing_windows` for required steps.
-For macOS arm64, build from source inside miniforge using :ref:`installing_miniforge_build`.
+Use this when:
 
-Instructions for s3df setup are also available on `Confluence <https://confluence.slac.stanford.edu/spaces/ppareg/pages/591664140/Configure+miniforge+conda+and+Rogue+on+S3DF>`. 
+- You do not need to modify Rogue itself,
+- You want the fastest path to a usable environment,
+- Or you want dependency management handled by Miniforge.
+
+Windows installations require Ubuntu under WSL2. See
+:ref:`installing_windows`.
+
+For macOS arm64, the preferred path is to build from source inside Miniforge
+using :ref:`installing_miniforge_build`.
+
+Instructions for S3DF setup are also available on
+`Confluence <https://confluence.slac.stanford.edu/spaces/ppareg/pages/591664140/Configure+miniforge+conda+and+Rogue+on+S3DF>`_.
 
 Getting Miniforge
 =================
 
-Download and install miniforge if you don't already have it installed on your machine. Choose an install location with a lot of available diskspace (> 5GB). 
-Miniforge appears to only work reliably in the bash shell.
+Download and install Miniforge if you do not already have it installed. Choose
+an install location with adequate free disk space, typically more than 5 GB.
+Miniforge generally works best from a Bash shell.
 
 *Linux*
 
@@ -25,13 +37,14 @@ Miniforge appears to only work reliably in the bash shell.
    $ wget https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh
    $ bash Miniforge3-Linux-x86_64.sh
 
-Use the following command to add miniforge to your environment. This can be added to your .bash_profile.
+Use the following command to add Miniforge to your shell environment. This can
+be added to your ``.bash_profile``.
 
 .. code::
 
    $ source /path/to/my/miniforge3/etc/profile.d/conda.sh
 
-It is important to use the latest conda solver:
+It is important to use the current Conda solver:
 
 .. code::
 
@@ -43,15 +56,17 @@ It is important to use the latest conda solver:
 Creating A Rogue Environment
 ============================
 
-The next step is to create an miniforge environment which includes the Rogue package.
+The next step is to create a Miniforge environment that includes the Rogue
+package.
 
 .. code::
 
    $ conda create -n rogue_tag -c tidair-tag -c conda-forge rogue
 
-The order of the args is important. tidair-tag is the channel from which the Rogue package is downloaded.
+The order of the channels is important. ``tidair-tag`` is the channel from
+which the Rogue package is downloaded.
 
-If you already have an miniforge environment that you would like to install Rogue into:
+If you already have a Miniforge environment and want to install Rogue into it:
 
 .. code::
 
@@ -66,7 +81,8 @@ Alternatively you can install a specific released version of Rogue:
 Using Rogue In Miniforge
 ========================
 
-No additional setup scripts need to be run Rogue in an miniforge environment. To activate and de-activate the Rogue environment you can use the following commands:
+No additional setup script is needed inside a Miniforge environment. Activate
+and deactivate the environment with the usual Conda commands:
 
 To activate:
 
@@ -74,7 +90,8 @@ To activate:
 
    $ conda activate rogue_tag
 
-Replace rogue_tag with the name you used when creating your environment (e.g. rogue_v6.5.0).
+Replace ``rogue_tag`` with the environment name you chose, such as
+``rogue_v6.5.0``.
 
 
 To deactivate:
@@ -86,13 +103,19 @@ To deactivate:
 Installing Rogue In Existing Environment
 ========================================
 
-The following command is used to install Rogue inside and existing miniforge environment.
+The following command installs Rogue into an existing Miniforge environment:
+
+.. code::
+
+   $ conda activate my_existing_env
+   $ conda install -c tidair-tag -c conda-forge rogue
 
 
 Updating Rogue In Miniforge
 ===========================
 
-If you want to update Rogue, run the following command after activating the Rogue environment
+If you want to update Rogue, run the following command after activating the
+environment:
 
 .. code::
 
@@ -101,7 +124,7 @@ If you want to update Rogue, run the following command after activating the Rogu
 Deleting Miniforge Environment
 ==============================
 
-Run the following commands to delete the miniforge environment.
+Run the following command to delete the Miniforge environment.
 
 .. code::
 
