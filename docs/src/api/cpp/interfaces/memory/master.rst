@@ -12,7 +12,15 @@ For conceptual guidance on transaction lifecycle and memory-bus flow, see:
 - :doc:`/memory_interface/index`
 
 
-Master objects in C++ are referenced by the following shared pointer typedef:
+Python binding
+--------------
+
+This C++ class is also exported into Python as ``rogue.interfaces.memory.Master``.
+
+Python API page:
+- :doc:`/api/python/interfaces_memory_master`
+
+objects in C++ are referenced by the following shared pointer typedef:
 
 .. doxygentypedef:: rogue::interfaces::memory::MasterPtr
 

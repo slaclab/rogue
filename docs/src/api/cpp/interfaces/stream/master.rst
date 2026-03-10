@@ -9,7 +9,15 @@ For conceptual guidance on stream architecture and data flow, see:
 - :doc:`/stream_interface/index`
 - :doc:`/stream_interface/sending`
 
-Master objects in C++ are referenced by the following shared pointer typedef:
+Python binding
+--------------
+
+This C++ class is also exported into Python as ``rogue.interfaces.stream.Master``.
+
+Python API page:
+- :doc:`/api/python/interfaces_stream_master`
+
+objects in C++ are referenced by the following shared pointer typedef:
 
 .. doxygentypedef:: rogue::interfaces::stream::MasterPtr
 

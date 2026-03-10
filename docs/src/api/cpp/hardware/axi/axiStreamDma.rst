@@ -7,7 +7,15 @@ AxiStreamDma
 Examples of using the AxiStreamDma class are included in :ref:`hardware_axi_stream`.
 
 
-AxiStreamDma objects in C++ are referenced by the following shared pointer typedef:
+Python binding
+--------------
+
+This C++ class is also exported into Python as ``rogue.hardware.axi.AxiStreamDma``.
+
+Python API page:
+- :doc:`/api/python/hardware_axi_axistreamdma`
+
+objects in C++ are referenced by the following shared pointer typedef:
 
 .. doxygentypedef:: rogue::hardware::axi::AxiStreamDmaPtr
 

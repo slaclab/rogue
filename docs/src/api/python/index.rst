@@ -95,7 +95,33 @@ Stream-facing Python interface bindings.
 .. toctree::
    :maxdepth: 1
 
+   interfaces_stream_master
+   interfaces_stream_slave
+   interfaces_stream_frame
+   interfaces_stream_fifo
+   interfaces_stream_filter
+   interfaces_stream_ratedrop
+   interfaces_stream_tcpcore
+   interfaces_stream_tcpclient
+   interfaces_stream_tcpserver
    interfaces_stream_variable
+
+pyrogue.interfaces.memory
+-------------------------
+
+Memory-facing Python interface bindings.
+
+.. toctree::
+   :maxdepth: 1
+
+   interfaces_memory_master
+   interfaces_memory_slave
+   interfaces_memory_hub
+   interfaces_memory_transaction
+   interfaces_memory_block
+   interfaces_memory_emulate
+   interfaces_memory_tcpclient
+   interfaces_memory_tcpserver
 
 pyrogue.protocols.epicsV4
 -------------------------
@@ -132,3 +158,15 @@ PRBS test and diagnostics utility classes.
    utilities_prbs_prbspair
    utilities_prbs_prbsrx
    utilities_prbs_prbstx
+
+rogue.hardware
+--------------
+
+Python-visible hardware interface classes exported from Rogue C++.
+
+.. toctree::
+   :maxdepth: 1
+
+   hardware_memmap
+   hardware_axi_axistreamdma
+   hardware_axi_aximemmap
