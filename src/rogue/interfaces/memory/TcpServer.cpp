@@ -116,6 +116,12 @@ void rim::TcpServer::close() {
     this->stop();
 }
 
+void rim::TcpServer::start() {
+    // The bridge is fully bound and the worker thread is already running by
+    // the time the constructor returns. This hook exists for managed-lifecycle
+    // symmetry with TcpClient.
+}
+
 void rim::TcpServer::stop() {
     if (threadEn_) {
         rogue::GilRelease noGil;
@@ -246,7 +252,9 @@ void rim::TcpServer::setup_python() {
     bp::class_<rim::TcpServer, rim::TcpServerPtr, bp::bases<rim::Master>, boost::noncopyable>(
         "TcpServer",
         bp::init<std::string, uint16_t>())
-        .def("close", &rim::TcpServer::close);
+        .def("close", &rim::TcpServer::close)
+        .def("_start", &rim::TcpServer::start)
+        .def("_stop", &rim::TcpServer::stop);
 
     bp::implicitly_convertible<rim::TcpServerPtr, rim::MasterPtr>();
 #endif
