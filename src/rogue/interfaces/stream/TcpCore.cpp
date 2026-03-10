@@ -137,6 +137,8 @@ ris::TcpCore::TcpCore(const std::string& addr, uint16_t port, bool server) {
     threadEn_     = true;
     this->thread_ = new std::thread(&ris::TcpCore::runThread, this);
 
+    this->bridgeLog_->info("TCP stream bridge ready. pull=%s push=%s", this->pullAddr_.c_str(), this->pushAddr_.c_str());
+
     // Set a thread name
 #ifndef __MACH__
     pthread_setname_np(thread_->native_handle(), "TcpCore");
@@ -158,6 +160,9 @@ void ris::TcpCore::stop() {
         rogue::GilRelease noGil;
         threadEn_ = false;
         thread_->join();
+        this->bridgeLog_->info("Stopping TCP stream bridge. pull=%s push=%s",
+                               this->pullAddr_.c_str(),
+                               this->pushAddr_.c_str());
         zmq_close(this->zmqPull_);
         zmq_close(this->zmqPush_);
         zmq_ctx_destroy(this->zmqCtx_);
