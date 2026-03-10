@@ -69,6 +69,9 @@ class Logging {
     // Active logger instances
     static std::vector<rogue::Logging*> loggers_;
 
+    // Optional forwarding of Rogue C++ logs into Python logging
+    static bool forwardPython_;
+
     void intLog(uint32_t level, const char* format, va_list args);
 
     void updateLevelLocked();
@@ -135,6 +138,18 @@ class Logging {
      * @param level Level threshold for matching names.
      */
     static void setFilter(const std::string& filter, uint32_t level);
+
+    /**
+     * @brief Enables or disables forwarding Rogue C++ logs into Python logging.
+     * @param enable When true, emitted C++ log messages are also sent to the
+     *               Python ``logging`` logger with the same fully-qualified name.
+     */
+    static void setForwardPython(bool enable);
+
+    /**
+     * @brief Returns whether Rogue C++ logs are currently forwarded to Python logging.
+     */
+    static bool forwardPython();
 
     /**
      * @brief Normalizes logger names to the emitted Rogue namespace.

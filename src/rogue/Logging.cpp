@@ -17,6 +17,7 @@
 #include "rogue/Directives.h"
 
 #include "rogue/Logging.h"
+#include "rogue/ScopedGil.h"
 
 #include <inttypes.h>
 #include <stdarg.h>
@@ -58,6 +59,9 @@ std::vector<rogue::LogFilter*> rogue::Logging::filters_;
 
 // Active loggers
 std::vector<rogue::Logging*> rogue::Logging::loggers_;
+
+// Python forwarding enable
+bool rogue::Logging::forwardPython_ = false;
 
 // Crate logger
 rogue::LoggingPtr rogue::Logging::create(const std::string& name, bool quiet) {
@@ -131,6 +135,20 @@ void rogue::Logging::setFilter(const std::string& name, uint32_t level) {
     levelMtx_.unlock();
 }
 
+void rogue::Logging::setForwardPython(bool enable) {
+    levelMtx_.lock();
+    forwardPython_ = enable;
+    levelMtx_.unlock();
+}
+
+bool rogue::Logging::forwardPython() {
+    bool enable;
+    levelMtx_.lock();
+    enable = forwardPython_;
+    levelMtx_.unlock();
+    return enable;
+}
+
 void rogue::Logging::intLog(uint32_t level, const char* fmt, va_list args) {
     if (level < level_.load()) return;
 
@@ -143,6 +161,15 @@ void rogue::Logging::intLog(uint32_t level, const char* fmt, va_list args) {
            static_cast<int64_t>(tme.tv_usec),
            name_.c_str(),
            buffer);
+
+#ifndef NO_PYTHON
+    if (forwardPython()) {
+        rogue::ScopedGil gil;
+        bp::object logging = bp::import("logging");
+        bp::object logger  = logging.attr("getLogger")(name_);
+        logger.attr("log")(level, buffer);
+    }
+#endif
 }
 
 void rogue::Logging::log(uint32_t level, const char* fmt, ...) {
@@ -214,6 +241,10 @@ void rogue::Logging::setup_python() {
         .staticmethod("setLevel")
         .def("setFilter", &rogue::Logging::setFilter)
         .staticmethod("setFilter")
+        .def("setForwardPython", &rogue::Logging::setForwardPython)
+        .staticmethod("setForwardPython")
+        .def("forwardPython", &rogue::Logging::forwardPython)
+        .staticmethod("forwardPython")
         .def("normalizeName", &rogue::Logging::normalizeName)
         .staticmethod("normalizeName")
         .def_readonly("Critical", &rogue::Logging::Critical)

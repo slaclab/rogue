@@ -105,8 +105,8 @@ This is what powers:
 
 Important limitation:
 Python log records under the ``pyrogue`` logger hierarchy are captured there,
-but Rogue C++ ``rogue.Logging`` output is not automatically mirrored into
-``SystemLog``.
+but Rogue C++ ``rogue.Logging`` output is not mirrored into ``SystemLog``
+unless you explicitly enable Python forwarding for C++ logs.
 
 Rogue C++ Logging
 =================
@@ -127,6 +127,7 @@ The Python-visible API is:
    rogue.Logging.setLevel(rogue.Logging.Warning)
    rogue.Logging.setFilter('udp', rogue.Logging.Debug)
    rogue.Logging.setFilter('pyrogue.packetizer', rogue.Logging.Debug)
+   rogue.Logging.setForwardPython(True)
 
 Severity constants are:
 
@@ -215,6 +216,27 @@ These are equivalent:
 Unlike older Rogue releases, changing the global level or filters now updates
 existing ``rogue.Logging`` instances as well as future ones.
 
+Optional Python forwarding
+--------------------------
+
+Rogue C++ logging can also be forwarded into Python ``logging``:
+
+.. code-block:: python
+
+   import rogue
+
+   rogue.Logging.setForwardPython(True)
+
+When enabled:
+
+- Rogue C++ log messages are still emitted through the normal C++ logging path.
+- They are also forwarded into Python ``logging`` using the same
+  fully-qualified logger name.
+- In a PyRogue application with a running ``Root``, those forwarded records can
+  then flow into ``Root.SystemLog`` through the normal Python handler path.
+
+This is disabled by default to avoid changing existing application behavior.
+
 How To Find The Right Logger Name
 =================================
 
@@ -280,6 +302,7 @@ For mixed Python + C++ applications:
 
    logging.getLogger('pyrogue').setLevel(logging.DEBUG)
    rogue.Logging.setFilter('rssi', rogue.Logging.Debug)
+   rogue.Logging.setForwardPython(True)
 
    # If you have a PyRogue node object, one call can configure both.
    pyrogue.setLogLevel(root.MyDevice, 'DEBUG')
@@ -289,12 +312,10 @@ Current Rough Edges
 
 The codebase works today, but there are a few real pain points:
 
-- Python and C++ logging use different APIs.
-- C++ logger names are not easy to discover unless you inspect source.
-- C++ and Python logging still use different APIs even though they now share
+- Python and C++ logging still use different APIs even though they now share
   some helper methods.
-- Only Python ``pyrogue`` logs flow into ``Root.SystemLog`` / PyDM system-log
-  tooling.
+- C++ logger names are not easy to discover unless you inspect source.
+- C++ log forwarding into Python/SystemLog is opt-in rather than automatic.
 
 Those are good targets for future code cleanup, but the current documentation
 should at least make existing behavior predictable.
