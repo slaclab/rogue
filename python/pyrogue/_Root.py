@@ -769,12 +769,12 @@ class Root(pr.Device):
 
     def _write(self) -> bool:
         """Write and verify all blocks."""
-        self._log.info("Start root write")
+        self._log.info("Start root write (forceWrite=%s)", self.ForceWrite.value())
         with self.pollBlock(), self.updateGroup():
             self.writeBlocks(force=self.ForceWrite.value(), recurse=True)
-            self._log.info("Verify root read")
+            self._log.info("Verify root write with readback")
             self.verifyBlocks(recurse=True)
-            self._log.info("Check root read")
+            self._log.info("Check verified root write transactions")
             self.checkBlocks(recurse=True)
 
         self._log.info("Done root write")
@@ -785,7 +785,7 @@ class Root(pr.Device):
         self._log.info("Start root read")
         with self.pollBlock(), self.updateGroup():
             self.readBlocks(recurse=True)
-            self._log.info("Check root read")
+            self._log.info("Check root read transactions")
             self.checkBlocks(recurse=True)
 
         self._log.info("Done root read")
@@ -935,16 +935,28 @@ class Root(pr.Device):
             else:
                 raise Exception("loadYaml: Invalid load file: {}, must be a directory or end in .yml or .yaml".format(rl))
 
+        self._log.info(
+            "Loading YAML config from %s file(s), writeEach=%s, modes=%s, incGroups=%s, excGroups=%s",
+            len(lst),
+            writeEach,
+            modes,
+            incGroups,
+            excGroups,
+        )
+
         # Read each file
         with self.pollBlock(), self.updateGroup():
             for fn in lst:
+                self._log.debug("Applying YAML config file %s", fn)
                 d = pr.yamlToData(fName=fn)
                 self._setDictRoot(d=d,writeEach=writeEach,modes=modes,incGroups=incGroups,excGroups=excGroups)
 
             if not writeEach:
+                self._log.info("Committing staged YAML config to hardware")
                 self._write()
 
         if self.InitAfterConfig.value():
+            self._log.info("Running initialize() after YAML config load")
             self.initialize()
 
         return True
@@ -1034,13 +1046,23 @@ class Root(pr.Device):
         """
         d = pr.yamlToData(yml)
 
+        self._log.info(
+            "Applying YAML text config, writeEach=%s, modes=%s, incGroups=%s, excGroups=%s",
+            writeEach,
+            modes,
+            incGroups,
+            excGroups,
+        )
+
         with self.pollBlock(), self.updateGroup():
             self._setDictRoot(d=d,writeEach=writeEach,modes=modes,incGroups=incGroups,excGroups=excGroups)
 
             if not writeEach:
+                self._log.info("Committing staged YAML text config to hardware")
                 self._write()
 
         if self.InitAfterConfig.value():
+            self._log.info("Running initialize() after YAML text config")
             self.initialize()
 
     def remoteVariableDump(

@@ -437,7 +437,7 @@ class VirtualClient(rogue.interfaces.ZmqClient):
             if self._link and (time.time() - self._ltime) > 10.0:
                 self._link = False
                 self._log.warning(
-                    "I have not heard from %s in 10 seconds. It may be busy, continuing to wait...",
+                    "Lost link heartbeat from %s for 10 seconds; continuing to wait",
                     self._root.name,
                 )
                 for mon in self._monitors:
@@ -445,7 +445,7 @@ class VirtualClient(rogue.interfaces.ZmqClient):
 
             elif (not self._link) and (time.time() - self._ltime) < 10.0:
                 self._link = True
-                self._log.warning("I have finally heard from %s. All is good!", self._root.name)
+                self._log.info("Link heartbeat restored from %s", self._root.name)
                 for mon in self._monitors:
                     mon(self._link)
 
