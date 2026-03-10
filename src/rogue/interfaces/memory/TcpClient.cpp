@@ -121,7 +121,6 @@ rim::TcpClient::TcpClient(std::string addr, uint16_t port, bool waitReady) : rim
 #ifndef __MACH__
     pthread_setname_np(thread_->native_handle(), "TcpClient");
 #endif
-
 }
 
 //! Destructor
