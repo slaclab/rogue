@@ -44,4 +44,4 @@ Related Topics
 
 - Stream interface patterns and connection semantics: :doc:`/stream_interface/index`
 - PyRogue tree integration and Device structure: :doc:`/pyrogue_tree/index`
-- Python and C++ API reference entry point: :doc:`/api/index`
+- Built-in module survey and extension context: :doc:`/built_in_modules/index`

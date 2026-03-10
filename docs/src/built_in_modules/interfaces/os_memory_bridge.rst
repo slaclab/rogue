@@ -212,5 +212,5 @@ Related Topics
 ==============
 
 - Memory transaction topology and routing: :doc:`/memory_interface/index`
-- Device lifecycle and block operations: :doc:`/pyrogue_tree/core/device`
-- Variable type/model behavior: :doc:`/pyrogue_tree/core/variable`
+- Device lifecycle and managed startup: :doc:`/pyrogue_tree/core/device`
+- Command behavior and callable Nodes: :doc:`/pyrogue_tree/core/command`

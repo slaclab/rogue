@@ -87,6 +87,6 @@ matches the current ``Bsp`` API.
 Related Topics
 ==============
 
+- Built-in interface overview: :doc:`/built_in_modules/interfaces/index`
 - PyRogue tree structure and lifecycle: :doc:`/pyrogue_tree/index`
 - Core Root/Device/Variable behavior: :doc:`/pyrogue_tree/core/index`
-- Full API entry point (Python + C++): :doc:`/api/index`

@@ -106,5 +106,5 @@ C++ examples
 Related Topics
 ==============
 
-- Built-in section overview: :doc:`/built_in_modules/index`
 - Deployment and environment setup: :doc:`/installing/index`
+- Upgrade guidance across Rogue versions: :doc:`/migration/index`

@@ -78,4 +78,4 @@ Related Topics
 
 - Tree variable concepts: :doc:`/pyrogue_tree/core/variable`
 - Logging subsystem overview: :doc:`/logging/index`
-- Version gating for deployments: :doc:`/built_in_modules/interfaces/version`
+- GUI and client access patterns for live trees: :doc:`/pyrogue_tree/client_interfaces/index`

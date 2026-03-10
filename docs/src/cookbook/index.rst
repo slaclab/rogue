@@ -37,4 +37,4 @@ Related Topics
 
 - Core architecture and lifecycle detail: :doc:`/pyrogue_tree/index`
 - Stream interface composition patterns: :doc:`/stream_interface/index`
-- Python and C++ API reference entry point: :doc:`/api/index`
+- Built-in protocols and utilities: :doc:`/built_in_modules/index`
