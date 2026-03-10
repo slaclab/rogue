@@ -134,6 +134,10 @@ bound into it.
 
 - Logger pattern: ``pyrogue.memory.block.<path>``
 - Example: ``pyrogue.memory.block.Root.MyDevice.MyRegister``
+- Unified Logging API:
+  ``logging.getLogger('pyrogue.memory.block').setLevel(logging.DEBUG)``
+- Legacy Logging API:
+  ``rogue.Logging.setFilter('pyrogue.memory.block', rogue.Logging.Debug)``
 
 This logger is useful for low-level register-access debugging because it emits
 messages during:
@@ -142,14 +146,6 @@ messages during:
 - transaction start/check flow
 - retry handling
 - verify/readback behavior
-
-Configuration example:
-
-.. code-block:: python
-
-   import rogue
-
-   rogue.Logging.setFilter('pyrogue.memory.block', rogue.Logging.Debug)
 
 The logger name is derived from the first Variable path assigned to the Block,
 so filtering by the ``pyrogue.memory.block`` prefix is usually the practical

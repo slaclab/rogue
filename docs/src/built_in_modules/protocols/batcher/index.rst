@@ -59,15 +59,10 @@ equally to both ``Splitter`` and ``Inverter`` usage:
 
 - v1 path: ``pyrogue.batcher.CoreV1``
 - v2 path: ``pyrogue.batcher.CoreV2``
-
-Enable the logger that matches the batcher version you are debugging before
-processing frames:
-
-.. code-block:: python
-
-   import rogue
-
-   rogue.Logging.setFilter('pyrogue.batcher.CoreV2', rogue.Logging.Debug)
+- Unified Logging API:
+  ``logging.getLogger('pyrogue.batcher.CoreV2').setLevel(logging.DEBUG)``
+- Legacy Logging API:
+  ``rogue.Logging.setFilter('pyrogue.batcher.CoreV2', rogue.Logging.Debug)``
 
 For byte-level inspection of split or transformed output frames, add a
 downstream debug ``Slave`` tap and use :doc:`/stream_interface/debugStreams`.

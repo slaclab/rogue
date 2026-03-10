@@ -127,29 +127,18 @@ Examples:
 
 - ``pyrogue.stream.TcpCore.127.0.0.1.Server.8000``
 - ``pyrogue.stream.TcpCore.192.168.1.10.Client.8000``
-
-How to enable it
-----------------
-
-Use ``rogue.Logging.setFilter(...)`` to enable it:
-
-.. code-block:: python
-
-   import rogue
-   import rogue.interfaces.stream as ris
-
-   rogue.Logging.setFilter('pyrogue.stream.TcpCore', rogue.Logging.Debug)
-
-   tcp = ris.TcpClient('127.0.0.1', 8000)
+- Unified Logging API:
+  ``logging.getLogger('pyrogue.stream.TcpCore').setLevel(logging.DEBUG)``
+- Legacy Logging API:
+  ``rogue.Logging.setFilter('pyrogue.stream.TcpCore', rogue.Logging.Debug)``
 
 You can also target one specific instance if the full dynamic name is known:
 
 .. code-block:: python
 
-   rogue.Logging.setFilter(
-       'pyrogue.stream.TcpCore.127.0.0.1.Client.8000',
-       rogue.Logging.Debug,
-   )
+   logging.getLogger(
+       'pyrogue.stream.TcpCore.127.0.0.1.Client.8000'
+   ).setLevel(logging.DEBUG)
 
 What it logs
 ------------

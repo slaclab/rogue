@@ -162,18 +162,14 @@ The useful logging comes from two lower layers:
 
 - ``SideBandSim`` uses Python logging with names of the form
   ``pyrogue.SideBandSim.<host>.<port>``
+- ``SideBandSim`` logging API:
+  ``logging.getLogger('pyrogue.SideBandSim').setLevel(logging.DEBUG)``
 - The underlying TCP stream endpoints can be debugged through the normal
   TCP bridge logger family documented in :doc:`/stream_interface/tcp_bridge`
-
-Example:
-
-.. code-block:: python
-
-   import logging
-   import rogue
-
-   logging.getLogger('pyrogue.SideBandSim').setLevel(logging.DEBUG)
-   rogue.Logging.setFilter('pyrogue.stream.TcpCore', rogue.Logging.Debug)
+- ``TcpCore`` unified logging API:
+  ``logging.getLogger('pyrogue.stream.TcpCore').setLevel(logging.DEBUG)``
+- ``TcpCore`` legacy logging API:
+  ``rogue.Logging.setFilter('pyrogue.stream.TcpCore', rogue.Logging.Debug)``
 
 What To Explore Next
 ====================

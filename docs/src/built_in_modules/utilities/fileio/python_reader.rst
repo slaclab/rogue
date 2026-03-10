@@ -71,7 +71,7 @@ Logging
 ``FileReader`` uses Python logging, not Rogue C++ logging.
 
 - Default logger name: ``pyrogue.FileReader``
-- Configuration API:
+- Logging API:
   ``logging.getLogger('pyrogue.FileReader').setLevel(logging.DEBUG)``
 
 If you pass a custom ``log=...`` object into ``FileReader``, that logger is

@@ -49,6 +49,10 @@ Logging
 The transaction runtime uses a Rogue C++ logger:
 
 - Logger name: ``pyrogue.memory.Transaction``
+- Unified Logging API:
+  ``logging.getLogger('pyrogue.memory.Transaction').setLevel(logging.DEBUG)``
+- Legacy Logging API:
+  ``rogue.Logging.setFilter('pyrogue.memory.Transaction', rogue.Logging.Debug)``
 
 This logger is created in quiet mode and is mainly an internal runtime aid for
 timeout/correlation behavior rather than a primary user-facing debug surface.

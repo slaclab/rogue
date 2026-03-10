@@ -44,12 +44,12 @@ Logging
 ``MemMap`` uses Rogue C++ logging.
 
 - Logger name: ``pyrogue.MemMap``
-- Configuration API:
+- Unified Logging API:
+  ``logging.getLogger('pyrogue.MemMap').setLevel(logging.DEBUG)``
+- Legacy Logging API:
   ``rogue.Logging.setFilter('pyrogue.MemMap', rogue.Logging.Debug)``
 - Typical messages: mapped-range creation, issued transactions, and transaction
   timeout warnings
-
-Set the filter with:
 
 Python MemMap Example
 =====================

@@ -16,7 +16,9 @@ Logging
 The underlying Rogue PRBS engine uses Rogue C++ logging.
 
 - Logger name: ``pyrogue.prbs.rx``
-- Configuration API:
+- Unified Logging API:
+  ``logging.getLogger('pyrogue.prbs.rx').setLevel(logging.DEBUG)``
+- Legacy Logging API:
   ``rogue.Logging.setFilter('pyrogue.prbs.rx', rogue.Logging.Debug)``
 
 Set the filter if you want detailed

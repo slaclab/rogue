@@ -20,7 +20,9 @@ Logging
 The underlying Rogue ``StreamWriter`` instance uses Rogue C++ logging.
 
 - Logger name: ``pyrogue.fileio.StreamWriter``
-- Configuration API:
+- Unified Logging API:
+  ``logging.getLogger('pyrogue.fileio.StreamWriter').setLevel(logging.DEBUG)``
+- Legacy Logging API:
   ``rogue.Logging.setFilter('pyrogue.fileio.StreamWriter', rogue.Logging.Debug)``
 
 The PyRogue Device wrapper itself is mainly a control wrapper, so capture-path

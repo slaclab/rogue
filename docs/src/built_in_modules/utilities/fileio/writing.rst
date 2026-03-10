@@ -41,12 +41,12 @@ Logging
 The underlying C++ ``StreamWriter`` uses Rogue C++ logging.
 
 - Logger name: ``pyrogue.fileio.StreamWriter``
-- Configuration API:
+- Unified Logging API:
+  ``logging.getLogger('pyrogue.fileio.StreamWriter').setLevel(logging.DEBUG)``
+- Legacy Logging API:
   ``rogue.Logging.setFilter('pyrogue.fileio.StreamWriter', rogue.Logging.Debug)``
 - Typical messages: file open/close flow, split-file rollover, and write-path
   operational diagnostics
-
-Set the filter with:
 
 The PyRogue wrapper itself is primarily a control surface around that C++
 writer, so the most useful logging usually comes from the underlying

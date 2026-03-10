@@ -99,16 +99,10 @@ Examples:
 
 - ``pyrogue.memory.TcpServer.*.8000``
 - ``pyrogue.memory.TcpClient.127.0.0.1.8000``
-
-Enable logging with ``rogue.Logging.setFilter(...)``:
-
-.. code-block:: python
-
-   import rogue
-   import rogue.interfaces.memory as rim
-
-   rogue.Logging.setFilter('pyrogue.memory.TcpServer', rogue.Logging.Debug)
-   server = rim.TcpServer('*', 8000)
+- Unified Logging API:
+  ``logging.getLogger('pyrogue.memory.TcpServer').setLevel(logging.DEBUG)``
+- Legacy Logging API:
+  ``rogue.Logging.setFilter('pyrogue.memory.TcpServer', rogue.Logging.Debug)``
 
 At debug level these classes log socket setup and transaction forwarding
 details. There is no additional per-instance runtime debug helper.

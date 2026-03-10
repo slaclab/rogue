@@ -62,7 +62,8 @@ Unified Python and C++ logging
 ------------------------------
 
 If a PyRogue application wants one logging path for both Python Nodes and Rogue
-C++ transport/protocol objects, construct the Root with ``unifyLogs=True``:
+C++ transport/protocol objects, call ``pyrogue.setUnifiedLogging(True)`` or
+construct the Root with ``unifyLogs=True``:
 
 .. code-block:: python
 

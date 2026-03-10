@@ -89,16 +89,12 @@ Logging
 The base Rogue memory master uses Rogue C++ logging.
 
 - Logger name: ``pyrogue.memory.Master``
-- Configuration API:
+- Unified Logging API:
+  ``logging.getLogger('pyrogue.memory.Master').setLevel(logging.DEBUG)``
+- Legacy Logging API:
   ``rogue.Logging.setFilter('pyrogue.memory.Master', rogue.Logging.Debug)``
 
-Set the filter with:
 
-.. code-block:: python
-
-   import rogue
-
-   rogue.Logging.setFilter('pyrogue.memory.Master', rogue.Logging.Debug)
 
 This logger is useful for transaction-request and error-path debugging in
 custom master implementations. ``Master`` does not provide a separate runtime

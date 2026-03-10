@@ -152,14 +152,10 @@ Static logger names:
 
 Use ``pyrogue.xilinx.xvc`` for TCP server / frame-bridge activity and
 ``pyrogue.xilinx.jtag`` for protocol-level JTAG query/shift debugging.
-
-Enable with:
-
-.. code-block:: python
-
-   import rogue
-
-   rogue.Logging.setFilter('pyrogue.xilinx', rogue.Logging.Debug)
+- Unified Logging API:
+  ``logging.getLogger('pyrogue.xilinx').setLevel(logging.DEBUG)``
+- Legacy Logging API:
+  ``rogue.Logging.setFilter('pyrogue.xilinx', rogue.Logging.Debug)``
 
 API references
 --------------

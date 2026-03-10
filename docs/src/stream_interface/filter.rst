@@ -99,16 +99,10 @@ Logging
 ``Filter`` uses Rogue C++ logging with the static logger name:
 
 - ``pyrogue.stream.Filter``
-
-Enable it with:
-
-.. code-block:: python
-
-   import rogue
-   import rogue.interfaces.stream as ris
-
-   rogue.Logging.setFilter('pyrogue.stream.Filter', rogue.Logging.Debug)
-   filt = ris.Filter(True, 3)
+- Unified Logging API:
+  ``logging.getLogger('pyrogue.stream.Filter').setLevel(logging.DEBUG)``
+- Legacy Logging API:
+  ``rogue.Logging.setFilter('pyrogue.stream.Filter', rogue.Logging.Debug)``
 
 ``Filter`` does not provide a separate runtime ``setDebug(...)`` helper. If you
 want to inspect forwarded payloads, add a debug ``Slave`` downstream and use

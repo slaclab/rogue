@@ -47,7 +47,9 @@ Logging
 debug path.
 
 - Logger name: ``pyrogue.axi.AxiStreamDma``
-- Configuration API:
+- Unified Logging API:
+  ``logging.getLogger('pyrogue.axi.AxiStreamDma').setLevel(logging.DEBUG)``
+- Legacy Logging API:
   ``rogue.Logging.setFilter('pyrogue.axi.AxiStreamDma', rogue.Logging.Debug)``
 - Typical Rogue messages: DMA channel creation, send/receive timeouts, and
   errored-frame handling

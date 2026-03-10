@@ -99,7 +99,7 @@ Logging
 ``VirtualClient`` uses Python logging.
 
 - Logger name: ``pyrogue.VirtualClient``
-- Configuration API:
+- Logging API:
   ``logging.getLogger('pyrogue.VirtualClient').setLevel(logging.DEBUG)``
 
 This logger is useful for client-side connection/setup issues and for

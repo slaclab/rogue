@@ -113,14 +113,10 @@ Logging
 Packetizer v2 logs through the shared packetizer controller logger:
 
 - ``pyrogue.packetizer.Controller``
-
-Enable it with:
-
-.. code-block:: python
-
-   import rogue
-
-   rogue.Logging.setFilter('pyrogue.packetizer', rogue.Logging.Debug)
+- Unified Logging API:
+  ``logging.getLogger('pyrogue.packetizer').setLevel(logging.DEBUG)``
+- Legacy Logging API:
+  ``rogue.Logging.setFilter('pyrogue.packetizer', rogue.Logging.Debug)``
 
 For v2-specific debugging, this logger reports CRC/drop conditions and outbound
 queue timeouts. There is no separate ``CoreV2``-specific logger name.

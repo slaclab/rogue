@@ -51,12 +51,12 @@ Logging
 ``SrpV3`` uses Rogue C++ logging, not Python ``logging``.
 
 - Logger name: ``pyrogue.SrpV3``
-- Configuration API:
+- Unified Logging API:
+  ``logging.getLogger('pyrogue.SrpV3').setLevel(logging.DEBUG)``
+- Legacy Logging API:
   ``rogue.Logging.setFilter('pyrogue.SrpV3', rogue.Logging.Debug)``
 - Typical messages: transmitted request headers, received response headers,
   undersized frames, bad headers, error tails, and transaction-ID mismatches
-
-Set the filter with:
 
 Python usage examples
 ---------------------

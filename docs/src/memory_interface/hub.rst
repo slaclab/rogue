@@ -74,16 +74,12 @@ Logging
 The base Rogue memory hub uses Rogue C++ logging.
 
 - Logger name: ``pyrogue.memory.Hub``
-- Configuration API:
+- Unified Logging API:
+  ``logging.getLogger('pyrogue.memory.Hub').setLevel(logging.DEBUG)``
+- Legacy Logging API:
   ``rogue.Logging.setFilter('pyrogue.memory.Hub', rogue.Logging.Debug)``
 
-Set the filter with:
 
-.. code-block:: python
-
-   import rogue
-
-   rogue.Logging.setFilter('pyrogue.memory.Hub', rogue.Logging.Debug)
 
 For custom hub subclasses, it is often worth adding a second subclass-specific
 logger in addition to the base hub logger if your translation logic is complex.

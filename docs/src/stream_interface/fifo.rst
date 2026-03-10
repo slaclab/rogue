@@ -109,16 +109,10 @@ Logging
 ``Fifo`` uses Rogue C++ logging with the static logger name:
 
 - ``pyrogue.stream.Fifo``
-
-Enable it with:
-
-.. code-block:: python
-
-   import rogue
-   import rogue.interfaces.stream as ris
-
-   rogue.Logging.setFilter('pyrogue.stream.Fifo', rogue.Logging.Debug)
-   fifo = ris.Fifo(256, 0, True)
+- Unified Logging API:
+  ``logging.getLogger('pyrogue.stream.Fifo').setLevel(logging.DEBUG)``
+- Legacy Logging API:
+  ``rogue.Logging.setFilter('pyrogue.stream.Fifo', rogue.Logging.Debug)``
 
 ``Fifo`` does not expose a separate runtime ``setDebug(...)`` helper. For
 payload/byte-dump inspection, attach a debug ``Slave`` tap before or after the

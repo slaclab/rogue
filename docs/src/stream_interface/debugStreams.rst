@@ -22,11 +22,13 @@ Logging
 - Dynamic logger pattern: ``pyrogue.<name>``
 - Example: ``dbg.setDebug(100, 'stream.debug')`` logs through
   ``pyrogue.stream.debug``
-- Configuration API:
+- Unified Logging API:
+  ``logging.getLogger('pyrogue.stream.debug').setLevel(logging.DEBUG)``
+- Legacy Logging API:
   ``rogue.Logging.setFilter('pyrogue.stream.debug', rogue.Logging.Debug)``
 
-Set the filter before calling ``setDebug(...)``. The helper creates the logger
-instance when debug mode is enabled.
+Enable unified logging before calling ``setDebug(...)``. The helper creates the
+logger instance when debug mode is enabled.
 
 Python example
 ==============

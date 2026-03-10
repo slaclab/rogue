@@ -79,16 +79,10 @@ two static logger names:
 
 - ``pyrogue.prbs.tx``
 - ``pyrogue.prbs.rx``
-
-Enable them with:
-
-.. code-block:: python
-
-   import rogue
-   import rogue.utilities as ru
-
-   rogue.Logging.setFilter('pyrogue.prbs', rogue.Logging.Debug)
-   prbs = ru.Prbs()
+- Unified Logging API:
+  ``logging.getLogger('pyrogue.prbs').setLevel(logging.DEBUG)``
+- Legacy Logging API:
+  ``rogue.Logging.setFilter('pyrogue.prbs', rogue.Logging.Debug)``
 
 The PyRogue wrappers also have their own Python loggers, but the transport/data
 path debug output from the underlying PRBS generator/checker comes from the
