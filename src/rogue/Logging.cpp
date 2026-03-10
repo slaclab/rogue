@@ -41,6 +41,31 @@
 namespace bp = boost::python;
 #endif
 
+namespace {
+uint32_t currentThreadId() {
+#if defined(__linux__)
+    return syscall(SYS_gettid);
+#elif defined(__APPLE__) && defined(__MACH__)
+    uint64_t tid64;
+    pthread_threadid_np(NULL, &tid64);
+    return static_cast<uint32_t>(tid64);
+#else
+    return 0;
+#endif
+}
+
+std::string loggerComponent(const std::string& name) {
+    const std::string prefix = "pyrogue.";
+    size_t start = 0;
+    size_t end;
+
+    if (name.rfind(prefix, 0) == 0) start = prefix.size();
+    end = name.find('.', start);
+    if (end == std::string::npos) return name.substr(start);
+    return name.substr(start, end - start);
+}
+}  // namespace
+
 const uint32_t rogue::Logging::Critical;
 const uint32_t rogue::Logging::Error;
 const uint32_t rogue::Logging::Thread;
@@ -185,8 +210,41 @@ void rogue::Logging::intLog(uint32_t level, const char* fmt, va_list args) {
     if (forwardPython()) {
         rogue::ScopedGil gil;
         bp::object logging = bp::import("logging");
-        bp::object logger  = logging.attr("getLogger")(name_);
-        logger.attr("log")(level, buffer);
+        bp::dict record;
+        bp::object logger = logging.attr("getLogger")(name_);
+        uint32_t tid      = currentThreadId();
+        uint32_t pid      = static_cast<uint32_t>(getpid());
+        double created    = static_cast<double>(tme.tv_sec) + (static_cast<double>(tme.tv_usec) / 1000000.0);
+        std::string component = loggerComponent(name_);
+
+        record["name"] = name_;
+        record["msg"] = buffer;
+        record["args"] = bp::tuple();
+        record["levelno"] = level;
+        record["levelname"] = logging.attr("getLevelName")(level);
+        record["pathname"] = "<rogue>";
+        record["filename"] = "<rogue>";
+        record["module"] = "rogue";
+        record["exc_info"] = bp::object();
+        record["exc_text"] = bp::object();
+        record["stack_info"] = bp::object();
+        record["lineno"] = 0;
+        record["funcName"] = "<rogue>";
+        record["created"] = created;
+        record["msecs"] = static_cast<double>(tme.tv_usec) / 1000.0;
+        record["relativeCreated"] = 0.0;
+        record["thread"] = tid;
+        record["threadName"] = "rogue";
+        record["process"] = pid;
+        record["processName"] = "rogue";
+        record["rogue_cpp"] = true;
+        record["rogue_tid"] = tid;
+        record["rogue_pid"] = pid;
+        record["rogue_logger"] = name_;
+        record["rogue_timestamp"] = created;
+        record["rogue_component"] = component;
+
+        logger.attr("handle")(logging.attr("makeLogRecord")(record));
     }
 #endif
 }
@@ -234,18 +292,7 @@ void rogue::Logging::debug(const char* fmt, ...) {
 }
 
 void rogue::Logging::logThreadId() {
-    uint32_t tid;
-
-#if defined(__linux__)
-    tid = syscall(SYS_gettid);
-#elif defined(__APPLE__) && defined(__MACH__)
-    uint64_t tid64;
-    pthread_threadid_np(NULL, &tid64);
-    tid = static_cast<uint32_t>(tid64);
-#else
-    tid = 0;
-#endif
-
+    uint32_t tid = currentThreadId();
     this->log(Thread, "PID=%" PRIu32 ", TID=%" PRIu32, getpid(), tid);
 }
 

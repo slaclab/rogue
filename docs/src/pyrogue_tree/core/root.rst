@@ -77,6 +77,24 @@ native Rogue stdout sink to avoid duplicate messages. The forwarded records can
 then appear in ``Root.SystemLog`` and any other Python logging handlers already
 attached under the ``pyrogue`` logger tree.
 
+Example forwarded ``SystemLog`` entry:
+
+.. code-block:: json
+
+   {
+     "created": 1772812345.123456,
+     "name": "pyrogue.rssi.controller",
+     "message": "Closing link. Server=0",
+     "levelName": "WARNING",
+     "levelNumber": 30,
+     "rogueCpp": true,
+     "rogueTid": 48123,
+     "roguePid": 90210,
+     "rogueLogger": "pyrogue.rssi.controller",
+     "rogueTimestamp": 1772812345.123456,
+     "rogueComponent": "rssi"
+   }
+
 Lifecycle and Startup Sequence
 ------------------------------
 

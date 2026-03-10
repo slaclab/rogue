@@ -88,7 +88,15 @@ class SystemLog(PyDMFrame):
         # Unclear if that is neccessary.
         for ent in lst[-20:]:
             widget = QTreeWidgetItem(self._systemLog)
-            widget.setText(0, time.strftime("%Y-%m-%d %H:%M:%S %Z", time.localtime(ent['created'])))
+            tags = []
+            if ent.get('rogueCpp'):
+                tags.append('C++')
+            if ent.get('rogueComponent') is not None:
+                tags.append(ent['rogueComponent'])
+            stamp = time.strftime("%Y-%m-%d %H:%M:%S %Z", time.localtime(ent['created']))
+            if len(tags) > 0:
+                stamp = f"{stamp} [{' '.join(tags)}]"
+            widget.setText(0, stamp)
 
             widget.setText(1,ent['message'])
             widget.setExpanded(False)
@@ -103,6 +111,36 @@ class SystemLog(PyDMFrame):
             temp.setText(0,'Level')
             temp.setText(1,'{} ({})'.format(ent['levelName'],ent['levelNumber']))
             temp.setTextAlignment(0,Qt.AlignRight)
+
+            if ent.get('rogueCpp'):
+                temp = QTreeWidgetItem(widget)
+                temp.setText(0,'Source')
+                temp.setText(1,'Rogue C++')
+                temp.setTextAlignment(0,Qt.AlignRight)
+
+            if ent.get('rogueComponent') is not None:
+                temp = QTreeWidgetItem(widget)
+                temp.setText(0,'Component')
+                temp.setText(1,str(ent['rogueComponent']))
+                temp.setTextAlignment(0,Qt.AlignRight)
+
+            if ent.get('rogueLogger') is not None:
+                temp = QTreeWidgetItem(widget)
+                temp.setText(0,'Rogue Logger')
+                temp.setText(1,str(ent['rogueLogger']))
+                temp.setTextAlignment(0,Qt.AlignRight)
+
+            if ent.get('rogueTid') is not None:
+                temp = QTreeWidgetItem(widget)
+                temp.setText(0,'Rogue TID')
+                temp.setText(1,str(ent['rogueTid']))
+                temp.setTextAlignment(0,Qt.AlignRight)
+
+            if ent.get('roguePid') is not None:
+                temp = QTreeWidgetItem(widget)
+                temp.setText(0,'Rogue PID')
+                temp.setText(1,str(ent['roguePid']))
+                temp.setTextAlignment(0,Qt.AlignRight)
 
             if ent['exception'] is not None:
                 exc = QTreeWidgetItem(widget)

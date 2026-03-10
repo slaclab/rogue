@@ -120,6 +120,30 @@ With ``unifyLogs=True``:
 - Native Rogue stdout emission is disabled to avoid duplicate output.
 - The forwarded records can flow into ``Root.SystemLog`` through the normal
   Python handler path.
+- Forwarded C++ records also carry metadata fields that Python-only records do
+  not, including ``rogueCpp``, ``rogueTid``, ``roguePid``,
+  ``rogueLogger``, ``rogueTimestamp``, and ``rogueComponent`` in
+  ``Root.SystemLog`` output.
+
+Example forwarded ``SystemLog`` record:
+
+.. code-block:: json
+
+   {
+     "created": 1772812345.123456,
+     "name": "pyrogue.udp.Client",
+     "message": "UDP write call failed for 10.0.0.5: Connection refused",
+     "exception": null,
+     "traceBack": null,
+     "levelName": "WARNING",
+     "levelNumber": 30,
+     "rogueCpp": true,
+     "rogueTid": 48123,
+     "roguePid": 90210,
+     "rogueLogger": "pyrogue.udp.Client",
+     "rogueTimestamp": 1772812345.123456,
+     "rogueComponent": "udp"
+   }
 
 Important limitation:
 Python log records under the ``pyrogue`` logger hierarchy are captured there,
@@ -256,6 +280,16 @@ When enabled:
 - If you also call ``rogue.Logging.setEmitStdout(False)``, the native C++
   console print path is disabled so the forwarded Python record becomes the only
   visible copy.
+- Forwarded records include metadata on the Python ``LogRecord`` such as:
+  The CLI monitor and PyDM ``SystemLog`` widget can use these fields to show
+  C++ badges, component names, and thread/process ids.
+
+  - ``rogue_cpp=True``
+  - ``rogue_tid=<native thread id>``
+  - ``rogue_pid=<process id>``
+  - ``rogue_logger=<fully-qualified Rogue logger name>``
+  - ``rogue_timestamp=<native emit timestamp>``
+  - ``rogue_component=<top-level logger family>``
 
 Both forwarding and stdout suppression are disabled by default to avoid changing
 existing application behavior.

@@ -114,6 +114,19 @@ class RootLogHandler(logging.Handler):
                        'levelName'   : record.levelname,
                        'levelNumber' : record.levelno }
 
+                if hasattr(record, 'rogue_cpp'):
+                    se['rogueCpp'] = record.rogue_cpp
+                if hasattr(record, 'rogue_tid'):
+                    se['rogueTid'] = record.rogue_tid
+                if hasattr(record, 'rogue_pid'):
+                    se['roguePid'] = record.rogue_pid
+                if hasattr(record, 'rogue_logger'):
+                    se['rogueLogger'] = record.rogue_logger
+                if hasattr(record, 'rogue_timestamp'):
+                    se['rogueTimestamp'] = record.rogue_timestamp
+                if hasattr(record, 'rogue_component'):
+                    se['rogueComponent'] = record.rogue_component
+
                 if record.exc_info is not None:
                     se['exception'] = record.exc_info[0].__name__
                     se['traceBack'] = []
