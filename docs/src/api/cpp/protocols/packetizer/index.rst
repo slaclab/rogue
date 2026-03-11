@@ -7,9 +7,6 @@ rogue::protocols::packetizer
 This section contains the C++ API reference for
 ``rogue::protocols::packetizer`` classes.
 
-.. rubric:: Related Topics
-
-- :doc:`/built_in_modules/protocols/packetizer/index`
 
 .. toctree::
    :maxdepth: 1
@@ -22,3 +19,8 @@ This section contains the C++ API reference for
    controllerV2
    application
    transport
+
+
+.. rubric:: Related Topics
+
+- :doc:`/built_in_modules/protocols/packetizer/index`

@@ -6,9 +6,6 @@ rogue.protocols.packetizer
 
 Python-visible packetizer protocol classes exported from Rogue C++.
 
-.. rubric:: Related Topics
-
-- :doc:`/built_in_modules/protocols/packetizer/index`
 
 .. toctree::
    :maxdepth: 1
@@ -17,3 +14,8 @@ Python-visible packetizer protocol classes exported from Rogue C++.
    transport
    core
    corev2
+
+
+.. rubric:: Related Topics
+
+- :doc:`/built_in_modules/protocols/packetizer/index`

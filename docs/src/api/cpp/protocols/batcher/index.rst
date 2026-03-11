@@ -7,9 +7,6 @@ rogue::protocols::batcher
 This section contains the C++ API reference for
 ``rogue::protocols::batcher`` classes.
 
-.. rubric:: Related Topics
-
-- :doc:`/built_in_modules/protocols/batcher/index`
 
 .. toctree::
    :maxdepth: 1
@@ -22,3 +19,8 @@ This section contains the C++ API reference for
    inverterV2
    splitterV1
    splitterV2
+
+
+.. rubric:: Related Topics
+
+- :doc:`/built_in_modules/protocols/batcher/index`

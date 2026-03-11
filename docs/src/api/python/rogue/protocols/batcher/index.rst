@@ -6,9 +6,6 @@ rogue.protocols.batcher
 
 Python-visible batcher protocol classes exported from Rogue C++.
 
-.. rubric:: Related Topics
-
-- :doc:`/built_in_modules/protocols/batcher/index`
 
 .. toctree::
    :maxdepth: 1
@@ -17,3 +14,8 @@ Python-visible batcher protocol classes exported from Rogue C++.
    splitterv2
    inverterv1
    inverterv2
+
+
+.. rubric:: Related Topics
+
+- :doc:`/built_in_modules/protocols/batcher/index`

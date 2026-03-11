@@ -6,9 +6,6 @@ rogue.protocols.srp
 
 Python-visible SRP protocol classes exported from Rogue C++.
 
-.. rubric:: Related Topics
-
-- :doc:`/built_in_modules/protocols/srp/index`
 
 .. toctree::
    :maxdepth: 1
@@ -16,3 +13,8 @@ Python-visible SRP protocol classes exported from Rogue C++.
    srpv0
    srpv3
    cmd
+
+
+.. rubric:: Related Topics
+
+- :doc:`/built_in_modules/protocols/srp/index`

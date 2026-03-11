@@ -7,9 +7,6 @@ rogue::protocols::udp
 This section contains the C++ API reference for
 ``rogue::protocols::udp`` classes.
 
-.. rubric:: Related Topics
-
-- :doc:`/built_in_modules/protocols/udp/index`
 
 .. toctree::
    :maxdepth: 1
@@ -18,3 +15,8 @@ This section contains the C++ API reference for
    core
    server
    client
+
+
+.. rubric:: Related Topics
+
+- :doc:`/built_in_modules/protocols/udp/index`

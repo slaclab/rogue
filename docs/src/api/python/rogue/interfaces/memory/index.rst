@@ -6,11 +6,6 @@ rogue.interfaces.memory
 
 Python-visible Rogue memory interface classes exported from C++.
 
-.. rubric:: Related Topics
-
-- :doc:`/memory_interface/index`
-- :doc:`/memory_interface/transactions`
-- :doc:`/memory_interface/tcp_bridge`
 
 .. toctree::
    :maxdepth: 1
@@ -23,3 +18,10 @@ Python-visible Rogue memory interface classes exported from C++.
    emulate
    tcpclient
    tcpserver
+
+
+.. rubric:: Related Topics
+
+- :doc:`/memory_interface/index`
+- :doc:`/memory_interface/transactions`
+- :doc:`/memory_interface/tcp_bridge`

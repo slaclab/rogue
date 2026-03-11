@@ -6,9 +6,6 @@ rogue.protocols.rssi
 
 Python-visible RSSI protocol classes exported from Rogue C++.
 
-.. rubric:: Related Topics
-
-- :doc:`/built_in_modules/protocols/rssi/index`
 
 .. toctree::
    :maxdepth: 1
@@ -17,3 +14,8 @@ Python-visible RSSI protocol classes exported from Rogue C++.
    transport
    client
    server
+
+
+.. rubric:: Related Topics
+
+- :doc:`/built_in_modules/protocols/rssi/index`

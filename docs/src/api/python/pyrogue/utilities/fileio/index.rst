@@ -6,9 +6,6 @@ pyrogue.utilities.fileio
 
 File I/O utility wrappers implemented in PyRogue.
 
-.. rubric:: Related Topics
-
-- :doc:`/built_in_modules/utilities/fileio/index`
 
 .. toctree::
    :maxdepth: 1
@@ -17,3 +14,8 @@ File I/O utility wrappers implemented in PyRogue.
    rogueheader
    streamreader
    streamwriter
+
+
+.. rubric:: Related Topics
+
+- :doc:`/built_in_modules/utilities/fileio/index`

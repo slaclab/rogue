@@ -7,10 +7,6 @@ rogue
 The ``rogue`` namespace exposes Python-visible runtime classes exported from
 Rogue C++.
 
-.. rubric:: Related Topics
-
-- :doc:`/logging/index`
-- :doc:`/built_in_modules/index`
 
 Core runtime
 ============
@@ -34,3 +30,9 @@ Subpackages
    protocols/index
    hardware/index
    utilities/index
+
+
+.. rubric:: Related Topics
+
+- :doc:`/logging/index`
+- :doc:`/built_in_modules/index`

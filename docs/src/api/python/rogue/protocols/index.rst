@@ -6,10 +6,6 @@ rogue.protocols
 
 Python-visible protocol classes exported from Rogue C++.
 
-.. rubric:: Related Topics
-
-- :doc:`/built_in_modules/protocols/index`
-- :doc:`/built_in_modules/protocols/network`
 
 UDP
 ===
@@ -58,3 +54,9 @@ Xilinx
    :maxdepth: 1
 
    xilinx/index
+
+
+.. rubric:: Related Topics
+
+- :doc:`/built_in_modules/protocols/index`
+- :doc:`/built_in_modules/protocols/network`

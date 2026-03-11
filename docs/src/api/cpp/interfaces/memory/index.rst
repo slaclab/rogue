@@ -7,11 +7,6 @@ rogue::interfaces::memory
 This section contains the C++ API reference for
 ``rogue::interfaces::memory`` classes.
 
-.. rubric:: Related Topics
-
-- :doc:`/memory_interface/index`
-- :doc:`/memory_interface/transactions`
-- :doc:`/memory_interface/tcp_bridge`
 
 .. toctree::
    :maxdepth: 1
@@ -28,3 +23,10 @@ This section contains the C++ API reference for
    emulate
    tcpClient
    tcpServer
+
+
+.. rubric:: Related Topics
+
+- :doc:`/memory_interface/index`
+- :doc:`/memory_interface/transactions`
+- :doc:`/memory_interface/tcp_bridge`

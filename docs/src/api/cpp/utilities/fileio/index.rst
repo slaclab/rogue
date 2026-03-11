@@ -7,9 +7,6 @@ rogue::utilities::fileio
 This section contains the C++ API reference for
 Rogue file I/O utility classes.
 
-.. rubric:: Related Topics
-
-- :doc:`/built_in_modules/utilities/fileio/index`
 
 .. toctree::
    :maxdepth: 1
@@ -18,3 +15,8 @@ Rogue file I/O utility classes.
    writer
    channel
    reader
+
+
+.. rubric:: Related Topics
+
+- :doc:`/built_in_modules/utilities/fileio/index`

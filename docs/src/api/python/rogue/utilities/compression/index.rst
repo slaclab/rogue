@@ -6,12 +6,14 @@ rogue.utilities.compression
 
 Python-visible compression utility classes exported from Rogue C++.
 
-.. rubric:: Related Topics
-
-- :doc:`/built_in_modules/utilities/compression/index`
 
 .. toctree::
    :maxdepth: 1
 
    streamzip
    streamunzip
+
+
+.. rubric:: Related Topics
+
+- :doc:`/built_in_modules/utilities/compression/index`

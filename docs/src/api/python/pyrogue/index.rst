@@ -7,11 +7,6 @@ pyrogue
 The ``pyrogue`` namespace contains the tree object model, pure-Python helper
 classes, and higher-level wrappers built on top of Rogue runtime services.
 
-.. rubric:: Related Topics
-
-- :doc:`/pyrogue_tree/index`
-- :doc:`/pyrogue_tree/core/index`
-- :doc:`/pyrogue_tree/builtin_devices/index`
 
 Core objects
 ============
@@ -92,3 +87,10 @@ Subpackages
    interfaces/index
    protocols/index
    utilities/index
+
+
+.. rubric:: Related Topics
+
+- :doc:`/pyrogue_tree/index`
+- :doc:`/pyrogue_tree/core/index`
+- :doc:`/pyrogue_tree/builtin_devices/index`

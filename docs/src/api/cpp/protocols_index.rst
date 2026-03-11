@@ -7,13 +7,9 @@ rogue::protocols
 The ``rogue::protocols`` namespace contains packet, transport, and hardware
 protocol adapters layered on top of the Rogue interfaces.
 
-.. rubric:: Related Topics
-
-- :doc:`/built_in_modules/protocols/index`
-- :doc:`/built_in_modules/protocols/network`
-
 .. toctree::
    :maxdepth: 1
+   :caption: Reference Sections
 
    protocols/batcher/index
    protocols/packetizer/index
@@ -21,3 +17,8 @@ protocol adapters layered on top of the Rogue interfaces.
    protocols/srp/index
    protocols/udp/index
    protocols/xilinx/index
+
+.. rubric:: Related Topics
+
+- :doc:`/built_in_modules/protocols/index`
+- :doc:`/built_in_modules/protocols/network`

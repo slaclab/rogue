@@ -6,9 +6,6 @@ rogue.protocols.udp
 
 Python-visible UDP protocol classes exported from Rogue C++.
 
-.. rubric:: Related Topics
-
-- :doc:`/built_in_modules/protocols/udp/index`
 
 .. toctree::
    :maxdepth: 1
@@ -16,3 +13,8 @@ Python-visible UDP protocol classes exported from Rogue C++.
    core
    client
    server
+
+
+.. rubric:: Related Topics
+
+- :doc:`/built_in_modules/protocols/udp/index`

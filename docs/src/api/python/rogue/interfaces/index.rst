@@ -6,11 +6,6 @@ rogue.interfaces
 
 Python-visible Rogue interface classes exported from C++.
 
-.. rubric:: Related Topics
-
-- :doc:`/stream_interface/index`
-- :doc:`/memory_interface/index`
-- :doc:`/pyrogue_tree/client_interfaces/index`
 
 Stream
 ======
@@ -35,3 +30,10 @@ Other interfaces
    :maxdepth: 1
 
    zmqclient
+
+
+.. rubric:: Related Topics
+
+- :doc:`/stream_interface/index`
+- :doc:`/memory_interface/index`
+- :doc:`/pyrogue_tree/client_interfaces/index`

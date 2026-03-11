@@ -7,11 +7,6 @@ rogue::hardware::axi
 This section contains the C++ API reference for
 ``rogue::hardware::axi`` classes.
 
-.. rubric:: Related Topics
-
-- :doc:`/built_in_modules/hardware/dma/index`
-- :doc:`/built_in_modules/hardware/dma/stream`
-- :doc:`/built_in_modules/hardware/dma/memory`
 
 .. toctree::
    :maxdepth: 1
@@ -19,3 +14,10 @@ This section contains the C++ API reference for
 
    axiStreamDma
    axiMemMap
+
+
+.. rubric:: Related Topics
+
+- :doc:`/built_in_modules/hardware/dma/index`
+- :doc:`/built_in_modules/hardware/dma/stream`
+- :doc:`/built_in_modules/hardware/dma/memory`
