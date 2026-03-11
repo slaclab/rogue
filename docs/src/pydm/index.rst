@@ -55,8 +55,8 @@ That usually means:
 - Optional coexistence with scripts, notebooks, or other clients attached to
   the same Root
 
-What To Explore In This Section
-===============================
+What To Explore Next
+====================
 
 - :doc:`starting_gui` for launching the standard debug GUI or a custom UI file
 - :doc:`timeplot_gui` for time-series plotting workflows

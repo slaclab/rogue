@@ -101,11 +101,15 @@ The common PyRogue pattern is to construct the transport and ``SrpV0`` inside a
                expand=True,
            ))
 
-Related docs
-------------
+Related Topics
+--------------
 
 - :doc:`/built_in_modules/protocols/srp/index`
-- Python API: :doc:`/api/python/protocols_srp_srpv0`
-- C++ API: :doc:`/api/cpp/protocols/srp/srpV0`
 - Preferred newer protocol: :doc:`srpV3`
 - Command-only path: :doc:`cmd`
+
+API Reference
+-------------
+
+- Python: :doc:`/api/python/protocols_srp_srpv0`
+- C++: :doc:`/api/cpp/protocols/srp/srpV0`

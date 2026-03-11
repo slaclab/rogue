@@ -25,8 +25,8 @@ Not every release needs a migration note. These pages are only added when a
 version introduces changes that are significant enough to affect existing
 applications.
 
-What To Explore In This Section
-===============================
+What To Explore Next
+====================
 
 - :doc:`rogue_v6` for the major interface and API transitions introduced in
   Rogue V6

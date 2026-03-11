@@ -83,7 +83,7 @@ See also:
 * :doc:`/pyrogue_tree/core/block`
 * :doc:`/memory_interface/index`
 
-BaseVariable API Reference
-================================
+API Reference
+=============
 
 See :doc:`/api/python/basevariable` for generated API details.

@@ -77,10 +77,14 @@ Threading and Lifecycle
 - Implements Managed Interface Lifecycle:
   :ref:`pyrogue_tree_node_device_managed_interfaces`
 
-Related pages
+Related Topics
 =============
 
 - Overview and full topology: :doc:`index`
 - Transport recommendations: :doc:`/built_in_modules/protocols/network`
-- Python API: :doc:`/api/python/protocols_rssi_server`
-- C++ API: :doc:`/api/cpp/protocols/rssi/server`
+
+API Reference
+=============
+
+- Python: :doc:`/api/python/protocols_rssi_server`
+- C++: :doc:`/api/cpp/protocols/rssi/server`

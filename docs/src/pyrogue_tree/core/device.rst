@@ -431,7 +431,7 @@ Frequently used examples include:
 * :doc:`/pyrogue_tree/builtin_devices/data_receiver`
 * :doc:`/pyrogue_tree/builtin_devices/prbspair`
 
-Device API Reference
-==========================
+API Reference
+=============
 
 See :doc:`/api/python/device` for generated API details.

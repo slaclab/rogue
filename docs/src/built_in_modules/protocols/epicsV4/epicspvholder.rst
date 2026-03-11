@@ -46,7 +46,7 @@ When to use it
 - You are composing higher-level EPICS publication or subscription workflows.
 - You want protocol-specific behavior isolated from core device modeling.
 
-Related pages
+Related Topics
 =============
 
 - EPICS server integration: :doc:`epicspvserver`

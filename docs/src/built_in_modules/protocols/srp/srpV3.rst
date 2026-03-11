@@ -112,11 +112,15 @@ Root + Device(memBase=srp) with AXI Stream DMA
                expand=True,
            ))
 
-Related docs
-------------
+Related Topics
+--------------
 
 - :doc:`/built_in_modules/protocols/srp/index`
-- Python API: :doc:`/api/python/protocols_srp_srpv3`
-- C++ API: :doc:`/api/cpp/protocols/srp/srpV3`
 - SRPv0 comparison: :doc:`srpV0`
 - Command-only path: :doc:`cmd`
+
+API Reference
+-------------
+
+- Python: :doc:`/api/python/protocols_srp_srpv3`
+- C++: :doc:`/api/cpp/protocols/srp/srpV3`

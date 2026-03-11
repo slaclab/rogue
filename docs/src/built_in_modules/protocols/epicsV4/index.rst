@@ -54,7 +54,7 @@ surface for a given deployment.
 For group semantics and filtering behavior in the tree model, see
 :doc:`/pyrogue_tree/core/groups`.
 
-Related docs
+Related Topics
 ============
 
 - :doc:`/api/python/protocols_epicsv4_epicspvserver`
