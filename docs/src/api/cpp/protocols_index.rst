@@ -7,8 +7,7 @@ rogue::protocols
 The ``rogue::protocols`` namespace contains packet, transport, and hardware
 protocol adapters layered on top of the Rogue interfaces.
 
-Related Topics
-==============
+.. rubric:: Related Topics
 
 - :doc:`/built_in_modules/protocols/index`
 - :doc:`/built_in_modules/protocols/network`

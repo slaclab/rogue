@@ -7,8 +7,7 @@ pyrogue
 The ``pyrogue`` namespace contains the tree object model, pure-Python helper
 classes, and higher-level wrappers built on top of Rogue runtime services.
 
-Related Topics
-==============
+.. rubric:: Related Topics
 
 - :doc:`/pyrogue_tree/index`
 - :doc:`/pyrogue_tree/core/index`
@@ -19,6 +18,7 @@ Core objects
 
 .. toctree::
    :maxdepth: 1
+   :titlesonly:
 
    node
    root
@@ -35,6 +35,7 @@ Commands
 
 .. toctree::
    :maxdepth: 1
+   :titlesonly:
 
    basecommand
    remotecommand
@@ -44,6 +45,7 @@ Variables
 
 .. toctree::
    :maxdepth: 1
+   :titlesonly:
 
    basevariable
    remotevariable
@@ -55,6 +57,7 @@ Models
 
 .. toctree::
    :maxdepth: 1
+   :titlesonly:
 
    model
    uint
@@ -71,6 +74,7 @@ Helpers
 
 .. toctree::
    :maxdepth: 1
+   :titlesonly:
 
    wordcount
    bytecount
@@ -83,6 +87,7 @@ Subpackages
 
 .. toctree::
    :maxdepth: 1
+   :titlesonly:
 
    interfaces/index
    protocols/index

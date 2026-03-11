@@ -6,8 +6,7 @@ Python API
 Generated Python API reference pages follow the full Python namespace and
 subpackage layout.
 
-Related Topics
-==============
+.. rubric:: Related Topics
 
 - :doc:`/pyrogue_tree/index`
 - :doc:`/stream_interface/index`
@@ -15,7 +14,8 @@ Related Topics
 - :doc:`/built_in_modules/index`
 
 .. toctree::
-   :maxdepth: 8
+   :maxdepth: 1
+   :titlesonly:
 
    pyrogue/index
    rogue/index

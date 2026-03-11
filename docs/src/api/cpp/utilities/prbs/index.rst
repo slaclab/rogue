@@ -7,8 +7,7 @@ rogue::utilities::prbs
 This section contains the C++ API reference for
 Rogue PRBS utility classes.
 
-Related Topics
-==============
+.. rubric:: Related Topics
 
 - :doc:`/built_in_modules/utilities/prbs/index`
 

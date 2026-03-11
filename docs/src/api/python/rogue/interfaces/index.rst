@@ -6,8 +6,7 @@ rogue.interfaces
 
 Python-visible Rogue interface classes exported from C++.
 
-Related Topics
-==============
+.. rubric:: Related Topics
 
 - :doc:`/stream_interface/index`
 - :doc:`/memory_interface/index`

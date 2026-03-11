@@ -7,8 +7,7 @@ pyrogue.interfaces.simulation
 Simulation helpers implemented in PyRogue for software/firmware co-simulation
 and testbench-style environments.
 
-Related Topics
-==============
+.. rubric:: Related Topics
 
 - :doc:`/built_in_modules/simulation/index`
 - :doc:`/built_in_modules/simulation/mememulate`

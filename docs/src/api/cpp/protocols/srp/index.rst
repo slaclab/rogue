@@ -10,8 +10,7 @@ This section contains the C++ API reference for
 The ``Cmd`` class is also listed here because it is in the same namespace, even
 though it is a separate lightweight command protocol.
 
-Related Topics
-==============
+.. rubric:: Related Topics
 
 - :doc:`/built_in_modules/protocols/srp/index`
 

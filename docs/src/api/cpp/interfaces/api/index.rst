@@ -7,8 +7,7 @@ rogue::interfaces::api
 This section contains the C++ API reference for
 ``rogue::interfaces::api`` classes.
 
-Related Topics
-==============
+.. rubric:: Related Topics
 
 - :doc:`/built_in_modules/interfaces/cpp_api_wrapper`
 

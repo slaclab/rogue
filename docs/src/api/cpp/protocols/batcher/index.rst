@@ -7,8 +7,7 @@ rogue::protocols::batcher
 This section contains the C++ API reference for
 ``rogue::protocols::batcher`` classes.
 
-Related Topics
-==============
+.. rubric:: Related Topics
 
 - :doc:`/built_in_modules/protocols/batcher/index`
 

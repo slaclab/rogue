@@ -7,8 +7,7 @@ pyrogue.interfaces
 Client/server access helpers, SQL logging, simulation helpers, and other
 PyRogue-side integration classes.
 
-Related Topics
-==============
+.. rubric:: Related Topics
 
 - :doc:`/pyrogue_tree/client_interfaces/index`
 - :doc:`/built_in_modules/interfaces/index`

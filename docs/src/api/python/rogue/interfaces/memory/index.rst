@@ -6,8 +6,7 @@ rogue.interfaces.memory
 
 Python-visible Rogue memory interface classes exported from C++.
 
-Related Topics
-==============
+.. rubric:: Related Topics
 
 - :doc:`/memory_interface/index`
 - :doc:`/memory_interface/transactions`

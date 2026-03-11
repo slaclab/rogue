@@ -7,8 +7,7 @@ rogue::interfaces::stream
 This section contains the C++ API reference for
 ``rogue::interfaces::stream`` classes.
 
-Related Topics
-==============
+.. rubric:: Related Topics
 
 - :doc:`/stream_interface/index`
 - :doc:`/stream_interface/frame_model`

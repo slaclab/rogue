@@ -6,8 +6,7 @@ rogue.interfaces.stream
 
 Python-visible Rogue stream interface classes exported from C++.
 
-Related Topics
-==============
+.. rubric:: Related Topics
 
 - :doc:`/stream_interface/index`
 - :doc:`/stream_interface/frame_model`

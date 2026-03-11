@@ -6,8 +6,7 @@ rogue.protocols
 
 Python-visible protocol classes exported from Rogue C++.
 
-Related Topics
-==============
+.. rubric:: Related Topics
 
 - :doc:`/built_in_modules/protocols/index`
 - :doc:`/built_in_modules/protocols/network`

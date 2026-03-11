@@ -7,8 +7,7 @@ rogue::interfaces
 The ``rogue::interfaces`` namespace contains the transport, memory, and stream
 runtime layers used throughout Rogue.
 
-Related Topics
-==============
+.. rubric:: Related Topics
 
 - :doc:`/stream_interface/index`
 - :doc:`/memory_interface/index`

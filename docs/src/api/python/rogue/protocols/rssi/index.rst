@@ -6,8 +6,7 @@ rogue.protocols.rssi
 
 Python-visible RSSI protocol classes exported from Rogue C++.
 
-Related Topics
-==============
+.. rubric:: Related Topics
 
 - :doc:`/built_in_modules/protocols/rssi/index`
 

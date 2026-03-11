@@ -6,8 +6,7 @@ rogue.protocols.batcher
 
 Python-visible batcher protocol classes exported from Rogue C++.
 
-Related Topics
-==============
+.. rubric:: Related Topics
 
 - :doc:`/built_in_modules/protocols/batcher/index`
 

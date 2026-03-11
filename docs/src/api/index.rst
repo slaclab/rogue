@@ -7,8 +7,7 @@ API Reference
 Generated API content from Python docstrings/autodoc and C++ Doxygen output is
 collected here.
 
-Related Topics
-==============
+.. rubric:: Related Topics
 
 - :doc:`/pyrogue_tree/index`
 - :doc:`/stream_interface/index`
@@ -16,7 +15,8 @@ Related Topics
 - :doc:`/built_in_modules/index`
 
 .. toctree::
-   :maxdepth: 8
+   :maxdepth: 1
+   :titlesonly:
    :caption: API Reference
 
    /api/python/index

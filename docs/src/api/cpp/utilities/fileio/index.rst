@@ -7,8 +7,7 @@ rogue::utilities::fileio
 This section contains the C++ API reference for
 Rogue file I/O utility classes.
 
-Related Topics
-==============
+.. rubric:: Related Topics
 
 - :doc:`/built_in_modules/utilities/fileio/index`
 

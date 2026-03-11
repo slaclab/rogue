@@ -6,8 +6,7 @@ rogue.hardware.axi
 
 Python-visible AXI hardware access classes exported from Rogue C++.
 
-Related Topics
-==============
+.. rubric:: Related Topics
 
 - :doc:`/built_in_modules/hardware/dma/index`
 - :doc:`/built_in_modules/hardware/dma/stream`
