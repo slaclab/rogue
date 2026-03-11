@@ -72,5 +72,5 @@ C++ AxiMemMap Example
 API references
 ==============
 
-- :doc:`/api/cpp/hardware/axi/axiMemMap`
-- :doc:`/api/cpp/interfaces/memory/index`
+- Python: :doc:`/api/python/hardware_axi_aximemmap`
+- C++: :doc:`/api/cpp/hardware/axi/axiMemMap`

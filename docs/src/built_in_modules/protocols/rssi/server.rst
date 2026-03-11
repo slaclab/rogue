@@ -82,4 +82,5 @@ Related pages
 
 - Overview and full topology: :doc:`index`
 - Transport recommendations: :doc:`/built_in_modules/protocols/network`
+- Python API: :doc:`/api/python/protocols_rssi_server`
 - C++ API: :doc:`/api/cpp/protocols/rssi/server`

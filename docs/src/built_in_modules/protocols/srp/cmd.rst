@@ -33,6 +33,7 @@ only when firmware defines an explicit opcode/context command path.
 API reference
 =============
 
+- Python: :doc:`/api/python/protocols_srp_cmd`
 - C++: :doc:`/api/cpp/protocols/srp/cmd`
 - SRP overview: :doc:`index`
 - Register-transaction protocols: :doc:`srpV3`, :doc:`srpV0`

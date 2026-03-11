@@ -88,5 +88,6 @@ C++ MemMap Example
 Related References
 ==================
 
-- :doc:`/api/cpp/hardware/raw/memMap`
+- Python: :doc:`/api/python/hardware_memmap`
+- C++: :doc:`/api/cpp/hardware/raw/memMap`
 - :doc:`/memory_interface/index`

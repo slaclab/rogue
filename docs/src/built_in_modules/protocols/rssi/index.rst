@@ -171,6 +171,13 @@ See also
 C++ API details for RSSI protocol classes are documented in
 :doc:`/api/cpp/protocols/rssi/index`.
 
+Python API details for RSSI protocol classes are documented in:
+
+- :doc:`/api/python/protocols_rssi_application`
+- :doc:`/api/python/protocols_rssi_transport`
+- :doc:`/api/python/protocols_rssi_client`
+- :doc:`/api/python/protocols_rssi_server`
+
 .. toctree::
    :maxdepth: 1
    :caption: RSSI Protocol

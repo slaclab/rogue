@@ -28,13 +28,16 @@ The ``rogue::protocols::udp`` layer is split into:
 
 - ``Core``:
   shared transport configuration (payload sizing, socket timeout, RX buffer
-  tuning). See :doc:`/api/cpp/protocols/udp/core`.
+  tuning. See :doc:`/api/python/protocols_udp_core` and
+  :doc:`/api/cpp/protocols/udp/core`.
 - ``Client``:
   outbound endpoint to a specific remote host/port. See :doc:`client` and
+  :doc:`/api/python/protocols_udp_client` and
   :doc:`/api/cpp/protocols/udp/client`.
 - ``Server``:
   local bind endpoint that receives inbound datagrams and can transmit to the
   most recently observed peer. See :doc:`server` and
+  :doc:`/api/python/protocols_udp_server` and
   :doc:`/api/cpp/protocols/udp/server`.
 
 Payload sizing and MTU
@@ -140,6 +143,12 @@ Related docs
 
 C++ API details for UDP protocol classes are documented in
 :doc:`/api/cpp/protocols/udp/index`.
+
+Python API details for UDP protocol classes are documented in:
+
+- :doc:`/api/python/protocols_udp_core`
+- :doc:`/api/python/protocols_udp_client`
+- :doc:`/api/python/protocols_udp_server`
 
 .. toctree::
    :maxdepth: 1

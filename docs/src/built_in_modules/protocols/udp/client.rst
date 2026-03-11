@@ -95,4 +95,5 @@ Related docs
 - :doc:`/built_in_modules/protocols/udp/index`
 - :doc:`/built_in_modules/protocols/network`
 - :doc:`/built_in_modules/protocols/rssi/index`
+- Python API: :doc:`/api/python/protocols_udp_client`
 - :doc:`/api/cpp/protocols/udp/client`

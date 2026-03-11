@@ -139,4 +139,5 @@ See also
 
 - :doc:`/built_in_modules/protocols/packetizer/index`
 - :doc:`/built_in_modules/protocols/packetizer/core`
+- Python API: :doc:`/api/python/protocols_packetizer_corev2`
 - :doc:`/api/cpp/protocols/packetizer/coreV2`

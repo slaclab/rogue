@@ -132,6 +132,13 @@ Related docs
 C++ API details for packetizer protocol classes are documented in
 :doc:`/api/cpp/protocols/packetizer/index`.
 
+Python API details for packetizer protocol classes are documented in:
+
+- :doc:`/api/python/protocols_packetizer_application`
+- :doc:`/api/python/protocols_packetizer_transport`
+- :doc:`/api/python/protocols_packetizer_core`
+- :doc:`/api/python/protocols_packetizer_corev2`
+
 .. toctree::
    :maxdepth: 1
    :caption: Packetizer Protocol

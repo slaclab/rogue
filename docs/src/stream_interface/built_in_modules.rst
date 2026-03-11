@@ -42,12 +42,20 @@ Detailed usage pages
 API reference
 =============
 
-- :doc:`/api/cpp/interfaces/stream/fifo`
-- :doc:`/api/cpp/interfaces/stream/filter`
-- :doc:`/api/cpp/interfaces/stream/rateDrop`
-- :doc:`/api/cpp/interfaces/stream/tcpCore`
-- :doc:`/api/cpp/interfaces/stream/tcpClient`
-- :doc:`/api/cpp/interfaces/stream/tcpServer`
+- Python stream bindings:
+  :doc:`/api/python/interfaces_stream_fifo`,
+  :doc:`/api/python/interfaces_stream_filter`,
+  :doc:`/api/python/interfaces_stream_ratedrop`,
+  :doc:`/api/python/interfaces_stream_tcpcore`,
+  :doc:`/api/python/interfaces_stream_tcpclient`,
+  :doc:`/api/python/interfaces_stream_tcpserver`
+- C++ stream bindings:
+  :doc:`/api/cpp/interfaces/stream/fifo`,
+  :doc:`/api/cpp/interfaces/stream/filter`,
+  :doc:`/api/cpp/interfaces/stream/rateDrop`,
+  :doc:`/api/cpp/interfaces/stream/tcpCore`,
+  :doc:`/api/cpp/interfaces/stream/tcpClient`,
+  :doc:`/api/cpp/interfaces/stream/tcpServer`
 
 What to explore next
 ====================

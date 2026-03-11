@@ -105,6 +105,7 @@ Related docs
 ------------
 
 - :doc:`/built_in_modules/protocols/srp/index`
+- Python API: :doc:`/api/python/protocols_srp_srpv0`
 - C++ API: :doc:`/api/cpp/protocols/srp/srpV0`
 - Preferred newer protocol: :doc:`srpV3`
 - Command-only path: :doc:`cmd`

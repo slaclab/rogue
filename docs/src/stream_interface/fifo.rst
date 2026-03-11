@@ -101,7 +101,8 @@ C++ example
 API reference
 =============
 
-- :doc:`/api/cpp/interfaces/stream/fifo`
+- Python: :doc:`/api/python/interfaces_stream_fifo`
+- C++: :doc:`/api/cpp/interfaces/stream/fifo`
 
 Logging
 =======
