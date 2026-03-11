@@ -131,4 +131,4 @@ API Reference
 =============
 
 - C++: :doc:`/api/cpp/utilities/fileio/writer`
-- Python: :doc:`/api/python/utilities_fileio_streamwriter`
+- Python: :doc:`/api/python/pyrogue/utilities/fileio_streamwriter`

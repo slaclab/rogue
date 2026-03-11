@@ -16,7 +16,7 @@ Python binding
 This C++ class is also exported into Python as ``rogue.interfaces.stream.TcpServer``.
 
 Python API page:
-- :doc:`/api/python/interfaces_stream_tcpserver`
+- :doc:`/api/python/rogue/interfaces/stream_tcpserver`
 
 objects in C++ are referenced by the following shared pointer typedef:
 

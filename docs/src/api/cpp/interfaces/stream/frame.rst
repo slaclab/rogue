@@ -16,7 +16,7 @@ Python binding
 This C++ class is also exported into Python as ``rogue.interfaces.stream.Frame``.
 
 Python API page:
-- :doc:`/api/python/interfaces_stream_frame`
+- :doc:`/api/python/rogue/interfaces/stream_frame`
 
 objects in C++ are referenced by the following shared pointer typedef:
 

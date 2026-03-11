@@ -9,6 +9,6 @@ Python-visible hardware access classes exported from Rogue C++.
 .. toctree::
    :maxdepth: 1
 
-   hardware_memmap
-   hardware_axi_axistreamdma
-   hardware_axi_aximemmap
+   memmap
+   axi_axistreamdma
+   axi_aximemmap

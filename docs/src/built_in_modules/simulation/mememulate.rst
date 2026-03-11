@@ -89,5 +89,5 @@ API Reference
 
 - Python:
 
-  - :doc:`/api/python/interfaces_simulation_mememulate`
-  - :doc:`/api/python/interfaces_memory_slave`
+  - :doc:`/api/python/pyrogue/interfaces/simulation_mememulate`
+  - :doc:`/api/python/rogue/interfaces/memory_slave`

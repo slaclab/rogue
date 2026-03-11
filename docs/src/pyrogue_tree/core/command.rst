@@ -35,4 +35,4 @@ Subtypes
 API Reference
 =============
 
-See :doc:`/api/python/basecommand` for generated API details.
+See :doc:`/api/python/pyrogue/basecommand` for generated API details.

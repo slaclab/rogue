@@ -108,4 +108,4 @@ Temporarily block polling during a critical sequence
 API Reference
 =============
 
-See :doc:`/api/python/pollqueue` for generated API details.
+See :doc:`/api/python/pyrogue/pollqueue` for generated API details.

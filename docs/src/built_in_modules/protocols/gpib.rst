@@ -195,5 +195,5 @@ API Reference
 
 - Python:
 
-  - :doc:`/api/python/protocols_gpibcontroller`
-  - :doc:`/api/python/protocols_gpibdevice`
+  - :doc:`/api/python/pyrogue/protocols/gpibcontroller`
+  - :doc:`/api/python/pyrogue/protocols/gpibdevice`

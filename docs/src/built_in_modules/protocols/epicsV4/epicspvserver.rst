@@ -111,4 +111,4 @@ messages emitted by the Python implementation.
 API Reference
 =============
 
-See :doc:`/api/python/protocols_epicsv4_epicspvserver` for generated API details.
+See :doc:`/api/python/pyrogue/protocols/epicsv4_epicspvserver` for generated API details.

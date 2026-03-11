@@ -53,4 +53,4 @@ Related Topics
 API Reference
 =============
 
-- Python: :doc:`/api/python/runcontrol`
+- Python: :doc:`/api/python/pyrogue/runcontrol`

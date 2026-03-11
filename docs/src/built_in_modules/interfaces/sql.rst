@@ -84,5 +84,5 @@ API Reference
 =============
 
 - Python:
-  :doc:`/api/python/interfaces_sqllogger`
-  :doc:`/api/python/interfaces_sqlreader`
+  :doc:`/api/python/pyrogue/interfaces/sqllogger`
+  :doc:`/api/python/pyrogue/interfaces/sqlreader`

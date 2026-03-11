@@ -69,4 +69,4 @@ server logger rather than a per-PV logger.
 API Reference
 =============
 
-See :doc:`/api/python/protocols_epicsv4_epicspvholder` for generated API details.
+See :doc:`/api/python/pyrogue/protocols/epicsv4_epicspvholder` for generated API details.

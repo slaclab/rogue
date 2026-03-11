@@ -23,7 +23,7 @@ Subpackages
 .. toctree::
    :maxdepth: 1
 
-   rogue_interfaces_index
-   rogue_protocols_index
-   rogue_hardware_index
-   rogue_utilities_index
+   interfaces/index
+   protocols/index
+   hardware/index
+   utilities/index

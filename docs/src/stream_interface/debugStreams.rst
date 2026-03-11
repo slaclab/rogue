@@ -78,7 +78,7 @@ Notes
 API Reference
 =============
 
-- Python: :doc:`/api/python/interfaces_stream_slave`
+- Python: :doc:`/api/python/rogue/interfaces/stream_slave`
 - C++: :doc:`/api/cpp/interfaces/stream/slave`
 
 What To Explore Next

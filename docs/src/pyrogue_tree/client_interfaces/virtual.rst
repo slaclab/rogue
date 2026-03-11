@@ -116,4 +116,4 @@ Related Topics
 API Reference
 =============
 
-See :doc:`/api/python/interfaces_virtualclient` for generated API details.
+See :doc:`/api/python/pyrogue/interfaces/virtualclient` for generated API details.

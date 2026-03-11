@@ -15,7 +15,7 @@ Python binding
 This C++ class is also exported into Python as ``rogue.interfaces.stream.Slave``.
 
 Python API page:
-- :doc:`/api/python/interfaces_stream_slave`
+- :doc:`/api/python/rogue/interfaces/stream_slave`
 
 objects in C++ are referenced by the following shared pointer typedef:
 

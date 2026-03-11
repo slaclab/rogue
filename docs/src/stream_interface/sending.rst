@@ -190,8 +190,8 @@ API Reference
 
 - Python:
 
-  - :doc:`/api/python/interfaces_stream_master`
-  - :doc:`/api/python/interfaces_stream_frame`
+  - :doc:`/api/python/rogue/interfaces/stream_master`
+  - :doc:`/api/python/rogue/interfaces/stream_frame`
 
 - C++:
 

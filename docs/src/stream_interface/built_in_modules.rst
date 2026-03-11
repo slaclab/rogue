@@ -43,12 +43,12 @@ API reference
 =============
 
 - Python stream bindings:
-  :doc:`/api/python/interfaces_stream_fifo`,
-  :doc:`/api/python/interfaces_stream_filter`,
-  :doc:`/api/python/interfaces_stream_ratedrop`,
-  :doc:`/api/python/interfaces_stream_tcpcore`,
-  :doc:`/api/python/interfaces_stream_tcpclient`,
-  :doc:`/api/python/interfaces_stream_tcpserver`
+  :doc:`/api/python/rogue/interfaces/stream_fifo`,
+  :doc:`/api/python/rogue/interfaces/stream_filter`,
+  :doc:`/api/python/rogue/interfaces/stream_ratedrop`,
+  :doc:`/api/python/rogue/interfaces/stream_tcpcore`,
+  :doc:`/api/python/rogue/interfaces/stream_tcpclient`,
+  :doc:`/api/python/rogue/interfaces/stream_tcpserver`
 - C++ stream bindings:
   :doc:`/api/cpp/interfaces/stream/fifo`,
   :doc:`/api/cpp/interfaces/stream/filter`,

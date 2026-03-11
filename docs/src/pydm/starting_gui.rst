@@ -166,4 +166,4 @@ API Reference
 
 - Python:
 
-  - :doc:`/api/python/pydm_runpydm`
+  - :doc:`/api/python/pyrogue/pydm_runpydm`

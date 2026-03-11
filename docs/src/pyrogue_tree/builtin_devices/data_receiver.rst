@@ -48,4 +48,4 @@ Related Topics
 API Reference
 =============
 
-- Python: :doc:`/api/python/datareceiver`
+- Python: :doc:`/api/python/pyrogue/datareceiver`

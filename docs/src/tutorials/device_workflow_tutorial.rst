@@ -35,7 +35,7 @@ API Reference
 =============
 
 - Python:
-  :doc:`/api/python/device`
-  :doc:`/api/python/basevariable`
-  :doc:`/api/python/basecommand`
-  :doc:`/api/python/model`
+  :doc:`/api/python/pyrogue/device`
+  :doc:`/api/python/pyrogue/basevariable`
+  :doc:`/api/python/pyrogue/basecommand`
+  :doc:`/api/python/pyrogue/model`

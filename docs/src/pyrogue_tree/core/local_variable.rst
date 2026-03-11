@@ -63,4 +63,4 @@ Example
 API Reference
 =============
 
-See :doc:`/api/python/localvariable` for generated API details.
+See :doc:`/api/python/pyrogue/localvariable` for generated API details.

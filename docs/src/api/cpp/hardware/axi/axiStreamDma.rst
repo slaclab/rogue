@@ -13,7 +13,7 @@ Python binding
 This C++ class is also exported into Python as ``rogue.hardware.axi.AxiStreamDma``.
 
 Python API page:
-- :doc:`/api/python/hardware_axi_axistreamdma`
+- :doc:`/api/python/rogue/hardware/axi_axistreamdma`
 
 objects in C++ are referenced by the following shared pointer typedef:
 

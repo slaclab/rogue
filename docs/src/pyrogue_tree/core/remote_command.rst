@@ -49,4 +49,4 @@ Example
 API Reference
 =============
 
-See :doc:`/api/python/remotecommand` for generated API details.
+See :doc:`/api/python/pyrogue/remotecommand` for generated API details.

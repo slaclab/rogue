@@ -20,5 +20,5 @@ Related Topics
 API Reference
 =============
 
-- Python: :doc:`/api/python/utilities_fileio_streamreader`
+- Python: :doc:`/api/python/pyrogue/utilities/fileio_streamreader`
 - C++: :doc:`/api/cpp/utilities/fileio/reader`

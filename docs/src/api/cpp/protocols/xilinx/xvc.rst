@@ -19,7 +19,7 @@ Python binding
 This C++ class is also exported into Python as ``rogue.protocols.xilinx.Xvc``.
 
 Python API page:
-- :doc:`/api/python/protocols_xilinx_xvc`
+- :doc:`/api/python/rogue/protocols/xilinx_xvc`
 
 Xvc objects in C++ are referenced by the following shared pointer typedef:
 

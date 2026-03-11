@@ -40,6 +40,6 @@ Starting points:
 
 API reference:
 
-- :doc:`/api/python/device`
-- :doc:`/api/python/remotevariable`
-- :doc:`/api/python/linkvariable`
+- :doc:`/api/python/pyrogue/device`
+- :doc:`/api/python/pyrogue/remotevariable`
+- :doc:`/api/python/pyrogue/linkvariable`

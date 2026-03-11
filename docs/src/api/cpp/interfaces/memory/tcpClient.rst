@@ -15,7 +15,7 @@ Python binding
 This C++ class is also exported into Python as ``rogue.interfaces.memory.TcpClient``.
 
 Python API page:
-- :doc:`/api/python/interfaces_memory_tcpclient`
+- :doc:`/api/python/rogue/interfaces/memory_tcpclient`
 
 objects in C++ are referenced by the following shared pointer typedef:
 

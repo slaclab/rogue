@@ -264,7 +264,7 @@ API Reference
 
 - Python:
 
-  - :doc:`/api/python/logging`
+  - :doc:`/api/python/rogue/logging`
 
 - C++:
 

@@ -105,4 +105,4 @@ API Reference
 
 - Python:
 
-  - :doc:`/api/python/protocols_uartmemory`
+  - :doc:`/api/python/pyrogue/protocols/uartmemory`

@@ -10,7 +10,7 @@ Python binding
 This C++ class is also exported into Python as ``rogue.interfaces.ZmqClient``.
 
 Python API page:
-- :doc:`/api/python/interfaces_zmqclient`
+- :doc:`/api/python/rogue/interfaces/zmqclient`
 
 For conceptual usage guidance, see:
 

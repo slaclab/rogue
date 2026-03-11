@@ -14,15 +14,15 @@ For conceptual guidance, see:
 
 Primary API reference pages:
 
-- :doc:`/api/python/model`
-- :doc:`/api/python/uint`
-- :doc:`/api/python/int`
-- :doc:`/api/python/bool`
-- :doc:`/api/python/string`
-- :doc:`/api/python/float`
-- :doc:`/api/python/double`
-- :doc:`/api/python/fixed`
-- :doc:`/api/python/ufixed`
+- :doc:`/api/python/pyrogue/model`
+- :doc:`/api/python/pyrogue/uint`
+- :doc:`/api/python/pyrogue/int`
+- :doc:`/api/python/pyrogue/bool`
+- :doc:`/api/python/pyrogue/string`
+- :doc:`/api/python/pyrogue/float`
+- :doc:`/api/python/pyrogue/double`
+- :doc:`/api/python/pyrogue/fixed`
+- :doc:`/api/python/pyrogue/ufixed`
 
 Standard Models
 ===============
@@ -34,88 +34,88 @@ The anchors below are preserved for compatibility with existing links.
 UInt
 ----
 
-See :doc:`/api/python/uint`.
+See :doc:`/api/python/pyrogue/uint`.
 
 .. _interfaces_memory_model_uintbe:
 
 UIntBE
 ------
 
-See :doc:`/api/python/uint`.
+See :doc:`/api/python/pyrogue/uint`.
 
 .. _interfaces_memory_model_uintreversed:
 
 UIntReversed
 ------------
 
-See :doc:`/api/python/uint`.
+See :doc:`/api/python/pyrogue/uint`.
 
 .. _interfaces_memory_model_int:
 
 Int
 ---
 
-See :doc:`/api/python/int`.
+See :doc:`/api/python/pyrogue/int`.
 
 .. _interfaces_memory_model_intbe:
 
 IntBE
 -----
 
-See :doc:`/api/python/int`.
+See :doc:`/api/python/pyrogue/int`.
 
 .. _interfaces_memory_model_bool:
 
 Bool
 ----
 
-See :doc:`/api/python/bool`.
+See :doc:`/api/python/pyrogue/bool`.
 
 .. _interfaces_memory_model_string:
 
 String
 ------
 
-See :doc:`/api/python/string`.
+See :doc:`/api/python/pyrogue/string`.
 
 .. _interfaces_memory_model_float:
 
 Float
 -----
 
-See :doc:`/api/python/float`.
+See :doc:`/api/python/pyrogue/float`.
 
 .. _interfaces_memory_model_floatbe:
 
 FloatBE
 -------
 
-See :doc:`/api/python/float`.
+See :doc:`/api/python/pyrogue/float`.
 
 .. _interfaces_memory_model_double:
 
 Double
 ------
 
-See :doc:`/api/python/double`.
+See :doc:`/api/python/pyrogue/double`.
 
 .. _interfaces_memory_model_doublebe:
 
 DoubleBE
 --------
 
-See :doc:`/api/python/double`.
+See :doc:`/api/python/pyrogue/double`.
 
 .. _interfaces_memory_model_fixed:
 
 Fixed
 -----
 
-See :doc:`/api/python/fixed`.
+See :doc:`/api/python/pyrogue/fixed`.
 
 .. _interfaces_memory_model_ufixed:
 
 UFixed
 ------
 
-See :doc:`/api/python/ufixed`.
+See :doc:`/api/python/pyrogue/ufixed`.

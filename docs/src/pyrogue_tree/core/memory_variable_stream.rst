@@ -74,7 +74,7 @@ Related topics
 API reference
 =============
 
-See :doc:`/api/python/interfaces_stream_variable` for generated API details.
+See :doc:`/api/python/rogue/interfaces/stream_variable` for generated API details.
 
 Related Topics
 ==============

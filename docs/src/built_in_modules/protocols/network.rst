@@ -207,4 +207,4 @@ API Reference
 
 - Python:
 
-  - :doc:`/api/python/protocols_network_udprssipack`
+  - :doc:`/api/python/pyrogue/protocols/network_udprssipack`

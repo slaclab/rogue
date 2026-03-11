@@ -56,4 +56,4 @@ Related Topics
 API Reference
 =============
 
-- Python: :doc:`/api/python/datawriter`
+- Python: :doc:`/api/python/pyrogue/datawriter`

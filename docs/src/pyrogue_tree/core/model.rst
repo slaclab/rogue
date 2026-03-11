@@ -172,10 +172,10 @@ For examples of built-in and custom Model definitions, see
 Reference links
 ===============
 
-* Python Model base/reference: :doc:`/api/python/model`
+* Python Model base/reference: :doc:`/api/python/pyrogue/model`
 * C++ memory Model reference: :doc:`/api/cpp/interfaces/memory/model`
-* Model helpers: :doc:`/api/python/wordcount`, :doc:`/api/python/bytecount`,
-  :doc:`/api/python/reversebits`, :doc:`/api/python/twoscomplement`
+* Model helpers: :doc:`/api/python/pyrogue/wordcount`, :doc:`/api/python/pyrogue/bytecount`,
+  :doc:`/api/python/pyrogue/reversebits`, :doc:`/api/python/pyrogue/twoscomplement`
 
 Where to explore next
 =====================

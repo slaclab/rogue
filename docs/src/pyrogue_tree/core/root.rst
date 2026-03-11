@@ -218,4 +218,4 @@ Root Node is created.
 API Reference
 -------------
 
-See :doc:`/api/python/root` for generated API details.
+See :doc:`/api/python/pyrogue/root` for generated API details.

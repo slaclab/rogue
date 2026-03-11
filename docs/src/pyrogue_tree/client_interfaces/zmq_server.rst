@@ -122,4 +122,4 @@ Related Topics
 API Reference
 =============
 
-See :doc:`/api/python/interfaces_zmqserver` for generated API details.
+See :doc:`/api/python/pyrogue/interfaces/zmqserver` for generated API details.

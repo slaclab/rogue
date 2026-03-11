@@ -13,7 +13,7 @@ Python binding
 This C++ class is also exported into Python as ``rogue.hardware.MemMap``.
 
 Python API page:
-- :doc:`/api/python/hardware_memmap`
+- :doc:`/api/python/rogue/hardware/memmap`
 
 objects in C++ are referenced by the following shared pointer typedef:
 

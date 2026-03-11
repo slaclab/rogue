@@ -53,4 +53,4 @@ Related Topics
 API Reference
 =============
 
-- Python: :doc:`/api/python/process`
+- Python: :doc:`/api/python/pyrogue/process`

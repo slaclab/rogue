@@ -91,7 +91,7 @@ logger in addition to the base hub logger if your translation logic is complex.
 API reference
 =============
 
-- Python: :doc:`/api/python/interfaces_memory_hub`
+- Python: :doc:`/api/python/rogue/interfaces/memory_hub`
 - C++: :doc:`/api/cpp/interfaces/memory/hub`
 
 What to explore next

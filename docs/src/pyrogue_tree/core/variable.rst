@@ -86,4 +86,4 @@ See also:
 API Reference
 =============
 
-See :doc:`/api/python/basevariable` for generated API details.
+See :doc:`/api/python/pyrogue/basevariable` for generated API details.

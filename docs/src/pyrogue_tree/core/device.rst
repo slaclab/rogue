@@ -158,7 +158,7 @@ Direct API references:
 * :py:meth:`~pyrogue.Device.verifyBlocks`
 * :py:meth:`~pyrogue.Device.readBlocks`
 * :py:meth:`~pyrogue.Device.checkBlocks`
-* :doc:`/api/python/device`
+* :doc:`/api/python/pyrogue/device`
 
 Where these methods are invoked
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -434,4 +434,4 @@ Frequently used examples include:
 API Reference
 =============
 
-See :doc:`/api/python/device` for generated API details.
+See :doc:`/api/python/pyrogue/device` for generated API details.

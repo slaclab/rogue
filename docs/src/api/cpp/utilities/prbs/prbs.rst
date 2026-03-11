@@ -12,7 +12,7 @@ Python binding
 This C++ class is also exported into Python as ``rogue.utilities.Prbs``.
 
 Python API page:
-- :doc:`/api/python/utilities_prbs_prbs`
+- :doc:`/api/python/rogue/utilities/prbs_prbs`
 
 Prbs objects in C++ are referenced by the following shared pointer typedef:
 

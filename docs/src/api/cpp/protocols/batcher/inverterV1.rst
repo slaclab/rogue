@@ -17,7 +17,7 @@ Python binding
 This C++ class is also exported into Python as ``rogue.protocols.batcher.InverterV1``.
 
 Python API page:
-- :doc:`/api/python/protocols_batcher_inverterv1`
+- :doc:`/api/python/rogue/protocols/batcher_inverterv1`
 
 InverterV1 objects in C++ are referenced by the following shared pointer typedef:
 

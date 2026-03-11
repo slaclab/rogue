@@ -13,7 +13,7 @@ Python binding
 This C++ class is also exported into Python as ``rogue.hardware.axi.AxiMemMap``.
 
 Python API page:
-- :doc:`/api/python/hardware_axi_aximemmap`
+- :doc:`/api/python/rogue/hardware/axi_aximemmap`
 
 objects in C++ are referenced by the following shared pointer typedef:
 

@@ -99,10 +99,10 @@ API Reference
 
 - Python:
 
-  - :doc:`/api/python/utilities_prbs_prbs`
-  - :doc:`/api/python/utilities_prbs_prbstx`
-  - :doc:`/api/python/utilities_prbs_prbsrx`
-  - :doc:`/api/python/utilities_prbs_prbspair`
+  - :doc:`/api/python/rogue/utilities/prbs_prbs`
+  - :doc:`/api/python/pyrogue/utilities/prbs_prbstx`
+  - :doc:`/api/python/pyrogue/utilities/prbs_prbsrx`
+  - :doc:`/api/python/pyrogue/utilities/prbs_prbspair`
 
 - C++:
 

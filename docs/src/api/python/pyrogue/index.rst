@@ -77,6 +77,6 @@ Subpackages
 .. toctree::
    :maxdepth: 1
 
-   pyrogue_interfaces_index
-   pyrogue_protocols_index
-   pyrogue_utilities_index
+   interfaces/index
+   protocols/index
+   utilities/index

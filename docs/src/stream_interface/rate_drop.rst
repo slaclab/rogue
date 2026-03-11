@@ -97,5 +97,5 @@ What to explore next
 API Reference
 =============
 
-- Python: :doc:`/api/python/interfaces_stream_ratedrop`
+- Python: :doc:`/api/python/rogue/interfaces/stream_ratedrop`
 - C++: :doc:`/api/cpp/interfaces/stream/rateDrop`

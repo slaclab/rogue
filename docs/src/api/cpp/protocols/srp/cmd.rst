@@ -15,7 +15,7 @@ Python binding
 This C++ class is also exported into Python as ``rogue.protocols.srp.Cmd``.
 
 Python API page:
-- :doc:`/api/python/protocols_srp_cmd`
+- :doc:`/api/python/rogue/protocols/srp_cmd`
 
 objects in C++ are referenced by the following shared pointer typedef:
 

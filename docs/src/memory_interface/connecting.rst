@@ -66,9 +66,9 @@ API Reference
 
 - Python:
 
-  - :doc:`/api/python/interfaces_memory_master`
-  - :doc:`/api/python/interfaces_memory_hub`
-  - :doc:`/api/python/interfaces_memory_slave`
+  - :doc:`/api/python/rogue/interfaces/memory_master`
+  - :doc:`/api/python/rogue/interfaces/memory_hub`
+  - :doc:`/api/python/rogue/interfaces/memory_slave`
 
 - C++:
 

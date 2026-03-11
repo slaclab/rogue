@@ -85,4 +85,4 @@ Related Topics
 API Reference
 =============
 
-:doc:`/api/python/interfaces_simpleclient`
+:doc:`/api/python/pyrogue/interfaces/simpleclient`
