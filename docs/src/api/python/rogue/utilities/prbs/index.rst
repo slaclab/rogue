@@ -6,6 +6,11 @@ rogue.utilities.prbs
 
 Python-visible PRBS utility classes exported from Rogue C++.
 
+Related Topics
+==============
+
+- :doc:`/built_in_modules/utilities/prbs/index`
+
 .. toctree::
    :maxdepth: 1
 

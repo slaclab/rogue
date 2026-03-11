@@ -4,7 +4,7 @@
 Slave
 =====
 
-For conceptual guidance on stream architecture and receive-side behavior, see:
+For conceptual usage, see:
 
 - :doc:`/stream_interface/index`
 - :doc:`/stream_interface/receiving`

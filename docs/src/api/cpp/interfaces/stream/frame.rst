@@ -4,7 +4,7 @@
 Frame
 =====
 
-For conceptual guidance on stream architecture and pipeline usage, see:
+For conceptual usage, see:
 
 - :doc:`/stream_interface/index`
 - :doc:`/stream_interface/frame_model`

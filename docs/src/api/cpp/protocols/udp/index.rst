@@ -7,8 +7,10 @@ rogue::protocols::udp
 This section contains the C++ API reference for
 ``rogue::protocols::udp`` classes.
 
-For conceptual guidance, lifecycle notes, and integration examples, see
-:doc:`/built_in_modules/protocols/udp/index`.
+Related Topics
+==============
+
+- :doc:`/built_in_modules/protocols/udp/index`
 
 .. toctree::
    :maxdepth: 1

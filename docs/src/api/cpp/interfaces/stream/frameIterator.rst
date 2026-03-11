@@ -4,7 +4,7 @@
 Frame Iterator
 ==============
 
-For conceptual guidance on frame traversal and payload handling, see:
+For conceptual usage, see:
 
 - :doc:`/stream_interface/index`
 

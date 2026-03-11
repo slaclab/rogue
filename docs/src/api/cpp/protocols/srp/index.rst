@@ -10,8 +10,10 @@ This section contains the C++ API reference for
 The ``Cmd`` class is also listed here because it is in the same namespace, even
 though it is a separate lightweight command protocol.
 
-For conceptual guidance and integration boundaries, see
-:doc:`/built_in_modules/protocols/srp/index`.
+Related Topics
+==============
+
+- :doc:`/built_in_modules/protocols/srp/index`
 
 .. toctree::
    :maxdepth: 1

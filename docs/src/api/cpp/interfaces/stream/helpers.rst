@@ -4,7 +4,7 @@
 Frame Helpers
 =============
 
-For conceptual guidance on stream frame access patterns, see:
+For conceptual usage, see:
 
 - :doc:`/stream_interface/index`
 

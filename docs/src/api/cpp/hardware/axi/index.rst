@@ -7,8 +7,12 @@ rogue::hardware::axi
 This section contains the C++ API reference for
 ``rogue::hardware::axi`` classes.
 
-For conceptual guidance and deployment patterns, see
-:doc:`/built_in_modules/hardware/dma/index`.
+Related Topics
+==============
+
+- :doc:`/built_in_modules/hardware/dma/index`
+- :doc:`/built_in_modules/hardware/dma/stream`
+- :doc:`/built_in_modules/hardware/dma/memory`
 
 .. toctree::
    :maxdepth: 1

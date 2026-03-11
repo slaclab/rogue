@@ -4,7 +4,7 @@
 Master
 ======
 
-For conceptual guidance on stream architecture and data flow, see:
+For conceptual usage, see:
 
 - :doc:`/stream_interface/index`
 - :doc:`/stream_interface/sending`

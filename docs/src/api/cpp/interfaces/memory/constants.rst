@@ -5,7 +5,7 @@ Constants
 =========
 
 The following constants are defined for use with the memory interface.
-For conceptual guidance on transaction and processing type usage, see
+For conceptual usage, see
 :doc:`/memory_interface/transactions`.
 
 .. _interface_memory_constants_type:

@@ -7,8 +7,10 @@ rogue::protocols::batcher
 This section contains the C++ API reference for
 ``rogue::protocols::batcher`` classes.
 
-For conceptual guidance and usage patterns, see
-:doc:`/built_in_modules/protocols/batcher/index`.
+Related Topics
+==============
+
+- :doc:`/built_in_modules/protocols/batcher/index`
 
 .. toctree::
    :maxdepth: 1

@@ -7,7 +7,12 @@ rogue::interfaces::memory
 This section contains the C++ API reference for
 ``rogue::interfaces::memory`` classes.
 
-For conceptual usage guidance, start with :doc:`/memory_interface/index`.
+Related Topics
+==============
+
+- :doc:`/memory_interface/index`
+- :doc:`/memory_interface/transactions`
+- :doc:`/memory_interface/tcp_bridge`
 
 .. toctree::
    :maxdepth: 1

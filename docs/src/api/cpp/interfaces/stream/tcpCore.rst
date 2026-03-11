@@ -4,7 +4,7 @@
 TcpCore
 =======
 
-For conceptual guidance and examples, see:
+For conceptual usage, see:
 
 - :doc:`/stream_interface/built_in_modules`
 - :ref:`interfaces_stream_using_tcp`

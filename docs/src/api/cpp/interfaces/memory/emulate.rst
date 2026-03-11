@@ -4,7 +4,7 @@
 Emulate
 =======
 
-For conceptual guidance on simulated memory targets, see:
+For conceptual usage, see:
 
 - :doc:`/built_in_modules/simulation/mememulate`
 
@@ -24,4 +24,3 @@ The class description is shown below:
 
 .. doxygenclass:: rogue::interfaces::memory::Emulate
    :members:
-

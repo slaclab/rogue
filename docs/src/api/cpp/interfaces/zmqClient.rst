@@ -12,7 +12,7 @@ This C++ class is also exported into Python as ``rogue.interfaces.ZmqClient``.
 Python API page:
 - :doc:`/api/python/rogue/interfaces/zmqclient`
 
-For conceptual usage guidance, see:
+For conceptual usage, see:
 
 - :doc:`/pyrogue_tree/client_interfaces/index`
 - :doc:`/pyrogue_tree/client_interfaces/virtual`

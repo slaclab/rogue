@@ -12,7 +12,7 @@ This C++ class is also exported into Python as ``rogue.GeneralError``.
 Python API page:
 - :doc:`/api/python/rogue/generalerror`
 
-For conceptual usage guidance, see:
+For conceptual usage, see:
 
 - :doc:`/logging/index`
 

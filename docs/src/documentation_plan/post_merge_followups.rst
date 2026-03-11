@@ -57,8 +57,6 @@ Reference polish
 
 - Continue refining generated Python/C++ API landing pages where grouping or
   ordering can better match how users look up classes.
-- Audit reference pages for concise conceptual backlinks and add them where
-  missing.
 - Revisit deep API navigation settings after users have had time to use the new
   structure in practice.
 

@@ -4,7 +4,7 @@
 Slave
 ======
 
-For conceptual guidance on memory-bus roles and transaction handling, see:
+For conceptual usage, see:
 
 - :doc:`/memory_interface/index`
 - :doc:`/memory_interface/transactions`

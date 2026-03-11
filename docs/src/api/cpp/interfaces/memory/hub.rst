@@ -4,7 +4,7 @@
 Hub
 ===
 
-For conceptual guidance on address translation and transaction fan-out, see:
+For conceptual usage, see:
 
 - :doc:`/memory_interface/transactions`
 - :doc:`/memory_interface/index`

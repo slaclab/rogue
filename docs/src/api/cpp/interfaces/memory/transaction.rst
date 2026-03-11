@@ -4,8 +4,9 @@
 Transaction
 ===========
 
-For conceptual guidance on transaction flow, timeout behavior, and
-subtransactions, see :doc:`/memory_interface/transactions`.
+For conceptual usage, see:
+
+- :doc:`/memory_interface/transactions`
 
 
 Python binding

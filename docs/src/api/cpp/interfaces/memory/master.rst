@@ -6,7 +6,7 @@ Master
 
 The memory interface Master class is the interface for initiating a memory transaction.
 Each Master class object will be coupled with one or more :ref:`interfaces_memory_slave` objects.
-For conceptual guidance on transaction lifecycle and memory-bus flow, see:
+For conceptual usage, see:
 
 - :doc:`/memory_interface/transactions`
 - :doc:`/memory_interface/index`

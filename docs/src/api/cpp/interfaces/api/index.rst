@@ -7,8 +7,10 @@ rogue::interfaces::api
 This section contains the C++ API reference for
 ``rogue::interfaces::api`` classes.
 
-For conceptual usage guidance, start with
-:doc:`/built_in_modules/interfaces/cpp_api_wrapper`.
+Related Topics
+==============
+
+- :doc:`/built_in_modules/interfaces/cpp_api_wrapper`
 
 .. toctree::
    :maxdepth: 1

@@ -7,8 +7,10 @@ rogue::utilities::compression
 This section contains the C++ API reference for
 Rogue compression utility classes.
 
-For conceptual guidance and usage patterns, see
-:doc:`/built_in_modules/utilities/compression/index`.
+Related Topics
+==============
+
+- :doc:`/built_in_modules/utilities/compression/index`
 
 .. toctree::
    :maxdepth: 1

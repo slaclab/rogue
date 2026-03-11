@@ -7,8 +7,10 @@ rogue::utilities::prbs
 This section contains the C++ API reference for
 Rogue PRBS utility classes.
 
-For conceptual guidance and usage patterns, see
-:doc:`/built_in_modules/utilities/prbs/index`.
+Related Topics
+==============
+
+- :doc:`/built_in_modules/utilities/prbs/index`
 
 .. toctree::
    :maxdepth: 1

@@ -3,4 +3,9 @@
 twosComplement
 ==============
 
+For conceptual usage, see:
+
+- :doc:`/pyrogue_tree/core/variable`
+- :doc:`/pyrogue_tree/core/model`
+
 .. autofunction:: pyrogue.twosComplement

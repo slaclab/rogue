@@ -6,6 +6,11 @@ rogue.protocols.srp
 
 Python-visible SRP protocol classes exported from Rogue C++.
 
+Related Topics
+==============
+
+- :doc:`/built_in_modules/protocols/srp/index`
+
 .. toctree::
    :maxdepth: 1
 

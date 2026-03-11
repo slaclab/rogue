@@ -3,7 +3,7 @@
 DataWriter
 ==========
 
-For conceptual built-in device behavior, see:
+For conceptual usage, see:
 
 - :doc:`/pyrogue_tree/builtin_devices/index`
 - :doc:`/pyrogue_tree/builtin_devices/data_writer`
