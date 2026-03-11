@@ -73,8 +73,12 @@ C++ Compression Pipeline
    for (int i = 0; i < 1000; ++i) prbs->genFrame(1000);
    fwrite->close();
 
-Related References
-==================
+Related Topics
+==============
+
+- :doc:`decompress`
+
+API Reference
+=============
 
 - :doc:`/api/cpp/utilities/compression/zip`
-- :doc:`decompress`

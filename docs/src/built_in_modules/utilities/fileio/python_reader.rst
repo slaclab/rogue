@@ -77,8 +77,8 @@ Logging
 If you pass a custom ``log=...`` object into ``FileReader``, that logger is
 used instead of the default.
 
-Related References
-==================
+API Reference
+=============
 
 - :doc:`/api/python/utilities_fileio_filereader`
 - :doc:`/api/python/utilities_fileio_rogueheader`

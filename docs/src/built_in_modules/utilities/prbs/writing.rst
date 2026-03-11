@@ -94,9 +94,13 @@ C++ PRBS Generator Example
    for (int i = 0; i < 1000; ++i) prbs->genFrame(1000);
    fwrite->close();
 
-Related References
-==================
+Related Topics
+==============
 
-- :doc:`/api/cpp/utilities/prbs/prbs`
 - :doc:`/pyrogue_tree/builtin_devices/prbstx`
 - :doc:`/pyrogue_tree/builtin_devices/prbspair`
+
+API Reference
+=============
+
+- :doc:`/api/cpp/utilities/prbs/prbs`

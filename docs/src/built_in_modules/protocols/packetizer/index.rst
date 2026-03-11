@@ -120,8 +120,8 @@ separate start API in Python. Lifecycle management is usually applied to the
 lower transport/reliability interfaces (for example RSSI, UDP, DMA) that
 packetizer attaches to.
 
-Related docs
-============
+Related Topics
+==============
 
 - :doc:`/built_in_modules/protocols/network`
 - :doc:`/built_in_modules/protocols/rssi/index`
@@ -129,15 +129,14 @@ Related docs
 - :doc:`/stream_interface/index`
 - :doc:`/built_in_modules/protocols/batcher/index`
 
-C++ API details for packetizer protocol classes are documented in
-:doc:`/api/cpp/protocols/packetizer/index`.
+API Reference
+=============
 
-Python API details for packetizer protocol classes are documented in:
-
-- :doc:`/api/python/protocols_packetizer_application`
-- :doc:`/api/python/protocols_packetizer_transport`
-- :doc:`/api/python/protocols_packetizer_core`
-- :doc:`/api/python/protocols_packetizer_corev2`
+- C++: :doc:`/api/cpp/protocols/packetizer/index`
+- Python: :doc:`/api/python/protocols_packetizer_application`
+- Python: :doc:`/api/python/protocols_packetizer_transport`
+- Python: :doc:`/api/python/protocols_packetizer_core`
+- Python: :doc:`/api/python/protocols_packetizer_corev2`
 
 .. toctree::
    :maxdepth: 1

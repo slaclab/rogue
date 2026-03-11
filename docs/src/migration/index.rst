@@ -36,7 +36,11 @@ Related Topics
 
 - Current PyRogue tree model and lifecycle behavior: :doc:`/pyrogue_tree/index`
 - Built-in interface and protocol documentation: :doc:`/built_in_modules/index`
-- API reference for exact class and method details: :doc:`/api/index`
+
+API Reference
+=============
+
+- :doc:`/api/index`
 
 .. toctree::
    :maxdepth: 1

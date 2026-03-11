@@ -88,9 +88,13 @@ C++ PRBS Receiver Example
    printf("Received %u frames\n", prbs->getRxCount());
    printf("Received %u errors\n", prbs->getRxErrors());
 
-Related References
-==================
+Related Topics
+==============
 
-- :doc:`/api/cpp/utilities/prbs/prbs`
 - :doc:`/pyrogue_tree/builtin_devices/prbsrx`
 - :doc:`/pyrogue_tree/builtin_devices/prbspair`
+
+API Reference
+=============
+
+- :doc:`/api/cpp/utilities/prbs/prbs`

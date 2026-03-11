@@ -201,16 +201,16 @@ Operational Notes
 - Address offsets and ``base`` Model types must match across master/slave.
 - This pattern is ideal for integration and prototyping, not high-rate paths.
 
-API references
-==============
-
-- :doc:`/api/python/interfaces_oscommandmemoryslave`
-- :doc:`/api/python/device`
-- :doc:`/api/python/remotevariable`
-
 Related Topics
 ==============
 
 - Memory transaction topology and routing: :doc:`/memory_interface/index`
 - Device lifecycle and managed startup: :doc:`/pyrogue_tree/core/device`
 - Command behavior and callable Nodes: :doc:`/pyrogue_tree/core/command`
+
+API Reference
+=============
+
+- :doc:`/api/python/interfaces_oscommandmemoryslave`
+- :doc:`/api/python/device`
+- :doc:`/api/python/remotevariable`

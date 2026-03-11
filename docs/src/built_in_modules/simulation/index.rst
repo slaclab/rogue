@@ -32,7 +32,6 @@ Selection guidance
   behavior together.
 - Use ``SideBandSim`` when testing sideband control/data paths without hardware.
 
-
 Related Topics
 ==============
 

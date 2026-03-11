@@ -31,8 +31,8 @@ What this tutorial emphasizes
 - Keeping command semantics explicit and testable
 - Organizing blocks and models for long-term maintainability
 
-Related API reference
-=====================
+API Reference
+=============
 
 - :doc:`/api/python/device`
 - :doc:`/api/python/basevariable`

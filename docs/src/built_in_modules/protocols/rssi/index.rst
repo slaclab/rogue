@@ -163,20 +163,19 @@ This is the most useful logger when debugging link bring-up, retransmission,
 and state transitions. The ``Client`` and ``Server`` wrappers themselves do not
 add a separate module-specific logger.
 
-See also
-========
+Related Topics
+==============
 
 * :ref:`protocols_network`
 
-C++ API details for RSSI protocol classes are documented in
-:doc:`/api/cpp/protocols/rssi/index`.
+API Reference
+=============
 
-Python API details for RSSI protocol classes are documented in:
-
-- :doc:`/api/python/protocols_rssi_application`
-- :doc:`/api/python/protocols_rssi_transport`
-- :doc:`/api/python/protocols_rssi_client`
-- :doc:`/api/python/protocols_rssi_server`
+- C++: :doc:`/api/cpp/protocols/rssi/index`
+- Python: :doc:`/api/python/protocols_rssi_application`
+- Python: :doc:`/api/python/protocols_rssi_transport`
+- Python: :doc:`/api/python/protocols_rssi_client`
+- Python: :doc:`/api/python/protocols_rssi_server`
 
 .. toctree::
    :maxdepth: 1

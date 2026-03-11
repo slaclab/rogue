@@ -195,8 +195,8 @@ Configuration example:
 In practice, enable the underlying protocol loggers rather than relying on any
 wrapper-level Python logging when debugging link behavior.
 
-See also
-========
+Related Topics
+==============
 
 * :ref:`protocols_rssi`
 * :ref:`protocols_udp`

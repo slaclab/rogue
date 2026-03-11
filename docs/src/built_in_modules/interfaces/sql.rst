@@ -73,15 +73,15 @@ Both SQL helpers use Python logging.
 database write failures. Because these are Python loggers, they also feed the
 normal PyRogue Python logging path rather than Rogue C++ ``rogue.Logging``.
 
-API references
-==============
-
-- :doc:`/api/python/interfaces_sqllogger`
-- :doc:`/api/python/interfaces_sqlreader`
-
 Related Topics
 ==============
 
 - Tree variable concepts: :doc:`/pyrogue_tree/core/variable`
 - Logging subsystem overview: :doc:`/logging/index`
 - GUI and client access patterns for live trees: :doc:`/pyrogue_tree/client_interfaces/index`
+
+API Reference
+=============
+
+- :doc:`/api/python/interfaces_sqllogger`
+- :doc:`/api/python/interfaces_sqlreader`

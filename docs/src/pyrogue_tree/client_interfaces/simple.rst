@@ -83,6 +83,6 @@ Related Topics
 - CLI operations for quick checks: :doc:`/pyrogue_tree/client_interfaces/commandline`
 
 API Reference
-==============
+=============
 
 :doc:`/api/python/interfaces_simpleclient`

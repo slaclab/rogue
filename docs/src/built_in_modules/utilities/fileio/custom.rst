@@ -77,8 +77,8 @@ flow, use the PyRogue ``StreamWriter`` wrapper with your custom writer module.
    streamA >> fwrite.getChannel(0)
    streamB >> fwrite.getChannel(1)
 
-Related References
-==================
+API Reference
+=============
 
 - :doc:`/api/cpp/utilities/fileio/writer`
 - :doc:`/api/python/utilities_fileio_streamwriter`

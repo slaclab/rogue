@@ -123,10 +123,14 @@ Enable it before constructing packetizer objects:
 This logger is the main source for packet drop, framing, and queue timeout
 messages. There is no additional per-instance debug helper on ``Core``.
 
-See also
-========
+Related Topics
+==============
 
 - :doc:`/built_in_modules/protocols/packetizer/index`
 - :doc:`/built_in_modules/protocols/packetizer/coreV2`
-- Python API: :doc:`/api/python/protocols_packetizer_core`
-- :doc:`/api/cpp/protocols/packetizer/core`
+
+API Reference
+=============
+
+- Python: :doc:`/api/python/protocols_packetizer_core`
+- C++: :doc:`/api/cpp/protocols/packetizer/core`

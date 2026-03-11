@@ -72,8 +72,12 @@ C++ Decompression Pipeline
    printf("Received %u frames\n", prbs->getRxCount());
    printf("Received %u errors\n", prbs->getRxErrors());
 
-Related References
-==================
+Related Topics
+==============
+
+- :doc:`compress`
+
+API Reference
+=============
 
 - :doc:`/api/cpp/utilities/compression/unzip`
-- :doc:`compress`

@@ -103,14 +103,14 @@ C++ examples
        return 0;
    }
 
-API references
---------------
-
-- :doc:`/api/python/version`
-- :doc:`/api/cpp/version`
-
 Related Topics
 ==============
 
 - Deployment and environment setup: :doc:`/installing/index`
 - Upgrade guidance across Rogue versions: :doc:`/migration/index`
+
+API Reference
+=============
+
+- :doc:`/api/python/version`
+- :doc:`/api/cpp/version`

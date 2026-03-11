@@ -84,14 +84,14 @@ Reference example
 See ``tests/api_test/src/api_test.cpp`` for a complete working example that
 matches the current ``Bsp`` API.
 
-API references
---------------
-
-- :doc:`/api/cpp/interfaces/api/bsp`
-
 Related Topics
 ==============
 
 - Built-in interface overview: :doc:`/built_in_modules/interfaces/index`
 - PyRogue tree structure and lifecycle: :doc:`/pyrogue_tree/index`
 - Core Root/Device/Variable behavior: :doc:`/pyrogue_tree/core/index`
+
+API Reference
+=============
+
+- :doc:`/api/cpp/interfaces/api/bsp`

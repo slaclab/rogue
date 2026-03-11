@@ -134,10 +134,14 @@ version alignment across firmware and software.
 In mixed system stacks, software ``CoreV2`` endpoints are typically paired with
 firmware v2 packetizer/depacketizer implementations in the transport path.
 
-See also
-========
+Related Topics
+==============
 
 - :doc:`/built_in_modules/protocols/packetizer/index`
 - :doc:`/built_in_modules/protocols/packetizer/core`
-- Python API: :doc:`/api/python/protocols_packetizer_corev2`
-- :doc:`/api/cpp/protocols/packetizer/coreV2`
+
+API Reference
+=============
+
+- Python: :doc:`/api/python/protocols_packetizer_corev2`
+- C++: :doc:`/api/cpp/protocols/packetizer/coreV2`

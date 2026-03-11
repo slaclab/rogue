@@ -161,8 +161,15 @@ Enable before object construction:
 
    rogue.Logging.setFilter('pyrogue.xilinx', rogue.Logging.Debug)
 
-API references
---------------
+Related Topics
+==============
+
+- Stream transport wiring patterns: :doc:`/stream_interface/connecting`
+- DMA transport details: :doc:`/built_in_modules/hardware/dma/stream`
+- Device-tree lifecycle integration: :doc:`/pyrogue_tree/core/device`
+
+API Reference
+=============
 
 C++ API reference pages are collected in :doc:`/api/cpp/protocols/xilinx/index`:
 
@@ -170,10 +177,3 @@ C++ API reference pages are collected in :doc:`/api/cpp/protocols/xilinx/index`:
 - :doc:`/api/cpp/protocols/xilinx/jtagDriver`
 - :doc:`/api/cpp/protocols/xilinx/xvcServer`
 - :doc:`/api/cpp/protocols/xilinx/xvcConnection`
-
-Related Topics
---------------
-
-- Stream transport wiring patterns: :doc:`/stream_interface/connecting`
-- DMA transport details: :doc:`/built_in_modules/hardware/dma/stream`
-- Device-tree lifecycle integration: :doc:`/pyrogue_tree/core/device`

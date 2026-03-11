@@ -132,8 +132,8 @@ Enable one side or the whole subsystem before constructing objects:
 At debug level, UDP logs socket setup and transmit/receive path events. There
 is no additional runtime ``setDebug(...)`` helper on these classes.
 
-Related docs
-============
+Related Topics
+==============
 
 - :ref:`protocols_network`
 - :doc:`/built_in_modules/protocols/network`
@@ -141,14 +141,13 @@ Related docs
 - :doc:`/built_in_modules/protocols/packetizer/index`
 - :doc:`/built_in_modules/protocols/srp/index`
 
-C++ API details for UDP protocol classes are documented in
-:doc:`/api/cpp/protocols/udp/index`.
+API Reference
+=============
 
-Python API details for UDP protocol classes are documented in:
-
-- :doc:`/api/python/protocols_udp_core`
-- :doc:`/api/python/protocols_udp_client`
-- :doc:`/api/python/protocols_udp_server`
+- C++: :doc:`/api/cpp/protocols/udp/index`
+- Python: :doc:`/api/python/protocols_udp_core`
+- Python: :doc:`/api/python/protocols_udp_client`
+- Python: :doc:`/api/python/protocols_udp_server`
 
 .. toctree::
    :maxdepth: 1
