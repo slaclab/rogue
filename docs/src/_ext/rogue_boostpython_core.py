@@ -17,7 +17,10 @@ SRC_ROOT = REPO_ROOT / "src" / "rogue"
 class MethodDoc:
     name: str
     args: list[str]
-    doc: str
+    brief: str
+    details: str
+    params: dict[str, str]
+    returns: str
     cpp_target: str
     cpp_role: str = "func"
 
@@ -44,7 +47,8 @@ class MethodDoc:
 
     @property
     def description(self) -> str:
-        text = normalize_doc_block(self.doc)
+        text = "\n\n".join(part for part in [self.brief, self.details] if part)
+        text = normalize_doc_block(text)
         if not text:
             return "No binding docstring provided."
         return text
@@ -65,15 +69,27 @@ class ClassDoc:
 
 @dataclasses.dataclass
 class HeaderDoc:
-    class_docs: dict[str, str]
-    method_docs: dict[str, str]
+    class_docs: dict[str, MethodDoc]
+    method_docs: dict[str, MethodDoc]
+
+
+@dataclasses.dataclass
+class ParsedComment:
+    brief: str
+    details: str
+    params: dict[str, str]
+    returns: str
 
 
 def normalize_doc(text: str) -> str:
     text = text.strip()
     if not text:
         return ""
-    return re.sub(r"\s+", " ", text.replace("\\n", " ")).strip()
+    text = re.sub(r"\s+", " ", text.replace("\\n", " ")).strip()
+    # Doxygen comments in this tree commonly use Markdown-style single backticks
+    # for inline code. Convert them to reST inline literals for Sphinx.
+    text = re.sub(r"(?<!`)`([^`\n]+)`(?!`)", r"``\1``", text)
+    return text
 
 
 def normalize_doc_block(text: str) -> str:
@@ -237,7 +253,7 @@ def extract_setup_python_body(text: str) -> tuple[str, str]:
     return qualifier, text[brace_start + 1 : brace_end]
 
 
-def parse_doxygen_comment(raw_comment: str) -> str:
+def parse_doxygen_comment(raw_comment: str) -> ParsedComment:
     lines: list[str] = []
     for line in raw_comment.splitlines():
         line = re.sub(r"^\s*/?\**\s?", "", line).strip()
@@ -246,31 +262,59 @@ def parse_doxygen_comment(raw_comment: str) -> str:
 
     brief: list[str] = []
     details: list[str] = []
+    params: dict[str, list[str]] = {}
+    returns: list[str] = []
+    current_param: str | None = None
     mode = "body"
     for line in lines:
         if line.startswith("@brief"):
             brief.append(line[len("@brief") :].strip())
             mode = "brief"
+            current_param = None
             continue
         if line.startswith("@details"):
             details.append(line[len("@details") :].strip())
             mode = "details"
+            current_param = None
             continue
-        if line.startswith("@param") or line.startswith("@return") or line.startswith("@tparam"):
+        if line.startswith("@param"):
+            match = re.match(r"@param(?:\s*\[[^\]]+\])?\s+(\w+)\s*(.*)", line)
+            if match:
+                current_param = match.group(1)
+                params.setdefault(current_param, [])
+                if match.group(2):
+                    params[current_param].append(match.group(2).strip())
+            mode = "param"
+            continue
+        if line.startswith("@return"):
+            returns.append(line[len("@return") :].strip())
+            mode = "return"
+            current_param = None
+            continue
+        if line.startswith("@tparam"):
             mode = "tags"
+            current_param = None
             continue
         if line.startswith("@"):
             mode = "tags"
+            current_param = None
             continue
 
         if mode == "details":
             details.append(line)
+        elif mode == "param" and current_param:
+            params.setdefault(current_param, []).append(line)
+        elif mode == "return":
+            returns.append(line)
         elif mode in {"brief", "body"}:
             brief.append(line)
 
-    brief_text = normalize_doc(" ".join(brief))
-    details_text = normalize_doc(" ".join(details))
-    return "\n\n".join(part for part in [brief_text, details_text] if part)
+    return ParsedComment(
+        brief=normalize_doc(" ".join(brief)),
+        details=normalize_doc(" ".join(details)),
+        params={key: normalize_doc(" ".join(value)) for key, value in params.items() if normalize_doc(" ".join(value))},
+        returns=normalize_doc(" ".join(returns)),
+    )
 
 
 def declaration_name(declaration: str) -> str | None:
@@ -286,16 +330,25 @@ def declaration_name(declaration: str) -> str | None:
 @lru_cache(maxsize=None)
 def parse_header_docs(header_path: pathlib.Path) -> HeaderDoc:
     text = header_path.read_text()
-    class_docs: dict[str, str] = {}
-    method_docs: dict[str, str] = {}
+    class_docs: dict[str, MethodDoc] = {}
+    method_docs: dict[str, MethodDoc] = {}
     pattern = re.compile(r"/\*\*(.*?)\*/\s*([^;{]+[;{])", re.DOTALL)
     for comment, declaration in pattern.findall(text):
-        doc = parse_doxygen_comment(comment)
-        if not doc:
+        parsed = parse_doxygen_comment(comment)
+        if not any([parsed.brief, parsed.details, parsed.params, parsed.returns]):
             continue
         name = declaration_name(declaration)
         if not name:
             continue
+        doc = MethodDoc(
+            name=name,
+            args=[],
+            brief=parsed.brief,
+            details=parsed.details,
+            params=parsed.params,
+            returns=parsed.returns,
+            cpp_target="",
+        )
         if declaration.lstrip().startswith("class "):
             class_docs[name] = doc
         else:
@@ -303,13 +356,13 @@ def parse_header_docs(header_path: pathlib.Path) -> HeaderDoc:
     return HeaderDoc(class_docs=class_docs, method_docs=method_docs)
 
 
-def lookup_method_doc(cpp_target: str, python_name: str = "") -> str:
+def lookup_method_doc(cpp_target: str, python_name: str = "") -> MethodDoc | None:
     header_path = resolve_header_for_cpp_name(cpp_target.rsplit("::", 1)[0])
     if not header_path:
-        return ""
+        return None
     header_docs = parse_header_docs(header_path)
     target_name = cpp_target.rsplit("::", 1)[-1]
-    return header_docs.method_docs.get(python_name) or header_docs.method_docs.get(target_name) or ""
+    return header_docs.method_docs.get(python_name) or header_docs.method_docs.get(target_name)
 
 
 def extract_class_expression(body: str) -> str:
@@ -384,7 +437,15 @@ def parse_method(def_text: str, cpp_class: str, aliases: dict[str, str]) -> Meth
     literals = extract_string_literals(def_text)
     doc = literals[-1] if len(literals) > 1 else ""
     cpp_target = actual_target or f"{cpp_class}::{name}"
-    return MethodDoc(name=name, args=arg_names, doc=doc, cpp_target=cpp_target)
+    return MethodDoc(
+        name=name,
+        args=arg_names,
+        brief=normalize_doc(doc),
+        details="",
+        params={},
+        returns="",
+        cpp_target=cpp_target,
+    )
 
 
 def parse_binding(source_path: pathlib.Path, module_paths: dict[pathlib.Path, str]) -> ClassDoc | None:
@@ -443,19 +504,30 @@ def parse_binding(source_path: pathlib.Path, module_paths: dict[pathlib.Path, st
     header_path = resolve_header_path(source_path)
     header_docs = parse_header_docs(header_path) if header_path else HeaderDoc({}, {})
     if header_docs.class_docs.get(class_name):
-        class_doc = header_docs.class_docs[class_name]
+        class_doc = header_docs.class_docs[class_name].description
     if header_docs.method_docs.get(class_name):
-        ctor_doc = header_docs.method_docs[class_name]
-    methods = [
-        dataclasses.replace(
-            method,
-            doc=header_docs.method_docs.get(method.name)
+        ctor_doc = header_docs.method_docs[class_name].description
+    resolved_methods: list[MethodDoc] = []
+    for method in methods:
+        header_method = (
+            header_docs.method_docs.get(method.name)
             or header_docs.method_docs.get(method.cpp_target.rsplit("::", 1)[-1])
             or lookup_method_doc(method.cpp_target, method.name)
-            or method.doc,
         )
-        for method in methods
-    ]
+        if header_method:
+            resolved_methods.append(
+                dataclasses.replace(
+                    method,
+                    args=method.args or list(header_method.params.keys()),
+                    brief=header_method.brief,
+                    details=header_method.details,
+                    params=header_method.params,
+                    returns=header_method.returns,
+                )
+            )
+        else:
+            resolved_methods.append(method)
+    methods = resolved_methods
 
     python_module = nearest_module_path(source_path, module_paths)
     python_name = f"{python_module}.{class_name}"
@@ -488,14 +560,29 @@ def scan_bindings() -> dict[str, ClassDoc]:
     return bindings
 
 
-def render_method_entry(method: MethodDoc) -> list[str]:
+def render_method_entry(
+    method: MethodDoc,
+    *,
+    no_index: bool = False,
+) -> list[str]:
     role = "class" if method.cpp_role == "class" else "func"
-    lines = [f"``{method.signature}`` -> :cpp:{role}:`{method.cpp_target}`"]
-    paragraphs = normalize_doc_block(method.description).split("\n\n")
-    for idx, paragraph in enumerate(paragraphs):
-        if idx:
+    directive = "py:method"
+    lines = [f".. {directive}:: {method.signature}"]
+    if no_index:
+        lines.append("   :no-index:")
+    lines.append("")
+    lines.append(f"   C++: :cpp:{role}:`{method.cpp_target}`")
+    for paragraph in normalize_doc_block(method.description).split("\n\n"):
+        if paragraph:
             lines.append("")
-        lines.append(f"   {paragraph}")
+            lines.append(f"   {paragraph}")
+    for arg in method.args:
+        if arg in method.params:
+            lines.append("")
+            lines.append(f"   :param {arg}: {method.params[arg]}")
+    if method.returns:
+        lines.append("")
+        lines.append(f"   :returns: {method.returns}")
     return lines
 
 
@@ -533,11 +620,32 @@ def render_inherited_section(binding: ClassDoc, bindings_by_cpp: dict[str, Class
         for method in base.methods:
             if method.name == "__eq__":
                 continue
-            lines.extend(render_method_entry(method))
+            lines.extend(render_method_entry(method, no_index=True))
             lines.append("")
         lines.pop()
         lines.append("")
     lines.pop()
+    return lines
+
+
+def render_class_section(binding: ClassDoc, include_init: bool) -> list[str]:
+    module_name = binding.python_name.rsplit(".", 1)[0]
+    lines = [f".. py:class:: {binding.class_name}", f"   :module: {module_name}", ""]
+    lines.append(f"   C++: :cpp:class:`{binding.cpp_target}`")
+
+    class_description = normalize_doc_block(binding.class_doc)
+    if class_description:
+        for paragraph in class_description.split("\n\n"):
+            lines.append("")
+            lines.append(f"   {paragraph}")
+
+    if include_init and binding.ctor_doc:
+        lines.extend(["", f"   .. py:method:: __init__()", ""])
+        ctor_paragraphs = normalize_doc_block(binding.ctor_doc).split("\n\n")
+        for paragraph in ctor_paragraphs:
+            if paragraph:
+                lines.append(f"      {paragraph}")
+
     return lines
 
 
@@ -559,17 +667,14 @@ def render_embedded_api(
         lines.extend(normalize_doc_block(class_intro).split("\n\n"))
         lines.append("")
 
-    if include_init and binding.ctor_doc:
-        lines.extend(["Construction", "------------", ""])
-        ctor = MethodDoc(binding.class_name, [], binding.ctor_doc, binding.cpp_target, cpp_role="class")
-        lines.extend(render_method_entry(ctor))
-        lines.extend(["", ""])
+    lines.extend(render_class_section(binding, include_init))
+    lines.extend(["", ""])
 
     if include_internal:
         exported = [method for method in binding.methods if method.name != "__eq__"]
     else:
         exported = [method for method in binding.methods if not method.is_internal and not method.is_dunder]
-    exported_block = render_methods_section("Exported Methods", exported)
+    exported_block = render_methods_section("Methods", exported)
     if exported_block:
         lines.extend(exported_block)
         lines.extend(["", ""])
