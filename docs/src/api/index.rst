@@ -15,7 +15,7 @@ with:
 - :doc:`/memory_interface/index`
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
    :caption: API Reference
 
    /api/python/index

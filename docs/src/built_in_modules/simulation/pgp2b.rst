@@ -186,6 +186,6 @@ API Reference
 
 - Python:
 
-  - :doc:`/api/python/pyrogue/interfaces/simulation_pgp2bsim`
-  - :doc:`/api/python/pyrogue/interfaces/simulation_sidebandsim`
+  - :doc:`/api/python/pyrogue/interfaces/simulation/pgp2bsim`
+  - :doc:`/api/python/pyrogue/interfaces/simulation/sidebandsim`
   - :doc:`/api/python/rogue/interfaces/stream_tcpclient`

@@ -7,7 +7,7 @@ C++ API
 Generated C++ API reference pages are grouped by namespace and subsystem.
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
    rogue_index
    interfaces_index

@@ -7,6 +7,9 @@ pyrogue.interfaces
 Client/server access helpers, SQL logging, simulation helpers, and other
 PyRogue-side integration classes.
 
+Client Interfaces
+=================
+
 .. toctree::
    :maxdepth: 1
 
@@ -14,8 +17,13 @@ PyRogue-side integration classes.
    sqllogger
    sqlreader
    simpleclient
-   simulation_mememulate
-   simulation_pgp2bsim
-   simulation_sidebandsim
    virtualclient
    zmqserver
+
+Simulation
+==========
+
+.. toctree::
+   :maxdepth: 1
+
+   simulation/index
