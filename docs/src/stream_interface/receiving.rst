@@ -181,9 +181,22 @@ base ``Slave`` and call ``setDebug(maxBytes, name)``. That helper creates a
 Rogue C++ logger named ``pyrogue.<name>``. For example,
 ``dbg.setDebug(128, 'stream.rx.tap')`` emits through ``pyrogue.stream.rx.tap``.
 
-What to explore next
+What To Explore Next
 ====================
 
 - Frame construction and transmit patterns: :doc:`/stream_interface/sending`
 - Connection topologies: :doc:`/stream_interface/connecting`
 - Stream debugging patterns: :doc:`/stream_interface/debugStreams`
+
+API Reference
+=============
+
+- Python:
+
+  - :doc:`/api/python/interfaces_stream_slave`
+  - :doc:`/api/python/interfaces_stream_frame`
+
+- C++:
+
+  - :doc:`/api/cpp/interfaces/stream/slave`
+  - :doc:`/api/cpp/interfaces/stream/frame`

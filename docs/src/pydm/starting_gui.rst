@@ -160,3 +160,10 @@ What To Explore Next
 - Widget set for custom screens: :doc:`rogue_widgets`
 - Time-series plotting UI: :doc:`timeplot_gui`
 - ZMQ server setup used by PyDM sessions: :doc:`/pyrogue_tree/client_interfaces/zmq_server`
+
+API Reference
+=============
+
+- Python:
+
+  - :doc:`/api/python/pydm_runpydm`

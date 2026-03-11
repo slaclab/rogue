@@ -189,3 +189,11 @@ Related Topics
 - PyRogue Variable behavior: :doc:`/pyrogue_tree/core/variable`
 - Model conversion rules: :doc:`/pyrogue_tree/core/model`
 - Memory-style transaction flow: :doc:`/memory_interface/index`
+
+API Reference
+=============
+
+- Python:
+
+  - :doc:`/api/python/protocols_gpibcontroller`
+  - :doc:`/api/python/protocols_gpibdevice`

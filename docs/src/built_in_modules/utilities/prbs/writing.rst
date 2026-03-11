@@ -103,4 +103,12 @@ Related Topics
 API Reference
 =============
 
-- C++: :doc:`/api/cpp/utilities/prbs/prbs`
+- Python:
+
+  - :doc:`/api/python/utilities_prbs_prbs`
+  - :doc:`/api/python/utilities_prbs_prbstx`
+  - :doc:`/api/python/utilities_prbs_prbspair`
+
+- C++:
+
+  - :doc:`/api/cpp/utilities/prbs/prbs`

@@ -99,3 +99,10 @@ Configuration API:
 The current implementation has several transaction-level debug statements in
 the code commented out, so enabling the logger is most useful when those debug
 calls are active or when additional UART diagnostics are added.
+
+API Reference
+=============
+
+- Python:
+
+  - :doc:`/api/python/protocols_uartmemory`

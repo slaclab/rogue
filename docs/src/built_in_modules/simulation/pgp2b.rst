@@ -180,3 +180,12 @@ Related Topics
 
 - Stream topologies and connection operators: :doc:`/stream_interface/connecting`
 - TCP stream transport behavior: :doc:`/stream_interface/tcp_bridge`
+
+API Reference
+=============
+
+- Python:
+
+  - :doc:`/api/python/interfaces_simulation_pgp2bsim`
+  - :doc:`/api/python/interfaces_simulation_sidebandsim`
+  - :doc:`/api/python/interfaces_stream_tcpclient`

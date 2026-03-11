@@ -1,0 +1,79 @@
+.. _api_python_pyrogue:
+
+=======
+pyrogue
+=======
+
+The ``pyrogue`` namespace contains the tree object model, pure-Python helper
+classes, and higher-level wrappers built on top of Rogue runtime services.
+
+Core objects
+============
+
+.. toctree::
+   :maxdepth: 1
+
+   node
+   root
+   pollqueue
+   device
+   localblock
+   process
+   runcontrol
+   datareceiver
+   datawriter
+
+Commands
+========
+
+.. toctree::
+   :maxdepth: 1
+
+   basecommand
+   remotecommand
+
+Variables
+=========
+
+.. toctree::
+   :maxdepth: 1
+
+   basevariable
+   remotevariable
+   localvariable
+   linkvariable
+
+Models
+======
+
+.. toctree::
+   :maxdepth: 1
+
+   model
+   uint
+   int
+   bool
+   string
+   float
+   double
+   fixed
+   ufixed
+
+Helpers
+=======
+
+.. toctree::
+   :maxdepth: 1
+
+   wordcount
+   bytecount
+   reversebits
+   twoscomplement
+   pydm_runpydm
+
+Subpackages
+===========
+
+- :doc:`/api/python/pyrogue_interfaces_index`
+- :doc:`/api/python/pyrogue_protocols_index`
+- :doc:`/api/python/pyrogue_utilities_index`

@@ -80,4 +80,5 @@ Related Topics
 API Reference
 =============
 
+- Python: :doc:`/api/python/utilities_compression_streamunzip`
 - C++: :doc:`/api/cpp/utilities/compression/unzip`

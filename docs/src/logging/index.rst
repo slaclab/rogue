@@ -259,6 +259,17 @@ For mixed Python + C++ applications:
    logging.getLogger('pyrogue').setLevel(logging.DEBUG)
    rogue.Logging.setFilter('pyrogue.rssi', rogue.Logging.Debug)
 
+API Reference
+=============
+
+- Python:
+
+  - :doc:`/api/python/logging`
+
+- C++:
+
+  - :doc:`/api/cpp/logging`
+
 Current Rough Edges
 ===================
 

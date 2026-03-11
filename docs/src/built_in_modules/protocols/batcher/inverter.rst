@@ -68,9 +68,20 @@ V2
 
    src >> inv >> dst
 
-Related docs
-============
+Related Topics
+==============
 
 - :doc:`/built_in_modules/protocols/batcher/index`
-- :doc:`/api/cpp/protocols/batcher/inverterV1`
-- :doc:`/api/cpp/protocols/batcher/inverterV2`
+
+API Reference
+=============
+
+- Python:
+
+  - :doc:`/api/python/protocols_batcher_inverterv1`
+  - :doc:`/api/python/protocols_batcher_inverterv2`
+
+- C++:
+
+  - :doc:`/api/cpp/protocols/batcher/inverterV1`
+  - :doc:`/api/cpp/protocols/batcher/inverterV2`

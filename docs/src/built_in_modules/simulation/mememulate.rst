@@ -83,3 +83,11 @@ Related Topics
 
 - Memory interface transaction flow: :doc:`/memory_interface/transactions`
 - Device/hub interception patterns: :doc:`/memory_interface/hub`
+
+API Reference
+=============
+
+- Python:
+
+  - :doc:`/api/python/interfaces_simulation_mememulate`
+  - :doc:`/api/python/interfaces_memory_slave`

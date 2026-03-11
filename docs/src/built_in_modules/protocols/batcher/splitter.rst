@@ -63,9 +63,20 @@ V2
 
    src >> split >> filt >> dst
 
-Related docs
-============
+Related Topics
+==============
 
 - :doc:`/built_in_modules/protocols/batcher/index`
-- :doc:`/api/cpp/protocols/batcher/splitterV1`
-- :doc:`/api/cpp/protocols/batcher/splitterV2`
+
+API Reference
+=============
+
+- Python:
+
+  - :doc:`/api/python/protocols_batcher_splitterv1`
+  - :doc:`/api/python/protocols_batcher_splitterv2`
+
+- C++:
+
+  - :doc:`/api/cpp/protocols/batcher/splitterV1`
+  - :doc:`/api/cpp/protocols/batcher/splitterV2`

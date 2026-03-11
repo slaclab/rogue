@@ -94,6 +94,20 @@ The PyRogue wrappers also have their own Python loggers, but the transport/data
 path debug output from the underlying PRBS generator/checker comes from the
 C++ logger names above.
 
+API Reference
+=============
+
+- Python:
+
+  - :doc:`/api/python/utilities_prbs_prbs`
+  - :doc:`/api/python/utilities_prbs_prbstx`
+  - :doc:`/api/python/utilities_prbs_prbsrx`
+  - :doc:`/api/python/utilities_prbs_prbspair`
+
+- C++:
+
+  - :doc:`/api/cpp/utilities/prbs/prbs`
+
 What To Explore Next
 ====================
 

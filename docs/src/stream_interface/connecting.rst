@@ -192,10 +192,31 @@ C++
       return 0;
    }
 
-What to explore next
+What To Explore Next
 ====================
 
 - Frame production patterns: :doc:`/stream_interface/sending`
 - Frame consumption patterns: :doc:`/stream_interface/receiving`
 - Built-in module behavior and tuning: :doc:`/stream_interface/built_in_modules`
 - Stream section overview: :doc:`/stream_interface/index`
+
+API Reference
+=============
+
+- Python:
+
+  - :doc:`/api/python/interfaces_stream_fifo`
+  - :doc:`/api/python/interfaces_stream_ratedrop`
+  - :doc:`/api/python/interfaces_stream_slave`
+  - :doc:`/api/python/interfaces_stream_tcpclient`
+  - :doc:`/api/python/hardware_axi_axistreamdma`
+  - :doc:`/api/python/utilities_fileio_streamwriter`
+
+- C++:
+
+  - :doc:`/api/cpp/interfaces/stream/fifo`
+  - :doc:`/api/cpp/interfaces/stream/rateDrop`
+  - :doc:`/api/cpp/interfaces/stream/slave`
+  - :doc:`/api/cpp/interfaces/stream/tcpClient`
+  - :doc:`/api/cpp/hardware/axi/axiStreamDma`
+  - :doc:`/api/cpp/utilities/fileio/writer`

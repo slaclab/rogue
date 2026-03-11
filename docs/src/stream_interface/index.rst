@@ -123,11 +123,20 @@ What To Explore Next
 - Custom receivers: :doc:`/stream_interface/receiving`
 - Built-in modules: :doc:`/stream_interface/built_in_modules`
 
-Core API reference:
+API Reference
+=============
 
-- :doc:`/api/cpp/interfaces/stream/master`
-- :doc:`/api/cpp/interfaces/stream/slave`
-- :doc:`/api/cpp/interfaces/stream/frame`
+- Python:
+
+  - :doc:`/api/python/interfaces_stream_master`
+  - :doc:`/api/python/interfaces_stream_slave`
+  - :doc:`/api/python/interfaces_stream_frame`
+
+- C++:
+
+  - :doc:`/api/cpp/interfaces/stream/master`
+  - :doc:`/api/cpp/interfaces/stream/slave`
+  - :doc:`/api/cpp/interfaces/stream/frame`
 
 .. toctree::
    :maxdepth: 1

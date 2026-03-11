@@ -98,6 +98,17 @@ What To Explore Next
 * Block transaction behavior: :doc:`/pyrogue_tree/core/block`
 * Model conversion behavior: :doc:`/pyrogue_tree/core/model`
 
+API Reference
+=============
+
+- Python:
+
+  - :doc:`/api/python/root`
+  - :doc:`/api/python/device`
+  - :doc:`/api/python/basevariable`
+  - :doc:`/api/python/basecommand`
+  - :doc:`/api/python/model`
+
 .. toctree::
    :maxdepth: 2
    :caption: Core:

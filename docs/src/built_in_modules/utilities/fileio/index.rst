@@ -59,6 +59,19 @@ Subtopic Guide
 - :doc:`python_reader`: Covers lightweight, non-stream Python analysis flows.
 - :doc:`custom`: Covers subclassing ``StreamWriter`` for custom output formats.
 
+API Reference
+=============
+
+- Python:
+
+  - :doc:`/api/python/utilities_fileio_streamreader`
+  - :doc:`/api/python/utilities_fileio_streamwriter`
+
+- C++:
+
+  - :doc:`/api/cpp/utilities/fileio/reader`
+  - :doc:`/api/cpp/utilities/fileio/writer`
+
 .. toctree::
    :maxdepth: 1
    :caption: File I/O Utilities:
