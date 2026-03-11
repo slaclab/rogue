@@ -115,6 +115,8 @@ html_theme_options = {
     # Keep sidebar navigation focused on document/page links only.
     # This suppresses per-page heading entries in the navbar.
     'titles_only': True,
+    # Do not cap sidebar toctree depth; let deep API namespaces expand fully.
+    'navigation_depth': -1,
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,
