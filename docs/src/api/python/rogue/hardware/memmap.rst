@@ -8,8 +8,7 @@ For conceptual usage, see:
 
 - :doc:`/built_in_modules/hardware/raw/index`
 
-Implementation
---------------
+.. rubric:: Implementation
 
 This Python API is provided by a Rogue C++ class exported into Python.
 

@@ -9,8 +9,7 @@ For conceptual usage, see:
 - :doc:`/stream_interface/rate_drop`
 - :doc:`/stream_interface/index`
 
-Implementation
---------------
+.. rubric:: Implementation
 
 This Python API is provided by a Rogue C++ class exported into Python.
 

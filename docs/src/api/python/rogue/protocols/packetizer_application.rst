@@ -8,8 +8,7 @@ For conceptual usage, see:
 
 - :doc:`/built_in_modules/protocols/packetizer/index`
 
-Implementation
---------------
+.. rubric:: Implementation
 
 This Python API is provided by a Rogue C++ class exported into Python.
 

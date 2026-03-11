@@ -3,8 +3,7 @@
 rogue.GeneralError
 ==================
 
-Implementation
---------------
+.. rubric:: Implementation
 
 This Python API is provided by a Rogue C++ class exported into Python.
 

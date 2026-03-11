@@ -10,8 +10,7 @@ For conceptual usage, see:
 - :doc:`/stream_interface/receiving`
 - :doc:`/stream_interface/debugStreams`
 
-Implementation
---------------
+.. rubric:: Implementation
 
 This Python API is provided by a Rogue C++ class exported into Python.
 

@@ -9,8 +9,7 @@ For conceptual usage, see:
 - :doc:`/built_in_modules/protocols/xilinx/index`
 - :doc:`/stream_interface/connecting`
 
-Implementation
---------------
+.. rubric:: Implementation
 
 This Python API is provided by a Rogue C++ class exported into Python.
 

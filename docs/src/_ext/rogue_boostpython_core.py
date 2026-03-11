@@ -65,6 +65,9 @@ class ClassDoc:
     class_doc: str
     ctor_doc: str
     ctor_args: list[str]
+    ctor_params: dict[str, str]
+    ctor_cpp_target: str
+    ctor_cpp_role: str
     methods: list[MethodDoc]
 
 
@@ -503,6 +506,9 @@ def parse_binding(source_path: pathlib.Path, module_paths: dict[pathlib.Path, st
     class_doc = ""
     ctor_doc = ""
     ctor_args: list[str] = []
+    ctor_params: dict[str, str] = {}
+    ctor_cpp_target = cpp_name
+    ctor_cpp_role = "class"
     for arg in call_args[1:]:
         if "bp::init" in arg:
             literals = extract_string_literals(arg)
@@ -530,9 +536,18 @@ def parse_binding(source_path: pathlib.Path, module_paths: dict[pathlib.Path, st
     header_docs = parse_header_docs(header_path) if header_path else HeaderDoc({}, {})
     if header_docs.class_docs.get(class_name):
         class_doc = header_docs.class_docs[class_name].description
-    if header_docs.method_docs.get(class_name):
-        ctor_doc = header_docs.method_docs[class_name].description
-        ctor_args = list(header_docs.method_docs[class_name].params.keys())
+    if header_docs.method_docs.get("create"):
+        create_doc = header_docs.method_docs["create"]
+        ctor_doc = create_doc.description
+        ctor_args = list(create_doc.params.keys()) or ctor_args
+        ctor_params = create_doc.params
+        ctor_cpp_target = f"{cpp_name}::create"
+        ctor_cpp_role = "func"
+    elif header_docs.method_docs.get(class_name):
+        ctor_header_doc = header_docs.method_docs[class_name]
+        ctor_doc = ctor_header_doc.description
+        ctor_args = list(ctor_header_doc.params.keys()) or ctor_args
+        ctor_params = ctor_header_doc.params
     resolved_methods: list[MethodDoc] = []
     for method in methods:
         header_method = (
@@ -567,6 +582,9 @@ def parse_binding(source_path: pathlib.Path, module_paths: dict[pathlib.Path, st
         class_doc=class_doc,
         ctor_doc=ctor_doc,
         ctor_args=ctor_args,
+        ctor_params=ctor_params,
+        ctor_cpp_target=ctor_cpp_target,
+        ctor_cpp_role=ctor_cpp_role,
         methods=methods,
     )
 
@@ -618,11 +636,11 @@ def render_method_entry(
     return lines
 
 
-def render_methods_section(title: str, methods: Iterable[MethodDoc], indent: str = "") -> list[str]:
+def render_method_entries(methods: Iterable[MethodDoc], indent: str = "") -> list[str]:
     methods = list(methods)
     if not methods:
         return []
-    lines = [f"{indent}{title}", f"{indent}{'-' * len(title)}", ""]
+    lines: list[str] = []
     for method in methods:
         lines.extend(render_method_entry(method, indent=indent))
         lines.append("")
@@ -630,39 +648,37 @@ def render_methods_section(title: str, methods: Iterable[MethodDoc], indent: str
     return lines
 
 
-def render_inherited_section(binding: ClassDoc, bindings_by_cpp: dict[str, ClassDoc]) -> list[str]:
+def render_inherited_section(
+    binding: ClassDoc,
+    bindings_by_cpp: dict[str, ClassDoc],
+    *,
+    indent: str = "",
+) -> list[str]:
     bases = [bindings_by_cpp[base] for base in binding.bases_cpp if base in bindings_by_cpp]
     if not bases:
         return []
 
-    lines = [
-        "Inherited Methods",
-        "-----------------",
-        "",
-        f"``{binding.class_name}`` also exposes methods inherited from its exported Python base classes.",
-        "",
-    ]
+    lines: list[str] = []
     for base in bases:
-        heading = f"Inherited from :class:`{base.python_name}`"
-        lines.append(heading)
-        lines.append("~" * len(heading))
-        lines.append("")
-        lines.append(f"C++ base: :cpp:class:`{base.cpp_target}`")
-        lines.append("")
         for method in base.methods:
             if method.name == "__eq__":
                 continue
-            lines.extend(render_method_entry(method, no_index=True))
+            lines.extend(render_method_entry(method, indent=indent, no_index=True))
             lines.append("")
+    if lines:
         lines.pop()
-        lines.append("")
-    lines.pop()
     return lines
 
 
-def render_class_section(binding: ClassDoc, include_init: bool, include_internal: bool) -> list[str]:
+def render_class_section(
+    binding: ClassDoc,
+    include_init: bool,
+    include_internal: bool,
+    bindings_by_cpp: dict[str, ClassDoc],
+) -> list[str]:
     module_name = binding.python_name.rsplit(".", 1)[0]
-    if include_init:
+    show_constructor = include_init or bool(binding.ctor_args or binding.ctor_doc)
+    if show_constructor:
         arglist = ", ".join(binding.ctor_args)
         class_signature = f"{binding.class_name}({arglist})"
     else:
@@ -680,24 +696,34 @@ def render_class_section(binding: ClassDoc, include_init: bool, include_internal
             else:
                 lines.append(f"   {paragraph}")
 
-    if include_init and binding.ctor_doc:
-        for paragraph in normalize_doc_block(binding.ctor_doc).split("\n\n"):
-            lines.append("")
-            if "\n" in paragraph and all(line.startswith(("- ", "* ")) for line in paragraph.splitlines()):
-                for bullet in paragraph.splitlines():
-                    lines.append(f"   {bullet}")
-            else:
-                lines.append(f"   {paragraph}")
+    if show_constructor and (binding.ctor_args or binding.ctor_doc):
+        ctor_method = MethodDoc(
+            name="__init__",
+            args=binding.ctor_args,
+            brief=binding.ctor_doc,
+            details="",
+            params=binding.ctor_params,
+            returns="",
+            cpp_target=binding.ctor_cpp_target,
+            cpp_role=binding.ctor_cpp_role,
+        )
+        lines.extend(["", ""])
+        lines.extend(render_method_entry(ctor_method, indent="   ", no_index=True))
 
     if include_internal:
         exported = [method for method in binding.methods if method.name != "__eq__"]
     else:
         exported = [method for method in binding.methods if not method.is_internal and not method.is_dunder]
 
-    methods_block = render_methods_section("Methods", exported, indent="   ")
+    methods_block = render_method_entries(exported, indent="   ")
     if methods_block:
         lines.extend(["", ""])
         lines.extend(methods_block)
+
+    inherited_block = render_inherited_section(binding, bindings_by_cpp, indent="   ")
+    if inherited_block:
+        lines.extend(["", ""])
+        lines.extend(inherited_block)
 
     return lines
 
@@ -716,12 +742,7 @@ def render_embedded_api(
 
     lines: list[str] = []
     lines.extend(["Generated API", "-------------", ""])
-    lines.extend(render_class_section(binding, include_init, include_internal))
+    lines.extend(render_class_section(binding, include_init, include_internal, bindings_by_cpp))
     lines.extend(["", ""])
-
-    inherited_block = render_inherited_section(binding, bindings_by_cpp)
-    if inherited_block:
-        lines.extend(inherited_block)
-        lines.extend(["", ""])
 
     return "\n".join(lines)
