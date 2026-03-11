@@ -66,7 +66,7 @@ server logger passed in from ``EpicsPvServer``:
 That means put/get/rpc handling errors reported by a holder appear under the
 server logger rather than a per-PV logger.
 
-EPICS PvHolder API Reference
-==================================
+API Reference
+=============
 
 See :doc:`/api/python/protocols_epicsv4_epicspvholder` for generated API details.
