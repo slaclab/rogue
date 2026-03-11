@@ -22,6 +22,7 @@ import sys
 
 # Prefer the source tree Python package over any installed copy in the build
 # environment so autodoc reflects the current branch content.
+sys.path.insert(0, os.path.abspath('_ext'))
 sys.path.insert(0, os.path.abspath('../../python'))
 import rogue
 import breathe
@@ -47,7 +48,8 @@ extensions = ['sphinx.ext.autodoc',
     'sphinx.ext.napoleon',
     'sphinx_autodoc_typehints',
     'sphinx_copybutton',
-    'breathe']
+    'breathe',
+    'rogue_boostpython_api']
 
 # Optional runtime dependencies used by a few Python API pages. These are not
 # required to build the docs and should not make autodoc fail when absent.
