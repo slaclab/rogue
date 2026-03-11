@@ -126,5 +126,5 @@ What to explore next
 API Reference
 =============
 
-- Python: :doc:`/api/python/rogue/interfaces/memory_slave`
+- Python: :doc:`/api/python/rogue/interfaces/memory/slave`
 - C++: :doc:`/api/cpp/interfaces/memory/slave`

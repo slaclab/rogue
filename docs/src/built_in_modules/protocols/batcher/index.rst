@@ -77,10 +77,10 @@ API Reference
 
 - Python:
 
-  - :doc:`/api/python/rogue/protocols/batcher_splitterv1`
-  - :doc:`/api/python/rogue/protocols/batcher_splitterv2`
-  - :doc:`/api/python/rogue/protocols/batcher_inverterv1`
-  - :doc:`/api/python/rogue/protocols/batcher_inverterv2`
+  - :doc:`/api/python/rogue/protocols/batcher/splitterv1`
+  - :doc:`/api/python/rogue/protocols/batcher/splitterv2`
+  - :doc:`/api/python/rogue/protocols/batcher/inverterv1`
+  - :doc:`/api/python/rogue/protocols/batcher/inverterv2`
 
 - C++:
 

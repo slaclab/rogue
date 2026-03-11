@@ -81,5 +81,5 @@ API Reference
 =============
 
 - Python:
-  :doc:`/api/python/pyrogue/utilities/fileio_filereader`
-  :doc:`/api/python/pyrogue/utilities/fileio_rogueheader`
+  :doc:`/api/python/pyrogue/utilities/fileio/filereader`
+  :doc:`/api/python/pyrogue/utilities/fileio/rogueheader`

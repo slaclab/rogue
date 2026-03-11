@@ -205,12 +205,12 @@ API Reference
 
 - Python:
 
-  - :doc:`/api/python/rogue/interfaces/stream_fifo`
-  - :doc:`/api/python/rogue/interfaces/stream_ratedrop`
-  - :doc:`/api/python/rogue/interfaces/stream_slave`
-  - :doc:`/api/python/rogue/interfaces/stream_tcpclient`
-  - :doc:`/api/python/rogue/hardware/axi_axistreamdma`
-  - :doc:`/api/python/pyrogue/utilities/fileio_streamwriter`
+  - :doc:`/api/python/rogue/interfaces/stream/fifo`
+  - :doc:`/api/python/rogue/interfaces/stream/ratedrop`
+  - :doc:`/api/python/rogue/interfaces/stream/slave`
+  - :doc:`/api/python/rogue/interfaces/stream/tcpclient`
+  - :doc:`/api/python/rogue/hardware/axi/axistreamdma`
+  - :doc:`/api/python/pyrogue/utilities/fileio/streamwriter`
 
 - C++:
 

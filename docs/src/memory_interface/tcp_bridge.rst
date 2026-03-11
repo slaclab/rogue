@@ -82,8 +82,8 @@ C++ example
 API reference
 =============
 
-- Python: :doc:`/api/python/rogue/interfaces/memory_tcpserver`
-- Python: :doc:`/api/python/rogue/interfaces/memory_tcpclient`
+- Python: :doc:`/api/python/rogue/interfaces/memory/tcpserver`
+- Python: :doc:`/api/python/rogue/interfaces/memory/tcpclient`
 - C++: :doc:`/api/cpp/interfaces/memory/tcpServer`
 - C++: :doc:`/api/cpp/interfaces/memory/tcpClient`
 

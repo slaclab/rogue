@@ -38,4 +38,4 @@ Related Topics
 API Reference
 =============
 
-- Python: :doc:`/api/python/pyrogue/utilities/prbs_prbspair`
+- Python: :doc:`/api/python/pyrogue/utilities/prbs/prbspair`

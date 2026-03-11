@@ -32,4 +32,4 @@ Related Topics
 API Reference
 =============
 
-- Python: :doc:`/api/python/pyrogue/utilities/prbs_prbstx`
+- Python: :doc:`/api/python/pyrogue/utilities/prbs/prbstx`

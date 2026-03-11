@@ -109,4 +109,4 @@ API Reference
 =============
 
 - C++: :doc:`/api/cpp/utilities/fileio/reader`
-- Python: :doc:`/api/python/pyrogue/utilities/fileio_streamreader`
+- Python: :doc:`/api/python/pyrogue/utilities/fileio/streamreader`

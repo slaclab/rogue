@@ -15,7 +15,7 @@ Python binding
 This C++ class is also exported into Python as ``rogue.interfaces.stream.Master``.
 
 Python API page:
-- :doc:`/api/python/rogue/interfaces/stream_master`
+- :doc:`/api/python/rogue/interfaces/stream/master`
 
 objects in C++ are referenced by the following shared pointer typedef:
 

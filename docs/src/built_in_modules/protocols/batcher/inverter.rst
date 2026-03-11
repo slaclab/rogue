@@ -78,8 +78,8 @@ API Reference
 
 - Python:
 
-  - :doc:`/api/python/rogue/protocols/batcher_inverterv1`
-  - :doc:`/api/python/rogue/protocols/batcher_inverterv2`
+  - :doc:`/api/python/rogue/protocols/batcher/inverterv1`
+  - :doc:`/api/python/rogue/protocols/batcher/inverterv2`
 
 - C++:
 

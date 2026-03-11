@@ -3,10 +3,11 @@
 Python API
 ==========
 
-Generated Python API reference pages are grouped by their top-level namespace.
+Generated Python API reference pages follow the full Python namespace and
+subpackage layout.
 
 .. toctree::
-   :maxdepth: 5
+   :maxdepth: 8
 
    pyrogue/index
    rogue/index

@@ -10,5 +10,4 @@ Python-visible hardware access classes exported from Rogue C++.
    :maxdepth: 1
 
    memmap
-   axi_axistreamdma
-   axi_aximemmap
+   axi/index

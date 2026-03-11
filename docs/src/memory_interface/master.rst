@@ -107,7 +107,7 @@ debug helper.
 API reference
 =============
 
-- Python: :doc:`/api/python/rogue/interfaces/memory_master`
+- Python: :doc:`/api/python/rogue/interfaces/memory/master`
 - C++: :doc:`/api/cpp/interfaces/memory/master`
 
 What to explore next

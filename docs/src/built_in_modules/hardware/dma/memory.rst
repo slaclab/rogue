@@ -72,5 +72,5 @@ C++ AxiMemMap Example
 API Reference
 =============
 
-- Python: :doc:`/api/python/rogue/hardware/axi_aximemmap`
+- Python: :doc:`/api/python/rogue/hardware/axi/aximemmap`
 - C++: :doc:`/api/cpp/hardware/axi/axiMemMap`

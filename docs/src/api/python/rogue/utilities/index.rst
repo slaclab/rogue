@@ -9,6 +9,5 @@ Python-visible utility classes exported from Rogue C++.
 .. toctree::
    :maxdepth: 1
 
-   prbs_prbs
-   compression_streamzip
-   compression_streamunzip
+   prbs/index
+   compression/index

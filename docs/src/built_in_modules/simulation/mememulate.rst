@@ -90,4 +90,4 @@ API Reference
 - Python:
 
   - :doc:`/api/python/pyrogue/interfaces/simulation/mememulate`
-  - :doc:`/api/python/rogue/interfaces/memory_slave`
+  - :doc:`/api/python/rogue/interfaces/memory/slave`

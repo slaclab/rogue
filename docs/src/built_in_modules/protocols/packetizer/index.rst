@@ -134,10 +134,10 @@ API Reference
 
 - C++: :doc:`/api/cpp/protocols/packetizer/index`
 - Python:
-  :doc:`/api/python/rogue/protocols/packetizer_application`
-  :doc:`/api/python/rogue/protocols/packetizer_transport`
-  :doc:`/api/python/rogue/protocols/packetizer_core`
-  :doc:`/api/python/rogue/protocols/packetizer_corev2`
+  :doc:`/api/python/rogue/protocols/packetizer/application`
+  :doc:`/api/python/rogue/protocols/packetizer/transport`
+  :doc:`/api/python/rogue/protocols/packetizer/core`
+  :doc:`/api/python/rogue/protocols/packetizer/corev2`
 
 .. toctree::
    :maxdepth: 1

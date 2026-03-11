@@ -16,7 +16,7 @@ Python binding
 This C++ class is also exported into Python as ``rogue.interfaces.stream.Filter``.
 
 Python API page:
-- :doc:`/api/python/rogue/interfaces/stream_filter`
+- :doc:`/api/python/rogue/interfaces/stream/filter`
 
 objects in C++ are referenced by the following shared pointer typedef:
 

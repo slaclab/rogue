@@ -15,7 +15,7 @@ Python binding
 This C++ class is also exported into Python as ``rogue.utilities.StreamZip``.
 
 Python API page:
-- :doc:`/api/python/rogue/utilities/compression_streamzip`
+- :doc:`/api/python/rogue/utilities/compression/streamzip`
 
 StreamZip objects in C++ are referenced by the following shared pointer typedef:
 

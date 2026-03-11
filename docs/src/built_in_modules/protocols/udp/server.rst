@@ -97,5 +97,5 @@ Related Topics
 API Reference
 =============
 
-- Python: :doc:`/api/python/rogue/protocols/udp_server`
+- Python: :doc:`/api/python/rogue/protocols/udp/server`
 - C++: :doc:`/api/cpp/protocols/udp/server`

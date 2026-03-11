@@ -104,9 +104,9 @@ C++ server/client example
 API reference
 =============
 
-- Python: :doc:`/api/python/rogue/interfaces/stream_tcpcore`
-- Python: :doc:`/api/python/rogue/interfaces/stream_tcpserver`
-- Python: :doc:`/api/python/rogue/interfaces/stream_tcpclient`
+- Python: :doc:`/api/python/rogue/interfaces/stream/tcpcore`
+- Python: :doc:`/api/python/rogue/interfaces/stream/tcpserver`
+- Python: :doc:`/api/python/rogue/interfaces/stream/tcpclient`
 - C++: :doc:`/api/cpp/interfaces/stream/tcpCore`
 - C++: :doc:`/api/cpp/interfaces/stream/tcpServer`
 - C++: :doc:`/api/cpp/interfaces/stream/tcpClient`

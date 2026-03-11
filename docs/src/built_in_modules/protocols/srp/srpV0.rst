@@ -111,5 +111,5 @@ Related Topics
 API Reference
 -------------
 
-- Python: :doc:`/api/python/rogue/protocols/srp_srpv0`
+- Python: :doc:`/api/python/rogue/protocols/srp/srpv0`
 - C++: :doc:`/api/cpp/protocols/srp/srpV0`

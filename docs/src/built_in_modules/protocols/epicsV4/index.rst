@@ -57,8 +57,8 @@ For group semantics and filtering behavior in the tree model, see
 Related Topics
 ==============
 
-- :doc:`/api/python/pyrogue/protocols/epicsv4_epicspvserver`
-- :doc:`/api/python/pyrogue/protocols/epicsv4_epicspvholder`
+- :doc:`/api/python/pyrogue/protocols/epicsv4/epicspvserver`
+- :doc:`/api/python/pyrogue/protocols/epicsv4/epicspvholder`
 - :doc:`/built_in_modules/protocols/index`
 
 .. toctree::

@@ -13,5 +13,4 @@ Protocol wrappers implemented directly in PyRogue.
    uartmemory
    gpibcontroller
    gpibdevice
-   epicsv4_epicspvholder
-   epicsv4_epicspvserver
+   epicsv4/index

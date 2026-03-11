@@ -173,10 +173,10 @@ API Reference
 
 - C++: :doc:`/api/cpp/protocols/rssi/index`
 - Python:
-  :doc:`/api/python/rogue/protocols/rssi_application`
-  :doc:`/api/python/rogue/protocols/rssi_transport`
-  :doc:`/api/python/rogue/protocols/rssi_client`
-  :doc:`/api/python/rogue/protocols/rssi_server`
+  :doc:`/api/python/rogue/protocols/rssi/application`
+  :doc:`/api/python/rogue/protocols/rssi/transport`
+  :doc:`/api/python/rogue/protocols/rssi/client`
+  :doc:`/api/python/rogue/protocols/rssi/server`
 
 .. toctree::
    :maxdepth: 1

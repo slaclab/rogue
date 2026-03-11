@@ -16,7 +16,7 @@ Python binding
 This C++ class is also exported into Python as ``rogue.protocols.batcher.SplitterV2``.
 
 Python API page:
-- :doc:`/api/python/rogue/protocols/batcher_splitterv2`
+- :doc:`/api/python/rogue/protocols/batcher/splitterv2`
 
 SplitterV2 objects in C++ are referenced by the following shared pointer typedef:
 

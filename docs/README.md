@@ -11,7 +11,7 @@ Fallback/debug helper:
 
 ```
 python3 scripts/generate_boostpython_api_docs.py \
-  --rst docs/src/api/python/rogue/utilities/prbs_prbs.rst
+  --rst docs/src/api/python/rogue/utilities/prbs/prbs.rst
 ```
 
 The helper script reads the page's ``.. autoclass::`` target and prints the same

@@ -37,5 +37,5 @@ Related Topics
 API Reference
 =============
 
-- Python: :doc:`/api/python/pyrogue/utilities/fileio_streamwriter`
+- Python: :doc:`/api/python/pyrogue/utilities/fileio/streamwriter`
 - C++: :doc:`/api/cpp/utilities/fileio/writer`

@@ -86,5 +86,5 @@ Related Topics
 API Reference
 =============
 
-- Python: :doc:`/api/python/rogue/protocols/rssi_server`
+- Python: :doc:`/api/python/rogue/protocols/rssi/server`
 - C++: :doc:`/api/cpp/protocols/rssi/server`

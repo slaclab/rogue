@@ -90,9 +90,9 @@ state until completion.
 
 Related API reference:
 
-- :doc:`/api/python/rogue/interfaces/memory_transaction`
-- :doc:`/api/python/rogue/interfaces/memory_master`
-- :doc:`/api/python/rogue/interfaces/memory_hub`
+- :doc:`/api/python/rogue/interfaces/memory/transaction`
+- :doc:`/api/python/rogue/interfaces/memory/master`
+- :doc:`/api/python/rogue/interfaces/memory/hub`
 - :doc:`/api/cpp/interfaces/memory/transaction`
 - :doc:`/api/cpp/interfaces/memory/transactionLock`
 - :doc:`/api/cpp/interfaces/memory/master`

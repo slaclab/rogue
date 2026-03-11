@@ -64,8 +64,8 @@ API Reference
 
 - Python:
 
-  - :doc:`/api/python/pyrogue/utilities/fileio_streamreader`
-  - :doc:`/api/python/pyrogue/utilities/fileio_streamwriter`
+  - :doc:`/api/python/pyrogue/utilities/fileio/streamreader`
+  - :doc:`/api/python/pyrogue/utilities/fileio/streamwriter`
 
 - C++:
 

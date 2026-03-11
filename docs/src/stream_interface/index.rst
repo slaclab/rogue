@@ -128,9 +128,9 @@ API Reference
 
 - Python:
 
-  - :doc:`/api/python/rogue/interfaces/stream_master`
-  - :doc:`/api/python/rogue/interfaces/stream_slave`
-  - :doc:`/api/python/rogue/interfaces/stream_frame`
+  - :doc:`/api/python/rogue/interfaces/stream/master`
+  - :doc:`/api/python/rogue/interfaces/stream/slave`
+  - :doc:`/api/python/rogue/interfaces/stream/frame`
 
 - C++:
 

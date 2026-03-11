@@ -15,7 +15,7 @@ Python binding
 This C++ class is also exported into Python as ``rogue.interfaces.memory.Slave``.
 
 Python API page:
-- :doc:`/api/python/rogue/interfaces/memory_slave`
+- :doc:`/api/python/rogue/interfaces/memory/slave`
 
 objects in C++ are referenced by the following shared pointer typedef:
 

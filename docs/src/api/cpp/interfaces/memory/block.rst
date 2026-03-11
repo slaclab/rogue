@@ -17,7 +17,7 @@ Python binding
 This C++ class is also exported into Python as ``rogue.interfaces.memory.Block``.
 
 Python API page:
-- :doc:`/api/python/rogue/interfaces/memory_block`
+- :doc:`/api/python/rogue/interfaces/memory/block`
 
 objects in C++ are referenced by the following shared pointer typedef:
 

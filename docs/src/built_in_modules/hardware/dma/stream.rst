@@ -202,5 +202,5 @@ C++:
 API Reference
 =============
 
-- Python: :doc:`/api/python/rogue/hardware/axi_axistreamdma`
+- Python: :doc:`/api/python/rogue/hardware/axi/axistreamdma`
 - C++: :doc:`/api/cpp/hardware/axi/axiStreamDma`

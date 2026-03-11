@@ -16,7 +16,7 @@ Python binding
 This C++ class is also exported into Python as ``rogue.protocols.packetizer.Application``.
 
 Python API page:
-- :doc:`/api/python/rogue/protocols/packetizer_application`
+- :doc:`/api/python/rogue/protocols/packetizer/application`
 
 objects in C++ are referenced by the following shared pointer typedef:
 

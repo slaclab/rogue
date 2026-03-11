@@ -173,8 +173,8 @@ API Reference
 
 - Python:
 
-  - :doc:`/api/python/rogue/protocols/xilinx_xvc`
-  - :doc:`/api/python/rogue/protocols/xilinx_jtagdriver`
+  - :doc:`/api/python/rogue/protocols/xilinx/xvc`
+  - :doc:`/api/python/rogue/protocols/xilinx/jtagdriver`
 
 - C++:
 

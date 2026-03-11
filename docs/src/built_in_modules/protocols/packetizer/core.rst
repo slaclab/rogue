@@ -132,5 +132,5 @@ Related Topics
 API Reference
 =============
 
-- Python: :doc:`/api/python/rogue/protocols/packetizer_core`
+- Python: :doc:`/api/python/rogue/protocols/packetizer/core`
 - C++: :doc:`/api/cpp/protocols/packetizer/core`
