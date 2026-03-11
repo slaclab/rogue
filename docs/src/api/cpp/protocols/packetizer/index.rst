@@ -1,10 +1,10 @@
 .. _protocols_packetizer_classes:
 
-======================================
-Packetizer Protocol Class Descriptions
-======================================
+===========================
+rogue::protocols::packetizer
+===========================
 
-This section provides C++ API reference pages for
+This section contains the C++ API reference for
 ``rogue::protocols::packetizer`` classes.
 
 For conceptual guidance and version-selection notes, see

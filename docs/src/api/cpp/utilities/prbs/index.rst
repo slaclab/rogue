@@ -1,14 +1,17 @@
 .. _utilifies_prbs:
 
-==============
-PRBS Utilities
-==============
+===================
+rogue::utilities::prbs
+===================
 
-The following are detailed descriptions of the various C++ classes that make up the Rogue PRBS utilities.
+This section contains the C++ API reference for
+Rogue PRBS utility classes.
+
+For conceptual guidance and usage patterns, see
+:doc:`/built_in_modules/utilities/prbs/index`.
 
 .. toctree::
    :maxdepth: 1
    :caption: PRBS Classes:
 
-   prbs.rst
-
+   prbs

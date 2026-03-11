@@ -1,10 +1,12 @@
 .. _interfaces_memory_classes:
 
-===================================
-Memory Interface Class Descriptions
-===================================
+=========================
+rogue::interfaces::memory
+=========================
 
-The following are detailed descriptions of the various C++ classes that make up the Rogue memory interface.
+This section contains the C++ API reference for
+``rogue::interfaces::memory`` classes.
+
 For conceptual usage guidance, start with :doc:`/memory_interface/index`.
 
 .. toctree::

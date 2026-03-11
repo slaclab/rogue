@@ -1,10 +1,10 @@
 .. _protocols_udp_classes:
 
-===============================
-UDP Protocol Class Descriptions
-===============================
+====================
+rogue::protocols::udp
+====================
 
-This section provides C++ API reference pages for
+This section contains the C++ API reference for
 ``rogue::protocols::udp`` classes.
 
 For conceptual guidance, lifecycle notes, and integration examples, see

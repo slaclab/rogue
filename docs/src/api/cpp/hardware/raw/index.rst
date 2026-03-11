@@ -1,14 +1,17 @@
 .. _hardware_raw_classes:
 
-=====================================
-Hardware Interface Class Descriptions
-=====================================
+========================
+rogue::hardware::raw
+========================
 
-The following are detailed descriptions of the various C++ classes that support the generic AXI hardware.
+This section contains the C++ API reference for
+``rogue::hardware::raw`` classes.
+
+For conceptual guidance and deployment patterns, see
+:doc:`/built_in_modules/hardware/raw/index`.
 
 .. toctree::
    :maxdepth: 1
-   :caption: Hardware Classes:
+   :caption: Raw Hardware Classes:
 
    memMap
-

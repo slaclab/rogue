@@ -1,10 +1,14 @@
 .. _hardware_axi_classes:
 
-=========================================
-AXI Hardware Interface Class Descriptions
-=========================================
+========================
+rogue::hardware::axi
+========================
 
-The following are detailed descriptions of the various C++ classes that support the generic AXI hardware.
+This section contains the C++ API reference for
+``rogue::hardware::axi`` classes.
+
+For conceptual guidance and deployment patterns, see
+:doc:`/built_in_modules/hardware/dma/index`.
 
 .. toctree::
    :maxdepth: 1
@@ -12,4 +16,3 @@ The following are detailed descriptions of the various C++ classes that support 
 
    axiStreamDma
    axiMemMap
-

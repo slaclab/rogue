@@ -1,11 +1,14 @@
 .. _interfaces_stream_classes:
 
-===================================
-Stream Interface Class Descriptions
-===================================
+=========================
+rogue::interfaces::stream
+=========================
 
-The following are detailed descriptions of the various C++ classes that make up the Rogue stream interface.
-For conceptual and usage documentation, start with :doc:`/stream_interface/index`.
+This section contains the C++ API reference for
+``rogue::interfaces::stream`` classes.
+
+For conceptual and usage documentation, start with
+:doc:`/stream_interface/index`.
 
 .. toctree::
    :maxdepth: 1

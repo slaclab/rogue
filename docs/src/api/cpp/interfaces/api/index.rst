@@ -1,17 +1,17 @@
 .. _interfaces_api_classes:
 
-================================
-Interface API Class Descriptions
-================================
+======================
+rogue::interfaces::api
+======================
 
-The following are detailed descriptions of the C++ classes in
-``rogue::interfaces::api``.
+This section contains the C++ API reference for
+``rogue::interfaces::api`` classes.
 
 For conceptual usage guidance, start with
 :doc:`/built_in_modules/interfaces/cpp_api_wrapper`.
 
 .. toctree::
    :maxdepth: 1
-   :caption: Interface API Classes:
+   :caption: API Classes:
 
    bsp
