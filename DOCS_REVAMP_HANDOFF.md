@@ -1,6 +1,6 @@
 # Rogue Docs Revamp Handoff
 
-Last updated: 2026-03-06 (local workspace time)
+Last updated: 2026-03-11 (local workspace time)
 
 ## 1) Canonical Plan and Artifacts
 Use these first; they are the authoritative plan artifacts created during this effort:
@@ -12,13 +12,14 @@ Use these first; they are the authoritative plan artifacts created during this e
 - `docs/src/documentation_plan/m2_closeout.rst`
 - `docs/src/documentation_plan/m3_closeout.rst`
 - `docs/src/documentation_plan/m4_closeout.rst`
+- `docs/src/documentation_plan/post_merge_followups.rst`
 
 ## 2) Milestone Status
 
 - M1 Skeleton IA: complete
 - M2 Narrative migration + boundary cleanup: complete (frozen and closeout recorded)
 - M3 Coverage expansion: complete (closeout recorded)
-- M4 Harmonization: closeout preparation active
+- M4 Harmonization: complete
 
 ## 3) Key Decisions to Preserve
 
@@ -51,11 +52,9 @@ Use these first; they are the authoritative plan artifacts created during this e
 
 ## 5) Current Workspace State (Important)
 
-There are uncommitted local changes in protocol pages related to lifecycle/threading cleanup. New agent should inspect before additional refactors:
-
-- `docs/src/built_in_modules/protocols/rssi/index.rst`
-- `docs/src/built_in_modules/protocols/rssi/client.rst`
-- `docs/src/built_in_modules/protocols/rssi/server.rst`
+The branch is in release-freeze cleanup state. Structural migration work is
+complete; remaining edits should be limited to consistency, wording, and
+artifact finalization unless a follow-up task explicitly reopens structure.
 
 ## 6) What Is Done vs Remaining
 
@@ -103,15 +102,21 @@ There are uncommitted local changes in protocol pages related to lifecycle/threa
 
 ### Remaining high-value M4 work
 
-Continue M4 harmonization and release-freeze cleanup.
+- Final proofing and wording cleanup only.
+- Keep legacy example sections available where they still add value, but treat
+  them as supplemental rather than canonical navigation roots.
+- Treat any further section expansion as post-merge follow-up work unless it is
+  needed for correctness.
 
 ## 7) Suggested Next Execution Order (One Section at a Time)
 
-1. M4 harmonization sweep: normalize naming/ordering and remove stale navigation
-   paths where safe.
-2. Final consistency pass across section landing pages (terminology and
-   cross-links).
-3. Release-ready freeze/update of plan artifacts after M4 decisions land.
+1. Final wording/consistency pass across section landing pages and cross-links.
+2. Finalize milestone artifacts and handoff notes for merge.
+3. Defer additional content expansion to post-merge follow-up work.
+
+Tracked follow-up backlog:
+
+- `docs/src/documentation_plan/post_merge_followups.rst`
 
 ## 8) Fast Validation Checklist
 

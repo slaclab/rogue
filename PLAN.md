@@ -1,5 +1,18 @@
 ## Documentation Revamp Plan: Coherent Learning Path + Clean Reference Boundary
 
+Superseded note
+===============
+
+This top-level plan was the initial working proposal for the documentation
+revamp. The canonical historical record for what actually landed is under
+``docs/src/documentation_plan/``.
+
+Current status as of 2026-03-11:
+
+- M1 through M4 are complete.
+- The branch is in release-freeze cleanup state for merge into ``pre-release``.
+- Any additional section expansion should be treated as follow-up work.
+
 ### Summary
 Rebuild the docs around a clear user journey while preserving reference quality:
 1. `Intro -> Quick Start -> Core Concepts -> Task Guides -> Reference`.
@@ -187,4 +200,3 @@ Documentation interfaces that will change:
 - Cookbook is kept as a separate section for discoverable recipes, with strict scope control.
 - API reference remains authoritative for signatures/details; narrative authority shifts to main docs.
 - Sidebar will evolve, but only at milestone boundaries (chosen default).
-

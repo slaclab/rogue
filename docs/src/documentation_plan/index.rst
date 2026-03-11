@@ -6,8 +6,8 @@
 Documentation Revamp Plan
 =========================
 
-This section tracks the documentation information architecture and migration
-status for the current revamp.
+This section records the completed documentation information architecture,
+migration decisions, and milestone closeout notes for the revamp.
 
 .. toctree::
    :maxdepth: 1
@@ -19,3 +19,4 @@ status for the current revamp.
    m2_closeout
    m3_closeout
    m4_closeout
+   post_merge_followups

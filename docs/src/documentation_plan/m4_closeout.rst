@@ -14,10 +14,10 @@ Complete harmonization of the documentation structure after major migration:
 - converge moved content into canonical narrative homes
 - finalize cross-link boundaries between narrative and API reference pages
 
-Completion summary (Draft)
-==========================
+Completion summary
+==================
 
-M4 harmonization is in closeout preparation.
+M4 harmonization is complete as of 2026-03-11.
 
 Completed in M4 so far:
 
@@ -44,22 +44,24 @@ Completed in M4 so far:
 Validation
 ==========
 
-- Documentation builds are being run incrementally after section batches.
-- Current reported state from latest user validation: no build warnings.
+- Documentation builds were run incrementally after section batches.
+- Final HTML build completed successfully in the project ``rogue_build``
+  environment.
+- Remaining reported warning was environmental: intersphinx could not fetch the
+  Python inventory because external network access was unavailable.
 
 Release freeze checks
 =====================
 
-- Confirm no remaining stale destination paths in planning artifacts.
-- Confirm all major section landing pages include substantive narrative content.
-- Confirm API pages remain reference-first with concise conceptual links.
-- Confirm milestone artifacts (handoff + matrix + closeout docs) align.
+- Major section landing pages include substantive narrative content.
+- API pages remain reference-first with concise conceptual links.
+- Milestone artifacts were aligned for merge.
+- Legacy example sections remain available as supplemental material rather than
+  canonical navigation roots.
 
 Finalization notes
 ==================
 
-When release freeze is declared:
-
-- mark M4 status as complete in handoff and plan artifacts
-- add final date stamp in this document
-- lock further structural moves to post-release follow-up work
+- M4 status was marked complete in handoff and plan artifacts.
+- Structural moves are now frozen for this revamp branch.
+- Any further expansion should be handled as post-merge follow-up work.

@@ -12,7 +12,7 @@ Scope of Tutorials:
 - Explain tradeoffs and design patterns, not just first use
 - Bridge into architecture-level sections after hands-on examples
 
-Legacy step-by-step examples remain available in:
+Supplemental legacy step-by-step examples remain available in:
 
 - :doc:`/getting_started/index`
 - :doc:`/advanced_examples/index`
