@@ -90,7 +90,7 @@ Practical checklist
 - Ensure upper protocol payload sizing fits ``maxPayload()`` budget.
 
 Related Topics
-============
+==============
 
 - :doc:`/built_in_modules/protocols/udp/index`
 - :doc:`/built_in_modules/protocols/network`

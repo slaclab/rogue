@@ -78,7 +78,7 @@ Threading and Lifecycle
   :ref:`pyrogue_tree_node_device_managed_interfaces`
 
 Related Topics
-=============
+==============
 
 - Overview and full topology: :doc:`index`
 - Transport recommendations: :doc:`/built_in_modules/protocols/network`

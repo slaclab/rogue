@@ -88,7 +88,7 @@ Practical checklist
 - In multi-peer environments, account for "last sender wins" peer update model.
 
 Related Topics
-============
+==============
 
 - :doc:`/built_in_modules/protocols/udp/index`
 - :doc:`/built_in_modules/protocols/network`

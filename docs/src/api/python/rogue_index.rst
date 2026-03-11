@@ -20,7 +20,10 @@ Core runtime
 Subpackages
 ===========
 
-- :doc:`/api/python/rogue_interfaces_index`
-- :doc:`/api/python/rogue_protocols_index`
-- :doc:`/api/python/rogue_hardware_index`
-- :doc:`/api/python/rogue_utilities_index`
+.. toctree::
+   :maxdepth: 1
+
+   rogue_interfaces_index
+   rogue_protocols_index
+   rogue_hardware_index
+   rogue_utilities_index

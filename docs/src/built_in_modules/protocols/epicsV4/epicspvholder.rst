@@ -47,7 +47,7 @@ When to use it
 - You want protocol-specific behavior isolated from core device modeling.
 
 Related Topics
-=============
+==============
 
 - EPICS server integration: :doc:`epicspvserver`
 - General protocol organization: :doc:`/built_in_modules/protocols/index`

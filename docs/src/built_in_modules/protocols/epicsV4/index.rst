@@ -55,7 +55,7 @@ For group semantics and filtering behavior in the tree model, see
 :doc:`/pyrogue_tree/core/groups`.
 
 Related Topics
-============
+==============
 
 - :doc:`/api/python/protocols_epicsv4_epicspvserver`
 - :doc:`/api/python/protocols_epicsv4_epicspvholder`

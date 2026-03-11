@@ -74,6 +74,9 @@ Helpers
 Subpackages
 ===========
 
-- :doc:`/api/python/pyrogue_interfaces_index`
-- :doc:`/api/python/pyrogue_protocols_index`
-- :doc:`/api/python/pyrogue_utilities_index`
+.. toctree::
+   :maxdepth: 1
+
+   pyrogue_interfaces_index
+   pyrogue_protocols_index
+   pyrogue_utilities_index

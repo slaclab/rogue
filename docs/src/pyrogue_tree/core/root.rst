@@ -216,6 +216,6 @@ Root Node is created.
 * **PollEn**: Polling worker.
 
 API Reference
-=============
+-------------
 
 See :doc:`/api/python/root` for generated API details.
