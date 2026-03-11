@@ -17,9 +17,12 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-# import os
-# import sys
-# sys.path.insert(0, os.path.abspath('.'))
+import os
+import sys
+
+# Prefer the source tree Python package over any installed copy in the build
+# environment so autodoc reflects the current branch content.
+sys.path.insert(0, os.path.abspath('../../python'))
 import rogue
 import breathe
 
