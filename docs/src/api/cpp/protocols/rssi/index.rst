@@ -1,8 +1,8 @@
 .. _protocols_rssi_classes:
 
-=====================
+=======================
 rogue::protocols::rssi
-=====================
+=======================
 
 This section contains the C++ API reference for
 ``rogue::protocols::rssi`` classes.

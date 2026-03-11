@@ -1,8 +1,8 @@
 .. _protocols_batcher_classes:
 
-========================
+==========================
 rogue::protocols::batcher
-========================
+==========================
 
 This section contains the C++ API reference for
 ``rogue::protocols::batcher`` classes.

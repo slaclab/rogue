@@ -1,8 +1,8 @@
 .. _protocols_packetizer_classes:
 
-===========================
+=============================
 rogue::protocols::packetizer
-===========================
+=============================
 
 This section contains the C++ API reference for
 ``rogue::protocols::packetizer`` classes.

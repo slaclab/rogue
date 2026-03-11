@@ -1,8 +1,8 @@
 .. _utilities_compression_classes:
 
-===========================
+==============================
 rogue::utilities::compression
-===========================
+==============================
 
 This section contains the C++ API reference for
 Rogue compression utility classes.

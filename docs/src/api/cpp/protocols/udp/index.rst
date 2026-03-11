@@ -1,8 +1,8 @@
 .. _protocols_udp_classes:
 
-====================
+======================
 rogue::protocols::udp
-====================
+======================
 
 This section contains the C++ API reference for
 ``rogue::protocols::udp`` classes.

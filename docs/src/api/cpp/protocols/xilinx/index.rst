@@ -1,8 +1,8 @@
 .. _protocols_xilinx_classes:
 
-=======================
+=========================
 rogue::protocols::xilinx
-=======================
+=========================
 
 This section contains the C++ API reference for
 ``rogue::protocols::xilinx`` classes.

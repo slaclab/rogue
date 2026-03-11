@@ -1,8 +1,8 @@
 .. _utilifies_prbs:
 
-===================
+======================
 rogue::utilities::prbs
-===================
+======================
 
 This section contains the C++ API reference for
 Rogue PRBS utility classes.

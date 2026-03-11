@@ -1,8 +1,8 @@
 .. _utilifies_fileio:
 
-=====================
+========================
 rogue::utilities::fileio
-=====================
+========================
 
 This section contains the C++ API reference for
 Rogue file I/O utility classes.

@@ -1,8 +1,8 @@
 .. _protocols_srp_classes:
 
-====================
+======================
 rogue::protocols::srp
-====================
+======================
 
 This section contains the C++ API reference for
 ``rogue::protocols::srp`` classes.
