@@ -34,7 +34,8 @@ What this tutorial emphasizes
 API Reference
 =============
 
-- :doc:`/api/python/device`
-- :doc:`/api/python/basevariable`
-- :doc:`/api/python/basecommand`
-- :doc:`/api/python/model`
+- Python:
+  :doc:`/api/python/device`
+  :doc:`/api/python/basevariable`
+  :doc:`/api/python/basecommand`
+  :doc:`/api/python/model`

@@ -211,6 +211,7 @@ Related Topics
 API Reference
 =============
 
-- :doc:`/api/python/interfaces_oscommandmemoryslave`
-- :doc:`/api/python/device`
-- :doc:`/api/python/remotevariable`
+- Python:
+  :doc:`/api/python/interfaces_oscommandmemoryslave`
+  :doc:`/api/python/device`
+  :doc:`/api/python/remotevariable`

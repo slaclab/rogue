@@ -130,5 +130,5 @@ C++ StreamWriter Example
 API Reference
 =============
 
-- :doc:`/api/cpp/utilities/fileio/writer`
-- :doc:`/api/python/utilities_fileio_streamwriter`
+- C++: :doc:`/api/cpp/utilities/fileio/writer`
+- Python: :doc:`/api/python/utilities_fileio_streamwriter`

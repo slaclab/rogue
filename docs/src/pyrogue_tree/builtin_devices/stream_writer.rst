@@ -27,7 +27,15 @@ The PyRogue Device wrapper itself is mainly a control wrapper, so capture-path
 diagnostics usually come from the underlying C++ writer rather than from a
 separate Python logger on the wrapper.
 
-StreamWriter API Reference
-================================
+Related Topics
+==============
 
-See :doc:`/api/python/utilities_fileio_streamwriter` for generated API details.
+- :doc:`/built_in_modules/utilities/fileio/index`
+- :doc:`/built_in_modules/utilities/fileio/writing`
+- :doc:`data_writer`
+
+API Reference
+=============
+
+- Python: :doc:`/api/python/utilities_fileio_streamwriter`
+- C++: :doc:`/api/cpp/utilities/fileio/writer`

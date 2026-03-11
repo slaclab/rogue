@@ -112,5 +112,5 @@ Related Topics
 API Reference
 =============
 
-- :doc:`/api/python/version`
-- :doc:`/api/cpp/version`
+- Python: :doc:`/api/python/version`
+- C++: :doc:`/api/cpp/version`

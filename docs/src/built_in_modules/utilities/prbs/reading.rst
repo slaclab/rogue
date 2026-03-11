@@ -97,4 +97,4 @@ Related Topics
 API Reference
 =============
 
-- :doc:`/api/cpp/utilities/prbs/prbs`
+- C++: :doc:`/api/cpp/utilities/prbs/prbs`

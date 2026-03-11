@@ -87,14 +87,15 @@ C++ example
       return 0;
    }
 
-API reference
-=============
-
-- :doc:`/api/cpp/interfaces/stream/rateDrop`
-
 What to explore next
 ====================
 
 - FIFO buffering and burst absorption: :doc:`/stream_interface/fifo`
 - Channel/error selection: :doc:`/stream_interface/filter`
 - Topology design: :doc:`/stream_interface/connecting`
+
+API Reference
+=============
+
+- Python: :doc:`/api/python/interfaces_stream_ratedrop`
+- C++: :doc:`/api/cpp/interfaces/stream/rateDrop`

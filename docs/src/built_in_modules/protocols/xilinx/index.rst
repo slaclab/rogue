@@ -173,7 +173,8 @@ API Reference
 
 C++ API reference pages are collected in :doc:`/api/cpp/protocols/xilinx/index`:
 
-- :doc:`/api/cpp/protocols/xilinx/xvc`
-- :doc:`/api/cpp/protocols/xilinx/jtagDriver`
-- :doc:`/api/cpp/protocols/xilinx/xvcServer`
-- :doc:`/api/cpp/protocols/xilinx/xvcConnection`
+- C++:
+  :doc:`/api/cpp/protocols/xilinx/xvc`
+  :doc:`/api/cpp/protocols/xilinx/jtagDriver`
+  :doc:`/api/cpp/protocols/xilinx/xvcServer`
+  :doc:`/api/cpp/protocols/xilinx/xvcConnection`

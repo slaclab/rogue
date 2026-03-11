@@ -39,7 +39,13 @@ Example
            # Optional: project-specific handling using parsed header
            _ = header
 
-DataReceiver API Reference
-================================
+Related Topics
+==============
 
-See :doc:`/api/python/datareceiver` for generated API details.
+- :doc:`/stream_interface/receiving`
+- :doc:`stream_writer`
+
+API Reference
+=============
+
+- Python: :doc:`/api/python/datareceiver`

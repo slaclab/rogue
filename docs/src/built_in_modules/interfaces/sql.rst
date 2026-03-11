@@ -83,5 +83,6 @@ Related Topics
 API Reference
 =============
 
-- :doc:`/api/python/interfaces_sqllogger`
-- :doc:`/api/python/interfaces_sqlreader`
+- Python:
+  :doc:`/api/python/interfaces_sqllogger`
+  :doc:`/api/python/interfaces_sqlreader`

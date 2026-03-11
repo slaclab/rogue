@@ -145,9 +145,10 @@ API Reference
 =============
 
 - C++: :doc:`/api/cpp/protocols/udp/index`
-- Python: :doc:`/api/python/protocols_udp_core`
-- Python: :doc:`/api/python/protocols_udp_client`
-- Python: :doc:`/api/python/protocols_udp_server`
+- Python:
+  :doc:`/api/python/protocols_udp_core`
+  :doc:`/api/python/protocols_udp_client`
+  :doc:`/api/python/protocols_udp_server`
 
 .. toctree::
    :maxdepth: 1

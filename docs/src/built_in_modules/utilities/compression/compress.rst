@@ -81,4 +81,4 @@ Related Topics
 API Reference
 =============
 
-- :doc:`/api/cpp/utilities/compression/zip`
+- C++: :doc:`/api/cpp/utilities/compression/zip`

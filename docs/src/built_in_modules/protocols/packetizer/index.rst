@@ -133,10 +133,11 @@ API Reference
 =============
 
 - C++: :doc:`/api/cpp/protocols/packetizer/index`
-- Python: :doc:`/api/python/protocols_packetizer_application`
-- Python: :doc:`/api/python/protocols_packetizer_transport`
-- Python: :doc:`/api/python/protocols_packetizer_core`
-- Python: :doc:`/api/python/protocols_packetizer_corev2`
+- Python:
+  :doc:`/api/python/protocols_packetizer_application`
+  :doc:`/api/python/protocols_packetizer_transport`
+  :doc:`/api/python/protocols_packetizer_core`
+  :doc:`/api/python/protocols_packetizer_corev2`
 
 .. toctree::
    :maxdepth: 1

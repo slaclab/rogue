@@ -94,4 +94,4 @@ Related Topics
 API Reference
 =============
 
-- :doc:`/api/cpp/interfaces/api/bsp`
+- C++: :doc:`/api/cpp/interfaces/api/bsp`

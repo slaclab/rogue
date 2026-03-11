@@ -28,7 +28,14 @@ Configure whichever side you are debugging:
    rogue.Logging.setFilter('pyrogue.prbs.tx', rogue.Logging.Debug)
    rogue.Logging.setFilter('pyrogue.prbs.rx', rogue.Logging.Debug)
 
-PrbsPair API Reference
-============================
+Related Topics
+==============
 
-See :doc:`/api/python/utilities_prbs_prbspair` for generated API details.
+- :doc:`/built_in_modules/utilities/prbs/index`
+- :doc:`prbstx`
+- :doc:`prbsrx`
+
+API Reference
+=============
+
+- Python: :doc:`/api/python/utilities_prbs_prbspair`
