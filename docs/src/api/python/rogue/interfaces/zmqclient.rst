@@ -16,6 +16,4 @@ For conceptual usage, see:
 - :doc:`/pyrogue_tree/client_interfaces/index`
 - :doc:`/pyrogue_tree/client_interfaces/virtual`
 
-.. autoclass:: rogue.interfaces.ZmqClient
-   :members:
-   :member-order: bysource
+.. rogue_boostpython_api:: rogue.interfaces.ZmqClient

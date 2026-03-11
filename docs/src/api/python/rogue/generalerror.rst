@@ -15,6 +15,4 @@ For conceptual usage, see:
 
 - :doc:`/logging/index`
 
-.. autoclass:: rogue.GeneralError
-   :members:
-   :member-order: bysource
+.. rogue_boostpython_api:: rogue.GeneralError

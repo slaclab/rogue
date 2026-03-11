@@ -17,8 +17,5 @@ This Python API is provided by a Rogue C++ class exported into Python.
 Native C++ class:
 - :doc:`/api/cpp/interfaces/stream/rateDrop`
 
-.. autoclass:: rogue.interfaces.stream.RateDrop
-   :members:
-   :member-order: bysource
-   :inherited-members:
+.. rogue_boostpython_api:: rogue.interfaces.stream.RateDrop
 

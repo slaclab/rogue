@@ -15,6 +15,4 @@ For conceptual usage, see:
 
 - :doc:`/logging/index`
 
-.. autoclass:: rogue.Logging
-   :members:
-   :member-order: bysource
+.. rogue_boostpython_api:: rogue.Logging

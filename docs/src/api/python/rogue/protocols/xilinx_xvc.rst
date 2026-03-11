@@ -17,7 +17,4 @@ This Python API is provided by a Rogue C++ class exported into Python.
 Native C++ class:
 - :doc:`/api/cpp/protocols/xilinx/xvc`
 
-.. autoclass:: rogue.protocols.xilinx.Xvc
-   :members:
-   :member-order: bysource
-   :inherited-members:
+.. rogue_boostpython_api:: rogue.protocols.xilinx.Xvc

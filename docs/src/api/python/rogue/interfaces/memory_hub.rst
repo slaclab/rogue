@@ -17,8 +17,5 @@ This Python API is provided by a Rogue C++ class exported into Python.
 Native C++ class:
 - :doc:`/api/cpp/interfaces/memory/hub`
 
-.. autoclass:: rogue.interfaces.memory.Hub
-   :members:
-   :member-order: bysource
-   :inherited-members:
+.. rogue_boostpython_api:: rogue.interfaces.memory.Hub
 

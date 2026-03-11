@@ -9,5 +9,4 @@ For conceptual usage, see:
 - :doc:`/built_in_modules/interfaces/version`
 - :doc:`/migration/index`
 
-.. autoclass:: rogue.Version
-   :members:
+.. rogue_boostpython_api:: rogue.Version

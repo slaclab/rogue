@@ -16,7 +16,4 @@ This Python API is provided by a Rogue C++ class exported into Python.
 Native C++ class:
 - :doc:`/api/cpp/utilities/compression/unzip`
 
-.. autoclass:: rogue.utilities.StreamUnZip
-   :members:
-   :member-order: bysource
-   :inherited-members:
+.. rogue_boostpython_api:: rogue.utilities.StreamUnZip
