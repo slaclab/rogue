@@ -85,7 +85,7 @@ def normalize_doc(text: str) -> str:
     text = text.strip()
     if not text:
         return ""
-    text = re.sub(r"\s+", " ", text.replace("\\n", " ")).strip()
+    text = re.sub(r"[ \t]+", " ", text.replace("\\n", " ")).strip()
     # Doxygen comments in this tree commonly use Markdown-style single backticks
     # for inline code. Convert them to reST inline literals for Sphinx.
     text = re.sub(r"(?<!`)`([^`\n]+)`(?!`)", r"``\1``", text)
@@ -93,9 +93,32 @@ def normalize_doc(text: str) -> str:
 
 
 def normalize_doc_block(text: str) -> str:
-    paragraphs = [normalize_doc(part) for part in re.split(r"\n\s*\n", text)]
-    paragraphs = [part for part in paragraphs if part]
-    return "\n\n".join(paragraphs)
+    paragraphs = [part.strip() for part in re.split(r"\n\s*\n", text) if part.strip()]
+    rendered: list[str] = []
+    for paragraph in paragraphs:
+        lines = [line.strip() for line in paragraph.splitlines() if line.strip()]
+        if not lines:
+            continue
+
+        chunk: list[str] = []
+        bullet_lines: list[str] = []
+        for line in lines:
+            if line.startswith(("- ", "* ")):
+                if chunk:
+                    rendered.append(normalize_doc(" ".join(chunk)))
+                    chunk = []
+                bullet_lines.append(normalize_doc(line))
+            else:
+                if bullet_lines:
+                    bullet_lines[-1] = normalize_doc(f"{bullet_lines[-1]} {line}")
+                else:
+                    chunk.append(line)
+        if chunk:
+            rendered.append(normalize_doc(" ".join(chunk)))
+        if bullet_lines:
+            rendered.append("\n".join(bullet_lines))
+
+    return "\n\n".join(part for part in rendered if part)
 
 
 def extract_string_literals(text: str) -> list[str]:
@@ -310,8 +333,8 @@ def parse_doxygen_comment(raw_comment: str) -> ParsedComment:
             brief.append(line)
 
     return ParsedComment(
-        brief=normalize_doc(" ".join(brief)),
-        details=normalize_doc(" ".join(details)),
+        brief=normalize_doc_block("\n".join(brief)),
+        details=normalize_doc_block("\n".join(details)),
         params={key: normalize_doc(" ".join(value)) for key, value in params.items() if normalize_doc(" ".join(value))},
         returns=normalize_doc(" ".join(returns)),
     )
@@ -575,7 +598,11 @@ def render_method_entry(
     for paragraph in normalize_doc_block(method.description).split("\n\n"):
         if paragraph:
             lines.append("")
-            lines.append(f"   {paragraph}")
+            if "\n" in paragraph and all(line.startswith(("- ", "* ")) for line in paragraph.splitlines()):
+                for bullet in paragraph.splitlines():
+                    lines.append(f"   {bullet}")
+            else:
+                lines.append(f"   {paragraph}")
     for arg in method.args:
         if arg in method.params:
             lines.append("")
@@ -637,7 +664,11 @@ def render_class_section(binding: ClassDoc, include_init: bool) -> list[str]:
     if class_description:
         for paragraph in class_description.split("\n\n"):
             lines.append("")
-            lines.append(f"   {paragraph}")
+            if "\n" in paragraph and all(line.startswith(("- ", "* ")) for line in paragraph.splitlines()):
+                for bullet in paragraph.splitlines():
+                    lines.append(f"   {bullet}")
+            else:
+                lines.append(f"   {paragraph}")
 
     if include_init and binding.ctor_doc:
         lines.extend(["", f"   .. py:method:: __init__()", ""])
@@ -662,11 +693,7 @@ def render_embedded_api(
     bindings_by_cpp = {item.cpp_name: item for item in bindings.values()}
 
     lines: list[str] = []
-    class_intro = normalize_doc_block(binding.class_doc)
-    if class_intro:
-        lines.extend(normalize_doc_block(class_intro).split("\n\n"))
-        lines.append("")
-
+    lines.extend(["Generated API", "-------------", ""])
     lines.extend(render_class_section(binding, include_init))
     lines.extend(["", ""])
 
