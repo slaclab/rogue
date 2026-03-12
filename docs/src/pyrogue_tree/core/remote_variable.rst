@@ -28,10 +28,25 @@ transaction path. Reads and writes flow through the parent ``Device``, the
 ``Block`` structure built during attachment, and the underlying memory
 interface.
 
-Mapping Metadata
-================
+What You Usually Set
+====================
 
-A ``RemoteVariable`` is defined by register-mapping metadata such as:
+Most ``RemoteVariable`` definitions combine the shared Variable parameters from
+:doc:`/pyrogue_tree/core/variable` with a small set of hardware-mapping
+parameters:
+
+* ``offset`` for the memory location.
+* ``bitSize`` and ``bitOffset`` for the field layout.
+* ``base`` for the typed interpretation of the data.
+* ``verify`` when write-back verification policy matters.
+* ``overlapEn`` when multiple Variables share one register word.
+* ``numValues``, ``valueBits``, and ``valueStride`` for arrays or tables.
+* ``bulkOpEn`` when large Variables need different transaction behavior.
+
+Memory Mapping Parameters
+=========================
+
+A ``RemoteVariable`` is defined by memory-mapping parameters such as:
 
 * ``offset``
 * ``bitSize``
@@ -50,6 +65,34 @@ details of byte packing, block grouping, and memory transactions underneath.
 ``offset``, ``bitSize``, and ``bitOffset`` can each be either a single value or
 lists. List form is used when one logical Variable is split across multiple
 register locations.
+
+Behavior And Transaction Options
+================================
+
+``verify``
+----------
+
+``verify`` enables write verification for the Variable. It is useful for
+registers where write confirmation matters, but it can add noticeable traffic
+for large arrays or heavy configuration sequences.
+
+``overlapEn``
+-------------
+
+Use ``overlapEn=True`` when this Variable intentionally shares memory space
+with another Variable.
+
+``numValues``, ``valueBits``, And ``valueStride``
+-------------------------------------------------
+
+These parameters turn the Variable into an array-like view over a packed block
+of register-backed values.
+
+``bulkOpEn``
+------------
+
+``bulkOpEn`` controls whether the Variable participates in bulk block
+operations.
 
 How RemoteVariable Fits The Tree
 ================================
