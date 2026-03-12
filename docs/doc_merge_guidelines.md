@@ -70,6 +70,25 @@ text. Rewrite the page so it reads like one intentional document.
 - When older content contains the better explanation, integrate it into the new
   structure rather than copying the old structure back wholesale.
 
+## Verification And Docs Build
+
+- After a meaningful doc rewrite, prefer validating the result with the
+  repository's docs-build workflow when the user wants verification or when a
+  structural change might have introduced Sphinx issues.
+- In this repository, the canonical build path is the VS Code task
+  `Docs: Build HTML`, or the equivalent shell sequence from `docs/`:
+  `source "${MINIFORGE_HOME:-$HOME/miniforge3}/etc/profile.d/conda.sh"`
+  then
+  `conda run -n rogue_build python -c "import sphinx_autodoc_typehints, sphinx_copybutton" || conda run -n rogue_build pip install sphinx-autodoc-typehints sphinx-copybutton sphinxcontrib-napoleon`
+  then
+  `conda run -n rogue_build make clean html`
+- Treat that task as the source of truth for how docs are built in this repo.
+- Do not run the docs build automatically if it has not been requested. Ask the
+  user before running it, especially because the task may install missing
+  Python packages and performs `make clean html`.
+- If the build is attempted and fails, report the exact failure and any missing
+  dependency or environment step rather than hand-waving it away.
+
 ## Parameter Documentation Style
 
 - For tree classes, document parameters using the narrative pattern established
