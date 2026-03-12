@@ -42,6 +42,11 @@ text. Rewrite the page so it reads like one intentional document.
 - Do not assume an older example is still valid after a refactor or API change.
 - If the old and new docs disagree about an API, verify against the
   implementation before writing the merged example.
+- When repository-local examples are thin, also consult local example code in
+  `/Users/bareese/surf`, `/Users/bareese/ldmx-firmware`, and
+  `/Users/bareese/warm-tdm` for real-world usage patterns. Treat those as
+  supplementary examples, not as a substitute for verifying Rogue APIs against
+  this repository's implementation.
 
 ## Technical Content Priorities
 

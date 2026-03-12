@@ -32,6 +32,9 @@ Working rules:
 - Prefer narrative exposition over compressed bullets.
 - Preserve strong explanatory comments in examples.
 - Verify example APIs against the actual code before writing them.
+- When useful, also consult local example code in `/Users/bareese/surf`,
+  `/Users/bareese/ldmx-firmware`, and `/Users/bareese/warm-tdm` for real-world
+  usage patterns.
 - Use proper type names in fixed-width formatting, such as ``Master``,
   ``Slave``, ``Frame``, and ``Transaction``.
 - Capitalize list items.
@@ -63,6 +66,9 @@ Important structural notes:
   `docs/src/stream_interface/built_in_modules.rst`.
 - `docs/src/memory_interface/hub.rst` includes both a fuller raw C++ `Hub`
   example and a `Using A Python Device Hub` section.
+- Helpful local example-code repositories for doc writing:
+  `/Users/bareese/surf`, `/Users/bareese/ldmx-firmware`, and
+  `/Users/bareese/warm-tdm`.
 - No docs build has been run yet; verification so far is source-level only.
 
 Next likely target:
