@@ -5,10 +5,9 @@
 Core
 ====
 
-This section defines the object model and runtime behavior of a PyRogue tree.
-It organizes control logic into a hierarchy of ``Root``, ``Device``,
-``Variable``, and ``Command`` Nodes, with ``Block`` and ``Model`` providing
-memory transaction grouping and typed value conversion.
+A PyRogue tree is defined by the object model and runtime behavior of
+``Root``, ``Device``, ``Variable``, and ``Command`` Nodes, with ``Block`` and
+``Model`` providing memory transaction grouping and typed value conversion.
 
 A typical hierarchy starts at one ``Root`` and fans into multiple ``Device``
 subtrees. Each Device can contain child Devices, Variables, and Commands.
@@ -98,6 +97,17 @@ What To Explore Next
 * Variable-to-stream adapter behavior: :doc:`/pyrogue_tree/core/memory_variable_stream`
 * Block transaction behavior: :doc:`/pyrogue_tree/core/block`
 * Model conversion behavior: :doc:`/pyrogue_tree/core/model`
+
+API Reference
+=============
+
+- Python:
+
+  - :doc:`/api/python/pyrogue/root`
+  - :doc:`/api/python/pyrogue/device`
+  - :doc:`/api/python/pyrogue/basevariable`
+  - :doc:`/api/python/pyrogue/basecommand`
+  - :doc:`/api/python/pyrogue/model`
 
 .. toctree::
    :maxdepth: 2

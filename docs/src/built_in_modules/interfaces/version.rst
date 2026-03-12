@@ -103,8 +103,14 @@ C++ examples
        return 0;
    }
 
-What To Explore Next
-====================
+Related Topics
+==============
 
-- Built-in section overview: :doc:`/built_in_modules/index`
 - Deployment and environment setup: :doc:`/installing/index`
+- Upgrade guidance across Rogue versions: :doc:`/migration/index`
+
+API Reference
+=============
+
+- Python: :doc:`/api/python/rogue/version`
+- C++: :doc:`/api/cpp/version`

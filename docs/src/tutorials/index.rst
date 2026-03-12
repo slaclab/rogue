@@ -12,7 +12,7 @@ Scope of Tutorials:
 - Explain tradeoffs and design patterns, not just first use
 - Bridge into architecture-level sections after hands-on examples
 
-Legacy step-by-step examples remain available in:
+Supplemental legacy step-by-step examples remain available in:
 
 - :doc:`/getting_started/index`
 - :doc:`/advanced_examples/index`
@@ -21,12 +21,13 @@ Legacy step-by-step examples remain available in:
    :maxdepth: 1
    :caption: Tutorials:
 
+   /getting_started/index
    device_workflow_tutorial
    system_integration_tutorial
+   /advanced_examples/index
 
-What To Explore Next
-====================
+Related Topics
+==============
 
-- Foundational setup and checks: :doc:`/quick_start/index`
 - Core tree architecture and lifecycle: :doc:`/pyrogue_tree/index`
-- Task-focused implementation recipes: :doc:`/cookbook/index`
+- Installation and build workflows: :doc:`/installing/index`

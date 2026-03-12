@@ -114,8 +114,8 @@ That enables the C++ transport logger. Separately, ``ZmqServer._start()``
 prints the selected ports and example client commands to stdout. Those startup
 messages are not controlled by the logging API.
 
-What To Explore Next
-====================
+Related Topics
+==============
 
 - Lightweight scripting client: :doc:`/pyrogue_tree/client_interfaces/simple`
 - Mirrored tree client: :doc:`/pyrogue_tree/client_interfaces/virtual`
@@ -124,4 +124,4 @@ What To Explore Next
 API Reference
 =============
 
-See :doc:`/api/python/interfaces_zmqserver` for generated API details.
+See :doc:`/api/python/pyrogue/interfaces/zmqserver` for generated API details.

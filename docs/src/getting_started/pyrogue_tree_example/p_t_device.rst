@@ -4,9 +4,9 @@
 Create a Custom PyRogue Device
 ==========================================
 
-This page shows a representative custom `pyrogue.Device` implementation.
-Use it as a pattern for adding strongly-typed register maps, helper
-`LinkVariable` values, and command interfaces.
+A representative custom `pyrogue.Device` implementation is shown here. Use it
+as a pattern for adding strongly-typed register maps, helper `LinkVariable`
+values, and command interfaces.
 
 .. code-block:: python
 

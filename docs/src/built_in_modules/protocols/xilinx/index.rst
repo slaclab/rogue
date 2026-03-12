@@ -158,19 +158,24 @@ Use ``pyrogue.xilinx.xvc`` for TCP server / frame-bridge activity and
 - Legacy Logging API:
   ``rogue.Logging.setFilter('pyrogue.xilinx', rogue.Logging.Debug)``
 
-API references
---------------
-
-C++ API reference pages are collected in :doc:`/api/cpp/protocols/xilinx/index`:
-
-- :doc:`/api/cpp/protocols/xilinx/xvc`
-- :doc:`/api/cpp/protocols/xilinx/jtagDriver`
-- :doc:`/api/cpp/protocols/xilinx/xvcServer`
-- :doc:`/api/cpp/protocols/xilinx/xvcConnection`
-
-What To Explore Next
---------------------
+Related Topics
+==============
 
 - Stream transport wiring patterns: :doc:`/stream_interface/connecting`
 - DMA transport details: :doc:`/built_in_modules/hardware/dma/stream`
 - Device-tree lifecycle integration: :doc:`/pyrogue_tree/core/device`
+
+API Reference
+=============
+
+- Python:
+
+  - :doc:`/api/python/rogue/protocols/xilinx/xvc`
+  - :doc:`/api/python/rogue/protocols/xilinx/jtagdriver`
+
+- C++:
+
+  - :doc:`/api/cpp/protocols/xilinx/xvc`
+  - :doc:`/api/cpp/protocols/xilinx/jtagDriver`
+  - :doc:`/api/cpp/protocols/xilinx/xvcServer`
+  - :doc:`/api/cpp/protocols/xilinx/xvcConnection`

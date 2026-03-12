@@ -46,8 +46,8 @@ When to use it
 - You are composing higher-level EPICS publication or subscription workflows.
 - You want protocol-specific behavior isolated from core device modeling.
 
-Related pages
-=============
+Related Topics
+==============
 
 - EPICS server integration: :doc:`epicspvserver`
 - General protocol organization: :doc:`/built_in_modules/protocols/index`
@@ -66,7 +66,7 @@ server logger passed in from ``EpicsPvServer``:
 That means put/get/rpc handling errors reported by a holder appear under the
 server logger rather than a per-PV logger.
 
-EPICS PvHolder API Reference
-==================================
+API Reference
+=============
 
-See :doc:`/api/python/protocols_epicsv4_epicspvholder` for generated API details.
+See :doc:`/api/python/pyrogue/protocols/epicsv4/epicspvholder` for generated API details.

@@ -63,7 +63,7 @@ surrounding module loggers:
 - ``pyrogue.memory.Master`` for request issue paths
 - ``pyrogue.memory.Hub`` for routing/splitting paths
 - ``pyrogue.memory.block.*`` for Variable/Block transaction flow
-- protocol-specific loggers such as ``pyrogue.SrpV3``
+- Protocol-specific loggers such as ``pyrogue.SrpV3``
 
 Subtransactions
 ===============
@@ -94,6 +94,9 @@ state until completion.
 
 Related API reference:
 
+- :doc:`/api/python/rogue/interfaces/memory/transaction`
+- :doc:`/api/python/rogue/interfaces/memory/master`
+- :doc:`/api/python/rogue/interfaces/memory/hub`
 - :doc:`/api/cpp/interfaces/memory/transaction`
 - :doc:`/api/cpp/interfaces/memory/transactionLock`
 - :doc:`/api/cpp/interfaces/memory/master`

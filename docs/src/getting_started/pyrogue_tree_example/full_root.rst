@@ -4,7 +4,7 @@
 Review the Complete Root Example
 ========================================
 
-This page collects the full example root in one listing so you can compare
+The full example Root is collected in one listing here so you can compare it
 against your implementation and copy from a complete reference.
 
 .. code-block:: python

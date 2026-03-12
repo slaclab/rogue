@@ -67,6 +67,20 @@ equally to both ``Splitter`` and ``Inverter`` usage:
 For byte-level inspection of split or transformed output frames, add a
 downstream debug ``Slave`` tap and use :doc:`/stream_interface/debugStreams`.
 
+API Reference
+=============
+
+- Python:
+
+  - :doc:`/api/python/rogue/protocols/batcher/splitterv1`
+  - :doc:`/api/python/rogue/protocols/batcher/splitterv2`
+  - :doc:`/api/python/rogue/protocols/batcher/inverterv1`
+  - :doc:`/api/python/rogue/protocols/batcher/inverterv2`
+
+- C++:
+
+  - :doc:`/api/cpp/protocols/batcher/index`
+
 Usage examples
 ==============
 

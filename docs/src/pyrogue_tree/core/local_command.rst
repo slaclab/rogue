@@ -42,5 +42,5 @@ LocalCommand (BaseCommand Alias) API Reference
 
 For full API documentation (including inherited members), see:
 
-- :doc:`/api/python/basecommand`
+- :doc:`/api/python/pyrogue/basecommand`
 - :doc:`/pyrogue_tree/core/command`

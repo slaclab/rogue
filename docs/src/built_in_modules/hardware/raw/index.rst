@@ -85,8 +85,13 @@ C++ MemMap Example
    // Route master transactions into the mapped hardware window.
    *memMast >> memMap;
 
-Related References
-==================
+Related Topics
+==============
 
-- :doc:`/api/cpp/hardware/raw/memMap`
 - :doc:`/memory_interface/index`
+
+API Reference
+=============
+
+- Python: :doc:`/api/python/rogue/hardware/memmap`
+- C++: :doc:`/api/cpp/hardware/raw/memMap`

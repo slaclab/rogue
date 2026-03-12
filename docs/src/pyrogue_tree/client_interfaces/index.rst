@@ -58,9 +58,9 @@ Operational notes
 Related API references
 ======================
 
-- :doc:`/api/python/interfaces_zmqserver`
-- :doc:`/api/python/interfaces_simpleclient`
-- :doc:`/api/python/interfaces_virtualclient`
+- :doc:`/api/python/pyrogue/interfaces/zmqserver`
+- :doc:`/api/python/pyrogue/interfaces/simpleclient`
+- :doc:`/api/python/pyrogue/interfaces/virtualclient`
 
 Minimal setup pattern
 =====================
@@ -81,8 +81,8 @@ Minimal setup pattern
            )
            self.addInterface(self.zmqServer)
 
-What To Explore Next
-====================
+Related Topics
+==============
 
 - Server configuration details: :doc:`/pyrogue_tree/client_interfaces/zmq_server`
 - Lightweight scripting access: :doc:`/pyrogue_tree/client_interfaces/simple`

@@ -104,9 +104,12 @@ C++ server/client example
 API reference
 =============
 
-- :doc:`/api/cpp/interfaces/stream/tcpCore`
-- :doc:`/api/cpp/interfaces/stream/tcpServer`
-- :doc:`/api/cpp/interfaces/stream/tcpClient`
+- Python: :doc:`/api/python/rogue/interfaces/stream/tcpcore`
+- Python: :doc:`/api/python/rogue/interfaces/stream/tcpserver`
+- Python: :doc:`/api/python/rogue/interfaces/stream/tcpclient`
+- C++: :doc:`/api/cpp/interfaces/stream/tcpCore`
+- C++: :doc:`/api/cpp/interfaces/stream/tcpServer`
+- C++: :doc:`/api/cpp/interfaces/stream/tcpClient`
 
 Logging
 =======
@@ -146,11 +149,11 @@ What it logs
 At debug level, ``TcpCore`` logs bridge setup details and frame movement, such
 as:
 
-- client/server socket creation
-- bind/connect address selection
-- pushed frame sizes
-- pulled frame sizes
-- worker-thread identity
+- Client/server socket creation
+- Bind/connect address selection
+- Pushed frame sizes
+- Pulled frame sizes
+- Worker-thread identity
 
 There is no additional per-instance ``setDebug(...)`` helper on ``TcpCore``.
 For byte-level frame inspection, add a separate debug ``Slave`` or use

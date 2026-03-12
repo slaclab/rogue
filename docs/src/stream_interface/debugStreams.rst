@@ -77,12 +77,13 @@ Notes
   counters/debug behavior, call ``Slave::acceptFrame(frame)`` or implement
   equivalent logic.
 
-API reference
+API Reference
 =============
 
-- :doc:`/api/cpp/interfaces/stream/slave`
+- Python: :doc:`/api/python/rogue/interfaces/stream/slave`
+- C++: :doc:`/api/cpp/interfaces/stream/slave`
 
-What to explore next
+What To Explore Next
 ====================
 
 - Connection placement patterns: :doc:`/stream_interface/connecting`

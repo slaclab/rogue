@@ -44,7 +44,13 @@ Key constructor parameters:
 * ``cmd``: Callable executed at each iteration in the default software-driven
   run loop. This can be a Python function reference or a PyRogue command.
 
-RunControl API Reference
-==============================
+Related Topics
+==============
 
-See :doc:`/api/python/runcontrol` for generated API details.
+- :doc:`process`
+- :doc:`/pyrogue_tree/core/root`
+
+API Reference
+=============
+
+- Python: :doc:`/api/python/pyrogue/runcontrol`

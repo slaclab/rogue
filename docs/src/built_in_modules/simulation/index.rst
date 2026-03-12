@@ -32,9 +32,8 @@ Selection guidance
   behavior together.
 - Use ``SideBandSim`` when testing sideband control/data paths without hardware.
 
-
-What To Explore Next
-====================
+Related Topics
+==============
 
 - Memory emulation patterns: :doc:`/built_in_modules/simulation/mememulate`
 - Simulated PGP2B links: :doc:`/built_in_modules/simulation/pgp2b`

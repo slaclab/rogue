@@ -127,8 +127,8 @@ C++ StreamWriter Example
    // ... stream traffic is captured while file is open ...
    fwrite->close();
 
-Related References
-==================
+API Reference
+=============
 
-- :doc:`/api/cpp/utilities/fileio/writer`
-- :doc:`/api/python/utilities_fileio_streamwriter`
+- C++: :doc:`/api/cpp/utilities/fileio/writer`
+- Python: :doc:`/api/python/pyrogue/utilities/fileio/streamwriter`

@@ -73,8 +73,13 @@ C++ Compression Pipeline
    for (int i = 0; i < 1000; ++i) prbs->genFrame(1000);
    fwrite->close();
 
-Related References
-==================
+Related Topics
+==============
 
-- :doc:`/api/cpp/utilities/compression/zip`
 - :doc:`decompress`
+
+API Reference
+=============
+
+- Python: :doc:`/api/python/rogue/utilities/compression/streamzip`
+- C++: :doc:`/api/cpp/utilities/compression/zip`

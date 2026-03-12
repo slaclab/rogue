@@ -26,11 +26,17 @@ Each recipe should answer:
    pyrogue_devices_and_variables
    advanced_pyrogue_patterns
    advanced_stream_patterns
-   /advanced_examples/index
 
-What To Explore Next
-====================
+Legacy examples
+===============
+
+Longer legacy examples remain available for reference:
+
+- :doc:`/advanced_examples/index`
+
+Related Topics
+==============
 
 - Core architecture and lifecycle detail: :doc:`/pyrogue_tree/index`
 - Stream interface composition patterns: :doc:`/stream_interface/index`
-- Python and C++ API reference entry point: :doc:`/api/index`
+- Built-in protocols and utilities: :doc:`/built_in_modules/index`

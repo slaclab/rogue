@@ -44,7 +44,13 @@ Example
 
                self.Message.setDisp('Done')
 
-Process API Reference
-===========================
+Related Topics
+==============
 
-See :doc:`/api/python/process` for generated API details.
+- :doc:`run_control`
+- :doc:`/pyrogue_tree/core/command`
+
+API Reference
+=============
+
+- Python: :doc:`/api/python/pyrogue/process`

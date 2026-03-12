@@ -179,7 +179,7 @@ ADC Conversion with Multiple Dependencies (Read-Only)
                linkedGet=_scaled_input,
            ))
 
-LinkVariable API Reference
-================================
+API Reference
+=============
 
-See :doc:`/api/python/linkvariable` for generated API details.
+See :doc:`/api/python/pyrogue/linkvariable` for generated API details.

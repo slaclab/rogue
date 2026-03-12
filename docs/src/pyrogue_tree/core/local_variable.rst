@@ -60,7 +60,7 @@ Example
        def _set_is_running(self, value):
            self._is_running = bool(value)
 
-LocalVariable API Reference
-=================================
+API Reference
+=============
 
-See :doc:`/api/python/localvariable` for generated API details.
+See :doc:`/api/python/pyrogue/localvariable` for generated API details.

@@ -16,8 +16,8 @@ Why Blocks Exist
 
 Blocks separate two concerns:
 
-1. value staging and conversion (pack/unpack Variable values into bytes)
-2. transport sequencing (initiate/check read/write/verify operations)
+1. Value staging and conversion (pack/unpack Variable values into bytes)
+2. Transport sequencing (initiate/check read/write/verify operations)
 
 This separation lets Variable APIs stay high-level while transaction handling
 stays efficient and ordered.
@@ -78,25 +78,25 @@ The Block API has two layers:
 
 In the C++ ``Variable`` API, a typed set call performs both steps:
 
-1. conversion into staged bytes via a bound ``Block`` method
+1. Conversion into staged bytes via a bound ``Block`` method
 2. ``Block::write()`` (write + verify/check sequence)
 
 A typed get call similarly performs:
 
 1. ``Block::read()``
-2. conversion from staged bytes via a bound ``Block`` method
+2. Conversion from staged bytes via a bound ``Block`` method
 
 Typical write path:
 
 1. Variable ``set`` updates staged Block bytes using Model conversion
-2. write (and optional verify) transactions are initiated
-3. completion is checked
+2. Write (and optional verify) transactions are initiated
+3. Completion is checked
 
 Typical read path:
 
-1. read transactions are initiated
-2. completion is checked
-3. bytes are decoded back into Variable values
+1. Read transactions are initiated
+2. Completion is checked
+3. Bytes are decoded back into Variable values
 
 In PyRogue terminology, waiting for operation responses is called ``check``.
 
@@ -143,9 +143,9 @@ This logger is useful for low-level register-access debugging because it emits
 messages during:
 
 - Variable-to-Block binding
-- transaction start/check flow
-- retry handling
-- verify/readback behavior
+- Transaction start/check flow
+- Retry handling
+- Verify/readback behavior
 
 The logger name is derived from the first Variable path assigned to the Block,
 so filtering by the ``pyrogue.memory.block`` prefix is usually the practical
@@ -362,4 +362,4 @@ Where to explore next
 * Model API and utility helpers: :doc:`/pyrogue_tree/core/model`
 * Root bulk write/read/check sequencing: :doc:`/pyrogue_tree/core/root`
 * C++ Block reference: :doc:`/api/cpp/interfaces/memory/block`
-* Python LocalBlock reference: :doc:`/api/python/localblock`
+* Python LocalBlock reference: :doc:`/api/python/pyrogue/localblock`

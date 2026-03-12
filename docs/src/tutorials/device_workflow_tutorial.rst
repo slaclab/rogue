@@ -31,10 +31,11 @@ What this tutorial emphasizes
 - Keeping command semantics explicit and testable
 - Organizing blocks and models for long-term maintainability
 
-Related API reference
-=====================
+API Reference
+=============
 
-- :doc:`/api/python/device`
-- :doc:`/api/python/basevariable`
-- :doc:`/api/python/basecommand`
-- :doc:`/api/python/model`
+- Python:
+  :doc:`/api/python/pyrogue/device`
+  :doc:`/api/python/pyrogue/basevariable`
+  :doc:`/api/python/pyrogue/basecommand`
+  :doc:`/api/python/pyrogue/model`

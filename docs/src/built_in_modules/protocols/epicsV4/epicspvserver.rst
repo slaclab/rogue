@@ -108,7 +108,7 @@ Logging
 This logger is used for PV mapping errors and other server-side operational
 messages emitted by the Python implementation.
 
-EpicsPvServer API Reference
-=================================
+API Reference
+=============
 
-See :doc:`/api/python/protocols_epicsv4_epicspvserver` for generated API details.
+See :doc:`/api/python/pyrogue/protocols/epicsv4/epicspvserver` for generated API details.

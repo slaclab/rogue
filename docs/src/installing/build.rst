@@ -4,17 +4,25 @@
 Building Rogue From Source
 ==========================
 
-The following instructions demonstrate how to build rogue outside of the miniforge environment. These
-instructions are only relevant for the Linux operating systems. See
-:ref:`installing_docker` for Windows and MacOS.
+Native source builds outside Miniforge are mainly for Linux environments that
+already manage their own system packages, deployment paths, or compiler
+toolchains.
+
+Most users should prefer the Miniforge workflows in
+:ref:`installing_miniforge` or :ref:`installing_miniforge_build`. Use this path
+when you specifically want Rogue integrated into an existing native build
+environment.
+
+These instructions are only relevant for Linux. For Windows and macOS, use the
+Miniforge or Docker paths instead.
 
 Installing Packages Required For Rogue
 ======================================
 
-The following packages are required to build the rogue library:
+The following packages are required to build the Rogue library:
 
-* Cmake   >= 3.15
-* Boost   >= 1.58
+* CMake >= 3.15
+* Boost >= 1.58
 * Python3 >= 3.9
 * Bz2
 
@@ -53,7 +61,7 @@ RHEL-based systems (E.g. Rocky 9)
    $ sudo dnf install -y python3-pyqt5-sip
    $ sudo dnf install -y qt5-qtsvg-devel
 
-archlinux:
+Arch Linux
 ##########
 
 .. code::
@@ -70,16 +78,17 @@ archlinux:
 Building & Installing Rogue
 ===========================
 
-There are three possible modes for building/installing rogue:
+There are three supported installation modes:
 
-* Local:
-   Rogue is going to be used in the local checkout directory. A setup script is generated to add rogue to the system environment.
-
-* Custom:
-   Rogue is going to be installed in a custom non-system directory. A setup script is generated to add rogue to the system environment.
-
-* System:
-   The rogue headers and libraries will be installed to a standard system directory and the python filed will be installed using the system python package installed.
+- Local:
+  Rogue stays associated with the local checkout. A setup script is generated
+  to place that build on the shell environment.
+- Custom:
+  Rogue is installed into a custom non-system directory. A setup script is
+  generated for that install location.
+- System:
+  Rogue is installed into standard system locations and the Python pieces are
+  installed through the system Python environment.
 
 Local Install
 -------------
@@ -99,7 +108,8 @@ Local Install
 Custom Install
 --------------
 
-Make sure you have permission to install into the passed install directory, if not use sudo.
+Make sure you have permission to install into the target directory. If not, use
+``sudo``.
 
 .. code::
 
@@ -117,7 +127,8 @@ Make sure you have permission to install into the passed install directory, if n
 System Install
 --------------
 
-Make sure you have permission to install into the /usr/local/ directory, if not use sudo.
+Make sure you have permission to install into ``/usr/local``. If not, use
+``sudo``.
 
 .. code::
 
@@ -133,7 +144,7 @@ Make sure you have permission to install into the /usr/local/ directory, if not 
 Updating Rogue
 --------------
 
-to update from git and rebuild:
+To update from Git and rebuild:
 
 .. code::
 
@@ -143,12 +154,14 @@ to update from git and rebuild:
    $ make clean
    $ make install
 
-Cross-compiling Rogue
+Cross-Compiling Rogue
 =====================
 
-If you want to cross-compile rogue, first you need to have your cross-compilation toolchain setup. You also need to have cross-compiled version of all the dependencies with that toolchain.
+If you want to cross-compile Rogue, first you need a working cross-compilation
+toolchain and cross-compiled versions of all required dependencies.
 
-Then, you need to create a CMake toolchain file, where you have to manually point the CMake compiler variables to the path of your cross-compiler. Those variables are:
+Then create a CMake toolchain file that points the compiler variables at the
+cross-toolchain binaries. The required variables are:
 
 .. code::
 
@@ -164,7 +177,8 @@ Then, you need to create a CMake toolchain file, where you have to manually poin
    CMAKE_SIZE
    CMAKE_STRIP
 
-In this file you also need to point to the location of the cross-compile version of the dependencies by using these variables:
+In the same file you also need to point to the cross-compiled dependency
+locations using these variables:
 
 .. code::
 
@@ -176,14 +190,17 @@ In this file you also need to point to the location of the cross-compile version
    PYTHON_INCLUDE_DIR
    BOOST_ROOT
 
-**Note:** for python you also need cross-compile version of its packages, like for example numpy.
+**Note:** For Python you also need cross-compiled versions of the required
+Python packages, such as NumPy.
 
-Once you have that file define, you pas that file to CMake with the option ``-CMAKE_TOOLCHAIN_FILE=<file_name>``.
+Once that file is defined, pass it to CMake with
+``-DCMAKE_TOOLCHAIN_FILE=<file_name>``.
 
 Example
 -------
 
-To cross-compile rogue at SLAC using our internal ``buildroot`` toolchain, we defined the following toolchain file, called ``buildroot-2019.08-x86_64.cmake``
+To cross-compile Rogue at SLAC using the internal ``buildroot`` toolchain, the
+following toolchain file was used as an example:
 
 .. code::
 
@@ -219,10 +236,11 @@ To cross-compile rogue at SLAC using our internal ``buildroot`` toolchain, we de
    # Define the location of boost (cross-compiled)
    set(BOOST_ROOT /afs/slac/g/lcls/package/boost/1.64.0/buildroot-2019.08-x86_64)
 
-Then we build rogue as described in the previous section, but adding the ``CMAKE_TOOLCHAIN_FILE`` variable when calling CMake:
+Then build Rogue as described above, but add the
+``CMAKE_TOOLCHAIN_FILE`` variable when calling CMake:
 
 .. code::
 
    cmake .. -DCMAKE_TOOLCHAIN_FILE=buildroot-2019.08-x86_64.cmake
 
-**Note:** you need to pass the correct path, either absolute or relative, of you toolchain file  to the ``CMAKE_TOOLCHAIN_FILE`` variable.
+**Note:** Pass the correct absolute or relative path to the toolchain file.

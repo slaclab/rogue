@@ -192,10 +192,31 @@ C++
       return 0;
    }
 
-What to explore next
+What To Explore Next
 ====================
 
 - Frame production patterns: :doc:`/stream_interface/sending`
 - Frame consumption patterns: :doc:`/stream_interface/receiving`
 - Built-in module behavior and tuning: :doc:`/stream_interface/built_in_modules`
 - Stream section overview: :doc:`/stream_interface/index`
+
+API Reference
+=============
+
+- Python:
+
+  - :doc:`/api/python/rogue/interfaces/stream/fifo`
+  - :doc:`/api/python/rogue/interfaces/stream/ratedrop`
+  - :doc:`/api/python/rogue/interfaces/stream/slave`
+  - :doc:`/api/python/rogue/interfaces/stream/tcpclient`
+  - :doc:`/api/python/rogue/hardware/axi/axistreamdma`
+  - :doc:`/api/python/pyrogue/utilities/fileio/streamwriter`
+
+- C++:
+
+  - :doc:`/api/cpp/interfaces/stream/fifo`
+  - :doc:`/api/cpp/interfaces/stream/rateDrop`
+  - :doc:`/api/cpp/interfaces/stream/slave`
+  - :doc:`/api/cpp/interfaces/stream/tcpClient`
+  - :doc:`/api/cpp/hardware/axi/axiStreamDma`
+  - :doc:`/api/cpp/utilities/fileio/writer`

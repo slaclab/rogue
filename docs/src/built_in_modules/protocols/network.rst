@@ -4,9 +4,10 @@
 Network Wrapper
 ===============
 
-This page documents the PyRogue network helper classes implemented in
-``python/pyrogue/protocols/_Network.py``. For RSSI protocol behavior and stack
-internals, see :ref:`protocols_rssi`.
+``pyrogue.protocols.UdpRssiPack`` is implemented in
+``python/pyrogue/protocols/_Network.py`` and provides a compact way to build
+the standard Rogue UDP/RSSI/packetizer stack. For RSSI protocol behavior and
+stack internals, see :ref:`protocols_rssi`.
 
 Overview
 ========
@@ -31,9 +32,9 @@ Implementation details from ``_Network.py``
 ===========================================
 
 - ``server=False``:
-  creates ``udp.Client(host, port, jumbo)`` and ``rssi.Client(...)``.
+  Creates ``udp.Client(host, port, jumbo)`` and ``rssi.Client(...)``.
 - ``server=True``:
-  creates ``udp.Server(port, jumbo)`` and ``rssi.Server(...)``.
+  Creates ``udp.Server(port, jumbo)`` and ``rssi.Server(...)``.
 - Packetizer selection by ``packVer``:
   ``packVer=1`` uses ``packetizer.Core(enSsi)``;
   ``packVer=2`` uses ``packetizer.CoreV2(False, True, enSsi)``.
@@ -193,9 +194,16 @@ output, however, comes from the underlying Rogue C++ modules:
 In practice, enable the underlying protocol loggers rather than relying on any
 wrapper-level Python logging when debugging link behavior.
 
-See also
-========
+Related Topics
+==============
 
 * :ref:`protocols_rssi`
 * :ref:`protocols_udp`
 * :ref:`protocols_packetizer`
+
+API Reference
+=============
+
+- Python:
+
+  - :doc:`/api/python/pyrogue/protocols/network_udprssipack`

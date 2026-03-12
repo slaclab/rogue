@@ -65,6 +65,12 @@ well. Forwarded C++ records also carry additional metadata fields such as:
 - ``rogueTimestamp``
 - ``rogueComponent``
 
+This powers:
+
+- The PyDM System Log widget
+- ``pyrogue.interfaces.SystemLogMonitor``
+- SQL log capture via ``SqlLogger``
+
 Example forwarded ``SystemLog`` entry:
 
 .. code-block:: json
@@ -181,12 +187,26 @@ Debug one C++ subsystem in a standalone script:
 
    rogue.Logging.setFilter('xilinx', rogue.Logging.Debug)
 
-Related Docs
-============
+API Reference
+=============
+
+- Python:
+
+  - :doc:`/api/python/rogue/logging`
+
+- C++:
+
+  - :doc:`/api/cpp/logging`
+
+Current Rough Edges
+===================
 
 Module-specific docs now include local logging notes with the exact logger name
 or pattern for that module. Use those pages first when you already know which
 module you are debugging.
+
+Related Docs
+============
 
 - SQL-backed storage of ``SystemLog`` entries:
   :doc:`/built_in_modules/interfaces/sql`

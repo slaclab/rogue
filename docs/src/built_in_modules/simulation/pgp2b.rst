@@ -171,8 +171,17 @@ The useful logging comes from two lower layers:
 - ``TcpCore`` legacy logging API:
   ``rogue.Logging.setFilter('pyrogue.stream.TcpCore', rogue.Logging.Debug)``
 
-What To Explore Next
-====================
+Related Topics
+==============
 
 - Stream topologies and connection operators: :doc:`/stream_interface/connecting`
 - TCP stream transport behavior: :doc:`/stream_interface/tcp_bridge`
+
+API Reference
+=============
+
+- Python:
+
+  - :doc:`/api/python/pyrogue/interfaces/simulation/pgp2bsim`
+  - :doc:`/api/python/pyrogue/interfaces/simulation/sidebandsim`
+  - :doc:`/api/python/rogue/interfaces/stream/tcpclient`

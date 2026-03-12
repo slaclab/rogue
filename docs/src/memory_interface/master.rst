@@ -100,6 +100,12 @@ This logger is useful for transaction-request and error-path debugging in
 custom master implementations. ``Master`` does not provide a separate runtime
 debug helper.
 
+API reference
+=============
+
+- Python: :doc:`/api/python/rogue/interfaces/memory/master`
+- C++: :doc:`/api/cpp/interfaces/memory/master`
+
 What to explore next
 ====================
 

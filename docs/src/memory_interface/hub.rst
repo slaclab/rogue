@@ -84,6 +84,12 @@ The base Rogue memory hub uses Rogue C++ logging.
 For custom hub subclasses, it is often worth adding a second subclass-specific
 logger in addition to the base hub logger if your translation logic is complex.
 
+API reference
+=============
+
+- Python: :doc:`/api/python/rogue/interfaces/memory/hub`
+- C++: :doc:`/api/cpp/interfaces/memory/hub`
+
 What to explore next
 ====================
 

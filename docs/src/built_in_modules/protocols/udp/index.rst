@@ -28,13 +28,16 @@ The ``rogue::protocols::udp`` layer is split into:
 
 - ``Core``:
   shared transport configuration (payload sizing, socket timeout, RX buffer
-  tuning). See :doc:`/api/cpp/protocols/udp/core`.
+  tuning. See :doc:`/api/python/rogue/protocols/udp/core` and
+  :doc:`/api/cpp/protocols/udp/core`.
 - ``Client``:
   outbound endpoint to a specific remote host/port. See :doc:`client` and
+  :doc:`/api/python/rogue/protocols/udp/client` and
   :doc:`/api/cpp/protocols/udp/client`.
 - ``Server``:
   local bind endpoint that receives inbound datagrams and can transmit to the
   most recently observed peer. See :doc:`server` and
+  :doc:`/api/python/rogue/protocols/udp/server` and
   :doc:`/api/cpp/protocols/udp/server`.
 
 Payload sizing and MTU
@@ -125,8 +128,8 @@ Static logger names:
 At debug level, UDP logs socket setup and transmit/receive path events. There
 is no additional runtime ``setDebug(...)`` helper on these classes.
 
-Related docs
-============
+Related Topics
+==============
 
 - :ref:`protocols_network`
 - :doc:`/built_in_modules/protocols/network`
@@ -134,8 +137,14 @@ Related docs
 - :doc:`/built_in_modules/protocols/packetizer/index`
 - :doc:`/built_in_modules/protocols/srp/index`
 
-C++ API details for UDP protocol classes are documented in
-:doc:`/api/cpp/protocols/udp/index`.
+API Reference
+=============
+
+- C++: :doc:`/api/cpp/protocols/udp/index`
+- Python:
+  :doc:`/api/python/rogue/protocols/udp/core`
+  :doc:`/api/python/rogue/protocols/udp/client`
+  :doc:`/api/python/rogue/protocols/udp/server`
 
 .. toctree::
    :maxdepth: 1

@@ -12,7 +12,14 @@ transmit and receive control should live under one node.
 
 
 
-PrbsPair API Reference
-============================
+Related Topics
+==============
 
-See :doc:`/api/python/utilities_prbs_prbspair` for generated API details.
+- :doc:`/built_in_modules/utilities/prbs/index`
+- :doc:`prbstx`
+- :doc:`prbsrx`
+
+API Reference
+=============
+
+- Python: :doc:`/api/python/pyrogue/utilities/prbs/prbspair`

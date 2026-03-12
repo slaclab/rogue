@@ -253,7 +253,7 @@ Root Node is created.
 * **LocalTime**: Local time.
 * **PollEn**: Polling worker.
 
-Root API Reference
-------------------------
+API Reference
+-------------
 
-See :doc:`/api/python/root` for generated API details.
+See :doc:`/api/python/pyrogue/root` for generated API details.

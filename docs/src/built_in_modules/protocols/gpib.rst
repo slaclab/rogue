@@ -4,7 +4,7 @@
 GPIB Protocol
 =============
 
-This page covers the GPIB-based instrument interface implemented in
+The GPIB-based instrument interface is implemented in
 ``python/pyrogue/protocols/gpib.py``.
 
 Rogue models GPIB instruments as a memory-style control path so normal
@@ -18,10 +18,10 @@ Overview
 The implementation has two layers:
 
 - ``GpibController``:
-  a memory ``Slave`` that translates transactions into GPIB read/write
+  A memory ``Slave`` that translates transactions into GPIB read/write
   operations
 - ``GpibDevice``:
-  a ``pyrogue.Device`` wrapper that owns the controller and registers Variables
+  A ``pyrogue.Device`` wrapper that owns the controller and registers Variables
   with it
 
 Each mapped Variable must provide a ``key`` extra attribute. That key is used
@@ -177,9 +177,17 @@ such as:
 - ``Read Sending <command?>``
 - ``Read Got: <response>``
 
-What To Explore Next
-====================
+Related Topics
+==============
 
 - PyRogue Variable behavior: :doc:`/pyrogue_tree/core/variable`
 - Model conversion rules: :doc:`/pyrogue_tree/core/model`
 - Memory-style transaction flow: :doc:`/memory_interface/index`
+
+API Reference
+=============
+
+- Python:
+
+  - :doc:`/api/python/pyrogue/protocols/gpibcontroller`
+  - :doc:`/api/python/pyrogue/protocols/gpibdevice`

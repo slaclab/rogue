@@ -87,10 +87,15 @@ Practical checklist
 - Ensure expected peer address/port behavior is defined for your system.
 - In multi-peer environments, account for "last sender wins" peer update model.
 
-Related docs
-============
+Related Topics
+==============
 
 - :doc:`/built_in_modules/protocols/udp/index`
 - :doc:`/built_in_modules/protocols/network`
 - :doc:`/built_in_modules/protocols/rssi/index`
-- :doc:`/api/cpp/protocols/udp/server`
+
+API Reference
+=============
+
+- Python: :doc:`/api/python/rogue/protocols/udp/server`
+- C++: :doc:`/api/cpp/protocols/udp/server`

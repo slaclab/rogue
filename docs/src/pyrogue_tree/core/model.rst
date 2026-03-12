@@ -17,9 +17,9 @@ Why Models Exist
 
 Models separate three concerns:
 
-1. hardware representation (bits/bytes, endianness, signedness)
+1. Hardware representation (bits/bytes, endianness, signedness)
 2. Python-facing type and formatting behavior
-3. conversion logic used during Block access
+3. Conversion logic used during Block access
 
 This keeps Variable definitions clear and lets the same conversion behavior be
 reused across many registers.
@@ -172,10 +172,10 @@ For examples of built-in and custom Model definitions, see
 Reference links
 ===============
 
-* Python Model base/reference: :doc:`/api/python/model`
+* Python Model base/reference: :doc:`/api/python/pyrogue/model`
 * C++ memory Model reference: :doc:`/api/cpp/interfaces/memory/model`
-* Model helpers: :doc:`/api/python/wordcount`, :doc:`/api/python/bytecount`,
-  :doc:`/api/python/reversebits`, :doc:`/api/python/twoscomplement`
+* Model helpers: :doc:`/api/python/pyrogue/wordcount`, :doc:`/api/python/pyrogue/bytecount`,
+  :doc:`/api/python/pyrogue/reversebits`, :doc:`/api/python/pyrogue/twoscomplement`
 
 Where to explore next
 =====================

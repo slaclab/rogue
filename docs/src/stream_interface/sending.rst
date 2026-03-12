@@ -178,9 +178,22 @@ See also:
 - :doc:`/api/cpp/interfaces/stream/helpers`
 - :doc:`/api/cpp/interfaces/stream/frameAccessor`
 
-What to explore next
+What To Explore Next
 ====================
 
 - Receive-side access patterns: :doc:`/stream_interface/receiving`
 - Built-in module insertion points: :doc:`/stream_interface/built_in_modules`
 - Stream connection topologies: :doc:`/stream_interface/connecting`
+
+API Reference
+=============
+
+- Python:
+
+  - :doc:`/api/python/rogue/interfaces/stream/master`
+  - :doc:`/api/python/rogue/interfaces/stream/frame`
+
+- C++:
+
+  - :doc:`/api/cpp/interfaces/stream/master`
+  - :doc:`/api/cpp/interfaces/stream/frame`

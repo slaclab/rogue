@@ -74,11 +74,11 @@ Related topics
 API reference
 =============
 
-See :doc:`/api/python/interfaces_stream_variable` for generated API details.
+See :doc:`/api/python/rogue/interfaces/stream/variable` for generated API details.
 
-What To Explore Next
-====================
+Related Topics
+==============
 
 - Stream connection patterns: :doc:`/stream_interface/connecting`
 - Frame send/receive APIs: :doc:`/stream_interface/sending` and :doc:`/stream_interface/receiving`
-- Root client/server exposure patterns: :doc:`/pyrogue_tree/client_interfaces/index`
+- Device and Variable behavior in the tree: :doc:`/pyrogue_tree/core/index`

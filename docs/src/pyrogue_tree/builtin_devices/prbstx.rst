@@ -24,7 +24,14 @@ The underlying Rogue PRBS engine uses Rogue C++ logging.
 Set the filter if you want detailed
 transmit-path diagnostics.
 
-PrbsTx API Reference
-==========================
+Related Topics
+==============
 
-See :doc:`/api/python/utilities_prbs_prbstx` for generated API details.
+- :doc:`/built_in_modules/utilities/prbs/index`
+- :doc:`prbsrx`
+- :doc:`prbspair`
+
+API Reference
+=============
+
+- Python: :doc:`/api/python/pyrogue/utilities/prbs/prbstx`

@@ -1,19 +1,23 @@
 .. _protocols_xilinx_classes:
 
-==================================
-Xilinx Protocol Class Descriptions
-==================================
+=========================
+rogue::protocols::xilinx
+=========================
 
-The following pages provide C++ API references for the Rogue Xilinx protocol
-classes.
-For conceptual guidance and deployment patterns, see
-:doc:`/built_in_modules/protocols/xilinx/index`.
+This section contains the C++ API reference for
+``rogue::protocols::xilinx`` classes.
+
 
 .. toctree::
    :maxdepth: 1
-   :caption: Xilinx Classes
+   :caption: Xilinx Classes:
 
    xvc
    jtagDriver
    xvcServer
    xvcConnection
+
+
+.. rubric:: Related Topics
+
+- :doc:`/built_in_modules/protocols/xilinx/index`

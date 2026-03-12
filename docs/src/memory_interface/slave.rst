@@ -122,3 +122,9 @@ What to explore next
 - Transaction internals and locking: :doc:`/memory_interface/transactions`
 - Hub translation strategies: :doc:`/memory_interface/hub`
 - Bus connection patterns: :doc:`/memory_interface/connecting`
+
+API Reference
+=============
+
+- Python: :doc:`/api/python/rogue/interfaces/memory/slave`
+- C++: :doc:`/api/cpp/interfaces/memory/slave`

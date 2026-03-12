@@ -47,7 +47,13 @@ The following :py:class:`~pyrogue.LocalVariable` objects are created when
 * **TotalSize**: Total bytes written.
 * **FrameCount**: Total frames received and written.
 
-DataWriter API Reference
-==============================
+Related Topics
+==============
 
-See :doc:`/api/python/datawriter` for generated API details.
+- :doc:`stream_writer`
+- :doc:`/built_in_modules/utilities/fileio/index`
+
+API Reference
+=============
+
+- Python: :doc:`/api/python/pyrogue/datawriter`

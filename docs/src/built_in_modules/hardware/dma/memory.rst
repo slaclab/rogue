@@ -69,8 +69,8 @@ C++ AxiMemMap Example
    // Route memory transactions from master into AXI memory map endpoint.
    *memMast >> memMap;
 
-API references
-==============
+API Reference
+=============
 
-- :doc:`/api/cpp/hardware/axi/axiMemMap`
-- :doc:`/api/cpp/interfaces/memory/index`
+- Python: :doc:`/api/python/rogue/hardware/axi/aximemmap`
+- C++: :doc:`/api/cpp/hardware/axi/axiMemMap`

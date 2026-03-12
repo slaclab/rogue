@@ -91,7 +91,8 @@ C++ example
 API reference
 =============
 
-- :doc:`/api/cpp/interfaces/stream/filter`
+- Python: :doc:`/api/python/rogue/interfaces/stream/filter`
+- C++: :doc:`/api/cpp/interfaces/stream/filter`
 
 Logging
 =======

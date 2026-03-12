@@ -105,8 +105,8 @@ C++ StreamReader Example
    fread->open("myFile.dat.1");
    fread->closeWait();
 
-Related References
-==================
+API Reference
+=============
 
-- :doc:`/api/cpp/utilities/fileio/reader`
-- :doc:`/api/python/utilities_fileio_streamreader`
+- C++: :doc:`/api/cpp/utilities/fileio/reader`
+- Python: :doc:`/api/python/pyrogue/utilities/fileio/streamreader`

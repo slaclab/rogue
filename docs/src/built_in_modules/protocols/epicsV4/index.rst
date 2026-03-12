@@ -5,7 +5,8 @@
 EPICSV4 Protocol
 ================
 
-This section covers EPICS-facing protocol integration in Rogue/PyRogue.
+EPICS-facing protocol integration in Rogue/PyRogue is built around serving
+selected PyRogue Variables into an EPICS V4 namespace.
 
 Use these pages for conceptual behavior and integration patterns. API object
 details remain in the Python API reference.
@@ -53,11 +54,11 @@ surface for a given deployment.
 For group semantics and filtering behavior in the tree model, see
 :doc:`/pyrogue_tree/core/groups`.
 
-Related docs
-============
+Related Topics
+==============
 
-- :doc:`/api/python/protocols_epicsv4_epicspvserver`
-- :doc:`/api/python/protocols_epicsv4_epicspvholder`
+- :doc:`/api/python/pyrogue/protocols/epicsv4/epicspvserver`
+- :doc:`/api/python/pyrogue/protocols/epicsv4/epicspvholder`
 - :doc:`/built_in_modules/protocols/index`
 
 .. toctree::

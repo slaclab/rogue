@@ -89,10 +89,15 @@ Practical checklist
 - Confirm firewall and routing allow bidirectional UDP traffic.
 - Ensure upper protocol payload sizing fits ``maxPayload()`` budget.
 
-Related docs
-============
+Related Topics
+==============
 
 - :doc:`/built_in_modules/protocols/udp/index`
 - :doc:`/built_in_modules/protocols/network`
 - :doc:`/built_in_modules/protocols/rssi/index`
-- :doc:`/api/cpp/protocols/udp/client`
+
+API Reference
+=============
+
+- Python: :doc:`/api/python/rogue/protocols/udp/client`
+- C++: :doc:`/api/cpp/protocols/udp/client`

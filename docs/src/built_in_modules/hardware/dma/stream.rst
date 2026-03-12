@@ -201,8 +201,8 @@ C++:
 
    axiStream->setTimeout(1500);
 
-API references
-==============
+API Reference
+=============
 
-- :doc:`/api/cpp/hardware/axi/axiStreamDma`
-- :doc:`/api/cpp/interfaces/stream/index`
+- Python: :doc:`/api/python/rogue/hardware/axi/axistreamdma`
+- C++: :doc:`/api/cpp/hardware/axi/axiStreamDma`
