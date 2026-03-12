@@ -190,13 +190,8 @@ Debug one C++ subsystem in a standalone script:
 API Reference
 =============
 
-- Python:
-
-  - :doc:`/api/python/rogue/logging`
-
-- C++:
-
-  - :doc:`/api/cpp/logging`
+- Python: :doc:`/api/python/rogue/logging`
+- C++: :doc:`/api/cpp/logging`
 
 Current Rough Edges
 ===================
@@ -205,17 +200,13 @@ Module-specific docs now include local logging notes with the exact logger name
 or pattern for that module. Use those pages first when you already know which
 module you are debugging.
 
-Related Docs
-============
+Related Topics
+==============
 
-- SQL-backed storage of ``SystemLog`` entries:
-  :doc:`/built_in_modules/interfaces/sql`
-- PyDM system log display:
-  :doc:`/pydm/index`
-- Root behavior and ``unifyLogs``:
-  :doc:`/pyrogue_tree/core/root`
-- Migration note for the unified logging style:
-  :doc:`/migration/logging_unified`
+- SQL-backed storage of ``SystemLog`` entries: :doc:`/built_in_modules/interfaces/sql`
+- PyDM system log display: :doc:`/pydm/index`
+- Root behavior and ``unifyLogs``: :doc:`/pyrogue_tree/core/root`
+- Migration note for the unified logging style: :doc:`/migration/logging_unified`
 
 .. toctree::
    :hidden:
