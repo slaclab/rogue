@@ -24,7 +24,9 @@ transaction layer. They are used in three main ways:
 Why These Methods Exist
 =======================
 
-PyRogue separates transaction initiation from transaction completion.
+PyRogue separates transaction initiation from transaction completion. That is
+why these methods come in pairs and helper sequences rather than as one large
+"do everything" call.
 
 At a high level:
 
@@ -33,13 +35,19 @@ At a high level:
 * ``readBlocks`` initiates read transactions.
 * ``checkBlocks`` waits for initiated transactions to complete.
 
-That split lets many transactions be issued first and then checked afterward.
-The composed helpers:
+That split lets a ``Device`` issue many transactions first and then wait for
+completion afterward. The composed helpers:
 
 * ``writeAndVerifyBlocks``
 * ``readAndCheckBlocks``
 
-simply bundle the common multi-step flows on top of those same methods.
+simply bundle the most common full flows on top of those same methods. In
+practice, most readers only need two ideas first:
+
+* The default bulk path is "issue transactions across this ``Device`` or
+  subtree, then check them."
+* These same methods are also the normal place to override sequencing when the
+  hardware needs something more specific.
 
 Default Full-Device Behavior
 ============================
@@ -47,23 +55,20 @@ Default Full-Device Behavior
 When called without ``variable=...``, these methods operate on the current
 ``Device`` and, optionally, its child Devices.
 
-The default traversal is:
+The default traversal is simple:
 
 1. Process the ``Block`` objects attached directly to the current ``Device``.
 2. Recurse into child Devices if ``recurse=True``.
 
-So a Device's own Blocks are handled before traversal continues into child
-Devices.
+So the current ``Device`` goes first, and child Devices follow after that.
+That is the baseline behavior that custom overrides either preserve or replace.
 
 Ordering Rules
 ==============
 
-The implementation defines the ordering inside that traversal.
+Within that default traversal, the ordering is also defined.
 
-Device-Local Block Order
-------------------------
-
-Within one Device:
+Inside one ``Device``:
 
 * Automatically built hardware-backed Blocks are created from Variables sorted
   by ``(offset, varBytes)``, so those Blocks are normally issued in
@@ -71,14 +76,11 @@ Within one Device:
 * ``LocalVariable`` Blocks are appended as the Device walks its child Nodes, so
   they follow Node insertion order rather than address sorting.
 
-Child Device Order
-------------------
-
-Child Devices are visited in the order they were added to the parent. ``Node``
-stores children in an ``OrderedDict``, and ``Device`` recurses through
+For child Devices, the traversal follows add order. ``Node`` stores children
+in an ``OrderedDict``, and ``Device`` recurses through
 ``self.devices.values()``.
 
-In practice, the default recursive flow is:
+So the default recursive flow is:
 
 * This Device's Blocks first.
 * Then child Devices in add order.
@@ -91,14 +93,72 @@ The same methods can also target one specific Variable by passing
 
 That path does not perform full subtree traversal. Instead, it operates only on
 the ``Block`` associated with that Variable. This is how many hardware-backed
-per-Variable ``get`` and ``set`` paths reuse the same Device block methods
+per-Variable ``get`` and ``set`` paths reuse the same ``Device`` block methods
 without turning into full-tree operations.
+
+Common Usage Patterns
+=====================
+
+Most manual use of these APIs falls into one of three patterns: operate on a
+subtree, operate on one Variable's backing ``Block``, or call a composed
+helper when the full flow is what you actually want.
+
+Read one subtree
+----------------
+
+.. code-block:: python
+
+   # Initiate reads across this Device subtree, then wait for completion.
+   my_dev.readAndCheckBlocks(recurse=True)
+
+This is the normal manual pattern when you want a current hardware snapshot of
+one part of the tree.
+
+Write and verify one subtree
+----------------------------
+
+.. code-block:: python
+
+   # Force a full write/verify/check pass across this Device subtree.
+   my_dev.writeAndVerifyBlocks(force=True, recurse=True)
+
+This pattern is often useful for ADC and mixed-signal configuration, where a
+command needs to push a complete known-good register set into hardware in one
+step.
+
+Target one Variable's ``Block``
+-------------------------------
+
+.. code-block:: python
+
+   # Only issue a write for the Block backing one Variable.
+   my_dev.writeBlocks(variable=my_dev.MyRegister, checkEach=True)
+   my_dev.checkBlocks(variable=my_dev.MyRegister)
+
+This is the manual form of the narrower path that hardware-backed per-Variable
+operations use internally.
+
+Composed Helpers
+================
+
+Two helpers cover the most common complete flows:
+
+* ``writeAndVerifyBlocks(...)`` runs
+  ``writeBlocks`` -> ``verifyBlocks`` -> ``checkBlocks``.
+* ``readAndCheckBlocks(...)`` runs
+  ``readBlocks`` -> ``checkBlocks``.
+
+These helpers are often the clearest way to trigger a full operation from a
+script, a command callback, or a one-shot configuration step. They are also a
+good way to avoid open-coding the same multi-step sequence in many places.
 
 Method Parameters
 =================
 
-The methods share a common shape, but the parameters differ slightly depending
-on whether the operation is write-, read-, verify-, or check-oriented.
+The methods share a common shape, but the meaning of the parameters is easiest
+to understand after the default traversal and common usage patterns are clear.
+The most important controls are ``recurse``, ``variable``, ``checkEach``, and
+for writes, ``force``.
 
 ``writeBlocks``
 ---------------
@@ -224,59 +284,15 @@ each transaction instead of the default "issue many operations, then check
 them" flow. One example is a board or front-end path where tight sequencing or
 hardware-side backpressure makes deferred checking less desirable.
 
-Composed Helpers
-================
-
-Two helpers cover the most common complete flows:
-
-* ``writeAndVerifyBlocks(...)`` runs
-  ``writeBlocks`` -> ``verifyBlocks`` -> ``checkBlocks``.
-* ``readAndCheckBlocks(...)`` runs
-  ``readBlocks`` -> ``checkBlocks``.
-
-These helpers are often the clearest way to manually trigger a full bulk
-operation from a script, a command callback, or a one-shot configuration step.
-
-Manual Usage Patterns
-=====================
-
-Bulk read of one subtree
-------------------------
-
-.. code-block:: python
-
-   # Initiate reads across this Device subtree, then wait for completion.
-   my_dev.readAndCheckBlocks(recurse=True)
-
-Bulk write and verify
----------------------
-
-.. code-block:: python
-
-   # Force a full write/verify/check pass across this Device subtree.
-   my_dev.writeAndVerifyBlocks(force=True, recurse=True)
-
-This pattern is often useful for ADC and mixed-signal configuration, where a
-command needs to push a complete known-good register set into hardware in one
-step.
-
-Target one Variable's Block
----------------------------
-
-.. code-block:: python
-
-   # Only issue a write for the Block backing one Variable.
-   my_dev.writeBlocks(variable=my_dev.MyRegister, checkEach=True)
-   my_dev.checkBlocks(variable=my_dev.MyRegister)
-
-This is the manual form of the narrower path that hardware-backed per-Variable
-operations use internally.
-
 How To Override Properly
 ========================
 
 The normal reason to override these methods is that the hardware needs extra
-ordering around the default traversal.
+ordering around the default traversal. Before overriding, it helps to separate
+two questions:
+
+* Are you keeping the inherited traversal and just adding steps around it?
+* Or are you intentionally replacing part of the inherited traversal order?
 
 Common cases:
 
@@ -292,6 +308,9 @@ The general rule is:
 * Keep the default traversal unless you intentionally need to replace it.
 * Preserve the relevant keyword parameters.
 * Add only the extra pre- or post-sequencing behavior you need.
+
+The following examples move from the smallest override to the most structural
+one.
 
 Example: post-write update strobe
 ---------------------------------
@@ -413,7 +432,7 @@ Example: one-shot configure command
 -----------------------------------
 
 Sometimes the cleanest solution is not to override the block methods at all,
-but instead to call the composed helper from a Command:
+but instead to call a composed helper from a ``Command``:
 
 .. code-block:: python
 
