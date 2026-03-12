@@ -18,10 +18,10 @@ What A ``Frame`` Carries
 
 A ``Frame`` contains:
 
-- payload bytes
-- channel metadata via ``getChannel()`` and ``setChannel()``
-- error metadata via ``getError()`` and ``setError()``
-- flags and user fields via ``getFlags()``, ``setFlags()``, ``setFirstUser()``,
+- Payload bytes
+- Channel metadata via ``getChannel()`` and ``setChannel()``
+- Error metadata via ``getError()`` and ``setError()``
+- Flags and user fields via ``getFlags()``, ``setFlags()``, ``setFirstUser()``,
   and ``setLastUser()``
 
 The payload is the byte stream itself. The metadata travels with the payload

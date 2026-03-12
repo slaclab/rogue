@@ -22,7 +22,7 @@ The main built-in stream modules are:
 - ``Filter`` for channel selection and optional dropping of errored ``Frame``
   objects
 - ``RateDrop`` for count-based or time-based rate reduction
-- debug ``Slave`` mode for payload inspection without writing a custom receiver
+- Debug ``Slave`` mode for payload inspection without writing a custom receiver
 - ``TcpServer`` and ``TcpClient`` for bridging streams across TCP
 
 How To Choose A Module

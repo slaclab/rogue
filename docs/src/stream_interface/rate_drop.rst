@@ -16,9 +16,9 @@ the main stream.
 
 At a high level, ``RateDrop`` supports two operating modes:
 
-- time mode, where forwarded ``Frame`` objects are separated by at least a
+- Time mode, where forwarded ``Frame`` objects are separated by at least a
   configured time interval
-- count mode, where roughly one ``Frame`` is kept and then a configured number
+- Count mode, where roughly one ``Frame`` is kept and then a configured number
   of following ``Frame`` objects are dropped
 
 Constructor
