@@ -75,6 +75,13 @@ text. Rewrite the page so it reads like one intentional document.
 - Avoid headings like descriptive notes or phrases when a proper section name
   would do.
 
+## List Style
+
+- Items in a list should be capitalized.
+- This applies to bullet lists and numbered lists.
+- If a list item starts with a type name, concept name, or ordinary prose, use
+  an initial capital letter.
+
 ## Ending Sections
 
 Toward the end of a document, use these labels consistently:
