@@ -88,6 +88,7 @@ Already completed:
 - `docs/src/pyrogue_tree/core/link_variable.rst`
 - `docs/src/pyrogue_tree/core/local_command.rst`
 - `docs/src/pyrogue_tree/core/remote_command.rst`
+- `docs/src/pyrogue_tree/core/groups.rst`
 - `docs/src/pyrogue_tree/core/block.rst`
 - `docs/src/pyrogue_tree/core/block_operations.rst`
 
@@ -109,22 +110,37 @@ Important structural notes:
   `Root` -> `Device` -> `Variable` / `Command` -> subtype pages -> advanced
   mechanics pages such as `Block`, `Device Block Operations`, `Model`, and YAML.
 - `Device` now carries the first conceptual introduction to write / verify /
-  read / check. `Variable` now introduces `get()`, `set()`, `getDisp()`,
-  `setDisp()`, `value()`, and `valueDisp()`.
+  read / check. `post()` exists, but the current docs treat it as narrower:
+  part of the memory transaction model and relevant to hardware-backed
+  Variables and `RemoteCommand`, not one of the core full-Device traversal
+  operations.
+- `Variable` now introduces `get()`, `set()`, `getDisp()`, `setDisp()`,
+  `value()`, and `valueDisp()`, with `post()` described as a narrower
+  hardware-backed API.
 - `Block` now includes a dedicated explanation of the `Device._buildBlocks()`
   grouping process.
 - `LinkVariable` examples were expanded using real patterns from local/example
   repos, but the docs should avoid naming the source project in the example
   prose unless technically necessary.
+- `LocalCommand` now covers callback argument injection, default command
+  arguments via `value=`, and the `@self.command` decorator.
+- `RemoteCommand` now includes a fuller explanation of the built-in command
+  helper functions (`toggle`, `touchOne`, `touchZero`, posted helpers, and the
+  `create...` helpers).
+- `Groups` was rewritten in the newer narrative style, but its built-in-group
+  sections intentionally preserve more of the older page's operational detail.
+- In `memory_interface`, `Transaction`, `Master`, and `Slave` now introduce
+  `Post` more explicitly. The current doc position is: `Post` is a real memory
+  transaction type, often handled like `Write` at the transport boundary, but
+  available for downstream paths that want distinct posted-write policy.
 - No docs build has been run yet; verification so far is source-level only.
 
 Next likely target:
-- `docs/src/pyrogue_tree/core/command.rst` consistency pass after the subtype
-  rewrites
-- `docs/src/pyrogue_tree/core/groups.rst`
 - `docs/src/pyrogue_tree/core/memory_variable_stream.rst`
 - then the remaining advanced `pyrogue_tree/core` pages such as
   `model.rst`, `poll_queue.rst`, and `yaml_configuration.rst`
+- after that, do a consistency pass on nearby pages that mention command
+  helpers, group filters, or posted writes if any wording drift remains
 
 If the old/new mapping becomes ambiguous, stop and state the ambiguity clearly
 before continuing.
@@ -158,9 +174,9 @@ Already merged:
 - much of `docs/src/pyrogue_tree/core/*`
 
 Next target:
-- `docs/src/pyrogue_tree/core/command.rst`
-- `docs/src/pyrogue_tree/core/groups.rst`
 - `docs/src/pyrogue_tree/core/memory_variable_stream.rst`
+- `docs/src/pyrogue_tree/core/model.rst`
+- `docs/src/pyrogue_tree/core/poll_queue.rst`
 
 Compare full old docs on `pre-release` against the current docs before
 rewriting. Preserve the best narrative material from the old docs while keeping
