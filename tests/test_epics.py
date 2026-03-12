@@ -87,7 +87,6 @@ class LocalRoot(pr.Root):
             offset  = 0x0000,
             memBase = mc,
         ))
-
 class LocalRootWithEpics(LocalRoot):
     def __init__(self, use_map=False):
         LocalRoot.__init__(self)

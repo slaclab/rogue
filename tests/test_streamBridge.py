@@ -18,9 +18,7 @@ import time
 
 FrameCount = 10000
 FrameSize  = 10000
-
 def data_path():
-
     # Bridge server
     serv = rogue.interfaces.stream.TcpServer("127.0.0.1",9000)
 

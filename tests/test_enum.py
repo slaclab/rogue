@@ -86,7 +86,6 @@ class DummyTree(pr.Root):
             offset     = 0x0,
             memBase    = mc,
         ))
-
 def test_enum():
 
     with DummyTree() as root:

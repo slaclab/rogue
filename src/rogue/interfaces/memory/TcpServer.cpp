@@ -157,7 +157,7 @@ void rim::TcpServer::runThread() {
         // Get message
         do {
             // Get the message
-            if (zmq_recvmsg(this->zmqReq_, &(msg[x]), 0) > 0) {
+            if (zmq_recvmsg(this->zmqReq_, &(msg[x]), 0) >= 0) {
                 if (x != 4) x++;
                 msgCnt++;
 
