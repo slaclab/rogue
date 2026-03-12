@@ -49,6 +49,47 @@ Implications of Block grouping:
 * Partial updates can target changed sub-ranges
 * Grouped Block operations reduce transaction overhead
 
+How Device Builds Blocks
+========================
+
+The grouping is performed by :py:class:`~pyrogue.Device` during attach time,
+inside ``Device._buildBlocks()``. The process is worth understanding because it
+determines both transaction grouping and the default ordering later used by
+bulk block operations.
+
+At a high level, the build process is:
+
+1. Walk the Device's child Nodes.
+2. Add each ``LocalVariable``'s software Block directly to the Device.
+3. Collect hardware-backed ``RemoteVariable`` instances whose offsets are
+   defined.
+4. Align each RemoteVariable to the Device's minimum access size.
+5. Sort the RemoteVariables by ``(offset, varBytes)``.
+6. Group overlapping compatible RemoteVariables into shared Blocks.
+7. Reuse a pre-created custom Block when a Variable falls inside it.
+8. Create any remaining new Blocks, bind their Variables, and attach them to
+   the Device.
+
+Some details matter:
+
+* ``LocalVariable`` uses a one-to-one software Block. It does not participate
+  in the RemoteVariable grouping algorithm.
+* RemoteVariable grouping begins from sorted address order, so the auto-built
+  hardware Blocks are normally address-oriented.
+* If two RemoteVariables overlap the same byte region after alignment, they are
+  grouped into the same Block and their internal offsets are shifted relative
+  to that Block base.
+* A custom Block added ahead of time with ``addCustomBlock(...)`` takes
+  precedence for Variables that fall inside its address range.
+* After a Block is chosen or created, the Device sets each Variable's
+  ``_block`` reference to that Block and enables the Block according to the
+  Device's current enable state.
+
+This is why the later bulk methods in :doc:`/pyrogue_tree/core/block_operations`
+do not decide grouping on the fly. By the time reads, writes, verifies, and
+checks run, the Device has already built the Block structure they will
+traverse.
+
 Access Path (RemoteVariable)
 ============================
 

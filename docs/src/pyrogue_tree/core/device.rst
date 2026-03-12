@@ -153,6 +153,10 @@ What each hook is for
 
   Use this for structure-dependent setup that requires valid ``root``,
   ``parent``, or path context. This is also when Device Block (memory) layout is built.
+  During this step, the Device walks its Variables, groups compatible
+  hardware-backed Variables into ``Block`` objects, attaches any pre-created
+  custom Blocks, and records the Block structure that later bulk operations
+  traverse.
 
 * :py:meth:`~pyrogue.Node._finishInit`
 

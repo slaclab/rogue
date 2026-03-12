@@ -76,6 +76,9 @@ Inside one ``Device``:
 * ``LocalVariable`` Blocks are appended as the Device walks its child Nodes, so
   they follow Node insertion order rather than address sorting.
 
+For the Block-building process that creates that ordering, see
+:doc:`/pyrogue_tree/core/block`.
+
 For child Devices, the traversal follows add order. ``Node`` stores children
 in an ``OrderedDict``, and ``Device`` recurses through
 ``self.devices.values()``.
