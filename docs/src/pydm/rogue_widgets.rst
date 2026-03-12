@@ -74,3 +74,8 @@ What To Explore Next
 - Rogue channel syntax and modes: :doc:`channel_urls`
 - Launching a custom UI file: :doc:`starting_gui`
 - Time-series plotting workflows: :doc:`timeplot_gui`
+
+API Reference
+=============
+
+- Rogue PyDM widget API index: :doc:`/api/python/pyrogue/pydm_widgets/index`

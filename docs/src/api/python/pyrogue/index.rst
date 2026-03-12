@@ -77,6 +77,15 @@ Helpers
    twoscomplement
    pydm_runpydm
 
+PyDM
+====
+
+.. toctree::
+   :maxdepth: 1
+   :titlesonly:
+
+   pydm_widgets/index
+
 Subpackages
 ===========
 
