@@ -536,18 +536,18 @@ def parse_binding(source_path: pathlib.Path, module_paths: dict[pathlib.Path, st
     header_docs = parse_header_docs(header_path) if header_path else HeaderDoc({}, {})
     if header_docs.class_docs.get(class_name):
         class_doc = header_docs.class_docs[class_name].description
-    if header_docs.method_docs.get("create"):
+    if header_docs.method_docs.get(class_name):
+        ctor_header_doc = header_docs.method_docs[class_name]
+        ctor_doc = ctor_header_doc.description
+        ctor_args = list(ctor_header_doc.params.keys()) or ctor_args
+        ctor_params = ctor_header_doc.params
+    elif header_docs.method_docs.get("create"):
         create_doc = header_docs.method_docs["create"]
         ctor_doc = create_doc.description
         ctor_args = list(create_doc.params.keys()) or ctor_args
         ctor_params = create_doc.params
         ctor_cpp_target = f"{cpp_name}::create"
         ctor_cpp_role = "func"
-    elif header_docs.method_docs.get(class_name):
-        ctor_header_doc = header_docs.method_docs[class_name]
-        ctor_doc = ctor_header_doc.description
-        ctor_args = list(ctor_header_doc.params.keys()) or ctor_args
-        ctor_params = ctor_header_doc.params
     resolved_methods: list[MethodDoc] = []
     for method in methods:
         header_method = (
