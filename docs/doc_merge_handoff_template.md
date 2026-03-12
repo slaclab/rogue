@@ -91,6 +91,11 @@ Already completed:
 - `docs/src/pyrogue_tree/core/groups.rst`
 - `docs/src/pyrogue_tree/core/block.rst`
 - `docs/src/pyrogue_tree/core/block_operations.rst`
+- `docs/src/pyrogue_tree/core/memory_variable_stream.rst`
+- `docs/src/pyrogue_tree/core/model.rst`
+- `docs/src/pyrogue_tree/core/fixed_point_models.rst`
+- `docs/src/pyrogue_tree/core/poll_queue.rst`
+- `docs/src/pyrogue_tree/core/yaml_configuration.rst`
 
 Important structural notes:
 - Stream built-in module pages now sit under
@@ -133,14 +138,39 @@ Important structural notes:
   `Post` more explicitly. The current doc position is: `Post` is a real memory
   transaction type, often handled like `Write` at the transport boundary, but
   available for downstream paths that want distinct posted-write policy.
-- No docs build has been run yet; verification so far is source-level only.
+- `memory_variable_stream.rst` is implementation-driven because the old-page
+  equivalent on `pre-release` was effectively a stub.
+- `model.rst` now links to a dedicated
+  `docs/src/pyrogue_tree/core/fixed_point_models.rst` page so the main Model
+  page stays focused while `Fixed` / `UFixed` get fuller explanation.
+- `yaml_configuration.rst` was split so it now stays focused on YAML structure,
+  file inputs, filters, `writeEach`, and array matching; the generic bulk
+  write / verify / check transaction model now lives in
+  `docs/src/pyrogue_tree/core/block_operations.rst`.
+- The docs build workflow is now documented in
+  `docs/doc_merge_guidelines.md`: use the repo's `Docs: Build HTML` task /
+  `rogue_build` conda environment, but ask the user before running it because
+  it may install packages and runs `make clean html`.
+- A docs build has now been run successfully in the proper environment.
+  Current status: `build succeeded, 1 warning`.
+- The remaining warning is environmental, not a page-content problem:
+  Sphinx could not fetch the Python intersphinx inventory from
+  `https://docs.python.org/objects.inv`.
+- To make the docs build robust, `docs/src/conf.py` now mocks additional
+  optional GUI dependencies (`qtpy`, `matplotlib`, `pyqtgraph`, `sip`) and the
+  `python/pyrogue/pydm/widgets/*.py` modules now use
+  `from __future__ import annotations` so autodoc imports do not eagerly
+  evaluate mocked Qt type annotations.
 
 Next likely target:
-- `docs/src/pyrogue_tree/core/memory_variable_stream.rst`
-- then the remaining advanced `pyrogue_tree/core` pages such as
-  `model.rst`, `poll_queue.rst`, and `yaml_configuration.rst`
-- after that, do a consistency pass on nearby pages that mention command
-  helpers, group filters, or posted writes if any wording drift remains
+- Do a consistency pass on nearby pages that mention command helpers,
+  group filters, YAML workflows, or posted writes if any wording drift remains.
+- Consider whether `docs/src/pyrogue_tree/core/remote_variable.rst` should add
+  a short pointer to `fixed_point_models.rst`, since that is where many users
+  first encounter `base=pr.Fixed(...)`.
+- If needed, continue source-level cleanup for docs-build robustness, but treat
+  the remaining intersphinx warning as an environment/network issue unless the
+  build context changes.
 
 If the old/new mapping becomes ambiguous, stop and state the ambiguity clearly
 before continuing.
@@ -174,9 +204,9 @@ Already merged:
 - much of `docs/src/pyrogue_tree/core/*`
 
 Next target:
-- `docs/src/pyrogue_tree/core/memory_variable_stream.rst`
-- `docs/src/pyrogue_tree/core/model.rst`
-- `docs/src/pyrogue_tree/core/poll_queue.rst`
+- consistency pass on nearby `docs/src/pyrogue_tree/core/*` pages
+- optionally add fixed-point cross-links from `remote_variable.rst`
+- then move to the next unresolved doc cluster
 
 Compare full old docs on `pre-release` against the current docs before
 rewriting. Preserve the best narrative material from the old docs while keeping
