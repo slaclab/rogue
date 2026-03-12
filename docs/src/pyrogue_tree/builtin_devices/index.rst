@@ -25,6 +25,18 @@ Use cases commonly include:
 * Stream capture and replay workflows
 * Process supervision and script orchestration
 
+Reading Path
+============
+
+The built-in devices fall into a few natural groups:
+
+* Start with :doc:`run_control` and :doc:`process` if you are organizing
+  software actions, acquisition loops, or operator-visible procedures.
+* Use :doc:`data_writer`, :doc:`data_receiver`, :doc:`stream_writer`, and
+  :doc:`stream_reader` for file and stream data paths.
+* Use :doc:`prbstx`, :doc:`prbsrx`, and :doc:`prbspair` for PRBS generation,
+  checking, and loopback validation.
+
 Relationship to Core and interfaces
 ===================================
 

@@ -18,6 +18,39 @@ text. Rewrite the page so it reads like one intentional document.
 5. Rewrite the full page around a clean narrative that preserves the best of
    both.
 
+## Required Workflow
+
+Treat each merge target as a small research-and-rewrite pass, not as a text
+edit.
+
+Follow this order:
+
+1. Read the full old page on `pre-release`.
+2. Read the full current page in the reorganized docs.
+3. Read the relevant implementation in this repository so the behavior,
+   examples, and parameter descriptions reflect the actual current API.
+4. Check how the feature is used in practice:
+   - Search local example-heavy repositories such as
+     `/Users/bareese/surf`, `/Users/bareese/ldmx-firmware`, and
+     `/Users/bareese/warm-tdm` when they are relevant.
+   - Use authenticated `gh` code search against the `slaclab` GitHub
+     organization for real-world usage patterns.
+5. Decide what the old page explains better, what the new page structures
+   better, and what the implementation/examples show about actual usage.
+6. Rewrite the page as one coherent document.
+7. After the rewrite, do a short consistency pass against neighboring pages in
+   the same subsection so terminology, section patterns, and cross-links do not
+   drift.
+
+Do not skip the implementation read just because the old docs already contain
+examples. Do not skip real-world example discovery just because the local page
+already has one example.
+
+For topics centered on a class, helper, or reusable workflow, GitHub example
+search should usually be treated as part of the standard workflow, not as an
+exception path. The point is to understand how the feature tends to be used in
+real trees, not just how it is defined in isolation.
+
 ## Narrative Structure
 
 - Start with general use cases and the basic purpose of the subject.
@@ -47,11 +80,16 @@ text. Rewrite the page so it reads like one intentional document.
   `/Users/bareese/warm-tdm` for real-world usage patterns. Treat those as
   supplementary examples, not as a substitute for verifying Rogue APIs against
   this repository's implementation.
-- When additional real-world examples would help, use authenticated
-  `gh search code` queries against the `slaclab` GitHub organization to find
-  Rogue-based usage patterns across public and accessible private repositories.
-  Use GitHub search as a discovery tool, then verify the details against the
-  relevant source before carrying the example pattern into the docs.
+- Use authenticated `gh search code` queries against the `slaclab` GitHub
+  organization to find Rogue-based usage patterns across public and accessible
+  private repositories whenever the page describes a reusable class, helper,
+  or workflow. This should be the normal path for pages such as built-in
+  devices, command helpers, interface adapters, and other reusable APIs.
+- Use GitHub search as a discovery tool, then inspect the matched source
+  directly before carrying the example pattern into the docs.
+- If GitHub search is unavailable in the environment, say so clearly and fall
+  back to the best available local examples rather than silently skipping the
+  step.
 - `slaclab` repositories are generally fair game as example sources, but treat
   `pysmurf` as a special case because much of it targets an older Rogue API
   surface. If you consult `pysmurf`, cross-check the example carefully against
