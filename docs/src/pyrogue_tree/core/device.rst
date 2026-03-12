@@ -226,9 +226,13 @@ hardware procedures all build on the same model.
 
 One PyRogue design choice is especially important here: transaction initiation
 is intentionally separated from completion. ``write``, ``verify``, and
-``read`` start work, while ``check`` is the step that waits for the responses.
-That separation lets a ``Device`` issue many operations first and then retire
-them as a group.
+``read`` start work, while ``check`` is the step that waits for the
+responses. That separation lets a ``Device`` issue many operations first and
+then retire them as a group.
+
+Posted writes also exist in PyRogue, but they are usually exposed through
+per-Variable ``post()`` methods and posted ``RemoteCommand`` helpers rather
+than as a foundational full-Device traversal API.
 
 Device-Level Block APIs
 =======================

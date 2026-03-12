@@ -33,9 +33,9 @@ Those common behaviors are what make local, remote, and linked Variables feel
 like one coherent part of the tree, even though their implementations differ.
 
 For hardware-backed Variables, the actual bus activity still flows through the
-foundational ``Device`` operations: write, verify, read, and check. In other
-words, Variable APIs present the value-oriented surface, while ``Device`` owns
-the bulk transaction model underneath.
+foundational ``Device`` transaction model built around write, verify, read,
+and check. Variable APIs present the value-oriented surface, while ``Device``
+owns the bulk traversal and transaction model underneath.
 
 Parameters You Usually Set
 ==========================
@@ -202,16 +202,17 @@ Core Access Methods
 ===================
 
 Across the Variable subtypes, the most important day-to-day APIs are
-``get()`` and ``set()``.
+``get()``, ``set()``, and for hardware-backed cases, sometimes ``post()``.
 
 At a conceptual level:
 
 * ``get()`` returns a Variable value in its native Python type
 * ``set()`` accepts a native Python value and updates the Variable
+* ``post()`` issues a posted (non-blocking) write for hardware-backed Variables
 
 For hardware-backed Variables, those calls may also initiate bus activity.
-For software-backed or linked Variables, they call into the subtype's local or
-linked behavior instead.
+For software-backed or linked Variables, ``get()`` and ``set()`` call into the
+subtype's local or linked behavior instead.
 
 The most important control flags are:
 
@@ -228,6 +229,13 @@ normal write path." Using ``set(write=False)`` means "update or stage the value
 without immediately committing it." That distinction matters in bulk
 configuration flows, linked conversions, and any code that wants to stage
 several dependent updates before writing them together.
+
+``post(value)`` is narrower than the core ``Device`` block operations. It is a
+per-Variable hardware API that issues a posted write directly through the
+backing ``Block`` rather than through the normal ``parent.writeBlocks()`` path.
+That makes it useful for self-clearing command bits, trigger registers, and
+``RemoteCommand`` helpers whose intended hardware interaction is specifically a
+posted write.
 
 Those same ideas propagate into ``LinkVariable`` callbacks. A good
 ``linkedGet`` should normally respect the caller's ``read`` choice, and a good

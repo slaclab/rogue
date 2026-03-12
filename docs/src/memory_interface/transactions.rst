@@ -28,6 +28,26 @@ A ``Transaction`` typically carries:
 Most users do not construct ``Transaction`` objects directly. They are usually
 created by a ``Master`` when a request is issued.
 
+Access Types
+============
+
+The most important ``Transaction`` types are:
+
+- ``Read`` requests data from the downstream target.
+- ``Write`` sends data through the normal write path.
+- ``Post`` sends data as a posted write.
+- ``Verify`` checks that downstream state matches the expected value.
+
+For many custom ``Slave`` or ``Hub`` implementations, ``Write`` and ``Post``
+look almost identical at the transport boundary: both carry outbound write
+data. The important distinction is semantic. A posted write is a distinct
+transaction type in the Rogue memory model, so downstream code can choose to
+handle it differently when the protocol or hardware behavior requires that.
+
+In practice, some implementations intentionally treat ``Write`` and ``Post``
+the same, while others use ``Post`` for command-like or non-readback-oriented
+operations.
+
 Lifecycle
 =========
 
@@ -38,6 +58,17 @@ The normal lifecycle looks like this:
 3. Completion is reported with ``done()`` or with an error call such as
    ``error()``.
 4. Waiting code observes completion, failure, or timeout.
+
+Posted writes are not a separate lifecycle mechanism. They still move through
+the same ``Transaction`` machinery as reads, writes, and verifies: a
+``Master`` creates the ``Transaction``, downstream components process it, and
+completion or error is reported in the normal way.
+
+The difference is the access type. A downstream ``Slave`` or ``Hub`` can see
+that the request is ``Post`` instead of ``Write`` and choose different
+behavior if the protocol or hardware requires it. Some implementations treat
+``Post`` exactly like ``Write``. Others use it for write paths that should not
+wait for a normal downstream response, or for other command-oriented policies.
 
 Each ``Transaction`` has a unique 32-bit ID that can be used for lookup,
 correlation, or asynchronous completion handling.
