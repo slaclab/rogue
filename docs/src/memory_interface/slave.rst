@@ -32,6 +32,12 @@ Assume, for example, that the underlying protocol provides calls such as
 ``protocolRead(id, address, size)`` and ``protocolWrite(id, address, size,
 data)``, with callbacks when the operation completes.
 
+At the ``Slave`` boundary, ``Write`` and ``Post`` often arrive with the same
+basic shape: both carry outbound write data. That is why many implementations
+branch on them together. The distinction is that ``Post`` is still a different
+transaction type, so a ``Slave`` can choose to give it different treatment if
+the downstream protocol cares about posted-write semantics.
+
 Python Example
 ==============
 
@@ -92,6 +98,10 @@ Python Example
 The important part of this pattern is that the incoming ``Transaction`` is kept
 alive until the underlying protocol completes. That is why ``_addTransaction()``
 and ``_getTransaction()`` are used here.
+
+This example intentionally handles ``Write`` and ``Post`` the same way. That is
+common. A different protocol could instead inspect ``tran.type()`` and apply a
+special posted-write policy.
 
 C++ Example
 ===========
