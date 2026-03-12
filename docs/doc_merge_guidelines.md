@@ -52,6 +52,10 @@ text. Rewrite the page so it reads like one intentional document.
   Rogue-based usage patterns across public and accessible private repositories.
   Use GitHub search as a discovery tool, then verify the details against the
   relevant source before carrying the example pattern into the docs.
+- `slaclab` repositories are generally fair game as example sources, but treat
+  `pysmurf` as a special case because much of it targets an older Rogue API
+  surface. If you consult `pysmurf`, cross-check the example carefully against
+  the current implementation in this repository before reusing the pattern.
 - When examples are informed by other local or `slaclab` repositories, do not
   call out the source project in the explanatory prose unless the provenance is
   itself technically important. Present them as documentation examples first.
@@ -65,6 +69,24 @@ text. Rewrite the page so it reads like one intentional document.
   zero-copy behavior, ownership, ordering, or performance tradeoffs.
 - When older content contains the better explanation, integrate it into the new
   structure rather than copying the old structure back wholesale.
+
+## Parameter Documentation Style
+
+- For tree classes, document parameters using the narrative pattern established
+  in the current docs rather than trying to restate the full constructor
+  signature inline.
+- Use section title
+  `What You Usually Set` to focus attention on the small set of parameters that
+  most strongly shape behavior in real usage.
+- Treat the generated API reference as the canonical place for full signatures
+  and exhaustive parameter lists.
+- In narrative docs, explain the meaning and design impact of the commonly used
+  parameters instead of mechanically enumerating every argument.
+- For subtype pages, start from the shared parameters already explained on the
+  parent page, then add the subtype-specific parameters that matter most for
+  choosing and using that subtype.
+- When helpful, follow a short summary list of important parameters with a more
+  focused explanatory section for the highest-value ones.
 
 ## Type Naming Style
 

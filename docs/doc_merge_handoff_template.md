@@ -39,6 +39,9 @@ Working rules:
   `slaclab` GitHub organization to discover Rogue-based examples in public and
   accessible private repositories, then verify the relevant source directly
   before reflecting those patterns in the docs.
+- `slaclab` repositories are generally acceptable example sources, but treat
+  `pysmurf` cautiously because it often reflects older Rogue APIs; verify any
+  reused pattern against the current implementation in this repository first.
 - Do not identify example source projects in the doc prose unless that
   provenance is technically important; present examples as documentation
   examples first.
@@ -99,6 +102,9 @@ Important structural notes:
 - GitHub CLI auth is available for `gh search code` against the `slaclab`
   organization and should be used when broader Rogue example discovery would
   help the merge.
+- `slaclab` repos are acceptable example sources in general, but `pysmurf`
+  should be treated as legacy-oriented and cross-checked carefully before its
+  patterns are reused.
 - In `pyrogue_tree/core`, the foundational narrative now runs:
   `Root` -> `Device` -> `Variable` / `Command` -> subtype pages -> advanced
   mechanics pages such as `Block`, `Device Block Operations`, `Model`, and YAML.
