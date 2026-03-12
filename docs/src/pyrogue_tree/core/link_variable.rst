@@ -30,6 +30,31 @@ This is often the best way to expose engineering units, calibrated views,
 composite bit fields, or operator-friendly abstractions without hiding the raw
 registers that developers may still need.
 
+What You Usually Set
+====================
+
+Most ``LinkVariable`` definitions use the shared Variable parameters from
+:doc:`/pyrogue_tree/core/variable`, plus the linked-logic parameters that make
+the node derived rather than directly stored:
+
+* ``dependencies`` for the source Variables.
+* ``linkedGet`` for read-side conversion.
+* ``linkedSet`` for write-side conversion.
+
+Some code also uses the ``variable=...`` shortcut to mirror another Variable
+directly and then override only selected presentation properties or callback
+behavior.
+
+When you pass ``variable=some_var``, PyRogue automatically uses that
+Variable's ``get()`` and ``set()`` methods as the linked access behavior and
+adds it as a dependency. In other words, this is the quick way to build a
+single-source ``LinkVariable`` without spelling out both ``dependencies`` and
+the default callbacks yourself.
+
+This is most useful when you want a second view of one Variable that differs
+mainly in presentation, naming, grouping, or a small override to the default
+linked behavior.
+
 Callbacks And Dependencies
 ==========================
 
@@ -100,6 +125,43 @@ In practice:
 
 Examples
 ========
+
+Mirroring A Single Variable With ``variable=``
+----------------------------------------------
+
+The ``variable=...`` shortcut is useful when you want a second tree-facing
+view of one Variable without writing explicit ``dependencies``,
+``linkedGet``, and ``linkedSet`` boilerplate.
+
+.. code-block:: python
+
+   import pyrogue as pr
+
+   class PowerMonitor(pr.Device):
+       def __init__(self, **kwargs):
+           super().__init__(**kwargs)
+
+           self.add(pr.RemoteVariable(
+               name='VoltageRaw',
+               offset=0x00,
+               bitSize=16,
+               mode='RO',
+               base=pr.UInt,
+               hidden=True,
+           ))
+
+           self.add(pr.LinkVariable(
+               name='VoltageCounts',
+               variable=self.VoltageRaw,
+               mode='RO',
+               disp='{:#06x}',
+               description='Mirror of VoltageRaw with operator-facing formatting',
+           ))
+
+In this pattern, ``VoltageCounts`` reuses ``VoltageRaw`` for storage and read
+behavior, but presents it as a separate node with its own name, description,
+and formatting. This is a good fit when you want an alternate tree-facing view
+without introducing any new conversion logic.
 
 Engineering-Unit View Of A Raw Register
 ---------------------------------------
