@@ -114,6 +114,90 @@ This is one of the core reasons PyRogue trees work well for both hardware
 developers and operators: the same system can preserve raw control surfaces and
 also expose safer, more meaningful user-facing values.
 
+Core Access Methods
+===================
+
+Across the Variable subtypes, the most important day-to-day APIs are
+``get()`` and ``set()``.
+
+At a conceptual level:
+
+* ``get()`` returns a Variable value in its native Python type
+* ``set()`` accepts a native Python value and updates the Variable
+
+For hardware-backed Variables, those calls may also initiate bus activity.
+For software-backed or linked Variables, they call into the subtype's local or
+linked behavior instead.
+
+The most important control flags are:
+
+* ``read`` on ``get()``
+* ``write`` on ``set()``
+
+Using ``get(read=True)`` means "refresh from the underlying source before
+returning the value." For a ``RemoteVariable``, that usually means issuing a
+hardware read. Using ``get(read=False)`` means "return the currently cached
+value without forcing a new transaction."
+
+Using ``set(write=True)`` means "apply the new value and push it through the
+normal write path." Using ``set(write=False)`` means "update or stage the value
+without immediately committing it." That distinction matters in bulk
+configuration flows, linked conversions, and any code that wants to stage
+several dependent updates before writing them together.
+
+Those same ideas propagate into ``LinkVariable`` callbacks. A good
+``linkedGet`` should normally respect the caller's ``read`` choice, and a good
+``linkedSet`` should normally respect the caller's ``write`` choice.
+
+Display-Oriented Access
+=======================
+
+PyRogue also exposes display-form accessors alongside the native-value access
+methods:
+
+* ``getDisp()`` performs ``get()`` and returns the display-formatted string
+* ``setDisp()`` parses a display-formatted string and then calls ``set()``
+
+The display form is built from the Variable's ``disp`` setting.
+
+In the common case, ``disp`` is a Python format string such as:
+
+* ``'{:d}'`` for decimal integers
+* ``'{:#x}'`` for hexadecimal integers
+* ``'{:.3f}'`` for fixed-point floating-point display
+
+When ``getDisp()`` or ``valueDisp()`` is called, PyRogue formats the current
+native value through that ``disp`` string. When ``setDisp()`` is called,
+PyRogue parses the display-form input back into the native value type and then
+calls ``set()``.
+
+Two special cases are also common:
+
+* Enum-backed Variables can use display mappings so the user sees names rather
+  than raw numeric values.
+* Array-valued Variables format each element using the same display rule.
+
+These methods are useful when the interaction is text-oriented rather than
+type-oriented, for example:
+
+* Command-line tools
+* GUI widgets
+* YAML and other serialized configuration flows
+* Enum-backed or formatted values where the display form matters
+
+Cached Value Shortcuts
+======================
+
+Two related convenience methods expose the cached value without forcing a new
+read:
+
+* ``value()`` is equivalent to ``get(read=False)``
+* ``valueDisp()`` is equivalent to ``getDisp(read=False)``
+
+These are useful when the caller wants the current tree state as it already
+exists locally, without implying that the underlying source should be accessed
+again.
+
 Advanced Related Topics
 =======================
 
