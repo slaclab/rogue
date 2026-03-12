@@ -37,6 +37,90 @@ foundational ``Device`` operations: write, verify, read, and check. In other
 words, Variable APIs present the value-oriented surface, while ``Device`` owns
 the bulk transaction model underneath.
 
+Parameters You Usually Set
+==========================
+
+The generated API reference contains the full constructor signature for each
+Variable class. The narrative docs have a narrower job: explain the parameters
+that most often shape how a Variable behaves in a tree.
+
+Across the Variable types, the most important shared parameters are:
+
+* ``name`` for the tree path segment.
+* ``description`` for operator-facing help text.
+* ``mode`` for read/write policy such as ``RW``, ``RO``, or ``WO``.
+* ``units`` for engineering-unit labels.
+* ``disp`` for display formatting.
+* ``enum`` for named values backed by integers.
+* ``pollInterval`` for periodic refresh behavior.
+* ``hidden`` and ``groups`` for presentation and workflow policy.
+
+The subtype pages then add the parameters that most strongly affect their own
+behavior, such as ``offset`` for ``RemoteVariable`` or ``dependencies`` for
+``LinkVariable``.
+
+Common Variable Parameters
+==========================
+
+``name`` And ``description``
+----------------------------
+
+``name`` determines how the Variable appears in the tree and how code reaches
+it through attribute access or path-based APIs. ``description`` is the short
+human explanation shown to users, GUIs, and tooling.
+
+In practice, clear names and concise descriptions do more for tree usability
+than many lower-priority metadata fields.
+
+``mode``
+--------
+
+``mode`` controls whether the Variable is read-write, read-only, or
+write-only.
+
+Common choices are:
+
+* ``RW`` for normal configuration and readable state.
+* ``RO`` for telemetry, status, counters, and derived read-only views.
+* ``WO`` for write-only strobes, triggers, or special control surfaces.
+
+``disp``, ``enum``, And ``units``
+---------------------------------
+
+These parameters shape how a value is presented rather than where it comes
+from.
+
+* ``disp`` formats the value for display-oriented APIs such as ``getDisp()``.
+* ``enum`` maps integer values to named states.
+* ``units`` labels the engineering meaning of the value.
+
+These are high-value parameters to cover in narrative docs because they often
+determine whether the tree reads like a raw implementation surface or a clear
+operator-facing interface.
+
+``pollInterval``
+----------------
+
+``pollInterval`` tells PyRogue that the Variable should be refreshed
+periodically. This matters most for changing status values and telemetry.
+
+Not every Variable should be polled. Configuration values that rarely change
+usually read better as on-demand state than as constant background traffic.
+For the scheduling model behind that behavior, see
+:doc:`/pyrogue_tree/core/poll_queue`.
+
+``hidden`` And ``groups``
+-------------------------
+
+These parameters control how a Variable participates in presentation and other
+tree-level workflows.
+
+* ``hidden=True`` removes the Variable from normal user-facing views.
+* ``groups`` attaches labels that other tools and workflows can use for
+  filtering or policy decisions.
+
+For the grouping model itself, see :doc:`/pyrogue_tree/core/groups`.
+
 Choosing The Right Variable Type
 ================================
 
