@@ -39,6 +39,9 @@ Working rules:
   `slaclab` GitHub organization to discover Rogue-based examples in public and
   accessible private repositories, then verify the relevant source directly
   before reflecting those patterns in the docs.
+- Do not identify example source projects in the doc prose unless that
+  provenance is technically important; present examples as documentation
+  examples first.
 - Use proper type names in fixed-width formatting, such as ``Master``,
   ``Slave``, ``Frame``, and ``Transaction``.
 - Capitalize list items.
@@ -64,6 +67,26 @@ Already completed:
 - `docs/src/memory_interface/hub.rst`
 - `docs/src/memory_interface/tcp_bridge.rst`
 - `docs/src/memory_interface/transactions.rst`
+- `docs/src/pydm/index.rst`
+- `docs/src/pydm/starting_gui.rst`
+- `docs/src/pydm/channel_urls.rst`
+- `docs/src/pydm/rogue_widgets.rst`
+- `docs/src/pydm/timeplot_gui.rst`
+- `docs/src/api/python/pyrogue/pydm_widgets/index.rst`
+- `docs/src/api/python/pyrogue/pydm_widgets/*`
+- `docs/src/pyrogue_tree/index.rst`
+- `docs/src/pyrogue_tree/core/index.rst`
+- `docs/src/pyrogue_tree/core/root.rst`
+- `docs/src/pyrogue_tree/core/device.rst`
+- `docs/src/pyrogue_tree/core/variable.rst`
+- `docs/src/pyrogue_tree/core/command.rst`
+- `docs/src/pyrogue_tree/core/local_variable.rst`
+- `docs/src/pyrogue_tree/core/remote_variable.rst`
+- `docs/src/pyrogue_tree/core/link_variable.rst`
+- `docs/src/pyrogue_tree/core/local_command.rst`
+- `docs/src/pyrogue_tree/core/remote_command.rst`
+- `docs/src/pyrogue_tree/core/block.rst`
+- `docs/src/pyrogue_tree/core/block_operations.rst`
 
 Important structural notes:
 - Stream built-in module pages now sit under
@@ -76,12 +99,26 @@ Important structural notes:
 - GitHub CLI auth is available for `gh search code` against the `slaclab`
   organization and should be used when broader Rogue example discovery would
   help the merge.
+- In `pyrogue_tree/core`, the foundational narrative now runs:
+  `Root` -> `Device` -> `Variable` / `Command` -> subtype pages -> advanced
+  mechanics pages such as `Block`, `Device Block Operations`, `Model`, and YAML.
+- `Device` now carries the first conceptual introduction to write / verify /
+  read / check. `Variable` now introduces `get()`, `set()`, `getDisp()`,
+  `setDisp()`, `value()`, and `valueDisp()`.
+- `Block` now includes a dedicated explanation of the `Device._buildBlocks()`
+  grouping process.
+- `LinkVariable` examples were expanded using real patterns from local/example
+  repos, but the docs should avoid naming the source project in the example
+  prose unless technically necessary.
 - No docs build has been run yet; verification so far is source-level only.
 
 Next likely target:
-- `docs/src/pyrogue_tree/index.rst`
-- `docs/src/pyrogue_tree/core/index.rst`
-- then the core concept pages under `docs/src/pyrogue_tree/core/`
+- `docs/src/pyrogue_tree/core/command.rst` consistency pass after the subtype
+  rewrites
+- `docs/src/pyrogue_tree/core/groups.rst`
+- `docs/src/pyrogue_tree/core/memory_variable_stream.rst`
+- then the remaining advanced `pyrogue_tree/core` pages such as
+  `model.rst`, `poll_queue.rst`, and `yaml_configuration.rst`
 
 If the old/new mapping becomes ambiguous, stop and state the ambiguity clearly
 before continuing.
@@ -111,10 +148,13 @@ Read and follow:
 Already merged:
 - `docs/src/stream_interface/*`
 - `docs/src/memory_interface/*`
+- `docs/src/pydm/*`
+- much of `docs/src/pyrogue_tree/core/*`
 
 Next target:
-- `docs/src/pyrogue_tree/index.rst`
-- `docs/src/pyrogue_tree/core/index.rst`
+- `docs/src/pyrogue_tree/core/command.rst`
+- `docs/src/pyrogue_tree/core/groups.rst`
+- `docs/src/pyrogue_tree/core/memory_variable_stream.rst`
 
 Compare full old docs on `pre-release` against the current docs before
 rewriting. Preserve the best narrative material from the old docs while keeping

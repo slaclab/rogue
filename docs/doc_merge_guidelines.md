@@ -52,6 +52,9 @@ text. Rewrite the page so it reads like one intentional document.
   Rogue-based usage patterns across public and accessible private repositories.
   Use GitHub search as a discovery tool, then verify the details against the
   relevant source before carrying the example pattern into the docs.
+- When examples are informed by other local or `slaclab` repositories, do not
+  call out the source project in the explanatory prose unless the provenance is
+  itself technically important. Present them as documentation examples first.
 
 ## Technical Content Priorities
 
