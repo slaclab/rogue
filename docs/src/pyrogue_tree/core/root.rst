@@ -208,8 +208,11 @@ These methods back the built-in configuration and state commands exposed on the
 Root itself. They are the main mechanism for saving baselines, restoring known
 configurations, and applying configuration changes across the whole tree.
 
-For YAML matching, array slicing, and bulk commit behavior, see
+For YAML matching, file formats, and array slicing, see
 :doc:`/pyrogue_tree/core/yaml_configuration`.
+
+For the bulk transaction model used when those staged values are committed
+through the tree, see :doc:`/pyrogue_tree/core/block_operations`.
 
 Built-In Root Commands And Variables
 ====================================

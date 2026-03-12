@@ -1,42 +1,44 @@
 .. _pyrogue_tree_root_yaml_configuration:
 
-==============================
-YAML Configuration and Bulk IO
-==============================
+==================
+YAML Configuration
+==================
 
-PyRogue supports configuration/state import and export through YAML APIs on
-``Root``.
+PyRogue supports configuration and state import/export through YAML APIs on
+``Root`` and through subtree export on ``Node``.
 
-Typical YAML workflows
+These APIs are the standard way to capture a known-good configuration, restore
+it later, or inspect the current tree as structured YAML rather than as
+interactive Variables.
+
+Typical YAML Workflows
 ======================
 
 - Configuration baselines for known-good startup values
 - Captured runtime state for debug and issue reproduction
 - Status snapshots for validation and operator handoff
 
-Practical guidance
-==================
-
-- Separate baseline configuration from transient runtime state
-- Track YAML files in source control when they represent release artifacts
-- Document version compatibility when schema or naming changes occur
-
-Main entry points
+Main Entry Points
 =================
 
-- ``saveYaml(...)``: write YAML to file/zip from current tree values
-- ``loadYaml(...)``: read YAML from file(s)/directory and apply to tree
-- ``setYaml(...)``: apply YAML text directly
-- ``getYaml(...)``: generate YAML text for a Node/tree
+The main YAML entry points are:
 
-These APIs back built-in Root Commands in the tree:
+* ``Node.getYaml(...)`` to export one subtree as YAML text.
+* ``Root.saveYaml(...)`` to write YAML to a file, with optional auto-naming.
+* ``Root.loadYaml(...)`` to read YAML from one or more files or directories.
+* ``Root.setYaml(...)`` to apply YAML text directly.
 
-- ``SaveConfig`` / ``LoadConfig``
-- ``SaveState``
-- ``SetYamlConfig`` / ``GetYamlConfig`` / ``GetYamlState``
+These APIs also back the built-in hidden Root commands:
 
-Config vs state filters
-=======================
+* ``SaveConfig`` / ``LoadConfig``
+* ``SaveState``
+* ``SetYamlConfig`` / ``GetYamlConfig`` / ``GetYamlState``
+
+The command wrappers mainly pre-select useful defaults for modes and group
+filters.
+
+Configuration Vs State Filters
+==============================
 
 Typical defaults:
 
@@ -48,17 +50,51 @@ That means:
 - Read-only Variables are normally ignored for config load
 - Commands are ignored by YAML set/load (``BaseCommand._setDict`` is a no-op)
 
-How YAML load is applied
-========================
+This is why configuration YAML usually reads like "things you can set", while
+state YAML reads like "everything worth observing".
+
+Saving YAML
+===========
+
+``Node.getYaml(...)`` and ``Root.saveYaml(...)`` both serialize current tree
+values using the same underlying tree-dictionary path.
+
+Important export options:
+
+* ``readFirst=True`` performs a Root-wide read before export.
+* ``modes`` controls which Variable access modes are included.
+* ``incGroups`` and ``excGroups`` apply the same group-filtering model used
+  elsewhere in the tree.
+* ``recurse`` on ``getYaml(...)`` controls whether child Devices are included.
+
+``saveYaml(...)`` can either write to a named file or auto-generate a
+timestamped filename. If the target name ends in ``.zip``, it writes the YAML
+payload into a compressed zip member.
+
+Loading And Applying YAML
+=========================
+
+``Root.loadYaml(...)`` accepts more than a single file path. In the current
+implementation, the input can be:
+
+* A single ``.yml`` or ``.yaml`` file.
+* A directory, in which case all ``.yml`` and ``.yaml`` files in that
+  directory are loaded in sorted order.
+* A zip-file subdirectory path.
+* A Python list of those entries.
+* A comma-separated string of entries.
+
+``Root.setYaml(...)`` applies YAML text directly without going through the
+filesystem.
 
 For ``loadYaml(..., writeEach=False)`` and ``setYaml(..., writeEach=False)``,
-the workflow is:
+the application workflow is:
 
 1. Parse YAML input to ordered dictionaries.
-2. Traverse tree entries and assign Variable display values with
+2. Traverse the tree and assign Variable display values with
    ``setDisp(..., write=False)``.
-3. After the whole YAML payload is staged in shadow values, run Root bulk
-   write/verify/check (``Root._write()``).
+3. After the full YAML payload is staged in shadow state, run the normal Root
+   configuration-commit path through ``Root._write()``.
 
 Implications:
 
@@ -69,25 +105,24 @@ Implications:
 If ``writeEach=True``, each ``setDisp`` write is issued immediately while YAML
 is being traversed (no final consolidated ``Root._write()`` pass).
 
-Commit ordering
-===============
+The load path is wrapped in both ``Root.pollBlock()`` and ``Root.updateGroup()``
+so polling does not race with the configuration operation and listeners see a
+coalesced update batch.
 
-Bulk commit is initiated recursively using tree/Device order:
+The staged values are then committed using the normal tree transaction path.
+For the bulk write, verify, read, and check model behind that commit step, see
+:doc:`/pyrogue_tree/core/block_operations`.
 
-- Device traversal follows tree child ordering
-- Each Device initiates its Blocks in ``self._blocks`` order
-- For auto-built Blocks, ordering is typically lower-offset first because Block
-  creation starts from Variables sorted by ``(offset, size)``
+Practical Guidance
+==================
 
-After initiation:
+* Separate baseline configuration from transient runtime state.
+* Track YAML files in source control when they represent release artifacts.
+* Document version compatibility when tree names or meaning change.
+* Prefer ``writeEach=False`` for coordinated configuration loads unless you
+  specifically need immediate per-entry writes.
 
-- ``verify`` transactions are initiated
-- ``check`` phase waits for initiated operations to complete and surfaces errors
-
-In other words, PyRogue separates transaction initiation from completion. The completion/wait
-step is called ``check`` in API naming.
-
-Array matching and slicing in YAML keys
+Array Matching And Slicing In YAML Keys
 =======================================
 
 YAML load supports array-style Node matching:
@@ -99,33 +134,38 @@ YAML load supports array-style Node matching:
 
 Examples:
 
-- ``AmcCard[:]: DacEnable[0]: True``
-- ``AmcCard[1:3]: DacEnable: True``
+.. code-block:: yaml
 
-Bulk operations: initiate vs check
-==================================
+   Root:
+     AmcCard[:]:
+       DacEnable[0]: True
 
-Bulk methods intentionally decouple transaction initiation from completion:
+     AmcCard[1:3]:
+       DacEnable: True
 
-- Initiate: ``writeBlocks``, ``readBlocks``, ``verifyBlocks``
-- Wait/check: ``checkBlocks``
+The matching rules follow the same array-aware ``nodeMatch()`` behavior used by
+the tree:
 
-This pattern allows many operations to be issued first, then checked as a
-group, which reduces per-transaction blocking overhead.
+* ``[0]`` selects one element.
+* ``[:]`` and ``[*]`` select all elements.
+* ``[1:3]`` uses Python-style slice semantics, so it selects elements 1 and 2.
 
-``checkEach=True`` changes behavior to check completion after each Block
-transaction instead of deferring checks.
+Array Variables can also be targeted at the Variable level, for example with
+``DacEnable[0]``.
 
 Related settings on Root:
 
 - ``ForceWrite``: force writes of non-stale Blocks in bulk config paths
 - ``InitAfterConfig``: call ``initialize()`` after config apply
 
-Where to explore next
-=====================
+What To Explore Next
+====================
 
-- Root lifecycle/details: :doc:`/pyrogue_tree/core/root`
-- Polling behavior: :doc:`/pyrogue_tree/core/poll_queue`
-- Group filtering semantics: :doc:`/pyrogue_tree/core/groups`
-- Device/Block transaction paths: :doc:`/pyrogue_tree/core/device`,
-  :doc:`/pyrogue_tree/core/block`
+* Root lifecycle and built-in commands: :doc:`/pyrogue_tree/core/root`
+* Group filtering semantics: :doc:`/pyrogue_tree/core/groups`
+* Device block traversal and commit behavior: :doc:`/pyrogue_tree/core/block_operations`
+
+Related Topics
+==============
+
+* Polling behavior during bulk operations: :doc:`/pyrogue_tree/core/poll_queue`

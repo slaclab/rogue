@@ -126,7 +126,8 @@ starting point:
 * ``Fixed-Point Models`` is a focused companion page for ``Fixed`` and
   ``UFixed`` usage.
 * ``Poll Queue`` is about background scheduling behavior.
-* ``YAML Configuration`` is about bulk save/load and array-matching workflows.
+* ``YAML Configuration`` is about YAML save/load workflows, matching rules,
+  and configuration file structure.
 * ``Memory Variable Stream`` is about bridging variable updates into stream
   processing paths.
 * ``Groups`` is about filtering and bulk-operation scoping.

@@ -155,6 +155,34 @@ These helpers are often the clearest way to trigger a full operation from a
 script, a command callback, or a one-shot configuration step. They are also a
 good way to avoid open-coding the same multi-step sequence in many places.
 
+How YAML Configuration Uses These Methods
+=========================================
+
+YAML configuration loading is one of the main places where users encounter
+bulk block operations indirectly.
+
+For ``Root.loadYaml(..., writeEach=False)`` and ``Root.setYaml(..., writeEach=False)``,
+PyRogue first stages values into Variables with ``setDisp(..., write=False)``.
+Only after that full YAML payload has been applied to the tree does Root
+commit the configuration through its normal bulk write path.
+
+In practice, that means YAML configuration uses the same transaction model
+described on this page:
+
+* Values are staged first.
+* The resulting Block writes are issued across the tree.
+* Verification and completion checks run through the normal bulk helpers.
+
+So the YAML page should be read as "how the tree is described and matched,"
+while this page remains the right place for "how the resulting hardware
+transactions are issued and checked."
+
+Two Root settings are especially relevant in that YAML-driven path:
+
+* ``ForceWrite`` can force writes of non-stale Blocks during config apply.
+* ``InitAfterConfig`` can trigger ``initialize()`` after the configuration has
+  been committed.
+
 Method Parameters
 =================
 
