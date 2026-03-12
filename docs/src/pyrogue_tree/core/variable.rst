@@ -37,89 +37,70 @@ foundational ``Device`` transaction model built around write, verify, read,
 and check. Variable APIs present the value-oriented surface, while ``Device``
 owns the bulk traversal and transaction model underneath.
 
-Parameters You Usually Set
-==========================
+What You Usually Set
+====================
 
 The generated API reference contains the full constructor signature for each
-Variable class. The narrative docs have a narrower job: explain the parameters
-that most often shape how a Variable behaves in a tree.
+Variable class. The narrative docs have a narrower job: explain the shared
+parameters that most often shape how a Variable behaves in a tree. The subtype
+pages then add the parameters that matter most for their own behavior, such as
+``offset`` for ``RemoteVariable`` or ``dependencies`` for ``LinkVariable``.
 
-Across the Variable types, the most important shared parameters are:
+Across the Variable types, these are the parameters that usually deserve the
+most attention:
 
-* ``name`` for the tree path segment.
-* ``description`` for operator-facing help text.
-* ``mode`` for read/write policy such as ``RW``, ``RO``, or ``WO``.
-* ``units`` for engineering-unit labels.
-* ``disp`` for display formatting.
-* ``enum`` for named values backed by integers.
-* ``pollInterval`` for periodic refresh behavior.
-* ``hidden`` and ``groups`` for presentation and workflow policy.
+.. list-table::
+   :widths: 22 78
+   :header-rows: 1
 
-The subtype pages then add the parameters that most strongly affect their own
-behavior, such as ``offset`` for ``RemoteVariable`` or ``dependencies`` for
-``LinkVariable``.
+   * - Parameter
+     - Role
+   * - ``name``
+     - Defines the tree path segment and the attribute name users interact
+       with.
+   * - ``description``
+     - Provides short operator-facing help text for GUIs, scripts, and other
+       tooling.
+   * - ``mode``
+     - Controls read and write policy, usually ``RW``, ``RO``, or ``WO``.
+   * - ``disp``
+     - Formats values for display-oriented APIs such as ``getDisp()``.
+   * - ``enum``
+     - Maps integer values to named states.
+   * - ``units``
+     - Labels the engineering meaning of the value.
+   * - ``pollInterval``
+     - Enables periodic refresh for changing status or telemetry.
+   * - ``hidden``
+     - Removes the Variable from normal user-facing views when set to
+       ``True``.
+   * - ``groups``
+     - Adds labels that tree-level tools and workflows can use for filtering
+       or policy decisions.
 
-Common Variable Parameters
-==========================
+Start by getting ``name`` and ``description`` right. Those two fields do most
+of the work of making a tree understandable to users, GUIs, and scripts, and
+they usually matter more than lower-priority metadata.
 
-``name`` And ``description``
-----------------------------
+Use ``mode`` to express intent clearly. ``RW`` fits normal configuration and
+readable state, ``RO`` fits telemetry, status, counters, and derived views,
+and ``WO`` fits strobes, triggers, and other write-only control surfaces.
 
-``name`` determines how the Variable appears in the tree and how code reaches
-it through attribute access or path-based APIs. ``description`` is the short
-human explanation shown to users, GUIs, and tooling.
+Use ``disp``, ``enum``, and ``units`` to make the value readable in operator
+terms instead of exposing only the raw stored representation. That is often
+the difference between a tree that feels like a register map and one that
+feels like an interface.
 
-In practice, clear names and concise descriptions do more for tree usability
-than many lower-priority metadata fields.
-
-``mode``
---------
-
-``mode`` controls whether the Variable is read-write, read-only, or
-write-only.
-
-Common choices are:
-
-* ``RW`` for normal configuration and readable state.
-* ``RO`` for telemetry, status, counters, and derived read-only views.
-* ``WO`` for write-only strobes, triggers, or special control surfaces.
-
-``disp``, ``enum``, And ``units``
----------------------------------
-
-These parameters shape how a value is presented rather than where it comes
-from.
-
-* ``disp`` formats the value for display-oriented APIs such as ``getDisp()``.
-* ``enum`` maps integer values to named states.
-* ``units`` labels the engineering meaning of the value.
-
-These are high-value parameters to cover in narrative docs because they often
-determine whether the tree reads like a raw implementation surface or a clear
-operator-facing interface.
-
-``pollInterval``
-----------------
-
-``pollInterval`` tells PyRogue that the Variable should be refreshed
-periodically. This matters most for changing status values and telemetry.
-
-Not every Variable should be polled. Configuration values that rarely change
-usually read better as on-demand state than as constant background traffic.
-For the scheduling model behind that behavior, see
+Use ``pollInterval`` selectively for changing status and telemetry. Values
+that rarely change usually read better as on-demand state than as constant
+background traffic. For the scheduling model behind polling, see
 :doc:`/pyrogue_tree/core/poll_queue`.
 
-``hidden`` And ``groups``
--------------------------
-
-These parameters control how a Variable participates in presentation and other
-tree-level workflows.
-
-* ``hidden=True`` removes the Variable from normal user-facing views.
-* ``groups`` attaches labels that other tools and workflows can use for
-  filtering or policy decisions.
-
-For the grouping model itself, see :doc:`/pyrogue_tree/core/groups`.
+Use ``hidden`` and ``groups`` to control how the Variable participates in
+presentation and higher-level workflows. ``hidden=True`` removes it from
+normal user-facing views, while ``groups`` provides labels for filtering and
+policy decisions. For the grouping model itself, see
+:doc:`/pyrogue_tree/core/groups`.
 
 Choosing The Right Variable Type
 ================================
@@ -128,25 +109,24 @@ PyRogue provides three primary Variable subtypes:
 
 .. toctree::
    :maxdepth: 1
-   :caption: Variable Types:
+   :hidden:
 
    local_variable
    remote_variable
    link_variable
 
-In practice, the choice is usually straightforward:
+Choose:
 
-* :py:class:`~pyrogue.LocalVariable` for values owned by Python logic rather
-  than by hardware registers.
-* :py:class:`~pyrogue.RemoteVariable` for values mapped into hardware memory or
-  register space.
-* :py:class:`~pyrogue.LinkVariable` for derived values built from one or more
-  other Variables.
+* :doc:`/pyrogue_tree/core/local_variable` when the value is owned by Python
+  logic rather than by hardware registers.
+* :doc:`/pyrogue_tree/core/remote_variable` when the value maps into hardware
+  memory or register space.
+* :doc:`/pyrogue_tree/core/link_variable` when you want a derived view built
+  from one or more other Variables.
 
-That progression is also the conceptual progression most users need:
-``LocalVariable`` explains software-owned state, ``RemoteVariable`` explains
-register-backed state, and ``LinkVariable`` explains how to present a more
-useful derived view on top of the others.
+That is also the conceptual progression most users need: software-owned
+state first, then register-backed state, then derived operator-facing views
+built on top of the others.
 
 Common Design Questions
 =======================
