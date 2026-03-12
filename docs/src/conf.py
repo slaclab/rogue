@@ -49,7 +49,8 @@ extensions = ['sphinx.ext.autodoc',
     'sphinx_autodoc_typehints',
     'sphinx_copybutton',
     'breathe',
-    'rogue_boostpython_api']
+    'rogue_boostpython_api',
+    'rogue_cpp_source_links']
 
 # Optional runtime dependencies used by a few Python API pages. These are not
 # required to build the docs and should not make autodoc fail when absent.
