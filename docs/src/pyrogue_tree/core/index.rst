@@ -1,6 +1,8 @@
 .. _pyrogue_tree_core:
 .. _pyrogue_tree_node:
 
+.. Follow-up doc gap: add dedicated coverage for the Variable Update mechanism.
+
 =====================================
 PyRogue Tree Components And Concepts
 =====================================
