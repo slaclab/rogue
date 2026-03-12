@@ -13,6 +13,19 @@ The GUI can be launched either from the command line or from a Python
 application. Both paths ultimately run the same Rogue PyDM support code against
 one or more Rogue servers.
 
+How The GUI Is Structured
+=========================
+
+The default top-level display is implemented in
+``python/pyrogue/pydm/pydmTop.py``. It creates two tabs:
+
+- ``System`` for root-level controls, ``RunControl`` widgets, ``DataWriter``
+  widgets, and the system log.
+- ``Debug Tree`` for the full tree browser.
+
+That structure is useful context when deciding whether the stock GUI is enough
+or whether a custom screen would better match the operator workflow.
+
 Starting From The Command Line
 ==============================
 
@@ -22,8 +35,8 @@ The normal command-line entry point is:
 
    python -m pyrogue gui
 
-By default this connects to ``localhost:9099``. To point the GUI at a specific
-server, pass ``--server``:
+By default the command-line tool connects to ``localhost:9099``. To point the
+GUI at a specific server, pass ``--server``:
 
 .. code-block:: bash
 
@@ -36,9 +49,9 @@ You can also provide a comma-separated server list:
    python -m pyrogue --server localhost:9099,otherhost1:9099,otherhost2:9099 gui
 
 Rogue exposes all of those servers to the PyDM session, but the stock debug
-GUI is designed around one tree browser view. In practice, multi-server
-sessions are most useful when you are providing a custom UI file that knows
-which channels to bind to each server index.
+GUI is designed around one top-level tree browser rooted at ``rogue://0/root``.
+In practice, multi-server sessions are most useful when you are providing a
+custom UI file that deliberately binds channels to multiple server indices.
 
 Starting A Custom UI File
 =========================
@@ -53,6 +66,10 @@ with ``--ui``:
 This is the normal way to deploy a custom PyDM screen against a Rogue server.
 The Rogue plugin and channel handling still come from the same runtime support
 as the stock GUI.
+
+If the custom screen should work against different systems, prefer the
+``root`` alias in channel URLs instead of hard-coding a specific ``Root`` name.
+That keeps the UI portable across applications with different root-class names.
 
 Custom Python Top-Level Displays
 ================================
@@ -128,6 +145,10 @@ to :py:func:`pyrogue.pydm.runPyDM`:
 In practice, ``runPyDM`` always connects through the Rogue client interface
 path rather than attaching directly to the Root object.
 
+The current :py:func:`pyrogue.pydm.runPyDM` signature accepts ``serverList``
+and does not accept a ``root=`` argument. Older examples that passed a local
+``Root`` directly are stale and should be updated to expose a server first.
+
 Important Runtime Options
 =========================
 
@@ -139,6 +160,11 @@ The main :py:func:`pyrogue.pydm.runPyDM` options are:
 - ``title``: Window title.
 - ``sizeX`` and ``sizeY``: Initial window size.
 - ``maxListExpand`` and ``maxListSize``: Limits used by the debug-tree view.
+
+The command-line launcher defaults to ``localhost:9099``. The Python helper's
+function signature currently defaults to ``localhost:9090``, so in practice it
+is better to pass ``serverList`` explicitly rather than rely on the helper
+default.
 
 Rogue Channel Prefix
 ====================
@@ -164,6 +190,4 @@ What To Explore Next
 API Reference
 =============
 
-- Python:
-
-  - :doc:`/api/python/pyrogue/pydm_runpydm`
+- Python: :doc:`/api/python/pyrogue/pydm_runpydm`
