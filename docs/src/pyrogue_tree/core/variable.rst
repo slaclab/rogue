@@ -4,84 +4,139 @@
 Variable
 ========
 
-Variables are the value-carrying Nodes in the PyRogue tree. They provide:
+Variables are the value-carrying Nodes in the PyRogue tree. They are the main
+way a tree exposes state to users, GUIs, scripts, and higher-level software.
+In practice, most of what operators read and most of what applications
+configure flows through ``Variable`` Nodes.
 
-* A typed value Model (display/native formatting, units, enum support)
-* Access mode control (``RW``, ``RO``, ``WO``)
-* Optional hardware I/O through Block transactions
-* Listener/update integration for GUIs and remote interfaces
+A Variable can represent:
 
-Variable Types
-==============
+* Software-owned state.
+* A hardware register or bit field.
+* A derived engineering view computed from other Variables.
+
+That breadth is why Variable design matters so much to the quality of a tree.
+Good Variables make the system readable, scriptable, and safe to operate.
+
+What Variables Provide
+======================
+
+Across the different subtypes, Variables provide a shared set of behaviors:
+
+* Typed values and display formatting.
+* Access-mode control such as ``RW``, ``RO``, and ``WO``.
+* Units, enums, limits, and display metadata.
+* Update notifications for GUIs and remote listeners.
+* Optional polling and hardware-backed access behavior.
+
+Those common behaviors are what make local, remote, and linked Variables feel
+like one coherent part of the tree, even though their implementations differ.
+
+For hardware-backed Variables, the actual bus activity still flows through the
+foundational ``Device`` operations: write, verify, read, and check. In other
+words, Variable APIs present the value-oriented surface, while ``Device`` owns
+the bulk transaction model underneath.
+
+Choosing The Right Variable Type
+================================
 
 PyRogue provides three primary Variable subtypes:
 
 .. toctree::
    :maxdepth: 1
-   :caption: Types of Variables in the PyRogue Tree:
+   :caption: Variable Types:
 
-   link_variable
    local_variable
    remote_variable
+   link_variable
 
-When to use each type
-=====================
+In practice, the choice is usually straightforward:
 
-* :py:class:`~pyrogue.LocalVariable`: value is computed/stored locally in Python.
-* :py:class:`~pyrogue.RemoteVariable`: value maps to hardware memory/register space.
-* :py:class:`~pyrogue.LinkVariable`: value is derived from one or more dependency
-  Variables via custom getter/setter logic.
+* :py:class:`~pyrogue.LocalVariable` for values owned by Python logic rather
+  than by hardware registers.
+* :py:class:`~pyrogue.RemoteVariable` for values mapped into hardware memory or
+  register space.
+* :py:class:`~pyrogue.LinkVariable` for derived values built from one or more
+  other Variables.
 
-Variable stream adapters
-========================
+That progression is also the conceptual progression most users need:
+``LocalVariable`` explains software-owned state, ``RemoteVariable`` explains
+register-backed state, and ``LinkVariable`` explains how to present a more
+useful derived view on top of the others.
 
-Use Variable stream adapters when value updates should feed downstream stream
-processing or external consumers, instead of relying only on direct tree
-queries.
+Common Design Questions
+=======================
 
-Common patterns:
+When defining a Variable, the important questions are usually:
 
-* Push Variable changes into stream pipelines for asynchronous processing
-* Bridge selected telemetry into stream-capable transport/recording paths
-* Isolate conversion/formatting at the adapter boundary
+* Who owns the value: software, hardware, or another Variable?
+* Should users see the raw value, a converted value, or both?
+* Is the value read-only, write-only, or read-write?
+* Should it participate in polling or only update on demand?
+* Does the displayed form need units, enums, or custom formatting?
 
-For the stream-variable interface layer, see
-:doc:`/pyrogue_tree/core/memory_variable_stream`.
+Those questions affect not only the Variable subtype, but also how clear the
+tree will be to remote tools such as PyDM and command-line clients.
 
-Common attributes and behavior
-==============================
+Polling And Update Behavior
+===========================
 
-Most Variable classes share:
+Variables with non-zero ``pollInterval`` participate in the Root-owned polling
+workflow. That is most often relevant for hardware-backed status and telemetry
+values that change over time.
 
-* ``mode``: one of ``RW``, ``RO``, ``WO``
-* ``value`` / ``disp`` / ``enum`` / ``units``
-* ``minimum`` / ``maximum`` constraints
-* Group tags and filtering behavior
-* Update notifications/listeners
+In general:
 
-Polling note: Variables with non-zero ``pollInterval`` participate in the root
-poll scheduler. See :ref:`pyrogue_tree_root_poll_queue` for scheduling details
-and usage patterns.
+* Poll values that operators or software genuinely need to monitor.
+* Avoid turning rarely used configuration registers into continuously polled
+  traffic.
+* Use derived Variables carefully when their dependencies are polled, so the
+  resulting update behavior stays understandable.
 
-Implementation Boundary (Python and C++)
-========================================
+For the scheduling model itself, see :doc:`/pyrogue_tree/core/poll_queue`.
 
-For :py:class:`~pyrogue.RemoteVariable`, the public Python object wraps a
-lower-level memory Variable implementation from ``rogue.interfaces.memory``.
+Variable Presentation Vs Variable Storage
+=========================================
 
-This means:
+One of the most useful ways to think about Variables is to separate what users
+see from how values are stored.
 
-* Python-facing configuration (mode, formatting, limits, groups) is handled in
-  PyRogue classes
-* Byte/bit packing, access-range tracking, and typed conversion paths are
-  executed in the memory interface runtime (primarily C++ Block/Variable logic)
-* Transactions are still orchestrated through Block and Device APIs
+Examples:
 
-See also:
+* A ``RemoteVariable`` may store a raw register value while presenting units,
+  limits, and formatting metadata.
+* A ``LinkVariable`` may expose engineering units while leaving the raw
+  register access available through one or more underlying Variables.
+* A ``LocalVariable`` may present a live view of Python-owned state without any
+  hardware transaction path at all.
 
-* :ref:`pyrogue_tree_node_block`
-* :doc:`/pyrogue_tree/core/block`
-* :doc:`/memory_interface/index`
+This is one of the core reasons PyRogue trees work well for both hardware
+developers and operators: the same system can preserve raw control surfaces and
+also expose safer, more meaningful user-facing values.
+
+Advanced Related Topics
+=======================
+
+Some Variable mechanics are important, but they read better as separate pages:
+
+* :doc:`/pyrogue_tree/core/block` for how hardware-backed Variables are grouped
+  into transaction units.
+* :doc:`/pyrogue_tree/core/model` for how typed byte conversion works.
+* :doc:`/pyrogue_tree/core/memory_variable_stream` for bridging Variable
+  updates into stream-processing paths.
+
+Those are all part of the Variable story, but they are advanced enough that
+they should not interrupt the basic explanation of what a Variable is and when
+to use each subtype.
+
+What To Explore Next
+====================
+
+* Software-owned values: :doc:`/pyrogue_tree/core/local_variable`
+* Register-backed values: :doc:`/pyrogue_tree/core/remote_variable`
+* Derived values and engineering views: :doc:`/pyrogue_tree/core/link_variable`
+* Typed conversion rules: :doc:`/pyrogue_tree/core/model`
+* Block transaction behavior: :doc:`/pyrogue_tree/core/block`
 
 API Reference
 =============
