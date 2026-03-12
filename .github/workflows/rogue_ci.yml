@@ -146,16 +146,17 @@ jobs:
       # This step checks out a copy of your repository.
       - uses: actions/checkout@v3
         with:
-          fetch-depth: 0
+          fetch-depth: 1
 
       - name: Setup Miniforge Environment
         uses: conda-incubator/setup-miniconda@v3
         with:
           miniforge-variant: Miniforge3
           miniforge-version: latest
-          auto-activate-base: false
+          auto-activate: false
           activate-environment: rogue_build
           environment-file: conda.yml
+          conda-remove-defaults: true
           use-mamba: true
 
       - name: Install Python test/documentation dependencies
