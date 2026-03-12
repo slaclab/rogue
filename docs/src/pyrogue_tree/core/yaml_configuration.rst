@@ -14,9 +14,9 @@ interactive Variables.
 Typical YAML Workflows
 ======================
 
-- Configuration baselines for known-good startup values
-- Captured runtime state for debug and issue reproduction
-- Status snapshots for validation and operator handoff
+* Configuration baselines for known-good startup values
+* Captured runtime state for debug and issue reproduction
+* Status snapshots for validation and operator handoff
 
 Main Entry Points
 =================
@@ -42,13 +42,13 @@ Configuration Vs State Filters
 
 Typical defaults:
 
-- Config operations use modes ``['RW', 'WO']`` and exclude ``NoConfig``
-- State operations use modes ``['RW', 'RO', 'WO']`` and exclude ``NoState``
+* Config operations use modes ``['RW', 'WO']`` and exclude ``NoConfig``
+* State operations use modes ``['RW', 'RO', 'WO']`` and exclude ``NoState``
 
 That means:
 
-- Read-only Variables are normally ignored for config load
-- Commands are ignored by YAML set/load (``BaseCommand._setDict`` is a no-op)
+* Read-only Variables are normally ignored for config load
+* Commands are ignored by YAML set/load (``BaseCommand._setDict`` is a no-op)
 
 This is why configuration YAML usually reads like "things you can set", while
 state YAML reads like "everything worth observing".
@@ -98,9 +98,9 @@ the application workflow is:
 
 Implications:
 
-- If a Variable is assigned more than once while loading, the last assignment
+* If a Variable is assigned more than once while loading, the last assignment
   wins in shadow memory before commit
-- Hardware is not touched until the bulk commit step
+* Hardware is not touched until the bulk commit step
 
 If ``writeEach=True``, each ``setDisp`` write is issued immediately while YAML
 is being traversed (no final consolidated ``Root._write()`` pass).
@@ -127,10 +127,10 @@ Array Matching And Slicing In YAML Keys
 
 YAML load supports array-style Node matching:
 
-- ``AmcCard[0]:``
-- ``AmcCard[1:3]:``
-- ``AmcCard[:]:``
-- ``AmcCard[*]:``
+* ``AmcCard[0]:``
+* ``AmcCard[1:3]:``
+* ``AmcCard[:]:``
+* ``AmcCard[*]:``
 
 Examples:
 
@@ -155,8 +155,8 @@ Array Variables can also be targeted at the Variable level, for example with
 
 Related settings on Root:
 
-- ``ForceWrite``: force writes of non-stale Blocks in bulk config paths
-- ``InitAfterConfig``: call ``initialize()`` after config apply
+* ``ForceWrite``: force writes of non-stale Blocks in bulk config paths
+* ``InitAfterConfig``: call ``initialize()`` after config apply
 
 What To Explore Next
 ====================

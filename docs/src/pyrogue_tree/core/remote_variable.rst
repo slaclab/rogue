@@ -66,6 +66,10 @@ details of byte packing, block grouping, and memory transactions underneath.
 lists. List form is used when one logical Variable is split across multiple
 register locations.
 
+If the value uses a fixed-point interpretation such as ``base=pr.Fixed(...)``
+or ``base=pr.UFixed(...)``, see :doc:`/pyrogue_tree/core/fixed_point_models`
+for the scaling and display model behind those types.
+
 Behavior And Transaction Options
 ================================
 

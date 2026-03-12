@@ -181,10 +181,9 @@ Here, ``value=''`` makes the Variable string-backed from the start.
 Polled status from a helper library
 -----------------------------------
 
-This pattern is common in GitHub projects built on PyRogue: a local counter or
-status value is exposed read-only, refreshed by ``localGet``, and polled on an
-interval. One concrete example is the ``FrameCnt``-style counters used in the
-PySMuRF ``FrameStatistics`` device.
+This pattern is common in PyRogue applications: a local counter or status
+value is exposed read-only, refreshed by ``localGet``, and polled on an
+interval.
 
 .. code-block:: python
 

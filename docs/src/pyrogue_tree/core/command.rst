@@ -46,17 +46,17 @@ PyRogue provides two main Command forms:
 
 .. toctree::
    :maxdepth: 1
-   :caption: Command Types:
+   :hidden:
 
    local_command
    remote_command
 
 Use them based on where the action really lives:
 
-* :py:class:`~pyrogue.LocalCommand` for software-defined actions implemented in
-  Python.
-* :py:class:`~pyrogue.RemoteCommand` for actions backed by hardware register
-  writes or similar remote transaction paths.
+* :doc:`/pyrogue_tree/core/local_command` for software-defined actions
+  implemented in Python.
+* :doc:`/pyrogue_tree/core/remote_command` for actions backed by hardware
+  register writes or similar remote transaction paths.
 
 That distinction is similar to the distinction between local and remote
 Variables: one lives in software behavior, the other is tied to the hardware
