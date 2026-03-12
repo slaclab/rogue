@@ -123,6 +123,8 @@ starting point:
 * ``Device Block Operations`` is about recursive ``Device`` traversal and
   sequencing of the ``*Blocks`` methods.
 * ``Model`` is about typed byte conversion and custom encodings.
+* ``Fixed-Point Models`` is a focused companion page for ``Fixed`` and
+  ``UFixed`` usage.
 * ``Poll Queue`` is about background scheduling behavior.
 * ``YAML Configuration`` is about bulk save/load and array-matching workflows.
 * ``Memory Variable Stream`` is about bridging variable updates into stream
@@ -143,6 +145,7 @@ What To Explore Next
 * Block transaction behavior: :doc:`/pyrogue_tree/core/block`
 * Device block traversal and sequencing: :doc:`/pyrogue_tree/core/block_operations`
 * Model conversion behavior: :doc:`/pyrogue_tree/core/model`
+* Fixed-point model details: :doc:`/pyrogue_tree/core/fixed_point_models`
 * Poll scheduling behavior: :doc:`/pyrogue_tree/core/poll_queue`
 * YAML save/load behavior: :doc:`/pyrogue_tree/core/yaml_configuration`
 * Variable-to-stream adapter behavior: :doc:`/pyrogue_tree/core/memory_variable_stream`
@@ -168,6 +171,7 @@ API Reference
    block
    block_operations
    model
+   fixed_point_models
    poll_queue
    yaml_configuration
    memory_variable_stream
