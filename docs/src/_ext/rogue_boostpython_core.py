@@ -6,11 +6,15 @@ import dataclasses
 import pathlib
 import re
 from functools import lru_cache
+from posixpath import dirname, relpath
 from typing import Iterable
+import xml.etree.ElementTree as ET
 
 
 REPO_ROOT = pathlib.Path(__file__).resolve().parents[3]
 SRC_ROOT = REPO_ROOT / "src" / "rogue"
+DOXYXML_ROOT = REPO_ROOT / "docs" / "build" / "doxyxml"
+DOXYGEN_HTML_SUBDIR = "_doxygen"
 
 
 @dataclasses.dataclass
@@ -392,6 +396,59 @@ def lookup_method_doc(cpp_target: str, python_name: str = "") -> MethodDoc | Non
     return header_docs.method_docs.get(python_name) or header_docs.method_docs.get(target_name)
 
 
+def normalize_repo_path(file_name: str) -> str | None:
+    file_path = pathlib.Path(file_name).resolve()
+    try:
+        return file_path.relative_to(REPO_ROOT).as_posix()
+    except ValueError:
+        return None
+
+
+@lru_cache(maxsize=1)
+def load_doxygen_file_map() -> dict[str, str]:
+    file_map: dict[str, str] = {}
+    if not DOXYXML_ROOT.exists():
+        return file_map
+
+    for xml_path in DOXYXML_ROOT.glob("*.xml"):
+        try:
+            root = ET.parse(xml_path).getroot()
+        except ET.ParseError:
+            continue
+
+        compound = root.find("compounddef")
+        if compound is None or compound.get("kind") != "file":
+            continue
+
+        compound_id = compound.get("id")
+        location = compound.find("location")
+        if not compound_id or location is None:
+            continue
+
+        file_name = location.get("file")
+        if not file_name:
+            continue
+        relative = normalize_repo_path(file_name)
+        if relative:
+            file_map[relative] = compound_id
+
+    return file_map
+
+
+def binding_source_uri(source_path: pathlib.Path, docname: str) -> str | None:
+    relative = normalize_repo_path(str(source_path))
+    if not relative:
+        return None
+
+    file_id = load_doxygen_file_map().get(relative)
+    if not file_id:
+        return None
+
+    current_html = f"{docname}.html"
+    target_html = f"{DOXYGEN_HTML_SUBDIR}/{file_id}_source.html"
+    return relpath(target_html, start=dirname(current_html) or ".")
+
+
 def extract_class_expression(body: str) -> str:
     start = body.find("bp::class_<")
     if start < 0:
@@ -675,6 +732,8 @@ def render_class_section(
     include_init: bool,
     include_internal: bool,
     bindings_by_cpp: dict[str, ClassDoc],
+    *,
+    docname: str | None = None,
 ) -> list[str]:
     module_name = binding.python_name.rsplit(".", 1)[0]
     show_constructor = include_init or bool(binding.ctor_args or binding.ctor_doc)
@@ -685,6 +744,11 @@ def render_class_section(
         class_signature = binding.class_name
     lines = [f".. py:class:: {class_signature}", f"   :module: {module_name}", ""]
     lines.append(f"   C++: :cpp:class:`{binding.cpp_target}`")
+    if docname:
+        source_uri = binding_source_uri(binding.source_path, docname)
+        if source_uri:
+            lines.append("")
+            lines.append(f"   Binding source: `[{binding.source_path.name}] <{source_uri}>`_")
 
     class_description = normalize_doc_block(binding.class_doc)
     if class_description:
@@ -732,6 +796,7 @@ def render_embedded_api(
     python_name: str,
     include_init: bool = False,
     include_internal: bool = False,
+    docname: str | None = None,
 ) -> str:
     bindings = scan_bindings()
     if python_name not in bindings:
@@ -742,7 +807,15 @@ def render_embedded_api(
 
     lines: list[str] = []
     lines.extend(["Generated API", "-------------", ""])
-    lines.extend(render_class_section(binding, include_init, include_internal, bindings_by_cpp))
+    lines.extend(
+        render_class_section(
+            binding,
+            include_init,
+            include_internal,
+            bindings_by_cpp,
+            docname=docname,
+        )
+    )
     lines.extend(["", ""])
 
     return "\n".join(lines)

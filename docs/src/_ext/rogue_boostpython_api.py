@@ -23,10 +23,12 @@ class RogueBoostPythonApiDirective(Directive):
         python_name = self.arguments[0].strip()
         include_init = "include-init" in self.options
         include_internal = "include-internal" in self.options
+        docname = self.state.document.settings.env.docname
         generated = render_embedded_api(
             python_name,
             include_init=include_init,
             include_internal=include_internal,
+            docname=docname,
         )
 
         return nested_parse_to_nodes(
