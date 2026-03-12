@@ -72,6 +72,8 @@ Common Device-level properties include:
 * ``memBase`` for the memory interface used by hardware-backed children.
 * ``enable`` for controlling whether the subtree participates in hardware
   access behavior.
+* ``forceCheckEach`` for forcing block reads, writes, and verifies to check
+  each transaction immediately rather than deferring completion checks.
 
 The built-in ``enable`` Variable is especially important because it lets a tree
 keep its full structure visible while disabling hardware interaction for one
@@ -227,6 +229,11 @@ At a high level:
 All four methods can operate on the full Device subtree or on the Block backing
 one specific Variable, and they are the normal override points when hardware
 requires custom sequencing.
+
+If a Device should always use stricter transaction-by-transaction completion
+checking, set ``self.forceCheckEach = True`` in the subclass. That causes the
+Device-level block methods to behave as though ``checkEach=True`` had been
+requested on each call.
 
 For the detailed traversal model, ordering rules, and single-Variable versus
 full-subtree behavior, see :doc:`/pyrogue_tree/core/block_operations`.
