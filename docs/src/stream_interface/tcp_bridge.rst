@@ -1,9 +1,9 @@
 .. _interfaces_stream_using_tcp:
 .. _stream_interface_using_tcp:
 
-====================
-Using The TCP Bridge
-====================
+=================
+Stream TCP Bridge
+=================
 
 Rogue stream TCP bridging is provided by ``TcpServer`` and ``TcpClient``. These
 objects let a stream topology cross a TCP connection while preserving payload
