@@ -205,11 +205,32 @@ Example: Runtime Work In ``_start()`` And ``_stop()``
            while self._runWorker:
                time.sleep(0.1)
 
-Read And Write Operations
-=========================
+Foundational Transaction Operations
+===================================
 
-``Device`` is also where bulk hardware access is organized. Device-level block
-APIs traverse the tree and issue transactions for the ``Block`` objects
+``Device`` is where the PyRogue tree's foundational hardware transaction
+operations come together. At this level, four ideas matter:
+
+* ``write`` sends staged values from the tree toward hardware.
+* ``verify`` checks that hardware matches the expected value after a write.
+* ``read`` fetches current hardware state back into the tree.
+* ``check`` waits for initiated transactions to complete and surfaces errors.
+
+Those operations are foundational because they are reused throughout the tree:
+bulk configuration, per-Variable access, YAML apply paths, and many custom
+hardware procedures all build on the same model.
+
+One PyRogue design choice is especially important here: transaction initiation
+is intentionally separated from completion. ``write``, ``verify``, and
+``read`` start work, while ``check`` is the step that waits for the responses.
+That separation lets a ``Device`` issue many operations first and then retire
+them as a group.
+
+Device-Level Block APIs
+=======================
+
+``Device`` is where those operations become tree traversal methods. Device-level
+block APIs traverse the tree and issue transactions for the ``Block`` objects
 attached to that Device and, optionally, its children.
 
 The main methods are:
