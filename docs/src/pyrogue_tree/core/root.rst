@@ -10,6 +10,13 @@ read and write workflows, manages background services such as polling and
 update propagation, and provides the common entry points used by GUIs, remote
 clients, and YAML-based configuration flows.
 
+``Root`` also inherits from :py:class:`~pyrogue.Device`. That is important
+because the top of the tree participates in the same child-Device hierarchy,
+managed-interface lifecycle, and block-traversal behavior as the rest of the
+tree. In practice, that is why a ``Root`` can own interfaces, recurse through
+child Devices during startup and shutdown, and serve as the top-level entry
+point for bulk read and write operations.
+
 Most applications define one ``Root`` subclass and then build the rest of the
 tree underneath it. In practice, that means ``Root`` is where you decide:
 
