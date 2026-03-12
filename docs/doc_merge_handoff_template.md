@@ -35,6 +35,10 @@ Working rules:
 - When useful, also consult local example code in `/Users/bareese/surf`,
   `/Users/bareese/ldmx-firmware`, and `/Users/bareese/warm-tdm` for real-world
   usage patterns.
+- When useful, also use authenticated `gh search code` queries against the
+  `slaclab` GitHub organization to discover Rogue-based examples in public and
+  accessible private repositories, then verify the relevant source directly
+  before reflecting those patterns in the docs.
 - Use proper type names in fixed-width formatting, such as ``Master``,
   ``Slave``, ``Frame``, and ``Transaction``.
 - Capitalize list items.
@@ -69,6 +73,9 @@ Important structural notes:
 - Helpful local example-code repositories for doc writing:
   `/Users/bareese/surf`, `/Users/bareese/ldmx-firmware`, and
   `/Users/bareese/warm-tdm`.
+- GitHub CLI auth is available for `gh search code` against the `slaclab`
+  organization and should be used when broader Rogue example discovery would
+  help the merge.
 - No docs build has been run yet; verification so far is source-level only.
 
 Next likely target:

@@ -47,6 +47,11 @@ text. Rewrite the page so it reads like one intentional document.
   `/Users/bareese/warm-tdm` for real-world usage patterns. Treat those as
   supplementary examples, not as a substitute for verifying Rogue APIs against
   this repository's implementation.
+- When additional real-world examples would help, use authenticated
+  `gh search code` queries against the `slaclab` GitHub organization to find
+  Rogue-based usage patterns across public and accessible private repositories.
+  Use GitHub search as a discovery tool, then verify the details against the
+  relevant source before carrying the example pattern into the docs.
 
 ## Technical Content Priorities
 
