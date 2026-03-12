@@ -1,6 +1,6 @@
 # Docs Window Handoff
 
-Last updated: 2026-03-11
+Last updated: 2026-03-12
 Branch: `doc-update-6`
 Merge target: `pre-release`
 
@@ -72,6 +72,14 @@ Completed in this window:
   - API leaf pages generally use `For conceptual usage, see:`
 - Removed the specific follow-up backlog item about missing API backlinks,
   because that work is done.
+- Added local source-code links for C++ API docs using generated Doxygen HTML,
+  not GitHub links.
+- Enabled Doxygen source browsing and `.cpp` indexing so C++ API entries can
+  link to both declarations and implementations when available.
+- Added a docs-only Doxygen input filter so `.cpp` alias spellings are
+  normalized for Doxygen parsing without changing production C++ code.
+- Fixed the `maxVecLen` Doxygen parameter-name typo in
+  `include/rogue/protocols/xilinx/XvcConnection.h`.
 
 ## Sidebar/Nav Decisions Made Here
 
@@ -135,6 +143,10 @@ Workflow / build behavior:
 - `docs/src/conf.py`
 - `docs/src/_templates/layout.html`
 - `docs/src/_static/custom.js`
+- `docs/Doxyfile`
+- `docs/src/_ext/rogue_cpp_source_links.py`
+- `docs/src/_ext/rogue_doxygen_input_filter.py`
+- `docs/src/_static/custom.css`
 
 Handoff / planning:
 
@@ -173,12 +185,64 @@ Expected current result for `docs/build/html/api/python/index.html`:
 - Page body shows only the immediate API landing-page entries, not the fully
   expanded descendant tree
 
+## C++ Source Link Behavior
+
+Recent work added local source links for the C++ API pages.
+
+Current mechanism:
+
+- Doxygen HTML source pages are generated under `docs/build/doxyhtml`
+- During Sphinx HTML build they are copied into `docs/build/html/_doxygen`
+- C++ API signatures rendered by Breathe get source links injected by
+  `docs/src/_ext/rogue_cpp_source_links.py`
+
+Current expected behavior:
+
+- C++ class entries usually show `[header]`
+- C++ methods/functions with out-of-line definitions show both
+  `[header]` and `[impl]`
+- Links target local generated HTML like
+  `docs/build/html/_doxygen/Bsp_8h_source.html#l00044`
+  and
+  `docs/build/html/_doxygen/Bsp_8cpp_source.html#l00099`
+
+Important decision:
+
+- The user explicitly does **not** want GitHub source links for this feature.
+- This should remain a local Doxygen/Sphinx-generated source browser flow.
+
+Implementation notes:
+
+- `docs/Doxyfile` now has:
+  - `INPUT = ../include/ ../src/`
+  - `SOURCE_BROWSER = YES`
+- `docs/src/_ext/rogue_doxygen_input_filter.py` is used via
+  `FILTER_PATTERNS` for `*.cpp`
+- The filter exists to help Doxygen match implementation signatures that use
+  local aliases like `bp::object`, `ria::BspPtr`, `rim::...`, `ris::...`
+  back to the canonical header declarations
+- This warning cleanup was done in docs tooling only; do not "fix" it by
+  rewriting production C++ signatures unless the user explicitly asks
+
+How to verify source-link behavior:
+
+- Build docs with the normal docs task
+- Inspect a generated C++ API page in `docs/build/html`, for example:
+  - `docs/build/html/api/cpp/interfaces/api/bsp.html`
+- Confirm links resolve into `docs/build/html/_doxygen/...`
+- Confirm representative methods show both declaration and implementation links
+  where appropriate
+
 ## Known Remaining Issues
 
 - Intersphinx warning due to unavailable network access remains expected.
 - Matplotlib cache-dir warning may appear in this environment.
 - There may still be opportunities to simplify the fallback JS/sidebar logic
   later, but current behavior builds and matches the requested nav behavior.
+- The user has not yet decided how Boost.Python-exported C++ API pages should
+  expose source links. Do not assume they want wrapper-source links added.
+- For that mixed API area, the user explicitly said not to implement step 3
+  ("binding source" links) yet.
 
 ## Recommended Next Step For A New Window
 
@@ -189,3 +253,5 @@ If more work is needed:
 3. Use the VS Code docs task workflow, not an improvised build method
 4. If sidebar behavior is questioned, inspect `docs/build/html/api/python/index.html`
    directly after a task-driven build
+5. If C++ source links are questioned, inspect `docs/build/html/api/cpp/...`
+   and the copied local Doxygen pages under `docs/build/html/_doxygen/`
