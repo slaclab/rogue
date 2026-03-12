@@ -120,6 +120,8 @@ mechanics that matter a lot in real systems, but are usually not the right
 starting point:
 
 * ``Block`` is about transaction grouping and memory access flow.
+* ``Device Block Operations`` is about recursive ``Device`` traversal and
+  sequencing of the ``*Blocks`` methods.
 * ``Model`` is about typed byte conversion and custom encodings.
 * ``Poll Queue`` is about background scheduling behavior.
 * ``YAML Configuration`` is about bulk save/load and array-matching workflows.
@@ -139,6 +141,7 @@ What To Explore Next
 * Variable behavior and types: :doc:`/pyrogue_tree/core/variable`
 * Command behavior and invocation patterns: :doc:`/pyrogue_tree/core/command`
 * Block transaction behavior: :doc:`/pyrogue_tree/core/block`
+* Device block traversal and sequencing: :doc:`/pyrogue_tree/core/block_operations`
 * Model conversion behavior: :doc:`/pyrogue_tree/core/model`
 * Poll scheduling behavior: :doc:`/pyrogue_tree/core/poll_queue`
 * YAML save/load behavior: :doc:`/pyrogue_tree/core/yaml_configuration`
@@ -163,6 +166,7 @@ API Reference
    variable
    command
    block
+   block_operations
    model
    poll_queue
    yaml_configuration
