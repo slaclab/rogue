@@ -86,6 +86,8 @@ Use this for links to topics in the same subsection as the current page.
 Example:
 - A page in `stream_interface/` should link to other `stream_interface/` pages
   here.
+- If there are no same-subsection links that genuinely help the reader continue,
+  omit `What To Explore Next` rather than forcing a weak list.
 
 ### Related Topics
 
@@ -93,6 +95,8 @@ Use this for links to related topics in other subsections.
 
 Example:
 - A page in `stream_interface/` can link to `custom_module/` here.
+- If there is no genuinely useful cross-subsection link, omit `Related Topics`
+  rather than forcing a weak one.
 
 ### API Reference
 
