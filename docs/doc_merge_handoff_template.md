@@ -186,6 +186,10 @@ before continuing.
   next task immediately depends on them.
 - If there was a style correction made during the last window, mention it
   explicitly so it is not lost.
+- Current style correction to preserve:
+  prefer use-case-led openings such as "For [task], Rogue provides ..." or
+  "When [situation], PyRogue provides ..."; avoid calling modules or classes an
+  "entry point"; vary sentence structure so openings do not feel mechanical.
 
 ## Minimal Version
 

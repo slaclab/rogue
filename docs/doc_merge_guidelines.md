@@ -65,6 +65,12 @@ When deciding what to keep or recover, prioritize:
 ## Narrative Structure
 
 - Start with general use cases and the basic purpose of the subject.
+- Prefer use-case-led openings such as "For [task], Rogue provides ..." or
+  "When [situation], PyRogue provides ...".
+- Vary opening sentence structure across pages so the docs do not read like a
+  fixed template, but keep the same general pattern:
+  use case first, then the object that serves that use case, then the
+  wrapper/core relationship when relevant.
 - Explain the common workflow or lifecycle before advanced details.
 - Present examples in the order a user is likely to need them.
 - Move advanced mechanics, performance details, and edge cases later in the
@@ -74,6 +80,8 @@ When deciding what to keep or recover, prioritize:
 - Avoid meta-introduction phrasing such as "this section covers", "this area
   covers", "in this section", or "the examples below show". Prefer direct
   statements about the behavior, workflow, or object.
+- Avoid introducing topics as an "entry point". Prefer describing the task,
+  workflow, or role the class or module serves.
 - Prefer prose and narrative exposition over compressed bullet summaries.
 - Use bullets when the content is naturally list-shaped, but do not reduce core
   explanation to bullets if a paragraph would teach the subject better.
@@ -125,8 +133,11 @@ When deciding what to keep or recover, prioritize:
 - For tree classes, document parameters using the narrative pattern established
   in the current docs rather than trying to restate the full constructor
   signature inline.
-- Use section title `What You Usually Set` to focus attention on the small set
-  of parameters that most strongly shape behavior in real usage.
+- Use section titles that match the actual control surface of the page.
+- Prefer `Key Constructor Arguments` when the page is mainly about
+  instantiating a class or helper.
+- Prefer `Common Controls` or similar labels when the page mixes constructor
+  arguments with runtime methods, Variables, or commands.
 - Treat the generated API reference as the canonical place for full signatures
   and exhaustive parameter lists.
 - In narrative docs, explain the meaning and design impact of the commonly used

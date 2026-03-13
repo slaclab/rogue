@@ -56,12 +56,14 @@ Use for:
 
 Recommended order:
 
-1. Start with the most common user-facing entry point
+1. Start with the use case or workflow the wrapper serves
 2. Name the underlying Rogue utility immediately
 3. Explain how the wrapper changes the usage model
-4. Show the common wrapper example first when that is the usual entry point
-5. Show the direct Rogue utility form after that
-6. Keep lower-level mechanics clearly separated
+4. Use `Key Constructor Arguments` when the wrapper is mainly chosen at
+   construction time; use `Common Controls` when runtime settings matter more
+5. Show the common wrapper example first when that is the usual form in real use
+6. Show the direct Rogue utility form after that
+7. Keep lower-level mechanics clearly separated
 
 ### Pattern C: Direct Rogue Module
 
@@ -190,15 +192,15 @@ Goals:
 
 ### Phase 2: Normalize Mixed Wrapper/Core Families
 
-Status: `in_progress`
+Status: `completed`
 
-- [ ] `docs/src/built_in_modules/utilities/fileio/index.rst`
-- [ ] `docs/src/built_in_modules/utilities/fileio/writing.rst`
-- [ ] `docs/src/built_in_modules/utilities/fileio/reading.rst`
-- [ ] `docs/src/built_in_modules/utilities/prbs/index.rst`
-- [ ] `docs/src/built_in_modules/utilities/prbs/writing.rst`
-- [ ] `docs/src/built_in_modules/utilities/prbs/reading.rst`
-- [ ] `docs/src/built_in_modules/protocols/network.rst`
+- [x] `docs/src/built_in_modules/utilities/fileio/index.rst`
+- [x] `docs/src/built_in_modules/utilities/fileio/writing.rst`
+- [x] `docs/src/built_in_modules/utilities/fileio/reading.rst`
+- [x] `docs/src/built_in_modules/utilities/prbs/index.rst`
+- [x] `docs/src/built_in_modules/utilities/prbs/writing.rst`
+- [x] `docs/src/built_in_modules/utilities/prbs/reading.rst`
+- [x] `docs/src/built_in_modules/protocols/network.rst`
 
 Goals:
 
@@ -208,7 +210,7 @@ Goals:
 
 ### Phase 3: Normalize Direct Rogue Module Families
 
-Status: `pending`
+Status: `in_progress`
 
 - [ ] `docs/src/built_in_modules/protocols/udp/*`
 - [ ] `docs/src/built_in_modules/protocols/rssi/*`
@@ -278,6 +280,11 @@ Status: `pending`
   early in each page.
 - Avoid meta phrasing such as "this section covers", "this area covers", or
   "most readers start here if...".
+- Prefer use-case-led topic introductions such as "For [task], Rogue provides
+  ..." or "When [situation], PyRogue provides ...", while varying sentence
+  structure enough that the docs do not feel mechanically templated.
+- Avoid framing a class or module as an "entry point". Describe what task it
+  serves and how it relates to the lower-level object instead.
 
 ## Progress Notes
 
@@ -292,6 +299,13 @@ Use this section to record real state changes as the work moves forward.
   `utilities`, `protocols`, `interfaces`, and `hardware` so they now present
   the `pyrogue` vs `pyrogue.<submodule>` vs `rogue.<submodule>` split
   explicitly and guide readers by discovery-first subsections.
+- `2026-03-13`: Completed the mixed wrapper/core family rewrite for
+  `utilities/fileio`, `utilities/prbs`, and `protocols/network`, keeping the
+  common PyRogue wrapper form first while naming the underlying Rogue utility
+  immediately and separating wrapper behavior from direct-endpoint behavior.
+- `2026-03-13`: Added a built-in-modules intro-style rule: lead with the use
+  case, avoid calling things an "entry point", and vary opening sentence
+  structure so pages do not read like a rigid template.
 
 ## Context-Handoff Notes
 
