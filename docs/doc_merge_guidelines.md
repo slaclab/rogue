@@ -98,6 +98,10 @@ When deciding what to keep or recover, prioritize:
 - Keep older examples when their comments or teaching value are better than the
   newer versions.
 - When needed, combine a newer example structure with older inline commentary.
+- During the final pass on a rewritten page, explicitly check whether useful
+  language variants from the source material, especially Python and C++
+  examples, were compressed away during cleanup. Keep both when they add
+  teaching value or reflect real supported usage.
 - Consult the actual code when writing or merging example code so the examples
   use real APIs and use them correctly.
 - Do not assume an older example is still valid after a refactor or API change.

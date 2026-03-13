@@ -227,6 +227,33 @@ Goals:
 - Explain topology and key classes clearly.
 - Mention PyRogue integration only when useful.
 
+Progress Notes:
+
+- `protocols/udp/*` now frames UDP as the transport layer commonly used under
+  RSSI and packetizer, with `Client` as the common FPGA-facing form and
+  `Server` as the less common peer-facing form.
+- `protocols/rssi/*` had a follow-up recovery pass to restore threading and
+  lifecycle details, including controller ownership, application worker-thread
+  behavior, and standalone `_start()` / `_stop()` guidance.
+- `protocols/srp/*` now keeps SRP focused on the memory-to-stream bridge role,
+  with `SrpV3` as the preferred current protocol and `Cmd` separated as the
+  fire-and-forget opcode path.
+- `protocols/packetizer/*` had a second merge-quality rewrite to restore the
+  fuller protocol overview, v1/v2 comparison, Python examples, and C++
+  examples that were getting compressed away.
+- `protocols/batcher/*` had a second merge-quality rewrite to restore the
+  parser-core model, stronger splitter vs inverter guidance, and both Python
+  and C++ examples.
+- `protocols/xilinx/*` had a second merge-quality rewrite to restore workflow
+  explanation, `JtagDriver` details, and both standalone and `Root`-based
+  examples in Python and C++.
+- `utilities/compression/*` had a second merge-quality rewrite to restore the
+  fuller pipeline explanation, synchronous behavior notes, and both Python and
+  C++ examples.
+- `hardware/dma/*` and `hardware/raw/index.rst` needed follow-up corrections
+  for style, complete examples, and hardware-specific mechanics such as
+  `aes-stream-drivers`, zero-copy DMA behavior, and `dest` mapping.
+
 ### Phase 4: Normalize Pure Python Integration Families
 
 Status: `pending`
@@ -258,6 +285,39 @@ Status: `pending`
 ## Recommended Working Order
 
 1. `docs/src/built_in_modules/index.rst`
+
+## Current Decisions
+
+- Prefer use-case-led openings such as "For [task], Rogue provides ..." or
+  "When [situation], PyRogue provides ...".
+- Avoid calling classes or modules an "entry point".
+- Vary opening sentence structure so pages do not feel mechanically templated.
+- Use `Subtopics` rather than `Choosing A ...` headings on family and landing
+  pages.
+- Use `Key Constructor Arguments` when a page is mainly about instantiating a
+  class or helper.
+- Use `Common Controls` when runtime methods, variables, or settings matter
+  more than constructor arguments.
+- Prefer complete, commented examples over fragments.
+- On direct `rogue.*` family pages, explicitly verify that useful Python and
+  C++ examples both remain after the rewrite. This has regressed repeatedly
+  during cleanup passes.
+- In hardware DMA pages, keep the lower-level driver context visible when it is
+  part of the real mental model. In particular, preserve the
+  `slaclab/aes-stream-drivers` reference, the explanation of zero-copy buffer
+  handling, and the common `dest` mapping convention.
+
+## Next Target
+
+Phase 4 is the next clean starting point:
+
+- `docs/src/built_in_modules/interfaces/sql.rst`
+- `docs/src/built_in_modules/interfaces/os_memory_bridge.rst`
+- `docs/src/built_in_modules/protocols/gpib.rst`
+- `docs/src/built_in_modules/protocols/epicsV4/*`
+- `docs/src/built_in_modules/protocols/uart.rst`
+- `docs/src/built_in_modules/simulation/*`
+- `docs/src/built_in_modules/utilities/hls/*`
 2. `docs/src/built_in_modules/utilities/index.rst`
 3. `docs/src/built_in_modules/protocols/index.rst`
 4. `docs/src/built_in_modules/interfaces/index.rst`
