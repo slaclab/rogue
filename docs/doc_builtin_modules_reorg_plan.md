@@ -173,13 +173,13 @@ These belong in `pyrogue_tree`.
 
 ### Phase 1: Restructure Index Pages
 
-Status: `in_progress`
+Status: `completed`
 
-- [ ] `docs/src/built_in_modules/index.rst`
-- [ ] `docs/src/built_in_modules/utilities/index.rst`
-- [ ] `docs/src/built_in_modules/protocols/index.rst`
-- [ ] `docs/src/built_in_modules/interfaces/index.rst`
-- [ ] `docs/src/built_in_modules/hardware/index.rst`
+- [x] `docs/src/built_in_modules/index.rst`
+- [x] `docs/src/built_in_modules/utilities/index.rst`
+- [x] `docs/src/built_in_modules/protocols/index.rst`
+- [x] `docs/src/built_in_modules/interfaces/index.rst`
+- [x] `docs/src/built_in_modules/hardware/index.rst`
 
 Goals:
 
@@ -190,7 +190,7 @@ Goals:
 
 ### Phase 2: Normalize Mixed Wrapper/Core Families
 
-Status: `pending`
+Status: `in_progress`
 
 - [ ] `docs/src/built_in_modules/utilities/fileio/index.rst`
 - [ ] `docs/src/built_in_modules/utilities/fileio/writing.rst`
@@ -288,6 +288,10 @@ Use this section to record real state changes as the work moves forward.
   `utilities/fileio`, `utilities/prbs`, and `protocols/network`.
 - `2026-03-13`: Confirmed that top-level `pyrogue` built-ins are limited to
   `RunControl`, `Process`, `DataWriter`, and `DataReceiver`.
+- `2026-03-13`: Rewrote the built-in-modules landing pages for `index`,
+  `utilities`, `protocols`, `interfaces`, and `hardware` so they now present
+  the `pyrogue` vs `pyrogue.<submodule>` vs `rogue.<submodule>` split
+  explicitly and guide readers by discovery-first subsections.
 
 ## Context-Handoff Notes
 

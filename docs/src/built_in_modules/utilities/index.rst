@@ -5,27 +5,40 @@
 Utilities
 ==========
 
-Utility modules provide reusable processing and tooling components that are
-commonly inserted into stream pipelines or support infrastructure tasks.
-They are used to generate test patterns, record traffic, integrate HLS blocks,
-and add compression/decompression stages.
+Utilities collects reusable processing and tooling blocks that are commonly
+inserted into stream pipelines or surrounding support workflows. These modules
+do not usually define the transport path by themselves. Instead, they are the
+pieces you add for recording, playback, test-pattern generation, compression,
+or HLS-oriented adaptation.
 
-These modules are building blocks rather than complete transport stacks, and
-are typically composed with hardware and protocol modules.
+This subtree mixes two namespace layers on purpose. Some pages describe direct
+``rogue.utilities.*`` modules, while others start from the more common
+``pyrogue.utilities.*`` wrapper or ``Device`` form and then explain the
+underlying Rogue utility immediately.
 
-The utilities subtree includes both lower-level Rogue modules and Python-side
-wrappers around them. When a utility also has a PyRogue ``Device`` wrapper,
-that wrapper is documented here unless it is exposed in the top-level
-``pyrogue`` namespace.
+Utilities are usually the right place to start when you need to:
 
-Common use cases include:
-
-- File capture and playback during integration and debug.
-- PRBS source/sink chains for BER and link-validation testing.
-- Stream adaptation around HLS-generated processing components.
-- Compression stages for bandwidth-sensitive transport paths.
+- Capture or replay stream data.
+- Generate or check PRBS traffic during link validation.
+- Add compression or decompression stages to a stream path.
+- Integrate HLS-generated register or stream helpers into a larger design.
 
 For pipeline construction details, see :doc:`/stream_interface/index`.
+
+Choosing A Utility Family
+=========================
+
+- :doc:`fileio/index`
+  File capture, playback, offline reading, and the relationship between
+  ``pyrogue.utilities.fileio`` wrappers and the underlying
+  ``rogue.utilities.fileio`` classes.
+- :doc:`prbs/index`
+  PRBS generation and checking, including both the direct Rogue PRBS engine
+  and the common PyRogue wrappers.
+- :doc:`hls/index`
+  Python helpers for HLS-oriented integration workflows.
+- :doc:`compression/index`
+  Direct Rogue modules for stream compression and decompression.
 
 .. toctree::
    :maxdepth: 1
