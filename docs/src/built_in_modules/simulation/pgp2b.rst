@@ -29,8 +29,8 @@ In short, this module focuses on emulating the functional purpose of the link
 Although this utility may ultimately belong in SURF, it is currently part of
 Rogue and documented here.
 
-Method overview
-===============
+Simulation Workflow
+===================
 
 Key pieces used in the examples below:
 
@@ -41,8 +41,8 @@ Key pieces used in the examples below:
   sideband ``opCode``/``remData`` events.
 - Context-manager usage (``with``): ensures sockets/threads are cleaned up.
 
-Constructor
-===========
+Configuration Example
+=====================
 
 .. code-block:: python
 
@@ -55,14 +55,18 @@ Constructor
        port=9000,
    )
 
-Behavior:
+Key Constructor Arguments
+=========================
 
-- Creates ``vcCount`` stream endpoints as ``rogue.interfaces.stream.TcpClient``
-- Virtual-channel ports are ``port, port+2, ..., port+2*(vcCount-1)``
-- Sideband uses a paired channel at ``port+8`` via ``SideBandSim``
-- In the current implementation, sideband offset is fixed (not derived from
-  ``vcCount``), so ``vcCount`` should be kept at ``<= 4`` to avoid port
-  overlap with sideband.
+- ``vcCount`` selects how many virtual channels are created.
+- ``host`` selects the TCP and sideband host endpoint.
+- ``port`` selects the base port for VC 0, with additional virtual channels on
+  successive even-numbered ports.
+
+The current implementation uses a fixed sideband offset at ``port+8`` through
+``SideBandSim`` rather than deriving that offset from ``vcCount``, so
+``vcCount`` should be kept at ``<= 4`` to avoid port overlap with the sideband
+channel.
 
 Integrated Sideband Channel
 ===========================

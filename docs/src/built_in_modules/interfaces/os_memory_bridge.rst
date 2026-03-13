@@ -14,8 +14,8 @@ The bridge is typically built from two parts used together:
 
 - :py:class:`~pyrogue.interfaces.OsCommandMemorySlave`: a memory ``Slave`` that
   maps addresses to Python command callbacks.
-- ``OsMemMaster``: an example ``Device`` that exposes ``RemoteVariable`` Nodes
-  at those same offsets.
+- ``OsMemMaster``: an example ``Device`` that exposes typed
+  ``RemoteVariable`` Nodes at those same offsets.
 
 This pairing is useful for prototyping register maps, exposing host metrics
 inside a tree, and testing memory-control paths before firmware is available.
@@ -28,10 +28,10 @@ transactions to Python callables keyed by address.
 
 How mapping works:
 
-- Write/Post transaction: bytes are decoded with the registered ``base`` Model
-  and passed to the callback as ``arg``.
-- Read transaction: callback is invoked with ``arg=None``; return value is
-  encoded with the same Model and returned as transaction data.
+- Write and ``Post`` transactions are decoded with the registered ``base``
+  Model and passed to the callback as ``arg``.
+- Read transactions call the same callback with ``arg=None`` and encode the
+  return value with that same Model before returning it to the transaction.
 
 Commands are registered with ``@self.command(addr=..., base=...)``.
 
@@ -42,8 +42,8 @@ Method and Mapping Overview
 - ``addr`` defines the transaction-mapped register offset.
 - ``base`` defines encode/decode model for read/write payload conversion.
 - Callback ``arg`` behavior:
-  - ``arg is None`` on read transactions.
-  - ``arg`` contains decoded write value on write/post transactions.
+- ``arg is None`` on read transactions.
+- ``arg`` contains decoded write value on write and ``Post`` transactions.
 
 .. code-block:: python
 
@@ -197,9 +197,12 @@ In the example flow:
 Operational Notes
 =================
 
-- Poll intervals on RO variables drive periodic reads through ``memBase``.
-- Address offsets and ``base`` Model types must match across master/slave.
-- This pattern is ideal for integration and prototyping, not high-rate paths.
+- Poll intervals on read-only variables drive periodic reads through
+  ``memBase``.
+- Address offsets and ``base`` Model types must match across the master and
+  the command ``Slave``.
+- This pattern is ideal for integration and prototyping work, not for
+  high-rate paths.
 
 Related Topics
 ==============

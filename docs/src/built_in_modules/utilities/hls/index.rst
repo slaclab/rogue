@@ -28,7 +28,7 @@ into a usable form, but it does not replace the later cleanup pass where names,
 grouping, display behavior, Commands, and higher-level Device composition are
 made production-ready.
 
-Typical workflow
+Typical Workflow
 ================
 
 1. Export the HLS-generated package that contains the ``*_hw.h`` header.

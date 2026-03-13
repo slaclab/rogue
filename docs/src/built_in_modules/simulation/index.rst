@@ -13,7 +13,7 @@ They are most useful for:
 - Deterministic protocol bring-up and integration testing
 - Fault-injection workflows (for example dropped memory transactions)
 
-Available components
+Available Components
 ====================
 
 - ``MemEmulate``: in-memory memory-slave emulator for register/device testing
@@ -23,7 +23,7 @@ Available components
 These helpers are implemented in Python in
 ``python/pyrogue/interfaces/simulation.py``.
 
-Selection guidance
+Selection Guidance
 ==================
 
 - Use ``MemEmulate`` when validating memory-transaction behavior (read/write,

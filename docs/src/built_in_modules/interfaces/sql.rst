@@ -11,22 +11,29 @@ events into a SQL database through SQLAlchemy.
 This helper lives in the ``pyrogue.interfaces`` namespace because it is a
 host-side integration layer, not a stream or memory transport. It is useful
 when a system needs a durable run record, offline trend analysis, or a
-database-backed audit trail alongside the live tree. Typical deployments use it
-to capture variable history during hardware tests and commissioning runs, track
-alarm and status changes for post-run analysis, and preserve system-log
-messages from long-running control processes.
+database-backed audit trail alongside the live tree.
+
+Typical uses:
+
+- Variable history during hardware tests and commissioning runs.
+- Alarm and status changes for post-run analysis.
+- System-log messages from long-running control processes.
 
 SqlLogger Workflow
 ==================
 
-``SqlLogger`` is added as a managed interface on the ``Root`` with
-``addInterface()``. Internally it subscribes to variable updates through
-``root.addVarListener(...)`` and watches ``root.SystemLogLast`` so system-log
-events are written into the same database as variable changes. A background
-worker thread dequeues updates and commits them in batches, and
-``Root.stop()`` drives ``SqlLogger._stop()`` so queued entries are flushed
-before the worker exits. This keeps SQL logging in the host-side integration
-layer without changing the stream topology or the structure of the device tree.
+``SqlLogger`` is added as a managed interface on the ``Root``:
+
+- ``addInterface()`` makes it part of the ``Root`` lifecycle.
+- ``root.addVarListener(...)`` subscribes it to variable updates.
+- ``root.SystemLogLast`` is watched so system-log events are written into the
+  same database as variable changes.
+- A background worker thread dequeues updates and commits them in batches.
+- ``Root.stop()`` drives ``SqlLogger._stop()`` so queued entries are flushed
+  before the worker exits.
+
+This keeps SQL logging in the host-side integration layer without changing the
+stream topology or the structure of the device tree.
 
 Configuration Example
 =====================
@@ -70,14 +77,16 @@ polled or internal node.
 Recorded Tables
 ===============
 
-``SqlLogger`` creates the ``variables`` and ``syslog`` tables when they are not
-already present. The ``variables`` table stores each update path together with
-enum, display, raw/display value, severity, and status information. The
-``syslog`` table stores the mirrored system-log fields such as logger name,
-message text, exception text, and level metadata. Because the logger listens to
-the tree rather than to a data stream, both tables reflect the same
-variable-update and system-log activity that PyRogue exposes to other
-host-side interfaces.
+``SqlLogger`` creates two tables when they are not already present:
+
+- ``variables`` stores each update path together with enum, display,
+  raw/display value, severity, and status information.
+- ``syslog`` stores mirrored system-log fields such as logger name, message
+  text, exception text, and level metadata.
+
+Because the logger listens to the tree rather than to a data stream, both
+tables reflect the same variable-update and system-log activity that PyRogue
+exposes to other host-side interfaces.
 
 Operational Notes
 =================
