@@ -83,8 +83,12 @@ When deciding what to keep or recover, prioritize:
 - Avoid introducing topics as an "entry point". Prefer describing the task,
   workflow, or role the class or module serves.
 - Prefer prose and narrative exposition over compressed bullet summaries.
-- Use bullets when the content is naturally list-shaped, but do not reduce core
-  explanation to bullets if a paragraph would teach the subject better.
+- Use bullets when the content is naturally list-shaped, and keep short
+  3-4 item lists when they communicate the point more directly than prose.
+- Do not force list-shaped content into paragraphs unless the rewrite adds
+  meaningful narrative value or clarifies relationships that the list does not.
+- Do not reduce core explanation to bullets if a paragraph would teach the
+  subject better.
 - During editing passes, actively look for repeated statements between the page
   introduction, parameter sections, subclassing sections, and example
   commentary. Consolidate repeated ideas instead of leaving near-duplicates in

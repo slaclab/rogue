@@ -256,21 +256,42 @@ Progress Notes:
 
 ### Phase 4: Normalize Pure Python Integration Families
 
-Status: `pending`
+Status: `completed`
 
 - [x] `docs/src/built_in_modules/interfaces/sql.rst`
-- [ ] `docs/src/built_in_modules/interfaces/os_memory_bridge.rst`
-- [ ] `docs/src/built_in_modules/protocols/gpib.rst`
-- [ ] `docs/src/built_in_modules/protocols/epicsV4/*`
-- [ ] `docs/src/built_in_modules/protocols/uart.rst`
-- [ ] `docs/src/built_in_modules/simulation/*`
-- [ ] `docs/src/built_in_modules/utilities/hls/*`
+- [x] `docs/src/built_in_modules/interfaces/os_memory_bridge.rst`
+- [x] `docs/src/built_in_modules/protocols/gpib.rst`
+- [x] `docs/src/built_in_modules/protocols/epicsV4/*`
+- [x] `docs/src/built_in_modules/protocols/uart.rst`
+- [x] `docs/src/built_in_modules/simulation/*`
+- [x] `docs/src/built_in_modules/utilities/hls/*`
 
 Goals:
 
 - Describe what the Python helper does.
 - Show how it integrates with Rogue or PyRogue.
 - Avoid forcing a wrapper/core split when none exists.
+
+Progress Notes:
+
+- `interfaces/sql.rst` now explains `SqlLogger` as a managed `Root` interface,
+  keeps the focus on the actual logging workflow, and treats `SqlReader` as a
+  lightweight schema helper rather than a fuller query layer.
+- `interfaces/os_memory_bridge.rst` now keeps the bridge pattern focused on
+  command-backed memory transactions and the `OsMemMaster` example pairing,
+  with clearer mapping rules and same-subsection navigation.
+- `protocols/gpib.rst` and `protocols/uart.rst` now describe these helpers as
+  pure Python transaction adapters, foregrounding host dependencies, mapping
+  behavior, and operational limits instead of reading like thin API notes.
+- `protocols/epicsV4/*` now presents the server/holder relationship as one
+  coherent publication workflow, with filtering, mapping, metadata translation,
+  and logging responsibilities separated cleanly across the pages.
+- `simulation/*` now distinguishes memory emulation from PGP2B/sideband
+  co-simulation more clearly and preserves implementation-specific mechanics
+  such as retry-drop behavior and the fixed sideband port offset.
+- `utilities/hls/*` now frames the parser as a bootstrap utility that turns
+  generated HLS register headers into a starter PyRogue model, with the parser
+  workflow and cleanup expectations stated more directly.
 
 ### Phase 5: Cross-Section Consistency Pass
 
