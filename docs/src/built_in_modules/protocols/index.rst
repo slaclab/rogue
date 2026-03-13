@@ -16,8 +16,8 @@ hardware or a socket transport, adds reliability or framing, then adds a
 transaction protocol such as SRP before it connects into a Memory or Stream
 topology.
 
-Choosing A Protocol Family
-==========================
+Subtopics
+=========
 
 - Use :doc:`udp/index` for lightweight datagram transport endpoints.
 - Use :doc:`rssi/index` for ordered, reliable delivery over packet links.

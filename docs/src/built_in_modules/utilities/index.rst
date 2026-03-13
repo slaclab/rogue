@@ -25,8 +25,8 @@ Utilities are usually the right place to start when you need to:
 
 For pipeline construction details, see :doc:`/stream_interface/index`.
 
-Choosing A Utility Family
-=========================
+Subtopics
+=========
 
 - :doc:`fileio/index`
   File capture, playback, offline reading, and the relationship between

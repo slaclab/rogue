@@ -4,31 +4,41 @@
 Generating PRBS Frames
 ======================
 
-``rogue.utilities.Prbs`` generates PRBS traffic directly into a stream graph.
-That form is a good fit for scripts, standalone tests, and small validation
-setups.
+When PRBS transmission should be visible through a PyRogue tree, PyRogue
+provides ``pyrogue.utilities.prbs.PrbsTx``. It wraps the underlying
+``rogue.utilities.Prbs`` generator and exposes transmit size, period, enable
+state, and counters as tree variables and commands.
 
-``pyrogue.utilities.prbs.PrbsTx`` wraps the same generator behavior in a
-tree-managed ``Device``. That form is a better fit when transmit control and
-counters should be visible through a ``Root`` tree.
+The direct ``rogue.utilities.Prbs`` form is the smaller fit for scripts and
+standalone validation graphs that do not need a tree-managed control surface.
 
 PRBS transmit paths commonly drive traffic into FPGA firmware/VHDL checkers
 during link bring-up and integration testing.
 
-Method Overview
+Common Controls
 ===============
 
-Common generator calls are:
+The transmit wrapper is usually configured around:
 
-- ``genFrame(size)``: Generates and transmits one PRBS frame of ``size`` bytes.
-- ``PrbsTx`` wrapper: Exposes generator controls and counters as ``Variables``
-  and ``Commands`` in a tree.
+- ``txSize``
+  Payload size for generated frames.
+- ``txPeriod``
+  Background transmit period in microseconds.
+- ``txEnable``
+  Start or stop continuous generation.
+- ``genPayload``
+  Enable or disable payload generation.
+- ``width`` and ``taps``
+  PRBS state width and feedback polynomial selection.
+- ``sendCount``
+  Include a transmitted count field when the test setup expects it.
+
+The direct Rogue endpoint has the matching lower-level controls such as
+``genFrame(size)``, ``enable(size)``, ``disable()``, ``setTxPeriod(period)``,
+``setWidth(width)``, and ``setTaps(taps)``.
 
 Using ``PrbsTx`` In A Tree
 ==========================
-
-``pyrogue.utilities.prbs.PrbsTx`` is the tree-managed form of the PRBS
-generator.
 
 It is the right choice when operators or client code should be able to inspect
 or control transmit settings such as enable state, frame size, frame period,

@@ -14,8 +14,8 @@ These modules are the right choice when a design needs to persist state, bridge
 into another host process, expose a control path outside Python, or enforce
 runtime compatibility checks before the rest of the tree starts.
 
-Choosing An Integration Path
-============================
+Subtopics
+=========
 
 - Use :doc:`sql` for SQL-backed logging of ``Variable`` values and syslog
   events.

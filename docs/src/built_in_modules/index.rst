@@ -30,8 +30,8 @@ top-level ``pyrogue`` devices for operations and monitoring, then relies on
 ``pyrogue.<submodule>`` wrappers or direct ``rogue.<submodule>`` endpoints to
 handle file I/O, protocol transport, simulation, or hardware access.
 
-Choosing A Subsection
-=====================
+Subtopics
+=========
 
 - :doc:`/built_in_modules/utilities/index`
   Stream-support modules such as file I/O, PRBS, compression, and HLS helpers.

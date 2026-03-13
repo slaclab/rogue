@@ -4,56 +4,91 @@
 Writing Frames To A File
 ========================
 
-``rogue.utilities.fileio.StreamWriter`` captures incoming stream frames into a
-Rogue file format that preserves payload bytes plus frame metadata.
+For file capture that should be controlled from a PyRogue tree, PyRogue
+provides ``pyrogue.utilities.fileio.StreamWriter``. It wraps
+``rogue.utilities.fileio.StreamWriter`` and exposes the usual file controls
+through :py:class:`~pyrogue.DataWriter`.
 
-``pyrogue.utilities.fileio.StreamWriter`` wraps that writer in a tree-managed
-``Device`` by subclassing :py:class:`~pyrogue.DataWriter`. The lower-level
-writer is the simpler fit for scripts and standalone stream graphs. The PyRogue
-wrapper is the better fit when file capture should be started from a ``Root``
-tree or a client GUI.
+The underlying ``rogue.utilities.fileio.StreamWriter`` is still the object that
+does the capture work. It receives Rogue ``Frame`` traffic on one or more input
+channels and writes those frames in the standard Rogue file format, preserving
+payload bytes plus frame metadata.
 
 For the on-disk format details (header words, channel/flags/error encoding,
 raw mode, and split-file behavior), see :ref:`utilities_fileio_format`.
 
-Core Writer Controls
-====================
+When To Use Each Form
+=====================
 
-The core writer is shaped by a small set of methods:
+Use the PyRogue wrapper when operators or client code should be able to select
+the output file, open and close runs, and watch file counters through the tree.
+That is the pattern used in larger acquisition roots, where the writer becomes
+part of the operator-facing control surface.
 
-- ``setBufferSize(bytes)``: Sets the in-memory staging buffer used before
-  flushing writes to the OS. Larger values can improve throughput.
-- ``setMaxSize(bytes)``: Enables split-file output when non-zero
-  (``file.dat.1``, ``file.dat.2``, ...), rolling over before a write would
-  exceed the limit.
-- ``setDropErrors(bool)``: Controls whether incoming frames with non-zero frame
-  error are discarded instead of written.
-- ``getChannel(index)``: Returns the per-channel stream sink used to attach
-  stream sources.
-  Channel behavior is special for ``index=0``:
-  ``getChannel(0)`` uses each incoming frame's own channel metadata
-  (``frame.getChannel()``) when writing the file header.
-  ``getChannel(N)`` with ``N>0`` forces file channel ``N`` for all frames sent
-  through that sink, regardless of frame metadata.
-- ``open(path)``: Opens the output file and starts capture.
-- ``close()``: Flushes buffered data and closes the file.
+Use the direct Rogue writer when a script already owns the stream graph and
+just needs a sink that writes files. That form is smaller and avoids the tree
+layer entirely.
+
+Common Controls
+===============
+
+At the wrapper level, most setups are shaped by a small set of controls:
+
+- ``DataFile``
+  Output file selected through the inherited ``pyrogue.DataWriter`` interface.
+- ``BufferSize``
+  Staging buffer size before writes are flushed to the OS.
+- ``MaxFileSize``
+  Non-zero enables split-file capture.
+- ``configStream``
+  Optional mapping of channel index to a stream source that emits YAML or
+  status snapshots at file open and close.
+- ``rawMode``
+  When ``True``, write payload bytes only instead of the normal Rogue framed
+  record format.
+
+The direct writer has the matching lower-level methods:
+
+- ``setBufferSize(bytes)``
+- ``setMaxSize(bytes)``
+- ``setDropErrors(bool)``
+- ``getChannel(index)``
+- ``open(path)``
+- ``close()``
+
+Channel Behavior
+================
+
+``StreamWriter`` supports multiple incoming stream channels. That detail is
+important because capture files often mix event data, metadata, debug streams,
+or multiple firmware virtual channels in one recording.
+
+``getChannel(index)`` returns the sink for one capture path, but channel ``0``
+has a special meaning. Data written through ``getChannel(0)`` preserves the
+incoming frame's own channel metadata. Data written through ``getChannel(N)``
+with ``N > 0`` is forced to file channel ``N`` regardless of the frame's
+original channel field. That pattern is commonly used when a tree routes
+distinct sources into fixed file channels.
 
 Tree-Managed Writer Form
 ========================
 
-``pyrogue.utilities.fileio.StreamWriter`` is a Python ``Device`` wrapper around
-the same writer backend.
+The wrapper inherits the standard file-control surface from
+:py:class:`~pyrogue.DataWriter`, then adds the file I/O-specific behavior from
+the underlying Rogue writer.
 
-The wrapper is usually configured around:
-
-- ``configStream`` for channels that should emit YAML/config snapshots at file
-  open and close
-- ``rawMode`` when payload-only recording is desired
-- the inherited ``DataWriter`` controls such as ``DataFile``, ``BufferSize``,
-  and ``MaxFileSize``
+In practice, the wrapper is usually configured around ``configStream``,
+``rawMode``, and the inherited ``DataWriter`` controls such as ``DataFile``,
+``BufferSize``, and ``MaxFileSize``.
 
 In many systems, ``configStream`` is mapped to a reserved channel such as
 ``255`` so metadata stays separate from event/data channels.
+
+Opening the wrapper does two things: it opens the file, then emits any
+configured YAML or status streams into their assigned channels. Closing does
+the same status dump again before the underlying writer shuts down. That is why
+the wrapper is a better fit when the file should carry both event traffic and
+the configuration context that surrounded the run.
 
 Logging
 =======
@@ -128,11 +163,6 @@ Python Tree-Managed Example
    root.Writer.Open()
    # ...
    root.Writer.Close()
-
-Opening the file starts capture and emits any configured YAML/status streams.
-Closing the file emits those streams again before the writer shuts down. That
-pattern is useful because the file records both data traffic and the
-configuration context that surrounded the run.
 
 C++ StreamWriter Example
 ========================

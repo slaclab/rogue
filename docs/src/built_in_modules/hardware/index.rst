@@ -18,8 +18,8 @@ The driver stack required to use these interfaces is available at:
 
 https://github.com/slaclab/aes-stream-drivers
 
-Choosing A Hardware Family
-==========================
+Subtopics
+=========
 
 - Use :doc:`dma/index` for AXI DMA-backed stream and memory endpoints such as
   ``rogue.hardware.axi.AxiStreamDma`` and ``rogue.hardware.axi.AxiMemMap``.
