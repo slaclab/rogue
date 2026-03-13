@@ -108,6 +108,7 @@ Related Topics
 
 - Deployment and environment setup: :doc:`/installing/index`
 - Upgrade guidance across Rogue versions: :doc:`/migration/index`
+- Tree and interface catalog: :doc:`/built_in_modules/interfaces/index`
 
 API Reference
 =============

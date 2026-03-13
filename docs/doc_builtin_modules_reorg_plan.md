@@ -324,6 +324,10 @@ Progress Notes:
   `pyrogue` built-ins that commonly lead readers into lower-level utility or
   protocol families, helping keep the namespace boundary explicit instead of
   only implied.
+- A lighter polish pass through `built_in_modules/interfaces/*` aligned the
+  ending navigation patterns across `sql.rst`, `os_memory_bridge.rst`, and
+  `version.rst`, and also cleaned up one malformed mapping-summary list in the
+  OS memory bridge page.
 
 ## Recommended Working Order
 

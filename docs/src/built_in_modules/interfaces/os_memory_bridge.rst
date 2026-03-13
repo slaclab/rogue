@@ -42,7 +42,7 @@ Method and Mapping Overview
 - ``addr`` defines the transaction-mapped register offset.
 - ``base`` defines encode/decode model for read/write payload conversion.
 - Callback ``arg`` behavior:
-  - ``arg is None`` on read transactions.
+  - ``arg`` is ``None`` on read transactions.
   - ``arg`` contains decoded write value on write and ``Post`` transactions.
 
 .. code-block:: python
