@@ -4,49 +4,56 @@
 Compression Utilities
 =====================
 
-Compression utilities provide stream modules for in-line payload compression
-and decompression.
+For in-line compression or decompression inside a Rogue stream graph, Rogue
+provides ``rogue.utilities.StreamZip`` and ``rogue.utilities.StreamUnZip``.
 
-C++ API details for compression utilities are documented in
-:doc:`/api/cpp/utilities/compression/index`.
+These utilities operate on frame payload bytes inside the stream pipeline. That
+makes them useful when you want to reduce storage or transport bandwidth and
+then restore the original payload later without redesigning the rest of the
+graph.
 
-Use these modules when transport bandwidth or storage size is constrained and
-both ends of the pipeline agree on compressed payload handling.
-
-These modules are most useful when compression is just one stage in a larger
-stream graph. Typical use cases include:
+They are most useful when compression is just one stage in a larger workflow.
+Common use cases include:
 
 - Compressing captured data before writing it to disk.
-- Reducing bandwidth on a software transport path between processes or hosts.
-- Replaying stored compressed files back into analysis or verification
-  pipelines.
+- Reducing bandwidth between software or hardware-connected stages.
+- Replaying previously compressed files back into an analysis or verification
+  chain.
 
-The important design point is that Rogue compression operates on frame payloads
-inside the stream graph. That makes it easy to insert between an existing
-producer and consumer without redesigning the rest of the topology.
+The important design point is that Rogue compression transforms only the frame
+payload. The stream metadata remains intact, so the compressor or decompressor
+can be inserted between an existing producer and consumer with minimal graph
+changes.
 
-Choosing Compress vs Decompress
-===============================
+Subtopics
+=========
 
-- Use :doc:`compress` when the upstream path produces uncompressed frames and a
-  downstream transport or storage layer expects compressed payloads.
-- Use :doc:`decompress` when the input stream already contains compressed Rogue
-  frame payloads and downstream consumers expect the original bytes.
+- :doc:`compress`
+  Use ``StreamZip`` when the upstream path produces uncompressed frames.
+- :doc:`decompress`
+  Use ``StreamUnZip`` when the input stream already contains compressed Rogue
+  frame payloads.
 
-These are usually used as paired stages across a capture/replay or
-transport/receive boundary.
+How These Utilities Behave
+==========================
 
-What To Explore Next
-====================
+Both utilities preserve frame metadata while transforming payload bytes. Both
+allocate new output frames as needed. Neither utility starts an internal worker
+thread, so compression and decompression run synchronously in
+``acceptFrame()``.
 
-- In-line compression pipelines: :doc:`compress`
-- Restoring compressed payloads: :doc:`decompress`
-- File capture and replay workflows: :doc:`/built_in_modules/utilities/fileio/index`
-- General stream composition patterns: :doc:`/stream_interface/index`
+That makes them easy to insert into an existing graph, but it also means the
+CPU work happens in the calling thread.
+
+Related Topics
+==============
+
+- :doc:`/built_in_modules/utilities/fileio/index`
+- :doc:`/stream_interface/index`
 
 .. toctree::
    :maxdepth: 1
-   :caption: Compression Utilities:
+   :caption: Compression Utilities
 
    compress
    decompress

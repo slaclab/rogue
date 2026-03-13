@@ -210,16 +210,16 @@ Goals:
 
 ### Phase 3: Normalize Direct Rogue Module Families
 
-Status: `in_progress`
+Status: `completed`
 
 - [x] `docs/src/built_in_modules/protocols/udp/*`
 - [x] `docs/src/built_in_modules/protocols/rssi/*`
 - [x] `docs/src/built_in_modules/protocols/srp/*`
-- [ ] `docs/src/built_in_modules/protocols/packetizer/*`
-- [ ] `docs/src/built_in_modules/protocols/batcher/*`
-- [ ] `docs/src/built_in_modules/protocols/xilinx/*`
-- [ ] `docs/src/built_in_modules/utilities/compression/*`
-- [ ] `docs/src/built_in_modules/hardware/*`
+- [x] `docs/src/built_in_modules/protocols/packetizer/*`
+- [x] `docs/src/built_in_modules/protocols/batcher/*`
+- [x] `docs/src/built_in_modules/protocols/xilinx/*`
+- [x] `docs/src/built_in_modules/utilities/compression/*`
+- [x] `docs/src/built_in_modules/hardware/*`
 
 Goals:
 
@@ -317,6 +317,24 @@ Use this section to record real state changes as the work moves forward.
 - `2026-03-13`: Completed the direct-SRP rewrite for `protocols/srp`,
   keeping the focus on SRP as the bridge between memory transactions and stream
   transport while separating `SrpV0`, `SrpV3`, and `Cmd` by actual use case.
+- `2026-03-13`: Completed the direct packetizer rewrite for
+  `protocols/packetizer`, keeping the docs focused on packetizer as the
+  destination-routing layer above transport and restoring explicit controller,
+  version-selection, and lower-layer lifecycle guidance.
+- `2026-03-13`: Completed the direct batcher rewrite for `protocols/batcher`,
+  separating splitter and inverter workflows by actual downstream needs and
+  restoring the no-worker-thread execution model from the implementation.
+- `2026-03-13`: Completed the direct Xilinx rewrite for `protocols/xilinx`,
+  keeping `Xvc` as the normal object, `JtagDriver` as the lower-level protocol
+  base, and explicitly documenting the XVC server thread and managed-interface
+  lifecycle pattern.
+- `2026-03-13`: Completed the compression utility rewrite for
+  `utilities/compression`, keeping the docs focused on in-line stream payload
+  transformation and preserving the synchronous execution model from the
+  implementation.
+- `2026-03-13`: Completed the hardware wrapper rewrite for `hardware/*`,
+  sharpening the distinction between DMA-backed wrappers and raw `/dev/mem`
+  mapping while restoring explicit worker-thread and zero-copy behavior notes.
 
 ## Context-Handoff Notes
 

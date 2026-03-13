@@ -4,20 +4,28 @@
 Compressing Frames
 ==================
 
-``rogue.utilities.StreamZip`` compresses frame payload bytes in-line in a
-stream pipeline while preserving frame metadata.
+For compressing stream payloads in-line, Rogue provides
+``rogue.utilities.StreamZip``. It consumes ordinary Rogue frames, compresses
+the payload bytes with bzip2, and forwards a new frame downstream while
+preserving frame metadata.
 
-Method Overview
-===============
+Use ``StreamZip`` when the next stage in the graph expects compressed payloads,
+such as a file writer or a remote receiver that will later use
+``StreamUnZip``.
 
-The examples use a simple linear topology:
+Compression Pipeline
+====================
+
+A common compression chain looks like this:
 
 - ``Prbs`` generates deterministic test payloads.
 - ``StreamZip`` compresses each frame payload.
-- ``StreamWriter`` records compressed frames for replay/analysis.
+- ``StreamWriter`` records the compressed frames for later replay or analysis.
 
-Python Compression Pipeline
-===========================
+The same pattern appears in ``tests/test_file.py``.
+
+Python Example
+==============
 
 .. code-block:: python
 
@@ -25,25 +33,25 @@ Python Compression Pipeline
    import rogue.utilities.fileio as ruf
 
    # Capture compressed output to file.
-   fwrite = ruf.StreamWriter()
-   fwrite.setBufferSize(1000)
-   fwrite.setMaxSize(1_000_000)
+   writer = ruf.StreamWriter()
+   writer.setBufferSize(1000)
+   writer.setMaxSize(1_000_000)
 
    # Source generator and compression stage.
    prbs = ru.Prbs()
    comp = ru.StreamZip()
 
    # Pipeline: PRBS source -> compressor -> file sink.
-   prbs >> comp >> fwrite.getChannel(0)
+   prbs >> comp >> writer.getChannel(0)
 
    # Generate and capture compressed traffic.
-   fwrite.open("test.dat")
+   writer.open('test.dat')
    for _ in range(1000):
-      prbs.genFrame(1000)
-   fwrite.close()
+       prbs.genFrame(1000)
+   writer.close()
 
-C++ Compression Pipeline
-========================
+C++ Example
+===========
 
 .. code-block:: cpp
 
@@ -55,28 +63,48 @@ C++ Compression Pipeline
    namespace ru  = rogue::utilities;
    namespace ruf = rogue::utilities::fileio;
 
-   // Capture compressed output to file.
-   auto fwrite = ruf::StreamWriter::create();
-   fwrite->setBufferSize(10000);
-   fwrite->setMaxSize(100000000);
-   fwrite->setDropErrors(true);
+   int main() {
+       // Capture compressed output to file.
+       auto writer = ruf::StreamWriter::create();
+       writer->setBufferSize(10000);
+       writer->setMaxSize(100000000);
+       writer->setDropErrors(true);
 
-   // Source generator and compression stage.
-   auto prbs = ru::Prbs::create();
-   auto comp = ru::StreamZip::create();
+       // Source generator and compression stage.
+       auto prbs = ru::Prbs::create();
+       auto comp = ru::StreamZip::create();
 
-   // Pipeline: PRBS source -> compressor -> file sink.
-   *prbs >> comp >> fwrite->getChannel(0);
+       // Pipeline: PRBS source -> compressor -> file sink.
+       *prbs >> comp >> writer->getChannel(0);
 
-   // Generate and capture compressed traffic.
-   fwrite->open("test.dat");
-   for (int i = 0; i < 1000; ++i) prbs->genFrame(1000);
-   fwrite->close();
+       // Generate and capture compressed traffic.
+       writer->open("test.dat");
+       for (int i = 0; i < 1000; ++i) prbs->genFrame(1000);
+       writer->close();
+       return 0;
+   }
+
+Threading And Lifecycle
+=======================
+
+``StreamZip`` does not create an internal worker thread. Compression runs
+inside ``acceptFrame()`` in the caller thread, and the implementation locks the
+input frame while reading payload bytes.
+
+Operational Notes
+=================
+
+- Output frame allocation starts from the input payload size and grows if
+  needed.
+- Frame metadata is preserved across the compression step.
+- Compression is easiest to reason about when the corresponding replay or
+  receive path clearly includes :doc:`decompress`.
 
 Related Topics
 ==============
 
 - :doc:`decompress`
+- :doc:`/built_in_modules/utilities/fileio/writing`
 
 API Reference
 =============
