@@ -4,16 +4,37 @@
 UDP Protocol Server
 ===================
 
-``rogue::protocols::udp::Server`` is a UDP endpoint that binds a local port,
-receives inbound datagrams, and emits them into the Rogue stream graph.
+For UDP links where Rogue should listen on a local port and wait for the remote
+side to initiate traffic, Rogue provides ``rogue::protocols::udp::Server``.
+This form is most common in tests, software peer links, and other
+remote-initiated deployments.
 
-Role in stack
-=============
+``Server`` binds a local UDP port, emits inbound datagrams into the Rogue
+stream graph, and sends outbound datagrams to the most recently observed peer.
 
-Use ``Server`` when Rogue should listen for remote-initiated traffic, such as
-software peer links and integration tests.
+Role In The Stack
+=================
 
-Data path behavior
+Use ``Server`` when Rogue should act as the listener rather than the initiator.
+That is less common than ``Client`` for FPGA links, but useful for integration
+tests or peer-to-peer software setups.
+
+Construction
+============
+
+``Server(port, jumbo)`` is shaped by two constructor arguments:
+
+- ``port``
+  Local UDP port to bind. ``0`` requests an OS-assigned port.
+- ``jumbo``
+  Select jumbo payload sizing when ``True`` and standard MTU sizing when
+  ``False``.
+
+The constructor creates and binds the socket, initializes the frame pool, and
+starts the background receive thread. When ``port=0``, use ``getPort()`` to
+discover the assigned local port.
+
+Data Path Behavior
 ==================
 
 - Inbound:
@@ -26,24 +47,24 @@ Data path behavior
   ``acceptFrame()`` sends non-empty frame buffers as UDP datagrams to current
   remote endpoint.
 
-Construction and lifecycle
-==========================
+Lifecycle And Transport Behavior
+================================
 
-- Constructor behavior:
-  creates socket, binds local port, starts RX thread.
-- Dynamic port assignment:
-  passing ``port=0`` requests an OS-assigned port, retrievable via ``getPort()``.
-- C++ ``stop()`` / Python ``_stop()``:
-  disables RX thread, joins thread, and closes socket.
+- ``getPort()``
+  Returns the bound local UDP port.
+- C++ ``stop()`` / Python ``_stop()``
+  Stops the receive thread, joins it, and closes the socket.
+- ``setTimeout()``
+  Inherited from ``udp::Core`` and used for outbound transmit readiness checks.
 
-Timeout behavior
+Timeout Behavior
 ================
 
 Outbound writes use ``select()`` with configured timeout. If transmit readiness
 does not occur in time, server logs a critical timeout and retries.
 
-Typical deployment pattern
-==========================
+When To Use ``Server``
+======================
 
 - Rogue process binds a local UDP port.
 - Remote endpoint initiates traffic toward that port.
@@ -51,8 +72,8 @@ Typical deployment pattern
 - Standalone UDP deployment is less common for control/config paths because UDP
   itself does not provide reliability or in-order delivery guarantees.
 
-Code-backed example
-===================
+Python Example
+==============
 
 .. code-block:: python
 
@@ -71,15 +92,32 @@ Code-backed example
 Lifecycle usage modes:
 
 - Root-managed mode:
-  register transport/protocol objects with ``Root.addInterface(...)`` and let
+  Register transport/protocol objects with ``Root.addInterface(...)`` and let
   Managed Interface Lifecycle stop them during tree shutdown.
 - Standalone script mode:
-  call ``_stop()`` explicitly on UDP endpoints during script teardown.
+  Call ``_stop()`` explicitly on UDP endpoints during script teardown.
 
 Managed lifecycle reference:
 :ref:`pyrogue_tree_node_device_managed_interfaces`
 
-Practical checklist
+C++ Example
+===========
+
+.. code-block:: cpp
+
+   #include <rogue/protocols/udp/Server.h>
+
+   namespace rpu = rogue::protocols::udp;
+
+   auto udp = rpu::Server::create(0, true);
+
+   src >> udp;
+   udp >> dst;
+
+   auto port = udp->getPort();
+   udp->stop();
+
+Practical Checklist
 ===================
 
 - Reserve and expose the local bind port.
@@ -93,6 +131,7 @@ Related Topics
 - :doc:`/built_in_modules/protocols/udp/index`
 - :doc:`/built_in_modules/protocols/network`
 - :doc:`/built_in_modules/protocols/rssi/index`
+- :doc:`client`
 
 API Reference
 =============
