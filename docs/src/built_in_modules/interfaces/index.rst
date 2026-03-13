@@ -19,7 +19,8 @@ Subtopics
 
 - Use :doc:`sql` for SQL-backed logging of ``Variable`` values and syslog
   events.
-- Use :doc:`version` for version-gating and startup compatibility checks.
+- Use :doc:`version` for version-gating and startup compatibility checks
+  through ``rogue.Version``.
 - Use :doc:`cpp_api_wrapper` when a C++ application needs to create or control
   a PyRogue ``Root``.
 - Use :doc:`os_memory_bridge` when exposing OS-level commands through a memory

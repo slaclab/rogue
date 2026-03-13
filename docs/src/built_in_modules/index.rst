@@ -4,11 +4,15 @@
 Built-in Modules
 ================
 
-Built-in Modules is the entry point for Rogue functionality that lives below
-the top-level ``pyrogue`` namespace. These pages are organized for discovery
-first, but they also make the namespace split explicit so it is clear whether
-you are working with a top-level PyRogue ``Device``, a submodule wrapper, or a
-lower-level Rogue endpoint.
+Rogue comes with a number of built-in modules that are useful for assembling
+actual applications. These modules are built on top of the core Rogue and
+PyRogue APIs, so they fit naturally into the usual design flow for tree
+construction, transport setup, simulation, file handling, and hardware access.
+
+These pages are organized for discovery first, but they also make the
+namespace split explicit so it is clear whether you are working with a
+top-level PyRogue ``Device``, a submodule wrapper, or a lower-level Rogue
+endpoint.
 
 Three layers matter when choosing a module family:
 

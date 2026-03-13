@@ -295,13 +295,26 @@ Progress Notes:
 
 ### Phase 5: Cross-Section Consistency Pass
 
-Status: `pending`
+Status: `in_progress`
 
 - [ ] Verify `pyrogue_tree` only owns top-level `pyrogue` classes
 - [ ] Verify `built_in_modules` owns submodule APIs and wrapper families
 - [ ] Check cross-links between `pyrogue_tree` and `built_in_modules`
 - [ ] Remove any remaining bolted-on wrapper-note sections
 - [ ] Remove repeated intro text and other narrative drift
+
+Progress Notes:
+
+- The first pass confirmed that the top-level ownership split is mostly in the
+  right place: `pyrogue_tree` is centered on the `Root`/`Device`/`Variable`
+  model and top-level `pyrogue` built-ins, while `built_in_modules` carries
+  submodule wrappers, protocol families, hardware endpoints, simulation, and
+  helper integrations.
+- Initial cleanup corrected a few remaining scope-description drifts on the
+  landing pages, including namespace wording on `built_in_modules/index.rst`,
+  more precise ownership language on `built_in_modules/interfaces/index.rst`,
+  and a tighter summary of the UART page role on
+  `built_in_modules/protocols/index.rst`.
 
 ## Recommended Working Order
 
