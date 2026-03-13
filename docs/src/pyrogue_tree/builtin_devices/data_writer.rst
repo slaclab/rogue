@@ -81,6 +81,7 @@ Related Topics
 * Concrete stream-to-file writer: :doc:`/built_in_modules/utilities/fileio/writing`
 * Stream replay from file: :doc:`/built_in_modules/utilities/fileio/reading`
 * Rogue file-I/O utilities: :doc:`/built_in_modules/utilities/fileio/index`
+* Built-in module catalog beyond top-level ``pyrogue`` Devices: :doc:`/built_in_modules/index`
 
 API Reference
 =============

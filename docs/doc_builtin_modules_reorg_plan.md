@@ -319,6 +319,11 @@ Progress Notes:
   host-side integration wrapper around a running PyRogue tree, not part of the
   tree model itself, and now links more cleanly to the surrounding
   `built_in_modules/interfaces/*` and `pyrogue_tree/*` sections.
+- A follow-up sweep through `pyrogue_tree/builtin_devices/*` added clearer
+  outward links back to `built_in_modules/index.rst` from the top-level
+  `pyrogue` built-ins that commonly lead readers into lower-level utility or
+  protocol families, helping keep the namespace boundary explicit instead of
+  only implied.
 
 ## Recommended Working Order
 

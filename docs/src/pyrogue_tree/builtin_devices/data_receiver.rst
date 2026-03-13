@@ -119,6 +119,7 @@ Related Topics
 * Stream replay source: :doc:`/built_in_modules/utilities/fileio/reading`
 * Stream capture to file: :doc:`/built_in_modules/utilities/fileio/writing`
 * Stream receiving model: :doc:`/stream_interface/receiving`
+* Built-in module catalog beyond top-level ``pyrogue`` Devices: :doc:`/built_in_modules/index`
 
 API Reference
 =============

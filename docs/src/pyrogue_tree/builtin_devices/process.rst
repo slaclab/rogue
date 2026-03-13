@@ -188,6 +188,7 @@ Related Topics
 * Repeating run loops and run-state control: :doc:`run_control`
 * Command behavior: :doc:`/pyrogue_tree/core/command`
 * Device composition and lifecycle: :doc:`/pyrogue_tree/core/device`
+* Lower-level transport, protocol, and utility families: :doc:`/built_in_modules/index`
 
 API Reference
 =============

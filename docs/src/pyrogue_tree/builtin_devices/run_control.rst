@@ -139,6 +139,7 @@ Related Topics
 * Structured long-running procedures: :doc:`process`
 * Root lifecycle and top-level orchestration: :doc:`/pyrogue_tree/core/root`
 * Device composition and startup behavior: :doc:`/pyrogue_tree/core/device`
+* Lower-level transport, protocol, and utility families: :doc:`/built_in_modules/index`
 
 API Reference
 =============
