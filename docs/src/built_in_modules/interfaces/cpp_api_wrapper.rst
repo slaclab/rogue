@@ -5,10 +5,13 @@
 Wrapping Rogue In C++
 =====================
 
-The supported C++ wrapper interface is
-``rogue::interfaces::api::Bsp``. It wraps a PyRogue node/root object and
-provides helper methods for node traversal, command execution, and variable
-set/get operations.
+For embedding or controlling a PyRogue tree from a C++ application, Rogue
+provides ``rogue::interfaces::api::Bsp``. This wrapper sits in the built-in
+interfaces section because it is an integration layer around a running PyRogue
+tree rather than part of the tree model itself.
+
+``Bsp`` wraps a PyRogue node or ``Root`` object and provides helper methods for
+node traversal, command execution, variable access, and root-level listeners.
 
 Creating a root wrapper
 -----------------------
@@ -25,6 +28,10 @@ names:
 
 If constructed this way, the root is started in the constructor and stopped in
 the wrapper destructor.
+
+This is the common pattern when a C++ process needs to host the PyRogue
+application directly instead of connecting to it through a remote client
+interface.
 
 Node traversal and variable access
 ----------------------------------
@@ -78,12 +85,19 @@ Variable listeners can be attached only on a root wrapper:
 
    bsp.addVarListener(&varListener, &varDone);
 
+What To Explore Next
+====================
+
+- Built-in interface overview: :doc:`/built_in_modules/interfaces/index`
+- Version checks and compatibility guards: :doc:`/built_in_modules/interfaces/version`
+- SQL-backed tree logging: :doc:`/built_in_modules/interfaces/sql`
+
 Related Topics
 ==============
 
-- Built-in interface overview: :doc:`/built_in_modules/interfaces/index`
 - PyRogue tree structure and lifecycle: :doc:`/pyrogue_tree/index`
 - Core Root/Device/Variable behavior: :doc:`/pyrogue_tree/core/index`
+- Remote client/server access patterns: :doc:`/pyrogue_tree/client_interfaces/index`
 
 API Reference
 =============

@@ -315,6 +315,10 @@ Progress Notes:
   more precise ownership language on `built_in_modules/interfaces/index.rst`,
   and a tighter summary of the UART page role on
   `built_in_modules/protocols/index.rst`.
+- `interfaces/cpp_api_wrapper.rst` now states more clearly that `Bsp` is a
+  host-side integration wrapper around a running PyRogue tree, not part of the
+  tree model itself, and now links more cleanly to the surrounding
+  `built_in_modules/interfaces/*` and `pyrogue_tree/*` sections.
 
 ## Recommended Working Order
 
