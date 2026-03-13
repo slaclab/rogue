@@ -5,8 +5,8 @@
 Wrapping Rogue In C++
 =====================
 
-The supported C++ wrapper interface is ``rogue::interfaces::api::Bsp`` from
-``include/rogue/interfaces/api/Bsp.h``. It wraps a PyRogue node/root object and
+The supported C++ wrapper interface is
+``rogue::interfaces::api::Bsp``. It wraps a PyRogue node/root object and
 provides helper methods for node traversal, command execution, and variable
 set/get operations.
 
@@ -77,12 +77,6 @@ Variable listeners can be attached only on a root wrapper:
    }
 
    bsp.addVarListener(&varListener, &varDone);
-
-Reference example
------------------
-
-See ``tests/api_test/src/api_test.cpp`` for a complete working example that
-matches the current ``Bsp`` API.
 
 Related Topics
 ==============

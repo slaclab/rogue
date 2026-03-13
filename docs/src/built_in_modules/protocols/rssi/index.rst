@@ -127,8 +127,8 @@ The most common PyRogue-facing form is still ``pyrogue.protocols.UdpRssiPack``:
            # self.add(MyDevice(name='Dev', offset=0x0, memBase=srp))
 
 For custom wiring or lower-level debugging, instantiate the direct RSSI
-classes explicitly. The following pattern mirrors the wrapper logic used in
-``python/pyrogue/protocols/_Network.py`` and ``tests/test_udpPacketizer.py``:
+classes explicitly. The following pattern shows the usual lower-level stack
+shape:
 
 .. code-block:: python
 

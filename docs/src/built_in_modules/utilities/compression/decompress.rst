@@ -21,8 +21,6 @@ A common decompression chain reverses the compression workflow:
 - ``StreamUnZip`` inflates each payload.
 - ``Prbs`` verifies integrity and reports receive and error counts.
 
-The same pattern appears in ``tests/test_file.py``.
-
 Python Example
 ==============
 

@@ -15,10 +15,10 @@ What It Does
 ``EpicsPvServer`` publishes and serves EPICS-facing process variables using
 the PyRogue integration layer.
 
-Behavior from implementation
-============================
+Server Behavior
+===============
 
-Based on ``python/pyrogue/protocols/epicsV4.py``, the server:
+``EpicsPvServer``:
 
 - Requires a running ``Root`` before startup.
 - Builds PV mappings either automatically (``base:path``) or from ``pvMap``.
@@ -39,8 +39,8 @@ uses two mapping modes:
 
 Default exclusion is ``['NoServe']`` when ``excGroups`` is not provided.
 
-Code-Backed Setup Example
-=========================
+Setup Example
+=============
 
 .. code-block:: python
 
@@ -70,10 +70,10 @@ Code-Backed Setup Example
        # Optionally write mapping to file for IOC/client integration.
        root.epics.dump('epics_map.txt')
 
-Usage Pattern from Tests
-========================
+Typical Usage Pattern
+=====================
 
-``tests/test_epics.py`` validates the common setup:
+The common setup follows this pattern:
 
 1. Create and start a ``Root`` with Local and Remote variables.
 2. Construct ``EpicsPvServer(base=..., root=..., pvMap=...)``.

@@ -22,8 +22,6 @@ A common compression chain looks like this:
 - ``StreamZip`` compresses each frame payload.
 - ``StreamWriter`` records the compressed frames for later replay or analysis.
 
-The same pattern appears in ``tests/test_file.py``.
-
 Python Example
 ==============
 

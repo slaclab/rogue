@@ -87,8 +87,6 @@ When Not To Use UDP By Itself
 Python Example
 ==============
 
-The following pattern mirrors ``tests/test_udpPacketizer.py``:
-
 .. code-block:: python
 
    import rogue.protocols.udp

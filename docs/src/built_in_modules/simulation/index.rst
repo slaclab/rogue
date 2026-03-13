@@ -20,9 +20,6 @@ Available Components
 - ``Pgp2bSim``: simulated PGP2B endpoint with VC stream links and sideband
 - ``SideBandSim``: standalone sideband socket bridge for opcode/remote-data
 
-These helpers are implemented in Python in
-``python/pyrogue/interfaces/simulation.py``.
-
 Selection Guidance
 ==================
 

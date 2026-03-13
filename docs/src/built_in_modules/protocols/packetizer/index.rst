@@ -89,9 +89,8 @@ firmware side is already fixed, match that firmware.
 End-To-End Example
 ==================
 
-The packetizer path in ``tests/test_udpPacketizer.py`` shows the usual shape of
-the stack. Packetizer sits above RSSI, and one application destination carries
-the test traffic:
+Packetizer often sits above RSSI, with one application destination carrying the
+traffic for a given path:
 
 .. code-block:: python
 

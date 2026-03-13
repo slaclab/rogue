@@ -80,8 +80,6 @@ Retry-Test Pattern
    sim = pis.MemEmulate(dropCount=2)
    # With retryCount >= 2 on variables, transient drops can still succeed.
 
-This pattern is exercised in ``tests/test_retry_memory.py``.
-
 Related Topics
 ==============
 

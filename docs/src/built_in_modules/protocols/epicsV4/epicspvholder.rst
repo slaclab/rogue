@@ -19,8 +19,7 @@ for numeric types.
 Type Mapping and Updates
 ========================
 
-From the implementation in ``python/pyrogue/protocols/epicsV4.py``, holders
-handle several important translation cases:
+``EpicsPvHolder`` handles several important translation cases:
 
 - Enum variables are published through EPICS enum support using the Variable's
   display choices.
