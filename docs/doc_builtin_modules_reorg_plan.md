@@ -258,7 +258,7 @@ Progress Notes:
 
 Status: `pending`
 
-- [ ] `docs/src/built_in_modules/interfaces/sql.rst`
+- [x] `docs/src/built_in_modules/interfaces/sql.rst`
 - [ ] `docs/src/built_in_modules/interfaces/os_memory_bridge.rst`
 - [ ] `docs/src/built_in_modules/protocols/gpib.rst`
 - [ ] `docs/src/built_in_modules/protocols/epicsV4/*`
