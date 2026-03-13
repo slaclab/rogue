@@ -69,6 +69,11 @@ When deciding what to keep or recover, prioritize:
 - Present examples in the order a user is likely to need them.
 - Move advanced mechanics, performance details, and edge cases later in the
   document.
+- Write in subject-first narrative prose. Explain the thing itself rather than
+  announcing what the section "covers", "describes", or "will explain".
+- Avoid meta-introduction phrasing such as "this section covers", "this area
+  covers", "in this section", or "the examples below show". Prefer direct
+  statements about the behavior, workflow, or object.
 - Prefer prose and narrative exposition over compressed bullet summaries.
 - Use bullets when the content is naturally list-shaped, but do not reduce core
   explanation to bullets if a paragraph would teach the subject better.
