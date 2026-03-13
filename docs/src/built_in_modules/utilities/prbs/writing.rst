@@ -4,25 +4,37 @@
 Generating PRBS Frames
 ======================
 
-Use ``rogue.utilities.Prbs`` when a lightweight generator/checker endpoint is
-needed directly in a stream topology.
+``rogue.utilities.Prbs`` generates PRBS traffic directly into a stream graph.
+That form is a good fit for scripts, standalone tests, and small validation
+setups.
 
-Use ``pyrogue.utilities.prbs.PrbsTx`` when you want generator control and
-counters as part of a ``Root`` tree.
+``pyrogue.utilities.prbs.PrbsTx`` wraps the same generator behavior in a
+tree-managed ``Device``. That form is a better fit when transmit control and
+counters should be visible through a ``Root`` tree.
 
-This transmit path is commonly used to drive PRBS into FPGA firmware/VHDL
-checkers during link bring-up and integration testing.
+PRBS transmit paths commonly drive traffic into FPGA firmware/VHDL checkers
+during link bring-up and integration testing.
 
 Method Overview
 ===============
 
-Common PRBS generator calls shown below:
+Common generator calls are:
 
 - ``genFrame(size)``: Generates and transmits one PRBS frame of ``size`` bytes.
 - ``PrbsTx`` wrapper: Exposes generator controls and counters as ``Variables``
   and ``Commands`` in a tree.
 
-Python PRBS Generator Example
+Using ``PrbsTx`` In A Tree
+==========================
+
+``pyrogue.utilities.prbs.PrbsTx`` is the tree-managed form of the PRBS
+generator.
+
+It is the right choice when operators or client code should be able to inspect
+or control transmit settings such as enable state, frame size, frame period,
+and generator counters through the PyRogue tree.
+
+Python Direct-Utility Example
 =============================
 
 .. code-block:: python
@@ -47,8 +59,8 @@ Python PRBS Generator Example
       prbs.genFrame(1000)
    fwrite.close()
 
-PyRogue PRBS Transmitter Wrapper
-================================
+Python Tree-Managed Example
+===========================
 
 .. code-block:: python
 
@@ -97,8 +109,8 @@ C++ PRBS Generator Example
 Related Topics
 ==============
 
-- :doc:`/pyrogue_tree/builtin_devices/prbstx`
-- :doc:`/pyrogue_tree/builtin_devices/prbspair`
+- :doc:`index`
+- :doc:`reading`
 
 API Reference
 =============

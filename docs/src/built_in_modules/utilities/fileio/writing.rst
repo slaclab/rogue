@@ -7,13 +7,19 @@ Writing Frames To A File
 ``rogue.utilities.fileio.StreamWriter`` captures incoming stream frames into a
 Rogue file format that preserves payload bytes plus frame metadata.
 
+``pyrogue.utilities.fileio.StreamWriter`` wraps that writer in a tree-managed
+``Device`` by subclassing :py:class:`~pyrogue.DataWriter`. The lower-level
+writer is the simpler fit for scripts and standalone stream graphs. The PyRogue
+wrapper is the better fit when file capture should be started from a ``Root``
+tree or a client GUI.
+
 For the on-disk format details (header words, channel/flags/error encoding,
 raw mode, and split-file behavior), see :ref:`utilities_fileio_format`.
 
-Method Overview
-===============
+Core Writer Controls
+====================
 
-The examples below use a small set of core ``StreamWriter`` methods:
+The core writer is shaped by a small set of methods:
 
 - ``setBufferSize(bytes)``: Sets the in-memory staging buffer used before
   flushing writes to the OS. Larger values can improve throughput.
@@ -32,8 +38,22 @@ The examples below use a small set of core ``StreamWriter`` methods:
 - ``open(path)``: Opens the output file and starts capture.
 - ``close()``: Flushes buffered data and closes the file.
 
-In the PyRogue wrapper flow, the same operations are exposed through tree
-variables/commands such as ``DataFile``, ``Open``, and ``Close``.
+Tree-Managed Writer Form
+========================
+
+``pyrogue.utilities.fileio.StreamWriter`` is a Python ``Device`` wrapper around
+the same writer backend.
+
+The wrapper is usually configured around:
+
+- ``configStream`` for channels that should emit YAML/config snapshots at file
+  open and close
+- ``rawMode`` when payload-only recording is desired
+- the inherited ``DataWriter`` controls such as ``DataFile``, ``BufferSize``,
+  and ``MaxFileSize``
+
+In many systems, ``configStream`` is mapped to a reserved channel such as
+``255`` so metadata stays separate from event/data channels.
 
 Logging
 =======
@@ -52,8 +72,8 @@ The PyRogue wrapper itself is primarily a control surface around that C++
 writer, so the most useful logging usually comes from the underlying
 ``StreamWriter`` logger.
 
-Python StreamWriter Example
-===========================
+Python Direct-Utility Example
+=============================
 
 .. code-block:: python
 
@@ -79,29 +99,40 @@ Python StreamWriter Example
    # ... stream traffic is captured while file is open ...
    fwrite.close()
 
-PyRogue StreamWriter Device Wrapper
-===================================
-
-``pyrogue.utilities.fileio.StreamWriter`` wraps the writer for use in a
-``Root`` tree and GUI/client control.
+Python Tree-Managed Example
+===========================
 
 .. code-block:: python
 
+   import pyrogue as pr
+   import pyrogue.interfaces.stream as pis
    import pyrogue.utilities.fileio as puf
+   import pyrogue.utilities.prbs as pup
 
-   # Optional config/status streams can be mapped by channel.
-   # Those channels are emitted as YAML metadata on open/close.
-   fwrite = puf.StreamWriter(configStream={1: statusStream})
-   root.add(fwrite)
+   class MyRoot(pr.Root):
+       def __init__(self, **kwargs):
+           super().__init__(**kwargs)
 
-   streamA >> fwrite.getChannel(0)
-   streamB >> fwrite.getChannel(2)
+           # Tree-managed writer with a reserved metadata channel.
+           status_stream = pis.Variable(root=self)
+           self.add(puf.StreamWriter(name='Writer', configStream={255: status_stream}))
+
+           # Real stream source feeding capture channel 0.
+           self.add(pup.PrbsTx(name='PrbsTx'))
+           self.PrbsTx >> self.Writer.getChannel(0)
+
+   root = MyRoot()
 
    # File control can be performed through Device variables/commands.
-   fwrite.DataFile.set("myFile.dat")
-   fwrite.Open()
+   root.Writer.DataFile.set("myFile.dat")
+   root.Writer.Open()
    # ...
-   fwrite.Close()
+   root.Writer.Close()
+
+Opening the file starts capture and emits any configured YAML/status streams.
+Closing the file emits those streams again before the writer shuts down. That
+pattern is useful because the file records both data traffic and the
+configuration context that surrounded the run.
 
 C++ StreamWriter Example
 ========================

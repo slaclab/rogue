@@ -28,25 +28,27 @@ directly into existing stream topologies for test and validation:
 Because patterns are deterministic, PRBS tests are useful both for first
 bring-up and for recurring regression checks where repeatability matters.
 
-Core utility and PyRogue wrappers
-=================================
+Direct Endpoints And Tree-Managed Devices
+=========================================
 
-Two usage styles are common:
+Two Python forms are common:
 
 - ``rogue.utilities.Prbs``:
   lightweight direct stream endpoint for scripts and non-tree tests.
 - ``pyrogue.utilities.prbs`` wrappers (``PrbsTx``, ``PrbsRx``, ``PrbsPair``):
   tree-managed integration with Variables/Commands for GUI and runtime control.
 
-Wrapper documentation:
-
-- :doc:`/pyrogue_tree/builtin_devices/prbstx`
-- :doc:`/pyrogue_tree/builtin_devices/prbsrx`
-- :doc:`/pyrogue_tree/builtin_devices/prbspair`
-
 Common controls/counters exposed by the implementation include width/taps
 selection, transmit period, payload generation/check enable, and frame/error
 counters.
+
+``PrbsPair`` is a convenience wrapper that keeps both transmit and receive
+control under one node for loopback tests and end-to-end validation.
+
+The direct Rogue endpoint is the simpler fit when a test script just needs to
+generate or check traffic inside a stream graph. The PyRogue wrappers are the
+better fit when operators, GUIs, or client code need tree-visible counters and
+controls.
 
 Typical validation workflow
 ===========================
@@ -55,9 +57,6 @@ Typical validation workflow
 2. Route traffic through the transport/path under test.
 3. Check receive counters and error counters at the sink side.
 4. Tune width/taps/period when matching target link characteristics.
-
-Use the pages below for concrete transmit and receive examples in both Python
-and C++.
 
 C++ API details for PRBS utilities are documented in
 :doc:`/api/cpp/utilities/prbs/index`.
@@ -115,7 +114,7 @@ What To Explore Next
   :doc:`/built_in_modules/utilities/fileio/index`
 - Stream graph wiring patterns:
   :doc:`/stream_interface/connecting`
-- Built-in Device wrappers:
+- Top-level PyRogue tree devices:
   :doc:`/pyrogue_tree/builtin_devices/index`
 
 .. toctree::

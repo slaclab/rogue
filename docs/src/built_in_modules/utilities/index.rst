@@ -13,6 +13,11 @@ and add compression/decompression stages.
 These modules are building blocks rather than complete transport stacks, and
 are typically composed with hardware and protocol modules.
 
+The utilities subtree includes both lower-level Rogue modules and Python-side
+wrappers around them. When a utility also has a PyRogue ``Device`` wrapper,
+that wrapper is documented here unless it is exposed in the top-level
+``pyrogue`` namespace.
+
 Common use cases include:
 
 - File capture and playback during integration and debug.

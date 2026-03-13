@@ -8,6 +8,18 @@ Built-in Modules collects core Rogue components that are commonly assembled
 into complete systems: hardware interfaces, protocol stacks, utilities, and
 integration helpers.
 
+This section intentionally mixes three kinds of building blocks:
+
+- exported Rogue C++ modules that are exposed into Python
+- pure Python helper modules
+- Python ``Device`` wrappers around lower-level Rogue modules
+
+That third category is important when a lower-level stream or utility object
+also has a tree-managed wrapper. In those cases, the built-in-modules pages
+cover both the core module behavior and the wrapper layer, while
+:doc:`/pyrogue_tree/builtin_devices/index` stays focused on classes exposed in
+the top-level ``pyrogue`` namespace.
+
 In practice, this section is where transport and system-integration work gets
 done:
 

@@ -7,11 +7,18 @@ File I/O Utilities
 The File I/O utilities provide a standard record format and stream endpoints
 for writing and replaying frame data.
 
+``rogue.utilities.fileio`` provides the core file writer and reader endpoints.
+``pyrogue.utilities.fileio`` adds tree-managed ``Device`` wrappers around those
+same endpoints when capture or replay should be controlled from a PyRogue tree.
+
 Rogue file operations are centered on frame capture and replay:
 
 - ``StreamWriter`` captures stream traffic and writes framed records to disk.
 - ``StreamReader`` replays those records back into stream pipelines.
 - ``FileReader`` supports direct Python-side offline inspection/analysis.
+- ``pyrogue.utilities.fileio.StreamWriter`` and
+  ``pyrogue.utilities.fileio.StreamReader`` wrap those endpoints as
+  tree-managed devices.
 
 The file format itself is foundational, because every writer/reader behavior
 depends on how record headers, channel IDs, flags, and error fields are
@@ -26,6 +33,10 @@ Common workflows include:
 - Replaying captured files back into processing pipelines.
 - Reading records directly in Python for offline analysis.
 - Extending the base writer for custom DAQ output formats.
+
+The direct Rogue utilities are the simpler fit for scripts and standalone
+stream graphs. The PyRogue wrappers are the better fit when file control should
+appear through ``DataFile``, ``Open``, ``Close``, and related tree state.
 
 Logging
 =======
