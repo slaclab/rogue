@@ -59,6 +59,8 @@ When deciding what to keep or recover, prioritize:
   zero-copy behavior, ownership, ordering, or performance tradeoffs.
 - Integrating better old explanations into the new structure rather than
   restoring the old structure wholesale.
+- Removing repetitive statements so each section adds a new piece of
+  information instead of restating the same point in slightly different words.
 
 ## Narrative Structure
 
@@ -70,6 +72,10 @@ When deciding what to keep or recover, prioritize:
 - Prefer prose and narrative exposition over compressed bullet summaries.
 - Use bullets when the content is naturally list-shaped, but do not reduce core
   explanation to bullets if a paragraph would teach the subject better.
+- During editing passes, actively look for repeated statements between the page
+  introduction, parameter sections, subclassing sections, and example
+  commentary. Consolidate repeated ideas instead of leaving near-duplicates in
+  multiple places.
 
 ## Example Workflow
 
