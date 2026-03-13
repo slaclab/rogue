@@ -212,9 +212,9 @@ Goals:
 
 Status: `in_progress`
 
-- [ ] `docs/src/built_in_modules/protocols/udp/*`
-- [ ] `docs/src/built_in_modules/protocols/rssi/*`
-- [ ] `docs/src/built_in_modules/protocols/srp/*`
+- [x] `docs/src/built_in_modules/protocols/udp/*`
+- [x] `docs/src/built_in_modules/protocols/rssi/*`
+- [x] `docs/src/built_in_modules/protocols/srp/*`
 - [ ] `docs/src/built_in_modules/protocols/packetizer/*`
 - [ ] `docs/src/built_in_modules/protocols/batcher/*`
 - [ ] `docs/src/built_in_modules/protocols/xilinx/*`
@@ -306,6 +306,17 @@ Use this section to record real state changes as the work moves forward.
 - `2026-03-13`: Added a built-in-modules intro-style rule: lead with the use
   case, avoid calling things an "entry point", and vary opening sentence
   structure so pages do not read like a rigid template.
+- `2026-03-13`: Completed the direct-UDP rewrite for `protocols/udp`, using
+  the implementation and `tests/test_udpPacketizer.py` to document `Core`,
+  `Client`, and `Server` as lower-level transport pieces that usually sit
+  below RSSI and packetizer.
+- `2026-03-13`: Completed the direct-RSSI rewrite for `protocols/rssi`,
+  keeping the docs `rogue.*`-first while clarifying that
+  `pyrogue.protocols.UdpRssiPack` remains the normal FPGA-facing path and the
+  direct RSSI classes are the lower-level composition and debugging tools.
+- `2026-03-13`: Completed the direct-SRP rewrite for `protocols/srp`,
+  keeping the focus on SRP as the bridge between memory transactions and stream
+  transport while separating `SrpV0`, `SrpV3`, and `Cmd` by actual use case.
 
 ## Context-Handoff Notes
 

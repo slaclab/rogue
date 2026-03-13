@@ -4,10 +4,11 @@
 SRP Protocol
 ============
 
-Rogue SRP components provide a bridge between the memory transaction API and
-the stream API. Memory reads/writes are serialized into SRP stream frames,
-transported over a link (for example DMA or TCP), and consumed by FPGA/ASIC
-logic that implements the SRP protocol for register access.
+For carrying register and memory transactions across a Rogue stream link,
+Rogue provides ``rogue.protocols.srp``. SRP bridges the memory interface and
+the stream interface: reads and writes are serialized into SRP frames, carried
+over a stream transport, and decoded by FPGA or ASIC logic that implements the
+corresponding SRP protocol.
 
 In most deployed systems, SRP is not used by itself. It is usually combined
 with a transport/reliability stack such as ``UDP -> RSSI -> Packetizer`` or a
@@ -30,15 +31,18 @@ Choosing SRP version
 - Use :doc:`srpV0` only when endpoint firmware is locked to v0 framing.
 - Use :doc:`cmd` for lightweight command opcodes rather than register access.
 
-Integration boundaries
-======================
+Where SRP Fits
+==============
 
 - SRP bridges memory transactions to stream transport.
 - Tree-facing configuration and register semantics remain in PyRogue device
   definitions.
-- Stream transport tuning belongs in :doc:`/stream_interface/index`.
+- Transport selection and tuning belong in the lower stream and protocol
+  layers such as :doc:`/built_in_modules/protocols/network`,
+  :doc:`/built_in_modules/protocols/udp/index`, and
+  :doc:`/built_in_modules/hardware/dma/stream`.
 
-Common integration patterns
+Common Integration Patterns
 ===========================
 
 - PyRogue tree pattern:
@@ -51,11 +55,13 @@ Common integration patterns
   use :doc:`cmd` for opcode/context control channels that are intentionally
   separate from register-access transactions.
 
-Related integration pages
-=========================
+Related Topics
+==============
 
 - AXI stream + SRPv3 usage: :doc:`/built_in_modules/hardware/dma/stream`
 - TCP memory bridge usage: :doc:`/memory_interface/tcp_bridge`
+- Memory transaction model: :doc:`/memory_interface/transactions`
+- Tree integration through ``memBase``: :doc:`/pyrogue_tree/core/remote_variable`
 
 .. toctree::
    :maxdepth: 1
