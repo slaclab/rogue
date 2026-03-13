@@ -4,121 +4,135 @@
 Packetizer Protocol
 ===================
 
-Packetizer provides frame formatting and destination-channel multiplexing above
-transport/reliability layers. It packetizes large stream frames into smaller
-transport-friendly packets, then depacketizes them back into original frames on
-the receive side. In practice it is commonly placed above RSSI (which is often
-above UDP) to route application traffic by virtual channel. It lets one
-physical transport path carry multiple logical application streams without
-requiring separate sockets or DMA channels per flow.
-Each packet carries frame metadata (such as destination/virtual channel and
-other sideband fields), so receivers can correctly demultiplex mixed traffic
-streams after transport.
+For carrying multiple logical application streams over one shared transport
+path, Rogue provides ``rogue.protocols.packetizer``. Packetizer sits above a
+lower transport such as RSSI, DMA, or PGP and turns that shared link into a
+set of destination-addressed application channels.
 
-In many systems, software packetizer endpoints in Rogue connect to firmware
-packetizer endpoints (for example in the SURF firmware library). This allows
-AXI-Stream sideband metadata to be preserved while sending frame traffic over
-external transports such as UDP, PGP, or DMA-backed links.
+In practice, packetizer is the layer that lets one physical transport session
+carry different traffic types at the same time, such as register transactions,
+waveform data, and diagnostic events. The receive side can then reconstruct the
+original frame boundaries and route each stream to the correct destination
+endpoint.
 
-Protocol specifications
+In many systems, a software packetizer endpoint in Rogue connects directly to a
+firmware packetizer endpoint. That is what preserves AXI-Stream sideband
+metadata such as destination and user fields while traffic crosses an external
+transport.
+
+Protocol Specifications
 =======================
 
 - Packetizer v1 specification: https://confluence.slac.stanford.edu/x/1oyfD
 - Packetizer v2 specification: https://confluence.slac.stanford.edu/x/3nh4DQ
 
-Typical stack position
-======================
+How Packetizer Fits In The Stack
+================================
+
+A common network-backed stack looks like this:
 
 .. code-block:: text
 
-   UDP <-> RSSI <-> Packetizer <-> Application endpoints (dest 0..255)
+   UDP <-> RSSI <-> Packetizer <-> Application endpoints
 
-Core model
-==========
+On DMA-backed systems, the lower side might instead be:
 
-Both packetizer core variants wire the same main components:
+.. code-block:: text
 
-- ``Transport``:
-  stream edge facing lower transport layers.
-- ``Controller``:
-  protocol processing engine (v1 or v2 implementation).
-- ``Application(dest)``:
-  per-destination stream endpoints (0-255).
+   AxiStreamDma <-> Packetizer <-> Application endpoints
 
-Protocol versions at a glance
-=============================
+Both packetizer core variants expose the same main structure:
 
-- ``Core`` (v1):
-  packet header includes version/frame/packet counters plus
-  ``TDest``/``TID``/``TUserFirst`` and uses a compact 1-byte tail with
-  ``TUserLast`` + EOF bit.
-- ``CoreV2`` (v2):
-  designed for interleaving packet chunks and adds a structured 64-bit tail
-  including ``TUserLast``, EOF, ``LAST_BYTE_CNT``, and CRC field support.
+- ``transport()`` is the lower-layer edge facing RSSI, UDP, DMA, or another
+  transport path.
+- ``application(dest)`` is the upper-layer edge for one application channel.
+- A controller in the middle packetizes outbound frames and depacketizes
+  inbound ones.
 
-Overview
-========
+The destination field is an 8-bit selector, so one transport session can carry
+up to 256 logical application channels. In real designs, that lets software and
+firmware share one lower transport while still separating register, data, and
+debug traffic cleanly.
 
-The core object creates and connects these components, and application channels
-are instantiated lazily when ``application(dest)`` is called.
-The ``dest`` field is an 8-bit channel selector (0-255), so stream graphs can
-separate traffic types (for example register transactions, waveform data, and
-diagnostic events) while sharing one lower transport path.
+Packetizer Versions At A Glance
+===============================
 
-Choosing a core version
-=======================
+- ``Core`` implements packetizer v1.
+  It uses an 8-byte header and a compact 1-byte tail carrying ``TUserLast`` and
+  EOF information.
+- ``CoreV2`` implements packetizer v2.
+  It keeps the same overall role but adds a more structured 64-bit tail,
+  interleaving support, and configurable CRC behavior.
 
-- Use :doc:`core` when existing systems require packetizer v1 compatibility.
-- Use :doc:`coreV2` for new designs or links standardized on packetizer v2.
-- Ensure both peers use matching packetizer behavior/version expectations.
+Subtopics
+=========
 
-Integration pattern
-===================
+- :doc:`core`
+  Use packetizer v1 when the peer requires the older v1 wire format.
+- :doc:`coreV2`
+  Use packetizer v2 for new designs or whenever the link already standardizes on
+  v2 behavior and CRC handling.
 
-The following pattern mirrors ``tests/test_udpPacketizer.py``:
+Version Selection
+=================
+
+Packetizer version is a compatibility choice, not just a software preference.
+Both ends of the link must agree on the same wire format.
+
+- Use ``Core`` when the peer expects packetizer v1.
+- Use ``CoreV2`` when the peer expects packetizer v2.
+- Do not mix v1 and v2 endpoints across the same link.
+
+If the version is still open, ``CoreV2`` is usually the better default. If the
+firmware side is already fixed, match that firmware.
+
+End-To-End Example
+==================
+
+The packetizer path in ``tests/test_udpPacketizer.py`` shows the usual shape of
+the stack. Packetizer sits above RSSI, and one application destination carries
+the test traffic:
 
 .. code-block:: python
 
    import rogue.protocols.packetizer
    import rogue.protocols.rssi
+   import rogue.utilities
 
-   # Lower protocol layer (reliability + transport).
+   # Lower transport/reliability layer.
    rssi = rogue.protocols.rssi.Client(1472 - 8)
 
-   # Packetizer core (v2) with inbound CRC check, outbound CRC generation, SSI.
+   # Packetizer layer. This example uses v2 with inbound and outbound CRC.
    pkt = rogue.protocols.packetizer.CoreV2(True, True, True)
 
-   # Connect lower layer into packetizer transport edge.
+   # Source and sink connected to destination channel 0.
+   tx = rogue.utilities.Prbs()
+   rx = rogue.utilities.Prbs()
+
+   # Outbound traffic enters packetizer on application destination 0.
+   tx >> pkt.application(0)
+
+   # Packetizer transport side connects bidirectionally to RSSI.
    rssi.application() == pkt.transport()
 
-   # Route destination 0 to a register/control sink.
-   pkt.application(0) >> my_sink
+   # Inbound traffic for destination 0 is delivered to the receiver.
+   pkt.application(0) >> rx
 
-   # Route source traffic into destination 0 channel.
-   my_source >> pkt.application(0)
+Threading And Lifecycle
+=======================
 
-Core variants
-=============
+Packetizer core objects are wiring helpers. They do not start their own worker
+threads, and they do not define a standalone start or stop API in Python.
 
-- ``Core``: baseline packetizer implementation for standard deployments.
-- ``CoreV2``: newer packetizer variant with updated protocol behavior and
-  compatibility needs.
+Lifecycle control usually belongs to the lower transport layer that packetizer
+attaches to:
 
-When to use
-===========
+- RSSI endpoints own protocol lifecycle and background activity.
+- UDP endpoints own socket lifecycle.
+- DMA wrappers own driver-facing threads.
 
-- You need explicit packet framing at the protocol layer.
-- You need destination/application channel routing semantics.
-- You are integrating with systems that already use Rogue packetizer endpoints.
-- You want a single transport session to carry multiple logical channels.
-
-Lifecycle notes
-===============
-
-Packetizer core objects are data-path wiring/helpers and do not define a
-separate start API in Python. Lifecycle management is usually applied to the
-lower transport/reliability interfaces (for example RSSI, UDP, DMA) that
-packetizer attaches to.
+If a packetizer path is misbehaving, the lower layer is often the first place
+to inspect.
 
 Related Topics
 ==============
@@ -126,7 +140,7 @@ Related Topics
 - :doc:`/built_in_modules/protocols/network`
 - :doc:`/built_in_modules/protocols/rssi/index`
 - :doc:`/built_in_modules/protocols/udp/index`
-- :doc:`/stream_interface/index`
+- :doc:`/built_in_modules/hardware/dma/stream`
 - :doc:`/built_in_modules/protocols/batcher/index`
 
 API Reference

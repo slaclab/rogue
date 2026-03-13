@@ -4,67 +4,70 @@
 Packetizer Protocol CoreV2
 ==========================
 
-``CoreV2`` is the packetizer v2 wiring class. It creates a ``Transport``
-endpoint and a v2 controller, then exposes ``application(dest)`` endpoints for
-channel-based application routing.
+For packetizer v2 links, Rogue provides ``rogue.protocols.packetizer.CoreV2``.
+This class owns the v2 controller, exposes the lower transport edge through
+``transport()``, and creates per-destination application endpoints with
+``application(dest)``.
 
-Protocol behavior summary (v2)
-==============================
+Use ``CoreV2`` for new packetizer deployments, or whenever the peer already
+expects the v2 wire format.
 
-Packetizer v2 packetizes frames similarly to v1 but adds improved structure for
-interleaving packet chunks and CRC control. It also carries AXI-Stream sideband
-metadata in the packetized format.
+Protocol Behavior
+=================
 
-v2 format constraints and structure:
+Packetizer v2 serves the same routing role as v1 but adds a more structured
+tail format, better support for interleaving packet chunks, and configurable
+CRC behavior.
 
-- Firmware protocol definition requires a 64-bit AXI-Stream data path for v2
-  packetizer/depacketizer operation.
+Important v2 format traits:
+
+- The firmware protocol assumes a 64-bit AXI-Stream datapath.
 - Each packet has an 8-byte header and an 8-byte tail.
-- Header fields include:
-  version (expected ``0x2``), CRC type, ``TUserFirst``, ``TDest``, ``TID``,
-  packet sequence number, and SOF flag.
-- Tail fields include:
-  ``TUserLast``, EOF, ``LAST_BYTE_CNT`` (valid bytes in final beat), and CRC.
+- The header includes version, CRC type, ``TUserFirst``, ``TDest``, ``TID``,
+  packet sequence number, and SOF information.
+- The tail includes ``TUserLast``, EOF, ``LAST_BYTE_CNT``, and CRC.
 
-CRC behavior notes (v2):
+CRC Behavior
+============
 
-- CRC type selects no CRC, data-only CRC, or CRC over header/tail/data path as
-  defined by the v2 protocol.
-- In CRC-type 2 mode, CRC calculation excludes the CRC field itself.
-- If firmware CRC checking is disabled, CRC field should be zero and is not
-  checked on receive.
-- If firmware CRC checking is enabled, peers are expected to provide valid CRC.
-- Non-payload bytes in the final beat (``8 - LAST_BYTE_CNT``) still participate
-  in CRC computation because they remain part of packetizer frame transfer.
+CRC handling is one of the main reasons to choose v2. The CRC mode is a
+link-level compatibility choice, so software and firmware must agree on how CRC
+is generated and checked.
 
-Specification reference:
-https://confluence.slac.stanford.edu/x/3nh4DQ
+Practical points:
 
-Behavior summary
-================
+- ``enIbCrc`` enables inbound CRC checking in software.
+- ``enObCrc`` enables outbound CRC generation in software.
+- The v2 protocol allows different CRC modes, including no CRC and full-path
+  CRC behavior as defined by the specification.
+- If firmware is not checking CRC, the field may be ignored or expected to be
+  zero depending on the peer implementation.
 
-- Constructor arguments:
-  ``enIbCrc`` enables inbound CRC checking,
-  ``enObCrc`` enables outbound CRC generation,
-  ``enSsi`` controls SSI behavior.
-- ``transport()`` returns the stream edge for lower-layer connection.
-- ``application(dest)`` lazily allocates per-destination application endpoints
-  for ``dest`` values ``0..255``.
-- ``getDropCount()`` exposes controller-reported dropped-frame count.
-- ``setTimeout()`` forwards timeout tuning into controller behavior.
+Key Constructor Arguments
+=========================
 
-When to prefer CoreV2
-=====================
+``CoreV2(enIbCrc, enObCrc, enSsi)``
 
-- New designs where packetizer version selection is open.
-- Integrations requiring packetizer v2 behavior or CRC configuration control.
+- ``enIbCrc`` enables inbound CRC checking.
+- ``enObCrc`` enables outbound CRC generation.
+- ``enSsi`` enables SSI framing behavior.
 
-Code-backed example
-===================
+Common Controls
+===============
+
+- ``transport()`` returns the lower-layer stream edge.
+- ``application(dest)`` returns the destination endpoint for values ``0..255``.
+- ``getDropCount()`` reports the controller drop count.
+- ``setTimeout(timeout)`` forwards timeout tuning into the controller, in
+  microseconds.
+
+Python Example
+==============
 
 .. code-block:: python
 
    import rogue.protocols.packetizer
+   import rogue.protocols.rssi
 
    # Packetizer v2 core:
    #   enIbCrc=True  -> validate inbound CRC
@@ -72,16 +75,17 @@ Code-backed example
    #   enSsi=True    -> enable SSI framing behavior
    pkt = rogue.protocols.packetizer.CoreV2(True, True, True)
 
-   # Destination 0 endpoint receives decoded payload frames.
-   pkt.application(0) >> reg_sink
+   # Lower protocol layer.
+   rssi = rogue.protocols.rssi.Client(1472 - 8)
+   rssi.application() == pkt.transport()
 
-   # Outbound frames sent to destination 1.
+   # Outbound traffic enters destination channel 1.
    data_source >> pkt.application(1)
 
-   # Attach transport side to lower protocol layer.
-   # lower_layer == pkt.transport()
+   # Inbound traffic from destination channel 0 is delivered to a sink.
+   pkt.application(0) >> reg_sink
 
-C++ example
+C++ Example
 ===========
 
 .. code-block:: cpp
@@ -91,30 +95,44 @@ C++ example
    namespace rpp = rogue::protocols::packetizer;
 
    int main() {
-       // Packetizer v2 core with inbound/outbound CRC and SSI enabled.
+       // Packetizer v2 core with inbound CRC, outbound CRC, and SSI enabled.
        auto pkt = rpp::CoreV2::create(true, true, true);
 
-       // Example lower-layer connection:
-       // *lowerLayer == pkt->transport();
-
-       // Example destination endpoint access:
+       // Access one application destination endpoint.
        auto app0 = pkt->application(0);
        (void)app0;
 
-       // Query controller drop counter for diagnostics.
+       // Query drop count for diagnostics.
        auto dropCount = pkt->getDropCount();
        (void)dropCount;
+
+       // Lower-layer connection would be made through pkt->transport().
        return 0;
    }
+
+Threading And Lifecycle
+=======================
+
+``CoreV2`` does not start its own worker thread. Packetizer lifecycle still
+belongs to the lower transport layer attached to ``transport()``.
+
+Compatibility Notes
+===================
+
+- ``CoreV2`` must connect to a packetizer v2 peer.
+- If the remote endpoint expects packetizer v1, use :doc:`core`.
+
+In mixed system stacks, software ``CoreV2`` endpoints are commonly paired with
+firmware v2 packetizer or depacketizer implementations in the transport path.
 
 Logging
 =======
 
-Packetizer v2 logs through the shared packetizer controller logger:
+Packetizer v2 logs through the same controller logger used by v1:
 
 - ``pyrogue.packetizer.Controller``
 
-Enable it before constructing the ``CoreV2`` object:
+Enable it before constructing packetizer objects:
 
 .. code-block:: python
 
@@ -122,17 +140,8 @@ Enable it before constructing the ``CoreV2`` object:
 
    rogue.Logging.setFilter('pyrogue.packetizer', rogue.Logging.Debug)
 
-For v2-specific debugging, this logger reports CRC/drop conditions and outbound
-queue timeouts. There is no separate ``CoreV2``-specific logger name.
-
-Compatibility note
-==================
-
-Core/CoreV2 selection must match peer endpoint expectations. Confirm protocol
-version alignment across firmware and software.
-
-In mixed system stacks, software ``CoreV2`` endpoints are typically paired with
-firmware v2 packetizer/depacketizer implementations in the transport path.
+This logger reports CRC failures, packet drops, and queue timeout conditions.
+There is no separate ``CoreV2``-specific logger name.
 
 Related Topics
 ==============
