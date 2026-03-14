@@ -24,7 +24,7 @@ Workflow
 5. Validate full behavior with:
    :doc:`/getting_started/pyrogue_tree_example/full_root`
 
-What this tutorial emphasizes
+What This Tutorial Emphasizes
 =============================
 
 - Choosing between ``RemoteVariable``, ``LocalVariable``, and ``LinkVariable``

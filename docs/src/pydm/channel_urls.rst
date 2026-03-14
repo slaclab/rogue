@@ -43,7 +43,7 @@ the numeric server index is usually better for reusable screens because the UI
 can stay the same while the launcher chooses which servers occupy indices
 ``0``, ``1``, and so on.
 
-Using ``root`` As An Alias
+Using ``root`` as an Alias
 ==========================
 
 Rogue accepts both the real Root name and the ``root`` alias in channel paths.

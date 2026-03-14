@@ -11,7 +11,7 @@ patterns into configurable components that attach directly in your tree.
 This section is intentionally limited to classes exposed in the top-level
 ``pyrogue`` namespace.
 
-How these fit in a design
+How These Fit In A Design
 =========================
 
 Built-in Devices are ordinary ``Device`` subclasses, so they participate in the
@@ -40,7 +40,7 @@ The built-in devices fall into a few natural groups:
   such as file I/O and PRBS modules that live outside the top-level
   ``pyrogue`` namespace.
 
-Relationship to Core and interfaces
+Relationship To Core And Interfaces
 ===================================
 
 For underlying behavior, see:
