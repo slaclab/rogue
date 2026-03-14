@@ -159,7 +159,7 @@ layout writes.
 
 In practice, many transmitters need more than "write bytes and send". They need
 to prepend a header, place payload data at a known offset, and annotate the
-``Frame`` so downstream code can route or interpret it correctly. The examples below
+``Frame`` so downstream code can route or interpret it correctly. The following examples
 show that more realistic pattern in both languages.
 
 Python Header And Payload Example

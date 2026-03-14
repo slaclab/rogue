@@ -17,7 +17,7 @@ slave is also the last endpoint to receive a transmitted frame, so a diagnostic
 tap or monitor branch should usually be attached after the main processing
 path, not before it.
 
-Operator syntax and helper functions
+Operator Syntax And Helper Functions
 ====================================
 
 Rogue supports connection operators directly on stream objects:
@@ -26,7 +26,7 @@ Rogue supports connection operators directly on stream objects:
 - ``<<`` for one-way destination-from-source links
 - ``==`` for bi-directional links between dual-role endpoints
 
-Python usage
+Python Usage
 ------------
 
 In Python, operator syntax is generally preferred because it is concise and
@@ -47,7 +47,7 @@ Equivalent helper functions are also available:
    pr.streamConnect(src, dst)
    pr.streamConnectBiDir(ep_a, ep_b)
 
-C++ usage
+C++ Usage
 ---------
 
 In C++, operator syntax works the same way, but chained expressions require
@@ -68,7 +68,7 @@ For readability, many users prefer helper macros from
    rogueStreamConnect(rate, writer->getChannel(0));
    rogueStreamConnectBiDir(epA, epB);
 
-Connection semantics and ordering
+Connection Semantics And Ordering
 =================================
 
 - ``master >> slave`` and ``slave << master`` create one-way links.
@@ -80,7 +80,7 @@ Connection semantics and ordering
 That final ordering matters if the primary path consumes or empties a
 zero-copy frame.
 
-Fan-out topology: primary processing + diagnostic debug
+Fan-Out Topology: Primary Processing + Diagnostic Debug
 =======================================================
 
 A common pattern is to keep the primary path unmodified while creating a

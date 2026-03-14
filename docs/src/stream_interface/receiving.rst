@@ -173,7 +173,7 @@ Receive Frame Layout
 In practice, many receivers need more than "copy bytes and process". They need
 to inspect a header, split the payload into logical regions, and combine that
 information with ``Frame`` metadata such as channel, flags, and user fields. The
-examples below show that more realistic pattern in both languages.
+the following examples show that more realistic pattern in both languages.
 
 Python Header And Payload Example
 ---------------------------------
