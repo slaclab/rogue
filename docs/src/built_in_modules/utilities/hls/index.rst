@@ -40,12 +40,10 @@ Typical Workflow
 This tool is best treated as a bridge from generated artifacts into the normal
 PyRogue tree design workflow documented in :doc:`/pyrogue_tree/index`.
 
-What To Explore Next
-====================
+Subtopics
+=========
 
 - Parser usage details: :doc:`reg_interf_parser`
-- Building the resulting tree model: :doc:`/pyrogue_tree/index`
-- Device composition patterns: :doc:`/pyrogue_tree/core/device`
 
 .. toctree::
    :maxdepth: 1

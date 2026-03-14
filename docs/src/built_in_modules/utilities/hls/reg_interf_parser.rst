@@ -9,7 +9,7 @@ register header macros and generates a starter Rogue application file
 (``application.py``) containing `RemoteVariable`, `RemoteCommand`, or
 `MemoryDevice` definitions.
 
-Why this utility exists
+Why This Utility Exists
 =======================
 
 HLS flows often generate AXI addressable register maps described in ``*_hw.h``
@@ -70,7 +70,7 @@ writes an ``Application(pr.Device)`` class skeleton, emits one definition block
 per parsed record, and leaves placeholders for later user customization in
 ``initialize()``.
 
-Notes and Limitations
+Notes And Limitations
 =====================
 
 - The utility creates a starting point; manual cleanup/refinement is expected.

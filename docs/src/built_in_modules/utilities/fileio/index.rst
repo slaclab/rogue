@@ -73,8 +73,8 @@ Subtopics
   controls and channel model.
 - :doc:`reading`: Starts from the tree-managed replay wrapper, then explains the
   direct ``rogue.utilities.fileio.StreamReader`` behavior.
-- :doc:`python_reader`: Covers lightweight, non-stream Python analysis flows.
-- :doc:`custom`: Covers subclassing ``StreamWriter`` for custom output formats.
+- :doc:`python_reader`: Lightweight coverage for non-stream Python analysis flows.
+- :doc:`custom`: Guidance for subclassing ``StreamWriter`` for custom output formats.
 
 API Reference
 =============

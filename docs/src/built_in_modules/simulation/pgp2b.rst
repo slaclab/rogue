@@ -32,7 +32,7 @@ Rogue and documented here.
 Simulation Workflow
 ===================
 
-Key pieces used in the examples below:
+Key pieces in the simulation workflow include:
 
 - ``Pgp2bSim(vcCount, host, port)``: constructs one simulated endpoint.
 - ``connectPgp2bSim(a, b)``: links all virtual channels and sideband between
@@ -131,7 +131,7 @@ co-simulation.
        sb.send(opCode=0x12)
        sb.send(remData=0x34)
 
-Connecting two simulated endpoints
+Connecting Two Simulated Endpoints
 ==================================
 
 .. code-block:: python

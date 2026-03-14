@@ -11,7 +11,7 @@ selected PyRogue Variables into an EPICS V4 namespace.
 Use these pages for conceptual behavior and integration patterns. API object
 details remain in the Python API reference.
 
-How the EPICS Integration Is Structured
+How The EPICS Integration Is Structured
 =======================================
 
 The EPICS V4 integration has two primary components:
@@ -46,8 +46,8 @@ only the intended EPICS PV surface.
 For group semantics and filtering behavior in the tree model, see
 :doc:`/pyrogue_tree/core/groups`.
 
-What To Explore Next
-====================
+Subtopics
+=========
 
 - Server setup and PV mapping details: :doc:`epicspvserver`
 - Per-variable publication behavior: :doc:`epicspvholder`

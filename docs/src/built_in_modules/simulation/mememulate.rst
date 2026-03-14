@@ -49,7 +49,7 @@ Use ``MemEmulate`` when you need deterministic memory behavior during software
 integration and want to isolate tree/protocol logic from hardware timing and
 transport effects.
 
-Basic Usage with a Root
+Basic Usage With A Root
 =======================
 
 .. code-block:: python

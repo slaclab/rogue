@@ -53,7 +53,7 @@ Subtopics
   Use this path when downstream software still expects one output frame per
   super-frame, but with transformed framing.
 
-Splitter vs Inverter
+Splitter Vs Inverter
 ====================
 
 This is the main decision users usually need to make.
