@@ -155,8 +155,8 @@ Software-Owned State
 In this pattern, the tree shows one stable ``Variable`` interface while the
 actual value is still owned by Python application state.
 
- String-Backed Application Setting
- ---------------------------------
+String-Backed Application Setting
+---------------------------------
 
 This is a common pattern for software configuration such as file paths,
 hostnames, or operator-entered labels.
@@ -178,8 +178,8 @@ hostnames, or operator-entered labels.
 
 Here, ``value=''`` makes the Variable string-backed from the start.
 
- Polled Status From A Helper Library
- -----------------------------------
+Polled Status From A Helper Library
+-----------------------------------
 
 This pattern is common in PyRogue applications: a local counter or status
 value is exposed read-only, refreshed by ``localGet``, and polled on an
