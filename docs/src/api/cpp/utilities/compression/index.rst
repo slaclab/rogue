@@ -4,7 +4,7 @@
 rogue::utilities::compression
 ==============================
 
-This section contains the C++ API reference for
+These pages provide the C++ API reference for
 Rogue compression utility classes.
 
 
