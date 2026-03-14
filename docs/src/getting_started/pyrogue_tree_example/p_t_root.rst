@@ -90,8 +90,8 @@ Add Special Devices
 -------------------
 
 #. Create PGP card :ref:`hardware interfaces <hardware>`
-#. Create PRBS Transmitter :ref:`pyrogue_tree_node_device_prbsrx` device
-#. Create a :ref:`Stream Writer <pyrogue_tree_node_device_streamwriter>` device
+#. Create a PRBS transmitter device using :doc:`/built_in_modules/utilities/prbs/reading`
+#. Create a stream-writer device using :doc:`/built_in_modules/utilities/fileio/writing`
 #. Create a :ref:`Data Receiver <pyrogue_tree_node_device_datareceiver>` device
 #. Create a :ref:`Run Control <pyrogue_tree_node_device_runcontrol>` device
 
