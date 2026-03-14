@@ -23,7 +23,7 @@ Notes
 * ``pythonVersion()`` returns a Python-style version string (for example
   ``"6.3.0"`` or ``"6.3.0.dev4"``).
 
-Python examples
+Python Examples
 ---------------
 
 .. code-block:: python
@@ -58,7 +58,7 @@ Python examples
        print(f"Version mismatch: {exc}")
 
 
-C++ examples
+C++ Examples
 ------------
 
 .. code-block:: cpp

@@ -35,7 +35,7 @@ How mapping works:
 
 Commands are registered with ``@self.command(addr=..., base=...)``.
 
-Method and Mapping Overview
+Method And Mapping Overview
 ---------------------------
 
 - ``@self.command(addr=..., base=...)`` registers one address callback.

@@ -87,7 +87,7 @@ In practice, real trees usually only set ``host``, ``port``, ``packVer``,
 and nearby Rogue-based projects follow that pattern, often instantiating one
 ``UdpRssiPack`` for SRP traffic and another for event data.
 
-Startup behavior
+Startup Behavior
 ================
 
 During ``UdpRssiPack._start()``:
@@ -100,7 +100,7 @@ During ``UdpRssiPack._start()``:
 This startup behavior is why using the wrapper through Root-managed lifecycle
 is preferred for full applications.
 
-Typical Root integration
+Typical Root Integration
 ========================
 
 Use ``add()`` to place the wrapper in the tree, then ``addInterface()`` so
@@ -143,7 +143,7 @@ Root start/stop sequencing manages the transport lifecycle.
            # Example memory-mapped device:
            self.add(MyDevice(name='Dev', memBase=srp, offset=0x0))
 
-Lifecycle notes
+Lifecycle Notes
 ===============
 
 - Root-managed mode:
@@ -154,7 +154,7 @@ Lifecycle notes
 - Managed Interface Lifecycle reference:
   :ref:`pyrogue_tree_node_device_managed_interfaces`
 
-Server mode (less common)
+Server Mode (Less Common)
 =========================
 
 ``server=True`` is typically used for software peer links, integration tests,
@@ -173,7 +173,7 @@ This is not the common deployment for FPGA RSSI endpoints.
    ))
    self.addInterface(self.Net)
 
-Available helper methods/commands
+Available Helper Methods/Commands
 =================================
 
 * ``application(dest)``:

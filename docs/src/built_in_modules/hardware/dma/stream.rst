@@ -50,8 +50,8 @@ the firmware and driver stack expect for that stream endpoint.
 
 In the common ``aes-stream-drivers`` convention used by Rogue:
 
-- the low 8 bits of ``dest`` correspond to the AXI stream ``tDest`` value
-- the upper bits select the lane or higher-level DMA channel path implemented
+- The low 8 bits of ``dest`` correspond to the AXI stream ``tDest`` value
+- The upper bits select the lane or higher-level DMA channel path implemented
   in firmware
 
 That means software normally treats ``dest`` as one combined routing number,

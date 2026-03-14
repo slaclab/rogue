@@ -13,7 +13,7 @@ tree rather than part of the tree model itself.
 ``Bsp`` wraps a PyRogue node or ``Root`` object and provides helper methods for
 node traversal, command execution, variable access, and root-level listeners.
 
-Creating a root wrapper
+Creating A Root Wrapper
 -----------------------
 
 ``Bsp`` can construct and start a PyRogue root directly from Python module/class
@@ -33,7 +33,7 @@ This is the common pattern when a C++ process needs to host the PyRogue
 application directly instead of connecting to it through a remote client
 interface.
 
-Node traversal and variable access
+Node Traversal And Variable Access
 ----------------------------------
 
 Use ``operator[]`` for hierarchical traversal and ``getNode()`` for full-path
@@ -66,7 +66,7 @@ Command nodes are invoked through ``operator()`` or ``execute()``:
    // Execute command with argument string.
    std::string yaml = bsp["GetYamlConfig"]("True");
 
-Variable listeners (root only)
+Variable Listeners (Root Only)
 ------------------------------
 
 Variable listeners can be attached only on a root wrapper:

@@ -24,7 +24,7 @@ specifications are maintained externally:
 C++ API details for SRP protocol classes are documented in
 :doc:`/api/cpp/protocols/srp/index`.
 
-Choosing SRP version
+Choosing SRP Version
 ====================
 
 - Use :doc:`srpV3` for current systems unless compatibility requires v0.
