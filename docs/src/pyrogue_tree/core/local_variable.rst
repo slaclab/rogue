@@ -126,8 +126,11 @@ Design guidance:
 * Use ``LocalCommand`` instead when the interaction is really an action rather
   than a persistent value
 
-Example: software-owned state
-=============================
+Examples
+========
+
+Software-Owned State
+--------------------
 
 .. code-block:: python
 
@@ -152,11 +155,8 @@ Example: software-owned state
 In this pattern, the tree shows one stable ``Variable`` interface while the
 actual value is still owned by Python application state.
 
-More Example Patterns
-=====================
-
-String-backed application setting
----------------------------------
+ String-Backed Application Setting
+ ---------------------------------
 
 This is a common pattern for software configuration such as file paths,
 hostnames, or operator-entered labels.
@@ -178,8 +178,8 @@ hostnames, or operator-entered labels.
 
 Here, ``value=''`` makes the Variable string-backed from the start.
 
-Polled status from a helper library
------------------------------------
+ Polled Status From A Helper Library
+ -----------------------------------
 
 This pattern is common in PyRogue applications: a local counter or status
 value is exposed read-only, refreshed by ``localGet``, and polled on an
@@ -206,7 +206,7 @@ interval.
 The ``value=0`` seed makes the Variable integer-backed, while ``typeStr`` lets
 the tree present a more specific label to users.
 
-Read-write wrapper over external application state
+Read-Write Wrapper Over External Application State
 --------------------------------------------------
 
 This is the pattern to use when the tree should expose a live control surface
@@ -229,7 +229,7 @@ for an object owned by another Python library.
                localGet=self._engine.get_disable,
            ))
 
-This is also a common real-world GitHub pattern: the Variable gives GUIs and
+This is also a common real-world pattern: the Variable gives GUIs and
 scripts a normal tree-facing boolean while the actual state lives in another
 software object.
 

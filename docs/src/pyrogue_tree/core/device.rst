@@ -133,7 +133,7 @@ Most Device subclasses are created entirely in ``__init__``, but there are a
 few important lifecycle hooks for behavior that depends on tree attachment or a
 running system context.
 
-Attachment and startup order
+Attachment And Startup Order
 ----------------------------
 
 During :py:meth:`~pyrogue.Root.start`, Device lifecycle progresses in this
@@ -146,7 +146,7 @@ order:
 During :py:meth:`~pyrogue.Root.stop`, Root calls
 :py:meth:`~pyrogue.Device._stop` recursively.
 
-What each hook is for
+What Each Hook Is For
 ---------------------
 
 * :py:meth:`~pyrogue.Device._rootAttached`

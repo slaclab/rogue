@@ -43,6 +43,11 @@ parameters:
 * ``numValues``, ``valueBits``, and ``valueStride`` for arrays or tables.
 * ``bulkOpEn`` when large Variables need different transaction behavior.
 
+The first three parameters define where the value lives and how its bits should
+be interpreted. The remaining options mainly control transaction policy and
+layout edge cases, such as write verification, shared register words, packed
+arrays, and bulk-operation participation.
+
 Memory Mapping Parameters
 =========================
 
@@ -70,34 +75,6 @@ If the value uses a fixed-point interpretation such as ``base=pr.Fixed(...)``
 or ``base=pr.UFixed(...)``, see :doc:`/pyrogue_tree/core/fixed_point_models`
 for the scaling and display model behind those types.
 
-Behavior And Transaction Options
-================================
-
-``verify``
-----------
-
-``verify`` enables write verification for the Variable. It is useful for
-registers where write confirmation matters, but it can add noticeable traffic
-for large arrays or heavy configuration sequences.
-
-``overlapEn``
--------------
-
-Use ``overlapEn=True`` when this Variable intentionally shares memory space
-with another Variable.
-
-``numValues``, ``valueBits``, And ``valueStride``
--------------------------------------------------
-
-These parameters turn the Variable into an array-like view over a packed block
-of register-backed values.
-
-``bulkOpEn``
-------------
-
-``bulkOpEn`` controls whether the Variable participates in bulk block
-operations.
-
 How RemoteVariable Fits The Tree
 ================================
 
@@ -112,8 +89,8 @@ So when a user calls ``get(read=True)`` or ``set(write=True)``, the actual
 hardware activity still runs through the parent ``Device`` and its Block
 operations.
 
-Examples
-========
+Example Patterns
+================
 
 Most ``RemoteVariable`` definitions in real PyRogue device trees fall into a
 small set of patterns:
@@ -126,7 +103,7 @@ small set of patterns:
 * Multiple Variables intentionally sharing one register word through
   ``overlapEn=True``
 
-The examples below mirror those patterns.
+The following examples mirror those patterns.
 
 Single Register Fields
 ----------------------

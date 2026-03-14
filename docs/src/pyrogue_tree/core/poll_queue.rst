@@ -83,7 +83,7 @@ issuing the next poll batch.
 Usage Examples
 ==============
 
-Basic polling on a RemoteVariable
+Basic Polling On A RemoteVariable
 ---------------------------------
 
 .. code-block:: python
@@ -102,7 +102,7 @@ Basic polling on a RemoteVariable
                pollInterval=1.0,  # poll every second
            ))
 
-Runtime control from Root
+Runtime Control From Root
 -------------------------
 
 .. code-block:: python
@@ -114,7 +114,7 @@ Runtime control from Root
    # Change polling rate dynamically for one Variable
    root.MyDevice.AdcRaw.setPollInterval(0.2)
 
-Temporarily block polling during a critical sequence
+Temporarily Block Polling During A Critical Sequence
 ----------------------------------------------------
 
 .. code-block:: python

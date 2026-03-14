@@ -98,7 +98,7 @@ bring-up sequence that attaches the tree, finalizes Node initialization, starts
 managed interfaces, runs optional initial read or write operations, and then
 enables polling.
 
-Startup sequence
+Startup Sequence
 ----------------
 
 When :py:meth:`~pyrogue.Root.start` runs, the major stages are:
@@ -117,7 +117,7 @@ that sequence has completed. Before startup, the structure exists, but runtime
 behaviors such as polling, managed-interface startup, and hardware-backed block
 access should be treated as not yet active.
 
-Shutdown sequence
+Shutdown Sequence
 -----------------
 
 When :py:meth:`~pyrogue.Root.stop` runs, it:

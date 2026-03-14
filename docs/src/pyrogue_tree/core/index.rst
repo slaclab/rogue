@@ -22,7 +22,7 @@ specialized mechanics later. Most readers should understand ``Root``,
 ``Device``, ``Variable``, and ``Command`` before diving into ``Block``,
 ``Model``, polling internals, YAML bulk configuration, or stream adapters.
 
-Minimal tree example
+Minimal Tree Example
 ====================
 
 .. code-block:: python
@@ -91,7 +91,7 @@ The shared responsibilities of ``Node``-derived types include:
 * Lifecycle attachment to a Root context
 * Shared logging/path conventions across all subclasses
 
-Concrete Node categories
+Concrete Node Categories
 ========================
 
 * :ref:`pyrogue_tree_node_root`
@@ -101,7 +101,7 @@ Concrete Node categories
 * :ref:`pyrogue_tree_node_block`
 * :ref:`pyrogue_tree_node_groups`
 
-Common design workflow
+Common Design Workflow
 ======================
 
 1. Define one ``Root`` for lifecycle, top-level interfaces, and system actions.

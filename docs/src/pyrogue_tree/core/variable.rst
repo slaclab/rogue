@@ -159,8 +159,8 @@ In general:
 
 For the scheduling model itself, see :doc:`/pyrogue_tree/core/poll_queue`.
 
-Variable Presentation Vs Variable Storage
-=========================================
+Value Presentation And Value Storage
+====================================
 
 One of the most useful ways to think about Variables is to separate what users
 see from how values are stored.

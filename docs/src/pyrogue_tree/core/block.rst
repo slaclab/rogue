@@ -22,7 +22,7 @@ Blocks separate two concerns:
 This separation lets Variable APIs stay high-level while transaction handling
 stays efficient and ordered.
 
-How Variables Connect to Blocks
+How Variables Connect To Blocks
 ===============================
 
 When Devices attach to a Root, compatible ``RemoteVariable`` instances are
@@ -103,7 +103,7 @@ Typical read/write path:
 In bulk operations, many Variables can share one Block transaction, improving
 access efficiency versus isolated per-Variable transfers.
 
-Block APIs and Transaction Flow
+Block APIs And Transaction Flow
 ===============================
 
 Conversion vs Transaction
@@ -141,7 +141,7 @@ Typical read path:
 
 In PyRogue terminology, waiting for operation responses is called ``check``.
 
-Block helper functions
+Block Helper Functions
 ----------------------
 
 PyRogue exposes helper functions used by Variable/Device/Root flow:
@@ -196,7 +196,7 @@ The logger name is derived from the first Variable path assigned to the Block,
 so filtering by the ``pyrogue.memory.block`` prefix is usually the practical
 choice.
 
-Packing Rules and Variable Layout
+Packing Rules And Variable Layout
 ---------------------------------
 
 The internal ``setBytes``/``getBytes`` helpers are used by all typed methods
@@ -210,7 +210,7 @@ and apply Variable layout metadata:
 Because every typed method funnels through these helpers, custom subclasses can
 extend behavior while preserving the same packing model.
 
-Models in Block Conversion
+Models In Block Conversion
 ==========================
 
 Blocks use ``Model`` definitions to translate between Python-facing value types
@@ -218,7 +218,7 @@ and hardware bit/byte representation.
 
 Canonical Model documentation is in :doc:`/pyrogue_tree/core/model`.
 
-Model-driven Block method dispatch
+Model-Driven Block Method Dispatch
 ----------------------------------
 
 ``Variable`` instances bind to typed ``Block`` conversion methods based on
@@ -302,7 +302,7 @@ In practice:
   read/write/verify behavior, stale tracking, packing/unpacking, and update
   notification triggers
 
-Hub interaction
+Hub Interaction
 ===============
 
 Blocks are transaction sources; Hubs are transaction routers.
@@ -317,7 +317,7 @@ During a transaction, Hub logic:
 This is why Variable-to-Block transactions continue to work cleanly across
 multi-level Device trees with address translation.
 
-Advanced patterns
+Advanced Patterns
 =================
 
 Custom Models (Complete Example)
@@ -401,7 +401,7 @@ Variables that overlap that address range.
 This can improve throughput for use cases that benefit from larger grouped
 transactions.
 
-Where to explore next
+What To Explore Next
 =====================
 
 * Model API and utility helpers: :doc:`/pyrogue_tree/core/model`

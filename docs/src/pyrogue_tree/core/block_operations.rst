@@ -4,7 +4,7 @@
 Device Block Operations
 =======================
 
-This page covers the ``Device`` methods that traverse a tree and initiate or
+``Device`` provides a family of methods that traverse a tree and initiate or
 check ``Block`` transactions:
 
 * :py:meth:`~pyrogue.Device.writeBlocks`
@@ -106,7 +106,7 @@ Most manual use of these APIs falls into one of three patterns: operate on a
 subtree, operate on one Variable's backing ``Block``, or call a composed
 helper when the full flow is what you actually want.
 
-Read one subtree
+Read One Subtree
 ----------------
 
 .. code-block:: python
@@ -117,7 +117,7 @@ Read one subtree
 This is the normal manual pattern when you want a current hardware snapshot of
 one part of the tree.
 
-Write and verify one subtree
+Write And Verify One Subtree
 ----------------------------
 
 .. code-block:: python
@@ -129,7 +129,7 @@ This pattern is often useful for ADC and mixed-signal configuration, where a
 command needs to push a complete known-good register set into hardware in one
 step.
 
-Target one Variable's ``Block``
+Target One Variable's ``Block``
 -------------------------------
 
 .. code-block:: python
@@ -343,7 +343,7 @@ The general rule is:
 The following examples move from the smallest override to the most structural
 one.
 
-Example: post-write update strobe
+Example: Post-Write Update Strobe
 ---------------------------------
 
 This pattern is often needed for ADC and similar devices whose configuration
@@ -377,7 +377,7 @@ Here, ``DeviceUpdate`` is a real hardware command register. The write to
 written through the normal block path. A closely related pattern is an
 ``ApplyConfig`` bit or pulse in clocking and timing devices.
 
-Example: wrap reads with a control register
+Example: Wrap Reads With A Control Register
 -------------------------------------------
 
 Another common pattern is to bracket reads with a hardware control action when
@@ -417,7 +417,7 @@ The assertion at the start of ``readBlocks`` freezes a bank of debug registers
 so the read transactions see one consistent sample of the hardware state. The
 final write releases the freeze after the read requests have been issued.
 
-Example: custom child-Device ordering
+Example: Custom Child-Device Ordering
 -------------------------------------
 
 Sometimes the reason to override a block method is not a local register strobe,
@@ -459,7 +459,7 @@ preserve the normal parameter behavior, disable the inherited recursion where
 needed, and then issue child-Device operations in the hardware order that the
 system requires.
 
-Example: one-shot configure command
+Example: One-Shot Configure Command
 -----------------------------------
 
 Sometimes the cleanest solution is not to override the block methods at all,

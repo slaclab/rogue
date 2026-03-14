@@ -72,8 +72,11 @@ If the callback accepts ``arg``, then ``value=...`` becomes the command's
 default argument. Calling the command without an explicit argument uses that
 stored default.
 
-Example: device-local procedure
-===============================
+Example Patterns
+================
+
+Device-Local Procedure
+----------------------
 
 .. code-block:: python
 
@@ -97,8 +100,8 @@ Example: device-local procedure
 This is the simplest ``LocalCommand`` pattern: expose a named tree action and
 back it with ordinary Python logic.
 
-Example: command with an argument
-=================================
+Command With An Argument
+------------------------
 
 Many ``LocalCommand`` nodes are thin wrappers around a higher-level software
 workflow that needs one input value, such as a file path, a numeric count, or
@@ -126,8 +129,8 @@ Here, ``value=''`` establishes the default argument shape and lets the command
 be called either as ``LoadConfig('/path/file.yml')`` or by reusing the stored
 default argument.
 
-Using The ``@self.command`` Decorator
-=====================================
+Using the ``@self.command`` Decorator
+-------------------------------------
 
 ``Device.command()`` provides a compact way to define a ``LocalCommand`` inline
 next to the logic it wraps.

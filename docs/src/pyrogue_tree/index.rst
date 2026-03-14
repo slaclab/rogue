@@ -25,7 +25,7 @@ The section is organized in the same order most users need to learn it:
 * :doc:`client_interfaces/index` covers the server/client access patterns used
   by scripts, GUIs, notebooks, and command-line tools.
 
-Architectural view
+Architectural View
 ==================
 
 The tree model is intentionally independent from hardware bus topology.
