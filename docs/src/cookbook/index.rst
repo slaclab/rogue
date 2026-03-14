@@ -9,7 +9,7 @@ The cookbook provides short, task-driven recipes.
 Recipes are intentionally concise and link back to conceptual documentation
 when deeper context is needed.
 
-Recipe format
+Recipe Format
 =============
 
 Each recipe should answer:
@@ -27,7 +27,7 @@ Each recipe should answer:
    advanced_pyrogue_patterns
    advanced_stream_patterns
 
-Legacy examples
+Legacy Examples
 ===============
 
 Longer legacy examples remain available for reference:

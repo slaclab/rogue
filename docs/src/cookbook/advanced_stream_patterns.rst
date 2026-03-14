@@ -12,7 +12,7 @@ Recipe entry points for advanced stream implementations:
 - :doc:`/stream_interface/debugStreams`
 - :doc:`/custom_module/index`
 
-Recipe 1: Stabilize a bursty producer
+Recipe 1: Stabilize A Bursty Producer
 =====================================
 
 Problem
@@ -27,13 +27,13 @@ Procedure
 2. Add RateDrop if bounded loss is acceptable.
 3. Use debug stream instrumentation to verify queue and drop behavior.
 
-Deep dive
+Deep Dive
 =========
 
 - :doc:`/stream_interface/built_in_modules`
 - :doc:`/stream_interface/index`
 
-Recipe 2: Prototype then harden a custom stage
+Recipe 2: Prototype Then Harden A Custom Stage
 ==============================================
 
 Problem
@@ -48,13 +48,13 @@ Procedure
 2. Validate behavior on representative payloads and rates.
 3. Migrate bottleneck stage to C++ while preserving external interfaces.
 
-Deep dive
+Deep Dive
 =========
 
 - :doc:`/stream_interface/index`
 - :doc:`/custom_module/index`
 
-Recipe 3: Decouple receive callback with a worker thread
+Recipe 3: Decouple Receive Callback With A Worker Thread
 ========================================================
 
 Problem
@@ -69,7 +69,7 @@ Procedure
 2. Run a worker thread that dequeues and performs expensive processing.
 3. Bound queue depth and drop/flag when overloaded.
 
-Python pattern
+Python Pattern
 ==============
 
 .. code-block:: python
@@ -119,7 +119,7 @@ Python pattern
            self._run = False
            self._thr.join(timeout=1.0)
 
-Deep dive
+Deep Dive
 =========
 
 - :doc:`/stream_interface/receiving`
