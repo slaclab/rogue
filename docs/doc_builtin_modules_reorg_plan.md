@@ -295,13 +295,13 @@ Progress Notes:
 
 ### Phase 5: Cross-Section Consistency Pass
 
-Status: `in_progress`
+Status: `completed`
 
-- [ ] Verify `pyrogue_tree` only owns top-level `pyrogue` classes
-- [ ] Verify `built_in_modules` owns submodule APIs and wrapper families
-- [ ] Check cross-links between `pyrogue_tree` and `built_in_modules`
-- [ ] Remove any remaining bolted-on wrapper-note sections
-- [ ] Remove repeated intro text and other narrative drift
+- [x] Verify `pyrogue_tree` only owns top-level `pyrogue` classes
+- [x] Verify `built_in_modules` owns submodule APIs and wrapper families
+- [x] Check cross-links between `pyrogue_tree` and `built_in_modules`
+- [x] Remove any remaining bolted-on wrapper-note sections
+- [x] Remove repeated intro text and other narrative drift
 
 Progress Notes:
 
@@ -328,6 +328,10 @@ Progress Notes:
   ending navigation patterns across `sql.rst`, `os_memory_bridge.rst`, and
   `version.rst`, and also cleaned up one malformed mapping-summary list in the
   OS memory bridge page.
+- Docs validation was run through the repository's canonical `Docs: Build HTML`
+  path. The remaining warning is the expected intersphinx fetch failure for
+  `https://docs.python.org/objects.inv` in a no-network environment; the
+  internal Sphinx reference warnings introduced during the reorg were fixed.
 
 ## Recommended Working Order
 
