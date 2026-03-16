@@ -20,8 +20,9 @@ from typing import Any, Iterator
 
 import numpy
 import numpy.typing as npt
-import yaml
 import logging
+
+import pyrogue as pr
 
 RogueHeaderSize  = 8
 RogueHeaderPack  = 'IHBB'
@@ -170,7 +171,7 @@ class FileReader(object):
 
             # Process meta data
             if self._configChan is not None and self._header.channel == self._configChan:
-                self._updateConfig(yaml.load(self._currFile.read(self._header.size).decode('utf-8')))
+                self._updateConfig(pr.yamlToData(stream=self._currFile.read(self._header.size).decode('utf-8')))
 
             # This is a data channel
             else:
