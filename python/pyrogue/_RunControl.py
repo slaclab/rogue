@@ -102,7 +102,8 @@ class RunControl(pr.Device):
                 self._thread.start()
             elif self._thread is not None:
                 #print("Stopping run")
-                self._thread.join()
+                if threading.current_thread() is not self._thread:
+                    self._thread.join()
                 self._thread = None
 
     def _setRunRate(self, value: int) -> None:
