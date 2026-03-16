@@ -113,7 +113,10 @@ class SqlLogger(object):
 
         # Syslog
         if entry[0] == self._sysLogPath:
-            val = json.loads(entry[1])
+            # Root listeners hand us VariableValue objects, so unwrap the JSON
+            # payload from .value() before decoding the system-log entry.
+            log_entry = entry[1].value if hasattr(entry[1], 'value') else entry[1]
+            val = json.loads(log_entry)
 
             ins = self._logTable.insert().values(
                 name=val['name'],
