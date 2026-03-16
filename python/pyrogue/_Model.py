@@ -455,7 +455,7 @@ class Int(UInt):
         else:
             value = int.from_bytes(ba, self.endianness, signed=True)
 
-        return
+        return value
 
     def fromString(self, string: str) -> int:
         """
@@ -475,7 +475,7 @@ class Int(UInt):
         """
         i = int(string, 0)
         # perform twos complement if necessary
-        if i>0 and ((i >> self.bitSize) & 0x1 == 1):
+        if i >= 2**(self.bitSize-1):
             i = i - (1 << self.bitSize)
         return i
 
