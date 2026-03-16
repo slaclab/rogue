@@ -1,27 +1,91 @@
 .. _channel_urls:
 
 ============
-Channel URLS
+Channel URLs
 ============
 
-When using the PyDM and Rogue widgets the user must associate the widget with a Rogue Device, Variable or Command using a channel URL. The URLs used by Rogue connected widgets are in the form:
+PyDM widgets connect to Rogue nodes through the Rogue data-plugin URL scheme:
 
-:code:`rogue://0/MyRoot.MyDevice.MyVariable`
+.. code-block:: text
 
-The user can either use the real root name or simply the 'root' alias when referring to a Rogue root instance. This is usefull when creating generic debug tree associations. For example the URL used by a generic DebugTree widdget would be:
+   rogue://0/MyRoot.MyDevice.MyVariable
 
-:code:`rogue://0/root``
+The general form is:
 
-URL Suffix
-==========
+.. code-block:: text
 
-For some channels such as variables and commands a suffix can be added to the URL to direct PyDM on how to access the Rogue instance. An example suffix usage is:
+   rogue://<server>/<path>/<mode>/<index>
 
-:code:`rogue://0/root.Device.Variable/disp`
+Only the server index and path are required. ``mode`` and ``index`` are
+optional.
 
-The following suffixes are currently supported:
+Server Selection
+================
 
-   - name: The PyDM widget will display the Rogue instance name instead of its value. This is usefull for labels.
-   - path: The PyDM widget will display the full Rogue path of the instance.
-   - disp: The PyDM widget will use the getDisp() call instead of get() to display the string representation of the current value. This is usefull for line edit widgets.
+The ``<server>`` field can be either:
 
+- A zero-based server index within the current PyDM session, or
+- An explicit ``host:port`` pair
+
+Examples:
+
+.. code-block:: text
+
+   rogue://0/root.MyDevice.MyVariable
+   rogue://localhost:9099/root.MyDevice.MyVariable
+
+Using ``root`` As An Alias
+==========================
+
+Rogue accepts both the real Root name and the ``root`` alias in channel paths.
+The alias is useful when building generic screens that should work across
+systems whose actual Root names differ.
+
+Examples:
+
+.. code-block:: text
+
+   rogue://0/root
+   rogue://0/MyRoot
+
+Access Modes
+============
+
+The optional ``mode`` suffix tells the plugin what view of the node to expose.
+The main supported modes are:
+
+- ``value``: Raw value access. This is the default.
+- ``disp``: Display-formatted value from ``getDisp()``.
+- ``name``: Node name.
+- ``path``: Full Rogue path.
+
+Example:
+
+.. code-block:: text
+
+   rogue://0/root.Device.Variable/disp
+
+This is especially useful when binding labels and line edits:
+
+- Use ``/name`` for labels that should show the node name.
+- Use ``/path`` when the full path is useful in the UI.
+- Use ``/disp`` when the display representation matters more than the raw
+  underlying type.
+
+Array Indexing
+==============
+
+The optional ``index`` field selects an element from list-like values:
+
+.. code-block:: text
+
+   rogue://0/root.Device.ArrayVariable/value/3
+
+That allows a widget to bind to one element of a larger list or array without
+having to display the whole object.
+
+What To Explore Next
+====================
+
+- Launching the stock or custom GUI: :doc:`starting_gui`
+- Rogue-specific widget behavior: :doc:`rogue_widgets`

@@ -9,6 +9,13 @@ an external master, compress the Frame payload and then pass the compressed fram
 
 This compression module uses the Bzip2 library.
 
+Python binding
+==============
+
+This C++ class is also exported into Python as ``rogue.utilities.StreamZip``.
+
+Python API page:
+- :doc:`/api/python/rogue/utilities/compression/streamzip`
 
 StreamZip objects in C++ are referenced by the following shared pointer typedef:
 

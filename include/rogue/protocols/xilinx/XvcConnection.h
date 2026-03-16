@@ -63,7 +63,7 @@ class XvcConnection {
      *
      * @param sd Listening socket descriptor.
      * @param drv Driver used to execute JTAG operations.
-     * @param maxVecLen_ Maximum vector length in bytes accepted from client.
+     * @param maxVecLen Maximum vector length in bytes accepted from client.
      */
     XvcConnection(int sd, JtagDriver* drv, uint64_t maxVecLen_ = 32768);
 

@@ -4,146 +4,118 @@
 Model
 =====
 
-The Model class define a data type for use with a Block.
+Model APIs are exposed through PyRogue Python classes and used by memory blocks
+and remote variables.
 
-For a usage-focused overview of how models are used within the PyRogue tree,
-see :ref:`pyrogue_tree_model`.
+For conceptual guidance, see:
 
-.. autoclass:: pyrogue.Model
-   :members:
-   :member-order: bysource
-   :no-index:
+- :doc:`/pyrogue_tree/core/model`
+- :ref:`pyrogue_tree_model`
+
+Primary API reference pages:
+
+- :doc:`/api/python/pyrogue/model`
+- :doc:`/api/python/pyrogue/uint`
+- :doc:`/api/python/pyrogue/int`
+- :doc:`/api/python/pyrogue/bool`
+- :doc:`/api/python/pyrogue/string`
+- :doc:`/api/python/pyrogue/float`
+- :doc:`/api/python/pyrogue/double`
+- :doc:`/api/python/pyrogue/fixed`
+- :doc:`/api/python/pyrogue/ufixed`
 
 Standard Models
 ===============
 
-The following are pre-defined models for various data types.
+The anchors below are preserved for compatibility with existing links.
 
 .. _interfaces_memory_model_uint:
 
 UInt
 ----
 
-.. autoclass:: pyrogue.UInt
-   :members:
-   :member-order: bysource
-   :no-index:
+See :doc:`/api/python/pyrogue/uint`.
 
 .. _interfaces_memory_model_uintbe:
 
 UIntBE
 ------
 
-.. autoclass:: pyrogue.UIntBE
-   :members:
-   :member-order: bysource
-   :no-index:
+See :doc:`/api/python/pyrogue/uint`.
 
 .. _interfaces_memory_model_uintreversed:
 
 UIntReversed
 ------------
 
-.. autoclass:: pyrogue.UIntReversed
-   :members:
-   :member-order: bysource
-   :no-index:
+See :doc:`/api/python/pyrogue/uint`.
 
 .. _interfaces_memory_model_int:
-
 
 Int
 ---
 
-.. autoclass:: pyrogue.Int
-   :members:
-   :member-order: bysource
-   :no-index:
+See :doc:`/api/python/pyrogue/int`.
 
 .. _interfaces_memory_model_intbe:
 
 IntBE
 -----
 
-.. autoclass:: pyrogue.IntBE
-   :members:
-   :member-order: bysource
-   :no-index:
+See :doc:`/api/python/pyrogue/int`.
 
 .. _interfaces_memory_model_bool:
 
 Bool
 ----
 
-.. autoclass:: pyrogue.Bool
-   :members:
-   :member-order: bysource
-   :no-index:
+See :doc:`/api/python/pyrogue/bool`.
 
 .. _interfaces_memory_model_string:
 
 String
 ------
 
-.. autoclass:: pyrogue.String
-   :members:
-   :member-order: bysource
-   :no-index:
+See :doc:`/api/python/pyrogue/string`.
 
 .. _interfaces_memory_model_float:
 
 Float
 -----
 
-.. autoclass:: pyrogue.Float
-   :members:
-   :member-order: bysource
-   :no-index:
+See :doc:`/api/python/pyrogue/float`.
 
 .. _interfaces_memory_model_floatbe:
 
 FloatBE
 -------
 
-.. autoclass:: pyrogue.FloatBE
-   :members:
-   :member-order: bysource
-   :no-index:
+See :doc:`/api/python/pyrogue/float`.
 
 .. _interfaces_memory_model_double:
 
 Double
 ------
 
-.. autoclass:: pyrogue.Double
-   :members:
-   :member-order: bysource
-   :no-index:
+See :doc:`/api/python/pyrogue/double`.
 
 .. _interfaces_memory_model_doublebe:
 
 DoubleBE
 --------
 
-.. autoclass:: pyrogue.DoubleBE
-   :members:
-   :member-order: bysource
-   :no-index:
+See :doc:`/api/python/pyrogue/double`.
 
 .. _interfaces_memory_model_fixed:
 
 Fixed
 -----
 
-.. autoclass:: pyrogue.Fixed
-   :members:
-   :member-order: bysource
-   :no-index:
+See :doc:`/api/python/pyrogue/fixed`.
+
+.. _interfaces_memory_model_ufixed:
 
 UFixed
 ------
 
-.. autoclass:: pyrogue.UFixed
-   :members:
-   :member-order: bysource
-   :no-index:
+See :doc:`/api/python/pyrogue/ufixed`.

@@ -4,18 +4,20 @@
 Custom Module Source
 ====================
 
-The following is an example source code file for a custom module which implements
-a custom stream transmitter and receiver as described in stream interfaces
-documentation. This source code expands the example to expose status variables
-to the Python layer. Instructions for wrapping these modules in PyRogue Devices
-are included in :ref:`custom_wrapper`.
+The example source file below implements a custom stream transmitter and
+receiver like the ones discussed in the stream interface documentation. It also
+exposes a small amount of status to Python so the wrapped module can publish
+counters through PyRogue.
+
+Wrapping these classes in PyRogue ``Device`` objects is covered in
+:ref:`custom_wrapper`.
 
 * :ref:`interfaces_stream_sending`
 * :ref:`interfaces_stream_receiving`
 
-This module is compiled with the :ref:`custom_makefile` described in this section.
+Build this module with the :ref:`custom_makefile` described in this section.
 
-.. code::
+.. code-block:: cpp
 
    // Source for MyModule.cpp
 
@@ -186,3 +188,8 @@ This module is compiled with the :ref:`custom_makefile` described in this sectio
       printf("Loaded my module\n");
    };
 
+What To Explore Next
+====================
+
+- Building the shared library: :ref:`custom_makefile`
+- Wrapping the C++ classes as PyRogue Devices: :ref:`custom_wrapper`
