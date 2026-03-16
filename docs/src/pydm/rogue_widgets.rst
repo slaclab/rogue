@@ -8,7 +8,7 @@ Rogue provides PyDM widgets that understand common PyRogue structures and
 workflows. These are most useful when building custom screens, because they let
 you reuse the same tree-aware controls that appear in the stock debug tools.
 
-The available widgets are:
+The main widgets exported by ``pyrogue.pydm.widgets`` are:
 
 - ``SystemWindow``: Top-level system window that combines root controls, run
   control widgets, data-writer widgets, and the system log.
@@ -18,9 +18,16 @@ The available widgets are:
 - ``SystemLog``: Widget that displays the Rogue system log.
 - ``Process``: Widget for a ``pyrogue.Process`` Device.
 - ``DebugTree``: Tree browser for Devices, Variables, and Commands.
+- ``PyRogueLabel``: Label widget with Rogue-oriented unit display handling.
 - ``PyRogueLineEdit``: Rogue-aware line edit that keeps the stale-value visual
   state.
+- ``Plotter``: General plotting widget exported by the widget package.
 - ``TimePlotter``: Plotting widget for time-varying values.
+
+These widgets are not just cosmetic wrappers. Several of them inspect the
+connected Rogue node and build out a larger Qt layout dynamically after the
+channel connects. For example, ``SystemWindow`` discovers ``DataWriter`` and
+``RunControl`` devices under the bound ``Root`` and adds matching subwidgets.
 
 How To Use Them
 ===============
@@ -39,7 +46,12 @@ specific Device or Variable path. In general:
 
 - ``SystemWindow`` and ``DebugTree`` are Root-oriented.
 - ``Process``, ``RunControl``, and ``DataWriter`` are Device-oriented.
-- ``PyRogueLineEdit`` is typically Variable-oriented.
+- ``PyRogueLabel`` and ``PyRogueLineEdit`` are typically Variable-oriented.
+
+When in doubt, inspect the widget's constructor and ``connection_changed``
+implementation in ``python/pyrogue/pydm/widgets``. Most path requirements are
+clear there because the widget appends explicit child paths such as
+``.SystemLog`` or ``.runState`` after connecting.
 
 Choosing Between Stock And Custom Widgets
 =========================================
@@ -62,3 +74,8 @@ What To Explore Next
 - Rogue channel syntax and modes: :doc:`channel_urls`
 - Launching a custom UI file: :doc:`starting_gui`
 - Time-series plotting workflows: :doc:`timeplot_gui`
+
+API Reference
+=============
+
+- Rogue PyDM widget API index: :doc:`/api/python/pyrogue/pydm_widgets/index`

@@ -18,4 +18,3 @@ PRBS utility wrappers implemented in PyRogue.
 .. rubric:: Related Topics
 
 - :doc:`/built_in_modules/utilities/prbs/index`
-- :doc:`/pyrogue_tree/builtin_devices/index`

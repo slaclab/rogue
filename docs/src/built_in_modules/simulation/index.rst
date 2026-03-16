@@ -13,17 +13,14 @@ They are most useful for:
 - Deterministic protocol bring-up and integration testing
 - Fault-injection workflows (for example dropped memory transactions)
 
-Available components
+Available Components
 ====================
 
 - ``MemEmulate``: in-memory memory-slave emulator for register/device testing
 - ``Pgp2bSim``: simulated PGP2B endpoint with VC stream links and sideband
 - ``SideBandSim``: standalone sideband socket bridge for opcode/remote-data
 
-These helpers are implemented in Python in
-``python/pyrogue/interfaces/simulation.py``.
-
-Selection guidance
+Selection Guidance
 ==================
 
 - Use ``MemEmulate`` when validating memory-transaction behavior (read/write,

@@ -5,12 +5,15 @@
 Wrapping Rogue In C++
 =====================
 
-The supported C++ wrapper interface is ``rogue::interfaces::api::Bsp`` from
-``include/rogue/interfaces/api/Bsp.h``. It wraps a PyRogue node/root object and
-provides helper methods for node traversal, command execution, and variable
-set/get operations.
+For embedding or controlling a PyRogue tree from a C++ application, Rogue
+provides ``rogue::interfaces::api::Bsp``. This wrapper sits in the built-in
+interfaces section because it is an integration layer around a running PyRogue
+tree rather than part of the tree model itself.
 
-Creating a root wrapper
+``Bsp`` wraps a PyRogue node or ``Root`` object and provides helper methods for
+node traversal, command execution, variable access, and root-level listeners.
+
+Creating A Root Wrapper
 -----------------------
 
 ``Bsp`` can construct and start a PyRogue root directly from Python module/class
@@ -26,7 +29,11 @@ names:
 If constructed this way, the root is started in the constructor and stopped in
 the wrapper destructor.
 
-Node traversal and variable access
+This is the common pattern when a C++ process needs to host the PyRogue
+application directly instead of connecting to it through a remote client
+interface.
+
+Node Traversal And Variable Access
 ----------------------------------
 
 Use ``operator[]`` for hierarchical traversal and ``getNode()`` for full-path
@@ -59,7 +66,7 @@ Command nodes are invoked through ``operator()`` or ``execute()``:
    // Execute command with argument string.
    std::string yaml = bsp["GetYamlConfig"]("True");
 
-Variable listeners (root only)
+Variable Listeners (Root Only)
 ------------------------------
 
 Variable listeners can be attached only on a root wrapper:
@@ -78,18 +85,19 @@ Variable listeners can be attached only on a root wrapper:
 
    bsp.addVarListener(&varListener, &varDone);
 
-Reference example
------------------
+What To Explore Next
+====================
 
-See ``tests/api_test/src/api_test.cpp`` for a complete working example that
-matches the current ``Bsp`` API.
+- Built-in interface overview: :doc:`/built_in_modules/interfaces/index`
+- Version checks and compatibility guards: :doc:`/built_in_modules/interfaces/version`
+- SQL-backed tree logging: :doc:`/built_in_modules/interfaces/sql`
 
 Related Topics
 ==============
 
-- Built-in interface overview: :doc:`/built_in_modules/interfaces/index`
 - PyRogue tree structure and lifecycle: :doc:`/pyrogue_tree/index`
 - Core Root/Device/Variable behavior: :doc:`/pyrogue_tree/core/index`
+- Remote client/server access patterns: :doc:`/pyrogue_tree/client_interfaces/index`
 
 API Reference
 =============

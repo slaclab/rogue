@@ -4,44 +4,98 @@
 Memory Transactions and Lifecycle
 =================================
 
-Overview
-========
+``Transaction`` is the unit of work that moves through the Rogue memory bus.
+Every read, write, posted write, verify, routed access, or TCP-forwarded memory
+operation is represented as a ``Transaction``.
 
-``Transaction`` is the unit of work that moves through the Rogue memory bus
-between ``Master`` and ``Slave`` objects. It carries metadata (ID, address,
-size, and type), payload access, completion/error state, and timeout tracking.
+A ``Transaction`` carries both the request description and the state needed to
+track it while it is in flight. That includes the address, type, transfer size,
+payload access, completion state, error state, and timeout handling.
 
-Transactions are typically created by ``Master`` when a request is issued.
+What A ``Transaction`` Carries
+==============================
+
+A ``Transaction`` typically carries:
+
+- A unique transaction ID
+- The target address
+- The access type
+- The transfer size
+- Payload access for read or write data
+- Completion and error state
+- Timeout and expiration information
+
+Most users do not construct ``Transaction`` objects directly. They are usually
+created by a ``Master`` when a request is issued.
+
+Access Types
+============
+
+The most important ``Transaction`` types are:
+
+- ``Read`` requests data from the downstream target.
+- ``Write`` sends data through the normal write path.
+- ``Post`` sends data as a posted write.
+- ``Verify`` checks that downstream state matches the expected value.
+
+For many custom ``Slave`` or ``Hub`` implementations, ``Write`` and ``Post``
+look almost identical at the transport boundary: both carry outbound write
+data. The important distinction is semantic. A posted write is a distinct
+transaction type in the Rogue memory model, so downstream code can choose to
+handle it differently when the protocol or hardware behavior requires that.
+
+In practice, some implementations intentionally treat ``Write`` and ``Post``
+the same, while others use ``Post`` for command-like or non-readback-oriented
+operations.
 
 Lifecycle
 =========
 
-Typical flow:
+The normal lifecycle looks like this:
 
-1. A master creates and forwards a transaction.
-2. One or more slave or hub layers process it.
-3. Completion is signaled with ``done()`` or ``error()/errorStr()``.
-4. Wait logic observes completion or timeout.
+1. A ``Master`` creates and forwards a ``Transaction``.
+2. One or more ``Hub`` or ``Slave`` layers process it.
+3. Completion is reported with ``done()`` or with an error call such as
+   ``error()``.
+4. Waiting code observes completion, failure, or timeout.
 
-Each transaction has a unique 32-bit ID used for lookup and correlation.
+Posted writes are not a separate lifecycle mechanism. They still move through
+the same ``Transaction`` machinery as reads, writes, and verifies: a
+``Master`` creates the ``Transaction``, downstream components process it, and
+completion or error is reported in the normal way.
 
-Locking and Data Access
+The difference is the access type. A downstream ``Slave`` or ``Hub`` can see
+that the request is ``Post`` instead of ``Write`` and choose different
+behavior if the protocol or hardware requires it. Some implementations treat
+``Post`` exactly like ``Write``. Others use it for write paths that should not
+wait for a normal downstream response, or for other command-oriented policies.
+
+Each ``Transaction`` has a unique 32-bit ID that can be used for lookup,
+correlation, or asynchronous completion handling.
+
+Locking And Data Access
 =======================
 
-Transaction payload bytes are accessed via ``begin()``/``end()`` and protected
-using ``TransactionLock`` from ``lock()``.
+``Transaction`` payload bytes are accessed through pointer and iterator-style
+interfaces such as ``begin()`` and are protected by ``TransactionLock`` from
+``lock()``.
 
-Use the lock wrapper when reading or writing transaction payload/state from
-asynchronous paths.
+Whenever asynchronous code reads or writes ``Transaction`` payload or state, it
+should do so under the ``Transaction`` lock. This is especially important in
+custom ``Slave`` or ``Hub`` implementations that recover a stored
+``Transaction`` later from a callback or worker thread.
 
-Timeout and Expiration
+Timeout And Expiration
 ======================
 
-Timeout is attached at creation. If a transaction does not complete in time,
-wait logic marks it as a timeout error.
+Timeout is attached when the ``Transaction`` is created. If the work does not
+complete in time, waiting logic marks the ``Transaction`` as a timeout error.
 
 Timer refresh logic can extend active transactions in multi-stage flows to
 reduce false expirations on slower links.
+Longer multi-stage flows can refresh timer state so an active but slow
+``Transaction`` does not expire prematurely. That matters most for deeper hub
+graphs, protocol bridges, and slower transport links.
 
 Logging
 =======
@@ -68,36 +122,57 @@ surrounding module loggers:
 Subtransactions
 ===============
 
-Hubs and protocol layers may split one parent transaction into multiple child
-transactions. Parent completion is deferred until all children complete.
+One important feature of the memory interface is that a single parent
+``Transaction`` may be split into multiple child transactions. ``Hub`` and
+protocol layers use this when one upstream request must be decomposed before it
+can be serviced downstream.
 
-Child errors propagate to the parent transaction error state.
+Parent completion is deferred until all child work completes, and child errors
+propagate back to the parent error state.
 
 Why Subtransactions Exist
 =========================
 
-Subtransactions preserve a simple upstream API while handling downstream
-constraints:
+Subtransactions let upstream code stay simple while downstream details remain
+hidden. Common reasons for splitting include:
 
-- Access-size limits on downstream links
-- Address window translation
-- Protocol decomposition into wire-level operations
+- Access-size limits on a downstream link
+- Address-window translation
+- Protocol decomposition into several wire-level operations
 
-This keeps master-side code simple and hides transport fragmentation details.
+This keeps the upstream ``Master`` API straightforward even when the transport
+or bus structure underneath is more complicated.
 
 Python Integration
 ==================
 
-Python-facing APIs expose transaction fields and data access helpers.
-For Python buffer-backed transfers, transactions may hold temporary buffer
-state until completion.
+Python-facing APIs expose ``Transaction`` fields and payload access helpers. For
+buffer-backed Python transfers, a ``Transaction`` may also hold temporary buffer
+state until the operation completes.
 
-Related API reference:
+In most Python code, this shows up indirectly through ``Master``, ``Slave``,
+and ``Hub`` implementations rather than through direct user construction of a
+``Transaction``.
 
-- :doc:`/api/python/rogue/interfaces/memory/transaction`
-- :doc:`/api/python/rogue/interfaces/memory/master`
-- :doc:`/api/python/rogue/interfaces/memory/hub`
-- :doc:`/api/cpp/interfaces/memory/transaction`
-- :doc:`/api/cpp/interfaces/memory/transactionLock`
-- :doc:`/api/cpp/interfaces/memory/master`
-- :doc:`/api/cpp/interfaces/memory/hub`
+What To Explore Next
+====================
+
+- Custom ``Master`` patterns: :doc:`/memory_interface/master`
+- Custom ``Slave`` patterns: :doc:`/memory_interface/slave`
+- ``Hub`` translation patterns: :doc:`/memory_interface/hub`
+
+API Reference
+=============
+
+- Python:
+
+  - :doc:`/api/python/rogue/interfaces/memory/transaction`
+  - :doc:`/api/python/rogue/interfaces/memory/master`
+  - :doc:`/api/python/rogue/interfaces/memory/hub`
+
+- C++:
+
+  - :doc:`/api/cpp/interfaces/memory/transaction`
+  - :doc:`/api/cpp/interfaces/memory/transactionLock`
+  - :doc:`/api/cpp/interfaces/memory/master`
+  - :doc:`/api/cpp/interfaces/memory/hub`

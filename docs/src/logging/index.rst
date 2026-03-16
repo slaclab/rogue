@@ -17,6 +17,55 @@ Internally, many C++-backed Rogue modules still use ``rogue.Logging``. In the
 recommended unified mode, those messages are forwarded into Python logging so
 they appear in the same logging path as the rest of the application.
 
+How To Think About It
+=====================
+
+When you are debugging a problem, first identify which side emitted the message:
+
+- Pure Python / PyRogue class:
+  configure it with Python ``logging``.
+- C++-backed Rogue object:
+  configure it with ``rogue.Logging``.
+
+If you are not sure, the practical rule is:
+
+- ``self._log = pyrogue.logInit(...)`` means Python logging.
+- ``rogue::Logging::create("...")`` means Rogue C++ logging.
+
+Python Logging In PyRogue
+=========================
+
+PyRogue nodes and many Python helper classes create loggers with
+``pyrogue.logInit()`` in [python/pyrogue/_Node.py](/Users/bareese/rogue/python/pyrogue/_Node.py).
+That function ultimately returns a standard Python logger from
+``logging.getLogger(...)``.
+
+Logger Naming Rules
+-------------------
+
+The logger name starts with ``pyrogue`` and then appends type/class/path
+information. Common patterns are:
+
+- ``pyrogue.Root.<RootSubclass>.<path>``
+- ``pyrogue.Device.<DeviceSubclass>.<path>``
+- ``pyrogue.Variable.<VariableSubclass>.<path>``
+- ``pyrogue.Command.<CommandSubclass>.<path>``
+
+Because the full node path is usually included after tree attachment, Python
+logger names are often predictable once you know the object path.
+
+Examples from current code:
+
+- A Device named ``Top.MyDevice`` will typically log under a name beginning
+  with ``pyrogue.Device.<ClassName>.Top.MyDevice``.
+- The file reader uses ``pyrogue.FileReader`` in
+  [python/pyrogue/utilities/fileio/_FileReader.py](/Users/bareese/rogue/python/pyrogue/utilities/fileio/_FileReader.py).
+
+How To Enable Python Logging
+----------------------------
+
+Use the standard Python logging API:
+
 Recommended Usage
 =================
 
@@ -133,8 +182,50 @@ Severity constants are:
 
 Filter matching is prefix-based. These are equivalent:
 
+Logger Naming Rules
+-------------------
+
+Each C++ logger is created with ``rogue::Logging::create("name")``.
+Rogue then prepends ``pyrogue.`` internally, so:
+
+- ``Logging::create("udp.Client")`` becomes ``pyrogue.udp.Client``
+- ``Logging::create("packetizer.Controller")`` becomes
+  ``pyrogue.packetizer.Controller``
+
+Some logger names are static, and some are built dynamically at runtime.
+
+Examples currently in the codebase:
+
+- ``pyrogue.udp.Client``
+- ``pyrogue.udp.Server``
+- ``pyrogue.rssi.controller``
+- ``pyrogue.packetizer.Controller``
+- ``pyrogue.SrpV0``
+- ``pyrogue.SrpV3``
+- ``pyrogue.xilinx.xvc``
+- ``pyrogue.xilinx.jtag``
+- ``pyrogue.fileio.StreamWriter``
+- ``pyrogue.prbs.tx``
+- ``pyrogue.prbs.rx``
+
+Dynamic example:
+
+- ``pyrogue.stream.TcpCore.<addr>.Client.<port>``
+- ``pyrogue.stream.TcpCore.<addr>.Server.<port>``
+
+That dynamic pattern is constructed in
+[src/rogue/interfaces/stream/TcpCore.cpp](/Users/bareese/rogue/src/rogue/interfaces/stream/TcpCore.cpp).
+
+How To Enable C++ Logging
+-------------------------
+
+Global level:
+
 .. code-block:: python
 
+   import rogue
+
+   rogue.Logging.setLevel(rogue.Logging.Debug)
    rogue.Logging.setFilter('udp', rogue.Logging.Debug)
    rogue.Logging.setFilter('pyrogue.udp', rogue.Logging.Debug)
 

@@ -24,6 +24,7 @@
 #include <cstring>
 #include <memory>
 #include <string>
+#include <chrono>
 
 #include "rogue/GeneralError.h"
 #include "rogue/GilRelease.h"
@@ -39,14 +40,19 @@ namespace rim = rogue::interfaces::memory;
 namespace bp = boost::python;
 #endif
 
+namespace {
+static constexpr double DefaultReadyTimeout = 10.0;
+static constexpr double DefaultReadyPeriod  = 0.1;
+}  // namespace
+
 //! Class creation
-rim::TcpClientPtr rim::TcpClient::create(std::string addr, uint16_t port) {
-    rim::TcpClientPtr r = std::make_shared<rim::TcpClient>(addr, port);
+rim::TcpClientPtr rim::TcpClient::create(std::string addr, uint16_t port, bool waitReady) {
+    rim::TcpClientPtr r = std::make_shared<rim::TcpClient>(addr, port, waitReady);
     return (r);
 }
 
 //! Creator
-rim::TcpClient::TcpClient(std::string addr, uint16_t port) : rim::Slave(4, 0xFFFFFFFF) {
+rim::TcpClient::TcpClient(std::string addr, uint16_t port, bool waitReady) : rim::Slave(4, 0xFFFFFFFF) {
     int32_t opt;
     std::string logstr;
 
@@ -56,6 +62,11 @@ rim::TcpClient::TcpClient(std::string addr, uint16_t port) : rim::Slave(4, 0xFFF
     logstr.append(std::to_string(port));
 
     this->bridgeLog_ = rogue::Logging::create(logstr);
+    this->probeSeq_ = 0;
+    this->probeId_ = 0;
+    this->probeDone_ = false;
+    this->probeResult_.clear();
+    this->waitReadyOnStart_ = waitReady;
 
     // Format address
     this->respAddr_ = "tcp://";
@@ -130,6 +141,80 @@ void rim::TcpClient::stop() {
         zmq_close(this->zmqResp_);
         zmq_close(this->zmqReq_);
         zmq_ctx_destroy(this->zmqCtx_);
+    }
+}
+
+bool rim::TcpClient::waitReady(double timeout, double period) {
+    uint32_t id;
+    uint64_t addr = 0;
+    uint32_t size = 0;
+    uint32_t type = rim::TcpBridgeProbe;
+    zmq_msg_t msg[4];
+    auto deadline = std::chrono::steady_clock::now() + std::chrono::duration<double>(timeout);
+
+    // Retry the probe until the overall timeout expires. This verifies the
+    // full request/response bridge path, not just local socket setup.
+    while (std::chrono::steady_clock::now() < deadline) {
+        {
+            std::lock_guard<std::mutex> probeLock(probeMtx_);
+            // Track the current probe ID so the response thread can match the
+            // incoming bridge reply back to this wait operation.
+            probeId_ = ++probeSeq_;
+            probeDone_ = false;
+            probeResult_.clear();
+            id = probeId_;
+        }
+
+        // Build a minimal internal bridge-control request. The server handles
+        // this locally and responds with the normal six-part completion
+        // message, but without touching downstream memory.
+        zmq_msg_init_size(&(msg[0]), 4);
+        std::memcpy(zmq_msg_data(&(msg[0])), &id, 4);
+        zmq_msg_init_size(&(msg[1]), 8);
+        std::memcpy(zmq_msg_data(&(msg[1])), &addr, 8);
+        zmq_msg_init_size(&(msg[2]), 4);
+        std::memcpy(zmq_msg_data(&(msg[2])), &size, 4);
+        zmq_msg_init_size(&(msg[3]), 4);
+        std::memcpy(zmq_msg_data(&(msg[3])), &type, 4);
+
+        {
+            std::lock_guard<std::mutex> block(bridgeMtx_);
+            // Send through the same request socket and multipart framing used
+            // by normal memory transactions so this exercises the real bridge
+            // path end-to-end.
+            for (uint32_t x = 0; x < 4; ++x) {
+                if (zmq_sendmsg(this->zmqReq_, &(msg[x]), (x == 3 ? 0 : ZMQ_SNDMORE) | ZMQ_DONTWAIT) < 0) {
+                    bridgeLog_->debug("Readiness probe send failed for port %s", this->reqAddr_.c_str());
+                    break;
+                }
+            }
+        }
+
+        for (uint32_t x = 0; x < 4; ++x) zmq_msg_close(&(msg[x]));
+
+        std::unique_lock<std::mutex> probeLock(probeMtx_);
+        // The receive thread sets probeDone_/probeResult_ when it sees a probe
+        // response with the matching ID. We only wait for one retry period
+        // here so we can re-send if the server is not up yet.
+        probeCond_.wait_for(probeLock, std::chrono::duration<double>(period), [&]() { return probeDone_ && probeId_ == id; });
+
+        if (probeDone_ && probeId_ == id && probeResult_ == "OK") {
+            bridgeLog_->debug("Readiness probe succeeded for port %s", this->reqAddr_.c_str());
+            return true;
+        }
+    }
+
+    bridgeLog_->warning("Timed out waiting for bridge readiness on port %s", this->reqAddr_.c_str());
+    return false;
+}
+
+void rim::TcpClient::start() {
+    if (!waitReadyOnStart_) return;
+
+    if (!waitReady(DefaultReadyTimeout, DefaultReadyPeriod)) {
+        throw(rogue::GeneralError::create("memory::TcpClient::start",
+                                          "Timed out waiting for remote TcpServer readiness on %s",
+                                          this->reqAddr_.c_str()));
     }
 }
 
@@ -230,7 +315,7 @@ void rim::TcpClient::runThread() {
         // Get message
         do {
             // Get the message
-            if (zmq_recvmsg(this->zmqResp_, &(msg[x]), 0) > 0) {
+            if (zmq_recvmsg(this->zmqResp_, &(msg[x]), 0) >= 0) {
                 if (x != 5) x++;
                 msgCnt++;
 
@@ -267,6 +352,17 @@ void rim::TcpClient::runThread() {
 
             memset(result, 0, 1000);
             std::strncpy(result, reinterpret_cast<char*>(zmq_msg_data(&(msg[5]))), zmq_msg_size(&(msg[5])));
+
+            if (type == rim::TcpBridgeProbe) {
+                std::lock_guard<std::mutex> probeLock(probeMtx_);
+                if (id == probeId_) {
+                    probeResult_ = result;
+                    probeDone_   = true;
+                    probeCond_.notify_all();
+                }
+                for (x = 0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
+                continue;  // while (1)
+            }
 
             // Find Transaction
             if ((tran = getTransaction(id)) == NULL) {
@@ -326,8 +422,10 @@ void rim::TcpClient::setup_python() {
 
     bp::class_<rim::TcpClient, rim::TcpClientPtr, bp::bases<rim::Slave>, boost::noncopyable>(
         "TcpClient",
-        bp::init<std::string, uint16_t>())
-        .def("close", &rim::TcpClient::close);
+        bp::init<std::string, uint16_t, bp::optional<bool> >())
+        .def("close", &rim::TcpClient::close)
+        .def("waitReady", &rim::TcpClient::waitReady)
+        .def("_start", &rim::TcpClient::start);
 
     bp::implicitly_convertible<rim::TcpClientPtr, rim::SlavePtr>();
 #endif

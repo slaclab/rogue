@@ -56,6 +56,16 @@ static const uint32_t Post = 0x3;
  */
 static const uint32_t Verify = 0x4;
 
+/**
+ * @brief Internal TCP bridge readiness probe transaction type.
+ *
+ * @details
+ * Used by the memory TCP bridge client/server to verify that the request/
+ * response path is usable. This is an internal bridge control message and is
+ * not exported as a normal Python transaction type constant.
+ */
+static const uint32_t TcpBridgeProbe = 0xFFFFFFFE;
+
 //////////////////////////////
 // Block Processing Types
 //////////////////////////////

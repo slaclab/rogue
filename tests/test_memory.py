@@ -149,7 +149,6 @@ class DummyTree(pr.Root):
             offset  = 0x80000,
             memBase = mc,
         ))
-
 def test_memory():
 
     with DummyTree() as root:

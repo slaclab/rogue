@@ -5,31 +5,56 @@
 Memory Slave Patterns
 =====================
 
-Custom slaves are common when adapting proprietary protocols or hardware
-engines to Rogue's transaction model.
+Custom memory ``Slave`` objects are common when Rogue needs to adapt a
+proprietary hardware or protocol engine to the Rogue transaction model.
 
-Typical slave flow
+Unlike custom ``Master`` implementations, custom ``Slave`` implementations are
+fairly common because they often provide the hardware-facing side of the bus.
+They are the place where incoming Rogue ``Transaction`` objects are translated
+into the real protocol operations required by a device or transport.
+
+Python and C++ subclasses of ``Slave`` can be mixed freely with upstream
+``Master`` implementations in either language.
+
+Typical Slave Flow
 ==================
 
-1. Receive ``Transaction`` in ``_doTransaction``/``doTransaction``.
-2. Store transaction handle if completion is asynchronous.
-3. Dispatch protocol read/write request.
-4. On callback, recover transaction, validate freshness, set data/error, and
-   call ``done()``.
+Most custom ``Slave`` code follows this pattern:
 
-Python skeleton example
-=======================
+1. Receive a ``Transaction`` in ``_doTransaction`` or ``doTransaction``.
+2. Store the ``Transaction`` if completion will be asynchronous.
+3. Dispatch the actual protocol read or write.
+4. On callback, recover the stored ``Transaction``.
+5. Check whether it is still valid, then set data, report error, or call
+   ``done()``.
+
+Assume, for example, that the underlying protocol provides calls such as
+``protocolRead(id, address, size)`` and ``protocolWrite(id, address, size,
+data)``, with callbacks when the operation completes.
+
+At the ``Slave`` boundary, ``Write`` and ``Post`` often arrive with the same
+basic shape: both carry outbound write data. That is why many implementations
+branch on them together. The distinction is that ``Post`` is still a different
+transaction type, so a ``Slave`` can choose to give it different treatment if
+the downstream protocol cares about posted-write semantics.
+
+Python Example
+==============
 
 .. code-block:: python
 
    import rogue.interfaces.memory as rim
 
    class MyMemSlave(rim.Slave):
-       def __init__(self):
-           super().__init__(4, 1024)  # min/max transaction sizes
 
+       # Assume our minimum size is 4 bytes and our maximum size is 1024 bytes
+       def __init__(self):
+           super().__init__(4, 1024)
+
+       # Entry point for incoming transactions
        def _doTransaction(self, tran):
            with tran.lock():
+               # Store the Transaction so it can be recovered on callback
                self._addTransaction(tran)
 
                if tran.type() in (rim.Write, rim.Post):
@@ -39,24 +64,51 @@ Python skeleton example
                else:
                    protocolRead(tran.id(), tran.address(), tran.size())
 
+       # Protocol callback for write completion
+       def protocolWriteDone(self, tid, ok):
+           tran = self._getTransaction(tid)
+           if tran is None:
+               return
+
+           with tran.lock():
+               if tran.expired():
+                   return
+
+               if not ok:
+                   tran.error("protocol write failed")
+               else:
+                   tran.done()
+
+       # Protocol callback for read completion
        def protocolReadDone(self, tid, data, ok):
            tran = self._getTransaction(tid)
            if tran is None:
                return
+
            with tran.lock():
                if tran.expired():
                    return
+
                if not ok:
                    tran.error("protocol read failed")
                else:
                    tran.setData(data, 0)
                    tran.done()
 
-C++ skeleton example
-====================
+The important part of this pattern is that the incoming ``Transaction`` is kept
+alive until the underlying protocol completes. That is why ``_addTransaction()``
+and ``_getTransaction()`` are used here.
+
+This example intentionally handles ``Write`` and ``Post`` the same way. That is
+common. A different protocol could instead inspect ``tran.type()`` and apply a
+special posted-write policy.
+
+C++ Example
+===========
 
 .. code-block:: cpp
 
+   #include <algorithm>
    #include "rogue/interfaces/memory/Constants.h"
    #include "rogue/interfaces/memory/Slave.h"
 
@@ -80,6 +132,20 @@ C++ skeleton example
          }
       }
 
+      void protocolWriteDone(uint32_t id, bool ok) {
+         auto tran = getTransaction(id);
+         if (tran == nullptr) return;
+
+         auto lock = tran->lock();
+         if (tran->expired()) return;
+
+         if (!ok) {
+            tran->error("protocol write failed");
+         } else {
+            tran->done();
+         }
+      }
+
       void protocolReadDone(uint32_t id, uint8_t* data, bool ok) {
          auto tran = getTransaction(id);
          if (tran == nullptr) return;
@@ -96,35 +162,47 @@ C++ skeleton example
       }
    };
 
+Design Notes
+============
+
+Asynchronous completion is the central design issue for custom ``Slave``
+implementations. If the underlying protocol does not complete immediately, the
+``Transaction`` must be stored and recovered later. Before completing it, always
+check whether it has expired.
+
+This is also why lock scope matters. A lock should protect access to the shared
+``Transaction`` state, but it should not accidentally serialize unrelated work
+longer than necessary.
+
 Logging
 =======
 
-``memory.Slave`` does not define a dedicated logger of its own. Logging is
-typically implemented by concrete subclasses or bridge layers built on top of
-``Slave``.
+The base Rogue memory ``Slave`` does not define a dedicated logger name of its
+own. In practice, logging is usually added by concrete subclasses or protocol
+layers built on top of ``Slave``.
 
-Examples elsewhere in Rogue include:
+For custom implementations, the recommended pattern is:
 
-- ``pyrogue.SrpV0``
-- ``pyrogue.SrpV3``
-- ``pyrogue.memory.TcpClient.<addr>.<port>``
+- Python: add a logger with ``pyrogue.logInit(...)``
+- C++: add a logger with ``rogue::Logging::create("...")``
 
-For custom slaves, the recommended pattern is:
+That gives users a stable logger name they can filter while debugging the
+protocol-specific behavior of the ``Slave``.
 
-- Python: add ``self._log`` with ``pyrogue.logInit(...)``
-- C++: add ``rogue::Logging::create("...")``
-
-This gives users a stable logger name they can filter.
-
-What to explore next
+What To Explore Next
 ====================
 
 - Transaction internals and locking: :doc:`/memory_interface/transactions`
-- Hub translation strategies: :doc:`/memory_interface/hub`
+- ``Hub`` translation patterns: :doc:`/memory_interface/hub`
 - Bus connection patterns: :doc:`/memory_interface/connecting`
 
 API Reference
 =============
 
-- Python: :doc:`/api/python/rogue/interfaces/memory/slave`
-- C++: :doc:`/api/cpp/interfaces/memory/slave`
+- Python:
+
+  - :doc:`/api/python/rogue/interfaces/memory/slave`
+
+- C++:
+
+  - :doc:`/api/cpp/interfaces/memory/slave`

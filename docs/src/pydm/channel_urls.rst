@@ -16,8 +16,12 @@ The general form is:
 
    rogue://<server>/<path>/<mode>/<index>
 
-Only the server index and path are required. ``mode`` and ``index`` are
+Only the server selector and path are required. ``mode`` and ``index`` are
 optional.
+
+The plugin parses these addresses in
+``python/pyrogue/pydm/data_plugins/rogue_plugin.py`` and resolves them against
+the server list for the current PyDM session.
 
 Server Selection
 ================
@@ -34,7 +38,12 @@ Examples:
    rogue://0/root.MyDevice.MyVariable
    rogue://localhost:9099/root.MyDevice.MyVariable
 
-Using ``root`` As An Alias
+Using an explicit ``host:port`` can be convenient for one-off debugging. Using
+the numeric server index is usually better for reusable screens because the UI
+can stay the same while the launcher chooses which servers occupy indices
+``0``, ``1``, and so on.
+
+Using ``root`` as an Alias
 ==========================
 
 Rogue accepts both the real Root name and the ``root`` alias in channel paths.
@@ -59,6 +68,8 @@ The main supported modes are:
 - ``name``: Node name.
 - ``path``: Full Rogue path.
 
+When no ``mode`` is supplied, the plugin uses ``value``.
+
 Example:
 
 .. code-block:: text
@@ -72,6 +83,9 @@ This is especially useful when binding labels and line edits:
 - Use ``/disp`` when the display representation matters more than the raw
   underlying type.
 
+For editable text widgets, ``/disp`` is usually the most practical choice
+because it follows Rogue's display formatting and string conversion behavior.
+
 Array Indexing
 ==============
 
@@ -83,6 +97,13 @@ The optional ``index`` field selects an element from list-like values:
 
 That allows a widget to bind to one element of a larger list or array without
 having to display the whole object.
+
+This suffix is applied after the mode field. For example, the third element of
+an array variable's display value uses:
+
+.. code-block:: text
+
+   rogue://0/root.Device.ArrayVariable/disp/2
 
 What To Explore Next
 ====================

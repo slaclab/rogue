@@ -23,7 +23,7 @@ Notes
 * ``pythonVersion()`` returns a Python-style version string (for example
   ``"6.3.0"`` or ``"6.3.0.dev4"``).
 
-Python examples
+Python Examples
 ---------------
 
 .. code-block:: python
@@ -58,7 +58,7 @@ Python examples
        print(f"Version mismatch: {exc}")
 
 
-C++ examples
+C++ Examples
 ------------
 
 .. code-block:: cpp
@@ -108,6 +108,7 @@ Related Topics
 
 - Deployment and environment setup: :doc:`/installing/index`
 - Upgrade guidance across Rogue versions: :doc:`/migration/index`
+- Tree and interface catalog: :doc:`/built_in_modules/interfaces/index`
 
 API Reference
 =============

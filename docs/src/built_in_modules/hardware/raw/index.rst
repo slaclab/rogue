@@ -5,43 +5,100 @@
 Raw Hardware Interface
 ======================
 
-The raw hardware path provides direct memory mapping through ``/dev/mem`` style
-interfaces. It is useful for tightly scoped local register windows, but most
-systems should prefer :doc:`/built_in_modules/hardware/dma/index` when AXI
-driver support is available.
+For direct local mapping of a physical register window through ``/dev/mem``,
+Rogue provides ``rogue.hardware.MemMap``.
 
-Raw mapping is most appropriate when:
+This is the minimal hardware access path. It is useful when a platform exposes a
+small host-visible register span and no DMA-driver wrapper is available, but it
+is not the normal choice for PCIe or DMA-backed systems. When
+``aes-stream-drivers`` support exists, :doc:`/built_in_modules/hardware/dma/index`
+is usually the better integration path.
 
-- You need direct access to a fixed host-visible register span.
-- A DMA-driver wrapper is not available for the platform.
-- The integration is local and intentionally minimal.
+Use Cases
+=========
 
-Compared to DMA wrappers, raw mapping typically provides less transport
-abstraction and fewer hardware-integration conveniences, but a straightforward
-memory endpoint for simple register windows.
+- A simple local register window.
+- Early bring-up or tightly scoped platform utilities.
+- Systems without the standard DMA driver stack.
 
-C++ API details for raw hardware interfaces are documented in
-:doc:`/api/cpp/hardware/raw/index`.
+Key Constructor Arguments
+=========================
 
-Using The MemMap Class
-======================
+``MemMap(base, size)``
 
-The ``MemMap`` class maps a specific base address and size. Keeping each
-instance constrained to the smallest required span avoids unnecessary mapping
-of large address spaces.
+- ``base`` is the physical base address to map
+- ``size`` is the number of bytes to expose
 
-Parameter overview:
+How It Works
+============
 
-- ``base``: Start address of the mapped region.
-- ``size``: Number of bytes to expose through the memory endpoint.
+``MemMap`` maps the requested physical range and services queued Rogue memory
+transactions against that mapped window. Transactions are interpreted relative
+to the mapped base address.
 
-Transactions presented to this endpoint are interpreted relative to the mapped
-base, so sizing and alignment choices should match the target register map.
+Root-Based Example
+==================
+
+When ``MemMap`` is used in a PyRogue application, it is usually created in the
+``Root`` and passed as ``memBase`` to an existing device class.
+
+.. code-block:: python
+
+   import pyrogue as pr
+   import pyrogue.examples
+   import rogue.hardware as rh
+
+   class LocalRoot(pr.Root):
+       def __init__(self, **kwargs):
+           super().__init__(**kwargs)
+
+           # Map a 4 KB register window starting at physical address 0x1000.
+           self.memMap = rh.MemMap(0x00001000, 0x1000)
+           self.addInterface(self.memMap)
+
+           # Attach an existing example device to the mapped register space.
+           self.add(pyrogue.examples.AxiVersion(
+               memBase=self.memMap,
+               name='AxiVersion',
+               offset=0x00000000,
+               expand=True,
+           ))
+
+Standalone Memory-Master Example
+================================
+
+If you are not building a PyRogue tree, ``MemMap`` can still be used as a plain
+Rogue memory endpoint:
+
+.. code-block:: python
+
+   import rogue.hardware as rh
+
+   # Map a 0x1000-byte register window starting at address 0x00001000.
+   mem_map = rh.MemMap(0x00001000, 0x1000)
+   mem_master >> mem_map
+
+Threading And Lifecycle
+=======================
+
+``MemMap`` does create a background worker thread:
+
+- ``doTransaction()`` enqueues requests from upstream.
+- The worker thread performs mapped-memory accesses.
+- Destruction or ``_stop()`` shuts down the worker, unmaps the region, and
+  closes ``/dev/mem``.
+
+Operational Notes
+=================
+
+Keep the mapped span as small as practical. Use this path only when direct
+``/dev/mem`` access is appropriate for the target system. When a driver-backed
+integration already exists, the AXI DMA wrappers are usually the better choice.
 
 Logging
 =======
 
-``MemMap`` uses Rogue C++ logging.
+``MemMap`` uses Rogue C++ logging:
 
 - Logger name: ``pyrogue.MemMap``
 - Unified Logging API:
@@ -51,43 +108,18 @@ Logging
 - Typical messages: mapped-range creation, issued transactions, and transaction
   timeout warnings
 
-Python MemMap Example
-=====================
+Enable it before construction:
 
 .. code-block:: python
 
-   import rogue.hardware as rh
+   import rogue
 
-   # Map a 0x1000-byte register window starting at address 0x00001000.
-   mem_map = rh.MemMap(0x00001000, 0x1000)
-
-   # Upstream memory master that initiates reads/writes.
-   mem_mast = MyMemMaster()
-
-   # Route master transactions into the mapped hardware window.
-   mem_mast >> mem_map
-
-C++ MemMap Example
-==================
-
-.. code-block:: cpp
-
-   #include <rogue/hardware/MemMap.h>
-
-   namespace rh = rogue::hardware;
-
-   // Map a 0x1000-byte register window starting at address 0x00001000.
-   auto memMap = rh::MemMap::create(0x00001000, 0x1000);
-
-   // Upstream memory master that initiates reads/writes.
-   auto memMast = MyMemMaster::create();
-
-   // Route master transactions into the mapped hardware window.
-   *memMast >> memMap;
+   rogue.Logging.setFilter('pyrogue.MemMap', rogue.Logging.Debug)
 
 Related Topics
 ==============
 
+- :doc:`/built_in_modules/hardware/dma/index`
 - :doc:`/memory_interface/index`
 
 API Reference

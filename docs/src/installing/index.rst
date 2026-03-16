@@ -20,7 +20,7 @@ In practice there are three main paths:
 - Build Rogue from source outside Miniforge:
   :ref:`installing_full_build`
 
-Recommended choices by platform are:
+Recommended Choices By Platform Are:
 
 - Linux: :ref:`installing_miniforge` or :ref:`installing_miniforge_build`
 - macOS arm64: :ref:`installing_miniforge_build`

@@ -14,8 +14,6 @@ import pyrogue as pr
 import pyrogue.interfaces.simulation
 import rogue.interfaces.memory
 
-import time
-
 #rogue.Logging.setLevel(rogue.Logging.Warning)
 #import logging
 #logger = logging.getLogger('pyrogue')
@@ -78,7 +76,8 @@ class DummyTree(pr.Root):
         sim << ms
 
         # Create a memory gateway
-        mc = rogue.interfaces.memory.TcpClient("127.0.0.1",9080)
+        mc = rogue.interfaces.memory.TcpClient("127.0.0.1",9080, True)
+        self.memClient = mc
         self.addInterface(mc)
 
         # Add Device
@@ -87,17 +86,9 @@ class DummyTree(pr.Root):
             offset     = 0x0,
             memBase    = mc,
         ))
-
-    def start(self, **kwargs):
-        super().start(**kwargs)
-
-        # Allow time for TCP connection to establish
-        time.sleep(1.0)
-
 def test_enum():
 
     with DummyTree() as root:
-
         for i in range(3):
             root.Dev.Config.setDisp(f'Config{i}')
             config =  root.Dev.Config.get()

@@ -4,9 +4,15 @@
 Reading Frames From A File
 ==========================
 
-``rogue.utilities.fileio.StreamReader`` replays captured Rogue files as stream
-frames. Frame metadata (channel, flags, error) is reconstructed and propagated
-with each emitted frame.
+For replay workflows that should be controlled from a PyRogue tree, PyRogue
+provides ``pyrogue.utilities.fileio.StreamReader``. It wraps the lower-level
+``rogue.utilities.fileio.StreamReader`` and exposes file selection plus open
+and close commands through a small tree-visible ``Device``.
+
+The underlying ``rogue.utilities.fileio.StreamReader`` reconstructs captured
+Rogue records as live ``Frame`` traffic. Payload bytes, channel IDs, flags, and
+error state are restored from the file and propagated downstream as replayed
+frames.
 
 Frames can be read in a streaming fashion using ``StreamReader``. Each data
 record is emitted as a Rogue ``Frame`` with payload and metadata preserved from
@@ -17,17 +23,47 @@ replayed frames by channel as needed.
 For file-format details consumed by the reader, see
 :ref:`utilities_fileio_format`.
 
-Method Overview
+When To Use Each Form
+=====================
+
+Use the wrapper when replay should be started from a ``Root`` tree, a GUI, or
+remote client code. Use the direct Rogue reader when a standalone script just
+needs a file-to-stream replay source.
+
+Common Controls
 ===============
 
-The examples below use the core ``StreamReader`` methods:
+At the wrapper layer, most workflows only need:
 
-- ``open(path)``: Opens an input file and starts background replay.
-- ``closeWait()``: Blocks until replay finishes, then closes the reader.
-- ``close()``: Stops replay immediately and closes the reader.
+- ``DataFile``
+  Input filename exposed as a tree variable.
+- ``Open``
+  Starts replay.
+- ``Close``
+  Stops replay.
+- ``isOpen``
+  Reports whether replay is still active.
+
+At the direct utility layer, the main controls are:
+
+- ``open(path)``
+- ``closeWait()``
+- ``close()``
 
 When the input name ends with ``.1``, the reader automatically attempts
 ``.2``, ``.3``, and so on as a split-file sequence.
+
+Tree-Managed Reader Form
+========================
+
+``pyrogue.utilities.fileio.StreamReader`` is intentionally thinner than the
+writer wrapper. It adds the file-selection variables and commands, but it does
+not expose a tree-visible ``closeWait()`` equivalent.
+
+That means wrapper-level code usually calls ``Open()`` and then polls
+``isOpen`` when blocking behavior is needed. If a script wants direct blocking
+control, the lower-level ``rogue.utilities.fileio.StreamReader`` remains the
+simpler form.
 
 Logging
 =======
@@ -44,8 +80,8 @@ For replay debugging, the practical approaches are:
 
 See :doc:`/stream_interface/debugStreams` for the standard debug-tap pattern.
 
-Python StreamReader Example
-===========================
+Python Direct-Utility Example
+=============================
 
 .. code-block:: python
 
@@ -64,11 +100,8 @@ Python StreamReader Example
    # Or call close() for immediate stop.
    # fread.close()
 
-PyRogue StreamReader Device Wrapper
-===================================
-
-``pyrogue.utilities.fileio.StreamReader`` wraps the reader for use in a
-``Root`` tree and GUI/client control.
+Python Tree-Managed Example
+===========================
 
 .. code-block:: python
 
@@ -81,10 +114,19 @@ PyRogue StreamReader Device Wrapper
    # Route replayed frames to a downstream stream consumer.
    fread >> receiver
 
+   import time
+
    # Configure and run replay via Device variables/commands.
    fread.DataFile.set("myFile.dat.1")
    fread.Open()
-   fread.Close()
+
+   # Wait for replay to finish when script-style blocking behavior is needed.
+   while fread.isOpen.get():
+      time.sleep(0.1)
+
+This wrapper is a natural partner for tree-facing stream sinks such as
+``pyrogue.DataReceiver`` subclasses: the reader provides the replay source,
+and the downstream device decodes or publishes the replayed frames.
 
 C++ StreamReader Example
 ========================

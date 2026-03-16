@@ -27,14 +27,14 @@ Workflow
 5. Review full architecture context:
    :doc:`/pyrogue_tree/index`
 
-What this tutorial emphasizes
+What This Tutorial Emphasizes
 =============================
 
 - Building a coherent end-to-end control and data path
 - Separating conceptual architecture from API reference lookups
 - Planning for deployment and operations from the start
 
-Related sections
+Related Sections
 ================
 
 - :doc:`/built_in_modules/index`

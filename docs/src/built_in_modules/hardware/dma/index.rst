@@ -4,53 +4,62 @@
 AXI DMA Driver Wrappers
 =========================
 
-AXI hardware support in Rogue is built around wrappers for the AXI stream DMA
-driver stack from
+For host-side access to FPGA DMA channels and register space through the
+``aes-stream-drivers`` stack, Rogue provides driver wrappers in
+``rogue.hardware.axi``.
+
+The underlying Linux driver and user-space support library live in
 `slaclab/aes-stream-drivers <https://github.com/slaclab/aes-stream-drivers>`_.
-These wrappers translate driver-level channels and register accesses into Rogue
-Stream and Rogue Memory interface semantics, so hardware can be connected with
-the same connection and transaction patterns used elsewhere in Rogue.
+That repository is the right lower-level reference when you need driver API
+details such as DMA buffer mapping, channel reservation masks, or register-path
+behavior.
 
-C++ API details for AXI hardware interfaces are documented in
-:doc:`/api/cpp/hardware/axi/index`.
+These wrappers are usually the software boundary between the Linux driver and
+the rest of a Rogue application:
 
-For PCIe- and DMA-backed FPGA systems, this subsection is usually the
-host-side boundary between the Linux driver and the rest of the Rogue
-application. The driver exposes DMA channels and a register access path, and
-Rogue turns those into the same Stream and Memory abstractions used elsewhere
-in the framework:
+- ``AxiStreamDma`` turns one DMA stream channel into Rogue stream interfaces.
+- ``AxiMemMap`` turns the driver register path into a Rogue memory interface.
 
-- ``AxiStreamDma`` handles moving framed data to and from DMA channels.
-- ``AxiMemMap`` handles register and memory transactions through the same
-  driver stack.
-- Higher-level protocol choices such as RSSI, SRP, or packetizer remain
-  independent of the DMA wrapper itself.
+Higher-level protocols such as SRP, RSSI, or packetizer are layered on top of
+these wrappers when the firmware design expects them.
 
-Typical integration pattern
+Subtopics
+=========
+
+- :doc:`stream`
+  Use ``AxiStreamDma`` for framed data channels.
+- :doc:`memory`
+  Use ``AxiMemMap`` for register and memory transactions exposed through the
+  driver path.
+
+Typical Integration Pattern
 ===========================
 
-A common host-side composition looks like this:
+Most applications split the work between one register path and one or more
+stream paths. The register side is usually exposed as a Rogue memory endpoint,
+while the data side is connected into a Rogue stream graph and then layered
+with SRP, packetizer, file I/O, or custom processing only where the firmware
+actually uses those protocols.
 
-1. Use :doc:`memory` to expose firmware registers to a PyRogue tree or a lower
-   level memory master.
-2. Use :doc:`stream` to connect data-producing or data-consuming firmware
-   channels into Rogue stream topologies.
-3. Layer higher-level protocols such as :doc:`/built_in_modules/protocols/srp/index`
-   or :doc:`/built_in_modules/protocols/rssi/index` on top of those DMA
-   channels when the firmware expects them.
+1. Use :doc:`memory` when firmware registers should appear as a Rogue memory
+   endpoint.
+2. Use :doc:`stream` when firmware data channels should participate in a Rogue
+   stream graph.
+3. Add higher-level protocol layers above those wrappers only when the firmware
+   path actually uses them.
 
-What To Explore Next
-====================
+Related Topics
+==============
 
-- Stream DMA channel usage: :doc:`stream`
-- Memory/register access path: :doc:`memory`
-- Stream graph construction: :doc:`/stream_interface/index`
-- Memory transaction routing: :doc:`/memory_interface/index`
-- Protocol layering above DMA: :doc:`/built_in_modules/protocols/index`
+- :doc:`/built_in_modules/protocols/srp/index`
+- :doc:`/built_in_modules/protocols/rssi/index`
+- :doc:`/built_in_modules/protocols/packetizer/index`
+- :doc:`/memory_interface/index`
+- :doc:`/stream_interface/index`
 
 .. toctree::
    :maxdepth: 1
-   :caption: AXI Hardware:
+   :caption: AXI Hardware
 
    stream
    memory

@@ -61,7 +61,7 @@ Bit-level view of ``headerB``:
    |   Channel ID   |  Frame Error   |      Frame Flags[15:0]       |
    +----------------+----------------+-------------------------------+
 
-Concrete example
+Concrete Example
 ================
 
 If a frame has:
