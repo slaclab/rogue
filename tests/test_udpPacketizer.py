@@ -21,6 +21,7 @@ import threading
 
 FrameCount = 10000
 FrameSize  = 10000
+DrainTimeout = 30.0
 
 class RssiOutOfOrder(rogue.interfaces.stream.Slave, rogue.interfaces.stream.Master):
 
@@ -130,18 +131,28 @@ def data_path(ver,jumbo):
     print("Generating Frames")
     for _ in range(FrameCount):
         prbsTx.genFrame(FrameSize)
-    time.sleep(1)
 
     # Disable out of order
     coo.period = 0
+
+    # Wait for the stack to drain rather than assuming a fixed wall-clock delay.
+    print("Waiting for frame drain")
+    start = time.time()
+    while prbsRx.getRxCount() != FrameCount:
+        time.sleep(0.1)
+        if (time.time() - start) > DrainTimeout:
+            cRssi._stop()
+            sRssi._stop()
+            raise AssertionError('Frame drain timeout. Ver={} Jumbo={} Got = {} expected = {}'.format(
+                ver,
+                jumbo,
+                prbsRx.getRxCount(),
+                FrameCount))
 
     # Stop connection
     print("Closing Link")
     cRssi._stop()
     sRssi._stop()
-
-    if prbsRx.getRxCount() != FrameCount:
-        raise AssertionError('Frame count error. Ver={} Jumbo={} Got = {} expected = {}'.format(ver,jumbo,prbsRx.getRxCount(),FrameCount))
 
     if prbsRx.getRxErrors() != 0:
         raise AssertionError('PRBS Frame errors detected! Ver={} Jumbo={}'.format(ver,jumbo))

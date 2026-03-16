@@ -17,6 +17,7 @@ import rogue.interfaces.memory
 from p4p.client.thread import Context
 
 epics_prefix='test_ioc'
+PropagateTimeout = 10.0
 
 class SimpleDev(pr.Device):
 
@@ -111,6 +112,28 @@ class LocalRootWithEpics(LocalRoot):
         )
         self.addProtocol(self.epics)
 
+
+def wait_pv_value(ctxt, pv_name, expected, timeout=PropagateTimeout, transform=None):
+    start = time.time()
+
+    while True:
+        try:
+            value = ctxt.get(pv_name)
+            if transform is not None:
+                value = transform(value)
+            if value == expected:
+                return
+        except Exception:
+            pass
+
+        if (time.time() - start) > timeout:
+            raise AssertionError('Timed out waiting for pv_name={} expected={} last={}'.format(
+                pv_name,
+                expected,
+                value if 'value' in locals() else 'unavailable'))
+
+        time.sleep(0.1)
+
 def test_local_root():
     """
     Test Epics Server
@@ -125,8 +148,6 @@ def test_local_root():
 
     for s in pv_map_states:
         with LocalRootWithEpics(use_map=s) as root:
-            time.sleep(1)
-
             # Device EPICS PV name prefix
             device_epics_prefix=epics_prefix+':LocalRoot:SimpleDev'
 
@@ -135,13 +156,15 @@ def test_local_root():
 
             # Test list method
             root.epics.list()
-            time.sleep(1)
+
+            # Wait for PVs to become visible through the EPICS server.
+            wait_pv_value(ctxt, device_epics_prefix+':LocalRwInt', 0)
 
             # Test RW a variable holding an scalar value
             pv_name=device_epics_prefix+':LocalRwInt'
             test_value=314
             ctxt.put(pv_name, test_value)
-            time.sleep(1)
+            wait_pv_value(ctxt, pv_name, test_value)
             test_result=ctxt.get(pv_name)
             if test_result != test_value:
                 raise AssertionError('pv_name={}: test_value={}; test_result={}'.format(pv_name, test_value, test_result))
@@ -155,7 +178,7 @@ def test_local_root():
             pv_name=device_epics_prefix+':LocalRwFloat'
             test_value=5.67
             ctxt.put(pv_name, test_value)
-            time.sleep(1)
+            wait_pv_value(ctxt, pv_name, test_value, transform=lambda value: round(value,2))
             test_result=round(ctxt.get(pv_name),2)
             if test_result != test_value:
                 raise AssertionError('pvStates={} pv_name={}: test_value={}; test_result={}'.format(s, pv_name, test_value, test_result))
@@ -164,7 +187,7 @@ def test_local_root():
             pv_name=device_epics_prefix+':RemoteRwInt'
             test_value=314
             ctxt.put(pv_name, test_value)
-            time.sleep(1)
+            wait_pv_value(ctxt, pv_name, test_value)
             test_result=ctxt.get(pv_name)
             if test_result != test_value:
                 raise AssertionError('pv_name={}: test_value={}; test_result={}'.format(pv_name, test_value, test_result))
@@ -173,9 +196,6 @@ def test_local_root():
             pv_name=device_epics_prefix+':RemoteWoInt'
             test_value=314
             ctxt.put(pv_name, test_value)
-
-        # Allow epics client to reset
-        time.sleep(5)
 
 if __name__ == "__main__":
     test_local_root()
