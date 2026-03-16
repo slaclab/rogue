@@ -4,20 +4,25 @@
 Interfaces
 ==========
 
-Interface modules are the adapters that connect a running PyRogue tree to
-other processes, external services, and deployment tooling. They are often the
-boundary where control software, data persistence, and host integration meet.
+Interfaces collects the adapters that connect a running PyRogue process to
+external software, services, and host-side operational tooling. These pages
+are primarily about ``pyrogue.interfaces.*`` helpers plus a small amount of
+supporting Rogue runtime integration, rather than about the internal Stream or
+Memory interfaces themselves.
 
-In practice, these modules are used when a system needs to expose tree state
-outside the process boundary, persist operational data, or embed PyRogue
-control into a larger C++ runtime.
+These modules are the right choice when a design needs to persist state, bridge
+into another host process, expose a control path outside Python, or enforce
+runtime compatibility checks before the rest of the tree starts.
 
-Use this subsection to choose the integration path:
+Subtopics
+=========
 
-- Use :doc:`sql` for SQL-backed logging of Variable values and syslog events.
-- Use :doc:`version` for version-gating and compatibility checks at startup.
-- Use :doc:`cpp_api_wrapper` when embedding and controlling a PyRogue Root
-  from C++.
+- Use :doc:`sql` for SQL-backed logging of ``Variable`` values and syslog
+  events.
+- Use :doc:`version` for version-gating and startup compatibility checks
+  through ``rogue.Version``.
+- Use :doc:`cpp_api_wrapper` when a C++ application needs to create or control
+  a PyRogue ``Root``.
 - Use :doc:`os_memory_bridge` when exposing OS-level commands through a memory
   transaction interface.
 

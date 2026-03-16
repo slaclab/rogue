@@ -1,47 +1,32 @@
 .. _protocols_uart:
 
-=============
-UART Protocol
-=============
+===========
+UART Memory
+===========
 
-UART-based memory access in Rogue is implemented by
-``pyrogue.protocols.UartMemory`` in ``python/pyrogue/protocols/_uart.py``. The
-interface adapts text-based serial register commands into Rogue memory
-transactions.
+For simple serial register access, PyRogue provides
+``pyrogue.protocols.UartMemory``. This helper adapts a text-based UART command
+protocol into Rogue memory transactions, making it useful for low-rate control
+and monitor channels, bring-up paths on embedded hardware, and systems that
+expose a simple UART register monitor in firmware.
 
-Overview
-========
+``UartMemory`` lives in the ``pyrogue.protocols`` namespace and implements a
+memory ``Slave`` with 32-bit access granularity. Transactions are queued and
+processed on a dedicated worker thread, so the interface can participate in the
+managed ``Root`` lifecycle through ``addInterface()`` or ``addProtocol()``.
 
-``UartMemory`` implements ``rogue.interfaces.memory.Slave`` with 32-bit access
-granularity and executes transactions on a worker thread.
-
-Transaction model
+Transaction Model
 =================
 
-- Write transactions:
-  each 32-bit word is sent as ``w <addr> <data>`` and validated from response.
-- Read transactions:
-  each 32-bit word is requested as ``r <addr>`` and returned data is written
-  back into the transaction buffer.
-- Non-zero status or malformed/empty responses raise transaction errors.
+Each write transaction is split into 32-bit words and sent as
+``w <addr> <data>``. Each read or verify transaction is split the same way and
+issued as ``r <addr>``. Returned data is packed back into the transaction
+buffer in little-endian form. Empty responses, malformed responses, or non-zero
+status values are reported as transaction errors. Posted writes are not
+supported by this implementation.
 
-Threading and lifecycle
-=======================
-
-- Transactions are queued and processed in a dedicated worker thread.
-- Implements Managed Interface Lifecycle:
-  :ref:`pyrogue_tree_node_device_managed_interfaces`
-- Posted writes are not supported by this implementation.
-
-Common usage
-============
-
-- Low-rate control/monitor channels
-- Bring-up/debug access paths on embedded hardware
-- Systems exposing a simple UART register monitor/proxy in firmware
-
-Code-backed example
-===================
+Configuration Example
+=====================
 
 .. code-block:: python
 
@@ -70,30 +55,45 @@ Code-backed example
                memBase=uart_mem,
            ))
 
-Integration notes
+Key Constructor Arguments
+=========================
+
+- ``device`` selects the serial port path, such as ``/dev/ttyUSB0``.
+- ``baud`` selects the UART baud rate.
+- ``timeout`` controls line-read timeout behavior.
+- Additional keyword arguments are passed through to ``serial.Serial`` for
+  platform-specific serial settings.
+
+Operational Notes
 =================
 
-- Confirm serial settings (baud/parity/stop bits) match endpoint firmware.
-- Validate buffering/timing behavior when bridging UART into stream or command
-  workflows.
-- Keep transactions aligned to 32-bit words for predictable behavior.
+Confirm that serial settings such as baud, parity, and stop bits match the
+endpoint firmware. Keep transactions aligned to 32-bit words for predictable
+behavior, because the implementation always operates one 32-bit word at a time.
+This interface is best suited to low-rate memory access rather than bulk data
+paths.
 
 Logging
 =======
 
-``UartMemory`` uses Python logging.
+``UartMemory`` uses Python logging. The logger name includes the serial device
+path, following the pattern ``pyrogue.UartMemory.<device>``.
 
-The logger name includes the serial device path:
+.. code-block:: python
 
-- Pattern: ``pyrogue.UartMemory.<device>``
-- Example: ``pyrogue.UartMemory./dev/ttyUSB0``
+   import logging
 
-Logging API:
-  ``logging.getLogger('pyrogue.UartMemory').setLevel(logging.DEBUG)``
+   logging.getLogger('pyrogue.UartMemory').setLevel(logging.DEBUG)
 
 The current implementation has several transaction-level debug statements in
 the code commented out, so enabling the logger is most useful when those debug
 calls are active or when additional UART diagnostics are added.
+
+Related Topics
+==============
+
+- Memory-style transaction flow: :doc:`/memory_interface/index`
+- Managed interface lifecycle: :ref:`pyrogue_tree_node_device_managed_interfaces`
 
 API Reference
 =============

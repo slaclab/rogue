@@ -4,129 +4,144 @@
 Batcher Protocol
 ================
 
-The batcher protocol packs multiple logical records into a single stream frame
-for transport efficiency. Rogue provides parser and transform utilities for
-both supported wire formats:
+For unpacking or transforming records that firmware has combined into larger
+super-frames, Rogue provides ``rogue.protocols.batcher``. These classes are
+used when batching is done in firmware to reduce transport and driver overhead
+from sending many small frames individually.
 
-* Batcher v1 specification: https://confluence.slac.stanford.edu/x/th1SDg
-* Batcher v2 specification: https://confluence.slac.stanford.edu/x/L2VlK
+In practice, the firmware side often batches records before they reach
+software. Rogue then handles one of two software-side tasks:
 
-In many systems, batching is done in FPGA firmware before data reaches software.
-The SURF firmware library (https://github.com/slaclab/surf) includes batcher
-modules that are commonly used for this purpose. The primary motivation is to
-reduce software/driver overhead from receiving many small frames by combining
-them into fewer larger transfers.
+- Split one super-frame into one Rogue frame per logical record.
+- Rewrite the framing in place so a downstream consumer sees the layout it
+  expects without producing one output frame per record.
 
-Rogue batcher support can then be used to unbatch these frames either:
+That makes batcher support most useful in two moments of a workflow:
 
-* Inline while receiving live stream data, or
-* Later when reading recorded stream files for analysis/replay.
+- Inline while receiving live stream data from firmware.
+- Later, while replaying or analyzing previously recorded batched files.
 
-How the classes fit together
+Rogue supports both wire formats:
+
+- Batcher v1 specification: https://confluence.slac.stanford.edu/x/th1SDg
+- Batcher v2 specification: https://confluence.slac.stanford.edu/x/L2VlK
+
+How The Classes Fit Together
 ============================
 
-The classes in ``rogue::protocols::batcher`` are composable:
+The classes in ``rogue.protocols.batcher`` are composable rather than
+monolithic:
 
-* ``CoreV1`` / ``CoreV2`` parse one super-frame and expose record metadata.
-* ``Data`` represents one parsed record payload plus routing/user metadata.
-* ``SplitterV1`` / ``SplitterV2`` use ``Core`` + ``Data`` to emit one output
-  frame per record (true unbatching).
-* ``InverterV1`` / ``InverterV2`` use ``Core`` metadata to rewrite framing
-  in-place and forward one transformed frame (single-frame reformat, not
-  batching or unbatching).
+- ``CoreV1`` and ``CoreV2`` parse one incoming super-frame and expose parsed
+  record metadata.
+- ``Data`` represents one parsed record payload plus its routing and user-field
+  metadata.
+- ``SplitterV1`` and ``SplitterV2`` use the parser output to emit one output
+  frame per record.
+- ``InverterV1`` and ``InverterV2`` use the same parser metadata to rewrite
+  framing in place and emit one transformed frame.
 
-Choose V1 or V2 classes to match the firmware protocol version.
+Choose the v1 or v2 class family to match the firmware batcher format. Do not
+mix v1 and v2 parsing or transform stages in the same path.
 
-Choosing splitter vs inverter
-=============================
+Subtopics
+=========
 
-- Use ``SplitterV1/V2`` when downstream processing expects one frame per record.
-- Use ``InverterV1/V2`` when you need an in-place framing transform while
-  preserving one output frame per input super-frame.
+- :doc:`splitter`
+  Use this path when downstream software needs one frame per logical record.
+- :doc:`inverter`
+  Use this path when downstream software still expects one output frame per
+  super-frame, but with transformed framing.
 
-Version compatibility
-=====================
+Splitter Vs Inverter
+====================
 
-- Match v1 classes with v1 firmware stream format.
-- Match v2 classes with v2 firmware stream format.
-- Do not mix v1 and v2 parsers/transforms in the same processing path.
+This is the main decision users usually need to make.
 
-Logging
-=======
+Use a splitter when downstream processing expects ordinary record-sized frames.
+That is the common choice for filters, routers, file capture, and analysis
+stages that should operate on one logical record at a time.
 
-Batcher logging is implemented in the shared parser cores, so it applies
-equally to both ``Splitter`` and ``Inverter`` usage:
+Use an inverter when the downstream stage still wants one frame per input
+super-frame, but needs the framing rewritten into the layout it understands.
+An inverter is not an unbatcher. It is a single-frame reformatting stage.
 
-- v1 path: ``pyrogue.batcher.CoreV1``
-- v2 path: ``pyrogue.batcher.CoreV2``
-- Unified Logging API:
-  ``logging.getLogger('pyrogue.batcher.CoreV2').setLevel(logging.DEBUG)``
-- Legacy Logging API:
-  ``rogue.Logging.setFilter('pyrogue.batcher.CoreV2', rogue.Logging.Debug)``
-
-For byte-level inspection of split or transformed output frames, add a
-downstream debug ``Slave`` tap and use :doc:`/stream_interface/debugStreams`.
-
-API Reference
-=============
-
-- Python:
-
-  - :doc:`/api/python/rogue/protocols/batcher/splitterv1`
-  - :doc:`/api/python/rogue/protocols/batcher/splitterv2`
-  - :doc:`/api/python/rogue/protocols/batcher/inverterv1`
-  - :doc:`/api/python/rogue/protocols/batcher/inverterv2`
-
-- C++:
-
-  - :doc:`/api/cpp/protocols/batcher/index`
-
-Usage examples
+Usage Patterns
 ==============
 
-Python splitter chain (v2)
---------------------------
+The most common software-side chains look like this:
 
 .. code-block:: python
 
    import rogue.protocols.batcher
    import rogue.interfaces.stream
 
-   src = MyBatchedFrameSource()                   # Produces batcher-v2 frames
-   split = rogue.protocols.batcher.SplitterV2()   # Super-frame -> per-record frames
-   filt = rogue.interfaces.stream.Filter(True, 3) # Keep channel/dest 3
+   # True unbatching: one output frame per logical record.
+   src = MyBatchedFrameSource()
+   split = rogue.protocols.batcher.SplitterV2()
+   filt = rogue.interfaces.stream.Filter(True, 3)
    dst = MyRecordSink()
 
    src >> split >> filt >> dst
 
-Python inverter chain (v1)
---------------------------
+or:
 
 .. code-block:: python
 
    import rogue.protocols.batcher
 
-   src = MyBatchedFrameSource()                  # Produces batcher-v1 frames
-   inv = rogue.protocols.batcher.InverterV1()    # In-place framing transform
+   # In-place framing transform: one output frame per input super-frame.
+   src = MyBatchedFrameSource()
+   inv = rogue.protocols.batcher.InverterV1()
    dst = MyTransformedFrameSink()
 
    src >> inv >> dst
 
-C++ splitter chain (v1)
------------------------
+Threading And Lifecycle
+=======================
 
-.. code-block:: cpp
+The batcher parser, splitter, and inverter classes do not start internal worker
+threads. Processing runs synchronously in the caller thread of the surrounding
+stream graph.
 
-   #include <rogue/protocols/batcher/SplitterV1.h>
+Logging
+=======
 
-   auto split = rogue::protocols::batcher::SplitterV1::create();
-   auto src   = MyBatchedFrameSource::create();
-   auto dst   = MyRecordSink::create();
+Batcher logging is emitted by the shared parser cores, so it applies to both
+splitter and inverter usage:
 
-   *(*src >> split) >> dst;
+- ``pyrogue.batcher.CoreV1``
+- ``pyrogue.batcher.CoreV2``
 
-C++ API details for batcher protocol classes are documented in
-:doc:`/api/cpp/protocols/batcher/index`.
+Enable the logger for the batcher version you are debugging before processing
+frames:
+
+.. code-block:: python
+
+   import rogue
+
+   rogue.Logging.setFilter('pyrogue.batcher.CoreV2', rogue.Logging.Debug)
+
+For byte-level inspection of split or transformed output frames, add a
+downstream debug ``Slave`` tap and use
+:doc:`/stream_interface/debugStreams`.
+
+Related Topics
+==============
+
+- :doc:`/built_in_modules/protocols/packetizer/index`
+- :doc:`/built_in_modules/utilities/fileio/index`
+- :doc:`/stream_interface/index`
+
+API Reference
+=============
+
+- Python:
+  :doc:`/api/python/rogue/protocols/batcher/splitterv1`
+  :doc:`/api/python/rogue/protocols/batcher/splitterv2`
+  :doc:`/api/python/rogue/protocols/batcher/inverterv1`
+  :doc:`/api/python/rogue/protocols/batcher/inverterv2`
+- C++: :doc:`/api/cpp/protocols/batcher/index`
 
 .. toctree::
    :maxdepth: 1

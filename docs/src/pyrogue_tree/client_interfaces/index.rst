@@ -12,7 +12,7 @@ automation, monitoring, and operations.
 Most deployments use :py:class:`~pyrogue.interfaces.ZmqServer` as the server-side
 transport. The server is added to the ``Root`` and clients connect over TCP.
 
-Connection model
+Connection Model
 ================
 
 1. Start the server side from your ``Root`` (typically ``ZmqServer``)
@@ -20,7 +20,7 @@ Connection model
    CLI tools, or GUI)
 3. Perform read/write/command operations against the same tree model
 
-Why this matters
+Why This Matters
 ================
 
 This model allows one running tree to serve multiple concurrent workflows:
@@ -31,7 +31,7 @@ This model allows one running tree to serve multiple concurrent workflows:
 * Jupyter notebooks
 * Command-line tools
 
-Choosing an interface
+Choosing An Interface
 =====================
 
 Use :doc:`simple` when you want lightweight string-path access with minimal
@@ -46,7 +46,7 @@ launch workflows.
 Use :doc:`zmq_server` when implementing or configuring the server side in your
 ``Root``.
 
-Operational notes
+Operational Notes
 =================
 
 - Treat remote command paths as part of your public control surface.
@@ -55,14 +55,14 @@ Operational notes
 - Prefer ``127.0.0.1`` for local-only deployments and explicit non-loopback
   binds for remote access.
 
-Related API references
+API Reference
 ======================
 
 - :doc:`/api/python/pyrogue/interfaces/zmqserver`
 - :doc:`/api/python/pyrogue/interfaces/simpleclient`
 - :doc:`/api/python/pyrogue/interfaces/virtualclient`
 
-Minimal setup pattern
+Minimal Setup Pattern
 =====================
 
 .. code-block:: python

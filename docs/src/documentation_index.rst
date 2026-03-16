@@ -3,7 +3,7 @@
 :orphan:
 
 =================
-Table of Contents
+Table Of Contents
 =================
 
 Canonical navigation is rooted at :doc:`/index`.

@@ -10,7 +10,7 @@ Advanced PyRogue usage commonly includes:
 - Complex ``RemoteVariable`` bit mappings
 - Computed ``LinkVariable`` dependencies
 
-Design principles
+Design Principles
 =================
 
 - Keep base ``Device`` classes predictable; isolate special behavior in narrow
@@ -18,14 +18,14 @@ Design principles
 - Favor declarative variable definitions over implicit runtime mutation.
 - Keep link-variable dependency graphs shallow and well documented.
 
-Common failure modes
+Common Failure Modes
 ====================
 
 - Hidden side effects inside command callbacks.
 - Overloaded variables that mix control intent and status reporting.
 - Circular or fragile link-variable dependencies.
 
-Validation checklist
+Validation Checklist
 ====================
 
 - Commands are deterministic for the same input state.

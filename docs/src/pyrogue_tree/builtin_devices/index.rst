@@ -8,7 +8,10 @@ PyRogue includes reusable ``Device`` subclasses for common control, monitoring,
 and data-path tasks. These classes reduce boilerplate by packaging widely used
 patterns into configurable components that attach directly in your tree.
 
-How these fit in a design
+This section is intentionally limited to classes exposed in the top-level
+``pyrogue`` namespace.
+
+How These Fit In A Design
 =========================
 
 Built-in Devices are ordinary ``Device`` subclasses, so they participate in the
@@ -21,11 +24,23 @@ same tree lifecycle and transaction flow as custom devices:
 Use cases commonly include:
 
 * Run control sequencing and rate management
-* PRBS transmit/receive test pipelines
-* Stream capture and replay workflows
+* Stream capture and receive control surfaces
 * Process supervision and script orchestration
 
-Relationship to Core and interfaces
+Reading Path
+============
+
+The built-in devices fall into a few natural groups:
+
+* Start with :doc:`run_control` and :doc:`process` if you are organizing
+  software actions, acquisition loops, or operator-visible procedures.
+* Use :doc:`data_writer` and :doc:`data_receiver` for tree-facing stream write
+  and receive patterns.
+* Use :doc:`/built_in_modules/index` for lower-level utilities and wrappers
+  such as file I/O and PRBS modules that live outside the top-level
+  ``pyrogue`` namespace.
+
+Relationship To Core And Interfaces
 ===================================
 
 For underlying behavior, see:
@@ -38,9 +53,9 @@ Related Topics
 ==============
 
 * Run control orchestration: :doc:`run_control`
-* Data capture/write path: :doc:`data_writer` and :doc:`stream_writer`
-* Data receive/read path: :doc:`data_receiver` and :doc:`stream_reader`
-* PRBS testing devices: :doc:`prbsrx`, :doc:`prbstx`, and :doc:`prbspair`
+* Data capture/write path: :doc:`data_writer`
+* Data receive/read path: :doc:`data_receiver`
+* Lower-level modules and wrappers: :doc:`/built_in_modules/index`
 * External process integration: :doc:`process`
 
 .. toctree::
@@ -50,9 +65,4 @@ Related Topics
    run_control
    data_writer
    data_receiver
-   prbsrx
-   prbstx
-   prbspair
-   stream_reader
-   stream_writer
    process

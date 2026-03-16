@@ -4,17 +4,37 @@
 UDP Protocol Client
 ===================
 
-``rogue::protocols::udp::Client`` is a UDP endpoint for outbound connections to
-a specific remote host/port. It converts Rogue stream frames to UDP datagrams
-and converts inbound datagrams back into Rogue frames.
+For Rogue software that should initiate traffic to a known remote host and
+port, Rogue provides ``rogue::protocols::udp::Client``. This is the usual UDP
+form for software-to-FPGA links when firmware listens on a fixed port.
 
-Role in stack
-=============
+``Client`` converts outbound Rogue stream frames into UDP datagrams and
+converts inbound UDP datagrams back into Rogue frames.
 
-Use ``Client`` when Rogue software should initiate traffic to a known peer
-(common for software-to-FPGA links when firmware listens on a fixed port).
+Role In The Stack
+=================
 
-Data path behavior
+Use ``Client`` when Rogue should act as the peer that knows the remote address
+up front. In practice, that is the common deployment model for FPGA links that
+run UDP underneath RSSI and packetizer.
+
+Construction
+============
+
+``Client(host, port, jumbo)`` is shaped by three constructor arguments:
+
+- ``host``
+  Remote hostname or IPv4 address.
+- ``port``
+  Remote UDP port.
+- ``jumbo``
+  Select jumbo payload sizing when ``True`` and standard MTU sizing when
+  ``False``.
+
+The constructor resolves the host address, opens the socket, sizes the local
+frame pool from the MTU mode, and starts the background receive thread.
+
+Data Path Behavior
 ==================
 
 - Outbound:
@@ -26,26 +46,25 @@ Data path behavior
 - Oversize datagrams are dropped with warning logs if payload exceeds available
   frame space.
 
-Construction and lifecycle
-==========================
+Lifecycle And Transport Behavior
+================================
 
-- Constructor behavior:
-  resolves host address, opens socket, initializes frame pool sizing, starts
-  RX thread.
-- C++ ``stop()`` / Python ``_stop()``:
-  disables RX thread, joins thread, and closes socket.
-- ``maxPayload()``:
-  inherited from ``udp::Core`` and depends on jumbo vs standard MTU mode.
+- ``maxPayload()``
+  Inherited from ``udp::Core`` and depends on jumbo vs standard MTU mode.
+- C++ ``stop()`` / Python ``_stop()``
+  Stops the receive thread, joins it, and closes the socket.
+- ``setTimeout()``
+  Inherited from ``udp::Core`` and used for outbound transmit readiness checks.
 
-Timeout and backpressure behavior
-=================================
+Timeout And Backpressure
+========================
 
 Outbound writes use ``select()`` with the configured timeout before ``sendmsg``.
 If timeout elapses, a critical log is emitted and transmit retry loop continues.
 Tune timeout using ``setTimeout()`` from ``udp::Core`` when needed.
 
-Typical deployment pattern
-==========================
+When To Use ``Client``
+======================
 
 - Software host runs Rogue UDP client.
 - FPGA/remote endpoint listens on a fixed port.
@@ -53,8 +72,8 @@ Typical deployment pattern
 - Standalone UDP deployment is less common for control/config paths because UDP
   itself does not provide reliability or in-order delivery guarantees.
 
-Code-backed example
-===================
+Python Example
+==============
 
 .. code-block:: python
 
@@ -73,15 +92,31 @@ Code-backed example
 Lifecycle usage modes:
 
 - Root-managed mode:
-  register transport/protocol objects with ``Root.addInterface(...)`` and let
+  Register transport/protocol objects with ``Root.addInterface(...)`` and let
   Managed Interface Lifecycle stop them during tree shutdown.
 - Standalone script mode:
-  call ``_stop()`` explicitly on UDP endpoints during script teardown.
+  Call ``_stop()`` explicitly on UDP endpoints during script teardown.
 
 Managed lifecycle reference:
 :ref:`pyrogue_tree_node_device_managed_interfaces`
 
-Practical checklist
+C++ Example
+===========
+
+.. code-block:: cpp
+
+   #include <rogue/protocols/udp/Client.h>
+
+   namespace rpu = rogue::protocols::udp;
+
+   auto udp = rpu::Client::create("10.0.0.5", 8192, true);
+
+   src >> udp;
+   udp >> dst;
+
+   udp->stop();
+
+Practical Checklist
 ===================
 
 - Confirm target host/IP and port.
@@ -95,6 +130,7 @@ Related Topics
 - :doc:`/built_in_modules/protocols/udp/index`
 - :doc:`/built_in_modules/protocols/network`
 - :doc:`/built_in_modules/protocols/rssi/index`
+- :doc:`server`
 
 API Reference
 =============

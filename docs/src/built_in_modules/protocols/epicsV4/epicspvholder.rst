@@ -7,51 +7,42 @@ Epics PV Holder Protocol
 ========================
 
 ``EpicsPvHolder`` is the per-variable bridge object used by the EPICS V4
-integration layer.
+integration layer. Each holder binds one PyRogue Variable or Command to one
+EPICS PV and remains owned by ``EpicsPvServer`` for the server lifetime.
 
-What it does
-============
+The holder is where PyRogue metadata becomes EPICS-facing behavior. It infers
+the published value type from the Variable metadata, creates the backing P4P
+``SharedPV``, installs the put/get/rpc handler, subscribes to PyRogue variable
+updates with ``addListener()``, and forwards alarm state plus display metadata
+for numeric types.
 
-``EpicsPvHolder`` provides a container/bridge object used when integrating
-EPICS PV interactions into a PyRogue-based control application.
+Type Mapping and Updates
+========================
 
-Behavior from implementation
+``EpicsPvHolder`` handles several important translation cases:
+
+- Enum variables are published through EPICS enum support using the Variable's
+  display choices.
+- NumPy arrays are published as array-oriented EPICS types.
+- Numeric scalars carry alarm status, severity, description, units, and limit
+  metadata when those values are present in the tree.
+- Strings, lists, dictionaries, and unsupported native types fall back to a
+  string-oriented EPICS representation.
+
+Command and Variable Behavior
+=============================
+
+Writable Variables accept EPICS puts and translate them through the normal
+PyRogue set and display paths. Commands are exposed through EPICS RPC behavior,
+with the holder forwarding the EPICS request payload into the bound PyRogue
+command and packaging the return value back into the EPICS response.
+
+Lifecycle Role in the Server
 ============================
 
-Based on ``python/pyrogue/protocols/epicsV4.py``, each holder:
-
-- Infers EPICS value type from variable metadata (including enum and ndarray);
-- Creates a P4P ``SharedPV`` with a handler for put/get/rpc behavior;
-- Subscribes to PyRogue variable updates via ``addListener``;
-- Forwards alarm status/severity and display metadata (units/limits) for
-  numeric types.
-
-Lifecycle role in the server
-============================
-
-``EpicsPvHolder`` instances are created and owned by ``EpicsPvServer``.
-Each holder binds one tree variable/command to one EPICS PV and remains active
+``EpicsPvHolder`` instances are created and owned by ``EpicsPvServer``. Each
+holder binds one tree Variable or Command to one EPICS PV and remains active
 for the server lifetime.
-
-Per-holder responsibilities:
-
-- Determine EPICS-facing value type from PyRogue metadata.
-- Create backing ``SharedPV`` and handler for put/get/rpc operations.
-- Subscribe to variable updates and post translated values/alarms.
-
-When to use it
-==============
-
-- You need EPICS-facing value exposure aligned with tree variable semantics.
-- You are composing higher-level EPICS publication or subscription workflows.
-- You want protocol-specific behavior isolated from core device modeling.
-
-Related Topics
-==============
-
-- EPICS server integration: :doc:`epicspvserver`
-- General protocol organization: :doc:`/built_in_modules/protocols/index`
-- Usage validation: ``tests/test_epics.py``
 
 Logging
 =======
@@ -65,6 +56,17 @@ server logger passed in from ``EpicsPvServer``:
 
 That means put/get/rpc handling errors reported by a holder appear under the
 server logger rather than a per-PV logger.
+
+What To Explore Next
+====================
+
+- Server setup and mapping control: :doc:`epicspvserver`
+
+Related Topics
+==============
+
+- EPICS V4 overview: :doc:`index`
+- Logging behavior in PyRogue: :doc:`/logging/index`
 
 API Reference
 =============

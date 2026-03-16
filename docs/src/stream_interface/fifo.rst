@@ -1,12 +1,30 @@
 .. _interfaces_stream_using_fifo:
 .. _stream_interface_using_fifo:
 
-============
-Using A Fifo
-============
+==============
+FIFO Buffering
+==============
 
-:ref:`interfaces_stream_fifo` inserts a queue between upstream and downstream
-stream stages.
+A :ref:`interfaces_stream_fifo` object inserts an elastic buffer between an
+upstream stream stage and a downstream stream stage. In Rogue terms, it sits
+between a ``Master`` and one or more downstream ``Slave`` objects and decouples
+their timing.
+
+You typically add a ``Fifo`` for one of three reasons. The first is to absorb
+bursts or flow-control events so a fast producer does not immediately stall a
+slower consumer. The second is to create a deliberate drop point when the
+downstream path cannot keep up indefinitely. The third is to add a tap path for
+monitoring or logging, where the monitoring branch should not interfere with the
+primary processing path.
+
+At a high level, ``Fifo`` behavior is controlled by three constructor
+parameters:
+
+- ``maxDepth`` controls how many ``Frame`` objects may be queued before new
+  arrivals are dropped.
+- ``trimSize`` controls how much payload is copied when copy mode is enabled.
+- ``noCopy`` selects whether the original ``Frame`` is queued or whether a new
+  copied ``Frame`` is created.
 
 Constructor
 ===========
@@ -14,114 +32,178 @@ Constructor
 - Python: ``ris.Fifo(maxDepth, trimSize, noCopy)``
 - C++: ``ris::Fifo::create(maxDepth, trimSize, noCopy)``
 
-Parameter behavior
-==================
+Copy And Queue Behavior
+=======================
 
-- ``maxDepth``:
-  queue depth threshold in frames.
-  ``maxDepth > 0`` enables threshold-based drop of incoming frames when full.
-  ``maxDepth = 0`` disables that threshold.
-- ``trimSize``:
-  payload trim limit in bytes for copy mode.
-  ``trimSize = 0`` copies full payload.
-- ``noCopy``:
-  ``True`` enqueues original frame object (trim ignored).
-  ``False`` allocates/copies a new frame; metadata is preserved.
+The interaction between ``trimSize`` and ``noCopy`` determines what the ``Fifo``
+actually stores.
 
-Operational counters
-====================
+- ``noCopy=True`` and ``trimSize=0``:
+  the original incoming ``Frame`` is queued.
+- ``noCopy=False`` and ``trimSize=0``:
+  a full copy of the incoming ``Frame`` is queued.
+- ``noCopy=False`` and ``trimSize!=0``:
+  a copied ``Frame`` containing only up to ``trimSize`` bytes of payload is
+  queued.
 
-Use ``dropCnt()`` to inspect dropped-frame count and ``clearCnt()`` to reset it.
+``maxDepth`` determines whether the queue is bounded. When ``maxDepth=0``, the
+queue depth is effectively unlimited and frames are never dropped due to queue
+depth. When ``maxDepth!=0``, incoming ``Frame`` objects are dropped once the
+queue reaches that depth. Use ``dropCnt()`` to inspect the number of dropped
+``Frame`` objects and ``clearCnt()`` to reset the counter.
 
-Python example: DMA -> FIFO -> file writer
-==========================================
+Python In-Line Example
+======================
 
-.. code-block:: python
-
-   import rogue.hardware.axi as rha
-   import rogue.interfaces.stream as ris
-   import rogue.utilities.fileio as ruf
-
-   dma = rha.AxiStreamDma('/dev/datadev_0', 1, True)
-   fifo = ris.Fifo(maxDepth=256, trimSize=0, noCopy=True)
-
-   writer = ruf.StreamWriter()
-   writer.open('fifo_capture.dat')
-
-   dma >> fifo >> writer.getChannel(0)
-
-Python tap-path example (copy + trim)
-=====================================
+The simplest use of a ``Fifo`` is to place it directly in-line between a source
+and a destination. This is the normal choice when the goal is to absorb bursts
+without changing the payload.
 
 .. code-block:: python
 
-   import rogue.hardware.axi as rha
    import rogue.interfaces.stream as ris
 
-   dma = rha.AxiStreamDma('/dev/datadev_0', 1, True)
+   # Data source
+   src = MyCustomMaster()
 
-   # Main consumer path
-   proc = ris.Slave()
-   proc.setDebug(32, 'proc')
-   dma >> proc
+   # Data destination
+   dst = MyCustomSlave()
 
-   # Secondary monitoring path: copied and trimmed frames
-   tap = ris.Fifo(maxDepth=128, trimSize=64, noCopy=False)
-   mon = ris.Slave()
-   mon.setDebug(64, 'tap')
+   # Create a Fifo with maxDepth=100, trimSize=0, noCopy=True
+   fifo = ris.Fifo(100, 0, True)
 
-   dma >> tap >> mon
+   # Connect the Fifo between the source and the destination
+   src >> fifo >> dst
 
-C++ example
-===========
+In this configuration the ``Fifo`` queues the original incoming ``Frame``
+objects, up to a depth of 100, and begins dropping newly arrived ``Frame``
+objects once that depth is reached.
+
+C++ In-Line Example
+===================
 
 .. code-block:: cpp
 
    #include "rogue/Helpers.h"
-   #include "rogue/hardware/axi/AxiStreamDma.h"
    #include "rogue/interfaces/stream/Fifo.h"
-   #include "rogue/utilities/fileio/StreamWriter.h"
-
-   namespace rha = rogue::hardware::axi;
-   namespace ris = rogue::interfaces::stream;
-   namespace ruf = rogue::utilities::fileio;
+   #include "MyCustomMaster.h"
+   #include "MyCustomSlave.h"
 
    int main() {
-      auto dma  = rha::AxiStreamDma::create("/dev/datadev_0", 1, true);
-      auto fifo = ris::Fifo::create(256, 0, true);
+      // Data source
+      auto src = MyCustomMaster::create();
 
-      auto writer = ruf::StreamWriter::create();
-      writer->open("fifo_capture.dat");
+      // Data destination
+      auto dst = MyCustomSlave::create();
 
-      rogueStreamConnect(dma, fifo);
-      rogueStreamConnect(fifo, writer->getChannel(0));
+      // Create a Fifo with maxDepth=100, trimSize=0, noCopy=true
+      auto fifo = rogue::interfaces::stream::Fifo::create(100, 0, true);
+
+      // Connect the Fifo between the source and the destination
+      rogueStreamConnect(src, fifo);
+      rogueStreamConnect(fifo, dst);
       return 0;
    }
 
-API reference
-=============
+Python Tap Example
+==================
 
-- Python: :doc:`/api/python/rogue/interfaces/stream/fifo`
-- C++: :doc:`/api/cpp/interfaces/stream/fifo`
+Another common pattern is to use a copied ``Fifo`` as a secondary monitoring
+branch. In that case the primary path continues unchanged, while the tap path
+receives copied and optionally trimmed ``Frame`` objects.
+
+.. code-block:: python
+
+   import rogue.interfaces.stream as ris
+
+   # Data source
+   src = MyCustomMaster()
+
+   # Main data destination
+   dst = MyCustomSlave()
+
+   # Additional monitor
+   mon = MyCustomMonitor()
+
+   # Primary path
+   src >> dst
+
+   # Tap path: copy at most 20 bytes from each Frame and queue up to 150 Frames
+   fifo = ris.Fifo(150, 20, False)
+   src >> fifo >> mon
+
+This is useful when the monitor is slower than the main path or only needs a
+small prefix of each payload. Because the monitor branch gets copies rather than
+the original ``Frame`` objects, it does not interfere with the primary path's
+ownership or zero-copy behavior.
+
+C++ Tap Example
+===============
+
+.. code-block:: cpp
+
+   #include "rogue/Helpers.h"
+   #include "rogue/interfaces/stream/Fifo.h"
+   #include "MyCustomMaster.h"
+   #include "MyCustomSlave.h"
+   #include "MyCustomMonitor.h"
+
+   int main() {
+      // Data source
+      auto src = MyCustomMaster::create();
+
+      // Main data destination
+      auto dst = MyCustomSlave::create();
+
+      // Additional monitor
+      auto mon = MyCustomMonitor::create();
+
+      // Primary path
+      rogueStreamConnect(src, dst);
+
+      // Tap path: copy at most 20 bytes from each Frame and queue up to 150 Frames
+      auto fifo = rogue::interfaces::stream::Fifo::create(150, 20, false);
+      rogueStreamConnect(src, fifo);
+      rogueStreamConnect(fifo, mon);
+      return 0;
+   }
 
 Logging
 =======
 
-``Fifo`` uses Rogue C++ logging with the static logger name:
+``Fifo`` uses Rogue C++ logging with the static logger name
+``pyrogue.stream.Fifo``.
 
-- ``pyrogue.stream.Fifo``
-- Unified Logging API:
-  ``logging.getLogger('pyrogue.stream.Fifo').setLevel(logging.DEBUG)``
-- Legacy Logging API:
-  ``rogue.Logging.setFilter('pyrogue.stream.Fifo', rogue.Logging.Debug)``
+Enable that logger before constructing the object if you want constructor-time
+and runtime messages from the ``Fifo`` implementation:
 
-``Fifo`` does not expose a separate runtime ``setDebug(...)`` helper. For
-payload/byte-dump inspection, attach a debug ``Slave`` tap before or after the
-FIFO and call ``setDebug(maxBytes, name)`` on that monitor object.
+.. code-block:: python
 
-What to explore next
+   import rogue
+   import rogue.interfaces.stream as ris
+
+   rogue.Logging.setFilter('pyrogue.stream.Fifo', rogue.Logging.Debug)
+   fifo = ris.Fifo(256, 0, True)
+
+``Fifo`` does not expose a separate runtime ``setDebug(...)`` helper. If you
+need byte-dump inspection, attach a debug ``Slave`` before or after the
+``Fifo`` and use ``setDebug(maxBytes, name)`` on that monitor.
+
+What To Explore Next
 ====================
 
-- Filtering and channel selection: :doc:`/stream_interface/filter`
-- Rate shaping: :doc:`/stream_interface/rate_drop`
-- Topology patterns: :doc:`/stream_interface/connecting`
+- Connection topology rules: :doc:`/stream_interface/connecting`
+- ``Filter`` usage: :doc:`/stream_interface/filter`
+- ``RateDrop`` usage: :doc:`/stream_interface/rate_drop`
+- Receive-side monitoring patterns: :doc:`/stream_interface/receiving`
+
+API Reference
+=============
+
+- Python:
+
+  - :doc:`/api/python/rogue/interfaces/stream/fifo`
+
+- C++:
+
+  - :doc:`/api/cpp/interfaces/stream/fifo`

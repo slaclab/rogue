@@ -10,10 +10,8 @@ that stores bytes in a local dictionary-backed address space.
 It is useful for testing ``RemoteVariable`` access behavior and retry handling
 without requiring hardware.
 
-Behavior and parameters
-=======================
-
-Constructor signature:
+Configuration Example
+=====================
 
 .. code-block:: python
 
@@ -25,27 +23,33 @@ Constructor signature:
        dropCount=0,
    )
 
-Parameter effects:
+Key Constructor Arguments
+=========================
 
 - ``minWidth``: required alignment granularity for transaction addresses
 - ``maxSize``: maximum accepted transaction size in bytes
 - ``dropCount``: number of transactions intentionally dropped before one is
   accepted; useful for exercising retry logic
 
-Operational notes:
+Operational Notes
+=================
 
 - Write/post transactions copy incoming bytes into emulated memory
 - Read/verify transactions return bytes from emulated memory
 - Unread addresses default to ``0x00``
 
-When to use MemEmulate
+The implementation also enforces
+alignment against ``minWidth`` and rejects transactions larger than
+``maxSize``.
+
+When To Use MemEmulate
 ======================
 
 Use ``MemEmulate`` when you need deterministic memory behavior during software
 integration and want to isolate tree/protocol logic from hardware timing and
 transport effects.
 
-Basic usage with a Root
+Basic Usage With A Root
 =======================
 
 .. code-block:: python
@@ -64,7 +68,7 @@ Basic usage with a Root
            # Attach a Device so RemoteVariables transact through emulated memory.
            self.add(MyDevice(name='Dev', offset=0x0, memBase=sim))
 
-Retry-test pattern
+Retry-Test Pattern
 ==================
 
 ``dropCount`` can be used to validate variable retry behavior:
@@ -75,8 +79,6 @@ Retry-test pattern
 
    sim = pis.MemEmulate(dropCount=2)
    # With retryCount >= 2 on variables, transient drops can still succeed.
-
-This pattern is exercised in ``tests/test_retry_memory.py``.
 
 Related Topics
 ==============

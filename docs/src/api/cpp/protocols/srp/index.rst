@@ -4,7 +4,7 @@
 rogue::protocols::srp
 ======================
 
-This section contains the C++ API reference for
+These pages provide the C++ API reference for
 ``rogue::protocols::srp`` classes.
 
 The ``Cmd`` class is also listed here because it is in the same namespace, even

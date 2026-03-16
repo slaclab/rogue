@@ -1,73 +1,101 @@
 .. _hardware_axi_memory:
 
-============
+=========
 AxiMemMap
+=========
+
+For register and memory transactions through the ``aes-stream-drivers`` path,
+Rogue provides ``rogue.hardware.axi.AxiMemMap``. This class adapts the driver
+register-access API into a Rogue memory slave.
+
+Use ``AxiMemMap`` when firmware exposes a memory-mapped register path through
+the driver and you want upstream Rogue memory masters or a PyRogue tree to use
+normal Rogue memory transactions.
+
+Key Constructor Arguments
+=========================
+
+``AxiMemMap(path)``
+
+- ``path`` is the Linux device path, commonly ``/dev/datadev_0``.
+
+How It Works
 ============
 
-``AxiMemMap`` wraps the ``aes-stream-drivers`` memory access path as a Rogue
-Memory interface endpoint. Memory masters can initiate transactions through it
-using standard Rogue memory semantics.
+``AxiMemMap`` queues incoming memory transactions, then a worker thread performs
+the underlying driver register operations. Transactions are 32-bit word based,
+matching the class memory-slave configuration and the driver access model.
 
-The ``AxiMemMap`` class allows you to connect memory masters to PCIe and
-Zynq7000-based FPGA firmware that uses the generic AXI stream drivers.
-Hardware that uses this pattern includes, but is not limited to:
+Root-Based Example
+==================
 
-- PgpCard3 with the AXI stream DMA engine.
-- KCU1500.
-- Zynq7000 FPGA with TID-AIR RCE firmware.
+In PyRogue applications, ``AxiMemMap`` is usually created in the ``Root`` and
+then passed as ``memBase`` to the top-level hardware device tree.
 
-The example below assumes a single card is being accessed by a single master,
-with the master being the device model shown in
-:ref:`interfaces_memory_master_ex`.
+.. code-block:: python
 
-``AxiMemMap`` processes queued transactions in a worker thread and executes
-driver register operations underneath. Transactions are 32-bit word based
-(4-byte alignment), matching the class memory-slave configuration and driver
-register access model.
+   import pyrogue as pr
+   import rogue.hardware.axi as rha
+   import axipcie
 
-Use ``AxiMemMap`` when your firmware exposes register access through the
-driver path and you want a direct Rogue Memory endpoint.
+   class BoardRoot(pr.Root):
+       def __init__(self, dev='/dev/datadev_0', **kwargs):
+           super().__init__(**kwargs)
 
-Logging
-=======
+           self.memMap = rha.AxiMemMap(dev)
+           self.addInterface(self.memMap)
 
-``AxiMemMap`` uses Rogue C++ logging.
+           self.add(axipcie.AxiPcieCore(
+               memBase=self.memMap,
+               offset=0x00000000,
+               expand=True,
+           ))
 
-- Logger name: ``pyrogue.axi.AxiMemMap``
-- Unified Logging API:
-  ``logging.getLogger('pyrogue.axi.AxiMemMap').setLevel(logging.DEBUG)``
-- Legacy Logging API:
-  ``rogue.Logging.setFilter('pyrogue.axi.AxiMemMap', rogue.Logging.Debug)``
-- Typical messages: transaction issue/completion flow and transaction timeouts
+Standalone Memory-Master Example
+================================
 
-Python AxiMemMap Example
-========================
+If you are not building a PyRogue tree, ``AxiMemMap`` can still be used as a
+plain Rogue memory endpoint:
 
 .. code-block:: python
 
    import rogue.hardware.axi as rha
 
    mem_map = rha.AxiMemMap('/dev/datadev_0')
-   mem_mast = MyMemMaster()
-   mem_mast >> mem_map
+   mem_master >> mem_map
 
-C++ AxiMemMap Example
-=====================
+Threading And Lifecycle
+=======================
 
-.. code-block:: cpp
+``AxiMemMap`` does create a background worker thread:
 
-   #include <rogue/hardware/axi/AxiMemMap.h>
+- ``doTransaction()`` enqueues requests from upstream.
+- The worker thread performs the register access.
+- Destruction or ``_stop()`` shuts down the worker and closes the device.
 
-   namespace rha = rogue::hardware::axi;
+If this object is Root-managed, let the Root control lifecycle. In standalone
+use, explicitly stop it when finished.
 
-   // Open AXI memory-mapped driver endpoint.
-   auto memMap = rha::AxiMemMap::create("/dev/datadev_0");
+Logging
+=======
 
-   // Create an upstream Rogue memory master.
-   auto memMast = MyMemMaster::create();
+``AxiMemMap`` uses Rogue C++ logging:
 
-   // Route memory transactions from master into AXI memory map endpoint.
-   *memMast >> memMap;
+- ``pyrogue.axi.AxiMemMap``
+
+Enable it before construction:
+
+.. code-block:: python
+
+   import rogue
+
+   rogue.Logging.setFilter('pyrogue.axi.AxiMemMap', rogue.Logging.Debug)
+
+Related Topics
+==============
+
+- :doc:`/built_in_modules/hardware/dma/index`
+- :doc:`/memory_interface/index`
 
 API Reference
 =============

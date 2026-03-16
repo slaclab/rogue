@@ -22,7 +22,7 @@ Blocks separate two concerns:
 This separation lets Variable APIs stay high-level while transaction handling
 stays efficient and ordered.
 
-How Variables Connect to Blocks
+How Variables Connect To Blocks
 ===============================
 
 When Devices attach to a Root, compatible ``RemoteVariable`` instances are
@@ -49,6 +49,47 @@ Implications of Block grouping:
 * Partial updates can target changed sub-ranges
 * Grouped Block operations reduce transaction overhead
 
+How Device Builds Blocks
+========================
+
+The grouping is performed by :py:class:`~pyrogue.Device` during attach time,
+inside ``Device._buildBlocks()``. The process is worth understanding because it
+determines both transaction grouping and the default ordering later used by
+bulk block operations.
+
+At a high level, the build process is:
+
+1. Walk the Device's child Nodes.
+2. Add each ``LocalVariable``'s software Block directly to the Device.
+3. Collect hardware-backed ``RemoteVariable`` instances whose offsets are
+   defined.
+4. Align each RemoteVariable to the Device's minimum access size.
+5. Sort the RemoteVariables by ``(offset, varBytes)``.
+6. Group overlapping compatible RemoteVariables into shared Blocks.
+7. Reuse a pre-created custom Block when a Variable falls inside it.
+8. Create any remaining new Blocks, bind their Variables, and attach them to
+   the Device.
+
+Some details matter:
+
+* ``LocalVariable`` uses a one-to-one software Block. It does not participate
+  in the RemoteVariable grouping algorithm.
+* RemoteVariable grouping begins from sorted address order, so the auto-built
+  hardware Blocks are normally address-oriented.
+* If two RemoteVariables overlap the same byte region after alignment, they are
+  grouped into the same Block and their internal offsets are shifted relative
+  to that Block base.
+* A custom Block added ahead of time with ``addCustomBlock(...)`` takes
+  precedence for Variables that fall inside its address range.
+* After a Block is chosen or created, the Device sets each Variable's
+  ``_block`` reference to that Block and enables the Block according to the
+  Device's current enable state.
+
+This is why the later bulk methods in :doc:`/pyrogue_tree/core/block_operations`
+do not decide grouping on the fly. By the time reads, writes, verifies, and
+checks run, the Device has already built the Block structure they will
+traverse.
+
 Access Path (RemoteVariable)
 ============================
 
@@ -62,7 +103,7 @@ Typical read/write path:
 In bulk operations, many Variables can share one Block transaction, improving
 access efficiency versus isolated per-Variable transfers.
 
-Block APIs and Transaction Flow
+Block APIs And Transaction Flow
 ===============================
 
 Conversion vs Transaction
@@ -100,7 +141,7 @@ Typical read path:
 
 In PyRogue terminology, waiting for operation responses is called ``check``.
 
-Block helper functions
+Block Helper Functions
 ----------------------
 
 PyRogue exposes helper functions used by Variable/Device/Root flow:
@@ -151,7 +192,7 @@ The logger name is derived from the first Variable path assigned to the Block,
 so filtering by the ``pyrogue.memory.block`` prefix is usually the practical
 choice.
 
-Packing Rules and Variable Layout
+Packing Rules And Variable Layout
 ---------------------------------
 
 The internal ``setBytes``/``getBytes`` helpers are used by all typed methods
@@ -165,7 +206,7 @@ and apply Variable layout metadata:
 Because every typed method funnels through these helpers, custom subclasses can
 extend behavior while preserving the same packing model.
 
-Models in Block Conversion
+Models In Block Conversion
 ==========================
 
 Blocks use ``Model`` definitions to translate between Python-facing value types
@@ -173,7 +214,7 @@ and hardware bit/byte representation.
 
 Canonical Model documentation is in :doc:`/pyrogue_tree/core/model`.
 
-Model-driven Block method dispatch
+Model-Driven Block Method Dispatch
 ----------------------------------
 
 ``Variable`` instances bind to typed ``Block`` conversion methods based on
@@ -257,7 +298,7 @@ In practice:
   read/write/verify behavior, stale tracking, packing/unpacking, and update
   notification triggers
 
-Hub interaction
+Hub Interaction
 ===============
 
 Blocks are transaction sources; Hubs are transaction routers.
@@ -272,7 +313,7 @@ During a transaction, Hub logic:
 This is why Variable-to-Block transactions continue to work cleanly across
 multi-level Device trees with address translation.
 
-Advanced patterns
+Advanced Patterns
 =================
 
 Custom Models (Complete Example)
@@ -356,7 +397,7 @@ Variables that overlap that address range.
 This can improve throughput for use cases that benefit from larger grouped
 transactions.
 
-Where to explore next
+What To Explore Next
 =====================
 
 * Model API and utility helpers: :doc:`/pyrogue_tree/core/model`

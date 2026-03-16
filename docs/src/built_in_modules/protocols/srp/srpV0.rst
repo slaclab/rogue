@@ -4,18 +4,26 @@
 SRP Protocol Version 0
 ======================
 
-`SrpV0` converts Rogue memory transactions into SRPv0 stream frames and decodes
-responses from hardware. In a typical system, those SRP frames are carried over
-Rogue stream transports and terminate at FPGA/ASIC SRP logic that performs
-register access.
+For legacy SRP register links that still use version 0 framing, Rogue provides
+``rogue.protocols.srp.SrpV0``. ``SrpV0`` converts Rogue memory transactions
+into SRPv0 stream frames and decodes hardware responses back into memory
+transaction completion.
 
 Rogue does not re-document the SRPv0 wire format here. Use the protocol
 specification for packet-level details:
 
 - SRPv0 reference: https://confluence.slac.stanford.edu/x/aRmVD
 
-Implementation notes
---------------------
+When To Use ``SrpV0``
+=====================
+
+- Use when endpoint firmware is fixed to SRPv0 framing.
+- Prefer :doc:`srpV3` for newer systems unless compatibility requires v0.
+- Use :doc:`cmd` instead when the link carries opcodes rather than memory
+  transactions.
+
+Behavior
+========
 
 - Rogue can issue multiple SRPv0 requests before responses return; these are
   tracked as in-flight transactions by transaction ID.
@@ -27,35 +35,34 @@ Implementation notes
 - ``SrpV0`` enforces 4-byte alignment and defaults to a 2048-byte max
   transaction size (from constructor ``memory::Slave(4, 2048)``).
 
-Threading and locking model
----------------------------
+The class sits directly between the memory and stream interfaces. Connect it to
+a lower stream transport, then use the SRP object itself as the ``memBase`` for
+PyRogue devices or other memory clients.
+
+Threading And Locking
+=====================
 
 - ``doTransaction()`` and ``acceptFrame()`` can be invoked from different
   runtime contexts.
 - In-flight transaction matching is protected by the base memory-slave mutex.
 - Per-transaction payload/state access is protected via ``TransactionLock``.
 
-Integration references
-----------------------
-
-- :doc:`/memory_interface/tcp_bridge`
-- :doc:`/built_in_modules/hardware/dma/stream`
-
 Logging
--------
+=======
 
-``SrpV0`` uses Rogue C++ logging.
+``SrpV0`` uses Rogue C++ logging, not Python ``logging``.
 
 - Logger name: ``pyrogue.SrpV0``
-- Unified Logging API:
-  ``logging.getLogger('pyrogue.SrpV0').setLevel(logging.DEBUG)``
-- Legacy Logging API:
+- Configuration API:
   ``rogue.Logging.setFilter('pyrogue.SrpV0', rogue.Logging.Debug)``
 - Typical messages: transmitted request headers, received response headers,
   undersized frames, bad headers, expired transactions, and error tails
 
-Python usage example
---------------------
+Set the filter before constructing the ``SrpV0`` object. Rogue C++ loggers
+copy their level when the logger instance is created.
+
+Python Example
+==============
 
 The common PyRogue pattern is to construct the transport and ``SrpV0`` inside a
 ``Root`` subclass, then pass the SRP object as ``memBase`` when adding devices.
@@ -83,7 +90,7 @@ The common PyRogue pattern is to construct the transport and ``SrpV0`` inside a
        def __init__(self, dev='/dev/datadev_0', **kwargs):
            super().__init__(timeout=2.0, **kwargs)
 
-           # Stream transport carrying SRPv0 frames (register channel).
+           # Stream transport carrying SRPv0 frames.
            self.regStream = rogue.hardware.axi.AxiStreamDma(dev, 0, True)
 
            # SRPv0 protocol bridge.
@@ -101,14 +108,16 @@ The common PyRogue pattern is to construct the transport and ``SrpV0`` inside a
            ))
 
 Related Topics
---------------
+==============
 
+- :doc:`/memory_interface/tcp_bridge`
+- :doc:`/built_in_modules/hardware/dma/stream`
 - :doc:`/built_in_modules/protocols/srp/index`
 - Preferred newer protocol: :doc:`srpV3`
 - Command-only path: :doc:`cmd`
 
 API Reference
--------------
+=============
 
 - Python: :doc:`/api/python/rogue/protocols/srp/srpv0`
 - C++: :doc:`/api/cpp/protocols/srp/srpV0`

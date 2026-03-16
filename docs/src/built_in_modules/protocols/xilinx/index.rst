@@ -4,178 +4,228 @@
 Xilinx Protocols
 ================
 
-Rogue Xilinx protocol support provides an XVC bridge for JTAG-over-TCP workflows
-such as FPGA debug through Vivado hardware manager. In practice, this is used to
-connect to an on-chip ILA (ChipScope) through firmware that exposes an
-AxisToJtag-style endpoint.
+For remote JTAG and ILA access through a Rogue-managed transport, Rogue
+provides ``rogue.protocols.xilinx``. The class most users actually instantiate
+is ``rogue.protocols.xilinx.Xvc``, which presents a local XVC TCP server to
+Vivado and forwards those XVC operations across a Rogue stream link to firmware
+that implements an AxisToJtag-style endpoint.
 
-Rogue sits between a TCP XVC client and the hardware JTAG endpoint:
+This is the normal software-side path when Vivado Hardware Manager needs to
+reach on-chip debug logic through an existing Rogue transport such as DMA, PGP,
+or a network bridge.
 
-- Upstream side: XVC TCP connection (tool-facing).
-- Downstream side: Rogue stream transport (hardware-facing), such as rUDP, PGP,
-  or other stream-capable links.
+How The Bridge Fits Together
+============================
 
-At a high level:
+The XVC bridge sits between the tool-facing TCP connection and the
+hardware-facing Rogue stream path:
 
-- ``Xvc`` hosts the XVC TCP server and translates XVC requests into JTAG
-  operations over Rogue streams.
-- ``JtagDriver`` implements protocol framing/retry/query logic and defines the
-  transport transfer contract.
-- ``XvcServer`` and ``XvcConnection`` manage connection accept/command parsing
-  for XVC TCP clients.
+.. code-block:: text
 
-The XVC bridge is typically connected to a bidirectional Rogue stream path to
-hardware firmware that implements the corresponding JTAG bridge endpoint.
+   Vivado XVC client <-> Xvc TCP server <-> Rogue stream transport <-> firmware JTAG bridge
 
-When to use this stack
-----------------------
+``Xvc`` combines three roles in one object:
 
-- You need remote JTAG/ILA access from Vivado over TCP.
+- A TCP XVC server for the tool-facing side.
+- A Rogue ``Master``/``Slave`` pair for the hardware-facing stream path.
+- The ``JtagDriver`` protocol engine that handles query, shift, retry, and
+  vector chunking logic.
+
+The lower transport can be whatever the firmware design already exposes for the
+JTAG bridge path. In practice that is often a dedicated DMA destination, but it
+can also be another bidirectional Rogue stream path.
+
+When This Stack Fits
+====================
+
+- You need remote JTAG or ILA access from Vivado over TCP.
 - Your firmware exposes an AxisToJtag-compatible endpoint.
-- Rogue is already the integration layer for the transport path.
+- Rogue already owns the transport path to the hardware.
 
-Typical usage
--------------
+Key Classes
+===========
+
+- ``Xvc`` is the normal class to instantiate. It owns the local XVC listener
+  and bridges XVC requests to the Rogue stream transport.
+- ``JtagDriver`` is the lower-level protocol base class used by ``Xvc``. It is
+  mostly relevant to C++ users implementing a custom transport.
+- ``XvcServer`` and ``XvcConnection`` are support classes behind the local TCP
+  listener and client session handling.
+
+Typical Workflow
+================
+
+The normal workflow is straightforward:
 
 1. Create an ``Xvc`` instance on a local TCP port.
-2. Connect it bidirectionally to a Rogue stream transport path to hardware.
-3. Start lifecycle (managed by ``Root.addInterface(...)`` or explicitly in
-   standalone scripts).
-4. Connect Vivado/XVC client to the local TCP port.
+2. Connect it bidirectionally to the Rogue stream path that reaches the
+   firmware JTAG bridge endpoint.
+3. Let a ``Root`` manage lifecycle, or start and stop the bridge explicitly in
+   a standalone script.
+4. Point Vivado or another XVC client at the local TCP port.
 
-Python example
---------------
+Root-Based Python Example
+=========================
+
+The most common PyRogue pattern is to create the XVC bridge in the ``Root``,
+connect it to the firmware-facing transport, and register both interfaces for
+managed lifecycle.
 
 .. code-block:: python
 
    import pyrogue as pr
-   import rogue.hardware.axi
-   import rogue.protocols.xilinx
-
-   class JtagRoot(pr.Root):
-       def __init__(self, dev='/dev/datadev_0', jtagDest=2, xvcPort=2542, **kwargs):
-           super().__init__(**kwargs)
-
-           # Stream path to firmware JTAG bridge endpoint.
-           self.jtagStream = rogue.hardware.axi.AxiStreamDma(dev, jtagDest, True)
-
-           # XVC TCP bridge (localhost:xvcPort).
-           self.xvc = rogue.protocols.xilinx.Xvc(xvcPort)
-
-           # Bidirectional stream connection.
-           self.jtagStream == self.xvc
-
-           # Register interfaces for Managed Interface Lifecycle.
-           self.addInterface(self.jtagStream, self.xvc)
-
-Standalone Python script pattern
---------------------------------
-
-Use explicit lifecycle calls when no ``Root`` is managing interfaces.
-
-.. code-block:: python
-
    import rogue.hardware.axi as rha
    import rogue.protocols.xilinx as rpx
 
-   jtag_stream = rha.AxiStreamDma("/dev/datadev_0", 2, True)
+   class JtagRoot(pr.Root):
+       def __init__(self, dev='/dev/datadev_0', jtagDest=0x400, xvcPort=2542, **kwargs):
+           super().__init__(**kwargs)
+
+           # Open the firmware stream path that terminates at the JTAG bridge.
+           # The combined destination value must match the lane and TDEST
+           # implemented in firmware for the AxisToJtag endpoint.
+           self.jtagStream = rha.AxiStreamDma(dev, jtagDest, True)
+
+           # Create the local XVC server that Vivado will connect to.
+           self.xvc = rpx.Xvc(xvcPort)
+
+           # Bridge the transport path in both directions:
+           #   Rogue stream <-> XVC bridge <-> Vivado TCP client
+           self.jtagStream == self.xvc
+
+           # Register both interfaces so Root owns startup and shutdown.
+           self.addInterface(self.jtagStream, self.xvc)
+
+Standalone Python Example
+=========================
+
+Without a ``Root``, the same bridge can be brought up directly in a short
+script.
+
+.. code-block:: python
+
+   import time
+   import rogue.hardware.axi as rha
+   import rogue.protocols.xilinx as rpx
+
+   # Open the stream path to the firmware JTAG bridge.
+   jtag_stream = rha.AxiStreamDma('/dev/datadev_0', 0x400, True)
+
+   # Start a local XVC server on tcp://127.0.0.1:2542.
    xvc = rpx.Xvc(2542)
 
+   # Connect the stream transport to the XVC bridge in both directions.
    jtag_stream == xvc
 
+   # No Root is managing lifecycle here, so start and stop explicitly.
    xvc._start()
    try:
-       # Keep process alive while XVC clients connect.
-       # Your application loop goes here.
-       pass
+       # Keep the process alive while Vivado connects to the local XVC port.
+       while True:
+           time.sleep(1.0)
    finally:
        xvc._stop()
        jtag_stream._stop()
 
+C++ Example
+===========
 
-C++ example
------------
+The same pattern applies in C++ when Rogue is being used directly without a
+PyRogue ``Root``:
 
 .. code-block:: cpp
 
    #include <rogue/hardware/axi/AxiStreamDma.h>
    #include <rogue/protocols/xilinx/Xvc.h>
 
-   int main() {
-       // Hardware-facing stream endpoint for firmware JTAG bridge channel.
-       auto jtagStream = rogue::hardware::axi::AxiStreamDma::create("/dev/datadev_0", 2, true);
-       // Tool-facing XVC TCP server bridge.
-       auto xvc        = rogue::protocols::xilinx::Xvc::create(2542);
+   namespace rha = rogue::hardware::axi;
+   namespace rpx = rogue::protocols::xilinx;
 
-       // Bidirectional stream connection between transport and XVC bridge.
+   int main() {
+       // Open the firmware-facing stream path for the JTAG bridge endpoint.
+       auto jtagStream = rha::AxiStreamDma::create("/dev/datadev_0", 0x400, true);
+
+       // Start the local XVC server used by Vivado.
+       auto xvc = rpx::Xvc::create(2542);
+
+       // Connect the stream transport to the XVC bridge in both directions.
        *jtagStream == xvc;
 
        // Standalone lifecycle control in C++.
        xvc->start();
-       // Application loop...
+
+       // Application loop goes here.
+
        xvc->stop();
        return 0;
    }
 
-JtagDriver notes
-----------------
+JtagDriver Role
+===============
 
-``JtagDriver`` is the protocol/transport abstraction used by ``Xvc``. It can
-also be subclassed directly in C++ for custom transports:
+``JtagDriver`` is the protocol and transport abstraction underneath ``Xvc``.
+It is responsible for:
 
-- Subclass implements raw transfer primitive (``xfer``)
-- Subclass reports transport vector limit (``getMaxVectorSize``)
-- Base class handles protocol framing, retries, query, and vector chunking
+- Querying target capabilities.
+- Framing shift and query commands.
+- Applying retry logic.
+- Chunking transfers to the transport-supported vector size.
 
-Threading and Lifecycle
------------------------
+For normal Python use, that detail stays behind ``Xvc``. In C++, ``JtagDriver``
+can also be subclassed directly when a custom transport is needed. In that
+case, the transport subclass supplies:
 
-- ``Xvc`` runs a background server thread for TCP XVC clients.
+- ``xfer()`` to move one opaque protocol message to and from the target.
+- ``getMaxVectorSize()`` to report the transport-side vector limit.
+
+The base class then handles the protocol-level JTAG mechanics above that raw
+transport primitive.
+
+Threading And Lifecycle
+=======================
+
+``Xvc`` does create background activity:
+
+- A background server thread accepts and services local XVC TCP clients.
 - Incoming Rogue reply frames are queued for synchronous consumption by
-  ``Xvc::xfer()``.
-- ``Xvc`` uses an internal mutex around response-buffer copy paths.
-- Implements Managed Interface Lifecycle:
-  :ref:`pyrogue_tree_node_device_managed_interfaces`
-- In Root-managed PyRogue applications, register with ``Root.addInterface(...)``
-  and avoid manual start/stop calls.
-- In standalone scripts, call ``_start()``/``_stop()`` explicitly on ``Xvc``.
+  ``xfer()``.
+- The implementation uses an internal mutex around response-buffer handling.
+
+In Root-managed PyRogue applications, register both the transport and ``Xvc``
+with ``addInterface(...)`` and let the Root manage startup and shutdown.
+Without a Root, call ``_start()`` and ``_stop()`` explicitly on ``Xvc``.
 
 Logging
--------
+=======
 
-Xilinx/XVC support uses Rogue C++ logging.
+Xilinx support uses Rogue C++ logging:
 
-Static logger names:
+- ``pyrogue.xilinx.xvc`` for TCP server and frame-bridge activity.
+- ``pyrogue.xilinx.jtag`` for protocol-level query and shift debugging.
 
-- ``pyrogue.xilinx.xvc``
-- ``pyrogue.xilinx.jtag``
+Enable the logger family before construction:
 
-Use ``pyrogue.xilinx.xvc`` for TCP server / frame-bridge activity and
-``pyrogue.xilinx.jtag`` for protocol-level JTAG query/shift debugging.
+.. code-block:: python
 
-- Unified Logging API:
-  ``logging.getLogger('pyrogue.xilinx').setLevel(logging.DEBUG)``
-- Legacy Logging API:
-  ``rogue.Logging.setFilter('pyrogue.xilinx', rogue.Logging.Debug)``
+   import rogue
+
+   rogue.Logging.setFilter('pyrogue.xilinx', rogue.Logging.Debug)
 
 Related Topics
 ==============
 
-- Stream transport wiring patterns: :doc:`/stream_interface/connecting`
-- DMA transport details: :doc:`/built_in_modules/hardware/dma/stream`
-- Device-tree lifecycle integration: :doc:`/pyrogue_tree/core/device`
+- :doc:`/built_in_modules/hardware/dma/stream`
+- :doc:`/stream_interface/connecting`
+- :doc:`/pyrogue_tree/core/device`
 
 API Reference
 =============
 
 - Python:
-
-  - :doc:`/api/python/rogue/protocols/xilinx/xvc`
-  - :doc:`/api/python/rogue/protocols/xilinx/jtagdriver`
-
+  :doc:`/api/python/rogue/protocols/xilinx/xvc`
+  :doc:`/api/python/rogue/protocols/xilinx/jtagdriver`
 - C++:
-
-  - :doc:`/api/cpp/protocols/xilinx/xvc`
-  - :doc:`/api/cpp/protocols/xilinx/jtagDriver`
-  - :doc:`/api/cpp/protocols/xilinx/xvcServer`
-  - :doc:`/api/cpp/protocols/xilinx/xvcConnection`
+  :doc:`/api/cpp/protocols/xilinx/xvc`
+  :doc:`/api/cpp/protocols/xilinx/jtagDriver`
+  :doc:`/api/cpp/protocols/xilinx/xvcServer`
+  :doc:`/api/cpp/protocols/xilinx/xvcConnection`

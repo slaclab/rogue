@@ -4,25 +4,47 @@
 Generating PRBS Frames
 ======================
 
-Use ``rogue.utilities.Prbs`` when a lightweight generator/checker endpoint is
-needed directly in a stream topology.
+When PRBS transmission should be visible through a PyRogue tree, PyRogue
+provides ``pyrogue.utilities.prbs.PrbsTx``. It wraps the underlying
+``rogue.utilities.Prbs`` generator and exposes transmit size, period, enable
+state, and counters as tree variables and commands.
 
-Use ``pyrogue.utilities.prbs.PrbsTx`` when you want generator control and
-counters as part of a ``Root`` tree.
+The direct ``rogue.utilities.Prbs`` form is the smaller fit for scripts and
+standalone validation graphs that do not need a tree-managed control surface.
 
-This transmit path is commonly used to drive PRBS into FPGA firmware/VHDL
-checkers during link bring-up and integration testing.
+PRBS transmit paths commonly drive traffic into FPGA firmware/VHDL checkers
+during link bring-up and integration testing.
 
-Method Overview
+Common Controls
 ===============
 
-Common PRBS generator calls shown below:
+The transmit wrapper is usually configured around:
 
-- ``genFrame(size)``: Generates and transmits one PRBS frame of ``size`` bytes.
-- ``PrbsTx`` wrapper: Exposes generator controls and counters as ``Variables``
-  and ``Commands`` in a tree.
+- ``txSize``
+  Payload size for generated frames.
+- ``txPeriod``
+  Background transmit period in microseconds.
+- ``txEnable``
+  Start or stop continuous generation.
+- ``genPayload``
+  Enable or disable payload generation.
+- ``width`` and ``taps``
+  PRBS state width and feedback polynomial selection.
+- ``sendCount``
+  Include a transmitted count field when the test setup expects it.
 
-Python PRBS Generator Example
+The direct Rogue endpoint has the matching lower-level controls such as
+``genFrame(size)``, ``enable(size)``, ``disable()``, ``setTxPeriod(period)``,
+``setWidth(width)``, and ``setTaps(taps)``.
+
+Using ``PrbsTx`` In A Tree
+==========================
+
+It is the right choice when operators or client code should be able to inspect
+or control transmit settings such as enable state, frame size, frame period,
+and generator counters through the PyRogue tree.
+
+Python Direct-Utility Example
 =============================
 
 .. code-block:: python
@@ -47,8 +69,8 @@ Python PRBS Generator Example
       prbs.genFrame(1000)
    fwrite.close()
 
-PyRogue PRBS Transmitter Wrapper
-================================
+Python Tree-Managed Example
+===========================
 
 .. code-block:: python
 
@@ -97,8 +119,8 @@ C++ PRBS Generator Example
 Related Topics
 ==============
 
-- :doc:`/pyrogue_tree/builtin_devices/prbstx`
-- :doc:`/pyrogue_tree/builtin_devices/prbspair`
+- :doc:`index`
+- :doc:`reading`
 
 API Reference
 =============

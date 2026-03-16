@@ -17,6 +17,7 @@ import rogue.protocols.udp
 import rogue.protocols.rssi
 import rogue.protocols.packetizer
 import time
+import threading
 from typing import Any
 
 
@@ -70,6 +71,8 @@ class UdpRssiPack(pr.Device):
         self._wait = wait
         self._jumbo = jumbo
         self._server = server
+        self._rxBufferConfigured = False
+        self._rxBufferThreadStop = False
 
         # Check if running as server
         if server:
@@ -347,6 +350,7 @@ class UdpRssiPack(pr.Device):
     def _start(self) -> None:
         """Start RSSI/UDP transport and optionally wait for link-up."""
         # Start the RSSI connection
+        self._rxBufferThreadStop = False
         self._rssi._start()
 
         if self._wait and not self._server:
@@ -364,40 +368,49 @@ class UdpRssiPack(pr.Device):
                         cnt += 1
 
                     if cnt < 10:
-                        self._log.warning("host=%s, port=%d -> Establishing link ...", self._host, self._port)
+                        self._log.warning("host=%s, port=%d -> Establishing link ..." % (self._host,self._port))
 
                     else:
-                        self._log.warning(
-                            "host=%s, port=%d -> Failing to connect using jumbo frames. "
-                            "Check interface MTU settings with ifconfig -a",
-                            self._host,
-                            self._port,
-                        )
-
-            self._log.info(
-                "host=%s, port=%d -> Link established. jumbo=%s, maxPayload=%s",
-                self._host,
-                self._port,
-                self._jumbo,
-                self._udp.maxPayload(),
-            )
+                        self._log.warning('host=%s, port=%d -> Failing to connect using jumbo frames! Be sure to check interface MTU settings with ifconig -a' % (self._host,self._port))
 
 
-        # Sleep is bad, nee to figure this out
-        time.sleep(0.25)
-        self._udp.setRxBufferCount(self._rssi.curMaxBuffers())
-        self._log.info(
-            "host=%s, port=%d -> Configured UDP RX buffer count to %s",
-            self._host,
-            self._port,
-            self._rssi.curMaxBuffers(),
-        )
+        # On the client side, getOpen() only returns after negotiation is
+        # complete, so curMaxBuffers() is stable here. On the server side,
+        # waiting in _start() can deadlock if both endpoints are managed in the
+        # same Root, so defer buffer programming until the link actually opens.
+        if self._server:
+            self._armServerRxBufferUpdate()
+        else:
+            self._applyNegotiatedRxBufferCount()
 
         super()._start()
 
+    def _applyNegotiatedRxBufferCount(self) -> None:
+        """Program UDP RX buffers from the negotiated RSSI max-buffer count."""
+        if self._rxBufferConfigured:
+            return
+
+        self._udp.setRxBufferCount(self._rssi.curMaxBuffers())
+        self._rxBufferConfigured = True
+
+    def _armServerRxBufferUpdate(self) -> None:
+        """Wait for server-side RSSI open, then program the negotiated RX depth."""
+        self._rxBufferConfigured = False
+
+        def _wait_open() -> None:
+            while not self._rxBufferThreadStop and not self._rssi.getOpen():
+                time.sleep(0.0001)
+
+            if not self._rxBufferThreadStop and self._rssi.getOpen():
+                self._applyNegotiatedRxBufferCount()
+
+        threading.Thread(target=_wait_open, daemon=True).start()
+
     def _stop(self) -> None:
         """Stop the UDP/RSSI connection and clean up resources."""
+        self._rxBufferThreadStop = True
         self._rssi._stop()
+        self._rxBufferConfigured = False
 
         # This Device may not necessarily be added to a tree
         # So check if it has a parent first

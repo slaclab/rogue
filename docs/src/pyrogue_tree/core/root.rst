@@ -5,23 +5,51 @@ Root
 ====
 
 The :py:class:`~pyrogue.Root` class is the top-level Node in a PyRogue tree.
-It owns the application lifecycle, coordinates bulk read/write operations,
-manages background workers (poll and update), and provides APIs for YAML
-save/load and external listeners.
+It owns the runtime lifecycle of the full application, coordinates whole-tree
+read and write workflows, manages background services such as polling and
+update propagation, and provides the common entry points used by GUIs, remote
+clients, and YAML-based configuration flows.
 
-For polling internals and usage patterns, see
-:ref:`pyrogue_tree_root_poll_queue`.
+``Root`` also inherits from :py:class:`~pyrogue.Device`. That is important
+because the top of the tree participates in the same child-Device hierarchy,
+managed-interface lifecycle, and block-traversal behavior as the rest of the
+tree. In practice, that is why a ``Root`` can own interfaces, recurse through
+child Devices during startup and shutdown, and serve as the top-level entry
+point for bulk read and write operations.
 
-Most user applications define a subclass of ``pyrogue.Root`` and add Devices
-inside ``__init__``.
+Most applications define one ``Root`` subclass and then build the rest of the
+tree underneath it. In practice, that means ``Root`` is where you decide:
 
-In practice, ``Root`` is also where hardware connections are usually created and
-bound into the tree. A typical pattern is:
+* How the tree is exposed to remote tools.
+* Which memory or transport interfaces the design uses.
+* How startup and shutdown should happen.
+* Which top-level system actions and configuration workflows are available.
 
-* Create a memory interface (for example AXI PCIe, TCP simulation, etc.)
-* Register it with :py:meth:`~pyrogue.Root.addInterface`
-* Pass that interface as ``memBase`` when adding top-level Devices
-* Optionally add management/control interfaces (such as ZMQ) to the same Root
+What Root Usually Owns
+======================
+
+``Root`` is not just a container. It is the object that turns a static tree
+definition into a live system.
+
+A typical ``Root`` subclass does four things:
+
+1. Creates the hardware-facing interface path used for register access.
+2. Adds top-level ``Device`` instances to the tree and connects them to the hardware interface.
+3. Optionally exposes the running tree to remote tools such as PyDM or client
+   scripts.
+
+For most DAQ-style applications, the first step means opening the connection to
+the hardware itself or to a simulation of that hardware. In practice that often
+means opening a device driver,
+:doc:`/built_in_modules/hardware/dma/index`,
+:doc:`/memory_interface/tcp_bridge`, or another transport path through a
+Rogue-provided wrapper.
+
+The key outcome of that step is usually one or more Rogue memory-interface
+objects. Those objects are the link between the hardware connection and the
+PyRogue tree: they are passed as ``memBase`` to ``Device`` instances so that
+``RemoteVariable`` and other hardware-backed Nodes have a path for register
+transactions.
 
 .. code-block:: python
 
@@ -31,19 +59,16 @@ bound into the tree. A typical pattern is:
    import axipcie
 
    class EvalBoard(pr.Root):
-       def __init__(self, dev='/dev/datadev_0', sim=False, **kwargs):
+       def __init__(self, dev='/dev/datadev_0', **kwargs):
            super().__init__(name='EvalBoard', description='Evaluation board root', **kwargs)
 
-           # Create the memory-mapped hardware/simulation interface.
-           if sim:
-               self.memMap = rogue.interfaces.memory.TcpClient('localhost', 11000)
-           else:
-               self.memMap = rogue.hardware.axi.AxiMemMap(dev)
+           # Create the memory-mapped hardware interface.
+           self.memMap = rogue.hardware.axi.AxiMemMap(dev)
 
-           # Register memory interface with Root so tree transactions route correctly.
+           # Register it so tree transactions can route through Root.
            self.addInterface(self.memMap)
 
-           # Optional management API for GUIs/remote clients.
+           # Expose the tree to remote tools.
            self.zmqServer = pyrogue.interfaces.ZmqServer(
                root=self,
                addr='127.0.0.1',
@@ -51,117 +76,114 @@ bound into the tree. A typical pattern is:
            )
            self.addInterface(self.zmqServer)
 
-           # Add top-level devices and bind them to the same memory interface.
+           # Add the application-specific tree beneath Root.
            self.add(axipcie.AxiPcieCore(
                offset=0x00000000,
                memBase=self.memMap,
                expand=True,
            ))
 
-Unified Python and C++ logging
-------------------------------
+That composition pattern is the normal starting point for PyRogue systems:
+``Root`` owns lifecycle and top-level interfaces, while ``Device`` instances
+carry the hardware and application structure below it.
 
-If a PyRogue application wants one logging path for both Python Nodes and Rogue
-C++ transport/protocol objects, call ``pyrogue.setUnifiedLogging(True)`` or
-construct the Root with ``unifyLogs=True``:
+Lifecycle And Startup
+=====================
 
-.. code-block:: python
+The main lifecycle entry points on ``Root`` are
+:py:meth:`~pyrogue.Root.start` and :py:meth:`~pyrogue.Root.stop`.
 
-   import pyrogue as pr
+``Root.start()`` does more than start background threads. It performs the full
+bring-up sequence that attaches the tree, finalizes Node initialization, starts
+managed interfaces, runs optional initial read or write operations, and then
+enables polling.
 
-   class MyRoot(pr.Root):
-       def __init__(self, **kwargs):
-           super().__init__(name='MyRoot', unifyLogs=True, **kwargs)
+Startup Sequence
+----------------
 
-This enables Rogue C++ log forwarding into Python logging and disables the
-native Rogue stdout sink to avoid duplicate messages. The forwarded records can
-then appear in ``Root.SystemLog`` and any other Python logging handlers already
-attached under the ``pyrogue`` logger tree.
+When :py:meth:`~pyrogue.Root.start` runs, the major stages are:
 
-Example forwarded ``SystemLog`` entry:
+#. Attach the full tree with ``_rootAttached()``.
+#. Run ``_finishInit()`` across the full hierarchy.
+#. Validate the collected memory ``Block`` layout.
+#. Apply timeout settings.
+#. Start background update and heartbeat services.
+#. Call :py:meth:`~pyrogue.Device._start` recursively from the root.
+#. Optionally perform initial bulk read and write flows.
+#. Start :py:class:`~pyrogue.PollQueue` and apply ``PollEn`` state.
 
-.. code-block:: json
+The important practical point is that a PyRogue tree is not fully live until
+that sequence has completed. Before startup, the structure exists, but runtime
+behaviors such as polling, managed-interface startup, and hardware-backed block
+access should be treated as not yet active.
 
-   {
-     "created": 1772812345.123456,
-     "name": "pyrogue.rssi.controller",
-     "message": "Closing link. Server=0",
-     "levelName": "WARNING",
-     "levelNumber": 30,
-     "rogueCpp": true,
-     "rogueTid": 48123,
-     "roguePid": 90210,
-     "rogueLogger": "pyrogue.rssi.controller",
-     "rogueTimestamp": 1772812345.123456,
-     "rogueComponent": "rssi"
-   }
+Shutdown Sequence
+-----------------
 
-Lifecycle and Startup Sequence
-------------------------------
+When :py:meth:`~pyrogue.Root.stop` runs, it:
 
-``Root`` controls startup and shutdown for the full tree.
-The two calls that matter operationally are :py:meth:`~pyrogue.Root.start` and
-:py:meth:`~pyrogue.Root.stop`.
-
-``Root.start()`` sequence
-^^^^^^^^^^^^^^^^^^^^^^^^^
-
-When :py:meth:`~pyrogue.Root.start` runs, it performs bring-up in this order:
-
-#. Verifies the Root is not already running (raises if it is).
-#. Calls ``Root._rootAttached()``.
-
-   * Root sets its own parent/root/path fields.
-   * Root calls ``_rootAttached(parent, root)`` on all child Nodes.
-   * Each Device ``_rootAttached`` call recursively attaches children, builds
-     Device Blocks, and applies ``_defaults`` overrides.
-   * Root then builds its own Blocks and runs ``_finishInit()`` on Root-local
-     Variables that depend on built Blocks.
-
-#. Calls ``Root._finishInit()`` recursively on the full tree.
-#. Collects all memory Blocks, sorts by ``(slaveId, address, size)``, and
-   checks for overlapping address ranges per slave ID.
-#. Applies timeout settings via ``_setTimeout`` when Root timeout is not the
-   default value.
-#. Sets ``running=True`` and starts the update worker thread.
-#. Starts heartbeat thread if enabled.
-#. Calls :py:meth:`~pyrogue.Device._start` on Root.
-
-   * For each Device, managed interfaces/protocols receive ``_start()`` first.
-   * Then ``_start()`` recurses into child Devices.
-
-#. Runs optional startup read (``_initRead``) via ``Root._read()``.
-#. Runs optional startup write/verify/check (``_initWrite``) via ``Root._write()``.
-#. Starts :py:class:`~pyrogue.PollQueue` and then applies ``PollEn`` state.
-
-After this sequence, the tree is live for client access, polling, and normal
-read/write workflows.
-
-``Root.stop()`` sequence
-^^^^^^^^^^^^^^^^^^^^^^^^
-
-When :py:meth:`~pyrogue.Root.stop` runs:
-
-#. Sets ``running=False``.
-#. Pushes stop sentinel to the update queue and joins the update worker thread.
+#. Marks the Root as no longer running.
+#. Stops the update worker thread.
 #. Stops :py:class:`~pyrogue.PollQueue`.
-#. Calls :py:meth:`~pyrogue.Device._stop` on Root.
+#. Calls :py:meth:`~pyrogue.Device._stop` recursively from the root.
 
-   * For each Device, managed interfaces/protocols receive ``_stop()`` first.
-   * Then ``_stop()`` recurses into child Devices.
+That shutdown path is why device-owned runtime resources should normally be
+started in ``_start()`` and stopped in ``_stop()`` rather than being managed ad
+hoc elsewhere.
 
-``getNode`` path lookup
-^^^^^^^^^^^^^^^^^^^^^^^
+Tree Attachment And Lookup
+==========================
 
-:py:meth:`~pyrogue.Root.getNode` resolves dotted paths such as
-``EvalBoard.AxiVersion.ScratchPad`` and is commonly used by tooling and
-client-facing helpers.
+During startup, ``Root`` is also responsible for attaching parent, root, and
+path context to the entire tree. That happens through ``_rootAttached()``.
 
-Temporarily Blocking Polling
-----------------------------
+At a high level:
 
-Use :py:meth:`~pyrogue.Root.pollBlock` when you need a short critical section
-that should not race with background poll reads.
+* ``Root`` sets its own parent and root references to itself.
+* ``Root`` establishes its full path from its name.
+* Child Nodes are recursively attached with resolved parent/root/path context.
+* ``Device``-level attach logic builds the ``Block`` layout used by hardware
+  access paths.
+
+Once the tree is attached, :py:meth:`~pyrogue.Root.getNode` can resolve dotted
+paths such as ``EvalBoard.AxiVersion.ScratchPad``. This is one of the key ways
+tooling and remote interfaces address Nodes in a running system.
+
+Interfaces And Remote Access
+============================
+
+``Root`` is also where remote access usually enters the system. The most common
+pattern is to add a :py:class:`~pyrogue.interfaces.ZmqServer` so that PyDM,
+client scripts, and other tools can connect to the same live tree.
+
+Common pattern in ``Root.__init__``:
+
+* Create ``pyrogue.interfaces.ZmqServer(root=self, addr='127.0.0.1', port=0)``
+* Register it with :py:meth:`~pyrogue.Root.addInterface`
+
+Practical notes:
+
+* ``port=0`` auto-selects the first available base port starting at ``9099``.
+* Binding to ``127.0.0.1`` keeps the interface local to the host.
+* Other deployments can bind to a non-local address as needed.
+
+For the broader client-side workflows built on top of that interface, see:
+
+* :doc:`/pyrogue_tree/client_interfaces/index`
+* :doc:`/pyrogue_tree/client_interfaces/zmq_server`
+* :doc:`/pyrogue_tree/client_interfaces/simple`
+* :doc:`/pyrogue_tree/client_interfaces/virtual`
+
+Polling And Critical Sections
+=============================
+
+``Root`` owns :py:class:`~pyrogue.PollQueue`, which schedules periodic reads
+for polled Variables. In most applications, you do not instantiate or manage
+the poll queue directly; instead, you control it through ``Root`` and Variable
+settings such as ``PollEn`` and ``pollInterval``.
+
+Use :py:meth:`~pyrogue.Root.pollBlock` when a short sequence should not race
+with background poll reads.
 
 .. code-block:: python
 
@@ -169,91 +191,98 @@ that should not race with background poll reads.
        root.MyDevice.SomeControl.set(1)
        root.MyDevice.OtherControl.set(0)
 
-ZmqServer Interface
--------------------
+For the detailed scheduling and behavior model, see
+:doc:`/pyrogue_tree/core/poll_queue`.
 
-:py:class:`~pyrogue.interfaces.ZmqServer` exposes the root over a ZeroMQ control
-channel used by tools such as PyDM-based GUIs and external clients.
+YAML Configuration And Bulk Operations
+======================================
 
-Common initialization pattern in ``Root.__init__``:
+``Root`` provides the main tree-level YAML and bulk I/O entry points:
 
-* Create server: ``pyrogue.interfaces.ZmqServer(root=self, addr='127.0.0.1', port=0)``
-* Add to root with :py:meth:`~pyrogue.Root.addInterface`
+* :py:meth:`~pyrogue.Root.saveYaml`
+* :py:meth:`~pyrogue.Root.loadYaml`
+* :py:meth:`~pyrogue.Root.setYaml`
+* :py:meth:`~pyrogue.Node.getYaml`
 
-Notes:
+These methods back the built-in configuration and state commands exposed on the
+Root itself. They are the main mechanism for saving baselines, restoring known
+configurations, and applying configuration changes across the whole tree.
 
-* ``port=0`` auto-selects the first available base port starting at ``9099``
-  (the server then uses ``base``, ``base+1``, and ``base+2``)
-* Binding to ``127.0.0.1`` keeps the server local to the host
-* Non-local deployments can bind to another interface/address as needed
+For YAML matching, file formats, and array slicing, see
+:doc:`/pyrogue_tree/core/yaml_configuration`.
 
-For broader client/interface selection and deployment patterns, see
-:doc:`/pyrogue_tree/client_interfaces/index`,
-:doc:`/pyrogue_tree/client_interfaces/zmq_server`,
-:doc:`/pyrogue_tree/client_interfaces/simple`, and
-:doc:`/pyrogue_tree/client_interfaces/virtual`.
+For the bulk transaction model used when those staged values are committed
+through the tree, see :doc:`/pyrogue_tree/core/block_operations`.
 
-Built-in Groups
----------------
+Built-In Root Commands And Variables
+====================================
 
-PyRogue Root-level configuration/state Commands use group filtering to include
-or exclude Variables and Commands from bulk operations.
+Every ``Root`` instance includes a set of built-in control Nodes that support
+system-wide workflows.
 
-Common built-in group names:
+Built-in Commands
+-----------------
 
-* ``NoConfig``: excluded from configuration save/load operations.
-* ``NoState``: excluded from state snapshot/export operations.
-* ``Hidden``: hidden from normal GUI views unless explicitly included.
+The following :py:class:`~pyrogue.LocalCommand` objects are created with the
+Root:
 
-See :ref:`pyrogue_tree_node_groups` for full built-in group behavior and filtering semantics.
+* ``WriteAll``: Write every Variable value to hardware.
+* ``ReadAll``: Read every Variable value from hardware.
+* ``SaveState``: Save current state to YAML.
+* ``SaveConfig``: Save configuration to YAML.
+* ``LoadConfig``: Load configuration from YAML.
+* ``RemoteVariableDump``: Save a dump of remote Variable state.
+* ``RemoteConfigDump``: Save a dump of remote configuration state.
+* ``Initialize``: Invoke initialize behavior across the tree.
+* ``HardReset``: Invoke hard-reset behavior across the tree.
+* ``CountReset``: Invoke count-reset behavior across the tree.
+* ``ClearLog``: Clear the Root system log.
+* ``SetYamlConfig``: Apply configuration from YAML text.
+* ``GetYamlConfig``: Return configuration as YAML text.
+* ``GetYamlState``: Return state as YAML text.
 
+Built-in Variables
+------------------
 
-YAML Configuration and Bulk Operations
---------------------------------------
+The following :py:class:`~pyrogue.LocalVariable` objects are also created with
+the Root:
 
-Root YAML config/state workflows and array-matching rules are documented in:
+* ``RogueVersion``: Rogue version string.
+* ``RogueDirectory``: Rogue library directory.
+* ``SystemLog``: System log contents for remote tools.
+* ``SystemLogLast``: Most recent system log entry.
+* ``ForceWrite``: Controls whether non-stale Blocks are forced during bulk
+  config writes.
+* ``InitAfterConfig``: Controls whether ``initialize()`` runs after config
+  application.
+* ``Time``: Current UTC time in seconds since epoch.
+* ``LocalTime``: Current local time.
+* ``PollEn``: Global polling enable.
 
-- :doc:`/pyrogue_tree/core/yaml_configuration`
+Built-In Groups
+===============
 
-That page also covers bulk initiate/check behavior and related Root settings
-(``ForceWrite``, ``InitAfterConfig``).
+Root-level configuration and state workflows use group filtering to include or
+exclude Nodes from bulk operations.
 
-Included Command Objects
-------------------------
+Common built-in groups include:
 
-The following :py:class:`~pyrogue.LocalCommand` objects are all created when the Root Node is created.
+* ``NoConfig``: Excluded from configuration save and load operations.
+* ``NoState``: Excluded from state snapshot and export operations.
+* ``Hidden``: Hidden from normal GUI views unless explicitly included.
 
-* **WriteAll**: Write every Variable value to hardware (hidden from the GUI).
-* **ReadAll**: Read every Variable value from hardware.
-* **SaveState**: Save state to file in yaml format.
-* **SaveConfig**: Save configuration to file. Data is saved in YAML format.
-* **LoadConfig**: Read configuration from file. Data is read in YAML format.
-* **RemoteVariableDump**: Save a dump of the remote Variable state.
-* **RemoteConfigDump**: Save a dump of the remote configuration state.
-* **Initialize**: Generate a soft reset to each Device in the tree.
-* **HardReset**: Generate a hard reset to each Device in the tree.
-* **CountReset**: Generate a count reset to each Device in the tree.
-* **ClearLog**: Clear the message log contained in the SystemLog Variable.
-* **SetYamlConfig**: Set configuration from YAML string.
-* **GetYamlConfig**: Get configuration in YAML string.
-* **GetYamlState**: Get current state as YAML string.
+For the full group-filtering model, see :doc:`/pyrogue_tree/core/groups`.
 
-Included Variable Objects
--------------------------
-The following :py:class:`~pyrogue.LocalVariable` objects are created when the
-Root Node is created.
+What To Explore Next
+====================
 
-* **RogueVersion**: Rogue version string.
-* **RogueDirectory**: Rogue Library Directory.
-* **SystemLog**: String containing newline-separated system log entries. Allows remote client interfaces to know when an error has occurred. This string contains a summary of the error while the full traceback is dumped to the console.
-* **SystemLogLast**: String containing last system log entry.
-* **ForceWrite**: Controls how system level writes are handled. Configuration flag to always write non stale Blocks for WriteAll, LoadConfig and setYaml.
-* **InitAfterConfig**: Configuration flag to execute initialize after LoadConfig or setYaml.
-* **Time**: Current time in seconds since EPOCH UTC.
-* **LocalTime**: Local time.
-* **PollEn**: Polling worker.
+* Device composition beneath Root: :doc:`/pyrogue_tree/core/device`
+* Variable behavior and access patterns: :doc:`/pyrogue_tree/core/variable`
+* Poll scheduling behavior: :doc:`/pyrogue_tree/core/poll_queue`
+* YAML configuration workflows: :doc:`/pyrogue_tree/core/yaml_configuration`
+* Remote access patterns: :doc:`/pyrogue_tree/client_interfaces/index`
 
 API Reference
--------------
+=============
 
 See :doc:`/api/python/pyrogue/root` for generated API details.
