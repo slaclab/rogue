@@ -42,26 +42,10 @@ class GpibController(rogue.interfaces.memory.Slave):
     gpibBoard : int, optional
         GPIB interface board number.
     timeout : object, optional
-        GPIB timeout constant.
-        Possible Timeout Values:
-            T1000s
-            T300s
-            T100s
-            T30s
-            T10s
-            T3s
-            T1s
-            T300ms
-            T100ms
-            T30ms
-            T10ms
-            T3ms
-            T1ms
-            T300us
-            T100us
-            T30us
-            T10us
-            TNONE
+        GPIB timeout constant. Common values include ``T1000s``, ``T300s``,
+        ``T100s``, ``T30s``, ``T10s``, ``T3s``, ``T1s``, ``T300ms``,
+        ``T100ms``, ``T30ms``, ``T10ms``, ``T3ms``, ``T1ms``, ``T300us``,
+        ``T100us``, ``T30us``, ``T10us``, and ``TNONE``.
     """
 
     def __init__(

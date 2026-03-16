@@ -4,8 +4,9 @@
 Testing The Custom Module
 =========================
 
-The following script tests the MyModule and MyWrapper implementations created
-by the :ref:`custom_sourcefile`, :ref:`custom_makefile` and :ref:`custom_wrapper` steps.
+The following script tests the ``MyModule`` and ``MyWrapper``
+implementations created by the :ref:`custom_sourcefile`,
+:ref:`custom_makefile`, and :ref:`custom_wrapper` steps.
 
 .. code:: python
 
@@ -43,7 +44,8 @@ by the :ref:`custom_sourcefile`, :ref:`custom_makefile` and :ref:`custom_wrapper
        print("Got  {} bytes in {} frames".format(r.testSlave.ByteCount.get(),r.testSlave.FrameCount.get()))
 
 
-The output of this python script should be the following (with a different rogue version):
+The output of this Python script should look similar to the following, with a
+different Rogue version string:
 
 .. code::
 
@@ -56,8 +58,8 @@ The output of this python script should be the following (with a different rogue
 Testing With EPICS
 ==================
 
-The following scripts is similiar to the above but exposes the variables
-to epics to allow external control.
+The following script is similar to the one above but exposes the Variables
+through EPICS so external clients can drive them.
 
 .. code:: python
 
@@ -97,8 +99,8 @@ to epics to allow external control.
        except KeyboardInterrupt:
            print("Exiting")
 
-Start the above script and generate frames using epics caput commands. You can also
-monitor the counters as well. See below for an example:
+Start the script above and generate frames using EPICS commands. You can also
+monitor the counters. A simple example is shown below.
 
 In the first terminal:
 
@@ -130,10 +132,10 @@ In the first terminal:
    myTest:MyRoot:testSlave:ByteCount -> MyRoot.testSlave.ByteCount
    Running
 
-In the second terminal we generate two frames from epics. Commands in
-Rogue are exposed as Variables and a pvput will initiate the Command
-execution. Since our MyFrameGen Command does not take an arg we
-pass a value of 0 to keep epics happy.
+In the second terminal, generate two frames from EPICS. Commands in Rogue are
+exposed as Variables, and a ``pvput`` initiates Command execution. Since
+``MyFrameGen`` does not take an argument, pass a value of ``0`` to keep EPICS
+happy.
 
 .. code::
 
@@ -170,10 +172,13 @@ pass a value of 0 to keep epics happy.
 Testing With A GUI
 ==================
 
-In the last test we will add a locally attached GUI along with EPICS. This will allow
-you to experiment with how bot the GUI and EPICS can manipulate variables in parallel.
-In this test we start the GUI in the main script with the core Rogue. It is also possible
-to start one or more remote GUIs. That process is described in TBD.
+The last test adds a locally attached GUI along with EPICS. This allows you to
+experiment with how both the GUI and EPICS can manipulate Variables in
+parallel.
+
+In this test, the GUI is started in the main script alongside the core Rogue
+application. It is also possible to start one or more remote GUIs, but that
+workflow is described elsewhere.
 
 .. code:: python
 
@@ -215,3 +220,9 @@ You can then start the server:
 
    $ python myEpicsGuiTest.py
 
+Related Topics
+==============
+
+- Stream interface narrative and examples: :doc:`/stream_interface/index`
+- EPICS integration details: :doc:`/built_in_modules/protocols/epicsV4/index`
+- PyDM GUI workflows: :doc:`/pydm/index`

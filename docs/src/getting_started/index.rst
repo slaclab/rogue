@@ -18,6 +18,7 @@ Recommended learning path
    `RemoteVariable`, `LinkVariable`, and `RemoteCommand` entries.
 #. :ref:`full_root_definition` - review the full assembled example in one place.
 #. :ref:`pyrogue_tree` - review the PyRogue Tree architecture and concepts.
+#. :ref:`stream_interface_docs` and :ref:`memory_interface_docs` - review lower-level interfaces as needed.
 
 
 .. toctree::

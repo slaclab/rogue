@@ -4,24 +4,43 @@
 PyRogue Tree
 ============
 
-The PyRogue Tree implements a tree structure for the hierarchical organization of devices.
-All devices, variables, and commands subclass from :ref:`pyrogue_tree_node`.
+PyRogue organizes application control around a hierarchical tree owned by one
+running ``Root``. That tree is where hardware abstractions, operator-facing
+controls, background activity, and remote access meet.
 
-The tree structure is arbitrary and does not necessarily follow the hardware bus structures.
-Elements within the tree are exposed to outside systems via the various :ref:`management interfaces<interfaces>` (epics, pyro, mysql, etc)
+The section is split into three complementary topics:
 
-A common hierarchy will be a Root Node connected to any number of Device Nodes, which each can have their own Device Nodes, Command Nodes, and Variable Nodes.
+* :doc:`core/index`: the Node model and lifecycle behavior for Root, Device,
+  Variable, Command, Block, and Model.
+* :doc:`builtin_devices/index`: reusable Device implementations for common
+  workflows such as run control, PRBS, stream read/write, and process control.
+* :doc:`client_interfaces/index`: server/client access patterns for scripts,
+  GUIs, notebooks, and command-line tools.
+
+Architectural view
+==================
+
+The tree model is intentionally independent from hardware bus topology.
+You can optimize memory and stream transport plumbing for performance while
+keeping a stable user-facing organization in the tree.
+
+In practice:
+
+- The Core layer defines the basic structures for composing the tree.
+- Built-in Devices provide production-ready composition pieces inside that tree.
+- Client interfaces expose one running Root to multiple concurrent tools.
+
+What To Explore Next
+====================
+
+- Core Node model and lifecycle: :doc:`/pyrogue_tree/core/index`
+- Built-in Device catalog: :doc:`/pyrogue_tree/builtin_devices/index`
+- Client/server access patterns: :doc:`/pyrogue_tree/client_interfaces/index`
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Node Class Types
+   :maxdepth: 1
+   :caption: PyRogue Tree:
 
-   node/index
-   node/root/index
-   node/root/poll_queue
-   node/device/index
-   node/command/index
-   node/variable/index
-   model/index
-   blocks
-   blocks_advanced
+   core/index
+   builtin_devices/index
+   client_interfaces/index

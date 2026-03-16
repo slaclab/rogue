@@ -4,6 +4,10 @@
 Pool
 ====
 
+For conceptual usage, see:
+
+- :doc:`/stream_interface/index`
+
 Pool objects in C++ are referenced by the following shared pointer typedef:
 
 .. doxygentypedef:: rogue::interfaces::stream::PoolPtr
