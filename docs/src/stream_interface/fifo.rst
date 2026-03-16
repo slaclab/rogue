@@ -180,8 +180,9 @@ Logging
 - Legacy Logging API:
   ``rogue.Logging.setFilter('pyrogue.stream.Fifo', rogue.Logging.Debug)``
 
-Enable that logger before constructing the object if you want constructor-time
-and runtime messages from the ``Fifo`` implementation:
+You can enable that logger before or after constructing the object. Enable it
+before construction only if you want constructor-time messages in addition to
+runtime messages from the ``Fifo`` implementation:
 
 .. code-block:: python
 

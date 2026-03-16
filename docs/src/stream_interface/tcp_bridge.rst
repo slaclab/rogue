@@ -169,8 +169,9 @@ Examples:
 - Legacy Logging API:
   ``rogue.Logging.setFilter('pyrogue.stream.TcpCore', rogue.Logging.Debug)``
 
-Enable a broad filter before constructing the bridge if you want to see
-implementation messages:
+You can enable a broad filter before or after constructing the bridge. Enable
+it before construction only if you want constructor or initial connection
+startup messages in addition to later implementation messages:
 
 .. code-block:: python
 

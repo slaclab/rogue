@@ -87,7 +87,9 @@ Logging
 The emitted logger name is ``pyrogue.<name>``.
 
 For example, ``dbg.setDebug(100, 'stream.debug')`` emits through
-``pyrogue.stream.debug``. Enable that logger before using the debug ``Slave``:
+``pyrogue.stream.debug``. You can enable that logger before or after calling
+``setDebug(...)``. Enable it first only if you want the very first emitted
+debug messages:
 
 - Dynamic logger pattern: ``pyrogue.<name>``
 - Unified Logging API:

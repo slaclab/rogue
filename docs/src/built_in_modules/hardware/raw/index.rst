@@ -108,7 +108,8 @@ Logging
 - Typical messages: mapped-range creation, issued transactions, and transaction
   timeout warnings
 
-Enable it before construction:
+You can enable it before or after construction. Enable it before construction
+only if you want constructor or initial startup messages:
 
 .. code-block:: python
 

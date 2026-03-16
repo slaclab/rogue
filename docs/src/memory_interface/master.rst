@@ -166,8 +166,9 @@ The base Rogue memory ``Master`` uses Rogue C++ logging with the logger name
   ``logging.getLogger('pyrogue.memory.Master').setLevel(logging.DEBUG)``
 - Legacy Logging API:
   ``rogue.Logging.setFilter('pyrogue.memory.Master', rogue.Logging.Debug)``
-Enable that logger before constructing the object if you want transaction and
-error-path visibility from the base implementation:
+You can enable that logger before or after constructing the object. Enable it
+before construction only if you want constructor or early startup messages from
+the base implementation:
 
 
 ``Master`` does not expose a separate runtime debug helper. For more detailed

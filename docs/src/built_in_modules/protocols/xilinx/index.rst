@@ -208,7 +208,8 @@ Xilinx support uses Rogue C++ logging:
 - Legacy Logging API:
   ``rogue.Logging.setFilter('pyrogue.xilinx', rogue.Logging.Debug)``
 
-Enable the logger family before construction:
+You can enable the logger family before or after construction. Enable it before
+construction only if you want constructor or initial server-startup messages:
 
 .. code-block:: python
 

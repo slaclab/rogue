@@ -88,7 +88,8 @@ Logging
   ``rogue.Logging.setFilter('pyrogue.axi.AxiMemMap', rogue.Logging.Debug)``
 - Typical messages: transaction issue/completion flow and transaction timeouts
 
-Enable it before construction:
+You can enable it before or after construction. Enable it before construction
+only if you want constructor or initial startup messages:
 
 .. code-block:: python
 

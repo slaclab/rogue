@@ -273,7 +273,8 @@ path.
   errored-frame handling
 - Driver debug helper: ``setDriverDebug(level)``
 
-Enable Rogue logging before construction:
+You can enable Rogue logging before or after construction. Enable it before
+construction only if you want constructor or initial startup messages:
 
 .. code-block:: python
 
