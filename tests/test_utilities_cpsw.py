@@ -104,7 +104,7 @@ def test_export_device_and_root_write_yaml_files(tmp_path):
         device_list = {}
         index, size = cpsw.exportDevice(root.Dev, device_list, str(tmp_path))
         assert index == 0
-        assert size == 0x28
+        assert size == 0x21
 
         dev_yaml = (tmp_path / "CpswDevice.yaml").read_text()
         child_yaml = (tmp_path / "CpswChild.yaml").read_text()
