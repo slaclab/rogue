@@ -77,7 +77,8 @@ class LocalRoot(pr.Root):
         sim << ms
 
         # Create a memory gateway
-        mc = rogue.interfaces.memory.TcpClient("127.0.0.1",9070)
+        mc = rogue.interfaces.memory.TcpClient("127.0.0.1",9070, True)
+        self.memClient = mc
         self.addInterface(mc)
 
         # Add Device
@@ -86,7 +87,6 @@ class LocalRoot(pr.Root):
             offset  = 0x0000,
             memBase = mc,
         ))
-
 class LocalRootWithEpics(LocalRoot):
     def __init__(self, use_map=False):
         LocalRoot.__init__(self)

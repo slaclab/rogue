@@ -116,6 +116,12 @@ void rim::TcpServer::close() {
     this->stop();
 }
 
+void rim::TcpServer::start() {
+    // The bridge is fully bound and the worker thread is already running by
+    // the time the constructor returns. This hook exists for managed-lifecycle
+    // symmetry with TcpClient.
+}
+
 void rim::TcpServer::stop() {
     if (threadEn_) {
         rogue::GilRelease noGil;
@@ -151,7 +157,7 @@ void rim::TcpServer::runThread() {
         // Get message
         do {
             // Get the message
-            if (zmq_recvmsg(this->zmqReq_, &(msg[x]), 0) > 0) {
+            if (zmq_recvmsg(this->zmqReq_, &(msg[x]), 0) >= 0) {
                 if (x != 4) x++;
                 msgCnt++;
 
@@ -180,8 +186,18 @@ void rim::TcpServer::runThread() {
             std::memcpy(&size, zmq_msg_data(&(msg[2])), 4);
             std::memcpy(&type, zmq_msg_data(&(msg[3])), 4);
 
+            // Bridge readiness probe is handled locally.
+            if (type == rim::TcpBridgeProbe) {
+                if ((msgCnt != 4) || (size != 0)) {
+                    bridgeLog_->warning("Malformed readiness probe. Id=%" PRIu32, id);
+                    for (x = 0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
+                    continue;  // while (1)
+                }
+                zmq_msg_init_size(&(msg[4]), 0);
+                result = "OK";
+
             // Write data is expected
-            if ((type == rim::Write) || (type == rim::Post)) {
+            } else if ((type == rim::Write) || (type == rim::Post)) {
                 if ((msgCnt != 5) || (zmq_msg_size(&(msg[4])) != size)) {
                     bridgeLog_->warning("Transaction write data error. Id=%" PRIu32, id);
                     for (x = 0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
@@ -191,29 +207,31 @@ void rim::TcpServer::runThread() {
                 zmq_msg_init_size(&(msg[4]), size);
             }
 
-            // Data pointer
-            data = reinterpret_cast<uint8_t*>(zmq_msg_data(&(msg[4])));
+            if (type != rim::TcpBridgeProbe) {
+                // Data pointer
+                data = reinterpret_cast<uint8_t*>(zmq_msg_data(&(msg[4])));
 
-            bridgeLog_->debug("Starting transaction id=%" PRIu32 ", addr=0x%" PRIx64 ", size=%" PRIu32
-                              ", type=%" PRIu32,
-                              id,
-                              addr,
-                              size,
-                              type);
+                bridgeLog_->debug("Starting transaction id=%" PRIu32 ", addr=0x%" PRIx64 ", size=%" PRIu32
+                                  ", type=%" PRIu32,
+                                  id,
+                                  addr,
+                                  size,
+                                  type);
 
-            // Execute transaction and wait for result
-            this->clearError();
-            reqTransaction(addr, size, data, type);
-            waitTransaction(0);
-            result = getError();
+                // Execute transaction and wait for result
+                this->clearError();
+                reqTransaction(addr, size, data, type);
+                waitTransaction(0);
+                result = getError();
 
-            bridgeLog_->debug("Done transaction id=%" PRIu32 ", addr=0x%" PRIx64 ", size=%" PRIu32 ", type=%" PRIu32
-                              ", result=(%s)",
-                              id,
-                              addr,
-                              size,
-                              type,
-                              result.c_str());
+                bridgeLog_->debug("Done transaction id=%" PRIu32 ", addr=0x%" PRIx64 ", size=%" PRIu32
+                                  ", type=%" PRIu32 ", result=(%s)",
+                                  id,
+                                  addr,
+                                  size,
+                                  type,
+                                  result.c_str());
+            }
 
             // Result message, at least one char needs to be sent
             if (result.length() == 0) result = "OK";
@@ -234,7 +252,9 @@ void rim::TcpServer::setup_python() {
     bp::class_<rim::TcpServer, rim::TcpServerPtr, bp::bases<rim::Master>, boost::noncopyable>(
         "TcpServer",
         bp::init<std::string, uint16_t>())
-        .def("close", &rim::TcpServer::close);
+        .def("close", &rim::TcpServer::close)
+        .def("_start", &rim::TcpServer::start)
+        .def("_stop", &rim::TcpServer::stop);
 
     bp::implicitly_convertible<rim::TcpServerPtr, rim::MasterPtr>();
 #endif
