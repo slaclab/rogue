@@ -55,6 +55,8 @@ class VariableCommandDevice(pr.Device):
 
         self.add(pr.LinkVariable(
             name="Mirror",
+            # Use the direct-variable shortcut so the test covers inherited
+            # display/type metadata as well as dependency tracking.
             variable=self.Source,
         ))
 

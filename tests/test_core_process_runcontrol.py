@@ -13,6 +13,8 @@ class ProcessDevice(pr.Process):
         )
 
     def _run_process(self, *, dev):
+        # Keep the body deterministic and short so the test can assert state
+        # transitions without racing a long-lived worker thread.
         self.Message.set("Running")
         self.TotalSteps.set(4)
         for step in range(1, 5):
@@ -60,6 +62,9 @@ def test_process_start_stop_and_return_value(wait_until):
         assert root.Proc.Message.value() == "Done"
         assert root.Proc.events == [1, 2, 3, 4]
 
+        # Reset the small amount of process state we intentionally inspect so
+        # the stop path can be exercised in the same test without rebuilding
+        # the whole tree.
         root.Proc._runEn = True
         root.Proc._thread = None
         root.Proc.Message.set("")

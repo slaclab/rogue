@@ -54,6 +54,8 @@ def test_tree_dict_yaml_and_var_listener_filters(wait_until, tmp_path):
         root.addVarListener(lambda path, value: updates.append((path, value.value)), incGroups="Cfg")
 
         with root.updateGroup():
+            # Queue two updates together so the listener filter is tested against
+            # a realistic batched Root update cycle.
             root.Child.CfgValue.set(9)
             root.Child.StatusValue.set(10)
 

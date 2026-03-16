@@ -68,6 +68,7 @@ class FakeWriter:
 
 
 def _write_record(path, channel, payload, flags=0, error=0):
+    # Match the canonical Rogue on-disk record header layout.
     header = struct.pack("IHBB", len(payload) + 4, flags, error, channel)
     path.write_bytes(header + payload)
 
@@ -78,6 +79,8 @@ def test_file_reader_reads_records_and_config(tmp_path):
     data_payload = bytes([1, 2, 3, 4])
 
     data_path.write_bytes(
+        # Prepend a config-channel record so FileReader has to merge YAML before
+        # yielding the first data frame.
         struct.pack("IHBB", len(config_payload) + 4, 0, 0, 7) + config_payload +
         struct.pack("IHBB", len(data_payload) + 4, 1, 0, 1) + data_payload
     )
@@ -117,6 +120,8 @@ def test_stream_writer_wrapper_delegates_to_underlying_writer(tmp_path):
     )
 
     root = pr.Root(name="root", pollEn=False)
+    # Attach the wrapper to a real Root so LocalVariable/LocalCommand plumbing
+    # behaves the same way it does in normal runtime use.
     root.add(writer)
     with root:
         output = tmp_path / "stream.dat"
