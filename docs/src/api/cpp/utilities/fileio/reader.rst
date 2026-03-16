@@ -10,6 +10,10 @@ The file format consumed by StreamReader is documented here:
 
 - :ref:`utilities_fileio_format`
 
+For conceptual utility usage, see:
+
+- :doc:`/built_in_modules/utilities/fileio/index`
+
 
 StreamReader objects in C++ are referenced by the following shared pointer typedef:
 

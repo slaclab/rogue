@@ -6,6 +6,7 @@ CoreV2
 
 ``CoreV2`` parses Batcher v2 super-frames and exposes parsed record metadata
 through ``Data`` objects plus header/tail iterators.
+For conceptual guidance, see :doc:`/built_in_modules/protocols/batcher/index`.
 
 Protocol reference: https://confluence.slac.stanford.edu/x/L2VlK
 

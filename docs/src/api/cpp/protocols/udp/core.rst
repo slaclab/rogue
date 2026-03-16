@@ -4,10 +4,19 @@
 Core
 ====
 
-TODO
+``Core`` provides shared UDP transport configuration used by ``Client`` and
+``Server``. This page is reference-only; for usage guidance see
+:doc:`/built_in_modules/protocols/udp/index`.
 
+Python binding
+--------------
 
-Core objects in C++ are referenced by the following shared pointer typedef:
+This C++ class is also exported into Python as ``rogue.protocols.udp.Core``.
+
+Python API page:
+- :doc:`/api/python/rogue/protocols/udp/core`
+
+objects in C++ are referenced by the following shared pointer typedef:
 
 .. doxygentypedef:: rogue::protocols::udp::CorePtr
 

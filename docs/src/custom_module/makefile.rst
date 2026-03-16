@@ -4,28 +4,26 @@
 Building The Custom Module
 ==========================
 
-The following is an example custom CMakeLists.txt which will setup the environment
-for building a custom Rogue module using existing Rogue libraries. It is assumed
-that the ROGUE_DIR environment variable points to the non-standard Rogue
-location if not using an Miniforge environment, Docker or System install.
+The example below shows a custom ``CMakeLists.txt`` for building a Rogue module
+against an existing Rogue installation. ``ROGUE_DIR`` can be used when Rogue
+is installed in a non-standard location rather than in Miniforge, Docker, or a
+system path.
 
 Replace MyModule with your module name globally in this file.
 
-This file assumes that the source file MyModule.cpp exists in the **src**
-subdirectory relative to this file's location.  This file can be used to
-compile the :ref:`custom_sourcefile` described in this section.  This
-CMakeLists can be used to compile the custom module with the following commands:
+This file assumes that ``MyModule.cpp`` exists in the **src** subdirectory
+relative to the project root. It can be used to compile the
+:ref:`custom_sourcefile` with the following commands:
 
-.. code::
+.. code-block:: bash
 
    $ mkdir build
    $ cd build
    $ cmake ..
    $ make
 
-The output shared library MyModule.so will be created in the **python**
-sub-directory. This directory will need to be included in the PYTHONPATH
-environment variable.
+The output shared library ``MyModule.so`` will be created in the **python**
+subdirectory. That directory needs to be included in ``PYTHONPATH``.
 
 .. code:: cmake
 
@@ -81,3 +79,8 @@ environment variable.
    # Link to rogue core
    TARGET_LINK_LIBRARIES(MyModule LINK_PUBLIC ${ROGUE_LIBRARIES})
 
+What To Explore Next
+====================
+
+- Custom module source structure: :ref:`custom_sourcefile`
+- Wrapping the resulting module in PyRogue: :ref:`custom_wrapper`

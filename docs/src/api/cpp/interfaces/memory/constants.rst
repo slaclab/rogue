@@ -5,6 +5,8 @@ Constants
 =========
 
 The following constants are defined for use with the memory interface.
+For conceptual usage, see
+:doc:`/memory_interface/transactions`.
 
 .. _interface_memory_constants_type:
 .. _interfaces_memory_constants_type:
@@ -25,7 +27,7 @@ The following memory transaction types are defined:
 Block Process Types
 ===================
 
-The following block processing type ar defined:
+The following block processing types are defined:
 
 
 

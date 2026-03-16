@@ -1,0 +1,18 @@
+{% extends "!layout.html" %}
+
+{%- block navigation %}
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="{{ _('Navigation menu') }}">
+  {%- block menu %}
+    {%- set nav_depth = -1 if pagename.startswith('api/') else 4 %}
+    {%- set toctree = toctree(maxdepth=nav_depth,
+                              collapse=theme_collapse_navigation|tobool,
+                              includehidden=theme_includehidden|tobool,
+                              titles_only=theme_titles_only|tobool) %}
+    {%- if toctree %}
+      {{ toctree }}
+    {%- else %}
+      <div class="local-toc">{{ toc }}</div>
+    {%- endif %}
+  {%- endblock %}
+</div>
+{%- endblock %}

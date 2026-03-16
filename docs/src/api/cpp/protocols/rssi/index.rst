@@ -1,10 +1,12 @@
 .. _protocols_rssi_classes:
 
-================================
-RSSI Protocol Class Descriptions
-================================
+=======================
+rogue::protocols::rssi
+=======================
 
-The following are detailed descriptions of the various C++ classes that make up the Rogue RSSI protocol.
+This section contains the C++ API reference for
+``rogue::protocols::rssi`` classes.
+
 
 .. toctree::
    :maxdepth: 1
@@ -16,3 +18,8 @@ The following are detailed descriptions of the various C++ classes that make up 
    controller
    application
    transport
+
+
+.. rubric:: Related Topics
+
+- :doc:`/built_in_modules/protocols/rssi/index`

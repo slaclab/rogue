@@ -4,9 +4,9 @@
 Build Your First PyRogue Root
 ========================================
 
-This page walks through creating a functional PyRogue root tree from scratch.
-Each section adds one building block so you can run, inspect, and extend your
-application incrementally.
+Creating a functional PyRogue Root tree from scratch is the goal of this
+walkthrough. Each section adds one building block so you can run, inspect, and
+extend the application incrementally.
 
 Creating a Root Node
 ====================
