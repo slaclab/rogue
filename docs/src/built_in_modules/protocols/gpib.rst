@@ -1,52 +1,23 @@
 .. _protocols_gpib:
 
-=============
-GPIB Protocol
-=============
-
-The GPIB-based instrument interface is implemented in
-``python/pyrogue/protocols/gpib.py``.
-
-Rogue models GPIB instruments as a memory-style control path so normal
-``RemoteVariable`` access can drive SCPI-style commands. This is useful for lab
-equipment that already has a stable command set but does not present a register
-bus in the FPGA sense.
-
-Overview
-========
-
-The implementation has two layers:
-
-- ``GpibController``:
-  A memory ``Slave`` that translates transactions into GPIB read/write
-  operations
-- ``GpibDevice``:
-  A ``pyrogue.Device`` wrapper that owns the controller and registers Variables
-  with it
-
-Each mapped Variable must provide a ``key`` extra attribute. That key is used
-as the SCPI command prefix.
-
-Transaction model
-=================
-
-The controller translates memory transactions as follows:
-
-- Write:
-  decode the transaction bytes using the Variable Model, then send
-  ``<key> <display_value>``
-- Read or Verify:
-  send ``<key>?``, read back the instrument response string, parse it through
-  the Variable display/parser path, then return the encoded bytes to the
-  transaction
-- Post:
-  not currently supported
-
-This means the Variable's Model and display/parsing behavior are part of the
-protocol contract, not just the tree presentation.
-
-Dependencies
 ============
+GPIB Control
+============
+
+For instrument control over a host GPIB stack, PyRogue provides
+``pyrogue.protocols.gpib`` so SCPI-style commands can be exposed through the
+normal ``RemoteVariable`` memory-access model. This is the right fit when a lab
+instrument already has a stable command set but does not present a register bus
+in the FPGA sense.
+
+The implementation has two layers. ``GpibController`` is a memory ``Slave``
+that translates transactions into GPIB read and write operations, and
+``GpibDevice`` is the ``pyrogue.Device`` wrapper that owns that controller and
+registers Variables with it. Each mapped Variable must provide a ``key`` extra
+attribute, because that key becomes the SCPI command prefix used on the wire.
+
+Host Dependencies
+=================
 
 This interface depends on the external ``gpib_ctypes`` package and a working
 GPIB stack on the host:
@@ -59,8 +30,22 @@ The module source also references additional host setup guidance at:
 
 https://gist.github.com/ochococo/8362414fff28fa593bc8f368ba94d46a
 
-Defining Variables
-==================
+GpibDevice Workflow
+===================
+
+``GpibDevice`` keeps the user-facing PyRogue model conventional even though the
+underlying instrument interface is command-oriented:
+
+- It creates a ``GpibController`` and installs it as ``memBase``.
+- It registers Variables that carry ``extraArgs={'key': ...}``.
+- Reads and verifies send ``<key>?``, parse the response with the Variable
+  display/parser path, and return the encoded bytes to the transaction.
+- Writes decode the transaction bytes with the Variable Model and send
+  ``<key> <display_value>``.
+- Posted writes are not currently supported.
+
+Configuration Example
+=====================
 
 Variables should be created with a ``key`` extra attribute matching the
 instrument command name.
@@ -94,19 +79,21 @@ instrument command name.
                extraArgs={'key': 'CURR'},
            ))
 
-How the wrapper works
-=====================
+Key Constructor Arguments
+=========================
 
-``GpibDevice`` creates a ``GpibController`` and installs it as ``memBase``.
-When you add a Variable that includes ``extraArgs={'key': ...}``, the wrapper
-registers that Variable with the controller so transactions at the Variable
-offset can be translated into GPIB commands.
+- ``gpibAddr`` selects the instrument address on the bus.
+- ``gpibBoard`` selects the host GPIB board number when more than one board is
+  present.
+- ``timeout`` controls how long the GPIB layer waits for command completion.
 
-This keeps the user-facing PyRogue model conventional even though the
-underlying instrument interface is command-oriented.
+For Variables, the most important configuration point is the ``key`` extra
+attribute, because the controller uses that key to build the SCPI command
+string. The Variable Model and display/parser behavior are therefore part of
+the protocol contract, not just tree presentation.
 
-Code-backed example
-===================
+Instrument Example
+==================
 
 .. code-block:: python
 
@@ -148,15 +135,14 @@ Code-backed example
            super().__init__(name='MyRoot')
            self.add(PowerSupply())
 
-Operational notes
+Operational Notes
 =================
 
-- The transaction size must match the Variable's encoded byte width.
-- Readback parsing depends on the instrument returning a string compatible with
-  the Variable's display parser.
-- Posted writes are not supported.
-- This path is appropriate for low-rate instrument control and monitoring, not
-  high-rate acquisition.
+The transaction size must match the Variable's encoded byte width, because the
+controller checks the byte count before issuing the GPIB command. Readback
+parsing depends on the instrument returning a string compatible with the
+Variable's display parser. This path is intended for low-rate instrument
+control and monitoring, not for high-rate acquisition.
 
 Logging
 =======
@@ -176,8 +162,8 @@ Configuration example:
 
    logging.getLogger('pyrogue.GpibController').setLevel(logging.DEBUG)
 
-This logger is useful for command/response tracing because it emits messages
-such as:
+This logger is useful for command and response tracing because it emits
+messages such as:
 
 - ``Write Sending <command>``
 - ``Read Sending <command?>``

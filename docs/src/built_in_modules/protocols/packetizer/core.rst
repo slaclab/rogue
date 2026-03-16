@@ -4,80 +4,85 @@
 Packetizer Protocol Core
 ========================
 
-``Core`` is the packetizer v1 wiring class. It creates a ``Transport`` endpoint
-and a v1 controller, then exposes ``application(dest)`` endpoints for channel-
-based application routing.
+For packetizer v1 links, Rogue provides ``rogue.protocols.packetizer.Core``.
+This class owns the packetizer v1 controller, exposes the lower transport edge
+through ``transport()``, and creates per-destination application endpoints with
+``application(dest)``.
 
-Protocol behavior summary (v1)
-==============================
+Use ``Core`` when software must match an existing packetizer v1 firmware or
+software peer. For new deployments where the protocol version is still open,
+:doc:`coreV2` is usually the better choice.
 
-Packetizer v1 breaks one incoming frame into one or more packets and reassembles
-packets back into the original frame on the receive side. AXI-Stream sideband
-values (``TDest``, ``TID``, ``TUserFirst``, ``TUserLast``) are carried in the
-packetized wire format.
+Protocol Behavior
+=================
 
-Each packet has:
+Packetizer v1 breaks one incoming frame into one or more transport packets and
+reassembles those packets on the receive side. It carries the usual AXI-Stream
+sideband metadata in the wire format:
 
-- An 8-byte header, including:
-  version (expected ``0``), frame number, packet number, ``TDest``, ``TID``,
-  and ``TUserFirst``.
-- A 1-byte tail, including:
-  ``TUserLast`` (7 bits) and EOF flag (MSB).
+- ``TDest``
+- ``TID``
+- ``TUserFirst``
+- ``TUserLast``
+- EOF state
 
-Operational notes:
+Each v1 packet contains:
+
+- An 8-byte header with version, frame number, packet number, ``TDest``,
+  ``TID``, and ``TUserFirst``.
+- A 1-byte tail with ``TUserLast`` and EOF.
+
+The design tradeoff is that EOF and ``TUserLast`` live in a tail rather than in
+the header. That allows streaming behavior without buffering an entire packet
+payload before forwarding.
+
+Operational Notes
+=================
 
 - ``TUserLast`` is only valid when EOF is asserted.
-- Putting EOF/``TUserLast`` in a tail allows streaming operation without
-  buffering a full packet payload before forwarding.
-- ``TDest``, ``TID``, and ``TUserFirst`` are repeated in each packet header,
+- ``TDest``, ``TID``, and ``TUserFirst`` are repeated in each packet header
   even though they are frame-level attributes.
+- Destination endpoints are allocated lazily when ``application(dest)`` is
+  called.
 
-Specification reference:
-https://confluence.slac.stanford.edu/x/1oyfD
+Key Constructor Arguments
+=========================
 
-Behavior summary
-================
+``Core(enSsi)``
 
-- Constructor argument ``enSsi`` controls SSI framing behavior.
-- ``transport()`` returns the stream edge for lower-layer connection.
-- ``application(dest)`` lazily allocates per-destination application endpoints
-  for ``dest`` values ``0..255``.
-- ``getDropCount()`` exposes controller-reported dropped-frame count.
-- ``setTimeout()`` forwards timeout tuning into controller behavior.
+- ``enSsi`` enables SSI framing behavior.
 
-Compatibility notes
-===================
+Common Controls
+===============
 
-- Packetizer v1 must be matched by a packetizer v1 peer.
-- Use :doc:`coreV2` for newer v2 deployments, interleaving support, and CRC
-  control options.
+- ``transport()`` returns the lower-layer stream edge.
+- ``application(dest)`` returns the destination endpoint for values ``0..255``.
+- ``getDropCount()`` reports the controller drop count.
+- ``setTimeout(timeout)`` forwards timeout tuning into the controller, in
+  microseconds.
 
-When to prefer Core
-===================
-
-- Existing firmware/software integration expects packetizer v1 behavior.
-- You are extending an already-deployed stack already based on ``Core``.
-
-Code-backed example
-===================
+Python Example
+==============
 
 .. code-block:: python
 
    import rogue.protocols.packetizer
+   import rogue.protocols.rssi
 
-   # Packetizer v1 core with SSI framing behavior enabled.
+   # Packetizer v1 core with SSI framing enabled.
    pkt = rogue.protocols.packetizer.Core(True)
 
-   # Destination 0 endpoint receives decoded payload frames.
-   pkt.application(0) >> reg_sink
+   # Lower protocol layer.
+   rssi = rogue.protocols.rssi.Client(1472 - 8)
+   rssi.application() == pkt.transport()
 
-   # Outbound frames sent to destination 1.
+   # Outbound traffic enters destination channel 1.
    data_source >> pkt.application(1)
 
-   # Attach transport side to lower protocol layer.
-   # lower_layer == pkt.transport()
+   # Inbound traffic from destination channel 0 is delivered to a sink.
+   pkt.application(0) >> reg_sink
 
-C++ example
+C++ Example
 ===========
 
 .. code-block:: cpp
@@ -90,25 +95,36 @@ C++ example
        // Packetizer v1 core with SSI framing enabled.
        auto pkt = rpp::Core::create(true);
 
-       // Example lower-layer connection:
-       // *lowerLayer == pkt->transport();
-
-       // Example destination endpoint access:
+       // Access one application destination endpoint.
        auto app0 = pkt->application(0);
        (void)app0;
 
-       // Query controller drop counter for diagnostics.
+       // Query drop count for diagnostics.
        auto dropCount = pkt->getDropCount();
        (void)dropCount;
+
+       // Lower-layer connection would be made through pkt->transport().
        return 0;
    }
+
+Threading And Lifecycle
+=======================
+
+``Core`` does not start its own worker thread. Packetization and
+depacketization run in the caller context of the surrounding stream graph,
+while lifecycle management belongs to the lower transport layer attached to
+``transport()``.
+
+Compatibility Notes
+===================
+
+- ``Core`` must connect to a packetizer v1 peer.
+- If the remote endpoint expects packetizer v2, use :doc:`coreV2`.
 
 Logging
 =======
 
-Packetizer logging is emitted by the shared controller via Rogue C++ logging.
-
-Static logger name:
+Packetizer logging is emitted by the shared controller logger:
 
 - ``pyrogue.packetizer.Controller``
 
@@ -120,8 +136,8 @@ Enable it before constructing packetizer objects:
 
    rogue.Logging.setFilter('pyrogue.packetizer', rogue.Logging.Debug)
 
-This logger is the main source for packet drop, framing, and queue timeout
-messages. There is no additional per-instance debug helper on ``Core``.
+This logger is the main source for packet-drop, framing, and timeout messages.
+There is no separate per-instance debug helper on ``Core``.
 
 Related Topics
 ==============

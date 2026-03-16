@@ -6,40 +6,51 @@
 Batcher Protocol Inverter
 =========================
 
-The inverter modules transform a batcher super-frame in place and forward a
-single output frame. They are not batching or unbatching stages.
+For in-place transformation of batched super-frames, Rogue provides
+``rogue.protocols.batcher.InverterV1`` and ``InverterV2``. These classes are
+not unbatchers: each input frame produces exactly one output frame.
 
-Use:
+Use an inverter when the downstream stage still wants one super-frame-shaped
+message, but needs the framing rewritten into the layout expected by that
+consumer.
 
-- ``InverterV1`` with batcher v1 framing.
-- ``InverterV2`` with batcher v2 framing.
+Version Selection
+=================
 
-When to use inverter vs splitter
-================================
+- Use ``InverterV1`` with batcher v1 framing.
+- Use ``InverterV2`` with batcher v2 framing.
 
-- Use inverter when downstream expects one transformed super-frame.
-- Use splitter when downstream expects one frame per logical record.
+How Inversion Works
+===================
 
-Version behavior summary
-========================
+The inverter uses the corresponding parser core to locate record boundaries and
+tail metadata, then rewrites the frame in place:
 
-InverterV1
-----------
+- ``InverterV1`` uses ``CoreV1``.
+- ``InverterV2`` uses ``CoreV2``.
 
-- Input is parsed with ``CoreV1``.
-- Tail/header data is shifted in place across records.
-- Final payload is reduced by one tail-width segment.
-- Exactly one output frame is emitted for each input frame.
+In both cases, one input frame yields one output frame. No record fan-out
+occurs. Instead, the framing information is shifted into the layout expected by
+the downstream consumer, and the payload is trimmed to remove the final framing
+segment that has been folded into the transformed layout.
 
-InverterV2
-----------
+Version Behavior
+================
 
-- Input is parsed with ``CoreV2``.
-- Tail/header data is shifted in place across records.
-- Final payload is reduced by one header-width segment.
-- Exactly one output frame is emitted for each input frame.
+``InverterV1`` rewrites batcher v1 framing by copying per-record tail fields
+into the positions expected by downstream consumers and trimming the final
+tail-width segment from the payload.
 
-Python examples
+``InverterV2`` performs the same overall role for the v2 format, trimming the
+final header-width segment after the in-place framing transform.
+
+Inverter vs Splitter
+====================
+
+Use an inverter when downstream expects one transformed super-frame. Use
+:doc:`splitter` when downstream expects one frame per logical record.
+
+Python Examples
 ===============
 
 V1
@@ -49,7 +60,10 @@ V1
 
    import rogue.protocols.batcher
 
+   # Source produces batcher-v1 super-frames.
    src = MyBatcherV1Source()
+
+   # Rewrite framing in place and keep one output frame per input frame.
    inv = rogue.protocols.batcher.InverterV1()
    dst = MyTransformedFrameSink()
 
@@ -62,26 +76,54 @@ V2
 
    import rogue.protocols.batcher
 
+   # Source produces batcher-v2 super-frames.
    src = MyBatcherV2Source()
+
+   # Rewrite framing in place and keep one output frame per input frame.
    inv = rogue.protocols.batcher.InverterV2()
    dst = MyTransformedFrameSink()
 
    src >> inv >> dst
 
+C++ Example
+===========
+
+.. code-block:: cpp
+
+   #include <rogue/protocols/batcher/InverterV2.h>
+
+   namespace rpb = rogue::protocols::batcher;
+
+   int main() {
+       // Source produces batcher-v2 super-frames.
+       auto src = MyBatchedFrameSource::create();
+
+       // Rewrite framing in place and keep one output frame per input frame.
+       auto inv = rpb::InverterV2::create();
+       auto dst = MyTransformedFrameSink::create();
+
+       *(*src >> inv) >> dst;
+       return 0;
+   }
+
+Threading And Lifecycle
+=======================
+
+The inverter classes do not create worker threads. Frame transformation runs
+synchronously inside ``acceptFrame()`` in the caller thread.
+
 Related Topics
 ==============
 
 - :doc:`/built_in_modules/protocols/batcher/index`
+- :doc:`/built_in_modules/protocols/batcher/splitter`
 
 API Reference
 =============
 
 - Python:
-
-  - :doc:`/api/python/rogue/protocols/batcher/inverterv1`
-  - :doc:`/api/python/rogue/protocols/batcher/inverterv2`
-
+  :doc:`/api/python/rogue/protocols/batcher/inverterv1`
+  :doc:`/api/python/rogue/protocols/batcher/inverterv2`
 - C++:
-
-  - :doc:`/api/cpp/protocols/batcher/inverterV1`
-  - :doc:`/api/cpp/protocols/batcher/inverterV2`
+  :doc:`/api/cpp/protocols/batcher/inverterV1`
+  :doc:`/api/cpp/protocols/batcher/inverterV2`

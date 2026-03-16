@@ -9,7 +9,7 @@ This guide provides a quick walkthrough of a basic PyRogue tree application.
 It walks from a minimal root setup through custom device definition, then
 finishes with complete reference code.
 
-Recommended learning path
+Recommended Learning Path
 =========================
 
 #. :ref:`tutorials_p_t_root` - build a minimal working root and add common
@@ -30,7 +30,7 @@ Recommended learning path
    pyrogue_tree_example/full_root
 
 
-External hardware-oriented walkthrough
+External Hardware-Oriented Walkthrough
 ======================================
 
 For a board-focused example using Rogue with hardware:

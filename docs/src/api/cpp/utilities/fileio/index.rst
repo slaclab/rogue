@@ -4,7 +4,7 @@
 rogue::utilities::fileio
 ========================
 
-This section contains the C++ API reference for
+These pages provide the C++ API reference for
 Rogue file I/O utility classes.
 
 

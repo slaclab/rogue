@@ -5,27 +5,34 @@
 Protocols
 ==========
 
-Protocol modules define how stream and memory traffic is carried, framed, and
-interpreted between software and firmware endpoints. They are the transport and
-control layer between interface primitives and deployed system behavior.
+Protocols defines how stream and memory traffic are carried, framed, and acted
+on between software and firmware endpoints. These pages are mostly
+``rogue.protocols.*``-first, but they also call out the small number of common
+``pyrogue.protocols.*`` wrappers and Python-only helpers where that is how
+users usually encounter the protocol.
 
-Most Rogue systems use more than one protocol module. A common pattern is to
-pair a transport protocol with a framing or transaction protocol, then map that
-stack onto Stream or Memory interfaces.
+Most deployments combine multiple protocol layers. A typical stack starts with
+hardware or a socket transport, adds reliability or framing, then adds a
+transaction protocol such as SRP before it connects into a Memory or Stream
+topology.
 
-Protocol selection quick guide
-==============================
+Subtopics
+=========
 
 - Use :doc:`udp/index` for lightweight datagram transport endpoints.
-- Use :doc:`rssi/index` when link reliability and ordered delivery are required.
-- Use :doc:`srp/index` for register/memory transaction transport over streams.
-- Use :doc:`packetizer/index` for framing, virtual channels, and packet
-  routing control.
-- Use :doc:`batcher/index` for record batching/unbatching transforms.
-- Use :doc:`xilinx/index` for XVC/JTAG-over-TCP integration.
+- Use :doc:`rssi/index` for ordered, reliable delivery over packet links.
+- Use :doc:`network` for the common ``pyrogue.protocols.UdpRssiPack`` wrapper
+  that assembles a typical UDP/RSSI transport stack.
+- Use :doc:`srp/index` for register and memory transaction transport over
+  streams.
+- Use :doc:`packetizer/index` for framing, virtual channels, and packet routing
+  control.
+- Use :doc:`batcher/index` for batching and unbatching transforms on stream
+  traffic.
+- Use :doc:`xilinx/index` for XVC and related Xilinx JTAG-over-network support.
 - Use :doc:`epicsV4/index` for EPICS PV integration helpers.
-- Use :doc:`uart` for UART-backed stream/memory transport paths.
-- Use :doc:`gpib` for SCPI-style lab instrument control over GPIB.
+- Use :doc:`uart` for UART-backed memory access paths.
+- Use :doc:`gpib` for SCPI-style instrument control over GPIB.
 
 These protocol pages are most useful alongside
 :doc:`/stream_interface/index` and :doc:`/memory_interface/index`, where link

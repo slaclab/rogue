@@ -4,16 +4,23 @@
 Network Wrapper
 ===============
 
-``pyrogue.protocols.UdpRssiPack`` is implemented in
-``python/pyrogue/protocols/_Network.py`` and provides a compact way to build
-the standard Rogue UDP/RSSI/packetizer stack. For RSSI protocol behavior and
-stack internals, see :ref:`protocols_rssi`.
+For building a standard UDP, RSSI, and packetizer stack under one tree-managed
+object, PyRogue provides ``pyrogue.protocols.UdpRssiPack``. It wires together
+the underlying ``rogue.protocols.udp.*``, ``rogue.protocols.rssi.*``, and
+``rogue.protocols.packetizer.*`` modules internally.
+
+For software that needs to connect to an FPGA RSSI endpoint, this is almost
+always the module to use. In most deployed systems, ``UdpRssiPack`` is the
+standard wrapper for register links and data links built on UDP and RSSI.
+
+For the underlying protocol behavior, see :ref:`protocols_udp`,
+:ref:`protocols_rssi`, and :ref:`protocols_packetizer`.
 
 Overview
 ========
 
 ``pyrogue.protocols.UdpRssiPack`` is a convenience ``pyrogue.Device`` that
-bundles the common network stack used by many Rogue/PyRogue systems:
+bundles the network stack used by many Rogue and PyRogue systems:
 
 * UDP transport (``rogue.protocols.udp.Client`` or ``Server``)
 * RSSI reliability layer (``rogue.protocols.rssi.Client`` or ``Server``)
@@ -28,8 +35,8 @@ Internally, it wires the stream graph as:
 Because it is a ``pyrogue.Device``, RSSI status and configuration variables are
 exposed directly in the PyRogue tree.
 
-Implementation details from ``_Network.py``
-===========================================
+Implementation Details
+======================
 
 - ``server=False``:
   Creates ``udp.Client(host, port, jumbo)`` and ``rssi.Client(...)``.
@@ -41,7 +48,7 @@ Implementation details from ``_Network.py``
 - RSSI segment size is derived from transport payload budget:
   ``udp.maxPayload() - 8``.
 
-When to use
+When To Use
 ===========
 
 Use ``UdpRssiPack`` when you want:
@@ -54,7 +61,7 @@ For most hardware systems (software talking to an FPGA RSSI endpoint), use
 ``server=False`` so Rogue acts as the RSSI/UDP client and connects outbound to
 the FPGA target.
 
-Key constructor arguments
+Key Constructor Arguments
 =========================
 
 * ``server``:
@@ -75,7 +82,12 @@ Key constructor arguments
   ``locCumAckTout``, ``locRetranTout``, ``locNullTout``,
   ``locMaxRetran``, ``locMaxCumAck``.
 
-Startup behavior
+In practice, real trees usually only set ``host``, ``port``, ``packVer``,
+``jumbo``, and sometimes ``enSsi``. The local example roots in this repository
+and nearby Rogue-based projects follow that pattern, often instantiating one
+``UdpRssiPack`` for SRP traffic and another for event data.
+
+Startup Behavior
 ================
 
 During ``UdpRssiPack._start()``:
@@ -88,7 +100,7 @@ During ``UdpRssiPack._start()``:
 This startup behavior is why using the wrapper through Root-managed lifecycle
 is preferred for full applications.
 
-Typical Root integration
+Typical Root Integration
 ========================
 
 Use ``add()`` to place the wrapper in the tree, then ``addInterface()`` so
@@ -131,18 +143,18 @@ Root start/stop sequencing manages the transport lifecycle.
            # Example memory-mapped device:
            self.add(MyDevice(name='Dev', memBase=srp, offset=0x0))
 
-Lifecycle notes
+Lifecycle Notes
 ===============
 
 - Root-managed mode:
-  add ``UdpRssiPack`` to the tree and register it via ``Root.addInterface(...)``.
+  Add ``UdpRssiPack`` to the tree and register it via ``Root.addInterface(...)``.
 - Standalone mode:
-  direct scripts can call wrapper ``start``/``stop`` commands (or ``_start`` /
+  Direct scripts can call wrapper ``start``/``stop`` commands (or ``_start`` /
   ``_stop``) when no Root lifecycle manager is present.
 - Managed Interface Lifecycle reference:
   :ref:`pyrogue_tree_node_device_managed_interfaces`
 
-Server mode (less common)
+Server Mode (Less Common)
 =========================
 
 ``server=True`` is typically used for software peer links, integration tests,
@@ -161,15 +173,15 @@ This is not the common deployment for FPGA RSSI endpoints.
    ))
    self.addInterface(self.Net)
 
-Available helper methods/commands
+Available Helper Methods/Commands
 =================================
 
 * ``application(dest)``:
-  return packetizer application endpoint for a destination VC.
+  Return packetizer application endpoint for a destination VC.
 * ``countReset()``:
-  reset RSSI counters.
+  Reset RSSI counters.
 * ``start`` / ``stop``:
-  local commands exported by the wrapper device for link control.
+  Local commands exported by the wrapper device for link control.
 
 Logging
 =======
@@ -194,6 +206,15 @@ Configuration example:
 
 In practice, enable the underlying protocol loggers rather than relying on any
 wrapper-level Python logging when debugging link behavior.
+
+Relationship To The Lower-Level Modules
+=======================================
+
+``UdpRssiPack`` is the right page when you want the preassembled wrapper and
+tree-visible RSSI controls. If you need to reason about the transport behavior
+itself, or to build a custom stack without the wrapper, move to the direct
+protocol pages for UDP, RSSI, and packetizer. Those pages stay focused on the
+underlying ``rogue.protocols.*`` modules rather than on the convenience device.
 
 Related Topics
 ==============

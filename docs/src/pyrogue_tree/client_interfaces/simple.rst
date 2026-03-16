@@ -16,7 +16,7 @@ It is a good fit when you need:
 Compared to :doc:`/pyrogue_tree/client_interfaces/virtual`, ``SimpleClient``
 is intentionally narrower in scope but faster to adopt in small scripts.
 
-Basic usage
+Basic Usage
 ===========
 
 .. code-block:: python
@@ -39,7 +39,7 @@ Basic usage
        # Execute a command
        client.exec('root.SomeCommand', '0x100')
 
-Update callbacks
+Update Callbacks
 ================
 
 ``SimpleClient`` can register a callback that is invoked for each Variable

@@ -4,76 +4,100 @@
 RSSI Protocol
 =============
 
-RSSI (Reliable Streaming Service Interface) provides reliable, in-order stream
-delivery over lower layers that are not inherently reliable (for example UDP).
-Rogue's RSSI implementation uses sequence/acknowledge exchange, retransmission,
-timeout handling, and negotiated link parameters to maintain a stable stream.
-Conceptually, RSSI is based on the Reliable Data Protocol lineage defined by
-RFC 908 and RFC 1151.
+For reliable, in-order stream delivery over an unreliable lower layer such as
+UDP, Rogue provides ``rogue.protocols.rssi``. RSSI is the protocol layer that
+adds connection management, retransmission, flow control, and parameter
+negotiation on top of a lower transport.
 
-Protocol documentation
+In normal PyRogue applications, the usual way to bring up RSSI to an FPGA is
+still :doc:`/built_in_modules/protocols/network`. The direct
+``rogue.protocols.rssi`` classes are the lower-level pieces to use when you
+need custom protocol wiring, explicit debugging, or a stack that is not built
+by ``pyrogue.protocols.UdpRssiPack``.
+
+Rogue's RSSI implementation uses sequence and acknowledge exchange,
+retransmission, timeout handling, and negotiated link parameters to maintain a
+stable stream. Conceptually, RSSI follows the Reliable Data Protocol lineage
+described in RFC 908 and RFC 1151.
+
+Protocol Documentation
 ======================
 
-* RSSI protocol reference: https://confluence.slac.stanford.edu/x/1IyfD
-* Additional SLAC RSSI notes: https://confluence.slac.stanford.edu/x/xovOCw
+- RSSI protocol reference: https://confluence.slac.stanford.edu/x/1IyfD
+- Additional SLAC RSSI notes: https://confluence.slac.stanford.edu/x/xovOCw
 
 The protocol reference links to the relevant RFC background used by RSSI's
 reliability model (sequencing, acknowledgments, retransmission, and timeout
 behavior).
 
-How RSSI classes fit together
-=============================
+Where RSSI Fits In The Stack
+============================
+
+Typical protocol stack:
+
+.. code-block:: text
+
+   UDP <-> RSSI <-> Packetizer <-> Application logic
+
+RSSI is the layer that adds reliability and ordered delivery. Packetizer, SRP,
+or other upper protocols then sit above the RSSI application side.
+
+Key Classes
+===========
 
 The ``rogue::protocols::rssi`` classes are layered as follows:
 
-* ``Client`` / ``Server``:
+- ``Client`` / ``Server``:
   convenience wrappers that instantiate and wire the full stack for each role.
-* ``Controller``:
+- ``Controller``:
   the protocol state machine; performs handshake, negotiation, ACK handling,
   retransmission policy, and flow-control decisions.
-* ``Transport``:
+- ``Transport``:
   lower stream edge carrying RSSI frames to/from the underlying transport link.
-* ``Application``:
+- ``Application``:
   upper stream edge carrying payload frames to/from application protocols.
-* ``Header``:
+- ``Header``:
   helper codec/container for parsing and encoding RSSI frame headers.
 
-Threading and lifecycle notes
-=============================
-
-- Implements Managed Interface Lifecycle:
-  :ref:`pyrogue_tree_node_device_managed_interfaces`
-- ``Controller`` owns RSSI protocol-state progression and link-management
-  behavior.
-- ``Transport`` and ``Application`` are connected data-path endpoints without
-  standalone managed lifecycle control.
-
-Lifecycle usage modes
-=====================
-
-- Root-managed mode:
-  add interfaces to a ``Root`` with ``Root.addInterface(...)`` and let
-  Managed Interface Lifecycle handle startup/shutdown.
-- Standalone script mode:
-  for direct stream-graph scripts without a ``Root``, start/stop RSSI
-  endpoints explicitly in application code.
-
-Typical stream topology:
+The convenience wrappers wire these pieces as:
 
 .. code-block:: text
 
    [Underlying link] <-> Transport <-> Controller <-> Application <-> [Upper protocol]
 
-Python usage example
-====================
+Lifecycle And Threading
+=======================
 
-In most PyRogue applications, RSSI links are created with
-``pyrogue.protocols.UdpRssiPack``. This helper bundles UDP socket transport,
-RSSI protocol endpoints, and packetizer wiring into a single object. It is
-implemented as a ``pyrogue.Device``, so RSSI link/status variables are exposed
-directly in the PyRogue tree. For wrapper details, see
-:ref:`protocols_network`. For typical FPGA-facing links, instantiate it in
-client mode (``server=False``).
+- Root-managed mode:
+  Add interfaces to a ``Root`` with ``Root.addInterface(...)`` and let
+  Managed Interface Lifecycle handle startup/shutdown.
+- Standalone script mode:
+  For direct stream-graph scripts without a ``Root``, start/stop RSSI
+  endpoints explicitly in application code.
+- Managed Interface Lifecycle reference:
+  :ref:`pyrogue_tree_node_device_managed_interfaces`
+- ``Controller`` owns RSSI connection state and protocol progression.
+- ``Application`` starts a background worker thread once a controller is
+  attached.
+- ``Transport`` is the lower stream edge and forwards frames directly into the
+  controller.
+
+When To Use The Direct RSSI Classes
+===================================
+
+- You need the reliable-stream layer but want to build the full stack yourself.
+- You are debugging or instrumenting the RSSI layer separately from the
+  ``UdpRssiPack`` wrapper.
+- Your lower transport is not hidden behind the PyRogue network wrapper.
+
+For typical FPGA-facing links in PyRogue, prefer
+:doc:`/built_in_modules/protocols/network` unless you need this lower-level
+control.
+
+Python Example
+==============
+
+The most common PyRogue-facing form is still ``pyrogue.protocols.UdpRssiPack``:
 
 .. code-block:: python
 
@@ -102,9 +126,9 @@ client mode (``server=False``).
            # Example device using SRP as memBase
            # self.add(MyDevice(name='Dev', offset=0x0, memBase=srp))
 
-For advanced debugging or custom wiring, you can still instantiate each layer
-explicitly. The following pattern is used in wrappers such as
-``python/pyrogue/protocols/_Network.py``:
+For custom wiring or lower-level debugging, instantiate the direct RSSI
+classes explicitly. The following pattern shows the usual lower-level stack
+shape:
 
 .. code-block:: python
 
@@ -128,18 +152,36 @@ explicitly. The following pattern is used in wrappers such as
    c_udp == c_rssi.transport()
    c_rssi.application() == c_pack.transport()
 
-   # If using a Root-managed application, register interfaces with:
-   # root.addInterface(s_udp, s_rssi, c_udp, c_rssi)
-   #
-   # If using a standalone script (no Root), manage lifecycle directly:
    s_rssi._start()
    c_rssi._start()
    # ... run traffic ...
    c_rssi._stop()
    s_rssi._stop()
 
-Managed lifecycle reference:
-:ref:`pyrogue_tree_node_device_managed_interfaces`
+C++ Example
+===========
+
+.. code-block:: cpp
+
+   #include <rogue/protocols/udp/Client.h>
+   #include <rogue/protocols/udp/Server.h>
+   #include <rogue/protocols/rssi/Client.h>
+   #include <rogue/protocols/rssi/Server.h>
+
+   namespace rpu = rogue::protocols::udp;
+   namespace rpr = rogue::protocols::rssi;
+
+   auto sUdp  = rpu::Server::create(0, true);
+   auto sRssi = rpr::Server::create(sUdp->maxPayload() - 8);
+
+   auto cUdp  = rpu::Client::create("127.0.0.1", sUdp->getPort(), true);
+   auto cRssi = rpr::Client::create(cUdp->maxPayload() - 8);
+
+   sUdp == sRssi->transport();
+   cUdp == cRssi->transport();
+
+   sRssi->start();
+   cRssi->start();
 
 Logging
 =======
@@ -166,7 +208,10 @@ add a separate module-specific logger.
 Related Topics
 ==============
 
-* :ref:`protocols_network`
+- :doc:`/built_in_modules/protocols/network`
+- :doc:`/built_in_modules/protocols/udp/index`
+- :doc:`/built_in_modules/protocols/packetizer/index`
+- :doc:`/built_in_modules/protocols/srp/index`
 
 API Reference
 =============

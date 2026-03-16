@@ -4,7 +4,7 @@
 rogue::hardware::axi
 ========================
 
-This section contains the C++ API reference for
+These pages provide the C++ API reference for
 ``rogue::hardware::axi`` classes.
 
 

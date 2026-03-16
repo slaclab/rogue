@@ -36,7 +36,7 @@ PyRogue nodes and many Python helper classes create loggers with
 That function ultimately returns a standard Python logger from
 ``logging.getLogger(...)``.
 
-Logger naming rules
+Logger Naming Rules
 -------------------
 
 The logger name starts with ``pyrogue`` and then appends type/class/path
@@ -128,7 +128,7 @@ Severity constants are:
 - ``rogue.Logging.Info`` = 20
 - ``rogue.Logging.Debug`` = 10
 
-Logger naming rules
+Logger Naming Rules
 -------------------
 
 Each C++ logger is created with ``rogue::Logging::create("name")``.

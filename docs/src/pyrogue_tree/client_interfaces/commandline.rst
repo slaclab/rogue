@@ -14,7 +14,7 @@ running tree:
 The CLI connects to a running server (typically ``ZmqServer``) and supports
 common get/set/exec/monitor operations.
 
-Connecting to a server
+Connecting To A Server
 ======================
 
 By default, the CLI connects to ``localhost:9099``.
@@ -30,7 +30,7 @@ For GUI mode, ``--server`` may also be a comma-separated host list:
 
    python -m pyrogue --server=localhost:9099,otherHost:9099 gui
 
-Command forms
+Command Forms
 =============
 
 +---------------+-----------------+-----------------+----------------------------------------------------------------------------------+

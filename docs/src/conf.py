@@ -54,7 +54,16 @@ extensions = ['sphinx.ext.autodoc',
 
 # Optional runtime dependencies used by a few Python API pages. These are not
 # required to build the docs and should not make autodoc fail when absent.
-autodoc_mock_imports = ['gpib_ctypes', 'pydm', 'PyQt5', 'PyQt5.QtDesigner']
+autodoc_mock_imports = [
+    'gpib_ctypes',
+    'pydm',
+    'qtpy',
+    'PyQt5',
+    'PyQt5.QtDesigner',
+    'matplotlib',
+    'pyqtgraph',
+    'sip',
+]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
