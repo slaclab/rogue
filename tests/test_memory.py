@@ -13,6 +13,9 @@
 import pyrogue as pr
 import pyrogue.interfaces.simulation
 import rogue.interfaces.memory
+import pytest
+
+pytestmark = pytest.mark.integration
 
 #rogue.Logging.setLevel(rogue.Logging.Debug)
 #import logging

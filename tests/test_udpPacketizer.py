@@ -16,6 +16,9 @@ import rogue.interfaces.stream
 import rogue
 import time
 import threading
+import pytest
+
+pytestmark = pytest.mark.integration
 
 #rogue.Logging.setLevel(rogue.Logging.Debug)
 

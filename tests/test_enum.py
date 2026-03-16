@@ -13,8 +13,11 @@
 import pyrogue as pr
 import pyrogue.interfaces.simulation
 import rogue.interfaces.memory
+import pytest
 
 import time
+
+pytestmark = pytest.mark.integration
 
 #rogue.Logging.setLevel(rogue.Logging.Warning)
 #import logging

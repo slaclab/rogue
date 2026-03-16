@@ -13,8 +13,11 @@ import time
 import pyrogue as pr
 import pyrogue.protocols.epicsV4
 import rogue.interfaces.memory
+import pytest
 
 from p4p.client.thread import Context
+
+pytestmark = [pytest.mark.integration, pytest.mark.epics]
 
 epics_prefix='test_ioc'
 
@@ -121,7 +124,10 @@ def test_local_root():
     # setup the P4P client
     # https://mdavidsaver.github.io/p4p/client.html#usage
     print( Context.providers() )
-    ctxt = Context('pva')
+    try:
+        ctxt = Context('pva')
+    except RuntimeError as exc:
+        pytest.skip(f'EPICS PVA socket setup unavailable: {exc}')
 
     for s in pv_map_states:
         with LocalRootWithEpics(use_map=s) as root:
