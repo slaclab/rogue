@@ -79,8 +79,8 @@ def data_path(ver,jumbo):
     client = rogue.protocols.udp.Client("127.0.0.1",port,jumbo)
 
     # RSSI
-    sRssi = rogue.protocols.rssi.Server(serv.maxPayload())
-    cRssi = rogue.protocols.rssi.Client(client.maxPayload())
+    sRssi = rogue.protocols.rssi.Server(serv.maxPayload() - 8)
+    cRssi = rogue.protocols.rssi.Client(client.maxPayload() - 8)
 
     # Packetizer
     if ver == 1:

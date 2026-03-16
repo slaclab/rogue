@@ -96,8 +96,8 @@ Python Example
    serv = rogue.protocols.udp.Server(0, True)
    cli = rogue.protocols.udp.Client("127.0.0.1", serv.getPort(), True)
 
-   s_rssi = rogue.protocols.rssi.Server(serv.maxPayload())
-   c_rssi = rogue.protocols.rssi.Client(cli.maxPayload())
+   s_rssi = rogue.protocols.rssi.Server(serv.maxPayload() - 8)
+   c_rssi = rogue.protocols.rssi.Client(cli.maxPayload() - 8)
 
    s_pkt = rogue.protocols.packetizer.CoreV2(True, True, True)
    c_pkt = rogue.protocols.packetizer.CoreV2(True, True, True)
