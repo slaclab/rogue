@@ -80,12 +80,26 @@ implementation, the input can be:
 * A single ``.yml`` or ``.yaml`` file.
 * A directory, in which case all ``.yml`` and ``.yaml`` files in that
   directory are loaded in sorted order.
-* A zip-file subdirectory path.
+* A zip-file subdirectory path, using the same sorted-order rule on the
+  matching member names in that directory.
 * A Python list of those entries.
 * A comma-separated string of entries.
 
 ``Root.setYaml(...)`` applies YAML text directly without going through the
 filesystem.
+
+YAML content is parsed through :func:`pyrogue.yamlToData`, so the same
+``!include`` handling is available during ``loadYaml(...)`` as when parsing
+YAML directly. Relative includes are resolved relative to the file being read.
+
+For directory-like inputs, "sorted order" means an ascending lexicographic sort
+of the full path strings being loaded. For one directory, that is effectively
+lexicographic filename order. For example:
+
+* ``00-defaults.yml``
+* ``10-overrides.yml``
+
+load in that order, so later files can intentionally override earlier values.
 
 For ``loadYaml(..., writeEach=False)`` and ``setYaml(..., writeEach=False)``,
 the application workflow is:
@@ -101,13 +115,23 @@ Implications:
 * If a Variable is assigned more than once while loading, the last assignment
   wins in shadow memory before commit
 * Hardware is not touched until the bulk commit step
+* For directory and zip-directory loads, "last assignment wins" follows the
+  lexicographic file/member order described above
+* For explicit Python lists or comma-separated file lists, it follows the
+  order you passed to ``loadYaml(...)``
 
 If ``writeEach=True``, each ``setDisp`` write is issued immediately while YAML
-is being traversed (no final consolidated ``Root._write()`` pass).
+is being traversed (no final consolidated ``Root._write()`` pass). That means
+later YAML entries can still overwrite earlier values, but the intermediate
+hardware writes have already occurred.
 
 The load path is wrapped in both ``Root.pollBlock()`` and ``Root.updateGroup()``
 so polling does not race with the configuration operation and listeners see a
 coalesced update batch.
+
+For zip-file subdirectory loads, only YAML files in the immediate requested
+directory are considered. Nested subdirectories are ignored, matching the
+normal directory behavior.
 
 The staged values are then committed using the normal tree transaction path.
 For the bulk write, verify, read, and check model behind that commit step, see
