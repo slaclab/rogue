@@ -6,13 +6,28 @@ SrpV0
 
 `rogue::protocols::srp::SrpV0` bridges Rogue memory transactions to SRPv0
 stream frames that are transported to hardware SRP endpoints.
+For conceptual guidance, see :doc:`/built_in_modules/protocols/srp/srpV0`.
 
 For SRPv0 packet-level protocol details, see:
 
-- https://confluence.slac.stanford.edu/x/aRmVD
+- Https://confluence.slac.stanford.edu/x/aRmVD
 
+Threading and locking summary
+=============================
 
-SrpV0 objects in C++ are referenced by the following shared pointer typedef:
+- ``doTransaction()`` and ``acceptFrame()`` may run in different contexts.
+- In-flight map access is managed by base memory-slave synchronization.
+- Per-transaction payload access is guarded via transaction locking.
+
+Python binding
+--------------
+
+This C++ class is also exported into Python as ``rogue.protocols.srp.SrpV0``.
+
+Python API page:
+- :doc:`/api/python/rogue/protocols/srp/srpv0`
+
+objects in C++ are referenced by the following shared pointer typedef:
 
 .. doxygentypedef:: rogue::protocols::srp::SrpV0Ptr
 

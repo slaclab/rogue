@@ -4,11 +4,11 @@
 Build Your First PyRogue Root
 ========================================
 
-This page walks through creating a functional PyRogue root tree from scratch.
-Each section adds one building block so you can run, inspect, and extend your
-application incrementally.
+Creating a functional PyRogue Root tree from scratch is the goal of this
+walkthrough. Each section adds one building block so you can run, inspect, and
+extend the application incrementally.
 
-Creating a Root Node
+Creating A Root Node
 ====================
 
 The first step is to create the :ref:`Root <pyrogue_tree_node_root>` Node, which is the base Node of the tree.
@@ -90,8 +90,8 @@ Add Special Devices
 -------------------
 
 #. Create PGP card :ref:`hardware interfaces <hardware>`
-#. Create PRBS Transmitter :ref:`pyrogue_tree_node_device_prbsrx` device
-#. Create a :ref:`Stream Writer <pyrogue_tree_node_device_streamwriter>` device
+#. Create a PRBS transmitter device using :doc:`/built_in_modules/utilities/prbs/reading`
+#. Create a stream-writer device using :doc:`/built_in_modules/utilities/fileio/writing`
 #. Create a :ref:`Data Receiver <pyrogue_tree_node_device_datareceiver>` device
 #. Create a :ref:`Run Control <pyrogue_tree_node_device_runcontrol>` device
 
@@ -194,7 +194,7 @@ Add Linked and Local Variables
                 linkedGet = self._getPlot))
 
 
-Connect to EPICS if needed
+Connect To EPICS If Needed
 --------------------------
 
 #. Connect it to the :ref:`EPICS Protocol <pyrogue_protocol_epicspvserver>` class

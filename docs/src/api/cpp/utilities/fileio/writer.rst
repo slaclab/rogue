@@ -14,6 +14,10 @@ documented here:
 
 - :ref:`utilities_fileio_format`
 
+For conceptual utility usage, see:
+
+- :doc:`/built_in_modules/utilities/fileio/index`
+
 Raw Mode
 ========
 

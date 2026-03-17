@@ -1,26 +1,36 @@
 .. _installing_docker:
 
-=======================
-Installing Rogue Docker
-=======================
+===========================
+Running Rogue With Docker
+===========================
 
-Docker images with rogue are automatically generated and uploaded to GitHub Container Registry (GHCR), in the following repositories:
+Rogue container images are published to GitHub Container Registry (GHCR). This
+path is useful when:
 
-Docker images are created for tagged version of rogue:
+- You want a reproducible runtime environment without managing local
+  dependencies,
+- You are running on a platform where native installation is inconvenient,
+- Or you want to package an application on top of a known Rogue base image.
+
+Tagged images are published at:
+
 https://ghcr.io/slaclab/rogue
 
-The images can be used to run rogue applications as one would normally do using a local installation of rogue.
+They can be used to run Rogue applications much like a local installation,
+provided the container still has access to the required hardware and any GUI
+forwarding path you need.
 
 How To Get The Container
 ========================
 
-To get the most recent released docker container of rogue, first you will need to install docker in you host OS and be logged in. Then you can get a copy by running:
+To get the most recent released Rogue container, first install Docker on the
+host system and ensure you are logged in. Then pull the image:
 
 .. code::
 
    $ docker pull ghcr.io/slaclab/rogue:latest
 
-Or you can target a specific tagged version.
+Or target a specific tagged version:
 
 .. code::
 
@@ -29,12 +39,14 @@ Or you can target a specific tagged version.
 
 **Notes:**
 
-* The docker images are tagged using the same rogue tag.
+* The Docker images use the same release tags as Rogue itself.
 
 How To Run The Container
 ========================
 
-To run a rogue application inside a container, you must first have a copy of the application in in your host OS. Also, your host must have a direct connection to your target FPGA.
+To run a Rogue application inside a container, you must already have a copy of
+the application on the host system. The host must also retain the required
+connection to the target FPGA or other hardware.
 
 Then you can run the container, for example, like this:
 
@@ -47,9 +59,10 @@ where:
 * **APP_DIR** is the full path to the folder containing your application,
 * **APP_NAME** is the name of your application script.
 
-If your application uses a graphical interface, then you need to pass additional arguments in order to properly forward X:
+If your application uses a graphical interface, pass the additional arguments
+required for X11 forwarding.
 
-As an example use can test the docker install and X11 with the following command:
+As a quick check, you can test the Docker installation and X11 forwarding with:
 
 .. code::
 
@@ -70,10 +83,12 @@ GUI On A Linux OS
       -v <APP_DIR>:/python \
       ghcr.io/slaclab/rogue /python/<APP_NAME>
 
-GUI On A MAC OS
-===============
+GUI On A macOS Host
+===================
 
-First install XQuartz. Then run it from the command line using `open -a XQuartz`. In the XQuartz preferences, go to the “Security” tab and make sure you’ve got “Allow connections from network clients” ticked.
+First install XQuartz. Then start it with ``open -a XQuartz``. In the XQuartz
+preferences, under the Security tab, ensure that
+``Allow connections from network clients`` is enabled.
 
 Now run:
 
@@ -85,15 +100,18 @@ Now run:
 
 **Notes:**
 
-* The `-v` option maps a folder in your host OS inside the docker container. In this example we are mapping our local folder containing the rogue application to `/python/` inside the container. Then, when the container runs, we are able to access the rogue application which is now located at `/python/`. You can, of course, map more than one folder inside the container, as well as using different locations inside the container.
-* You can also run a specific tagged version of rogue changing `ghcr.io/slaclab/rogue` for `ghcr.io/slaclab/rogue:<TAG>` in the docker run command.
+- The ``-v`` option maps a host directory into the container. In the examples
+  above, the host application directory is mapped to ``/python`` inside the
+  container.
+- You can also run a specific tagged version by replacing
+  ``ghcr.io/slaclab/rogue`` with ``ghcr.io/slaclab/rogue:<TAG>``.
 
 How To Build A Custom Docker Image With Rogue
 =============================================
 
-You can create custom docker image, using the Docker image containing rogue as a starting point. Just start your `Dockerfile` with this line:
+You can create a custom Docker image by using the Rogue image as a base. Start
+your ``Dockerfile`` with:
 
 .. code::
 
    FROM ghcr.io/slaclab/rogue:<TAG>
-

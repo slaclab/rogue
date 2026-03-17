@@ -132,6 +132,16 @@ class TcpServer : public rogue::interfaces::memory::Master {
      * @brief Stops the bridge interface and worker thread.
      */
     void stop();
+
+    /**
+     * @brief Managed-lifecycle startup hook.
+     *
+     * @details
+     * The server binds and starts its worker thread in the constructor, so the
+     * managed startup hook is a no-op. It exists so `TcpServer` can
+     * participate uniformly in PyRogue managed interface lifecycle handling.
+     */
+    void start();
 };
 
 /**

@@ -17,9 +17,13 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-# import os
-# import sys
-# sys.path.insert(0, os.path.abspath('.'))
+import os
+import sys
+
+# Prefer the source tree Python package over any installed copy in the build
+# environment so autodoc reflects the current branch content.
+sys.path.insert(0, os.path.abspath('_ext'))
+sys.path.insert(0, os.path.abspath('../../python'))
 import rogue
 import breathe
 
@@ -44,7 +48,22 @@ extensions = ['sphinx.ext.autodoc',
     'sphinx.ext.napoleon',
     'sphinx_autodoc_typehints',
     'sphinx_copybutton',
-    'breathe']
+    'breathe',
+    'rogue_boostpython_api',
+    'rogue_cpp_source_links']
+
+# Optional runtime dependencies used by a few Python API pages. These are not
+# required to build the docs and should not make autodoc fail when absent.
+autodoc_mock_imports = [
+    'gpib_ctypes',
+    'pydm',
+    'qtpy',
+    'PyQt5',
+    'PyQt5.QtDesigner',
+    'matplotlib',
+    'pyqtgraph',
+    'sip',
+]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -56,7 +75,7 @@ templates_path = ['_templates']
 source_suffix = '.rst'
 
 # The master toctree document (top landing page).
-master_doc = 'introduction/index'
+master_doc = 'index'
 
 # General information about the project.
 project = 'Rogue'
@@ -102,7 +121,13 @@ html_theme = 'sphinx_rtd_theme'
 # further.  For a list of options available for each theme, see the
 # documentation.
 #
-# html_theme_options = {}
+html_theme_options = {
+    # Keep sidebar navigation focused on document/page links only.
+    # This suppresses per-page heading entries in the navbar.
+    'titles_only': True,
+    # Do not cap sidebar toctree depth; let deep API namespaces expand fully.
+    'navigation_depth': -1,
+}
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
@@ -110,6 +135,9 @@ html_theme = 'sphinx_rtd_theme'
 html_static_path = ['_static']
 html_css_files = [
     'custom.css',
+]
+html_js_files = [
+    'custom.js',
 ]
 
 # Custom sidebar templates, must be a dictionary that maps document names

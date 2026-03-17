@@ -1,10 +1,12 @@
 .. _protocols_batcher_classes:
 
-===================================
-Batcher Protocol Class Descriptions
-===================================
+==========================
+rogue::protocols::batcher
+==========================
 
-The following are detailed descriptions of the various C++ classes that make up the Rogue Batcher protocol.
+These pages provide the C++ API reference for
+``rogue::protocols::batcher`` classes.
+
 
 .. toctree::
    :maxdepth: 1
@@ -17,3 +19,8 @@ The following are detailed descriptions of the various C++ classes that make up 
    inverterV2
    splitterV1
    splitterV2
+
+
+.. rubric:: Related Topics
+
+- :doc:`/built_in_modules/protocols/batcher/index`

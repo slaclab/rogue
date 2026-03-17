@@ -4,6 +4,8 @@
 XvcConnection
 =============
 
+For conceptual guidance, see :doc:`/built_in_modules/protocols/xilinx/index`.
+
 The class description is shown below:
 
 .. doxygenclass:: rogue::protocols::xilinx::XvcConnection
