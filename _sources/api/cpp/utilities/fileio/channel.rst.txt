@@ -7,6 +7,10 @@ StreamWriterChannel
 The StreamWriterChannel class is the interface between the :ref:`utilities_fileio_writer` class
 and the incoming data streams.
 
+For conceptual utility usage, see:
+
+- :doc:`/built_in_modules/utilities/fileio/index`
+
 
 StreamWriterChannel objects in C++ are referenced by the following shared pointer typedef:
 

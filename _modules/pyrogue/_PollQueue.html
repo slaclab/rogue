@@ -5,20 +5,21 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue._PollQueue &mdash; Rogue v6.8.4 documentation</title>
+  <title>pyrogue._PollQueue &mdash; Rogue v6.8.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
-      <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=f9c5c301" />
+      <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=346ffc18" />
 
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=2d182aeb"></script>
+      <script src="../../_static/documentation_options.js?v=8960aef2"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/custom.js?v=b11a05f1"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -32,7 +33,7 @@
 
           
           
-          <a href="../../introduction/index.html" class="icon icon-home">
+          <a href="../../index.html" class="icon icon-home">
             Rogue
           </a>
 <div role="search">
@@ -42,40 +43,38 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../introduction/index.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../getting_started/index.html">PyRogue Tree Getting Started Guide</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../advanced_examples/index.html">Advanced Tutorials</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../pyrogue_tree/index.html">PyRogue Tree</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../interfaces/index.html">Interfaces</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../utilities/index.html">Utilities</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../hardware/index.html">Hardware</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../protocols/index.html">Protocols</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../logging/index.html">Logging In Rogue</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../custom_module/index.html">Creating Custom Modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../pydm/index.html">Using the PyDM Gui</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../migration/index.html">Migration Notes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../documentation_index.html">Table of Contents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../migration/index.html">Migration Notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api/index.html">API Reference</a></li>
 </ul>
 
-        </div>
+</div>
       </div>
     </nav>
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../introduction/index.html">Rogue</a>
+          <a href="../../index.html">Rogue</a>
       </nav>
 
       <div class="wy-nav-content">
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../introduction/index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
       <li class="breadcrumb-item active">pyrogue._PollQueue</li>
       <li class="wy-breadcrumbs-aside">
@@ -139,7 +138,7 @@
 
 
 <div class="viewcode-block" id="PollQueue">
-<a class="viewcode-back" href="../../api/python/pollqueue.html#pyrogue.PollQueue">[docs]</a>
+<a class="viewcode-back" href="../../api/python/pyrogue/pollqueue.html#pyrogue.PollQueue">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">PollQueue</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Poll queue scheduler.</span>
 
@@ -209,7 +208,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_condLock</span><span class="o">.</span><span class="n">notify</span><span class="p">()</span>
 
 <div class="viewcode-block" id="PollQueue.updatePollInterval">
-<a class="viewcode-back" href="../../api/python/pollqueue.html#pyrogue.PollQueue.updatePollInterval">[docs]</a>
+<a class="viewcode-back" href="../../api/python/pyrogue/pollqueue.html#pyrogue.PollQueue.updatePollInterval">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">updatePollInterval</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var</span><span class="p">:</span> <span class="n">pr</span><span class="o">.</span><span class="n">BaseVariable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Update polling interval for a variable.</span>
 
@@ -339,7 +338,7 @@
 
 
 <div class="viewcode-block" id="PollQueue.peek">
-<a class="viewcode-back" href="../../api/python/pollqueue.html#pyrogue.PollQueue.peek">[docs]</a>
+<a class="viewcode-back" href="../../api/python/pyrogue/pollqueue.html#pyrogue.PollQueue.peek">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">peek</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PollQueueEntry</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return (but don&#39;t pop) the top entry in the queue. &quot;&quot;&quot;</span>
         <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_condLock</span><span class="p">:</span>
@@ -350,7 +349,7 @@
 
 
 <div class="viewcode-block" id="PollQueue.empty">
-<a class="viewcode-back" href="../../api/python/pollqueue.html#pyrogue.PollQueue.empty">[docs]</a>
+<a class="viewcode-back" href="../../api/python/pyrogue/pollqueue.html#pyrogue.PollQueue.empty">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">empty</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return True of queue is empty, else False &quot;&quot;&quot;</span>
         <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_condLock</span><span class="p">:</span>
@@ -364,7 +363,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_condLock</span><span class="o">.</span><span class="n">notify</span><span class="p">()</span>
 
 <div class="viewcode-block" id="PollQueue.pause">
-<a class="viewcode-back" href="../../api/python/pollqueue.html#pyrogue.PollQueue.pause">[docs]</a>
+<a class="viewcode-back" href="../../api/python/pyrogue/pollqueue.html#pyrogue.PollQueue.pause">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">pause</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Pause or unpause the poll queue</span>
 
@@ -390,7 +389,7 @@
 
 
 <div class="viewcode-block" id="PollQueue.paused">
-<a class="viewcode-back" href="../../api/python/pollqueue.html#pyrogue.PollQueue.paused">[docs]</a>
+<a class="viewcode-back" href="../../api/python/pyrogue/pollqueue.html#pyrogue.PollQueue.paused">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">paused</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Check pause state &quot;&quot;&quot;</span>
         <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_condLock</span><span class="p">:</span>

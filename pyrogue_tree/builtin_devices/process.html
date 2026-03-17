@@ -1,0 +1,318 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Process Device Class &mdash; Rogue v6.8.5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=346ffc18" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=8960aef2"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/custom.js?v=b11a05f1"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Client Interfaces" href="../client_interfaces/index.html" />
+    <link rel="prev" title="DataReceiver Device Class" href="data_receiver.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">PyRogue Tree</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../core/index.html">Components And Concepts</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Built-in Devices</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="run_control.html">RunControl Device Class</a></li>
+<li class="toctree-l3"><a class="reference internal" href="data_writer.html">DataWriter Device Class</a></li>
+<li class="toctree-l3"><a class="reference internal" href="data_receiver.html">DataReceiver Device Class</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Process Device Class</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../client_interfaces/index.html">Client Interfaces</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">API Reference</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">PyRogue Tree</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Built-in Devices</a></li>
+      <li class="breadcrumb-item active">Process Device Class</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/pyrogue_tree/builtin_devices/process.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="process-device-class">
+<span id="pyrogue-tree-node-device-process"></span><h1>Process Device Class<a class="headerlink" href="#process-device-class" title="Link to this heading"></a></h1>
+<p><a class="reference internal" href="../../api/python/pyrogue/process.html#pyrogue.Process" title="pyrogue.Process"><code class="xref py py-class docutils literal notranslate"><span class="pre">Process</span></code></a> packages a long-running or multi-step operation
+into a tree-facing <code class="docutils literal notranslate"><span class="pre">Device</span></code> with built-in commands and status Variables. In
+the current implementation it provides:</p>
+<ul class="simple">
+<li><p>Start/stop commands</p></li>
+<li><p>Running/progress/message status variables</p></li>
+<li><p>Optional argument and return variables</p></li>
+<li><p>Optional wrapped function callback</p></li>
+</ul>
+<p>Use it when an operation needs structured status reporting and GUI visibility.</p>
+<p>The process runs in a background thread. While it is active, the tree can
+report whether it is running, how far along it is, and any status message the
+implementation wants to expose.</p>
+<section id="when-to-use-process">
+<h2>When To Use Process<a class="headerlink" href="#when-to-use-process" title="Link to this heading"></a></h2>
+<p>Use <code class="docutils literal notranslate"><span class="pre">Process</span></code> when the important interaction is “start this procedure and
+track it while it runs.”</p>
+<p>Common fits include:</p>
+<ul class="simple">
+<li><p>Calibration or tuning sequences</p></li>
+<li><p>Capture/export workflows</p></li>
+<li><p>Long-running initialization or verification steps</p></li>
+<li><p>Procedures that need operator-visible progress and status text</p></li>
+</ul>
+<p>If the action is instead a continuous repeating loop with a run/stop state and
+a selected loop rate, see <a class="reference internal" href="run_control.html"><span class="doc">RunControl Device Class</span></a>.</p>
+</section>
+<section id="what-you-usually-set">
+<h2>What You Usually Set<a class="headerlink" href="#what-you-usually-set" title="Link to this heading"></a></h2>
+<p>Most <code class="docutils literal notranslate"><span class="pre">Process</span></code> definitions revolve around three constructor-level extension
+points:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">function</span></code> for the process body</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">argVariable</span></code> for tree-visible input arguments</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">returnVariable</span></code> for tree-visible return data</p></li>
+</ul>
+<p>For simple use, supplying <code class="docutils literal notranslate"><span class="pre">function=...</span></code> is enough. The wrapper passes
+keyword arguments named <code class="docutils literal notranslate"><span class="pre">root</span></code>, <code class="docutils literal notranslate"><span class="pre">dev</span></code>, and <code class="docutils literal notranslate"><span class="pre">arg</span></code>, and the function may
+accept any subset of those names.</p>
+<p>In practice, many real systems also add process-specific <code class="docutils literal notranslate"><span class="pre">LocalVariable</span></code>
+Nodes for inputs, tuning knobs, captured results, or plotting helpers. That is
+often what makes a <code class="docutils literal notranslate"><span class="pre">Process</span></code> feel like a usable operator-facing workflow
+rather than just a background thread.</p>
+</section>
+<section id="subclassing-and-override-points">
+<h2>Subclassing And Override Points<a class="headerlink" href="#subclassing-and-override-points" title="Link to this heading"></a></h2>
+<p>In practice, subclassing is often the general way to use <code class="docutils literal notranslate"><span class="pre">Process</span></code>.
+Supplying <code class="docutils literal notranslate"><span class="pre">function=...</span></code> is enough for a compact wrapper, but many real
+systems need additional Variables, explicit progress reporting, and process
+logic that touches a wider subtree.</p>
+<p>The usual extension points are:</p>
+<ul class="simple">
+<li><p>Add process-specific Variables in <code class="docutils literal notranslate"><span class="pre">__init__</span></code> for inputs, outputs, or
+operator controls.</p></li>
+<li><p>Pass <code class="docutils literal notranslate"><span class="pre">function=self._my_wrapper</span></code> when a wrapper-style callback is enough.</p></li>
+<li><p>Override <code class="docutils literal notranslate"><span class="pre">_process()</span></code> directly when the full body of the procedure belongs
+on the subclass.</p></li>
+</ul>
+<p>The built-in status Variables are:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Running</span></code> for whether the thread is active</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Progress</span></code> for fractional completion</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Message</span></code> for operator-facing status text</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Step</span></code> and <code class="docutils literal notranslate"><span class="pre">TotalSteps</span></code> for step-count style progress reporting</p></li>
+</ul>
+<p>If you provide <code class="docutils literal notranslate"><span class="pre">argVariable</span></code> and <code class="docutils literal notranslate"><span class="pre">returnVariable</span></code>, they can be used to
+pass one tree-visible argument into the procedure and publish one result back
+out through the tree.</p>
+<p>There are two common ways to drive <code class="docutils literal notranslate"><span class="pre">Progress</span></code>:</p>
+<ul class="simple">
+<li><p>Set <code class="docutils literal notranslate"><span class="pre">Progress</span></code> directly when the procedure naturally reports fractional
+completion on its own.</p></li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">Step</span></code> and <code class="docutils literal notranslate"><span class="pre">TotalSteps</span></code> together, then call <code class="docutils literal notranslate"><span class="pre">_setSteps()</span></code> or
+<code class="docutils literal notranslate"><span class="pre">_incrementSteps()</span></code> so PyRogue updates <code class="docutils literal notranslate"><span class="pre">Progress</span></code> from the step count.</p></li>
+</ul>
+<p>The second pattern is often clearer for iterative procedures, while the first
+fits algorithms whose completion metric is not naturally “step N out of M.”</p>
+</section>
+<section id="concrete-example">
+<h2>Concrete Example<a class="headerlink" href="#concrete-example" title="Link to this heading"></a></h2>
+<p>One common pattern is a calibration or tuning process that adds its own
+operator-facing settings and result storage, then updates <code class="docutils literal notranslate"><span class="pre">Message</span></code>,
+<code class="docutils literal notranslate"><span class="pre">Progress</span></code>, <code class="docutils literal notranslate"><span class="pre">Step</span></code>, and <code class="docutils literal notranslate"><span class="pre">TotalSteps</span></code> while it runs.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">CaptureProcess</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Process</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">&#39;Capture N samples&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="c1"># Tree-facing input that lets the operator choose how much work to do.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;SampleCount&#39;</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span>
+            <span class="n">value</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Number of samples to capture&#39;</span><span class="p">,</span>
+        <span class="p">))</span>
+
+        <span class="c1"># Hidden result storage for whatever data the process produces.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;CaptureResult&#39;</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">value</span><span class="o">=</span><span class="p">[],</span>
+            <span class="n">hidden</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Captured result data&#39;</span><span class="p">,</span>
+        <span class="p">))</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_process</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Batch update notifications while the process runs. PyRogue still</span>
+        <span class="c1"># publishes changes during the block, but it coalesces them so GUIs</span>
+        <span class="c1"># and remote listeners do not get spammed on every individual write.</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">updateGroup</span><span class="p">(</span><span class="n">period</span><span class="o">=</span><span class="mf">0.25</span><span class="p">):</span>
+            <span class="n">total</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">SampleCount</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
+            <span class="n">captured</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="c1"># Initialize the built-in status Variables before starting work.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Message</span><span class="o">.</span><span class="n">setDisp</span><span class="p">(</span><span class="s1">&#39;Running capture&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">TotalSteps</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">total</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Step</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Progress</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">total</span><span class="p">):</span>
+                <span class="c1"># Respect the built-in Stop command.</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_runEn</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">Message</span><span class="o">.</span><span class="n">setDisp</span><span class="p">(</span><span class="s1">&#39;Stopped by user&#39;</span><span class="p">)</span>
+                    <span class="k">return</span>
+
+                <span class="c1"># Do one unit of hardware or software work.</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.01</span><span class="p">)</span>
+                <span class="n">captured</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+
+                <span class="c1"># _setSteps() updates both Step and Progress together.</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_setSteps</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+            <span class="c1"># Publish the final result back into the tree.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">CaptureResult</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">captured</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Message</span><span class="o">.</span><span class="n">setDisp</span><span class="p">(</span><span class="s1">&#39;Done&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="invocation-patterns">
+<h2>Invocation Patterns<a class="headerlink" href="#invocation-patterns" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">Process</span></code> can be started either through the built-in <code class="docutils literal notranslate"><span class="pre">Start</span></code> command or by
+calling the object directly with an optional argument:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">my_process.Start()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">my_process()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">my_process(arg)</span></code></p></li>
+</ul>
+<p>When an argument is supplied and <code class="docutils literal notranslate"><span class="pre">argVariable</span></code> exists, the argument is first
+written to that Variable before the background thread starts.</p>
+</section>
+<section id="design-guidance">
+<h2>Design Guidance<a class="headerlink" href="#design-guidance" title="Link to this heading"></a></h2>
+<p>Good <code class="docutils literal notranslate"><span class="pre">Process</span></code> implementations usually:</p>
+<ul class="simple">
+<li><p>Update <code class="docutils literal notranslate"><span class="pre">Message</span></code> with short operator-facing status text</p></li>
+<li><p>Keep <code class="docutils literal notranslate"><span class="pre">Progress</span></code> and <code class="docutils literal notranslate"><span class="pre">Step</span></code> / <code class="docutils literal notranslate"><span class="pre">TotalSteps</span></code> consistent when progress is
+meaningful</p></li>
+<li><p>Add explicit input or result Variables when the procedure needs operator
+parameters or produces structured output</p></li>
+<li><p>Check the stop condition when the work can be interrupted cleanly</p></li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">root.updateGroup(...)</span></code> when the body will publish many updates over
+time</p></li>
+</ul>
+</section>
+<section id="related-topics">
+<h2>Related Topics<a class="headerlink" href="#related-topics" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Repeating run loops and run-state control: <a class="reference internal" href="run_control.html"><span class="doc">RunControl Device Class</span></a></p></li>
+<li><p>Command behavior: <a class="reference internal" href="../core/command.html"><span class="doc">Command</span></a></p></li>
+<li><p>Device composition and lifecycle: <a class="reference internal" href="../core/device.html"><span class="doc">Device</span></a></p></li>
+<li><p>Lower-level transport, protocol, and utility families: <a class="reference internal" href="../../built_in_modules/index.html"><span class="doc">Built-in Modules</span></a></p></li>
+</ul>
+</section>
+<section id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<p>See <a class="reference internal" href="../../api/python/pyrogue/process.html"><span class="doc">Process</span></a> for generated API details.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="data_receiver.html" class="btn btn-neutral float-left" title="DataReceiver Device Class" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../client_interfaces/index.html" class="btn btn-neutral float-right" title="Client Interfaces" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

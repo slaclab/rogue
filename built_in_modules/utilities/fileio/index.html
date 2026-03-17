@@ -1,0 +1,242 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>File I/O Utilities &mdash; Rogue v6.8.5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=346ffc18" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=8960aef2"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../_static/custom.js?v=b11a05f1"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Rogue File Data Format" href="format.html" />
+    <link rel="prev" title="Utilities" href="../index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Built-in Modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../interfaces/index.html">Interfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../simulation/index.html">Simulation Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../protocols/index.html">Protocols</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../hardware/index.html">Hardware</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">Utilities</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">File I/O Utilities</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="format.html">Rogue File Data Format</a></li>
+<li class="toctree-l4"><a class="reference internal" href="writing.html">Writing Frames To A File</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reading.html">Reading Frames From A File</a></li>
+<li class="toctree-l4"><a class="reference internal" href="custom.html">Custom Writers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="python_reader.html">Python File Reader</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../prbs/index.html">PRBS Utilities</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../hls/index.html">HLS Utilities</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../compression/index.html">Compression Utilities</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">API Reference</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Built-in Modules</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Utilities</a></li>
+      <li class="breadcrumb-item active">File I/O Utilities</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/built_in_modules/utilities/fileio/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="file-i-o-utilities">
+<span id="utilities-fileio"></span><h1>File I/O Utilities<a class="headerlink" href="#file-i-o-utilities" title="Link to this heading"></a></h1>
+<p>For recording Rogue stream traffic to disk and replaying it later, Rogue
+provides a file I/O family that spans both tree-managed PyRogue wrappers and
+direct <code class="docutils literal notranslate"><span class="pre">rogue.utilities.fileio</span></code> endpoints.</p>
+<p>The family is organized around three related roles:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pyrogue.utilities.fileio.StreamWriter</span></code> and
+<code class="docutils literal notranslate"><span class="pre">pyrogue.utilities.fileio.StreamReader</span></code>
+Tree-managed wrappers that expose file selection and open/close control
+through a PyRogue tree.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">rogue.utilities.fileio.StreamWriter</span></code> and
+<code class="docutils literal notranslate"><span class="pre">rogue.utilities.fileio.StreamReader</span></code>
+Direct stream endpoints for capture and replay in standalone graphs or
+scripts.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pyrogue.utilities.fileio.FileReader</span></code>
+A Python-side offline reader for analysis workflows that do not need to
+reconstruct a live stream graph.</p></li>
+</ul>
+<p>The on-disk record format is shared by the whole family. Header words, channel
+IDs, flags, error fields, split-file handling, and raw-mode behavior all come
+from that format definition, so it is worth reading <a class="reference internal" href="format.html"><span class="doc">Rogue File Data Format</span></a> early.</p>
+<p>C++ API details for file I/O utilities are documented in
+<a class="reference internal" href="../../../api/cpp/utilities/fileio/index.html"><span class="doc">rogue::utilities::fileio</span></a>.</p>
+<p>Common workflows include:</p>
+<ul class="simple">
+<li><p>Capturing one or more stream channels to disk during integration and debug.</p></li>
+<li><p>Replaying captured files back into processing pipelines.</p></li>
+<li><p>Reading records directly in Python for offline analysis.</p></li>
+<li><p>Extending the base writer for custom DAQ output formats.</p></li>
+</ul>
+<p>The direct Rogue utilities are the simpler fit when a script already owns the
+stream graph and just needs capture or replay endpoints. The PyRogue wrappers
+are the better fit when file control should appear through <code class="docutils literal notranslate"><span class="pre">DataFile</span></code>,
+<code class="docutils literal notranslate"><span class="pre">Open</span></code>, <code class="docutils literal notranslate"><span class="pre">Close</span></code>, <code class="docutils literal notranslate"><span class="pre">IsOpen</span></code>, and the rest of the tree-visible state
+inherited from <code class="docutils literal notranslate"><span class="pre">pyrogue.DataWriter</span></code> or added by the wrapper <code class="docutils literal notranslate"><span class="pre">Device</span></code>.</p>
+<section id="logging">
+<h2>Logging<a class="headerlink" href="#logging" title="Link to this heading"></a></h2>
+<p>The file I/O utilities use both Rogue C++ logging and Python logging,
+depending on the object:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">rogue.utilities.fileio.StreamWriter</span></code> uses Rogue C++ logging with logger
+name <code class="docutils literal notranslate"><span class="pre">pyrogue.fileio.StreamWriter</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pyrogue.utilities.fileio.FileReader</span></code> uses Python logging with logger
+name <code class="docutils literal notranslate"><span class="pre">pyrogue.FileReader</span></code> by default.</p></li>
+</ul>
+<p>This means capture-path debugging and offline-analysis debugging use different
+configuration APIs:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">rogue</span>
+
+<span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">setFilter</span><span class="p">(</span><span class="s1">&#39;pyrogue.fileio.StreamWriter&#39;</span><span class="p">,</span> <span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">Debug</span><span class="p">)</span>
+<span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;pyrogue.FileReader&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="subtopics">
+<h2>Subtopics<a class="headerlink" href="#subtopics" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="format.html"><span class="doc">Rogue File Data Format</span></a>: Defines the canonical Rogue on-disk record structure.</p></li>
+<li><p><a class="reference internal" href="writing.html"><span class="doc">Writing Frames To A File</span></a>: Starts from the common <code class="docutils literal notranslate"><span class="pre">pyrogue.utilities.fileio.StreamWriter</span></code>
+wrapper, then explains the underlying <code class="docutils literal notranslate"><span class="pre">rogue.utilities.fileio.StreamWriter</span></code>
+controls and channel model.</p></li>
+<li><p><a class="reference internal" href="reading.html"><span class="doc">Reading Frames From A File</span></a>: Starts from the tree-managed replay wrapper, then explains the
+direct <code class="docutils literal notranslate"><span class="pre">rogue.utilities.fileio.StreamReader</span></code> behavior.</p></li>
+<li><p><a class="reference internal" href="python_reader.html"><span class="doc">Python File Reader</span></a>: Lightweight coverage for non-stream Python analysis flows.</p></li>
+<li><p><a class="reference internal" href="custom.html"><span class="doc">Custom Writers</span></a>: Guidance for subclassing <code class="docutils literal notranslate"><span class="pre">StreamWriter</span></code> for custom output formats.</p></li>
+</ul>
+</section>
+<section id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Python:</p>
+<ul>
+<li><p><a class="reference internal" href="../../../api/python/pyrogue/utilities/fileio/streamreader.html"><span class="doc">StreamReader</span></a></p></li>
+<li><p><a class="reference internal" href="../../../api/python/pyrogue/utilities/fileio/streamwriter.html"><span class="doc">StreamWriter</span></a></p></li>
+</ul>
+</li>
+<li><p>C++:</p>
+<ul>
+<li><p><a class="reference internal" href="../../../api/cpp/utilities/fileio/reader.html"><span class="doc">StreamReader</span></a></p></li>
+<li><p><a class="reference internal" href="../../../api/cpp/utilities/fileio/writer.html"><span class="doc">StreamWriter</span></a></p></li>
+</ul>
+</li>
+</ul>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">File I/O Utilities:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="format.html">Rogue File Data Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="writing.html">Writing Frames To A File</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reading.html">Reading Frames From A File</a></li>
+<li class="toctree-l1"><a class="reference internal" href="custom.html">Custom Writers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="python_reader.html">Python File Reader</a></li>
+</ul>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../index.html" class="btn btn-neutral float-left" title="Utilities" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="format.html" class="btn btn-neutral float-right" title="Rogue File Data Format" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

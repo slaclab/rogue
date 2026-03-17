@@ -1,0 +1,232 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Plotter &mdash; Rogue v6.8.5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css?v=346ffc18" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=8960aef2"></script>
+      <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../../_static/custom.js?v=b11a05f1"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link rel="next" title="TimePlotter" href="timeplotter.html" />
+    <link rel="prev" title="PyRogueLineEdit" href="pyroguelineedit.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../../index.html">Python API</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="../index.html">pyrogue</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../node.html">Node</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../root.html">Root</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pollqueue.html">PollQueue</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../device.html">Device</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../localblock.html">LocalBlock</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../process.html">Process</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../runcontrol.html">RunControl</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../datareceiver.html">DataReceiver</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../datawriter.html">DataWriter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../basecommand.html">BaseCommand</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../remotecommand.html">RemoteCommand</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../basevariable.html">BaseVariable</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../remotevariable.html">RemoteVariable</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../localvariable.html">LocalVariable</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../linkvariable.html">LinkVariable</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../model.html">Model</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../uint.html">UInt</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../int.html">Int</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../bool.html">Bool</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../string.html">String</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../float.html">Float</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../double.html">Double</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../fixed.html">Fixed</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../ufixed.html">UFixed</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../wordcount.html">wordCount</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../bytecount.html">byteCount</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reversebits.html">reverseBits</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../twoscomplement.html">twosComplement</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pydm_runpydm.html">runPyDM</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="index.html">pyrogue.pydm.widgets</a><ul class="current">
+<li class="toctree-l5"><a class="reference internal" href="systemwindow.html">SystemWindow</a></li>
+<li class="toctree-l5"><a class="reference internal" href="rootcontrol.html">RootControl</a></li>
+<li class="toctree-l5"><a class="reference internal" href="runcontrol.html">RunControl</a></li>
+<li class="toctree-l5"><a class="reference internal" href="datawriter.html">DataWriter</a></li>
+<li class="toctree-l5"><a class="reference internal" href="systemlog.html">SystemLog</a></li>
+<li class="toctree-l5"><a class="reference internal" href="process.html">Process</a></li>
+<li class="toctree-l5"><a class="reference internal" href="debugtree.html">DebugTree</a></li>
+<li class="toctree-l5"><a class="reference internal" href="pyroguelabel.html">PyRogueLabel</a></li>
+<li class="toctree-l5"><a class="reference internal" href="pyroguelineedit.html">PyRogueLineEdit</a></li>
+<li class="toctree-l5 current"><a class="current reference internal" href="#">Plotter</a></li>
+<li class="toctree-l5"><a class="reference internal" href="timeplotter.html">TimePlotter</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../interfaces/index.html">pyrogue.interfaces</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../protocols/index.html">pyrogue.protocols</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../utilities/index.html">pyrogue.utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../rogue/index.html">rogue</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../cpp/index.html">C++ API</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">API Reference</a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Python API</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">pyrogue</a></li>
+          <li class="breadcrumb-item"><a href="index.html">pyrogue.pydm.widgets</a></li>
+      <li class="breadcrumb-item active">Plotter</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../_sources/api/python/pyrogue/pydm_widgets/plotter.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="plotter">
+<span id="api-python-pyrogue-pydm-widgets-plotter"></span><h1>Plotter<a class="headerlink" href="#plotter" title="Link to this heading"></a></h1>
+<p>For conceptual usage, see:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../../../../pydm/rogue_widgets.html"><span class="doc">Rogue Widgets</span></a></p></li>
+</ul>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyrogue.pydm.widgets.Plotter">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pyrogue.pydm.widgets.</span></span><span class="sig-name descname"><span class="pre">Plotter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_channel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/pyrogue/pydm/widgets/plot.html#Plotter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.pydm.widgets.Plotter" title="Link to this definition"></a></dt>
+<dd><p>PyDM widget that displays an incoming matplotlib figure published by a pyrogue Variable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>parent</strong> (<span class="sphinx_autodoc_typehints-type">QWidget | None</span>, default: <code class="docutils literal notranslate"><span class="pre">None</span></code>) – Parent Qt widget.</p></li>
+<li><p><strong>init_channel</strong> (<span class="sphinx_autodoc_typehints-type">str | None</span>, default: <code class="docutils literal notranslate"><span class="pre">None</span></code>) – Initial Rogue channel address.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.pydm.widgets.Plotter.connection_changed">
+<span class="sig-name descname"><span class="pre">connection_changed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connected</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/pyrogue/pydm/widgets/plot.html#Plotter.connection_changed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.pydm.widgets.Plotter.connection_changed" title="Link to this definition"></a></dt>
+<dd><p>Build the layout after the first successful channel connection.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>connected</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.pydm.widgets.Plotter.value_changed">
+<span class="sig-name descname"><span class="pre">value_changed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_val</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/pyrogue/pydm/widgets/plot.html#Plotter.value_changed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.pydm.widgets.Plotter.value_changed" title="Link to this definition"></a></dt>
+<dd><p>Replace the displayed plot with the latest figure object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>new_val</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><em>object</em></a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pyroguelineedit.html" class="btn btn-neutral float-left" title="PyRogueLineEdit" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="timeplotter.html" class="btn btn-neutral float-right" title="TimePlotter" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

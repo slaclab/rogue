@@ -1,16 +1,16 @@
 .. _protocols_packetizer_classes:
 
-======================================
-Packetizer Protocol Class Descriptions
-======================================
+=============================
+rogue::protocols::packetizer
+=============================
 
-TODO
+These pages provide the C++ API reference for
+``rogue::protocols::packetizer`` classes.
 
-The following are detailed descriptions of the various C++ classes that make up the Rogue Packetizer protocol.
 
 .. toctree::
    :maxdepth: 1
-   :caption: UDP Classes:
+   :caption: Packetizer Classes:
 
    core
    coreV2
@@ -20,3 +20,7 @@ The following are detailed descriptions of the various C++ classes that make up 
    application
    transport
 
+
+.. rubric:: Related Topics
+
+- :doc:`/built_in_modules/protocols/packetizer/index`

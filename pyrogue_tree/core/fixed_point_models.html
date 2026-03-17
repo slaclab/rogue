@@ -1,0 +1,297 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fixed-Point Models &mdash; Rogue v6.8.5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=346ffc18" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=8960aef2"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/custom.js?v=b11a05f1"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="PollQueue" href="poll_queue.html" />
+    <link rel="prev" title="Model" href="model.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">PyRogue Tree</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Components And Concepts</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="root.html">Root</a></li>
+<li class="toctree-l3"><a class="reference internal" href="device.html">Device</a></li>
+<li class="toctree-l3"><a class="reference internal" href="variable.html">Variable</a></li>
+<li class="toctree-l3"><a class="reference internal" href="command.html">Command</a></li>
+<li class="toctree-l3"><a class="reference internal" href="block.html">Blocks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="block_operations.html">Device Block Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="model.html">Model</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Fixed-Point Models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="poll_queue.html">PollQueue</a></li>
+<li class="toctree-l3"><a class="reference internal" href="yaml_configuration.html">YAML Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="memory_variable_stream.html">Variable Update Stream</a></li>
+<li class="toctree-l3"><a class="reference internal" href="groups.html">Groups</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../builtin_devices/index.html">Built-in Devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../client_interfaces/index.html">Client Interfaces</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">API Reference</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">PyRogue Tree</a></li>
+          <li class="breadcrumb-item"><a href="index.html">PyRogue Tree Components And Concepts</a></li>
+      <li class="breadcrumb-item active">Fixed-Point Models</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/pyrogue_tree/core/fixed_point_models.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="fixed-point-models">
+<span id="pyrogue-tree-fixed-point-models"></span><h1>Fixed-Point Models<a class="headerlink" href="#fixed-point-models" title="Link to this heading"></a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">Fixed</span></code> and <code class="docutils literal notranslate"><span class="pre">UFixed</span></code> are the PyRogue <code class="docutils literal notranslate"><span class="pre">Model</span></code> types for fixed-point
+values. They are one of the most common sources of confusion because they are
+easy to read as “floating-point values stored in hardware.” That is not what
+they are doing.</p>
+<p>The right mental model is:</p>
+<ul class="simple">
+<li><p>Hardware stores an integer bit pattern.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">binPoint</span></code> says how many fractional bits that integer represents.</p></li>
+<li><p>PyRogue converts between the stored integer and the Python <code class="docutils literal notranslate"><span class="pre">float</span></code> you see
+in the Variable API.</p></li>
+</ul>
+<p>So a fixed-point value is really a scaled integer.</p>
+<section id="what-bitsize-and-binpoint-mean">
+<h2>What <code class="docutils literal notranslate"><span class="pre">bitSize</span></code> And <code class="docutils literal notranslate"><span class="pre">binPoint</span></code> Mean<a class="headerlink" href="#what-bitsize-and-binpoint-mean" title="Link to this heading"></a></h2>
+<p>For <code class="docutils literal notranslate"><span class="pre">pr.Fixed(bitSize,</span> <span class="pre">binPoint)</span></code> and <code class="docutils literal notranslate"><span class="pre">pr.UFixed(bitSize,</span> <span class="pre">binPoint)</span></code>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">bitSize</span></code> is the total stored width.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">binPoint</span></code> is the number of fractional bits.</p></li>
+<li><p>The value resolution is <code class="docutils literal notranslate"><span class="pre">2^-binPoint</span></code>.</p></li>
+</ul>
+<p>If <code class="docutils literal notranslate"><span class="pre">binPoint</span></code> is 8, then one integer count in hardware corresponds to
+<code class="docutils literal notranslate"><span class="pre">1</span> <span class="pre">/</span> <span class="pre">256</span></code> in the Python-facing value.</p>
+<p>Examples:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pr.Fixed(16,</span> <span class="pre">8)</span></code> means a signed 16-bit integer interpreted with 8
+fractional bits.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pr.UFixed(12,</span> <span class="pre">4)</span></code> means an unsigned 12-bit integer interpreted with 4
+fractional bits.</p></li>
+</ul>
+<p>In both cases, the binary point is not an extra stored bit. It is just the
+scaling rule used for conversion.</p>
+</section>
+<section id="how-conversion-works">
+<h2>How Conversion Works<a class="headerlink" href="#how-conversion-works" title="Link to this heading"></a></h2>
+<p>In the current implementation, fixed-point conversion is handled by the lower
+level Rogue memory path using <code class="docutils literal notranslate"><span class="pre">modelId</span> <span class="pre">=</span> <span class="pre">rim.Fixed</span></code> together with the
+Model’s <code class="docutils literal notranslate"><span class="pre">bitSize</span></code>, <code class="docutils literal notranslate"><span class="pre">binPoint</span></code>, and signedness. The Python <code class="docutils literal notranslate"><span class="pre">Fixed</span></code> and
+<code class="docutils literal notranslate"><span class="pre">UFixed</span></code> classes mainly supply that metadata.</p>
+<p>The conversion rule is:</p>
+<ul class="simple">
+<li><p>On write: store <code class="docutils literal notranslate"><span class="pre">round(value</span> <span class="pre">*</span> <span class="pre">2^binPoint)</span></code> as the underlying integer.</p></li>
+<li><p>On read: return <code class="docutils literal notranslate"><span class="pre">stored_integer</span> <span class="pre">/</span> <span class="pre">2^binPoint</span></code>.</p></li>
+</ul>
+<p>For signed <code class="docutils literal notranslate"><span class="pre">Fixed</span></code>, the stored integer uses two’s-complement interpretation.
+For <code class="docutils literal notranslate"><span class="pre">UFixed</span></code>, it is treated as unsigned.</p>
+<p>This leads to two practical consequences:</p>
+<ul class="simple">
+<li><p>Values are quantized to steps of <code class="docutils literal notranslate"><span class="pre">2^-binPoint</span></code>.</p></li>
+<li><p>A value that is not exactly representable is rounded to the nearest
+representable fixed-point step on write.</p></li>
+</ul>
+</section>
+<section id="numeric-range">
+<h2>Numeric Range<a class="headerlink" href="#numeric-range" title="Link to this heading"></a></h2>
+<p>For a signed <code class="docutils literal notranslate"><span class="pre">Fixed(bitSize,</span> <span class="pre">binPoint)</span></code> value:</p>
+<ul class="simple">
+<li><p>Minimum representable value:
+<code class="docutils literal notranslate"><span class="pre">-2^(bitSize</span> <span class="pre">-</span> <span class="pre">1)</span> <span class="pre">/</span> <span class="pre">2^binPoint</span></code></p></li>
+<li><p>Maximum representable value:
+<code class="docutils literal notranslate"><span class="pre">(2^(bitSize</span> <span class="pre">-</span> <span class="pre">1)</span> <span class="pre">-</span> <span class="pre">1)</span> <span class="pre">/</span> <span class="pre">2^binPoint</span></code></p></li>
+</ul>
+<p>For an unsigned <code class="docutils literal notranslate"><span class="pre">UFixed(bitSize,</span> <span class="pre">binPoint)</span></code> value:</p>
+<ul class="simple">
+<li><p>Minimum representable value:
+<code class="docutils literal notranslate"><span class="pre">0</span></code></p></li>
+<li><p>Maximum representable value:
+<code class="docutils literal notranslate"><span class="pre">(2^bitSize</span> <span class="pre">-</span> <span class="pre">1)</span> <span class="pre">/</span> <span class="pre">2^binPoint</span></code></p></li>
+</ul>
+<p>Examples:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pr.Fixed(16,</span> <span class="pre">8)</span></code> has resolution <code class="docutils literal notranslate"><span class="pre">1/256</span></code> and range
+<code class="docutils literal notranslate"><span class="pre">-128.0</span></code> to <code class="docutils literal notranslate"><span class="pre">127.99609375</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pr.UFixed(12,</span> <span class="pre">4)</span></code> has resolution <code class="docutils literal notranslate"><span class="pre">1/16</span></code> and range
+<code class="docutils literal notranslate"><span class="pre">0.0</span></code> to <code class="docutils literal notranslate"><span class="pre">255.9375</span></code>.</p></li>
+</ul>
+<p>One detail that often surprises users is that the positive maximum is usually
+slightly smaller in magnitude than the negative minimum for signed fixed-point
+types. That is normal two’s-complement behavior.</p>
+</section>
+<section id="worked-example">
+<h2>Worked Example<a class="headerlink" href="#worked-example" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">DspRegs</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Gain&#39;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Signed gain coefficient in Q1.15 format&#39;</span><span class="p">,</span>
+            <span class="n">offset</span><span class="o">=</span><span class="mh">0x00</span><span class="p">,</span>
+            <span class="n">bitSize</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span>
+            <span class="n">bitOffset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span>
+            <span class="n">base</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">Fixed</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">15</span><span class="p">),</span>
+            <span class="n">disp</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">{:.6f}</span><span class="s1">&#39;</span><span class="p">,</span>
+        <span class="p">))</span>
+</pre></div>
+</div>
+<p>Here <code class="docutils literal notranslate"><span class="pre">Gain</span></code> is a signed 16-bit fixed-point value with 15 fractional bits.
+That format is often called <code class="docutils literal notranslate"><span class="pre">Q1.15</span></code>.</p>
+<p>Interpretation examples:</p>
+<ul class="simple">
+<li><p>Python value <code class="docutils literal notranslate"><span class="pre">0.5</span></code> writes the integer <code class="docutils literal notranslate"><span class="pre">16384</span></code> because
+<code class="docutils literal notranslate"><span class="pre">0.5</span> <span class="pre">*</span> <span class="pre">2^15</span> <span class="pre">=</span> <span class="pre">16384</span></code>.</p></li>
+<li><p>Python value <code class="docutils literal notranslate"><span class="pre">-0.25</span></code> writes the two’s-complement integer representing
+<code class="docutils literal notranslate"><span class="pre">-8192</span></code>.</p></li>
+<li><p>A raw stored integer value of <code class="docutils literal notranslate"><span class="pre">24576</span></code> reads back as <code class="docutils literal notranslate"><span class="pre">0.75</span></code> because
+<code class="docutils literal notranslate"><span class="pre">24576</span> <span class="pre">/</span> <span class="pre">2^15</span> <span class="pre">=</span> <span class="pre">0.75</span></code>.</p></li>
+</ul>
+<p>For coefficient-style registers, this is usually the easiest way to reason
+about the model: first think about the scaled integer in hardware, then divide
+or multiply by <code class="docutils literal notranslate"><span class="pre">2^binPoint</span></code>.</p>
+</section>
+<section id="common-mistakes">
+<h2>Common Mistakes<a class="headerlink" href="#common-mistakes" title="Link to this heading"></a></h2>
+<p>The mistakes users make most often are:</p>
+<ul class="simple">
+<li><p>Treating <code class="docutils literal notranslate"><span class="pre">bitSize</span></code> as “integer bits” instead of total bits.</p></li>
+<li><p>Treating <code class="docutils literal notranslate"><span class="pre">binPoint</span></code> as an extra stored field rather than a scaling rule.</p></li>
+<li><p>Expecting arbitrary decimal values to round-trip exactly.</p></li>
+<li><p>Forgetting that signed <code class="docutils literal notranslate"><span class="pre">Fixed</span></code> uses two’s-complement range and therefore
+has an asymmetric positive and negative limit.</p></li>
+<li><p>Forgetting to set an explicit <code class="docutils literal notranslate"><span class="pre">disp</span></code> when operator-facing decimal
+formatting matters.</p></li>
+</ul>
+<p>In practice, if you know the hardware format name, such as <code class="docutils literal notranslate"><span class="pre">Q1.15</span></code> or
+<code class="docutils literal notranslate"><span class="pre">Q5.11</span></code>, convert it like this:</p>
+<ul class="simple">
+<li><p>Total width is <code class="docutils literal notranslate"><span class="pre">bitSize</span></code>.</p></li>
+<li><p>Fractional width is <code class="docutils literal notranslate"><span class="pre">binPoint</span></code>.</p></li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">Fixed</span></code> for signed formats and <code class="docutils literal notranslate"><span class="pre">UFixed</span></code> for unsigned formats.</p></li>
+</ul>
+<p>If the register documentation instead gives a scale factor directly, choose
+<code class="docutils literal notranslate"><span class="pre">binPoint</span></code> so that the scale factor is <code class="docutils literal notranslate"><span class="pre">1</span> <span class="pre">/</span> <span class="pre">2^binPoint</span></code>.</p>
+</section>
+<section id="what-to-explore-next">
+<h2>What To Explore Next<a class="headerlink" href="#what-to-explore-next" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>General Model behavior: <a class="reference internal" href="model.html"><span class="doc">Model</span></a></p></li>
+<li><p>Variable definitions that use Models: <a class="reference internal" href="remote_variable.html"><span class="doc">RemoteVariable</span></a></p></li>
+</ul>
+</section>
+<section id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Python Model base/reference: <a class="reference internal" href="../../api/python/pyrogue/model.html"><span class="doc">Model</span></a></p></li>
+<li><p>C++ memory Model reference: <a class="reference internal" href="../../api/cpp/interfaces/memory/model.html"><span class="doc">Model</span></a></p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="model.html" class="btn btn-neutral float-left" title="Model" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="poll_queue.html" class="btn btn-neutral float-right" title="PollQueue" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -31,7 +31,10 @@ Similiarly the previous feature which allowed the user to pass the root class to
 	pyrogue.pydm.runPyDM(serverList=root.zmqServer.address,title='Test UI',sizeX=1000,sizeY=500)
 
 
-More information can be found int he ZmqServer class documenation (TBD).
+More information can be found in:
+
+- :doc:`/api/python/pyrogue/interfaces/zmqserver`
+- :doc:`/pyrogue_tree/client_interfaces/index`
 
 
 SqlLogger
@@ -53,7 +56,10 @@ Similiar to the zmqServer, the sql logger is now removed to be an external inter
 	   self.addInterface(pyrogue.interfaces.SqlLogger(root=self, url='sqlite:///test.db'))
 
 
-More information can be found int he SqlLogger class documenation (TBD).
+More information can be found in:
+
+- :doc:`/built_in_modules/interfaces/sql`
+- ``python/pyrogue/interfaces/_SqlLogging.py``
 
 
 Root Configuration Streaming

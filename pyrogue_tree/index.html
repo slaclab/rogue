@@ -6,25 +6,26 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PyRogue Tree &mdash; Rogue v6.8.4 documentation</title>
+  <title>PyRogue Tree &mdash; Rogue v6.8.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
-      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=f9c5c301" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=346ffc18" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=2d182aeb"></script>
+      <script src="../_static/documentation_options.js?v=8960aef2"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script src="../_static/custom.js?v=b11a05f1"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Node" href="node/index.html" />
-    <link rel="prev" title="Advanced Tutorials" href="../advanced_examples/index.html" /> 
+    <link rel="next" title="PyRogue Tree Components And Concepts" href="core/index.html" />
+    <link rel="prev" title="Setting Up Rogue In Yocto" href="../installing/yocto.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -35,7 +36,7 @@
 
           
           
-          <a href="../introduction/index.html" class="icon icon-home">
+          <a href="../index.html" class="icon icon-home">
             Rogue
           </a>
 <div role="search">
@@ -45,51 +46,43 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../introduction/index.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../getting_started/index.html">PyRogue Tree Getting Started Guide</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../advanced_examples/index.html">Advanced Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installing/index.html">Installing &amp; Compiling Rogue</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">PyRogue Tree</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="node/index.html">Node</a></li>
-<li class="toctree-l2"><a class="reference internal" href="node/root/index.html">Root</a></li>
-<li class="toctree-l2"><a class="reference internal" href="node/root/poll_queue.html">PollQueue</a></li>
-<li class="toctree-l2"><a class="reference internal" href="node/device/index.html">Device</a></li>
-<li class="toctree-l2"><a class="reference internal" href="node/command/index.html">Command</a></li>
-<li class="toctree-l2"><a class="reference internal" href="node/variable/index.html">Variable</a></li>
-<li class="toctree-l2"><a class="reference internal" href="model/index.html">Model API</a></li>
-<li class="toctree-l2"><a class="reference internal" href="blocks.html">Blocks &amp; Models</a></li>
-<li class="toctree-l2"><a class="reference internal" href="blocks_advanced.html">Advanced Usage Of Blocks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core/index.html">Components And Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="builtin_devices/index.html">Built-in Devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="client_interfaces/index.html">Client Interfaces</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../interfaces/index.html">Interfaces</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../utilities/index.html">Utilities</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../hardware/index.html">Hardware</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../protocols/index.html">Protocols</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../built_in_modules/index.html">Built-in Modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../logging/index.html">Logging In Rogue</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../custom_module/index.html">Creating Custom Modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../pydm/index.html">Using the PyDM Gui</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cookbook/index.html">Cookbook</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../migration/index.html">Migration Notes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../documentation_index.html">Table of Contents</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../installing/index.html">Installing &amp; Compiling Rogue</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api/index.html">API Reference</a></li>
 </ul>
 
-        </div>
+</div>
       </div>
     </nav>
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../introduction/index.html">Rogue</a>
+          <a href="../index.html">Rogue</a>
       </nav>
 
       <div class="wy-nav-content">
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../introduction/index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
       <li class="breadcrumb-item active">PyRogue Tree</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/pyrogue_tree/index.rst.txt" rel="nofollow"> View page source</a>
@@ -102,90 +95,67 @@
              
   <section id="pyrogue-tree">
 <span id="id1"></span><h1>PyRogue Tree<a class="headerlink" href="#pyrogue-tree" title="Link to this heading"></a></h1>
-<p>The PyRogue Tree implements a tree structure for the hierarchical organization of devices.
-All devices, variables, and commands subclass from <a class="reference internal" href="node/index.html#pyrogue-tree-node"><span class="std std-ref">Node</span></a>.</p>
-<p>The tree structure is arbitrary and does not necessarily follow the hardware bus structures.
-Elements within the tree are exposed to outside systems via the various <a class="reference internal" href="../interfaces/index.html#interfaces"><span class="std std-ref">management interfaces</span></a> (epics, pyro, mysql, etc)</p>
-<p>A common hierarchy will be a Root Node connected to any number of Device Nodes, which each can have their own Device Nodes, Command Nodes, and Variable Nodes.</p>
+<p>PyRogue organizes application control around a hierarchical tree owned by one
+running <code class="docutils literal notranslate"><span class="pre">Root</span></code>. That tree is where hardware abstractions, operator-facing
+controls, background activity, and remote access meet.</p>
+<p>Most PyRogue work starts with the tree, even when the real task is hardware
+control, register definition, data movement, or GUI integration. The tree is
+the layer that gives those lower-level pieces a stable user-facing structure:
+<code class="docutils literal notranslate"><span class="pre">Device</span></code> Nodes describe the system, <code class="docutils literal notranslate"><span class="pre">Variable</span></code> and <code class="docutils literal notranslate"><span class="pre">Command</span></code> Nodes expose
+state and actions, and client interfaces make that structure visible to tools.</p>
+<p>The section is organized in the same order most users need to learn it:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="core/index.html"><span class="doc">PyRogue Tree Components And Concepts</span></a> explains the object model and runtime behavior of
+<code class="docutils literal notranslate"><span class="pre">Root</span></code>, <code class="docutils literal notranslate"><span class="pre">Device</span></code>, <code class="docutils literal notranslate"><span class="pre">Variable</span></code>, <code class="docutils literal notranslate"><span class="pre">Command</span></code>, <code class="docutils literal notranslate"><span class="pre">Block</span></code>, and <code class="docutils literal notranslate"><span class="pre">Model</span></code>.
+Start here if you are building or extending a tree.</p></li>
+<li><p><a class="reference internal" href="builtin_devices/index.html"><span class="doc">Built-in Devices</span></a> covers reusable <code class="docutils literal notranslate"><span class="pre">Device</span></code> implementations for
+common workflows such as run control, PRBS, stream read/write, and process
+control.</p></li>
+<li><p><a class="reference internal" href="client_interfaces/index.html"><span class="doc">Client Interfaces</span></a> covers the server/client access patterns used
+by scripts, GUIs, notebooks, and command-line tools.</p></li>
+</ul>
+<section id="architectural-view">
+<h2>Architectural View<a class="headerlink" href="#architectural-view" title="Link to this heading"></a></h2>
+<p>The tree model is intentionally independent from hardware bus topology.
+You can optimize memory and stream transport plumbing for performance while
+keeping a stable user-facing organization in the tree.</p>
+<p>That separation is important because it lets one design serve multiple needs at
+once. The same running <code class="docutils literal notranslate"><span class="pre">Root</span></code> can:</p>
+<ul class="simple">
+<li><p>Present a coherent register and control hierarchy to operators.</p></li>
+<li><p>Reuse built-in <code class="docutils literal notranslate"><span class="pre">Device</span></code> helpers for common behaviors.</p></li>
+<li><p>Expose the same live tree to PyDM, command-line clients, notebooks, or other
+remote consumers.</p></li>
+</ul>
+</section>
+<section id="reading-path">
+<h2>Reading Path<a class="headerlink" href="#reading-path" title="Link to this heading"></a></h2>
+<p>If you are new to this part of the docs, the most useful order is:</p>
+<ol class="arabic simple">
+<li><p>Read <a class="reference internal" href="core/index.html"><span class="doc">PyRogue Tree Components And Concepts</span></a> to understand the tree model and the
+role of <code class="docutils literal notranslate"><span class="pre">Root</span></code>.</p></li>
+<li><p>Continue into the core pages for <code class="docutils literal notranslate"><span class="pre">Root</span></code>, <code class="docutils literal notranslate"><span class="pre">Device</span></code>, <code class="docutils literal notranslate"><span class="pre">Variable</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">Command</span></code>.</p></li>
+<li><p>Move to built-in Devices once the composition model is clear.</p></li>
+<li><p>Read client interfaces after you know how the tree is organized internally.</p></li>
+</ol>
 <div class="toctree-wrapper compound">
-<p class="caption" role="heading"><span class="caption-text">Node Class Types</span></p>
+<p class="caption" role="heading"><span class="caption-text">PyRogue Tree:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="node/index.html">Node</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="node/block/index.html">Block</a></li>
-<li class="toctree-l2"><a class="reference internal" href="node/groups.html">Groups</a></li>
-<li class="toctree-l2"><a class="reference internal" href="node/index.html#node-class-description">Node Class Description</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="node/root/index.html">Root</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="node/root/index.html#key-attributes">Key Attributes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="node/root/index.html#key-methods">Key Methods</a></li>
-<li class="toctree-l2"><a class="reference internal" href="node/root/index.html#lifecycle-start-stop-and-rootattached">Lifecycle: <code class="docutils literal notranslate"><span class="pre">start()</span></code>, <code class="docutils literal notranslate"><span class="pre">stop()</span></code>, and <code class="docutils literal notranslate"><span class="pre">_rootAttached()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="node/root/index.html#temporarily-blocking-polling">Temporarily Blocking Polling</a></li>
-<li class="toctree-l2"><a class="reference internal" href="node/root/index.html#zmqserver-interface">ZmqServer Interface</a></li>
-<li class="toctree-l2"><a class="reference internal" href="node/root/index.html#yaml-file-configuration">Yaml File Configuration</a></li>
-<li class="toctree-l2"><a class="reference internal" href="node/root/index.html#included-command-objects">Included Command Objects</a></li>
-<li class="toctree-l2"><a class="reference internal" href="node/root/index.html#included-variable-objects">Included Variable Objects</a></li>
-<li class="toctree-l2"><a class="reference internal" href="node/root/index.html#root-class-documentation">Root Class Documentation</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="node/root/poll_queue.html">PollQueue</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="node/root/poll_queue.html#what-it-does">What it does</a></li>
-<li class="toctree-l2"><a class="reference internal" href="node/root/poll_queue.html#block-level-scheduling-behavior">Block-Level Scheduling Behavior</a></li>
-<li class="toctree-l2"><a class="reference internal" href="node/root/poll_queue.html#control-and-lifecycle">Control and Lifecycle</a></li>
-<li class="toctree-l2"><a class="reference internal" href="node/root/poll_queue.html#usage-examples">Usage Examples</a></li>
-<li class="toctree-l2"><a class="reference internal" href="node/root/poll_queue.html#pollqueue-class-documentation">PollQueue Class Documentation</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="node/device/index.html">Device</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="node/device/index.html#device-definition">Device Definition</a></li>
-<li class="toctree-l2"><a class="reference internal" href="node/device/index.html#special-device-subclasses">Special Device Subclasses</a></li>
-<li class="toctree-l2"><a class="reference internal" href="node/device/index.html#device-class-documentation">Device Class Documentation</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="node/command/index.html">Command</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="node/command/index.html#command-types">Command types</a></li>
-<li class="toctree-l2"><a class="reference internal" href="node/command/index.html#subtypes">Subtypes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="node/command/index.html#basecommand-class-documentation">BaseCommand Class Documentation</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="node/variable/index.html">Variable</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="node/variable/index.html#variable-types">Variable Types</a></li>
-<li class="toctree-l2"><a class="reference internal" href="node/variable/index.html#when-to-use-each-type">When to use each type</a></li>
-<li class="toctree-l2"><a class="reference internal" href="node/variable/index.html#common-attributes-and-behavior">Common attributes and behavior</a></li>
-<li class="toctree-l2"><a class="reference internal" href="node/variable/index.html#implementation-boundary-python-and-c">Implementation Boundary (Python and C++)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="node/variable/index.html#basevariable-class-documentation">BaseVariable Class Documentation</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="model/index.html">Model API</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="model/index.html#related-documentation">Related Documentation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="model/index.html#utility-functions">Utility Functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="model/index.html#base-model">Base Model</a></li>
-<li class="toctree-l2"><a class="reference internal" href="model/index.html#common-built-in-models">Common Built-in Models</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="blocks.html">Blocks &amp; Models</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="blocks.html#how-variables-models-and-block-methods-tie-together">How Variables, Models, and Block Methods Tie Together</a></li>
-<li class="toctree-l2"><a class="reference internal" href="blocks.html#custom-models">Custom Models</a></li>
-<li class="toctree-l2"><a class="reference internal" href="blocks.html#using-custom-models">Using Custom Models</a></li>
-<li class="toctree-l2"><a class="reference internal" href="blocks.html#pre-allocating-blocks">Pre-Allocating Blocks</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="blocks_advanced.html">Advanced Usage Of Blocks</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="blocks_advanced.html#model-driven-method-dispatch">Model-Driven Method Dispatch</a></li>
-<li class="toctree-l2"><a class="reference internal" href="blocks_advanced.html#conversion-vs-transaction">Conversion vs Transaction</a></li>
-<li class="toctree-l2"><a class="reference internal" href="blocks_advanced.html#packing-rules-and-variable-layout">Packing Rules and Variable Layout</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="core/index.html">Components And Concepts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="builtin_devices/index.html">Built-in Devices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="client_interfaces/index.html">Client Interfaces</a></li>
 </ul>
 </div>
+</section>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../advanced_examples/index.html" class="btn btn-neutral float-left" title="Advanced Tutorials" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="node/index.html" class="btn btn-neutral float-right" title="Node" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../installing/yocto.html" class="btn btn-neutral float-left" title="Setting Up Rogue In Yocto" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="core/index.html" class="btn btn-neutral float-right" title="PyRogue Tree Components And Concepts" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

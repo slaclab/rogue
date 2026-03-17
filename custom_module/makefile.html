@@ -6,20 +6,21 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Building The Custom Module &mdash; Rogue v6.8.4 documentation</title>
+  <title>Building The Custom Module &mdash; Rogue v6.8.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
-      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=f9c5c301" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=346ffc18" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=2d182aeb"></script>
+      <script src="../_static/documentation_options.js?v=8960aef2"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script src="../_static/custom.js?v=b11a05f1"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -35,7 +36,7 @@
 
           
           
-          <a href="../introduction/index.html" class="icon icon-home">
+          <a href="../index.html" class="icon icon-home">
             Rogue
           </a>
 <div role="search">
@@ -45,46 +46,53 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../introduction/index.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../getting_started/index.html">PyRogue Tree Getting Started Guide</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../advanced_examples/index.html">Advanced Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installing/index.html">Installing &amp; Compiling Rogue</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../pyrogue_tree/index.html">PyRogue Tree</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../interfaces/index.html">Interfaces</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../utilities/index.html">Utilities</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../hardware/index.html">Hardware</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../protocols/index.html">Protocols</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../logging/index.html">Logging In Rogue</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="index.html">Creating Custom Modules</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="sourcefile.html">Custom Module Source</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Building The Custom Module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="wrapper.html">Wrapping Custom Module With PyRogue Device</a></li>
-<li class="toctree-l2"><a class="reference internal" href="testing.html">Testing The Custom Module</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../stream_interface/index.html">Stream Interface</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../stream_interface/connecting.html">Connecting Streams</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stream_interface/frame_model.html">Frame Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stream_interface/sending.html">Sending Frames</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stream_interface/receiving.html">Receiving Frames</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stream_interface/built_in_modules.html">Built-in Stream Modules</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Creating Custom Modules</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="sourcefile.html">Custom Module Source</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Building The Custom Module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="wrapper.html">Wrapping Custom Module With PyRogue Device</a></li>
+<li class="toctree-l3"><a class="reference internal" href="testing.html">Testing The Custom Module</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../pydm/index.html">Using the PyDM Gui</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cookbook/index.html">Cookbook</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../migration/index.html">Migration Notes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../documentation_index.html">Table of Contents</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../installing/index.html">Installing &amp; Compiling Rogue</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api/index.html">API Reference</a></li>
 </ul>
 
-        </div>
+</div>
       </div>
     </nav>
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../introduction/index.html">Rogue</a>
+          <a href="../index.html">Rogue</a>
       </nav>
 
       <div class="wy-nav-content">
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../introduction/index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../stream_interface/index.html">Stream Interface</a></li>
           <li class="breadcrumb-item"><a href="index.html">Creating Custom Modules</a></li>
       <li class="breadcrumb-item active">Building The Custom Module</li>
       <li class="wy-breadcrumbs-aside">
@@ -98,24 +106,22 @@
              
   <section id="building-the-custom-module">
 <span id="custom-makefile"></span><h1>Building The Custom Module<a class="headerlink" href="#building-the-custom-module" title="Link to this heading"></a></h1>
-<p>The following is an example custom CMakeLists.txt which will setup the environment
-for building a custom Rogue module using existing Rogue libraries. It is assumed
-that the ROGUE_DIR environment variable points to the non-standard Rogue
-location if not using an Miniforge environment, Docker or System install.</p>
+<p>The example below shows a custom <code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code> for building a Rogue module
+against an existing Rogue installation. <code class="docutils literal notranslate"><span class="pre">ROGUE_DIR</span></code> can be used when Rogue
+is installed in a non-standard location rather than in Miniforge, Docker, or a
+system path.</p>
 <p>Replace MyModule with your module name globally in this file.</p>
-<p>This file assumes that the source file MyModule.cpp exists in the <strong>src</strong>
-subdirectory relative to this file’s location.  This file can be used to
-compile the <a class="reference internal" href="sourcefile.html#custom-sourcefile"><span class="std std-ref">Custom Module Source</span></a> described in this section.  This
-CMakeLists can be used to compile the custom module with the following commands:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ mkdir build
-$ cd build
-$ cmake ..
-$ make
+<p>This file assumes that <code class="docutils literal notranslate"><span class="pre">MyModule.cpp</span></code> exists in the <strong>src</strong> subdirectory
+relative to the project root. It can be used to compile the
+<a class="reference internal" href="sourcefile.html#custom-sourcefile"><span class="std std-ref">Custom Module Source</span></a> with the following commands:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>mkdir<span class="w"> </span>build
+$<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>build
+$<span class="w"> </span>cmake<span class="w"> </span>..
+$<span class="w"> </span>make
 </pre></div>
 </div>
-<p>The output shared library MyModule.so will be created in the <strong>python</strong>
-sub-directory. This directory will need to be included in the PYTHONPATH
-environment variable.</p>
+<p>The output shared library <code class="docutils literal notranslate"><span class="pre">MyModule.so</span></code> will be created in the <strong>python</strong>
+subdirectory. That directory needs to be included in <code class="docutils literal notranslate"><span class="pre">PYTHONPATH</span></code>.</p>
 <div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="c"># Source for CMakeLists.txt</span>
 
 <span class="c"># Add support for building in conda environment</span>
@@ -169,6 +175,13 @@ environment variable.</p>
 <span class="nb">TARGET_LINK_LIBRARIES</span><span class="p">(</span><span class="s">MyModule</span><span class="w"> </span><span class="s">LINK_PUBLIC</span><span class="w"> </span><span class="o">${</span><span class="nv">ROGUE_LIBRARIES</span><span class="o">}</span><span class="p">)</span>
 </pre></div>
 </div>
+<section id="what-to-explore-next">
+<h2>What To Explore Next<a class="headerlink" href="#what-to-explore-next" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Custom module source structure: <a class="reference internal" href="sourcefile.html#custom-sourcefile"><span class="std std-ref">Custom Module Source</span></a></p></li>
+<li><p>Wrapping the resulting module in PyRogue: <a class="reference internal" href="wrapper.html#custom-wrapper"><span class="std std-ref">Wrapping Custom Module With PyRogue Device</span></a></p></li>
+</ul>
+</section>
 </section>
 
 

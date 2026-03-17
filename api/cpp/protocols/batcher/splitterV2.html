@@ -6,24 +6,25 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SplitterV2 &mdash; Rogue v6.8.4 documentation</title>
+  <title>SplitterV2 &mdash; Rogue v6.8.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
-      <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css?v=f9c5c301" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css?v=346ffc18" />
 
   
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=2d182aeb"></script>
+      <script src="../../../../_static/documentation_options.js?v=8960aef2"></script>
       <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../../_static/custom.js?v=b11a05f1"></script>
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
-    <link rel="next" title="Packetizer Protocol Class Descriptions" href="../packetizer/index.html" />
+    <link rel="next" title="rogue::protocols::packetizer" href="../packetizer/index.html" />
     <link rel="prev" title="SplitterV1" href="splitterV1.html" /> 
 </head>
 
@@ -35,7 +36,7 @@
 
           
           
-          <a href="../../../../introduction/index.html" class="icon icon-home">
+          <a href="../../../../index.html" class="icon icon-home">
             Rogue
           </a>
 <div role="search">
@@ -45,71 +46,70 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../../../../introduction/index.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../getting_started/index.html">PyRogue Tree Getting Started Guide</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../advanced_examples/index.html">Advanced Tutorials</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../pyrogue_tree/index.html">PyRogue Tree</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../interfaces/index.html">Interfaces</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../utilities/index.html">Utilities</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../hardware/index.html">Hardware</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../protocols/index.html">Protocols</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../logging/index.html">Logging In Rogue</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../custom_module/index.html">Creating Custom Modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../pydm/index.html">Using the PyDM Gui</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../migration/index.html">Migration Notes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_index.html">Table of Contents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../index.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../migration/index.html">Migration Notes</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../../../index.html">API Reference</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../../../index.html#python-api">Python API</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../../../index.html#c-api">C++ API</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="../../hardware/axi/index.html">AXI Hardware Interface Class Descriptions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../hardware/raw/index.html">Hardware Interface Class Descriptions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../interfaces/memory/index.html">Memory Interface Class Descriptions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../interfaces/stream/index.html">Stream Interface Class Descriptions</a></li>
-<li class="toctree-l3 current"><a class="reference internal" href="index.html">Batcher Protocol Class Descriptions</a><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="coreV1.html">CoreV1</a></li>
-<li class="toctree-l4"><a class="reference internal" href="coreV2.html">CoreV2</a></li>
-<li class="toctree-l4"><a class="reference internal" href="data.html">Data</a></li>
-<li class="toctree-l4"><a class="reference internal" href="inverterV1.html">InverterV1</a></li>
-<li class="toctree-l4"><a class="reference internal" href="inverterV2.html">InverterV2</a></li>
-<li class="toctree-l4"><a class="reference internal" href="splitterV1.html">SplitterV1</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">SplitterV2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../python/index.html">Python API</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../../index.html">C++ API</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../../rogue_index.html">rogue</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../interfaces_index.html">rogue::interfaces</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../../protocols_index.html">rogue::protocols</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="index.html">rogue::protocols::batcher</a><ul class="current">
+<li class="toctree-l5"><a class="reference internal" href="coreV1.html">CoreV1</a></li>
+<li class="toctree-l5"><a class="reference internal" href="coreV2.html">CoreV2</a></li>
+<li class="toctree-l5"><a class="reference internal" href="data.html">Data</a></li>
+<li class="toctree-l5"><a class="reference internal" href="inverterV1.html">InverterV1</a></li>
+<li class="toctree-l5"><a class="reference internal" href="inverterV2.html">InverterV2</a></li>
+<li class="toctree-l5"><a class="reference internal" href="splitterV1.html">SplitterV1</a></li>
+<li class="toctree-l5 current"><a class="current reference internal" href="#">SplitterV2</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../packetizer/index.html">Packetizer Protocol Class Descriptions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../rssi/index.html">RSSI Protocol Class Descriptions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../srp/index.html">SRP Protocol Class Descriptions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../udp/index.html">UDP Protocol Class Descriptions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../xilinx/index.html">Xilinx Protocol Class Descriptions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../utilities/compression/index.html">Compression Classes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../utilities/fileio/index.html">File Operation Classes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../utilities/prbs/index.html">PRBS Utilities</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../packetizer/index.html">rogue::protocols::packetizer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../rssi/index.html">rogue::protocols::rssi</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../srp/index.html">rogue::protocols::srp</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../udp/index.html">rogue::protocols::udp</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../xilinx/index.html">rogue::protocols::xilinx</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../hardware_index.html">rogue::hardware</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../utilities_index.html">rogue::utilities</a></li>
 </ul>
 </li>
 </ul>
 </li>
 </ul>
 
-        </div>
+</div>
       </div>
     </nav>
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../../introduction/index.html">Rogue</a>
+          <a href="../../../../index.html">Rogue</a>
       </nav>
 
       <div class="wy-nav-content">
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../../introduction/index.html" class="icon icon-home" aria-label="Home"></a></li>
-          <li class="breadcrumb-item"><a href="../../../../documentation_index.html">Table of Contents</a></li>
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../../index.html">API Reference</a></li>
-          <li class="breadcrumb-item"><a href="index.html">Batcher Protocol Class Descriptions</a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">C++ API</a></li>
+          <li class="breadcrumb-item"><a href="../../protocols_index.html">rogue::protocols</a></li>
+          <li class="breadcrumb-item"><a href="index.html">rogue::protocols::batcher</a></li>
       <li class="breadcrumb-item active">SplitterV2</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../../../_sources/api/cpp/protocols/batcher/splitterV2.rst.txt" rel="nofollow"> View page source</a>
@@ -123,18 +123,24 @@
   <section id="splitterv2">
 <span id="protocols-batcher-classes-splitterv2"></span><h1>SplitterV2<a class="headerlink" href="#splitterv2" title="Link to this heading"></a></h1>
 <p><code class="docutils literal notranslate"><span class="pre">SplitterV2</span></code> decodes a Batcher v2 super-frame and emits one Rogue stream
-frame per record.</p>
+frame per record.
+For conceptual guidance, see <a class="reference internal" href="../../../../built_in_modules/protocols/batcher/splitter.html"><span class="doc">Batcher Protocol Splitter</span></a>.</p>
 <p>Protocol reference: <a class="reference external" href="https://confluence.slac.stanford.edu/x/L2VlK">https://confluence.slac.stanford.edu/x/L2VlK</a></p>
+<section id="python-binding">
+<h2>Python binding<a class="headerlink" href="#python-binding" title="Link to this heading"></a></h2>
+<p>This C++ class is also exported into Python as <code class="docutils literal notranslate"><span class="pre">rogue.protocols.batcher.SplitterV2</span></code>.</p>
+<p>Python API page:
+- <a class="reference internal" href="../../../python/rogue/protocols/batcher/splitterv2.html"><span class="doc">SplitterV2</span></a></p>
 <p>SplitterV2 objects in C++ are referenced by the following shared pointer typedef:</p>
 <dl class="cpp type">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols7batcher13SplitterV2PtrE">
-<span id="_CPPv3N5rogue9protocols7batcher13SplitterV2PtrE"></span><span id="_CPPv2N5rogue9protocols7batcher13SplitterV2PtrE"></span><span id="rogue::protocols::batcher::SplitterV2Ptr"></span><span class="target" id="namespacerogue_1_1protocols_1_1batcher_1a8f31023d86fe2d3b71d0c9e7c84bcba4"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">protocols</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">batcher</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue9protocols7batcher10SplitterV2E" title="rogue::protocols::batcher::SplitterV2"><span class="n"><span class="pre">SplitterV2</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">protocols</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">batcher</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">SplitterV2Ptr</span></span></span><a class="headerlink" href="#_CPPv4N5rogue9protocols7batcher13SplitterV2PtrE" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3N5rogue9protocols7batcher13SplitterV2PtrE"></span><span id="_CPPv2N5rogue9protocols7batcher13SplitterV2PtrE"></span><span id="rogue::protocols::batcher::SplitterV2Ptr"></span><span class="target" id="namespacerogue_1_1protocols_1_1batcher_1a8f31023d86fe2d3b71d0c9e7c84bcba4"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">protocols</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">batcher</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue9protocols7batcher10SplitterV2E" title="rogue::protocols::batcher::SplitterV2"><span class="n"><span class="pre">SplitterV2</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">protocols</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">batcher</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">SplitterV2Ptr</span></span></span><a class="headerlink" href="#_CPPv4N5rogue9protocols7batcher13SplitterV2PtrE" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/SplitterV2_8h_source.html#l00087"><span class="pre">[header]</span></a></dt>
 <dd></dd></dl>
 
 <p>The class description is shown below:</p>
 <dl class="cpp class">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols7batcher10SplitterV2E">
-<span id="_CPPv3N5rogue9protocols7batcher10SplitterV2E"></span><span id="_CPPv2N5rogue9protocols7batcher10SplitterV2E"></span><span id="rogue::protocols::batcher::SplitterV2"></span><span class="target" id="classrogue_1_1protocols_1_1batcher_1_1SplitterV2"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SplitterV2</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="../../interfaces/stream/master.html#_CPPv4N5rogue10interfaces6stream6MasterE" title="rogue::interfaces::stream::Master"><span class="n"><span class="pre">Master</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="../../interfaces/stream/slave.html#_CPPv4N5rogue10interfaces6stream5SlaveE" title="rogue::interfaces::stream::Slave"><span class="n"><span class="pre">Slave</span></span></a><a class="headerlink" href="#_CPPv4N5rogue9protocols7batcher10SplitterV2E" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3N5rogue9protocols7batcher10SplitterV2E"></span><span id="_CPPv2N5rogue9protocols7batcher10SplitterV2E"></span><span id="rogue::protocols::batcher::SplitterV2"></span><span class="target" id="classrogue_1_1protocols_1_1batcher_1_1SplitterV2"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SplitterV2</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="../../interfaces/stream/master.html#_CPPv4N5rogue10interfaces6stream6MasterE" title="rogue::interfaces::stream::Master"><span class="n"><span class="pre">Master</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="../../interfaces/stream/slave.html#_CPPv4N5rogue10interfaces6stream5SlaveE" title="rogue::interfaces::stream::Slave"><span class="n"><span class="pre">Slave</span></span></a><a class="headerlink" href="#_CPPv4N5rogue9protocols7batcher10SplitterV2E" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/SplitterV2_8h_source.html#l00050"><span class="pre">[header]</span></a></dt>
 <dd><p>Splits one batcher v2 super-frame into per-record output frames. </p>
 <p>Protocol reference: <a class="reference external" href="https://confluence.slac.stanford.edu/x/L2VlK">https://confluence.slac.stanford.edu/x/L2VlK</a></p>
 <p><code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1protocols_1_1batcher_1_1SplitterV2"><span class="std std-ref"><span class="pre">SplitterV2</span></span></a></code> uses <code class="docutils literal notranslate"><a class="reference internal" href="coreV2.html#classrogue_1_1protocols_1_1batcher_1_1CoreV2"><span class="std std-ref"><span class="pre">CoreV2</span></span></a></code> to parse a batcher super-frame, then emits one Rogue stream frame per parsed <code class="docutils literal notranslate"><a class="reference internal" href="data.html#classrogue_1_1protocols_1_1batcher_1_1Data"><span class="std std-ref"><span class="pre">Data</span></span></a></code> record:<ul class="simple">
@@ -152,21 +158,24 @@ frame per record.</p>
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols7batcher10SplitterV210SplitterV2Ev">
-<span id="_CPPv3N5rogue9protocols7batcher10SplitterV210SplitterV2Ev"></span><span id="_CPPv2N5rogue9protocols7batcher10SplitterV210SplitterV2Ev"></span><span id="rogue::protocols::batcher::SplitterV2::SplitterV2"></span><span class="target" id="classrogue_1_1protocols_1_1batcher_1_1SplitterV2_1a5140c0598ea9981ec08616a78cfcfd58"></span><span class="sig-name descname"><span class="n"><span class="pre">SplitterV2</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols7batcher10SplitterV210SplitterV2Ev" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3N5rogue9protocols7batcher10SplitterV210SplitterV2Ev"></span><span id="_CPPv2N5rogue9protocols7batcher10SplitterV210SplitterV2Ev"></span><span id="rogue::protocols::batcher::SplitterV2::SplitterV2"></span><span class="target" id="classrogue_1_1protocols_1_1batcher_1_1SplitterV2_1a5140c0598ea9981ec08616a78cfcfd58"></span><span class="sig-name descname"><span class="n"><span class="pre">SplitterV2</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols7batcher10SplitterV210SplitterV2Ev" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/SplitterV2_8h_source.html#l00074"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/SplitterV2_8cpp_source.html#l00061"><span class="pre">[impl]</span></a></dt>
 <dd><p>Constructs a <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1protocols_1_1batcher_1_1SplitterV2"><span class="std std-ref"><span class="pre">SplitterV2</span></span></a></code> instance. </p>
-<p>This constructor is a low-level C++ allocation path. Prefer <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1protocols_1_1batcher_1_1SplitterV2_1a661585ba5724db6ef3ee616acce5669a"><span class="std std-ref"><span class="pre">create()</span></span></a></code> when shared ownership or Python exposure is required. </p>
+<p>Creator.</p>
+<p>This constructor is a low-level C++ allocation path. Prefer <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1protocols_1_1batcher_1_1SplitterV2_1a8e59f16273cf960783c77fece1a4939e"><span class="std std-ref"><span class="pre">create()</span></span></a></code> when shared ownership or Python exposure is required. </p>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols7batcher10SplitterV2D0Ev">
-<span id="_CPPv3N5rogue9protocols7batcher10SplitterV2D0Ev"></span><span id="_CPPv2N5rogue9protocols7batcher10SplitterV2D0Ev"></span><span id="rogue::protocols::batcher::SplitterV2::~SplitterV2"></span><span class="target" id="classrogue_1_1protocols_1_1batcher_1_1SplitterV2_1a83cc697ed5b610b58b961eb710fd61f9"></span><span class="sig-name descname"><span class="n"><span class="pre">~SplitterV2</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols7batcher10SplitterV2D0Ev" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3N5rogue9protocols7batcher10SplitterV2D0Ev"></span><span id="_CPPv2N5rogue9protocols7batcher10SplitterV2D0Ev"></span><span id="rogue::protocols::batcher::SplitterV2::~SplitterV2"></span><span class="target" id="classrogue_1_1protocols_1_1batcher_1_1SplitterV2_1a83cc697ed5b610b58b961eb710fd61f9"></span><span class="sig-name descname"><span class="n"><span class="pre">~SplitterV2</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols7batcher10SplitterV2D0Ev" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/SplitterV2_8h_source.html#l00077"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/SplitterV2_8cpp_source.html#l00064"><span class="pre">[impl]</span></a></dt>
 <dd><p>Destroys the splitter. </p>
+<p>Deconstructor. </p>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols7batcher10SplitterV211acceptFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE">
-<span id="_CPPv3N5rogue9protocols7batcher10SplitterV211acceptFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE"></span><span id="_CPPv2N5rogue9protocols7batcher10SplitterV211acceptFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE"></span><span id="rogue::protocols::batcher::SplitterV2::acceptFrame__std::shared_ptr:rogue::interfaces::stream::Frame:"></span><span class="target" id="classrogue_1_1protocols_1_1batcher_1_1SplitterV2_1aaec749d33bc2c886073ce6b78c7777af"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">acceptFrame</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="../../interfaces/stream/frame.html#_CPPv4N5rogue10interfaces6stream5FrameE" title="rogue::interfaces::stream::Frame"><span class="n"><span class="pre">Frame</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">frame</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols7batcher10SplitterV211acceptFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3N5rogue9protocols7batcher10SplitterV211acceptFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE"></span><span id="_CPPv2N5rogue9protocols7batcher10SplitterV211acceptFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE"></span><span id="rogue::protocols::batcher::SplitterV2::acceptFrame__std::shared_ptr:rogue::interfaces::stream::Frame:"></span><span class="target" id="classrogue_1_1protocols_1_1batcher_1_1SplitterV2_1aaec749d33bc2c886073ce6b78c7777af"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">acceptFrame</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="../../interfaces/stream/frame.html#_CPPv4N5rogue10interfaces6stream5FrameE" title="rogue::interfaces::stream::Frame"><span class="n"><span class="pre">Frame</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">frame</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols7batcher10SplitterV211acceptFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/SplitterV2_8h_source.html#l00083"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/SplitterV2_8cpp_source.html#l00067"><span class="pre">[impl]</span></a></dt>
 <dd><p>Accepts one batcher v2 frame and emits parsed records as frames. </p>
+<p>Accept a frame from master.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>frame</strong> – Input batcher super-frame. </p>
@@ -179,25 +188,31 @@ frame per record.</p>
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-static-functions">Public Static Functions</p>
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols7batcher10SplitterV26createEv">
-<span id="_CPPv3N5rogue9protocols7batcher10SplitterV26createEv"></span><span id="_CPPv2N5rogue9protocols7batcher10SplitterV26createEv"></span><span id="rogue::protocols::batcher::SplitterV2::create"></span><span class="target" id="classrogue_1_1protocols_1_1batcher_1_1SplitterV2_1a661585ba5724db6ef3ee616acce5669a"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">protocols</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">batcher</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue9protocols7batcher10SplitterV2E" title="rogue::protocols::batcher::SplitterV2"><span class="n"><span class="pre">SplitterV2</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">create</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols7batcher10SplitterV26createEv" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3N5rogue9protocols7batcher10SplitterV26createEv"></span><span id="_CPPv2N5rogue9protocols7batcher10SplitterV26createEv"></span><span id="rogue::protocols::batcher::SplitterV2::create"></span><span class="target" id="classrogue_1_1protocols_1_1batcher_1_1SplitterV2_1a8e59f16273cf960783c77fece1a4939e"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">protocols</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">batcher</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue9protocols7batcher10SplitterV2E" title="rogue::protocols::batcher::SplitterV2"><span class="n"><span class="pre">SplitterV2</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">create</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols7batcher10SplitterV26createEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/SplitterV2_8h_source.html#l00062"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/SplitterV2_8cpp_source.html#l00046"><span class="pre">[impl]</span></a></dt>
 <dd><p>Creates a <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1protocols_1_1batcher_1_1SplitterV2"><span class="std std-ref"><span class="pre">SplitterV2</span></span></a></code> instance. </p>
+<p>Class creation.</p>
 <p>This static factory is the preferred construction path when the object is shared across Rogue graph connections or exposed to Python. It returns <code class="docutils literal notranslate"><span class="pre">std::shared_ptr</span></code> ownership compatible with Rogue pointer typedefs.</p>
+<p><em>Company : SLAC National Accelerator Laboratory </em></p>
+<p>Description: <em>SLAC Splitter  2 </em></p>
+<p>This file is part of the rogue software platform. It is subject to the license terms in the LICENSE.txt file found in the top-level directory of this distribution and at: <a class="reference external" href="https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html">https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html</a>. No part of the rogue software platform, including this file, may be copied, modified, propagated, or distributed except according to the terms <em>contained in the LICENSE.txt file. </em></p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Shared pointer to the created splitter. </p>
+<dd class="field-odd"><p>Shared pointer to the created splitter.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols7batcher10SplitterV212setup_pythonEv">
-<span id="_CPPv3N5rogue9protocols7batcher10SplitterV212setup_pythonEv"></span><span id="_CPPv2N5rogue9protocols7batcher10SplitterV212setup_pythonEv"></span><span id="rogue::protocols::batcher::SplitterV2::setup_python"></span><span class="target" id="classrogue_1_1protocols_1_1batcher_1_1SplitterV2_1a910e83a051863678e3511a2b536f4aae"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setup_python</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols7batcher10SplitterV212setup_pythonEv" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3N5rogue9protocols7batcher10SplitterV212setup_pythonEv"></span><span id="_CPPv2N5rogue9protocols7batcher10SplitterV212setup_pythonEv"></span><span id="rogue::protocols::batcher::SplitterV2::setup_python"></span><span class="target" id="classrogue_1_1protocols_1_1batcher_1_1SplitterV2_1a1f358af084c9c3494ecbaac255afb9d2"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setup_python</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols7batcher10SplitterV212setup_pythonEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/SplitterV2_8h_source.html#l00065"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/SplitterV2_8cpp_source.html#l00052"><span class="pre">[impl]</span></a></dt>
 <dd><p>Registers Python bindings for this class. </p>
+<p>Setup class in python. </p>
 </dd></dl>
 
 </div>
 </dd></dl>
 
+</section>
 </section>
 
 
@@ -205,7 +220,7 @@ frame per record.</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="splitterV1.html" class="btn btn-neutral float-left" title="SplitterV1" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../packetizer/index.html" class="btn btn-neutral float-right" title="Packetizer Protocol Class Descriptions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../packetizer/index.html" class="btn btn-neutral float-right" title="rogue::protocols::packetizer" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

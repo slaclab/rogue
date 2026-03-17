@@ -1,25 +1,12 @@
 .. _documentation_index:
 
+:orphan:
+
 =================
-Table of Contents
+Table Of Contents
 =================
 
-Use the left sidebar to navigate sections and search documentation content.
+Canonical navigation is rooted at :doc:`/index`.
 
-.. toctree::
-   :maxdepth: 3
-   :caption: Contents:
-
-   /getting_started/index
-   /advanced_examples/index
-   /pyrogue_tree/index
-   /interfaces/index
-   /utilities/index
-   /hardware/index
-   /protocols/index
-   /logging/index
-   /custom_module/index
-   /pydm/index
-   /migration/index
-   /installing/index
-   /api/index
+Use the left sidebar (generated from that root toctree) to browse sections and
+search documentation content.

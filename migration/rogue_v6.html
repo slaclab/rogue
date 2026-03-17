@@ -6,24 +6,25 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Migrating To Rogue V6 &mdash; Rogue v6.8.4 documentation</title>
+  <title>Migrating To Rogue V6 &mdash; Rogue v6.8.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
-      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=f9c5c301" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=346ffc18" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=2d182aeb"></script>
+      <script src="../_static/documentation_options.js?v=8960aef2"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script src="../_static/custom.js?v=b11a05f1"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Table of Contents" href="../documentation_index.html" />
+    <link rel="next" title="API Reference" href="../api/index.html" />
     <link rel="prev" title="Migration Notes" href="index.html" /> 
 </head>
 
@@ -35,7 +36,7 @@
 
           
           
-          <a href="../introduction/index.html" class="icon icon-home">
+          <a href="../index.html" class="icon icon-home">
             Rogue
           </a>
 <div role="search">
@@ -45,52 +46,41 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../introduction/index.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../getting_started/index.html">PyRogue Tree Getting Started Guide</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../advanced_examples/index.html">Advanced Tutorials</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../pyrogue_tree/index.html">PyRogue Tree</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../interfaces/index.html">Interfaces</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../utilities/index.html">Utilities</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../hardware/index.html">Hardware</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../protocols/index.html">Protocols</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../logging/index.html">Logging In Rogue</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../custom_module/index.html">Creating Custom Modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../pydm/index.html">Using the PyDM Gui</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="index.html">Migration Notes</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Migrating To Rogue V6</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#zmqserver">ZmqServer</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#sqllogger">SqlLogger</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#root-configuration-streaming">Root Configuration Streaming</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#epics-version-3-channel-access-server">EPICS Version 3 Channel Access Server</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#rawwrite-and-rawread">RawWrite and RawRead</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#setting-pollinterval">Setting pollInterval</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#previously-deprecated-legacy-gui-has-been-removed">Previously Deprecated Legacy GUI has Been Removed</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../documentation_index.html">Table of Contents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Migration Notes</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Migrating To Rogue V6</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../api/index.html">API Reference</a></li>
 </ul>
 
-        </div>
+</div>
       </div>
     </nav>
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../introduction/index.html">Rogue</a>
+          <a href="../index.html">Rogue</a>
       </nav>
 
       <div class="wy-nav-content">
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../introduction/index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="index.html">Migration Notes</a></li>
       <li class="breadcrumb-item active">Migrating To Rogue V6</li>
       <li class="wy-breadcrumbs-aside">
@@ -125,7 +115,11 @@
      <span class="n">pyrogue</span><span class="o">.</span><span class="n">pydm</span><span class="o">.</span><span class="n">runPyDM</span><span class="p">(</span><span class="n">serverList</span><span class="o">=</span><span class="n">root</span><span class="o">.</span><span class="n">zmqServer</span><span class="o">.</span><span class="n">address</span><span class="p">,</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Test UI&#39;</span><span class="p">,</span><span class="n">sizeX</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span><span class="n">sizeY</span><span class="o">=</span><span class="mi">500</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>More information can be found int he ZmqServer class documenation (TBD).</p>
+<p>More information can be found in:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../api/python/pyrogue/interfaces/zmqserver.html"><span class="doc">ZmqServer</span></a></p></li>
+<li><p><a class="reference internal" href="../pyrogue_tree/client_interfaces/index.html"><span class="doc">Client Interfaces</span></a></p></li>
+</ul>
 </section>
 <section id="sqllogger">
 <h2>SqlLogger<a class="headerlink" href="#sqllogger" title="Link to this heading"></a></h2>
@@ -142,7 +136,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">addInterface</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">SqlLogger</span><span class="p">(</span><span class="n">root</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="s1">&#39;sqlite:///test.db&#39;</span><span class="p">))</span>
 </pre></div>
 </div>
-<p>More information can be found int he SqlLogger class documenation (TBD).</p>
+<p>More information can be found in:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../built_in_modules/interfaces/sql.html"><span class="doc">SQL Logging</span></a></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">python/pyrogue/interfaces/_SqlLogging.py</span></code></p></li>
+</ul>
 </section>
 <section id="root-configuration-streaming">
 <h2>Root Configuration Streaming<a class="headerlink" href="#root-configuration-streaming" title="Link to this heading"></a></h2>
@@ -284,7 +282,7 @@ code to launch a generic tree GUI.</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="index.html" class="btn btn-neutral float-left" title="Migration Notes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../documentation_index.html" class="btn btn-neutral float-right" title="Table of Contents" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../api/index.html" class="btn btn-neutral float-right" title="API Reference" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

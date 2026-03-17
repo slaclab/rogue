@@ -1,0 +1,292 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rate Limiting With RateDrop &mdash; Rogue v6.8.5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=346ffc18" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=8960aef2"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script src="../_static/custom.js?v=b11a05f1"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Stream TCP Bridge" href="tcp_bridge.html" />
+    <link rel="prev" title="Channel Filtering" href="filter.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Stream Interface</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="connecting.html">Connecting Streams</a></li>
+<li class="toctree-l2"><a class="reference internal" href="frame_model.html">Frame Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sending.html">Sending Frames</a></li>
+<li class="toctree-l2"><a class="reference internal" href="receiving.html">Receiving Frames</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="built_in_modules.html">Built-in Stream Modules</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="fifo.html">FIFO Buffering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="filter.html">Channel Filtering</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Rate Limiting With RateDrop</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tcp_bridge.html">Stream TCP Bridge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="debugStreams.html">Debugging Streams</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../custom_module/index.html">Creating Custom Modules</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API Reference</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Stream Interface</a></li>
+          <li class="breadcrumb-item"><a href="built_in_modules.html">Built-in Stream Modules</a></li>
+      <li class="breadcrumb-item active">Rate Limiting With RateDrop</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/stream_interface/rate_drop.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="rate-limiting-with-ratedrop">
+<span id="stream-interface-using-rate-drop"></span><span id="interfaces-stream-using-rate-drop"></span><h1>Rate Limiting With RateDrop<a class="headerlink" href="#rate-limiting-with-ratedrop" title="Link to this heading"></a></h1>
+<p>A <a class="reference internal" href="../api/cpp/interfaces/stream/rateDrop.html#interfaces-stream-rate-drop"><span class="std std-ref">RateDrop</span></a> object limits how often <code class="docutils literal notranslate"><span class="pre">Frame</span></code> objects
+are forwarded to downstream consumers.</p>
+<p>You typically add a <code class="docutils literal notranslate"><span class="pre">RateDrop</span></code> when a downstream <code class="docutils literal notranslate"><span class="pre">Slave</span></code> cannot keep up with
+the full incoming rate but still benefits from seeing a representative subset of
+traffic. Common examples include live monitoring, file capture of diagnostic
+samples, or GUI update paths that should not consume every <code class="docutils literal notranslate"><span class="pre">Frame</span></code> produced by
+the main stream.</p>
+<p>At a high level, <code class="docutils literal notranslate"><span class="pre">RateDrop</span></code> supports two operating modes:</p>
+<ul class="simple">
+<li><p>Time mode, where forwarded <code class="docutils literal notranslate"><span class="pre">Frame</span></code> objects are separated by at least a
+configured time interval</p></li>
+<li><p>Count mode, where roughly one <code class="docutils literal notranslate"><span class="pre">Frame</span></code> is kept and then a configured number
+of following <code class="docutils literal notranslate"><span class="pre">Frame</span></code> objects are dropped</p></li>
+</ul>
+<section id="constructor">
+<h2>Constructor<a class="headerlink" href="#constructor" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Python: <code class="docutils literal notranslate"><span class="pre">ris.RateDrop(period,</span> <span class="pre">value)</span></code></p></li>
+<li><p>C++: <code class="docutils literal notranslate"><span class="pre">ris::RateDrop::create(period,</span> <span class="pre">value)</span></code></p></li>
+</ul>
+</section>
+<section id="rate-drop-behavior">
+<h2>Rate Drop Behavior<a class="headerlink" href="#rate-drop-behavior" title="Link to this heading"></a></h2>
+<p>The meaning of <code class="docutils literal notranslate"><span class="pre">value</span></code> depends on the <code class="docutils literal notranslate"><span class="pre">period</span></code> flag:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">period=True</span></code>:
+<code class="docutils literal notranslate"><span class="pre">value</span></code> is interpreted as seconds between forwarded <code class="docutils literal notranslate"><span class="pre">Frame</span></code> objects.
+For example, <code class="docutils literal notranslate"><span class="pre">value=0.1</span></code> forwards at about 10 Hz.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">period=False</span></code>:
+<code class="docutils literal notranslate"><span class="pre">value</span></code> is interpreted as a drop-count setting. One <code class="docutils literal notranslate"><span class="pre">Frame</span></code> is forwarded,
+then roughly <code class="docutils literal notranslate"><span class="pre">value</span></code> <code class="docutils literal notranslate"><span class="pre">Frame</span></code> objects are suppressed before forwarding the
+next one.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">value=0</span></code> in count mode effectively disables dropping.</p></li>
+</ul>
+<p>Time mode is usually the better choice for live displays and diagnostics,
+because it produces a more predictable output rate. Count mode is useful when
+the source rate is already stable and the goal is simply to thin the stream.</p>
+</section>
+<section id="python-time-mode-example">
+<h2>Python Time Mode Example<a class="headerlink" href="#python-time-mode-example" title="Link to this heading"></a></h2>
+<p>The most common use is to limit a monitoring or logging path to a fixed
+approximate rate.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">rogue.interfaces.stream</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ris</span>
+
+<span class="c1"># Data source</span>
+<span class="n">src</span> <span class="o">=</span> <span class="n">MyCustomMaster</span><span class="p">()</span>
+
+<span class="c1"># Data destination</span>
+<span class="n">dst</span> <span class="o">=</span> <span class="n">MyCustomSlave</span><span class="p">()</span>
+
+<span class="c1"># Keep at most one Frame every 0.01 seconds, about 100 Hz</span>
+<span class="n">rate</span> <span class="o">=</span> <span class="n">ris</span><span class="o">.</span><span class="n">RateDrop</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">)</span>
+
+<span class="c1"># Connect the RateDrop object between the source and the destination</span>
+<span class="n">src</span> <span class="o">&gt;&gt;</span> <span class="n">rate</span> <span class="o">&gt;&gt;</span> <span class="n">dst</span>
+</pre></div>
+</div>
+</section>
+<section id="c-time-mode-example">
+<h2>C++ Time Mode Example<a class="headerlink" href="#c-time-mode-example" title="Link to this heading"></a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;rogue/Helpers.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;rogue/interfaces/stream/RateDrop.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;MyCustomMaster.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;MyCustomSlave.h&quot;</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">   </span><span class="c1">// Data source</span>
+<span class="w">   </span><span class="k">auto</span><span class="w"> </span><span class="n">src</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MyCustomMaster</span><span class="o">::</span><span class="n">create</span><span class="p">();</span>
+
+<span class="w">   </span><span class="c1">// Data destination</span>
+<span class="w">   </span><span class="k">auto</span><span class="w"> </span><span class="n">dst</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MyCustomSlave</span><span class="o">::</span><span class="n">create</span><span class="p">();</span>
+
+<span class="w">   </span><span class="c1">// Keep at most one Frame every 0.01 seconds, about 100 Hz</span>
+<span class="w">   </span><span class="k">auto</span><span class="w"> </span><span class="n">rate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">RateDrop</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="nb">true</span><span class="p">,</span><span class="w"> </span><span class="mf">0.01</span><span class="p">);</span>
+
+<span class="w">   </span><span class="c1">// Connect the RateDrop object between the source and the destination</span>
+<span class="w">   </span><span class="n">rogueStreamConnect</span><span class="p">(</span><span class="n">src</span><span class="p">,</span><span class="w"> </span><span class="n">rate</span><span class="p">);</span>
+<span class="w">   </span><span class="n">rogueStreamConnect</span><span class="p">(</span><span class="n">rate</span><span class="p">,</span><span class="w"> </span><span class="n">dst</span><span class="p">);</span>
+<span class="w">   </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="python-count-mode-example">
+<h2>Python Count Mode Example<a class="headerlink" href="#python-count-mode-example" title="Link to this heading"></a></h2>
+<p>Count mode is useful when the source rate is steady and you want to keep only a
+sparse subset of the traffic.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">rogue.interfaces.stream</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ris</span>
+
+<span class="c1"># Data source</span>
+<span class="n">src</span> <span class="o">=</span> <span class="n">MyCustomMaster</span><span class="p">()</span>
+
+<span class="c1"># Data destination</span>
+<span class="n">dst</span> <span class="o">=</span> <span class="n">MyCustomSlave</span><span class="p">()</span>
+
+<span class="c1"># Forward one Frame, then drop about ten</span>
+<span class="n">sparse</span> <span class="o">=</span> <span class="n">ris</span><span class="o">.</span><span class="n">RateDrop</span><span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+
+<span class="n">src</span> <span class="o">&gt;&gt;</span> <span class="n">sparse</span> <span class="o">&gt;&gt;</span> <span class="n">dst</span>
+</pre></div>
+</div>
+</section>
+<section id="logging">
+<h2>Logging<a class="headerlink" href="#logging" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">RateDrop</span></code> uses Rogue C++ logging with the static logger name
+<code class="docutils literal notranslate"><span class="pre">pyrogue.stream.RateDrop</span></code>.</p>
+<p>If you want implementation messages from the object itself, enable that logger
+before constructing the <code class="docutils literal notranslate"><span class="pre">RateDrop</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">rogue</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">rogue.interfaces.stream</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ris</span>
+
+<span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">setFilter</span><span class="p">(</span><span class="s1">&#39;pyrogue.stream.RateDrop&#39;</span><span class="p">,</span> <span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">Debug</span><span class="p">)</span>
+<span class="n">rate</span> <span class="o">=</span> <span class="n">ris</span><span class="o">.</span><span class="n">RateDrop</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">RateDrop</span></code> does not expose a separate runtime <code class="docutils literal notranslate"><span class="pre">setDebug(...)</span></code> helper. If
+you want to inspect the thinned stream payload, attach a debug <code class="docutils literal notranslate"><span class="pre">Slave</span></code>
+downstream and enable <code class="docutils literal notranslate"><span class="pre">setDebug(maxBytes,</span> <span class="pre">name)</span></code> there.</p>
+</section>
+<section id="what-to-explore-next">
+<h2>What To Explore Next<a class="headerlink" href="#what-to-explore-next" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Connection topology rules: <a class="reference internal" href="connecting.html"><span class="doc">Connecting Streams</span></a></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Fifo</span></code> usage: <a class="reference internal" href="fifo.html"><span class="doc">FIFO Buffering</span></a></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Filter</span></code> usage: <a class="reference internal" href="filter.html"><span class="doc">Channel Filtering</span></a></p></li>
+<li><p>Receive-side monitoring patterns: <a class="reference internal" href="receiving.html"><span class="doc">Receiving Frames</span></a></p></li>
+</ul>
+</section>
+<section id="related-topics">
+<h2>Related Topics<a class="headerlink" href="#related-topics" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>File writer integration: <a class="reference internal" href="../built_in_modules/utilities/fileio/writing.html"><span class="doc">Writing Frames To A File</span></a></p></li>
+</ul>
+</section>
+<section id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Python:</p>
+<ul>
+<li><p><a class="reference internal" href="../api/python/rogue/interfaces/stream/ratedrop.html"><span class="doc">RateDrop</span></a></p></li>
+</ul>
+</li>
+<li><p>C++:</p>
+<ul>
+<li><p><a class="reference internal" href="../api/cpp/interfaces/stream/rateDrop.html"><span class="doc">RateDrop</span></a></p></li>
+</ul>
+</li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="filter.html" class="btn btn-neutral float-left" title="Channel Filtering" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tcp_bridge.html" class="btn btn-neutral float-right" title="Stream TCP Bridge" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

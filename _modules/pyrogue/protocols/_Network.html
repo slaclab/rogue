@@ -1,0 +1,545 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pyrogue.protocols._Network &mdash; Rogue v6.8.5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=346ffc18" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=8960aef2"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../_static/custom.js?v=b11a05f1"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">API Reference</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">pyrogue.protocols._Network</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pyrogue.protocols._Network</h1><div class="highlight"><pre>
+<span></span><span class="c1">#-----------------------------------------------------------------------------</span>
+<span class="c1"># Company    : SLAC National Accelerator Laboratory</span>
+<span class="c1">#-----------------------------------------------------------------------------</span>
+<span class="c1"># Description:</span>
+<span class="c1">#       PyRogue protocols / Network wrappers</span>
+<span class="c1">#-----------------------------------------------------------------------------</span>
+<span class="c1"># This file is part of the rogue software platform. It is subject to</span>
+<span class="c1"># the license terms in the LICENSE.txt file found in the top-level directory</span>
+<span class="c1"># of this distribution and at:</span>
+<span class="c1">#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.</span>
+<span class="c1"># No part of the rogue software platform, including this file, may be</span>
+<span class="c1"># copied, modified, propagated, or distributed except according to the terms</span>
+<span class="c1"># contained in the LICENSE.txt file.</span>
+<span class="c1">#-----------------------------------------------------------------------------</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">rogue.protocols.udp</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">rogue.protocols.rssi</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">rogue.protocols.packetizer</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">threading</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
+
+
+<div class="viewcode-block" id="UdpRssiPack">
+<a class="viewcode-back" href="../../../api/python/pyrogue/protocols/network_udprssipack.html#pyrogue.protocols.UdpRssiPack">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">UdpRssiPack</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    UDP-based network device with RSSI and Packetizer protocols.</span>
+
+<span class="sd">    Combines UDP transport with reliable stream protocol (rUDP) and packetizer</span>
+<span class="sd">    for communication over network links.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    port : int</span>
+<span class="sd">        UDP port number for the connection.</span>
+<span class="sd">    host : str, optional</span>
+<span class="sd">        Host address.</span>
+<span class="sd">    jumbo : bool, optional</span>
+<span class="sd">        Enable jumbo frames.</span>
+<span class="sd">    wait : bool, optional</span>
+<span class="sd">        Wait for link-up before finishing start.</span>
+<span class="sd">    packVer : int, optional</span>
+<span class="sd">        Packetizer version (1 or 2).</span>
+<span class="sd">    pollInterval : int, optional</span>
+<span class="sd">        Poll interval in seconds for status variables.</span>
+<span class="sd">    enSsi : bool, optional</span>
+<span class="sd">        Enable SSI in the packetizer.</span>
+<span class="sd">    server : bool, optional</span>
+<span class="sd">        Run as server instead of client.</span>
+<span class="sd">    **kwargs : Any</span>
+<span class="sd">        Additional arguments passed to :class:`pyrogue.Device`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">port</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">host</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span>
+        <span class="n">jumbo</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">wait</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">packVer</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">pollInterval</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">enSsi</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">server</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="c1"># Local copy host/port arg values</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_host</span> <span class="o">=</span> <span class="n">host</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_port</span> <span class="o">=</span> <span class="n">port</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_wait</span> <span class="o">=</span> <span class="n">wait</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_jumbo</span> <span class="o">=</span> <span class="n">jumbo</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_server</span> <span class="o">=</span> <span class="n">server</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rxBufferConfigured</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rxBufferThreadStop</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1"># Check if running as server</span>
+        <span class="k">if</span> <span class="n">server</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_udp</span>  <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">udp</span><span class="o">.</span><span class="n">Server</span><span class="p">(</span><span class="n">port</span><span class="p">,</span><span class="n">jumbo</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">rssi</span><span class="o">.</span><span class="n">Server</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_udp</span><span class="o">.</span><span class="n">maxPayload</span><span class="p">()</span><span class="o">-</span><span class="mi">8</span><span class="p">)</span>
+
+        <span class="c1"># Else running as client</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_udp</span>  <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">udp</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">host</span><span class="p">,</span><span class="n">port</span><span class="p">,</span><span class="n">jumbo</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">rssi</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_udp</span><span class="o">.</span><span class="n">maxPayload</span><span class="p">()</span><span class="o">-</span><span class="mi">8</span><span class="p">)</span>
+
+        <span class="c1"># Check if Packeterizer Version 2: https://confluence.slac.stanford.edu/x/3nh4DQ</span>
+        <span class="k">if</span> <span class="n">packVer</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_pack</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">packetizer</span><span class="o">.</span><span class="n">CoreV2</span><span class="p">(</span><span class="kc">False</span><span class="p">,</span><span class="kc">True</span><span class="p">,</span><span class="n">enSsi</span><span class="p">)</span> <span class="c1"># ibCRC = False, obCRC = True</span>
+
+        <span class="c1"># Else using Packeterizer Version 1: https://confluence.slac.stanford.edu/x/1oyfD</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_pack</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">packetizer</span><span class="o">.</span><span class="n">Core</span><span class="p">(</span><span class="n">enSsi</span><span class="p">)</span>
+
+        <span class="c1"># Connect the streams together</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_udp</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">transport</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">application</span><span class="p">()</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pack</span><span class="o">.</span><span class="n">transport</span><span class="p">()</span>
+
+        <span class="c1"># Set any user override of defaults</span>
+        <span class="n">defaults</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;defaults&#39;</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="n">param_setters</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;locMaxBuffers&#39;</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">setLocMaxBuffers</span><span class="p">,</span>
+            <span class="s1">&#39;locCumAckTout&#39;</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">setLocCumAckTout</span><span class="p">,</span>
+            <span class="s1">&#39;locRetranTout&#39;</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">setLocRetranTout</span><span class="p">,</span>
+            <span class="s1">&#39;locNullTout&#39;</span>   <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">setLocNullTout</span><span class="p">,</span>
+            <span class="s1">&#39;locMaxRetran&#39;</span>  <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">setLocMaxRetran</span><span class="p">,</span>
+            <span class="s1">&#39;locMaxCumAck&#39;</span>  <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">setLocMaxCumAck</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">setter</span> <span class="ow">in</span> <span class="n">param_setters</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">defaults</span><span class="p">:</span>
+                <span class="n">setter</span><span class="p">(</span><span class="n">defaults</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+
+        <span class="c1"># Add variables</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
+            <span class="n">name</span>        <span class="o">=</span> <span class="s1">&#39;rssiOpen&#39;</span><span class="p">,</span>
+            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">value</span>       <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="n">localGet</span>    <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">getOpen</span><span class="p">(),</span>
+            <span class="n">pollInterval</span><span class="o">=</span> <span class="n">pollInterval</span><span class="p">,</span>
+        <span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
+            <span class="n">name</span>        <span class="o">=</span> <span class="s1">&#39;rssiDownCount&#39;</span><span class="p">,</span>
+            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">value</span>       <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">&#39;UInt32&#39;</span><span class="p">,</span>
+            <span class="n">localGet</span>    <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">getDownCount</span><span class="p">(),</span>
+            <span class="n">pollInterval</span><span class="o">=</span> <span class="n">pollInterval</span><span class="p">,</span>
+        <span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
+            <span class="n">name</span>        <span class="o">=</span> <span class="s1">&#39;rssiDropCount&#39;</span><span class="p">,</span>
+            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">value</span>       <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">&#39;UInt32&#39;</span><span class="p">,</span>
+            <span class="n">localGet</span>    <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">getDropCount</span><span class="p">(),</span>
+            <span class="n">pollInterval</span><span class="o">=</span> <span class="n">pollInterval</span><span class="p">,</span>
+        <span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
+            <span class="n">name</span>        <span class="o">=</span> <span class="s1">&#39;rssiRetranCount&#39;</span><span class="p">,</span>
+            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">value</span>       <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">&#39;UInt32&#39;</span><span class="p">,</span>
+            <span class="n">localGet</span>    <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">getRetranCount</span><span class="p">(),</span>
+            <span class="n">pollInterval</span><span class="o">=</span> <span class="n">pollInterval</span><span class="p">,</span>
+        <span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
+            <span class="n">name</span>        <span class="o">=</span> <span class="s1">&#39;locBusy&#39;</span><span class="p">,</span>
+            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">value</span>       <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="n">localGet</span>    <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">getLocBusy</span><span class="p">(),</span>
+            <span class="n">hidden</span>      <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="n">pollInterval</span><span class="o">=</span> <span class="n">pollInterval</span><span class="p">,</span>
+        <span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
+            <span class="n">name</span>        <span class="o">=</span> <span class="s1">&#39;locBusyCnt&#39;</span><span class="p">,</span>
+            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">value</span>       <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">&#39;UInt32&#39;</span><span class="p">,</span>
+            <span class="n">localGet</span>    <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">getLocBusyCnt</span><span class="p">(),</span>
+            <span class="n">pollInterval</span><span class="o">=</span> <span class="n">pollInterval</span><span class="p">,</span>
+        <span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
+            <span class="n">name</span>        <span class="o">=</span> <span class="s1">&#39;remBusy&#39;</span><span class="p">,</span>
+            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">value</span>       <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="n">localGet</span>    <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">getRemBusy</span><span class="p">(),</span>
+            <span class="n">hidden</span>      <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="n">pollInterval</span><span class="o">=</span> <span class="n">pollInterval</span><span class="p">,</span>
+        <span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
+            <span class="n">name</span>        <span class="o">=</span> <span class="s1">&#39;remBusyCnt&#39;</span><span class="p">,</span>
+            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">value</span>       <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">&#39;UInt32&#39;</span><span class="p">,</span>
+            <span class="n">localGet</span>    <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">getRemBusyCnt</span><span class="p">(),</span>
+            <span class="n">pollInterval</span><span class="o">=</span> <span class="n">pollInterval</span><span class="p">,</span>
+        <span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
+            <span class="n">name</span>        <span class="o">=</span> <span class="s1">&#39;locTryPeriod&#39;</span><span class="p">,</span>
+            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">&#39;RW&#39;</span><span class="p">,</span>
+            <span class="n">value</span>       <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">getLocTryPeriod</span><span class="p">(),</span>
+            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">&#39;UInt32&#39;</span><span class="p">,</span>
+            <span class="n">localGet</span>    <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">getLocTryPeriod</span><span class="p">(),</span>
+            <span class="n">localSet</span>    <span class="o">=</span> <span class="k">lambda</span> <span class="n">value</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">setLocTryPeriod</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
+            <span class="n">name</span>        <span class="o">=</span> <span class="s1">&#39;locMaxBuffers&#39;</span><span class="p">,</span>
+            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">&#39;RW&#39;</span><span class="p">,</span>
+            <span class="n">value</span>       <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">getLocMaxBuffers</span><span class="p">(),</span>
+            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">&#39;UInt8&#39;</span><span class="p">,</span>
+            <span class="n">localGet</span>    <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">getLocMaxBuffers</span><span class="p">(),</span>
+            <span class="n">localSet</span>    <span class="o">=</span> <span class="k">lambda</span> <span class="n">value</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">setLocMaxBuffers</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
+            <span class="n">name</span>        <span class="o">=</span> <span class="s1">&#39;locMaxSegment&#39;</span><span class="p">,</span>
+            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">&#39;RW&#39;</span><span class="p">,</span>
+            <span class="n">value</span>       <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">getLocMaxSegment</span><span class="p">(),</span>
+            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">&#39;UInt16&#39;</span><span class="p">,</span>
+            <span class="n">localGet</span>    <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">getLocMaxSegment</span><span class="p">(),</span>
+            <span class="n">localSet</span>    <span class="o">=</span> <span class="k">lambda</span> <span class="n">value</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">setLocMaxSegment</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
+            <span class="n">name</span>        <span class="o">=</span> <span class="s1">&#39;locCumAckTout&#39;</span><span class="p">,</span>
+            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">&#39;RW&#39;</span><span class="p">,</span>
+            <span class="n">value</span>       <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">getLocCumAckTout</span><span class="p">(),</span>
+            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">&#39;UInt16&#39;</span><span class="p">,</span>
+            <span class="n">localGet</span>    <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">getLocCumAckTout</span><span class="p">(),</span>
+            <span class="n">localSet</span>    <span class="o">=</span> <span class="k">lambda</span> <span class="n">value</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">setLocCumAckTout</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
+            <span class="n">name</span>        <span class="o">=</span> <span class="s1">&#39;locRetranTout&#39;</span><span class="p">,</span>
+            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">&#39;RW&#39;</span><span class="p">,</span>
+            <span class="n">value</span>       <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">getLocRetranTout</span><span class="p">(),</span>
+            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">&#39;UInt16&#39;</span><span class="p">,</span>
+            <span class="n">localGet</span>    <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">getLocRetranTout</span><span class="p">(),</span>
+            <span class="n">localSet</span>    <span class="o">=</span> <span class="k">lambda</span> <span class="n">value</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">setLocRetranTout</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
+            <span class="n">name</span>        <span class="o">=</span> <span class="s1">&#39;locNullTout&#39;</span><span class="p">,</span>
+            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">&#39;RW&#39;</span><span class="p">,</span>
+            <span class="n">value</span>       <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">getLocNullTout</span><span class="p">(),</span>
+            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">&#39;UInt16&#39;</span><span class="p">,</span>
+            <span class="n">localGet</span>    <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">getLocNullTout</span><span class="p">(),</span>
+            <span class="n">localSet</span>    <span class="o">=</span> <span class="k">lambda</span> <span class="n">value</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">setLocNullTout</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
+            <span class="n">name</span>        <span class="o">=</span> <span class="s1">&#39;locMaxRetran&#39;</span><span class="p">,</span>
+            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">&#39;RW&#39;</span><span class="p">,</span>
+            <span class="n">value</span>       <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">getLocMaxRetran</span><span class="p">(),</span>
+            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">&#39;UInt8&#39;</span><span class="p">,</span>
+            <span class="n">localGet</span>    <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">getLocMaxRetran</span><span class="p">(),</span>
+            <span class="n">localSet</span>    <span class="o">=</span> <span class="k">lambda</span> <span class="n">value</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">setLocMaxRetran</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
+            <span class="n">name</span>        <span class="o">=</span> <span class="s1">&#39;locMaxCumAck&#39;</span><span class="p">,</span>
+            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">&#39;RW&#39;</span><span class="p">,</span>
+            <span class="n">value</span>       <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">getLocMaxCumAck</span><span class="p">(),</span>
+            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">&#39;UInt8&#39;</span><span class="p">,</span>
+            <span class="n">localGet</span>    <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">getLocMaxCumAck</span><span class="p">(),</span>
+            <span class="n">localSet</span>    <span class="o">=</span> <span class="k">lambda</span> <span class="n">value</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">setLocMaxCumAck</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
+            <span class="n">name</span>        <span class="o">=</span> <span class="s1">&#39;curMaxBuffers&#39;</span><span class="p">,</span>
+            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">value</span>       <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">&#39;UInt8&#39;</span><span class="p">,</span>
+            <span class="n">localGet</span>    <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">curMaxBuffers</span><span class="p">(),</span>
+            <span class="n">pollInterval</span><span class="o">=</span> <span class="n">pollInterval</span>
+        <span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
+            <span class="n">name</span>        <span class="o">=</span> <span class="s1">&#39;curMaxSegment&#39;</span><span class="p">,</span>
+            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">value</span>       <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">&#39;UInt16&#39;</span><span class="p">,</span>
+            <span class="n">localGet</span>    <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">curMaxSegment</span><span class="p">(),</span>
+            <span class="n">pollInterval</span><span class="o">=</span> <span class="n">pollInterval</span>
+        <span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
+            <span class="n">name</span>        <span class="o">=</span> <span class="s1">&#39;curCumAckTout&#39;</span><span class="p">,</span>
+            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">value</span>       <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">&#39;UInt16&#39;</span><span class="p">,</span>
+            <span class="n">localGet</span>    <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">curCumAckTout</span><span class="p">(),</span>
+            <span class="n">pollInterval</span><span class="o">=</span> <span class="n">pollInterval</span>
+        <span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
+            <span class="n">name</span>        <span class="o">=</span> <span class="s1">&#39;curRetranTout&#39;</span><span class="p">,</span>
+            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">value</span>       <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">&#39;UInt16&#39;</span><span class="p">,</span>
+            <span class="n">localGet</span>    <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">curRetranTout</span><span class="p">(),</span>
+            <span class="n">pollInterval</span><span class="o">=</span> <span class="n">pollInterval</span>
+        <span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
+            <span class="n">name</span>        <span class="o">=</span> <span class="s1">&#39;curNullTout&#39;</span><span class="p">,</span>
+            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">value</span>       <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">&#39;UInt16&#39;</span><span class="p">,</span>
+            <span class="n">localGet</span>    <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">curNullTout</span><span class="p">(),</span>
+            <span class="n">pollInterval</span><span class="o">=</span> <span class="n">pollInterval</span>
+        <span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
+            <span class="n">name</span>        <span class="o">=</span> <span class="s1">&#39;curMaxRetran&#39;</span><span class="p">,</span>
+            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">value</span>       <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">&#39;UInt8&#39;</span><span class="p">,</span>
+            <span class="n">localGet</span>    <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">curMaxRetran</span><span class="p">(),</span>
+            <span class="n">pollInterval</span><span class="o">=</span> <span class="n">pollInterval</span>
+        <span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
+            <span class="n">name</span>        <span class="o">=</span> <span class="s1">&#39;curMaxCumAck&#39;</span><span class="p">,</span>
+            <span class="n">mode</span>        <span class="o">=</span> <span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">value</span>       <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="n">typeStr</span>     <span class="o">=</span> <span class="s1">&#39;UInt8&#39;</span><span class="p">,</span>
+            <span class="n">localGet</span>    <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">curMaxCumAck</span><span class="p">(),</span>
+            <span class="n">pollInterval</span><span class="o">=</span> <span class="n">pollInterval</span>
+        <span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalCommand</span><span class="p">(</span>
+            <span class="n">name</span>        <span class="o">=</span> <span class="s1">&#39;stop&#39;</span><span class="p">,</span>
+            <span class="n">function</span>    <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stop</span>
+        <span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalCommand</span><span class="p">(</span>
+            <span class="n">name</span>        <span class="o">=</span> <span class="s1">&#39;start&#39;</span><span class="p">,</span>
+            <span class="n">function</span>    <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">_start</span><span class="p">()</span>
+        <span class="p">))</span>
+
+<div class="viewcode-block" id="UdpRssiPack.application">
+<a class="viewcode-back" href="../../../api/python/pyrogue/protocols/network_udprssipack.html#pyrogue.protocols.UdpRssiPack.application">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">application</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dest</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">rogue</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">packetizer</span><span class="o">.</span><span class="n">Application</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the application interface for connecting to a destination.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        dest : object</span>
+<span class="sd">            Destination protocol/device to connect to.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        object</span>
+<span class="sd">            Application interface for the packetizer.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pack</span><span class="o">.</span><span class="n">application</span><span class="p">(</span><span class="n">dest</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="UdpRssiPack.countReset">
+<a class="viewcode-back" href="../../../api/python/pyrogue/protocols/network_udprssipack.html#pyrogue.protocols.UdpRssiPack.countReset">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">countReset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reset RSSI connection counters.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">resetCounters</span><span class="p">()</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_start</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Start RSSI/UDP transport and optionally wait for link-up.&quot;&quot;&quot;</span>
+        <span class="c1"># Start the RSSI connection</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rxBufferThreadStop</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">_start</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wait</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="p">:</span>
+            <span class="n">curr</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span>
+            <span class="n">last</span> <span class="o">=</span> <span class="n">curr</span>
+            <span class="n">cnt</span> <span class="o">=</span> <span class="mi">0</span>
+
+            <span class="k">while</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">getOpen</span><span class="p">():</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">.0001</span><span class="p">)</span>
+                <span class="n">curr</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span>
+                <span class="k">if</span> <span class="n">last</span> <span class="o">!=</span> <span class="n">curr</span><span class="p">:</span>
+                    <span class="n">last</span> <span class="o">=</span> <span class="n">curr</span>
+
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_jumbo</span><span class="p">:</span>
+                        <span class="n">cnt</span> <span class="o">+=</span> <span class="mi">1</span>
+
+                    <span class="k">if</span> <span class="n">cnt</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;host=</span><span class="si">%s</span><span class="s2">, port=</span><span class="si">%d</span><span class="s2"> -&gt; Establishing link ...&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_host</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_port</span><span class="p">))</span>
+
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;host=</span><span class="si">%s</span><span class="s1">, port=</span><span class="si">%d</span><span class="s1"> -&gt; Failing to connect using jumbo frames! Be sure to check interface MTU settings with ifconig -a&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_host</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_port</span><span class="p">))</span>
+
+
+        <span class="c1"># On the client side, getOpen() only returns after negotiation is</span>
+        <span class="c1"># complete, so curMaxBuffers() is stable here. On the server side,</span>
+        <span class="c1"># waiting in _start() can deadlock if both endpoints are managed in the</span>
+        <span class="c1"># same Root, so defer buffer programming until the link actually opens.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_armServerRxBufferUpdate</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_applyNegotiatedRxBufferCount</span><span class="p">()</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_start</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_applyNegotiatedRxBufferCount</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Program UDP RX buffers from the negotiated RSSI max-buffer count.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rxBufferConfigured</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_udp</span><span class="o">.</span><span class="n">setRxBufferCount</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">curMaxBuffers</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rxBufferConfigured</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_armServerRxBufferUpdate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Wait for server-side RSSI open, then program the negotiated RX depth.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rxBufferConfigured</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">_wait_open</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">while</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rxBufferThreadStop</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">getOpen</span><span class="p">():</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.0001</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rxBufferThreadStop</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">getOpen</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_applyNegotiatedRxBufferCount</span><span class="p">()</span>
+
+        <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">_wait_open</span><span class="p">,</span> <span class="n">daemon</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Stop the UDP/RSSI connection and clean up resources.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rxBufferThreadStop</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">_stop</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rxBufferConfigured</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1"># This Device may not necessarily be added to a tree</span>
+        <span class="c1"># So check if it has a parent first</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rssiOpen</span><span class="o">.</span><span class="n">get</span><span class="p">()</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

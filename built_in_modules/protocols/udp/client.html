@@ -1,0 +1,284 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UDP Protocol Client &mdash; Rogue v6.8.5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=346ffc18" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=8960aef2"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../_static/custom.js?v=b11a05f1"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="UDP Protocol Server" href="server.html" />
+    <link rel="prev" title="UDP Protocol" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Built-in Modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../interfaces/index.html">Interfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../simulation/index.html">Simulation Utilities</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">Protocols</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">UDP Protocol</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">UDP Protocol Client</a></li>
+<li class="toctree-l4"><a class="reference internal" href="server.html">UDP Protocol Server</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../rssi/index.html">RSSI Protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../packetizer/index.html">Packetizer Protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../network.html">Network Wrapper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../batcher/index.html">Batcher Protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../epicsV4/index.html">EPICS V4 Access</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../srp/index.html">SRP Protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../xilinx/index.html">Xilinx Protocols</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../uart.html">UART Memory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gpib.html">GPIB Control</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../hardware/index.html">Hardware</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utilities/index.html">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">API Reference</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Built-in Modules</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Protocols</a></li>
+          <li class="breadcrumb-item"><a href="index.html">UDP Protocol</a></li>
+      <li class="breadcrumb-item active">UDP Protocol Client</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/built_in_modules/protocols/udp/client.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="udp-protocol-client">
+<span id="protocols-udp-client"></span><h1>UDP Protocol Client<a class="headerlink" href="#udp-protocol-client" title="Link to this heading"></a></h1>
+<p>For Rogue software that should initiate traffic to a known remote host and
+port, Rogue provides <code class="docutils literal notranslate"><span class="pre">rogue::protocols::udp::Client</span></code>. This is the usual UDP
+form for software-to-FPGA links when firmware listens on a fixed port.</p>
+<p><code class="docutils literal notranslate"><span class="pre">Client</span></code> converts outbound Rogue stream frames into UDP datagrams and
+converts inbound UDP datagrams back into Rogue frames.</p>
+<section id="role-in-the-stack">
+<h2>Role In The Stack<a class="headerlink" href="#role-in-the-stack" title="Link to this heading"></a></h2>
+<p>Use <code class="docutils literal notranslate"><span class="pre">Client</span></code> when Rogue should act as the peer that knows the remote address
+up front. In practice, that is the common deployment model for FPGA links that
+run UDP underneath RSSI and packetizer.</p>
+</section>
+<section id="construction">
+<h2>Construction<a class="headerlink" href="#construction" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">Client(host,</span> <span class="pre">port,</span> <span class="pre">jumbo)</span></code> is shaped by three constructor arguments:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">host</span></code>
+Remote hostname or IPv4 address.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">port</span></code>
+Remote UDP port.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">jumbo</span></code>
+Select jumbo payload sizing when <code class="docutils literal notranslate"><span class="pre">True</span></code> and standard MTU sizing when
+<code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+</ul>
+<p>The constructor resolves the host address, opens the socket, sizes the local
+frame pool from the MTU mode, and starts the background receive thread.</p>
+</section>
+<section id="data-path-behavior">
+<h2>Data Path Behavior<a class="headerlink" href="#data-path-behavior" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Outbound:
+<code class="docutils literal notranslate"><span class="pre">acceptFrame()</span></code> iterates frame buffers and transmits each non-empty buffer
+as a UDP datagram.</p></li>
+<li><p>Inbound:
+a background thread continuously calls <code class="docutils literal notranslate"><span class="pre">recvfrom()</span></code> and publishes received
+payloads through stream-master output.</p></li>
+<li><p>Oversize datagrams are dropped with warning logs if payload exceeds available
+frame space.</p></li>
+</ul>
+</section>
+<section id="lifecycle-and-transport-behavior">
+<h2>Lifecycle And Transport Behavior<a class="headerlink" href="#lifecycle-and-transport-behavior" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">maxPayload()</span></code>
+Inherited from <code class="docutils literal notranslate"><span class="pre">udp::Core</span></code> and depends on jumbo vs standard MTU mode.</p></li>
+<li><p>C++ <code class="docutils literal notranslate"><span class="pre">stop()</span></code> / Python <code class="docutils literal notranslate"><span class="pre">_stop()</span></code>
+Stops the receive thread, joins it, and closes the socket.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">setTimeout()</span></code>
+Inherited from <code class="docutils literal notranslate"><span class="pre">udp::Core</span></code> and used for outbound transmit readiness checks.</p></li>
+</ul>
+</section>
+<section id="timeout-and-backpressure">
+<h2>Timeout And Backpressure<a class="headerlink" href="#timeout-and-backpressure" title="Link to this heading"></a></h2>
+<p>Outbound writes use <code class="docutils literal notranslate"><span class="pre">select()</span></code> with the configured timeout before <code class="docutils literal notranslate"><span class="pre">sendmsg</span></code>.
+If timeout elapses, a critical log is emitted and transmit retry loop continues.
+Tune timeout using <code class="docutils literal notranslate"><span class="pre">setTimeout()</span></code> from <code class="docutils literal notranslate"><span class="pre">udp::Core</span></code> when needed.</p>
+</section>
+<section id="when-to-use-client">
+<h2>When To Use <code class="docutils literal notranslate"><span class="pre">Client</span></code><a class="headerlink" href="#when-to-use-client" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Software host runs Rogue UDP client.</p></li>
+<li><p>FPGA/remote endpoint listens on a fixed port.</p></li>
+<li><p>RSSI/packetizer layers sit above this transport path.</p></li>
+<li><p>Standalone UDP deployment is less common for control/config paths because UDP
+itself does not provide reliability or in-order delivery guarantees.</p></li>
+</ul>
+</section>
+<section id="python-example">
+<h2>Python Example<a class="headerlink" href="#python-example" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">rogue.protocols.udp</span>
+
+<span class="n">src</span> <span class="o">=</span> <span class="n">MyFrameSource</span><span class="p">()</span>  <span class="c1"># Application stream source.</span>
+<span class="n">dst</span> <span class="o">=</span> <span class="n">MyFrameSink</span><span class="p">()</span>    <span class="c1"># Application stream sink.</span>
+<span class="n">udp</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">udp</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="s2">&quot;10.0.0.5&quot;</span><span class="p">,</span> <span class="mi">8192</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Outbound application traffic: source -&gt; UDP datagrams.</span>
+<span class="n">src</span> <span class="o">&gt;&gt;</span> <span class="n">udp</span>
+
+<span class="c1"># Inbound application traffic: UDP datagrams -&gt; sink.</span>
+<span class="n">udp</span> <span class="o">&gt;&gt;</span> <span class="n">dst</span>
+</pre></div>
+</div>
+<p>Lifecycle usage modes:</p>
+<ul class="simple">
+<li><p>Root-managed mode:
+Register transport/protocol objects with <code class="docutils literal notranslate"><span class="pre">Root.addInterface(...)</span></code> and let
+Managed Interface Lifecycle stop them during tree shutdown.</p></li>
+<li><p>Standalone script mode:
+Call <code class="docutils literal notranslate"><span class="pre">_stop()</span></code> explicitly on UDP endpoints during script teardown.</p></li>
+</ul>
+<p>Managed lifecycle reference:
+<a class="reference internal" href="../../../pyrogue_tree/core/device.html#pyrogue-tree-node-device-managed-interfaces"><span class="std std-ref">Example: Runtime Work In _start() And _stop()</span></a></p>
+</section>
+<section id="c-example">
+<h2>C++ Example<a class="headerlink" href="#c-example" title="Link to this heading"></a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;rogue/protocols/udp/Client.h&gt;</span>
+
+<span class="k">namespace</span><span class="w"> </span><span class="nn">rpu</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nn">rogue</span><span class="o">::</span><span class="nn">protocols</span><span class="o">::</span><span class="nn">udp</span><span class="p">;</span>
+
+<span class="k">auto</span><span class="w"> </span><span class="n">udp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rpu</span><span class="o">::</span><span class="n">Client</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="s">&quot;10.0.0.5&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">8192</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">);</span>
+
+<span class="n">src</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">udp</span><span class="p">;</span>
+<span class="n">udp</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">dst</span><span class="p">;</span>
+
+<span class="n">udp</span><span class="o">-&gt;</span><span class="n">stop</span><span class="p">();</span>
+</pre></div>
+</div>
+</section>
+<section id="practical-checklist">
+<h2>Practical Checklist<a class="headerlink" href="#practical-checklist" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Confirm target host/IP and port.</p></li>
+<li><p>Confirm MTU/jumbo-frame assumptions match both endpoints.</p></li>
+<li><p>Confirm firewall and routing allow bidirectional UDP traffic.</p></li>
+<li><p>Ensure upper protocol payload sizing fits <code class="docutils literal notranslate"><span class="pre">maxPayload()</span></code> budget.</p></li>
+</ul>
+</section>
+<section id="related-topics">
+<h2>Related Topics<a class="headerlink" href="#related-topics" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="index.html"><span class="doc">UDP Protocol</span></a></p></li>
+<li><p><a class="reference internal" href="../network.html"><span class="doc">Network Wrapper</span></a></p></li>
+<li><p><a class="reference internal" href="../rssi/index.html"><span class="doc">RSSI Protocol</span></a></p></li>
+<li><p><a class="reference internal" href="server.html"><span class="doc">UDP Protocol Server</span></a></p></li>
+</ul>
+</section>
+<section id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Python: <a class="reference internal" href="../../../api/python/rogue/protocols/udp/client.html"><span class="doc">Client</span></a></p></li>
+<li><p>C++: <a class="reference internal" href="../../../api/cpp/protocols/udp/client.html"><span class="doc">Client</span></a></p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="UDP Protocol" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="server.html" class="btn btn-neutral float-right" title="UDP Protocol Server" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

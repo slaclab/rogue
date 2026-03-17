@@ -1,0 +1,203 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SRP Protocol Command &mdash; Rogue v6.8.5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=346ffc18" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=8960aef2"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../_static/custom.js?v=b11a05f1"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Xilinx Protocols" href="../xilinx/index.html" />
+    <link rel="prev" title="SRP Protocol Version 3" href="srpV3.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Built-in Modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../interfaces/index.html">Interfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../simulation/index.html">Simulation Utilities</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">Protocols</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../udp/index.html">UDP Protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../rssi/index.html">RSSI Protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../packetizer/index.html">Packetizer Protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../network.html">Network Wrapper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../batcher/index.html">Batcher Protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../epicsV4/index.html">EPICS V4 Access</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">SRP Protocol</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="srpV0.html">SRP Protocol Version 0</a></li>
+<li class="toctree-l4"><a class="reference internal" href="srpV3.html">SRP Protocol Version 3</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">SRP Protocol Command</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../xilinx/index.html">Xilinx Protocols</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../uart.html">UART Memory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gpib.html">GPIB Control</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../hardware/index.html">Hardware</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utilities/index.html">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">API Reference</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Built-in Modules</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Protocols</a></li>
+          <li class="breadcrumb-item"><a href="index.html">SRP Protocol</a></li>
+      <li class="breadcrumb-item active">SRP Protocol Command</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/built_in_modules/protocols/srp/cmd.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="srp-protocol-command">
+<span id="protocols-srp-cmd"></span><h1>SRP Protocol Command<a class="headerlink" href="#srp-protocol-command" title="Link to this heading"></a></h1>
+<p>For lightweight fire-and-forget opcode and context messages, Rogue provides
+<code class="docutils literal notranslate"><span class="pre">rogue.protocols.srp.Cmd</span></code>. <code class="docutils literal notranslate"><span class="pre">Cmd</span></code> is distinct from <code class="docutils literal notranslate"><span class="pre">SrpV0</span></code> and <code class="docutils literal notranslate"><span class="pre">SrpV3</span></code>:
+it is a stream command path, not a memory-transaction bridge.</p>
+<p>The class remains under <code class="docutils literal notranslate"><span class="pre">rogue.protocols.srp</span></code> for API compatibility.</p>
+<section id="when-to-use-cmd">
+<h2>When To Use <code class="docutils literal notranslate"><span class="pre">Cmd</span></code><a class="headerlink" href="#when-to-use-cmd" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Use for simple action requests that do not require a register readback path.</p></li>
+<li><p>Use when endpoint logic expects opcode/context messages instead of memory
+transactions.</p></li>
+<li><p>Avoid for stateful register control where SRPv0/SRPv3 semantics are needed.</p></li>
+</ul>
+</section>
+<section id="construction-and-behavior">
+<h2>Construction And Behavior<a class="headerlink" href="#construction-and-behavior" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">Cmd</span></code> is a stream <code class="docutils literal notranslate"><span class="pre">Master</span></code> only. <code class="docutils literal notranslate"><span class="pre">sendCmd(opCode,</span> <span class="pre">context)</span></code> emits a small
+command frame carrying just those two fields. In normal use there is no
+response path and no transaction completion semantics.</p>
+<p>Keep command opcodes stable and documented, since they become part of the
+control contract between software and firmware.</p>
+<p>Unlike <code class="docutils literal notranslate"><span class="pre">SrpV0</span></code>/<code class="docutils literal notranslate"><span class="pre">SrpV3</span></code>, <code class="docutils literal notranslate"><span class="pre">Cmd</span></code> is not a memory-transaction bridge. Use it
+only when firmware defines an explicit opcode/context command path.</p>
+</section>
+<section id="python-example">
+<h2>Python Example<a class="headerlink" href="#python-example" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">rogue.protocols.srp</span>
+
+<span class="n">cmd</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">srp</span><span class="o">.</span><span class="n">Cmd</span><span class="p">()</span>
+<span class="n">cmd</span> <span class="o">&gt;&gt;</span> <span class="n">command_transport</span>
+
+<span class="c1"># Send opcode 0x1 with context value 0x1234.</span>
+<span class="n">cmd</span><span class="o">.</span><span class="n">sendCmd</span><span class="p">(</span><span class="mh">0x1</span><span class="p">,</span> <span class="mh">0x1234</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="related-topics">
+<h2>Related Topics<a class="headerlink" href="#related-topics" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="index.html"><span class="doc">SRP Protocol</span></a></p></li>
+<li><p><a class="reference internal" href="srpV3.html"><span class="doc">SRP Protocol Version 3</span></a></p></li>
+<li><p><a class="reference internal" href="srpV0.html"><span class="doc">SRP Protocol Version 0</span></a></p></li>
+</ul>
+</section>
+<section id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Python: <a class="reference internal" href="../../../api/python/rogue/protocols/srp/cmd.html"><span class="doc">Cmd</span></a></p></li>
+<li><p>C++: <a class="reference internal" href="../../../api/cpp/protocols/srp/cmd.html"><span class="doc">Cmd</span></a></p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="srpV3.html" class="btn btn-neutral float-left" title="SRP Protocol Version 3" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../xilinx/index.html" class="btn btn-neutral float-right" title="Xilinx Protocols" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

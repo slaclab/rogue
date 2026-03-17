@@ -1,15 +1,22 @@
 .. _utilifies_fileio:
 
-======================
-File Operation Classes
-======================
+========================
+rogue::utilities::fileio
+========================
 
-The following are detailed descriptions of the various C++ classes that make up the Rogue file utilities.
+These pages provide the C++ API reference for
+Rogue file I/O utility classes.
+
 
 .. toctree::
    :maxdepth: 1
-   :caption: File Operation Classes:
+   :caption: File I/O Classes:
 
-   writer.rst
-   channel.rst
-   reader.rst
+   writer
+   channel
+   reader
+
+
+.. rubric:: Related Topics
+
+- :doc:`/built_in_modules/utilities/fileio/index`

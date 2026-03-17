@@ -1,0 +1,438 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Model &mdash; Rogue v6.8.5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=346ffc18" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=8960aef2"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/custom.js?v=b11a05f1"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Fixed-Point Models" href="fixed_point_models.html" />
+    <link rel="prev" title="Device Block Operations" href="block_operations.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">PyRogue Tree</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Components And Concepts</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="root.html">Root</a></li>
+<li class="toctree-l3"><a class="reference internal" href="device.html">Device</a></li>
+<li class="toctree-l3"><a class="reference internal" href="variable.html">Variable</a></li>
+<li class="toctree-l3"><a class="reference internal" href="command.html">Command</a></li>
+<li class="toctree-l3"><a class="reference internal" href="block.html">Blocks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="block_operations.html">Device Block Operations</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fixed_point_models.html">Fixed-Point Models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="poll_queue.html">PollQueue</a></li>
+<li class="toctree-l3"><a class="reference internal" href="yaml_configuration.html">YAML Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="memory_variable_stream.html">Variable Update Stream</a></li>
+<li class="toctree-l3"><a class="reference internal" href="groups.html">Groups</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../builtin_devices/index.html">Built-in Devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../client_interfaces/index.html">Client Interfaces</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">API Reference</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">PyRogue Tree</a></li>
+          <li class="breadcrumb-item"><a href="index.html">PyRogue Tree Components And Concepts</a></li>
+      <li class="breadcrumb-item active">Model</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/pyrogue_tree/core/model.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="model">
+<span id="pyrogue-tree-model"></span><h1>Model<a class="headerlink" href="#model" title="Link to this heading"></a></h1>
+<p>Models define how values are encoded to bytes and decoded back to Python types.
+In practice, a Model is selected per Variable (usually with <code class="docutils literal notranslate"><span class="pre">base=...</span></code> on
+<code class="docutils literal notranslate"><span class="pre">RemoteVariable</span></code>), and Block transactions apply that Model during read/write.</p>
+<p>Most users interact with Models indirectly through Variable <code class="docutils literal notranslate"><span class="pre">base</span></code> and related
+type configuration. Advanced users can use Model classes directly for custom
+encoding/decoding workflows.</p>
+<section id="why-models-exist">
+<h2>Why Models Exist<a class="headerlink" href="#why-models-exist" title="Link to this heading"></a></h2>
+<p>Models separate three closely related concerns:</p>
+<ol class="arabic simple">
+<li><p>Hardware representation such as bit width, endianness, and signedness.</p></li>
+<li><p>Python-facing type behavior such as <code class="docutils literal notranslate"><span class="pre">int</span></code>, <code class="docutils literal notranslate"><span class="pre">bool</span></code>, <code class="docutils literal notranslate"><span class="pre">float</span></code>, or <code class="docutils literal notranslate"><span class="pre">str</span></code>.</p></li>
+<li><p>Conversion logic used by <code class="docutils literal notranslate"><span class="pre">Block</span></code> staging and transaction code.</p></li>
+</ol>
+<p>This keeps Variable definitions clear and lets the same conversion behavior be
+reused across many registers.</p>
+</section>
+<section id="how-variables-select-a-model">
+<h2>How Variables Select A Model<a class="headerlink" href="#how-variables-select-a-model" title="Link to this heading"></a></h2>
+<p>Most users select a Model when defining each <code class="docutils literal notranslate"><span class="pre">RemoteVariable</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyRegs</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Status&#39;</span><span class="p">,</span>
+            <span class="n">offset</span><span class="o">=</span><span class="mh">0x00</span><span class="p">,</span>
+            <span class="n">bitSize</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">base</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>   <span class="c1"># Model selection</span>
+        <span class="p">))</span>
+</pre></div>
+</div>
+<p>In the current implementation, <code class="docutils literal notranslate"><span class="pre">RemoteVariable</span></code> usually receives a Model
+class such as <code class="docutils literal notranslate"><span class="pre">pr.UInt</span></code> or <code class="docutils literal notranslate"><span class="pre">pr.Float</span></code> rather than a pre-built instance.
+The Variable constructor then instantiates the Model using the Variable’s
+effective bit width.</p>
+<p>That is why <code class="docutils literal notranslate"><span class="pre">base=pr.UInt</span></code> is the normal form. For custom or parameterized
+Models such as fixed-point encodings, the <code class="docutils literal notranslate"><span class="pre">base</span></code> you pass must still line up
+with the Variable’s bit layout.</p>
+</section>
+<section id="what-a-model-defines">
+<h2>What A Model Defines<a class="headerlink" href="#what-a-model-defines" title="Link to this heading"></a></h2>
+<p>A Model is more than a byte-conversion helper. It also defines metadata that
+shapes how the Variable behaves in Python and in the generated tree metadata.</p>
+<p>Common Model responsibilities include:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pytype</span></code> for the native Python-facing type.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">defaultdisp</span></code> for the default display format when the Variable does not
+override <code class="docutils literal notranslate"><span class="pre">disp</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">minValue()</span></code> and <code class="docutils literal notranslate"><span class="pre">maxValue()</span></code> for default limit behavior.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">toBytes()</span></code> and <code class="docutils literal notranslate"><span class="pre">fromBytes()</span></code> for raw conversion.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">fromString()</span></code> for display-string parsing.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">modelId</span></code> for the lower-level Rogue memory-processing path.</p></li>
+</ul>
+<p>This is why Models belong conceptually between <a class="reference internal" href="variable.html"><span class="doc">Variable</span></a>
+and <a class="reference internal" href="block.html"><span class="doc">Blocks</span></a>: Variables present the value-oriented API,
+Models define the encoding, and Blocks move the bytes.</p>
+</section>
+<section id="built-in-model-families">
+<h2>Built-In Model Families<a class="headerlink" href="#built-in-model-families" title="Link to this heading"></a></h2>
+<p>Common built-in Models include:</p>
+<ul class="simple">
+<li><p>Integer: <code class="docutils literal notranslate"><span class="pre">UInt</span></code>, <code class="docutils literal notranslate"><span class="pre">UIntBE</span></code>, <code class="docutils literal notranslate"><span class="pre">UIntReversed</span></code>, <code class="docutils literal notranslate"><span class="pre">Int</span></code>, <code class="docutils literal notranslate"><span class="pre">IntBE</span></code></p></li>
+<li><p>Boolean: <code class="docutils literal notranslate"><span class="pre">Bool</span></code></p></li>
+<li><p>Text: <code class="docutils literal notranslate"><span class="pre">String</span></code></p></li>
+<li><p>Floating point: <code class="docutils literal notranslate"><span class="pre">Float</span></code>, <code class="docutils literal notranslate"><span class="pre">FloatBE</span></code>, <code class="docutils literal notranslate"><span class="pre">Double</span></code>, <code class="docutils literal notranslate"><span class="pre">DoubleBE</span></code></p></li>
+<li><p>Fixed point: <code class="docutils literal notranslate"><span class="pre">Fixed</span></code>, <code class="docutils literal notranslate"><span class="pre">UFixed</span></code></p></li>
+<li><p>Custom Python conversion path: Models that use <code class="docutils literal notranslate"><span class="pre">modelId</span> <span class="pre">=</span> <span class="pre">rim.PyFunc</span></code></p></li>
+</ul>
+</section>
+<section id="built-in-model-types">
+<h2>Built-In Model Types<a class="headerlink" href="#built-in-model-types" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Model</p></th>
+<th class="head"><p>Hardware Type</p></th>
+<th class="head"><p>Python Type</p></th>
+<th class="head"><p>Bit Size</p></th>
+<th class="head"><p>Notes</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="../../api/cpp/interfaces/memory/model.html#interfaces-memory-model-uint"><span class="std std-ref">UInt</span></a></p></td>
+<td><p>unsigned integer</p></td>
+<td><p>int</p></td>
+<td><p>unconstrained</p></td>
+<td><p>Little endian</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../api/cpp/interfaces/memory/model.html#interfaces-memory-model-uintbe"><span class="std std-ref">UIntBE</span></a></p></td>
+<td><p>unsigned integer</p></td>
+<td><p>int</p></td>
+<td><p>unconstrained</p></td>
+<td><p>Big endian</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../api/cpp/interfaces/memory/model.html#interfaces-memory-model-uintreversed"><span class="std std-ref">UIntReversed</span></a></p></td>
+<td><p>unsigned integer</p></td>
+<td><p>int</p></td>
+<td><p>unconstrained</p></td>
+<td><p>Reversed bit order</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../api/cpp/interfaces/memory/model.html#interfaces-memory-model-int"><span class="std std-ref">Int</span></a></p></td>
+<td><p>signed integer</p></td>
+<td><p>int</p></td>
+<td><p>unconstrained</p></td>
+<td><p>Little endian</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../api/cpp/interfaces/memory/model.html#interfaces-memory-model-intbe"><span class="std std-ref">IntBE</span></a></p></td>
+<td><p>signed integer</p></td>
+<td><p>int</p></td>
+<td><p>unconstrained</p></td>
+<td><p>Big endian</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../api/cpp/interfaces/memory/model.html#interfaces-memory-model-bool"><span class="std std-ref">Bool</span></a></p></td>
+<td><p>bit</p></td>
+<td><p>bool</p></td>
+<td><p>1-bit</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../api/cpp/interfaces/memory/model.html#interfaces-memory-model-string"><span class="std std-ref">String</span></a></p></td>
+<td><p>bytes</p></td>
+<td><p>string</p></td>
+<td><p>unconstrained</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../api/cpp/interfaces/memory/model.html#interfaces-memory-model-float"><span class="std std-ref">Float</span></a></p></td>
+<td><p>32-bit float</p></td>
+<td><p>float</p></td>
+<td><p>32-bits</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../api/cpp/interfaces/memory/model.html#interfaces-memory-model-floatbe"><span class="std std-ref">FloatBE</span></a></p></td>
+<td><p>32-bit float</p></td>
+<td><p>float</p></td>
+<td><p>32-bits</p></td>
+<td><p>Big endian</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../api/cpp/interfaces/memory/model.html#interfaces-memory-model-double"><span class="std std-ref">Double</span></a></p></td>
+<td><p>64-bit float</p></td>
+<td><p>float</p></td>
+<td><p>64-bits</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../api/cpp/interfaces/memory/model.html#interfaces-memory-model-doublebe"><span class="std std-ref">DoubleBE</span></a></p></td>
+<td><p>64-bit float</p></td>
+<td><p>float</p></td>
+<td><p>64-bits</p></td>
+<td><p>Big endian</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../api/cpp/interfaces/memory/model.html#interfaces-memory-model-fixed"><span class="std std-ref">Fixed</span></a></p></td>
+<td><p>fixed point</p></td>
+<td><p>float</p></td>
+<td><p>unconstrained</p></td>
+<td><p>Fixed-point conversion</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../api/cpp/interfaces/memory/model.html#interfaces-memory-model-ufixed"><span class="std std-ref">UFixed</span></a></p></td>
+<td><p>fixed point</p></td>
+<td><p>float</p></td>
+<td><p>unconstrained</p></td>
+<td><p>Unsigned fixed-point conversion</p></td>
+</tr>
+</tbody>
+</table>
+<p>For low-level Model class reference and constants, see
+<a class="reference internal" href="../../api/cpp/interfaces/memory/model.html"><span class="doc">Model</span></a>.</p>
+</section>
+<section id="fixed-point-models">
+<h2>Fixed-Point Models<a class="headerlink" href="#fixed-point-models" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">Fixed</span></code> and <code class="docutils literal notranslate"><span class="pre">UFixed</span></code> are important enough, and nuanced enough in
+practice, that they now have their own focused page:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="fixed_point_models.html"><span class="doc">Fixed-Point Models</span></a></p></li>
+</ul>
+<p>That page explains the fixed-point mental model, <code class="docutils literal notranslate"><span class="pre">bitSize</span></code> and <code class="docutils literal notranslate"><span class="pre">binPoint</span></code>,
+the conversion formulas, numeric range, and a worked example.</p>
+</section>
+<section id="model-utility-helpers">
+<h2>Model Utility Helpers<a class="headerlink" href="#model-utility-helpers" title="Link to this heading"></a></h2>
+<p>The Python Model module also includes a few small helpers that are useful when
+you need to reason about raw layouts or write a custom Model:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../../api/python/pyrogue/wordcount.html#pyrogue.wordCount" title="pyrogue.wordCount"><code class="xref py py-func docutils literal notranslate"><span class="pre">wordCount()</span></code></a> computes how many words are needed for a bit width.</p></li>
+<li><p><a class="reference internal" href="../../api/python/pyrogue/bytecount.html#pyrogue.byteCount" title="pyrogue.byteCount"><code class="xref py py-func docutils literal notranslate"><span class="pre">byteCount()</span></code></a> computes how many bytes are needed for a bit width.</p></li>
+<li><p><a class="reference internal" href="../../api/python/pyrogue/reversebits.html#pyrogue.reverseBits" title="pyrogue.reverseBits"><code class="xref py py-func docutils literal notranslate"><span class="pre">reverseBits()</span></code></a> reverses bit significance across a fixed width.</p></li>
+<li><p><a class="reference internal" href="../../api/python/pyrogue/twoscomplement.html#pyrogue.twosComplement" title="pyrogue.twosComplement"><code class="xref py py-func docutils literal notranslate"><span class="pre">twosComplement()</span></code></a> interprets a value with two’s-complement sign semantics.</p></li>
+</ul>
+<p>These are especially useful in custom conversion code and in documentation
+examples where raw register layout matters.</p>
+</section>
+<section id="model-instances-and-caching">
+<h2>Model Instances And Caching<a class="headerlink" href="#model-instances-and-caching" title="Link to this heading"></a></h2>
+<p>One implementation detail is worth knowing when you use Model classes directly:
+the <code class="docutils literal notranslate"><span class="pre">Model</span></code> metaclass caches instances by constructor arguments.</p>
+<p>In practice, repeated requests for the same Model and parameters, such as
+<code class="docutils literal notranslate"><span class="pre">pr.UInt(16)</span></code>, return the same shared Model instance. Most users do not need
+to think about this because Variables create Models for them, but it explains
+why Models are treated more like reusable type descriptors than like
+per-Variable mutable state.</p>
+</section>
+<section id="model-conversion-flow-in-block-access">
+<h2>Model Conversion Flow In Block Access<a class="headerlink" href="#model-conversion-flow-in-block-access" title="Link to this heading"></a></h2>
+<p>When a Variable is read or written:</p>
+<ol class="arabic simple">
+<li><p>Variable logic resolves its Model and layout metadata.</p></li>
+<li><p>Block conversion methods pack or unpack values for that Model.</p></li>
+<li><p>Block transaction methods move bytes to or from hardware.</p></li>
+</ol>
+<p>Model selection answers “how bytes map to values”; Block transactions answer
+“when bytes move.”</p>
+<p>For transaction flow details, see <a class="reference internal" href="block.html"><span class="doc">Blocks</span></a>.</p>
+</section>
+<section id="custom-model-example">
+<h2>Custom Model Example<a class="headerlink" href="#custom-model-example" title="Link to this heading"></a></h2>
+<p>Use a custom Model when built-ins do not match an encoding format.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">rogue.interfaces.memory</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">rim</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">BitReversedUInt</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">pytype</span> <span class="o">=</span> <span class="nb">int</span>
+    <span class="n">defaultdisp</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{:#x}</span><span class="s1">&#39;</span>
+    <span class="n">modelId</span> <span class="o">=</span> <span class="n">rim</span><span class="o">.</span><span class="n">PyFunc</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bitsize</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">bitsize</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">toBytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="c1"># Reverse bit order so MSB appears at bit position 0 in memory.</span>
+        <span class="n">raw_normal</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="n">raw_reversed</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">reverseBits</span><span class="p">(</span><span class="n">raw_normal</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">raw_reversed</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">byteCount</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span><span class="p">),</span> <span class="s1">&#39;little&#39;</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">fromBytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ba</span><span class="p">):</span>
+        <span class="n">raw_reversed</span> <span class="o">=</span> <span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="n">ba</span><span class="p">,</span> <span class="s1">&#39;little&#39;</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">pr</span><span class="o">.</span><span class="n">reverseBits</span><span class="p">(</span><span class="n">raw_reversed</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">fromString</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">string</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">minValue</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mi">0</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">maxValue</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="mi">2</span> <span class="o">**</span> <span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyDevice</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;AsicStatus&#39;</span><span class="p">,</span>
+            <span class="n">offset</span><span class="o">=</span><span class="mh">0x1000</span><span class="p">,</span>
+            <span class="n">bitSize</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span>
+            <span class="n">bitOffset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span>
+            <span class="n">base</span><span class="o">=</span><span class="n">BitReversedUInt</span><span class="p">,</span>
+        <span class="p">))</span>
+</pre></div>
+</div>
+<p>This is the same overall pattern used by built-in Models: define the Python
+type behavior and the byte conversion behavior in one reusable object, then
+attach that Model to one or more Variables.</p>
+</section>
+<section id="how-bitreverseduint-differs-from-built-in-uint">
+<h2>How <code class="docutils literal notranslate"><span class="pre">BitReversedUInt</span></code> Differs From Built-In <code class="docutils literal notranslate"><span class="pre">UInt</span></code><a class="headerlink" href="#how-bitreverseduint-differs-from-built-in-uint" title="Link to this heading"></a></h2>
+<p>This example shows a register layout where hardware bit order differs from
+normal integer interpretation:</p>
+<ul class="simple">
+<li><p>Built-in <code class="docutils literal notranslate"><span class="pre">UInt</span></code> assumes standard bit significance ordering.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">BitReversedUInt</span></code> reverses bits on write and read so software uses normal
+integer semantics while memory uses reversed bit positions.</p></li>
+<li><p>This is useful for custom register layouts where the hardware view is not a
+normal integer bit ordering.</p></li>
+</ul>
+</section>
+<section id="what-to-explore-next">
+<h2>What To Explore Next<a class="headerlink" href="#what-to-explore-next" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Variable type and access behavior: <a class="reference internal" href="variable.html"><span class="doc">Variable</span></a></p></li>
+<li><p>Block packing and transaction flow: <a class="reference internal" href="block.html"><span class="doc">Blocks</span></a></p></li>
+<li><p>Fixed-point usage details: <a class="reference internal" href="fixed_point_models.html"><span class="doc">Fixed-Point Models</span></a></p></li>
+</ul>
+</section>
+<section id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Python Model base/reference: <a class="reference internal" href="../../api/python/pyrogue/model.html"><span class="doc">Model</span></a></p></li>
+<li><p>C++ memory Model reference: <a class="reference internal" href="../../api/cpp/interfaces/memory/model.html"><span class="doc">Model</span></a></p></li>
+<li><p>Model helpers: <a class="reference internal" href="../../api/python/pyrogue/wordcount.html"><span class="doc">wordCount</span></a>, <a class="reference internal" href="../../api/python/pyrogue/bytecount.html"><span class="doc">byteCount</span></a>,
+<a class="reference internal" href="../../api/python/pyrogue/reversebits.html"><span class="doc">reverseBits</span></a>, <a class="reference internal" href="../../api/python/pyrogue/twoscomplement.html"><span class="doc">twosComplement</span></a></p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="block_operations.html" class="btn btn-neutral float-left" title="Device Block Operations" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="fixed_point_models.html" class="btn btn-neutral float-right" title="Fixed-Point Models" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

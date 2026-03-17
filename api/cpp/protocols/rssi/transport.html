@@ -6,24 +6,25 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Transport &mdash; Rogue v6.8.4 documentation</title>
+  <title>Transport &mdash; Rogue v6.8.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
-      <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css?v=f9c5c301" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css?v=346ffc18" />
 
   
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=2d182aeb"></script>
+      <script src="../../../../_static/documentation_options.js?v=8960aef2"></script>
       <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../../_static/custom.js?v=b11a05f1"></script>
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
-    <link rel="next" title="SRP Protocol Class Descriptions" href="../srp/index.html" />
+    <link rel="next" title="rogue::protocols::srp" href="../srp/index.html" />
     <link rel="prev" title="Application" href="application.html" /> 
 </head>
 
@@ -35,7 +36,7 @@
 
           
           
-          <a href="../../../../introduction/index.html" class="icon icon-home">
+          <a href="../../../../index.html" class="icon icon-home">
             Rogue
           </a>
 <div role="search">
@@ -45,70 +46,69 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../../../../introduction/index.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../getting_started/index.html">PyRogue Tree Getting Started Guide</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../advanced_examples/index.html">Advanced Tutorials</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../pyrogue_tree/index.html">PyRogue Tree</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../interfaces/index.html">Interfaces</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../utilities/index.html">Utilities</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../hardware/index.html">Hardware</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../protocols/index.html">Protocols</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../logging/index.html">Logging In Rogue</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../custom_module/index.html">Creating Custom Modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../pydm/index.html">Using the PyDM Gui</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../migration/index.html">Migration Notes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_index.html">Table of Contents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../index.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../migration/index.html">Migration Notes</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../../../index.html">API Reference</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../../../index.html#python-api">Python API</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../../../index.html#c-api">C++ API</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="../../hardware/axi/index.html">AXI Hardware Interface Class Descriptions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../hardware/raw/index.html">Hardware Interface Class Descriptions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../interfaces/memory/index.html">Memory Interface Class Descriptions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../interfaces/stream/index.html">Stream Interface Class Descriptions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../batcher/index.html">Batcher Protocol Class Descriptions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../packetizer/index.html">Packetizer Protocol Class Descriptions</a></li>
-<li class="toctree-l3 current"><a class="reference internal" href="index.html">RSSI Protocol Class Descriptions</a><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="client.html">Client</a></li>
-<li class="toctree-l4"><a class="reference internal" href="server.html">Server</a></li>
-<li class="toctree-l4"><a class="reference internal" href="header.html">Header</a></li>
-<li class="toctree-l4"><a class="reference internal" href="controller.html">Controller</a></li>
-<li class="toctree-l4"><a class="reference internal" href="application.html">Application</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">Transport</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../python/index.html">Python API</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../../index.html">C++ API</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../../rogue_index.html">rogue</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../interfaces_index.html">rogue::interfaces</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../../protocols_index.html">rogue::protocols</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../batcher/index.html">rogue::protocols::batcher</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../packetizer/index.html">rogue::protocols::packetizer</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="index.html">rogue::protocols::rssi</a><ul class="current">
+<li class="toctree-l5"><a class="reference internal" href="client.html">Client</a></li>
+<li class="toctree-l5"><a class="reference internal" href="server.html">Server</a></li>
+<li class="toctree-l5"><a class="reference internal" href="header.html">Header</a></li>
+<li class="toctree-l5"><a class="reference internal" href="controller.html">Controller</a></li>
+<li class="toctree-l5"><a class="reference internal" href="application.html">Application</a></li>
+<li class="toctree-l5 current"><a class="current reference internal" href="#">Transport</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../srp/index.html">SRP Protocol Class Descriptions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../udp/index.html">UDP Protocol Class Descriptions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../xilinx/index.html">Xilinx Protocol Class Descriptions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../utilities/compression/index.html">Compression Classes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../utilities/fileio/index.html">File Operation Classes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../utilities/prbs/index.html">PRBS Utilities</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../srp/index.html">rogue::protocols::srp</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../udp/index.html">rogue::protocols::udp</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../xilinx/index.html">rogue::protocols::xilinx</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../hardware_index.html">rogue::hardware</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../utilities_index.html">rogue::utilities</a></li>
 </ul>
 </li>
 </ul>
 </li>
 </ul>
 
-        </div>
+</div>
       </div>
     </nav>
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../../introduction/index.html">Rogue</a>
+          <a href="../../../../index.html">Rogue</a>
       </nav>
 
       <div class="wy-nav-content">
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../../introduction/index.html" class="icon icon-home" aria-label="Home"></a></li>
-          <li class="breadcrumb-item"><a href="../../../../documentation_index.html">Table of Contents</a></li>
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../../index.html">API Reference</a></li>
-          <li class="breadcrumb-item"><a href="index.html">RSSI Protocol Class Descriptions</a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">C++ API</a></li>
+          <li class="breadcrumb-item"><a href="../../protocols_index.html">rogue::protocols</a></li>
+          <li class="breadcrumb-item"><a href="index.html">rogue::protocols::rssi</a></li>
       <li class="breadcrumb-item active">Transport</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../../../_sources/api/cpp/protocols/rssi/transport.rst.txt" rel="nofollow"> View page source</a>
@@ -122,17 +122,23 @@
   <section id="transport">
 <span id="protocols-rssi-classes-transport"></span><h1>Transport<a class="headerlink" href="#transport" title="Link to this heading"></a></h1>
 <p><code class="docutils literal notranslate"><span class="pre">Transport</span></code> is the lower RSSI stream endpoint. It exchanges RSSI frames
-between the controller and the underlying link transport.</p>
-<p>Transport objects in C++ are referenced by the following shared pointer typedef:</p>
+between the controller and the underlying link transport.
+For conceptual guidance, see <a class="reference internal" href="../../../../built_in_modules/protocols/rssi/index.html"><span class="doc">RSSI Protocol</span></a>.</p>
+<section id="python-binding">
+<h2>Python binding<a class="headerlink" href="#python-binding" title="Link to this heading"></a></h2>
+<p>This C++ class is also exported into Python as <code class="docutils literal notranslate"><span class="pre">rogue.protocols.rssi.Transport</span></code>.</p>
+<p>Python API page:
+- <a class="reference internal" href="../../../python/rogue/protocols/rssi/transport.html"><span class="doc">Transport</span></a></p>
+<p>objects in C++ are referenced by the following shared pointer typedef:</p>
 <dl class="cpp type">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi12TransportPtrE">
-<span id="_CPPv3N5rogue9protocols4rssi12TransportPtrE"></span><span id="_CPPv2N5rogue9protocols4rssi12TransportPtrE"></span><span id="rogue::protocols::rssi::TransportPtr"></span><span class="target" id="namespacerogue_1_1protocols_1_1rssi_1a12eea2c159254ef846e6d2ab740ceb02"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">protocols</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">rssi</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue9protocols4rssi9TransportE" title="rogue::protocols::rssi::Transport"><span class="n"><span class="pre">Transport</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">protocols</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">rssi</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">TransportPtr</span></span></span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi12TransportPtrE" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3N5rogue9protocols4rssi12TransportPtrE"></span><span id="_CPPv2N5rogue9protocols4rssi12TransportPtrE"></span><span id="rogue::protocols::rssi::TransportPtr"></span><span class="target" id="namespacerogue_1_1protocols_1_1rssi_1a12eea2c159254ef846e6d2ab740ceb02"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">protocols</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">rssi</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue9protocols4rssi9TransportE" title="rogue::protocols::rssi::Transport"><span class="n"><span class="pre">Transport</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">protocols</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">rssi</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">TransportPtr</span></span></span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi12TransportPtrE" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Transport_8h_source.html#l00091"><span class="pre">[header]</span></a></dt>
 <dd></dd></dl>
 
 <p>The class description is shown below:</p>
 <dl class="cpp class">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi9TransportE">
-<span id="_CPPv3N5rogue9protocols4rssi9TransportE"></span><span id="_CPPv2N5rogue9protocols4rssi9TransportE"></span><span id="rogue::protocols::rssi::Transport"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Transport"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Transport</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="../../interfaces/stream/master.html#_CPPv4N5rogue10interfaces6stream6MasterE" title="rogue::interfaces::stream::Master"><span class="n"><span class="pre">Master</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="../../interfaces/stream/slave.html#_CPPv4N5rogue10interfaces6stream5SlaveE" title="rogue::interfaces::stream::Slave"><span class="n"><span class="pre">Slave</span></span></a><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi9TransportE" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3N5rogue9protocols4rssi9TransportE"></span><span id="_CPPv2N5rogue9protocols4rssi9TransportE"></span><span id="rogue::protocols::rssi::Transport"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Transport"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Transport</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="../../interfaces/stream/master.html#_CPPv4N5rogue10interfaces6stream6MasterE" title="rogue::interfaces::stream::Master"><span class="n"><span class="pre">Master</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="../../interfaces/stream/slave.html#_CPPv4N5rogue10interfaces6stream5SlaveE" title="rogue::interfaces::stream::Slave"><span class="n"><span class="pre">Slave</span></span></a><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi9TransportE" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Transport_8h_source.html#l00045"><span class="pre">[header]</span></a></dt>
 <dd><p>RSSI transport endpoint. </p>
 <p>Bridges stream traffic between the RSSI controller and the underlying link.</p>
 <p>Inbound frames are forwarded synchronously to <code class="docutils literal notranslate"><a class="reference internal" href="controller.html#classrogue_1_1protocols_1_1rssi_1_1Controller_1afa32efe3579c79b8bfbb61f48ab31ba6"><span class="std std-ref"><span class="pre">Controller::transportRx()</span></span></a></code>. Outbound transport frames are produced via controller APIs and emitted by other RSSI components. </p>
@@ -140,21 +146,24 @@ between the controller and the underlying link transport.</p>
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi9Transport9TransportEv">
-<span id="_CPPv3N5rogue9protocols4rssi9Transport9TransportEv"></span><span id="_CPPv2N5rogue9protocols4rssi9Transport9TransportEv"></span><span id="rogue::protocols::rssi::Transport::Transport"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Transport_1a82053157e1d1cea38b552f98a917009c"></span><span class="sig-name descname"><span class="n"><span class="pre">Transport</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi9Transport9TransportEv" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3N5rogue9protocols4rssi9Transport9TransportEv"></span><span id="_CPPv2N5rogue9protocols4rssi9Transport9TransportEv"></span><span id="rogue::protocols::rssi::Transport::Transport"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Transport_1a82053157e1d1cea38b552f98a917009c"></span><span class="sig-name descname"><span class="n"><span class="pre">Transport</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi9Transport9TransportEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Transport_8h_source.html#l00072"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Transport_8cpp_source.html#l00056"><span class="pre">[impl]</span></a></dt>
 <dd><p>Constructs a transport endpoint. </p>
-<p>This constructor is a low-level C++ allocation path. Prefer <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1protocols_1_1rssi_1_1Transport_1a2873032d00c6d5d2df877eb747720390"><span class="std std-ref"><span class="pre">create()</span></span></a></code> when shared ownership or Python exposure is required. </p>
+<p>Creator.</p>
+<p>This constructor is a low-level C++ allocation path. Prefer <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1protocols_1_1rssi_1_1Transport_1a5287699242d730238e31605ff1f593c9"><span class="std std-ref"><span class="pre">create()</span></span></a></code> when shared ownership or Python exposure is required. </p>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi9TransportD0Ev">
-<span id="_CPPv3N5rogue9protocols4rssi9TransportD0Ev"></span><span id="_CPPv2N5rogue9protocols4rssi9TransportD0Ev"></span><span id="rogue::protocols::rssi::Transport::~Transport"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Transport_1ac541cdb0ec65a12484870366f76f8f91"></span><span class="sig-name descname"><span class="n"><span class="pre">~Transport</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi9TransportD0Ev" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3N5rogue9protocols4rssi9TransportD0Ev"></span><span id="_CPPv2N5rogue9protocols4rssi9TransportD0Ev"></span><span id="rogue::protocols::rssi::Transport::~Transport"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Transport_1ac541cdb0ec65a12484870366f76f8f91"></span><span class="sig-name descname"><span class="n"><span class="pre">~Transport</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi9TransportD0Ev" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Transport_8h_source.html#l00075"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Transport_8cpp_source.html#l00059"><span class="pre">[impl]</span></a></dt>
 <dd><p>Destroys the transport endpoint. </p>
+<p>Destructor. </p>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi9Transport13setControllerENSt10shared_ptrIN5rogue9protocols4rssi10ControllerEEE">
-<span id="_CPPv3N5rogue9protocols4rssi9Transport13setControllerENSt10shared_ptrIN5rogue9protocols4rssi10ControllerEEE"></span><span id="_CPPv2N5rogue9protocols4rssi9Transport13setControllerENSt10shared_ptrIN5rogue9protocols4rssi10ControllerEEE"></span><span id="rogue::protocols::rssi::Transport::setController__std::shared_ptr:rogue::protocols::rssi::Controller:"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Transport_1ac7312752faebd95c8202244e771c1f23"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setController</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">protocols</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">rssi</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="controller.html#_CPPv4N5rogue9protocols4rssi10ControllerE" title="rogue::protocols::rssi::Controller"><span class="n"><span class="pre">Controller</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">cntl</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi9Transport13setControllerENSt10shared_ptrIN5rogue9protocols4rssi10ControllerEEE" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3N5rogue9protocols4rssi9Transport13setControllerENSt10shared_ptrIN5rogue9protocols4rssi10ControllerEEE"></span><span id="_CPPv2N5rogue9protocols4rssi9Transport13setControllerENSt10shared_ptrIN5rogue9protocols4rssi10ControllerEEE"></span><span id="rogue::protocols::rssi::Transport::setController__std::shared_ptr:rogue::protocols::rssi::Controller:"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Transport_1ac7312752faebd95c8202244e771c1f23"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setController</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">protocols</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">rssi</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="controller.html#_CPPv4N5rogue9protocols4rssi10ControllerE" title="rogue::protocols::rssi::Controller"><span class="n"><span class="pre">Controller</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">cntl</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi9Transport13setControllerENSt10shared_ptrIN5rogue9protocols4rssi10ControllerEEE" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Transport_8h_source.html#l00081"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Transport_8cpp_source.html#l00062"><span class="pre">[impl]</span></a></dt>
 <dd><p>Attaches the RSSI controller. </p>
+<p>Setup links.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>cntl</strong> – <a class="reference internal" href="controller.html#classrogue_1_1protocols_1_1rssi_1_1Controller"><span class="std std-ref">Controller</span></a> instance that owns protocol state. </p>
@@ -164,8 +173,9 @@ between the controller and the underlying link transport.</p>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi9Transport11acceptFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE">
-<span id="_CPPv3N5rogue9protocols4rssi9Transport11acceptFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE"></span><span id="_CPPv2N5rogue9protocols4rssi9Transport11acceptFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE"></span><span id="rogue::protocols::rssi::Transport::acceptFrame__std::shared_ptr:rogue::interfaces::stream::Frame:"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Transport_1a37c106c60bd45c71dc2a666496e6b7a6"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">acceptFrame</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="../../interfaces/stream/frame.html#_CPPv4N5rogue10interfaces6stream5FrameE" title="rogue::interfaces::stream::Frame"><span class="n"><span class="pre">Frame</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">frame</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi9Transport11acceptFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3N5rogue9protocols4rssi9Transport11acceptFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE"></span><span id="_CPPv2N5rogue9protocols4rssi9Transport11acceptFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE"></span><span id="rogue::protocols::rssi::Transport::acceptFrame__std::shared_ptr:rogue::interfaces::stream::Frame:"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Transport_1a37c106c60bd45c71dc2a666496e6b7a6"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">acceptFrame</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="../../interfaces/stream/frame.html#_CPPv4N5rogue10interfaces6stream5FrameE" title="rogue::interfaces::stream::Frame"><span class="n"><span class="pre">Frame</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">frame</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi9Transport11acceptFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Transport_8h_source.html#l00087"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Transport_8cpp_source.html#l00067"><span class="pre">[impl]</span></a></dt>
 <dd><p>Accepts a frame from the upstream stream interface. </p>
+<p>Accept a frame from master.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>frame</strong> – Input frame to decode and forward to controller logic. </p>
@@ -178,19 +188,23 @@ between the controller and the underlying link transport.</p>
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-static-functions">Public Static Functions</p>
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi9Transport6createEv">
-<span id="_CPPv3N5rogue9protocols4rssi9Transport6createEv"></span><span id="_CPPv2N5rogue9protocols4rssi9Transport6createEv"></span><span id="rogue::protocols::rssi::Transport::create"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Transport_1a2873032d00c6d5d2df877eb747720390"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">protocols</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">rssi</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue9protocols4rssi9TransportE" title="rogue::protocols::rssi::Transport"><span class="n"><span class="pre">Transport</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">create</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi9Transport6createEv" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3N5rogue9protocols4rssi9Transport6createEv"></span><span id="_CPPv2N5rogue9protocols4rssi9Transport6createEv"></span><span id="rogue::protocols::rssi::Transport::create"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Transport_1a5287699242d730238e31605ff1f593c9"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">protocols</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">rssi</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue9protocols4rssi9TransportE" title="rogue::protocols::rssi::Transport"><span class="n"><span class="pre">Transport</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">create</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi9Transport6createEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Transport_8h_source.html#l00060"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Transport_8cpp_source.html#l00039"><span class="pre">[impl]</span></a></dt>
 <dd><p>Creates a new transport endpoint instance. </p>
+<p>Class creation.</p>
 <p>This static factory is the preferred construction path when the object is shared across Rogue graph connections or exposed to Python. It returns <code class="docutils literal notranslate"><span class="pre">std::shared_ptr</span></code> ownership compatible with Rogue pointer typedefs.</p>
+<p><em>Company : SLAC National Accelerator Laboratory </em></p>
+<p>Description: <em>RSSI  Port </em></p>
+<p>This file is part of the rogue software platform. It is subject to the license terms in the LICENSE.txt file found in the top-level directory of this distribution and at: <a class="reference external" href="https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html">https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html</a>. No part of the rogue software platform, including this file, may be copied, modified, propagated, or distributed except according to the terms <em>contained in the LICENSE.txt file. </em></p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Shared pointer to the created transport endpoint. </p>
+<dd class="field-odd"><p>Shared pointer to the created transport endpoint.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi9Transport12setup_pythonEv">
-<span id="_CPPv3N5rogue9protocols4rssi9Transport12setup_pythonEv"></span><span id="_CPPv2N5rogue9protocols4rssi9Transport12setup_pythonEv"></span><span id="rogue::protocols::rssi::Transport::setup_python"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Transport_1a1baa8867cf9fb61ac78b86166ca1b41a"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setup_python</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi9Transport12setup_pythonEv" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3N5rogue9protocols4rssi9Transport12setup_pythonEv"></span><span id="_CPPv2N5rogue9protocols4rssi9Transport12setup_pythonEv"></span><span id="rogue::protocols::rssi::Transport::setup_python"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Transport_1abf762b435c2f1e5e609be76fdb1243b2"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setup_python</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi9Transport12setup_pythonEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Transport_8h_source.html#l00063"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Transport_8cpp_source.html#l00044"><span class="pre">[impl]</span></a></dt>
 <dd><p>Registers Python bindings for this class. </p>
 </dd></dl>
 
@@ -198,13 +212,14 @@ between the controller and the underlying link transport.</p>
 </dd></dl>
 
 </section>
+</section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="application.html" class="btn btn-neutral float-left" title="Application" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../srp/index.html" class="btn btn-neutral float-right" title="SRP Protocol Class Descriptions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../srp/index.html" class="btn btn-neutral float-right" title="rogue::protocols::srp" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

@@ -1,0 +1,271 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RunControl Device Class &mdash; Rogue v6.8.5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=346ffc18" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=8960aef2"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/custom.js?v=b11a05f1"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="DataWriter Device Class" href="data_writer.html" />
+    <link rel="prev" title="Built-in Devices" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">PyRogue Tree</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../core/index.html">Components And Concepts</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Built-in Devices</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">RunControl Device Class</a></li>
+<li class="toctree-l3"><a class="reference internal" href="data_writer.html">DataWriter Device Class</a></li>
+<li class="toctree-l3"><a class="reference internal" href="data_receiver.html">DataReceiver Device Class</a></li>
+<li class="toctree-l3"><a class="reference internal" href="process.html">Process Device Class</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../client_interfaces/index.html">Client Interfaces</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">API Reference</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">PyRogue Tree</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Built-in Devices</a></li>
+      <li class="breadcrumb-item active">RunControl Device Class</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/pyrogue_tree/builtin_devices/run_control.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="runcontrol-device-class">
+<span id="pyrogue-tree-node-device-runcontrol"></span><h1>RunControl Device Class<a class="headerlink" href="#runcontrol-device-class" title="Link to this heading"></a></h1>
+<p><a class="reference internal" href="../../api/python/pyrogue/runcontrol.html#pyrogue.RunControl" title="pyrogue.RunControl"><code class="xref py py-class docutils literal notranslate"><span class="pre">RunControl</span></code></a> is a <a class="reference internal" href="../../api/python/pyrogue/device.html#pyrogue.Device" title="pyrogue.Device"><code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code></a> subclass for
+software-driven run state management.</p>
+<p>Use it directly for most software-driven data acquisition, or subclass it for
+more complex hardware-integrated and external run-control workflows.</p>
+<section id="what-runcontrol-provides">
+<h2>What RunControl Provides<a class="headerlink" href="#what-runcontrol-provides" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">RunControl</span></code> packages a small software run loop into a normal tree-facing
+<code class="docutils literal notranslate"><span class="pre">Device</span></code>. In the current implementation it provides:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">runState</span></code> (for example <code class="docutils literal notranslate"><span class="pre">Stopped</span></code> / <code class="docutils literal notranslate"><span class="pre">Running</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">runRate</span></code> (iteration frequency)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">runCount</span></code> (loop counter)</p></li>
+<li><p>Optional <code class="docutils literal notranslate"><span class="pre">cmd</span></code> callback executed each run loop iteration</p></li>
+</ul>
+<p>When <code class="docutils literal notranslate"><span class="pre">runState</span></code> is set to <code class="docutils literal notranslate"><span class="pre">Running</span></code>, <code class="docutils literal notranslate"><span class="pre">RunControl</span></code> starts a background
+thread. That thread sleeps for the selected <code class="docutils literal notranslate"><span class="pre">runRate</span></code>, calls the optional
+<code class="docutils literal notranslate"><span class="pre">cmd</span></code> callback, and increments <code class="docutils literal notranslate"><span class="pre">runCount</span></code>. When <code class="docutils literal notranslate"><span class="pre">runState</span></code> leaves the
+running state, the thread exits and is joined.</p>
+<p>This makes <code class="docutils literal notranslate"><span class="pre">RunControl</span></code> a good fit when the system needs a simple
+operator-visible “start a repeating loop” control surface without building a
+custom thread manager from scratch.</p>
+</section>
+<section id="when-to-use-runcontrol">
+<h2>When To Use RunControl<a class="headerlink" href="#when-to-use-runcontrol" title="Link to this heading"></a></h2>
+<p>Use <code class="docutils literal notranslate"><span class="pre">RunControl</span></code> when the important behavior is a repeated loop whose state
+should be visible and editable from the tree.</p>
+<p>Common fits include:</p>
+<ul class="simple">
+<li><p>Software acquisition loops</p></li>
+<li><p>Periodic trigger or polling actions</p></li>
+<li><p>Application-level run/stop coordination</p></li>
+<li><p>Simple supervisory loops that call one function at a selected rate</p></li>
+</ul>
+<p>If the operation is instead a one-shot or finite multi-step procedure, see
+<a class="reference internal" href="process.html"><span class="doc">Process Device Class</span></a>.</p>
+</section>
+<section id="what-you-usually-set">
+<h2>What You Usually Set<a class="headerlink" href="#what-you-usually-set" title="Link to this heading"></a></h2>
+<p>Most <code class="docutils literal notranslate"><span class="pre">RunControl</span></code> definitions use just a few parameters:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">hidden</span></code> to keep the node in a dedicated run-control view rather than the
+normal tree display.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">rates</span></code> to define the available loop-rate selections.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">states</span></code> to define the available run-state labels.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cmd</span></code> for the function or command invoked once per loop iteration.</p></li>
+</ul>
+<p>In practice, <code class="docutils literal notranslate"><span class="pre">cmd</span></code> and <code class="docutils literal notranslate"><span class="pre">rates</span></code> are the most important ones because they
+define what the loop does and how fast it runs.</p>
+</section>
+<section id="subclassing-and-override-points">
+<h2>Subclassing And Override Points<a class="headerlink" href="#subclassing-and-override-points" title="Link to this heading"></a></h2>
+<p>In practice, subclassing is often the general way to use <code class="docutils literal notranslate"><span class="pre">RunControl</span></code>.
+Supplying <code class="docutils literal notranslate"><span class="pre">cmd=...</span></code> is enough for a simple periodic software loop, but many
+real systems need start/stop behavior around hardware triggers, counters,
+readout enables, or run bookkeeping.</p>
+<p>In the current implementation, the main override points are:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">_setRunState</span></code> to integrate with external run-control hardware or software
+when the state changes.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">_setRunRate</span></code> when changing the selected rate should trigger additional
+application behavior.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">_run</span></code> when the default “sleep, call <code class="docutils literal notranslate"><span class="pre">cmd</span></code>, increment <code class="docutils literal notranslate"><span class="pre">runCount</span></code>”
+loop is not sufficient.</p></li>
+</ul>
+</section>
+<section id="concrete-example">
+<h2>Concrete Example<a class="headerlink" href="#concrete-example" title="Link to this heading"></a></h2>
+<p>One common pattern is:</p>
+<ul class="simple">
+<li><p>When the run starts, read the current state, reset counters, and enable the
+hardware path that should produce data.</p></li>
+<li><p>While the run is active, wait for new frames or events and publish the
+accumulated count through <code class="docutils literal notranslate"><span class="pre">runCount</span></code>.</p></li>
+<li><p>When the run stops, disable the same trigger or readout path cleanly.</p></li>
+</ul>
+<p>This example reflects that style:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">AcquisitionRunControl</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RunControl</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;RunControl&#39;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Control a frame-based acquisition run&#39;</span><span class="p">,</span>
+            <span class="n">hidden</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">rates</span><span class="o">=</span><span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s1">&#39;Auto&#39;</span><span class="p">},</span>
+            <span class="n">states</span><span class="o">=</span><span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s1">&#39;Stopped&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="s1">&#39;Running&#39;</span><span class="p">},</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_start_run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Capture the current state before enabling acquisition.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">ReadAll</span><span class="p">()</span>
+
+        <span class="n">trigger</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">TriggerRegisters</span>
+        <span class="n">trigger</span><span class="o">.</span><span class="n">ResetCounters</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">CountReset</span><span class="p">()</span>
+
+        <span class="n">trigger</span><span class="o">.</span><span class="n">Enable</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_stop_run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">TriggerRegisters</span><span class="o">.</span><span class="n">Enable</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_start_run</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">runCount</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">runState</span><span class="o">.</span><span class="n">valueDisp</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;Running&#39;</span><span class="p">:</span>
+                <span class="c1"># Wait for one more recorded frame and publish the total.</span>
+                <span class="n">channel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">DataWriter</span><span class="o">.</span><span class="n">getChannel</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">channel</span><span class="o">.</span><span class="n">waitFrameCount</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">runCount</span><span class="o">.</span><span class="n">value</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1000000000</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">runCount</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">channel</span><span class="o">.</span><span class="n">getFrameCount</span><span class="p">())</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.01</span><span class="p">)</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_stop_run</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="related-topics">
+<h2>Related Topics<a class="headerlink" href="#related-topics" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Structured long-running procedures: <a class="reference internal" href="process.html"><span class="doc">Process Device Class</span></a></p></li>
+<li><p>Root lifecycle and top-level orchestration: <a class="reference internal" href="../core/root.html"><span class="doc">Root</span></a></p></li>
+<li><p>Device composition and startup behavior: <a class="reference internal" href="../core/device.html"><span class="doc">Device</span></a></p></li>
+<li><p>Lower-level transport, protocol, and utility families: <a class="reference internal" href="../../built_in_modules/index.html"><span class="doc">Built-in Modules</span></a></p></li>
+</ul>
+</section>
+<section id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<p>See <a class="reference internal" href="../../api/python/pyrogue/runcontrol.html"><span class="doc">RunControl</span></a> for generated API details.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Built-in Devices" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="data_writer.html" class="btn btn-neutral float-right" title="DataWriter Device Class" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

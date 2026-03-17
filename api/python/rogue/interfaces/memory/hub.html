@@ -1,0 +1,535 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hub &mdash; Rogue v6.8.5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom.css?v=346ffc18" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=8960aef2"></script>
+      <script src="../../../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../../../_static/custom.js?v=b11a05f1"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" />
+    <link rel="next" title="Transaction" href="transaction.html" />
+    <link rel="prev" title="Slave" href="slave.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../../../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../../../index.html">Python API</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../../../pyrogue/index.html">pyrogue</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../../index.html">rogue</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../../version.html">rogue.Version</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../logging.html">rogue.Logging</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../generalerror.html">rogue.GeneralError</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="../index.html">rogue.interfaces</a><ul class="current">
+<li class="toctree-l5"><a class="reference internal" href="../stream/index.html">rogue.interfaces.stream</a></li>
+<li class="toctree-l5 current"><a class="reference internal" href="index.html">rogue.interfaces.memory</a><ul class="current">
+<li class="toctree-l6"><a class="reference internal" href="master.html">Master</a></li>
+<li class="toctree-l6"><a class="reference internal" href="slave.html">Slave</a></li>
+<li class="toctree-l6 current"><a class="current reference internal" href="#">Hub</a></li>
+<li class="toctree-l6"><a class="reference internal" href="transaction.html">Transaction</a></li>
+<li class="toctree-l6"><a class="reference internal" href="block.html">Block</a></li>
+<li class="toctree-l6"><a class="reference internal" href="emulate.html">Emulate</a></li>
+<li class="toctree-l6"><a class="reference internal" href="tcpclient.html">TcpClient</a></li>
+<li class="toctree-l6"><a class="reference internal" href="tcpserver.html">TcpServer</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="../zmqclient.html">ZmqClient</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../../protocols/index.html">rogue.protocols</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../hardware/index.html">rogue.hardware</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../utilities/index.html">rogue.utilities</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../cpp/index.html">C++ API</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">API Reference</a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Python API</a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">rogue</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">rogue.interfaces</a></li>
+          <li class="breadcrumb-item"><a href="index.html">rogue.interfaces.memory</a></li>
+      <li class="breadcrumb-item active">Hub</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../../_sources/api/python/rogue/interfaces/memory/hub.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="hub">
+<span id="api-python-interfaces-memory-hub"></span><h1>Hub<a class="headerlink" href="#hub" title="Link to this heading"></a></h1>
+<p>For conceptual usage, see:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../../../../../memory_interface/hub.html"><span class="doc">Memory Hub Patterns</span></a></p></li>
+<li><p><a class="reference internal" href="../../../../../memory_interface/index.html"><span class="doc">Memory Interface</span></a></p></li>
+</ul>
+<p class="rubric">Implementation</p>
+<p>This Python API is provided by a Rogue C++ class exported into Python.</p>
+<p>Native C++ class:
+- <a class="reference internal" href="../../../../cpp/interfaces/memory/hub.html"><span class="doc">Hub</span></a></p>
+<section id="generated-api">
+<h2>Generated API<a class="headerlink" href="#generated-api" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="rogue.interfaces.memory.Hub">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">rogue.interfaces.memory.</span></span><span class="sig-name descname"><span class="pre">Hub</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">offset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#rogue.interfaces.memory.Hub" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/memory/hub.html#_CPPv4N5rogue10interfaces6memory3HubE" title="rogue::interfaces::memory::Hub"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">rogue::interfaces::memory::Hub</span></code></a></p>
+<p>Binding source: <a class="reference external" href="../../../../../_doxygen/Hub_8cpp_source.html">[Hub.cpp]</a></p>
+<p>Memory interface Hub device.</p>
+<p>The memory bus Hub serves as both a Slave and a Master for memory transactions. It will accept a Transaction from an attached Master and pass it down to the next level Slave or Hub device. It will apply its local offset address to the transaction as it is passed down to the next level. A Hub can be sub-classed in either Python or C++ is order to further manipulate the transaction data on the way down or convert the initial Transaction into multiple transactions to the next level. This can be useful to hide complex windows memory spaces or transactions that require multiplied steps be performed in hardware. If a non zero <code class="docutils literal notranslate"><span class="pre">min</span></code> and <code class="docutils literal notranslate"><span class="pre">max</span></code> transaction size are passed at creation this Hub will behave as if it is a new root <code class="docutils literal notranslate"><span class="pre">Slave</span></code> memory device in the tree. This is useful in cases where this <code class="docutils literal notranslate"><span class="pre">Hub</span></code> will master a paged address or other virtual address space. Access-size behavior is selected by the <code class="docutils literal notranslate"><span class="pre">min</span></code>/<code class="docutils literal notranslate"><span class="pre">max</span></code> constructor parameters:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">min</span> <span class="pre">==</span> <span class="pre">0</span></code> and <code class="docutils literal notranslate"><span class="pre">max</span> <span class="pre">==</span> <span class="pre">0</span></code>: pass-through mode. Access-size identity/name queries are forwarded to the downstream interface.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">min</span> <span class="pre">!=</span> <span class="pre">0</span></code> and <code class="docutils literal notranslate"><span class="pre">max</span> <span class="pre">!=</span> <span class="pre">0</span></code>: virtual-root mode. This hub advertises its own Slave-like identity and access limits (<code class="docutils literal notranslate"><span class="pre">min</span></code>/<code class="docutils literal notranslate"><span class="pre">max</span></code>) to upstream masters.</p></li>
+<li><p>Mixed values (<code class="docutils literal notranslate"><span class="pre">min</span> <span class="pre">==</span> <span class="pre">0,</span> <span class="pre">max</span> <span class="pre">!=</span> <span class="pre">0</span></code> or <code class="docutils literal notranslate"><span class="pre">min</span> <span class="pre">!=</span> <span class="pre">0,</span> <span class="pre">max</span> <span class="pre">==</span> <span class="pre">0</span></code>): also pass-through mode (virtual-root mode is not enabled). In other words, this hub behaves as a virtual root only when both <code class="docutils literal notranslate"><span class="pre">min</span></code> and <code class="docutils literal notranslate"><span class="pre">max</span></code> are non-zero. A pyrogue.Device instance is the most typical Hub used in Rogue.</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">offset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/memory/hub.html#_CPPv4N5rogue10interfaces6memory3HubE" title="rogue::interfaces::memory::Hub"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">rogue::interfaces::memory::Hub</span></code></a></p>
+<p>Constructs a Hub with optional virtual-root access constraints.</p>
+<p>This constructor is a low-level C++ allocation path. Prefer <code class="docutils literal notranslate"><span class="pre">create()</span></code> when shared ownership or Python exposure is required. Virtual-root mode is enabled only when both <code class="docutils literal notranslate"><span class="pre">min</span></code> and <code class="docutils literal notranslate"><span class="pre">max</span></code> are non-zero. When both are zero, the hub behaves as a pass-through for access-limit queries. Mixed values (only one non-zero) also behave as pass-through.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>offset</strong> – The offset of this Hub device.</p></li>
+<li><p><strong>min</strong> – Minimum transaction size in virtual-root mode. Use <code class="docutils literal notranslate"><span class="pre">0</span></code> with <code class="docutils literal notranslate"><span class="pre">max=0</span></code> to disable virtual-root mode.</p></li>
+<li><p><strong>max</strong> – Maximum transaction size in virtual-root mode. Use <code class="docutils literal notranslate"><span class="pre">0</span></code> with <code class="docutils literal notranslate"><span class="pre">min=0</span></code> to disable virtual-root mode.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_setSlave</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">slave</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/memory/master.html#_CPPv4N5rogue10interfaces6memory6Master8setSlaveENSt10shared_ptrIN5rogue10interfaces6memory5SlaveEEE" title="rogue::interfaces::memory::Master::setSlave"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::memory::Master::setSlave()</span></code></a></p>
+<p>Sets the downstream slave or hub.</p>
+<p>Transactions generated by this master are forwarded to this target. The target may be a leaf slave or a hub that forwards to lower levels. Exposed as <code class="docutils literal notranslate"><span class="pre">_setSlave()</span></code> in Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>slave</strong> – Downstream slave or hub pointer.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_getSlave</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/memory/master.html#_CPPv4N5rogue10interfaces6memory6Master8getSlaveEv" title="rogue::interfaces::memory::Master::getSlave"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::memory::Master::getSlave()</span></code></a></p>
+<p>Returns the configured downstream slave or hub.</p>
+<p>Exposed as <code class="docutils literal notranslate"><span class="pre">_getSlave()</span></code> in Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Downstream slave or hub pointer.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_reqSlaveId</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/memory/master.html#_CPPv4N5rogue10interfaces6memory6Master10reqSlaveIdEv" title="rogue::interfaces::memory::Master::reqSlaveId"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::memory::Master::reqSlaveId()</span></code></a></p>
+<p>Queries the downstream slave ID.</p>
+<p>Forwards the request to the lowest-level slave servicing this master path. This is used to determine which masters share an address space. Exposed as <code class="docutils literal notranslate"><span class="pre">_reqSlaveId()</span></code> in Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Unique 32-bit slave ID.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_reqSlaveName</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/memory/master.html#_CPPv4N5rogue10interfaces6memory6Master12reqSlaveNameEv" title="rogue::interfaces::memory::Master::reqSlaveName"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::memory::Master::reqSlaveName()</span></code></a></p>
+<p>Queries the downstream slave name.</p>
+<p>Forwards the request to the lowest-level slave servicing this master path. This allows the system to determine which memory Masters share an address space. Exposed as <code class="docutils literal notranslate"><span class="pre">_reqSlaveName()</span></code> in Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Slave name string.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_reqMinAccess</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/memory/master.html#_CPPv4N5rogue10interfaces6memory6Master12reqMinAccessEv" title="rogue::interfaces::memory::Master::reqMinAccess"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::memory::Master::reqMinAccess()</span></code></a></p>
+<p>Queries minimum access size in bytes for this interface path.</p>
+<p>Request is forwared to the lowest-level slave to determine the minimum transaction size. Exposed as <code class="docutils literal notranslate"><span class="pre">_reqMinAccess()</span></code> in Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Minimum transaction size in bytes.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_reqMaxAccess</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/memory/master.html#_CPPv4N5rogue10interfaces6memory6Master12reqMaxAccessEv" title="rogue::interfaces::memory::Master::reqMaxAccess"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::memory::Master::reqMaxAccess()</span></code></a></p>
+<p>Queries maximum access size in bytes for this interface path.</p>
+<p>Request is forwared to the lowest-level slave to determine the maximum transaction size. Exposed as <code class="docutils literal notranslate"><span class="pre">_reqMaxAccess()</span></code> in Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Maximum transaction size in bytes.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_reqAddress</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/memory/master.html#_CPPv4N5rogue10interfaces6memory6Master10reqAddressEv" title="rogue::interfaces::memory::Master::reqAddress"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::memory::Master::reqAddress()</span></code></a></p>
+<p>Queries the address offset of the next downstream layer.</p>
+<p>Returns the relative offset of the connected slave/hub and does not include any local master offset. Exposed as <code class="docutils literal notranslate"><span class="pre">_reqAddress()</span></code> in Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Downstream relative address offset.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_getError</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/memory/master.html#_CPPv4N5rogue10interfaces6memory6Master8getErrorEv" title="rogue::interfaces::memory::Master::getError"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::memory::Master::getError()</span></code></a></p>
+<p>Returns the last transaction error string.</p>
+<p>Exposed as <code class="docutils literal notranslate"><span class="pre">_getError()</span></code> in Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Error string for the last transaction sequence.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_clearError</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/memory/master.html#_CPPv4N5rogue10interfaces6memory6Master10clearErrorEv" title="rogue::interfaces::memory::Master::clearError"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::memory::Master::clearError()</span></code></a></p>
+<p>Clears the stored transaction error string.</p>
+<p>Exposed as <code class="docutils literal notranslate"><span class="pre">_clearError()</span></code> in Python.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_setTimeout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeout</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/memory/master.html#_CPPv4N5rogue10interfaces6memory6Master10setTimeoutE8uint64_t" title="rogue::interfaces::memory::Master::setTimeout"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::memory::Master::setTimeout()</span></code></a></p>
+<p>Sets the timeout value for future transactions.</p>
+<p>Timeout controls how long the master waits for transaction completion. Exposed as <code class="docutils literal notranslate"><span class="pre">_setTimeout()</span></code> in Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>timeout</strong> – Timeout value in microseconds. A value of <code class="docutils literal notranslate"><span class="pre">0</span></code> leaves the current timeout unchanged.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_reqTransaction</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>C++: <code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::memory::Master::_reqTransaction()</span></code></p>
+<p>No binding docstring provided.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_waitTransaction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/memory/master.html#_CPPv4N5rogue10interfaces6memory6Master15waitTransactionE8uint32_t" title="rogue::interfaces::memory::Master::waitTransaction"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::memory::Master::waitTransaction()</span></code></a></p>
+<p>Waits for transaction completion or timeout.</p>
+<p>Passing <code class="docutils literal notranslate"><span class="pre">0</span></code> waits for all currently pending transactions. Exposed as <code class="docutils literal notranslate"><span class="pre">_waitTransaction()</span></code> in Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>id</strong> – Transaction ID to wait for, or <code class="docutils literal notranslate"><span class="pre">0</span></code> for all.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_copyBits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dstData</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dstLsb</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">srcData</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">srcLsb</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/memory/master.html#_CPPv4N5rogue10interfaces6memory6Master8copyBitsEP7uint8_t8uint32_tP7uint8_t8uint32_t8uint32_t" title="rogue::interfaces::memory::Master::copyBits"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::memory::Master::copyBits()</span></code></a></p>
+<p>Copies bits between two byte arrays.</p>
+<p>Copies <code class="docutils literal notranslate"><span class="pre">size</span></code> bits from <code class="docutils literal notranslate"><span class="pre">srcData</span></code> starting at bit <code class="docutils literal notranslate"><span class="pre">srcLsb</span></code> into <code class="docutils literal notranslate"><span class="pre">dstData</span></code> starting at bit <code class="docutils literal notranslate"><span class="pre">dstLsb</span></code>. Bit numbering is least-significant-bit-first within each byte (bit 0 is the LSB of byte 0). The routine preserves destination bits outside the copied range and supports arbitrary unaligned source/destination bit offsets. When both offsets are byte-aligned, it uses a byte-copy fast path. This helper underpins variable packing/unpacking logic in the memory layer. Exposed as <code class="docutils literal notranslate"><span class="pre">_copyBits()</span></code> in Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dstData</strong> – Destination byte array.</p></li>
+<li><p><strong>dstLsb</strong> – Least-significant destination bit index.</p></li>
+<li><p><strong>srcData</strong> – Source byte array.</p></li>
+<li><p><strong>srcLsb</strong> – Least-significant source bit index.</p></li>
+<li><p><strong>size</strong> – Number of bits to copy.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_setBits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dstData</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lsb</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/memory/master.html#_CPPv4N5rogue10interfaces6memory6Master7setBitsEP7uint8_t8uint32_t8uint32_t" title="rogue::interfaces::memory::Master::setBits"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::memory::Master::setBits()</span></code></a></p>
+<p>Sets a contiguous bit range in a byte array.</p>
+<p>Sets <code class="docutils literal notranslate"><span class="pre">size</span></code> bits to <code class="docutils literal notranslate"><span class="pre">1</span></code> in <code class="docutils literal notranslate"><span class="pre">dstData</span></code> starting at bit <code class="docutils literal notranslate"><span class="pre">lsb</span></code>. Bit numbering is least-significant-bit-first within each byte (bit 0 is the LSB of byte 0). Bits outside the requested range are left unchanged. For byte-aligned regions, it uses a byte-fill fast path. This helper is used to build masks such as overlap and verify masks. Exposed as <code class="docutils literal notranslate"><span class="pre">_setBits()</span></code> in Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dstData</strong> – Destination byte array.</p></li>
+<li><p><strong>lsb</strong> – Least-significant bit index to set.</p></li>
+<li><p><strong>size</strong> – Number of bits to set.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_anyBits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">srcData</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lsb</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/memory/master.html#_CPPv4N5rogue10interfaces6memory6Master7anyBitsEP7uint8_t8uint32_t8uint32_t" title="rogue::interfaces::memory::Master::anyBits"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::memory::Master::anyBits()</span></code></a></p>
+<p>Tests whether any bit in a range is set.</p>
+<p>Checks <code class="docutils literal notranslate"><span class="pre">size</span></code> bits in <code class="docutils literal notranslate"><span class="pre">srcData</span></code> starting at bit <code class="docutils literal notranslate"><span class="pre">lsb</span></code> and returns <code class="docutils literal notranslate"><span class="pre">true</span></code> if at least one bit is <code class="docutils literal notranslate"><span class="pre">1</span></code>. Bit numbering is least-significant-bit-first within each byte (bit 0 is the LSB of byte 0). This helper is commonly used for overlap and mask checks. Exposed as <code class="docutils literal notranslate"><span class="pre">_anyBits()</span></code> in Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>srcData</strong> – Source byte array to check.</p></li>
+<li><p><strong>lsb</strong> – Least-significant bit index to check.</p></li>
+<li><p><strong>size</strong> – Number of bits to check.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">true</span></code> if any bit in the range is set; otherwise <code class="docutils literal notranslate"><span class="pre">false</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">__rshift__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/memory/master.html#_CPPv4N5rogue10interfaces6memory6Master8rshiftPyEN5boost6python6objectE" title="rogue::interfaces::memory::Master::rshiftPy"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::memory::Master::rshiftPy()</span></code></a></p>
+<p>Supports <code class="docutils literal notranslate"><span class="pre">&gt;&gt;</span></code> operator usage from Python.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_stop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/memory/master.html#_CPPv4N5rogue10interfaces6memory6Master4stopEv" title="rogue::interfaces::memory::Master::stop"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::memory::Master::stop()</span></code></a></p>
+<p>Stops the interface and releases runtime resources.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">setName</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/memory/slave.html#_CPPv4N5rogue10interfaces6memory5Slave7setNameENSt6stringE" title="rogue::interfaces::memory::Slave::setName"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::memory::Slave::setName()</span></code></a></p>
+<p>Sets slave name.</p>
+<p>Exposed to Python as <code class="docutils literal notranslate"><span class="pre">setName</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> – New slave name string.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_addTransaction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transaction</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/memory/slave.html#_CPPv4N5rogue10interfaces6memory5Slave14addTransactionENSt10shared_ptrIN5rogue10interfaces6memory11TransactionEEE" title="rogue::interfaces::memory::Slave::addTransaction"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::memory::Slave::addTransaction()</span></code></a></p>
+<p>Adds a transaction to the internal tracking map.</p>
+<p>This method is called by the sub-class to add a transaction into the local tracking map for later retrieval. This is used when the transaction will be completed later as the result of protocol data being returned to the Slave. Exposed to Python as <code class="docutils literal notranslate"><span class="pre">_addTransaction()</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>transaction</strong> – Pointer to transaction as TransactionPtr.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_getTransaction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/memory/slave.html#_CPPv4N5rogue10interfaces6memory5Slave14getTransactionE8uint32_t" title="rogue::interfaces::memory::Slave::getTransaction"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::memory::Slave::getTransaction()</span></code></a></p>
+<p>Gets a transaction from the internal tracking map.</p>
+<p>This method is called by the sub-class to retrieve an existing transaction using the unique transaction ID. If the transaction exists in the list the pointer to that transaction will be returned. If not a NULL pointer will be returned. When getTransaction() is called the map will also be checked for stale transactions which will be removed from the map. Exposed to Python as <code class="docutils literal notranslate"><span class="pre">_getTransaction()</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>index</strong> – ID of transaction to lookup.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Pointer to transaction as TransactionPtr or NULL if not found.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_doMinAccess</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/memory/slave.html#_CPPv4N5rogue10interfaces6memory5Slave11doMinAccessEv" title="rogue::interfaces::memory::Slave::doMinAccess"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::memory::Slave::doMinAccess()</span></code></a></p>
+<p>Returns minimum transaction access size.</p>
+<p>Invokes the Python override when provided.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Minimum transaction access size in bytes.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_doMaxAccess</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/memory/slave.html#_CPPv4N5rogue10interfaces6memory5Slave11doMaxAccessEv" title="rogue::interfaces::memory::Slave::doMaxAccess"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::memory::Slave::doMaxAccess()</span></code></a></p>
+<p>Returns maximum transaction access size.</p>
+<p>Invokes the Python override when provided.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Maximum transaction access size in bytes.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_doAddress</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/memory/slave.html#_CPPv4N5rogue10interfaces6memory5Slave9doAddressEv" title="rogue::interfaces::memory::Slave::doAddress"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::memory::Slave::doAddress()</span></code></a></p>
+<p>Returns base address contribution for this slave.</p>
+<p>Invokes the Python override when provided.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Address offset in bytes.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_doTransaction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transaction</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/memory/slave.html#_CPPv4N5rogue10interfaces6memory5Slave13doTransactionENSt10shared_ptrIN5rogue10interfaces6memory11TransactionEEE" title="rogue::interfaces::memory::Slave::doTransaction"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::memory::Slave::doTransaction()</span></code></a></p>
+<p>Services a transaction request from an attached master.</p>
+<p>Invokes the Python override when provided.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>transaction</strong> – Transaction object to process.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">__lshift__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/memory/slave.html#_CPPv4N5rogue10interfaces6memory5Slave8lshiftPyEN5boost6python6objectE" title="rogue::interfaces::memory::Slave::lshiftPy"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::memory::Slave::lshiftPy()</span></code></a></p>
+<p>Supports <code class="docutils literal notranslate"><span class="pre">&lt;&lt;</span></code> operator usage from Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>p</strong> – Python object expected to provide a memory <code class="docutils literal notranslate"><span class="pre">Master</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_stop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/memory/slave.html#_CPPv4N5rogue10interfaces6memory5Slave4stopEv" title="rogue::interfaces::memory::Slave::stop"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::memory::Slave::stop()</span></code></a></p>
+<p>Stops the memory slave interface.</p>
+<p>Base implementation is a no-op. Subclasses may override to stop worker threads or transport links.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="slave.html" class="btn btn-neutral float-left" title="Slave" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="transaction.html" class="btn btn-neutral float-right" title="Transaction" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

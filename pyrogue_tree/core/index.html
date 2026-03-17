@@ -1,0 +1,451 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PyRogue Tree Components And Concepts &mdash; Rogue v6.8.5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=346ffc18" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=8960aef2"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/custom.js?v=b11a05f1"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Root" href="root.html" />
+    <link rel="prev" title="PyRogue Tree" href="../index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">PyRogue Tree</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Components And Concepts</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="root.html">Root</a></li>
+<li class="toctree-l3"><a class="reference internal" href="device.html">Device</a></li>
+<li class="toctree-l3"><a class="reference internal" href="variable.html">Variable</a></li>
+<li class="toctree-l3"><a class="reference internal" href="command.html">Command</a></li>
+<li class="toctree-l3"><a class="reference internal" href="block.html">Blocks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="block_operations.html">Device Block Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="model.html">Model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fixed_point_models.html">Fixed-Point Models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="poll_queue.html">PollQueue</a></li>
+<li class="toctree-l3"><a class="reference internal" href="yaml_configuration.html">YAML Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="memory_variable_stream.html">Variable Update Stream</a></li>
+<li class="toctree-l3"><a class="reference internal" href="groups.html">Groups</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../builtin_devices/index.html">Built-in Devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../client_interfaces/index.html">Client Interfaces</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">API Reference</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">PyRogue Tree</a></li>
+      <li class="breadcrumb-item active">PyRogue Tree Components And Concepts</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/pyrogue_tree/core/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <span class="target" id="pyrogue-tree-node"><span id="pyrogue-tree-core"></span></span><section id="pyrogue-tree-components-and-concepts">
+<h1>PyRogue Tree Components And Concepts<a class="headerlink" href="#pyrogue-tree-components-and-concepts" title="Link to this heading"></a></h1>
+<p>A PyRogue tree is defined by the object model and runtime behavior of
+<code class="docutils literal notranslate"><span class="pre">Root</span></code>, <code class="docutils literal notranslate"><span class="pre">Device</span></code>, <code class="docutils literal notranslate"><span class="pre">Variable</span></code>, and <code class="docutils literal notranslate"><span class="pre">Command</span></code> Nodes, with <code class="docutils literal notranslate"><span class="pre">Block</span></code> and
+<code class="docutils literal notranslate"><span class="pre">Model</span></code> providing memory transaction grouping and typed value conversion.</p>
+<p>A typical hierarchy starts at one <code class="docutils literal notranslate"><span class="pre">Root</span></code> and fans into multiple <code class="docutils literal notranslate"><span class="pre">Device</span></code>
+subtrees. Each <code class="docutils literal notranslate"><span class="pre">Device</span></code> can contain child <code class="docutils literal notranslate"><span class="pre">Device</span></code> Nodes, <code class="docutils literal notranslate"><span class="pre">Variable</span></code>
+Nodes, and <code class="docutils literal notranslate"><span class="pre">Command</span></code> Nodes. At runtime, the <code class="docutils literal notranslate"><span class="pre">Root</span></code> coordinates startup,
+background polling, and system-wide read/write operations across that
+hierarchy.</p>
+<p>This subsection is intentionally split into foundational pages first and more
+specialized mechanics later. Most readers should understand <code class="docutils literal notranslate"><span class="pre">Root</span></code>,
+<code class="docutils literal notranslate"><span class="pre">Device</span></code>, <code class="docutils literal notranslate"><span class="pre">Variable</span></code>, and <code class="docutils literal notranslate"><span class="pre">Command</span></code> before diving into <code class="docutils literal notranslate"><span class="pre">Block</span></code>,
+<code class="docutils literal notranslate"><span class="pre">Model</span></code>, polling internals, YAML bulk configuration, or stream adapters.</p>
+<section id="minimal-tree-example">
+<h2>Minimal Tree Example<a class="headerlink" href="#minimal-tree-example" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue.interfaces</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">DemoDevice</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Enable&#39;</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span>
+            <span class="n">value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalCommand</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Reset&#39;</span><span class="p">,</span>
+            <span class="n">function</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Reset requested&#39;</span><span class="p">),</span>
+        <span class="p">))</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">DemoRoot</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;DemoRoot&#39;</span><span class="p">,</span> <span class="n">pollEn</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">DemoDevice</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;App&#39;</span><span class="p">))</span>
+
+        <span class="c1"># Optional: expose the running tree to remote clients.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addInterface</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">ZmqServer</span><span class="p">(</span>
+            <span class="n">root</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
+            <span class="n">addr</span><span class="o">=</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span>
+            <span class="n">port</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="p">))</span>
+</pre></div>
+</div>
+<p>This composition pattern is the foundation for most PyRogue applications:
+<code class="docutils literal notranslate"><span class="pre">Root</span></code> owns lifecycle, <code class="docutils literal notranslate"><span class="pre">Device</span></code> organizes hardware/application structure,
+and <code class="docutils literal notranslate"><span class="pre">Variable</span></code>/<code class="docutils literal notranslate"><span class="pre">Command</span></code> Nodes expose state and actions.</p>
+</section>
+<section id="how-to-read-this-subsection">
+<h2>How To Read This Subsection<a class="headerlink" href="#how-to-read-this-subsection" title="Link to this heading"></a></h2>
+<p>Use the core pages in this order:</p>
+<ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Root</span></code> for lifecycle, startup, and whole-tree control behavior.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Device</span></code> for composition, interface ownership, and block traversal.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Variable</span></code> and <code class="docutils literal notranslate"><span class="pre">Command</span></code> for the two main leaf-node interaction models.</p></li>
+<li><p>The subtype pages for local, remote, and link variants.</p></li>
+<li><p>The more advanced mechanics pages once the tree model itself is familiar.</p></li>
+</ol>
+<p>That ordering keeps the conceptual model stable before introducing the details
+of memory grouping, typed encoding, polling internals, and YAML bulk
+configuration.</p>
+</section>
+<section id="core-node-model">
+<h2>Core Node Model<a class="headerlink" href="#core-node-model" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">Node</span></code> is the common base class for the full tree object model.
+Every <code class="docutils literal notranslate"><span class="pre">Root</span></code>, <code class="docutils literal notranslate"><span class="pre">Device</span></code>, <code class="docutils literal notranslate"><span class="pre">Variable</span></code>, and <code class="docutils literal notranslate"><span class="pre">Command</span></code> inherits shared
+identity and hierarchy behavior (name/path/root/parent relationships).</p>
+<p>The shared responsibilities of <code class="docutils literal notranslate"><span class="pre">Node</span></code>-derived types include:</p>
+<ul class="simple">
+<li><p>Stable hierarchical addressing and lookup</p></li>
+<li><p>Group tagging/filtering support</p></li>
+<li><p>Lifecycle attachment to a Root context</p></li>
+<li><p>Shared logging/path conventions across all subclasses</p></li>
+</ul>
+</section>
+<section id="concrete-node-categories">
+<h2>Concrete Node Categories<a class="headerlink" href="#concrete-node-categories" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="root.html#pyrogue-tree-node-root"><span class="std std-ref">Root</span></a></p></li>
+<li><p><a class="reference internal" href="device.html#pyrogue-tree-node-device"><span class="std std-ref">Device</span></a></p></li>
+<li><p><a class="reference internal" href="variable.html#pyrogue-tree-node-variable"><span class="std std-ref">Variable</span></a></p></li>
+<li><p><a class="reference internal" href="command.html#pyrogue-tree-node-command"><span class="std std-ref">Command</span></a></p></li>
+<li><p><a class="reference internal" href="block.html#pyrogue-tree-node-block"><span class="std std-ref">Blocks</span></a></p></li>
+<li><p><a class="reference internal" href="groups.html#pyrogue-tree-node-groups"><span class="std std-ref">Groups</span></a></p></li>
+</ul>
+</section>
+<section id="common-design-workflow">
+<h2>Common Design Workflow<a class="headerlink" href="#common-design-workflow" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p>Define one <code class="docutils literal notranslate"><span class="pre">Root</span></code> for lifecycle, top-level interfaces, and system actions.</p></li>
+<li><p>Partition the design into <code class="docutils literal notranslate"><span class="pre">Device</span></code> subtrees by hardware/function boundary.</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">Variable</span></code> and <code class="docutils literal notranslate"><span class="pre">Command</span></code> Nodes for control and telemetry procedures.</p></li>
+<li><p>Choose local, remote, or linked Node subtypes as needed.</p></li>
+<li><p>Confirm memory mapping and typed conversion behavior through <code class="docutils literal notranslate"><span class="pre">Block</span></code> and
+<code class="docutils literal notranslate"><span class="pre">Model</span></code>.</p></li>
+<li><p>Expose remote access patterns for GUIs, scripts, notebooks, and clients.</p></li>
+</ol>
+</section>
+<section id="advanced-topics-and-why-they-are-separate">
+<h2>Advanced Topics And Why They Are Separate<a class="headerlink" href="#advanced-topics-and-why-they-are-separate" title="Link to this heading"></a></h2>
+<p>Some pages in this subsection are deliberately separated because they describe
+mechanics that matter a lot in real systems, but are usually not the right
+starting point:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Block</span></code> is about transaction grouping and memory access flow.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Device</span> <span class="pre">Block</span> <span class="pre">Operations</span></code> is about recursive <code class="docutils literal notranslate"><span class="pre">Device</span></code> traversal and
+sequencing of the <code class="docutils literal notranslate"><span class="pre">*Blocks</span></code> methods.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Model</span></code> is about typed byte conversion and custom encodings.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Fixed-Point</span> <span class="pre">Models</span></code> is a focused companion page for <code class="docutils literal notranslate"><span class="pre">Fixed</span></code> and
+<code class="docutils literal notranslate"><span class="pre">UFixed</span></code> usage.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Poll</span> <span class="pre">Queue</span></code> is about background scheduling behavior.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">YAML</span> <span class="pre">Configuration</span></code> is about YAML save/load workflows, matching rules,
+and configuration file structure.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Memory</span> <span class="pre">Variable</span> <span class="pre">Stream</span></code> is about bridging variable updates into stream
+processing paths.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Groups</span></code> is about filtering and bulk-operation scoping.</p></li>
+</ul>
+<p>Those topics belong in core because they define how the tree behaves, but they
+are advanced enough that they read better as focused pages rather than as long
+detours inside the introductory <code class="docutils literal notranslate"><span class="pre">Root</span></code>/<code class="docutils literal notranslate"><span class="pre">Device</span></code>/<code class="docutils literal notranslate"><span class="pre">Variable</span></code> docs.</p>
+</section>
+<section id="what-to-explore-next">
+<h2>What To Explore Next<a class="headerlink" href="#what-to-explore-next" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Root lifecycle and orchestration: <a class="reference internal" href="root.html"><span class="doc">Root</span></a></p></li>
+<li><p>Device composition and managed interfaces: <a class="reference internal" href="device.html"><span class="doc">Device</span></a></p></li>
+<li><p>Variable behavior and types: <a class="reference internal" href="variable.html"><span class="doc">Variable</span></a></p></li>
+<li><p>Command behavior and invocation patterns: <a class="reference internal" href="command.html"><span class="doc">Command</span></a></p></li>
+<li><p>Block transaction behavior: <a class="reference internal" href="block.html"><span class="doc">Blocks</span></a></p></li>
+<li><p>Device block traversal and sequencing: <a class="reference internal" href="block_operations.html"><span class="doc">Device Block Operations</span></a></p></li>
+<li><p>Model conversion behavior: <a class="reference internal" href="model.html"><span class="doc">Model</span></a></p></li>
+<li><p>Fixed-point model details: <a class="reference internal" href="fixed_point_models.html"><span class="doc">Fixed-Point Models</span></a></p></li>
+<li><p>Poll scheduling behavior: <a class="reference internal" href="poll_queue.html"><span class="doc">PollQueue</span></a></p></li>
+<li><p>YAML save/load behavior: <a class="reference internal" href="yaml_configuration.html"><span class="doc">YAML Configuration</span></a></p></li>
+<li><p>Variable-to-stream adapter behavior: <a class="reference internal" href="memory_variable_stream.html"><span class="doc">Variable Update Stream</span></a></p></li>
+</ul>
+</section>
+<section id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Python:
+<a class="reference internal" href="../../api/python/pyrogue/root.html"><span class="doc">Root</span></a>,
+<a class="reference internal" href="../../api/python/pyrogue/device.html"><span class="doc">Device</span></a>,
+<a class="reference internal" href="../../api/python/pyrogue/basevariable.html"><span class="doc">BaseVariable</span></a>,
+<a class="reference internal" href="../../api/python/pyrogue/basecommand.html"><span class="doc">BaseCommand</span></a>,
+<a class="reference internal" href="../../api/python/pyrogue/model.html"><span class="doc">Model</span></a></p></li>
+</ul>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Core:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="root.html">Root</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="root.html#what-root-usually-owns">What Root Usually Owns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="root.html#lifecycle-and-startup">Lifecycle And Startup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="root.html#tree-attachment-and-lookup">Tree Attachment And Lookup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="root.html#interfaces-and-remote-access">Interfaces And Remote Access</a></li>
+<li class="toctree-l2"><a class="reference internal" href="root.html#polling-and-critical-sections">Polling And Critical Sections</a></li>
+<li class="toctree-l2"><a class="reference internal" href="root.html#yaml-configuration-and-bulk-operations">YAML Configuration And Bulk Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="root.html#built-in-root-commands-and-variables">Built-In Root Commands And Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="root.html#built-in-groups">Built-In Groups</a></li>
+<li class="toctree-l2"><a class="reference internal" href="root.html#what-to-explore-next">What To Explore Next</a></li>
+<li class="toctree-l2"><a class="reference internal" href="root.html#api-reference">API Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="device.html">Device</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="device.html#what-a-device-does">What A Device Does</a></li>
+<li class="toctree-l2"><a class="reference internal" href="device.html#key-device-properties">Key Device Properties</a></li>
+<li class="toctree-l2"><a class="reference internal" href="device.html#composition-and-tree-structure">Composition And Tree Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="device.html#managed-interfaces-and-protocol-ownership">Managed Interfaces And Protocol Ownership</a></li>
+<li class="toctree-l2"><a class="reference internal" href="device.html#device-lifecycle-hooks">Device Lifecycle Hooks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="device.html#foundational-transaction-operations">Foundational Transaction Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="device.html#device-level-block-apis">Device-Level Block APIs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="device.html#relationship-to-the-memory-hub-model">Relationship To The Memory Hub Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="device.html#operational-hooks-and-decorators">Operational Hooks And Decorators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="device.html#what-to-explore-next">What To Explore Next</a></li>
+<li class="toctree-l2"><a class="reference internal" href="device.html#api-reference">API Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="variable.html">Variable</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="variable.html#what-variables-provide">What Variables Provide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="variable.html#what-you-usually-set">What You Usually Set</a></li>
+<li class="toctree-l2"><a class="reference internal" href="variable.html#choosing-the-right-variable-type">Choosing The Right Variable Type</a></li>
+<li class="toctree-l2"><a class="reference internal" href="variable.html#common-design-questions">Common Design Questions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="variable.html#polling-and-update-behavior">Polling And Update Behavior</a></li>
+<li class="toctree-l2"><a class="reference internal" href="variable.html#value-presentation-and-value-storage">Value Presentation And Value Storage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="variable.html#core-access-methods">Core Access Methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="variable.html#display-oriented-access">Display-Oriented Access</a></li>
+<li class="toctree-l2"><a class="reference internal" href="variable.html#cached-value-shortcuts">Cached Value Shortcuts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="variable.html#advanced-related-topics">Advanced Related Topics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="variable.html#what-to-explore-next">What To Explore Next</a></li>
+<li class="toctree-l2"><a class="reference internal" href="variable.html#api-reference">API Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="command.html">Command</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="command.html#what-commands-are-for">What Commands Are For</a></li>
+<li class="toctree-l2"><a class="reference internal" href="command.html#how-commands-are-invoked">How Commands Are Invoked</a></li>
+<li class="toctree-l2"><a class="reference internal" href="command.html#choosing-between-local-and-remote-commands">Choosing Between Local And Remote Commands</a></li>
+<li class="toctree-l2"><a class="reference internal" href="command.html#commands-in-tree-design">Commands In Tree Design</a></li>
+<li class="toctree-l2"><a class="reference internal" href="command.html#commands-vs-variables">Commands Vs Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="command.html#what-to-explore-next">What To Explore Next</a></li>
+<li class="toctree-l2"><a class="reference internal" href="command.html#api-reference">API Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="block.html">Blocks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="block.html#why-blocks-exist">Why Blocks Exist</a></li>
+<li class="toctree-l2"><a class="reference internal" href="block.html#how-variables-connect-to-blocks">How Variables Connect To Blocks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="block.html#how-device-builds-blocks">How Device Builds Blocks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="block.html#access-path-remotevariable">Access Path (RemoteVariable)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="block.html#block-apis-and-transaction-flow">Block APIs And Transaction Flow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="block.html#models-in-block-conversion">Models In Block Conversion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="block.html#implementation-boundary-python-and-c">Implementation Boundary (Python and C++)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="block.html#hub-interaction">Hub Interaction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="block.html#advanced-patterns">Advanced Patterns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="block.html#what-to-explore-next">What To Explore Next</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="block_operations.html">Device Block Operations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="block_operations.html#why-these-methods-exist">Why These Methods Exist</a></li>
+<li class="toctree-l2"><a class="reference internal" href="block_operations.html#default-full-device-behavior">Default Full-Device Behavior</a></li>
+<li class="toctree-l2"><a class="reference internal" href="block_operations.html#ordering-rules">Ordering Rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="block_operations.html#single-variable-behavior">Single-Variable Behavior</a></li>
+<li class="toctree-l2"><a class="reference internal" href="block_operations.html#common-usage-patterns">Common Usage Patterns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="block_operations.html#composed-helpers">Composed Helpers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="block_operations.html#how-yaml-configuration-uses-these-methods">How YAML Configuration Uses These Methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="block_operations.html#method-parameters">Method Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="block_operations.html#how-to-override-properly">How To Override Properly</a></li>
+<li class="toctree-l2"><a class="reference internal" href="block_operations.html#relationship-to-blocks">Relationship To <code class="docutils literal notranslate"><span class="pre">Blocks</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="block_operations.html#what-to-explore-next">What To Explore Next</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="model.html">Model</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="model.html#why-models-exist">Why Models Exist</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model.html#how-variables-select-a-model">How Variables Select A Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model.html#what-a-model-defines">What A Model Defines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model.html#built-in-model-families">Built-In Model Families</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model.html#built-in-model-types">Built-In Model Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model.html#fixed-point-models">Fixed-Point Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model.html#model-utility-helpers">Model Utility Helpers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model.html#model-instances-and-caching">Model Instances And Caching</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model.html#model-conversion-flow-in-block-access">Model Conversion Flow In Block Access</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model.html#custom-model-example">Custom Model Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model.html#how-bitreverseduint-differs-from-built-in-uint">How <code class="docutils literal notranslate"><span class="pre">BitReversedUInt</span></code> Differs From Built-In <code class="docutils literal notranslate"><span class="pre">UInt</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="model.html#what-to-explore-next">What To Explore Next</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model.html#api-reference">API Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="fixed_point_models.html">Fixed-Point Models</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="fixed_point_models.html#what-bitsize-and-binpoint-mean">What <code class="docutils literal notranslate"><span class="pre">bitSize</span></code> And <code class="docutils literal notranslate"><span class="pre">binPoint</span></code> Mean</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fixed_point_models.html#how-conversion-works">How Conversion Works</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fixed_point_models.html#numeric-range">Numeric Range</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fixed_point_models.html#worked-example">Worked Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fixed_point_models.html#common-mistakes">Common Mistakes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fixed_point_models.html#what-to-explore-next">What To Explore Next</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fixed_point_models.html#api-reference">API Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="poll_queue.html">PollQueue</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="poll_queue.html#polling-strategy">Polling Strategy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="poll_queue.html#what-it-does">What It Does</a></li>
+<li class="toctree-l2"><a class="reference internal" href="poll_queue.html#block-level-scheduling">Block-Level Scheduling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="poll_queue.html#control-and-lifecycle">Control and Lifecycle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="poll_queue.html#usage-examples">Usage Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="poll_queue.html#what-to-explore-next">What To Explore Next</a></li>
+<li class="toctree-l2"><a class="reference internal" href="poll_queue.html#api-reference">API Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="yaml_configuration.html">YAML Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="yaml_configuration.html#typical-yaml-workflows">Typical YAML Workflows</a></li>
+<li class="toctree-l2"><a class="reference internal" href="yaml_configuration.html#main-entry-points">Main Entry Points</a></li>
+<li class="toctree-l2"><a class="reference internal" href="yaml_configuration.html#configuration-vs-state-filters">Configuration Vs State Filters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="yaml_configuration.html#saving-yaml">Saving YAML</a></li>
+<li class="toctree-l2"><a class="reference internal" href="yaml_configuration.html#loading-and-applying-yaml">Loading And Applying YAML</a></li>
+<li class="toctree-l2"><a class="reference internal" href="yaml_configuration.html#practical-guidance">Practical Guidance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="yaml_configuration.html#array-matching-and-slicing-in-yaml-keys">Array Matching And Slicing In YAML Keys</a></li>
+<li class="toctree-l2"><a class="reference internal" href="yaml_configuration.html#what-to-explore-next">What To Explore Next</a></li>
+<li class="toctree-l2"><a class="reference internal" href="yaml_configuration.html#related-topics">Related Topics</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="memory_variable_stream.html">Variable Update Stream</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="memory_variable_stream.html#how-it-works">How It Works</a></li>
+<li class="toctree-l2"><a class="reference internal" href="memory_variable_stream.html#data-format">Data Format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="memory_variable_stream.html#group-filtering">Group Filtering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="memory_variable_stream.html#typical-integration-pattern">Typical Integration Pattern</a></li>
+<li class="toctree-l2"><a class="reference internal" href="memory_variable_stream.html#when-to-use-it">When To Use It</a></li>
+<li class="toctree-l2"><a class="reference internal" href="memory_variable_stream.html#what-to-explore-next">What To Explore Next</a></li>
+<li class="toctree-l2"><a class="reference internal" href="memory_variable_stream.html#related-topics">Related Topics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="memory_variable_stream.html#api-reference">API Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="groups.html">Groups</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="groups.html#what-groups-are-for">What Groups Are For</a></li>
+<li class="toctree-l2"><a class="reference internal" href="groups.html#how-group-filtering-works">How Group Filtering Works</a></li>
+<li class="toctree-l2"><a class="reference internal" href="groups.html#built-in-group-names">Built-In Group Names</a></li>
+<li class="toctree-l2"><a class="reference internal" href="groups.html#custom-groups-in-practice">Custom Groups In Practice</a></li>
+<li class="toctree-l2"><a class="reference internal" href="groups.html#group-assignment-notes">Group Assignment Notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="groups.html#other-names-you-may-see">Other Names You May See</a></li>
+<li class="toctree-l2"><a class="reference internal" href="groups.html#design-guidance">Design Guidance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="groups.html#what-to-explore-next">What To Explore Next</a></li>
+<li class="toctree-l2"><a class="reference internal" href="groups.html#api-reference">API Reference</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../index.html" class="btn btn-neutral float-left" title="PyRogue Tree" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="root.html" class="btn btn-neutral float-right" title="Root" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

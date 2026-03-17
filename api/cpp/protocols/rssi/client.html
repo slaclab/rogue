@@ -6,25 +6,26 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Client &mdash; Rogue v6.8.4 documentation</title>
+  <title>Client &mdash; Rogue v6.8.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
-      <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css?v=f9c5c301" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css?v=346ffc18" />
 
   
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=2d182aeb"></script>
+      <script src="../../../../_static/documentation_options.js?v=8960aef2"></script>
       <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../../_static/custom.js?v=b11a05f1"></script>
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
     <link rel="next" title="Server" href="server.html" />
-    <link rel="prev" title="RSSI Protocol Class Descriptions" href="index.html" /> 
+    <link rel="prev" title="rogue::protocols::rssi" href="index.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -35,7 +36,7 @@
 
           
           
-          <a href="../../../../introduction/index.html" class="icon icon-home">
+          <a href="../../../../index.html" class="icon icon-home">
             Rogue
           </a>
 <div role="search">
@@ -45,70 +46,69 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../../../../introduction/index.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../getting_started/index.html">PyRogue Tree Getting Started Guide</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../advanced_examples/index.html">Advanced Tutorials</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../pyrogue_tree/index.html">PyRogue Tree</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../interfaces/index.html">Interfaces</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../utilities/index.html">Utilities</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../hardware/index.html">Hardware</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../protocols/index.html">Protocols</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../logging/index.html">Logging In Rogue</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../custom_module/index.html">Creating Custom Modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../pydm/index.html">Using the PyDM Gui</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../migration/index.html">Migration Notes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_index.html">Table of Contents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../index.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../migration/index.html">Migration Notes</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../../../index.html">API Reference</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../../../index.html#python-api">Python API</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../../../index.html#c-api">C++ API</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="../../hardware/axi/index.html">AXI Hardware Interface Class Descriptions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../hardware/raw/index.html">Hardware Interface Class Descriptions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../interfaces/memory/index.html">Memory Interface Class Descriptions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../interfaces/stream/index.html">Stream Interface Class Descriptions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../batcher/index.html">Batcher Protocol Class Descriptions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../packetizer/index.html">Packetizer Protocol Class Descriptions</a></li>
-<li class="toctree-l3 current"><a class="reference internal" href="index.html">RSSI Protocol Class Descriptions</a><ul class="current">
-<li class="toctree-l4 current"><a class="current reference internal" href="#">Client</a></li>
-<li class="toctree-l4"><a class="reference internal" href="server.html">Server</a></li>
-<li class="toctree-l4"><a class="reference internal" href="header.html">Header</a></li>
-<li class="toctree-l4"><a class="reference internal" href="controller.html">Controller</a></li>
-<li class="toctree-l4"><a class="reference internal" href="application.html">Application</a></li>
-<li class="toctree-l4"><a class="reference internal" href="transport.html">Transport</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../python/index.html">Python API</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../../index.html">C++ API</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../../rogue_index.html">rogue</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../interfaces_index.html">rogue::interfaces</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../../protocols_index.html">rogue::protocols</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../batcher/index.html">rogue::protocols::batcher</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../packetizer/index.html">rogue::protocols::packetizer</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="index.html">rogue::protocols::rssi</a><ul class="current">
+<li class="toctree-l5 current"><a class="current reference internal" href="#">Client</a></li>
+<li class="toctree-l5"><a class="reference internal" href="server.html">Server</a></li>
+<li class="toctree-l5"><a class="reference internal" href="header.html">Header</a></li>
+<li class="toctree-l5"><a class="reference internal" href="controller.html">Controller</a></li>
+<li class="toctree-l5"><a class="reference internal" href="application.html">Application</a></li>
+<li class="toctree-l5"><a class="reference internal" href="transport.html">Transport</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../srp/index.html">SRP Protocol Class Descriptions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../udp/index.html">UDP Protocol Class Descriptions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../xilinx/index.html">Xilinx Protocol Class Descriptions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../utilities/compression/index.html">Compression Classes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../utilities/fileio/index.html">File Operation Classes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../utilities/prbs/index.html">PRBS Utilities</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../srp/index.html">rogue::protocols::srp</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../udp/index.html">rogue::protocols::udp</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../xilinx/index.html">rogue::protocols::xilinx</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../hardware_index.html">rogue::hardware</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../utilities_index.html">rogue::utilities</a></li>
 </ul>
 </li>
 </ul>
 </li>
 </ul>
 
-        </div>
+</div>
       </div>
     </nav>
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../../introduction/index.html">Rogue</a>
+          <a href="../../../../index.html">Rogue</a>
       </nav>
 
       <div class="wy-nav-content">
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../../introduction/index.html" class="icon icon-home" aria-label="Home"></a></li>
-          <li class="breadcrumb-item"><a href="../../../../documentation_index.html">Table of Contents</a></li>
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../../index.html">API Reference</a></li>
-          <li class="breadcrumb-item"><a href="index.html">RSSI Protocol Class Descriptions</a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">C++ API</a></li>
+          <li class="breadcrumb-item"><a href="../../protocols_index.html">rogue::protocols</a></li>
+          <li class="breadcrumb-item"><a href="index.html">rogue::protocols::rssi</a></li>
       <li class="breadcrumb-item active">Client</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../../../_sources/api/cpp/protocols/rssi/client.rst.txt" rel="nofollow"> View page source</a>
@@ -123,17 +123,31 @@
 <span id="protocols-rssi-classes-client"></span><h1>Client<a class="headerlink" href="#client" title="Link to this heading"></a></h1>
 <p><code class="docutils literal notranslate"><span class="pre">Client</span></code> is the role-specific convenience wrapper that owns and wires the
 RSSI <code class="docutils literal notranslate"><span class="pre">Transport</span></code>, <code class="docutils literal notranslate"><span class="pre">Application</span></code>, and <code class="docutils literal notranslate"><span class="pre">Controller</span></code> objects for client
-operation.</p>
-<p>Client objects in C++ are referenced by the following shared pointer typedef:</p>
+operation.
+For conceptual guidance, see <a class="reference internal" href="../../../../built_in_modules/protocols/rssi/client.html"><span class="doc">RSSI Protocol Client</span></a>.</p>
+<section id="threading-and-lifecycle">
+<h2>Threading and Lifecycle<a class="headerlink" href="#threading-and-lifecycle" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Delegates protocol-state execution to <code class="docutils literal notranslate"><span class="pre">Controller</span></code> and does not create a
+dedicated <code class="docutils literal notranslate"><span class="pre">Client</span></code> worker thread.</p></li>
+<li><p>Implements Managed Interface Lifecycle:
+<a class="reference internal" href="../../../../pyrogue_tree/core/device.html#pyrogue-tree-node-device-managed-interfaces"><span class="std std-ref">Example: Runtime Work In _start() And _stop()</span></a></p></li>
+</ul>
+<section id="python-binding">
+<h3>Python binding<a class="headerlink" href="#python-binding" title="Link to this heading"></a></h3>
+<p>This C++ class is also exported into Python as <code class="docutils literal notranslate"><span class="pre">rogue.protocols.rssi.Client</span></code>.</p>
+<p>Python API page:
+- <a class="reference internal" href="../../../python/rogue/protocols/rssi/client.html"><span class="doc">Client</span></a></p>
+<p>objects in C++ are referenced by the following shared pointer typedef:</p>
 <dl class="cpp type">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi9ClientPtrE">
-<span id="_CPPv3N5rogue9protocols4rssi9ClientPtrE"></span><span id="_CPPv2N5rogue9protocols4rssi9ClientPtrE"></span><span id="rogue::protocols::rssi::ClientPtr"></span><span class="target" id="namespacerogue_1_1protocols_1_1rssi_1aef4933d196b1982bc11fa51173e75ff0"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">protocols</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">rssi</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue9protocols4rssi6ClientE" title="rogue::protocols::rssi::Client"><span class="n"><span class="pre">Client</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">protocols</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">rssi</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">ClientPtr</span></span></span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi9ClientPtrE" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3N5rogue9protocols4rssi9ClientPtrE"></span><span id="_CPPv2N5rogue9protocols4rssi9ClientPtrE"></span><span id="rogue::protocols::rssi::ClientPtr"></span><span class="target" id="namespacerogue_1_1protocols_1_1rssi_1aef4933d196b1982bc11fa51173e75ff0"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">protocols</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">rssi</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue9protocols4rssi6ClientE" title="rogue::protocols::rssi::Client"><span class="n"><span class="pre">Client</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">protocols</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">rssi</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">ClientPtr</span></span></span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi9ClientPtrE" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8h_source.html#l00220"><span class="pre">[header]</span></a></dt>
 <dd></dd></dl>
 
 <p>The class description is shown below:</p>
 <dl class="cpp class">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6ClientE">
-<span id="_CPPv3N5rogue9protocols4rssi6ClientE"></span><span id="_CPPv2N5rogue9protocols4rssi6ClientE"></span><span id="rogue::protocols::rssi::Client"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Client</span></span></span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6ClientE" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3N5rogue9protocols4rssi6ClientE"></span><span id="_CPPv2N5rogue9protocols4rssi6ClientE"></span><span id="rogue::protocols::rssi::Client"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Client</span></span></span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6ClientE" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8h_source.html#l00045"><span class="pre">[header]</span></a></dt>
 <dd><p>RSSI client convenience wrapper. </p>
 <p>Bundles transport, application, and controller components for client-side RSSI links. Protocol reference: <a class="reference external" href="https://confluence.slac.stanford.edu/x/1IyfD">https://confluence.slac.stanford.edu/x/1IyfD</a></p>
 <p>Construction wires the internal components together: <code class="docutils literal notranslate"><a class="reference internal" href="transport.html#classrogue_1_1protocols_1_1rssi_1_1Transport"><span class="std std-ref"><span class="pre">Transport</span></span></a> <span class="pre">&lt;-&gt;</span> <a class="reference internal" href="controller.html#classrogue_1_1protocols_1_1rssi_1_1Controller"><span class="std std-ref"><span class="pre">Controller</span></span></a> <span class="pre">&lt;-&gt;</span> <a class="reference internal" href="application.html#classrogue_1_1protocols_1_1rssi_1_1Application"><span class="std std-ref"><span class="pre">Application</span></span></a></code>. </p>
@@ -141,9 +155,10 @@ operation.</p>
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6Client6ClientE8uint32_t">
-<span id="_CPPv3N5rogue9protocols4rssi6Client6ClientE8uint32_t"></span><span id="_CPPv2N5rogue9protocols4rssi6Client6ClientE8uint32_t"></span><span id="rogue::protocols::rssi::Client::Client__uint32_t"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1a95fd0f8901f85ab5962957b786c836ec"></span><span class="k"><span class="pre">explicit</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Client</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">segSize</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client6ClientE8uint32_t" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3N5rogue9protocols4rssi6Client6ClientE8uint32_t"></span><span id="_CPPv2N5rogue9protocols4rssi6Client6ClientE8uint32_t"></span><span id="rogue::protocols::rssi::Client::Client__uint32_t"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1a95fd0f8901f85ab5962957b786c836ec"></span><span class="k"><span class="pre">explicit</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Client</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">segSize</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client6ClientE8uint32_t" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8h_source.html#l00083"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8cpp_source.html#l00088"><span class="pre">[impl]</span></a></dt>
 <dd><p>Constructs an RSSI client bundle. </p>
-<p>This constructor is a low-level C++ allocation path. Prefer <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1protocols_1_1rssi_1_1Client_1a0aded35ef972f7fd098bced1fc92caa0"><span class="std std-ref"><span class="pre">create()</span></span></a></code> when shared ownership or Python exposure is required.</p>
+<p>Creator.</p>
+<p>This constructor is a low-level C++ allocation path. Prefer <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1protocols_1_1rssi_1_1Client_1aaf2b168ca044467f5a132967988c8d9f"><span class="std std-ref"><span class="pre">create()</span></span></a></code> when shared ownership or Python exposure is required.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>segSize</strong> – Initial local maximum segment size. </p>
@@ -153,14 +168,16 @@ operation.</p>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6ClientD0Ev">
-<span id="_CPPv3N5rogue9protocols4rssi6ClientD0Ev"></span><span id="_CPPv2N5rogue9protocols4rssi6ClientD0Ev"></span><span id="rogue::protocols::rssi::Client::~Client"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1ae8f9b6758eac34dea24f53b7f6ad9641"></span><span class="sig-name descname"><span class="n"><span class="pre">~Client</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6ClientD0Ev" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3N5rogue9protocols4rssi6ClientD0Ev"></span><span id="_CPPv2N5rogue9protocols4rssi6ClientD0Ev"></span><span id="rogue::protocols::rssi::Client::~Client"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1ae8f9b6758eac34dea24f53b7f6ad9641"></span><span class="sig-name descname"><span class="n"><span class="pre">~Client</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6ClientD0Ev" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8h_source.html#l00086"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8cpp_source.html#l00098"><span class="pre">[impl]</span></a></dt>
 <dd><p>Destroys the client bundle. </p>
+<p>Destructor. </p>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6Client9transportEv">
-<span id="_CPPv3N5rogue9protocols4rssi6Client9transportEv"></span><span id="_CPPv2N5rogue9protocols4rssi6Client9transportEv"></span><span id="rogue::protocols::rssi::Client::transport"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1a3d6d2ed6c1214dc1897b0dbba9eb278a"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">protocols</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">rssi</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="transport.html#_CPPv4N5rogue9protocols4rssi9TransportE" title="rogue::protocols::rssi::Transport"><span class="n"><span class="pre">Transport</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">transport</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client9transportEv" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3N5rogue9protocols4rssi6Client9transportEv"></span><span id="_CPPv2N5rogue9protocols4rssi6Client9transportEv"></span><span id="rogue::protocols::rssi::Client::transport"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1a0cadefd44774b3ae47f79d8b06cc9f26"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">protocols</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">rssi</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="transport.html#_CPPv4N5rogue9protocols4rssi9TransportE" title="rogue::protocols::rssi::Transport"><span class="n"><span class="pre">Transport</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">transport</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client9transportEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8h_source.html#l00092"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8cpp_source.html#l00103"><span class="pre">[impl]</span></a></dt>
 <dd><p>Returns the transport endpoint. </p>
+<p>Get transport interface.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Shared transport interface. </p>
@@ -170,8 +187,9 @@ operation.</p>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6Client11applicationEv">
-<span id="_CPPv3N5rogue9protocols4rssi6Client11applicationEv"></span><span id="_CPPv2N5rogue9protocols4rssi6Client11applicationEv"></span><span id="rogue::protocols::rssi::Client::application"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1ababe83a1f5ca684687d807f5ddd6ba90"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">protocols</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">rssi</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="application.html#_CPPv4N5rogue9protocols4rssi11ApplicationE" title="rogue::protocols::rssi::Application"><span class="n"><span class="pre">Application</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">application</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client11applicationEv" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3N5rogue9protocols4rssi6Client11applicationEv"></span><span id="_CPPv2N5rogue9protocols4rssi6Client11applicationEv"></span><span id="rogue::protocols::rssi::Client::application"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1a9931a8d6c23942022ac83d86141c1f53"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">protocols</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">rssi</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="application.html#_CPPv4N5rogue9protocols4rssi11ApplicationE" title="rogue::protocols::rssi::Application"><span class="n"><span class="pre">Application</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">application</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client11applicationEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8h_source.html#l00098"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8cpp_source.html#l00108"><span class="pre">[impl]</span></a></dt>
 <dd><p>Returns the application endpoint. </p>
+<p><a class="reference internal" href="application.html#classrogue_1_1protocols_1_1rssi_1_1Application"><span class="std std-ref">Application</span></a> module.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Shared application interface. </p>
@@ -181,8 +199,9 @@ operation.</p>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6Client7getOpenEv">
-<span id="_CPPv3N5rogue9protocols4rssi6Client7getOpenEv"></span><span id="_CPPv2N5rogue9protocols4rssi6Client7getOpenEv"></span><span id="rogue::protocols::rssi::Client::getOpen"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1adb05be0f0a395f5bb28454a410814396"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getOpen</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client7getOpenEv" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3N5rogue9protocols4rssi6Client7getOpenEv"></span><span id="_CPPv2N5rogue9protocols4rssi6Client7getOpenEv"></span><span id="rogue::protocols::rssi::Client::getOpen"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1adb05be0f0a395f5bb28454a410814396"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getOpen</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client7getOpenEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8h_source.html#l00104"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8cpp_source.html#l00113"><span class="pre">[impl]</span></a></dt>
 <dd><p>Returns whether the link is in open state. </p>
+<p>Get state.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>True when connection state is open. </p>
@@ -192,8 +211,9 @@ operation.</p>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6Client12getDownCountEv">
-<span id="_CPPv3N5rogue9protocols4rssi6Client12getDownCountEv"></span><span id="_CPPv2N5rogue9protocols4rssi6Client12getDownCountEv"></span><span id="rogue::protocols::rssi::Client::getDownCount"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1aef74a805394819e859d43c9fb09e3e88"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getDownCount</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client12getDownCountEv" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3N5rogue9protocols4rssi6Client12getDownCountEv"></span><span id="_CPPv2N5rogue9protocols4rssi6Client12getDownCountEv"></span><span id="rogue::protocols::rssi::Client::getDownCount"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1aef74a805394819e859d43c9fb09e3e88"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getDownCount</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client12getDownCountEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8h_source.html#l00110"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8cpp_source.html#l00118"><span class="pre">[impl]</span></a></dt>
 <dd><p>Returns the down-transition counter. </p>
+<p>Get Down Count.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Number of times the link entered a down/closed state. </p>
@@ -203,8 +223,9 @@ operation.</p>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6Client12getDropCountEv">
-<span id="_CPPv3N5rogue9protocols4rssi6Client12getDropCountEv"></span><span id="_CPPv2N5rogue9protocols4rssi6Client12getDropCountEv"></span><span id="rogue::protocols::rssi::Client::getDropCount"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1a4f2f47096b7a0456e8b42f8bb2b28b51"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getDropCount</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client12getDropCountEv" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3N5rogue9protocols4rssi6Client12getDropCountEv"></span><span id="_CPPv2N5rogue9protocols4rssi6Client12getDropCountEv"></span><span id="rogue::protocols::rssi::Client::getDropCount"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1a4f2f47096b7a0456e8b42f8bb2b28b51"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getDropCount</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client12getDropCountEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8h_source.html#l00116"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8cpp_source.html#l00123"><span class="pre">[impl]</span></a></dt>
 <dd><p>Returns the dropped-frame counter. </p>
+<p>Get Drop Count.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Number of dropped received frames. </p>
@@ -214,8 +235,9 @@ operation.</p>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6Client14getRetranCountEv">
-<span id="_CPPv3N5rogue9protocols4rssi6Client14getRetranCountEv"></span><span id="_CPPv2N5rogue9protocols4rssi6Client14getRetranCountEv"></span><span id="rogue::protocols::rssi::Client::getRetranCount"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1a0defc185973a238b699aa95706eb0f8f"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getRetranCount</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client14getRetranCountEv" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3N5rogue9protocols4rssi6Client14getRetranCountEv"></span><span id="_CPPv2N5rogue9protocols4rssi6Client14getRetranCountEv"></span><span id="rogue::protocols::rssi::Client::getRetranCount"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1a0defc185973a238b699aa95706eb0f8f"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getRetranCount</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client14getRetranCountEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8h_source.html#l00122"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8cpp_source.html#l00128"><span class="pre">[impl]</span></a></dt>
 <dd><p>Returns the retransmit counter. </p>
+<p>Get Retran Count.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Number of retransmitted frames. </p>
@@ -225,8 +247,9 @@ operation.</p>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6Client10getLocBusyEv">
-<span id="_CPPv3N5rogue9protocols4rssi6Client10getLocBusyEv"></span><span id="_CPPv2N5rogue9protocols4rssi6Client10getLocBusyEv"></span><span id="rogue::protocols::rssi::Client::getLocBusy"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1adeef764967930a77980c7365755f9eae"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getLocBusy</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client10getLocBusyEv" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3N5rogue9protocols4rssi6Client10getLocBusyEv"></span><span id="_CPPv2N5rogue9protocols4rssi6Client10getLocBusyEv"></span><span id="rogue::protocols::rssi::Client::getLocBusy"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1adeef764967930a77980c7365755f9eae"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getLocBusy</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client10getLocBusyEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8h_source.html#l00128"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8cpp_source.html#l00133"><span class="pre">[impl]</span></a></dt>
 <dd><p>Returns the local busy state. </p>
+<p>Get locBusy.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>True when the local endpoint is currently busy. </p>
@@ -236,8 +259,9 @@ operation.</p>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6Client13getLocBusyCntEv">
-<span id="_CPPv3N5rogue9protocols4rssi6Client13getLocBusyCntEv"></span><span id="_CPPv2N5rogue9protocols4rssi6Client13getLocBusyCntEv"></span><span id="rogue::protocols::rssi::Client::getLocBusyCnt"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1afd1ebb01a55d617a0d225dbbff7e5e76"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getLocBusyCnt</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client13getLocBusyCntEv" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3N5rogue9protocols4rssi6Client13getLocBusyCntEv"></span><span id="_CPPv2N5rogue9protocols4rssi6Client13getLocBusyCntEv"></span><span id="rogue::protocols::rssi::Client::getLocBusyCnt"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1afd1ebb01a55d617a0d225dbbff7e5e76"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getLocBusyCnt</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client13getLocBusyCntEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8h_source.html#l00134"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8cpp_source.html#l00138"><span class="pre">[impl]</span></a></dt>
 <dd><p>Returns the local busy event counter. </p>
+<p>Get locBusyCnt.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Number of local busy assertions. </p>
@@ -247,8 +271,9 @@ operation.</p>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6Client10getRemBusyEv">
-<span id="_CPPv3N5rogue9protocols4rssi6Client10getRemBusyEv"></span><span id="_CPPv2N5rogue9protocols4rssi6Client10getRemBusyEv"></span><span id="rogue::protocols::rssi::Client::getRemBusy"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1a1f7d4f6049d9b3df1d9826f3bbe9c8d2"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getRemBusy</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client10getRemBusyEv" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3N5rogue9protocols4rssi6Client10getRemBusyEv"></span><span id="_CPPv2N5rogue9protocols4rssi6Client10getRemBusyEv"></span><span id="rogue::protocols::rssi::Client::getRemBusy"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1a1f7d4f6049d9b3df1d9826f3bbe9c8d2"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getRemBusy</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client10getRemBusyEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8h_source.html#l00140"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8cpp_source.html#l00143"><span class="pre">[impl]</span></a></dt>
 <dd><p>Returns the remote busy state. </p>
+<p>Get remBusy.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>True when the remote endpoint reports busy. </p>
@@ -258,8 +283,9 @@ operation.</p>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6Client13getRemBusyCntEv">
-<span id="_CPPv3N5rogue9protocols4rssi6Client13getRemBusyCntEv"></span><span id="_CPPv2N5rogue9protocols4rssi6Client13getRemBusyCntEv"></span><span id="rogue::protocols::rssi::Client::getRemBusyCnt"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1a105074529f5dd9acebd79a4ef24e1787"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getRemBusyCnt</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client13getRemBusyCntEv" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3N5rogue9protocols4rssi6Client13getRemBusyCntEv"></span><span id="_CPPv2N5rogue9protocols4rssi6Client13getRemBusyCntEv"></span><span id="rogue::protocols::rssi::Client::getRemBusyCnt"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1a105074529f5dd9acebd79a4ef24e1787"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getRemBusyCnt</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client13getRemBusyCntEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8h_source.html#l00146"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8cpp_source.html#l00148"><span class="pre">[impl]</span></a></dt>
 <dd><p>Returns the remote busy event counter. </p>
+<p>Get remBusyCnt.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Number of remote busy indications. </p>
@@ -269,152 +295,153 @@ operation.</p>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6Client15setLocTryPeriodE8uint32_t">
-<span id="_CPPv3N5rogue9protocols4rssi6Client15setLocTryPeriodE8uint32_t"></span><span id="_CPPv2N5rogue9protocols4rssi6Client15setLocTryPeriodE8uint32_t"></span><span id="rogue::protocols::rssi::Client::setLocTryPeriod__uint32_t"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1af5a2867072e287434c0e4fe9fd822e71"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setLocTryPeriod</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">val</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client15setLocTryPeriodE8uint32_t" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3N5rogue9protocols4rssi6Client15setLocTryPeriodE8uint32_t"></span><span id="_CPPv2N5rogue9protocols4rssi6Client15setLocTryPeriodE8uint32_t"></span><span id="rogue::protocols::rssi::Client::setLocTryPeriod__uint32_t"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1af5a2867072e287434c0e4fe9fd822e71"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setLocTryPeriod</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">val</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client15setLocTryPeriodE8uint32_t" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8h_source.html#l00149"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8cpp_source.html#l00152"><span class="pre">[impl]</span></a></dt>
 <dd><p>Sets the local connection retry period in microseconds. </p>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6Client15getLocTryPeriodEv">
-<span id="_CPPv3N5rogue9protocols4rssi6Client15getLocTryPeriodEv"></span><span id="_CPPv2N5rogue9protocols4rssi6Client15getLocTryPeriodEv"></span><span id="rogue::protocols::rssi::Client::getLocTryPeriod"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1a5d25d96232887c134a9373c32d8d3bac"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getLocTryPeriod</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client15getLocTryPeriodEv" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3N5rogue9protocols4rssi6Client15getLocTryPeriodEv"></span><span id="_CPPv2N5rogue9protocols4rssi6Client15getLocTryPeriodEv"></span><span id="rogue::protocols::rssi::Client::getLocTryPeriod"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1a5d25d96232887c134a9373c32d8d3bac"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getLocTryPeriod</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client15getLocTryPeriodEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8h_source.html#l00151"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8cpp_source.html#l00156"><span class="pre">[impl]</span></a></dt>
 <dd><p>Returns the local connection retry period in microseconds. </p>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6Client16setLocMaxBuffersE7uint8_t">
-<span id="_CPPv3N5rogue9protocols4rssi6Client16setLocMaxBuffersE7uint8_t"></span><span id="_CPPv2N5rogue9protocols4rssi6Client16setLocMaxBuffersE7uint8_t"></span><span id="rogue::protocols::rssi::Client::setLocMaxBuffers__uint8_t"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1a80d36dafe72e271e14f76ef5a6fddac1"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setLocMaxBuffers</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">val</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client16setLocMaxBuffersE7uint8_t" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3N5rogue9protocols4rssi6Client16setLocMaxBuffersE7uint8_t"></span><span id="_CPPv2N5rogue9protocols4rssi6Client16setLocMaxBuffersE7uint8_t"></span><span id="rogue::protocols::rssi::Client::setLocMaxBuffers__uint8_t"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1a80d36dafe72e271e14f76ef5a6fddac1"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setLocMaxBuffers</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">val</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client16setLocMaxBuffersE7uint8_t" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8h_source.html#l00154"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8cpp_source.html#l00160"><span class="pre">[impl]</span></a></dt>
 <dd><p>Sets the local maximum outstanding-buffer count. </p>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6Client16getLocMaxBuffersEv">
-<span id="_CPPv3N5rogue9protocols4rssi6Client16getLocMaxBuffersEv"></span><span id="_CPPv2N5rogue9protocols4rssi6Client16getLocMaxBuffersEv"></span><span id="rogue::protocols::rssi::Client::getLocMaxBuffers"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1a85e28a5cf6d85024bf5057f4f3d0b82c"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getLocMaxBuffers</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client16getLocMaxBuffersEv" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3N5rogue9protocols4rssi6Client16getLocMaxBuffersEv"></span><span id="_CPPv2N5rogue9protocols4rssi6Client16getLocMaxBuffersEv"></span><span id="rogue::protocols::rssi::Client::getLocMaxBuffers"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1a85e28a5cf6d85024bf5057f4f3d0b82c"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getLocMaxBuffers</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client16getLocMaxBuffersEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8h_source.html#l00156"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8cpp_source.html#l00164"><span class="pre">[impl]</span></a></dt>
 <dd><p>Returns the local maximum outstanding-buffer count. </p>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6Client16setLocMaxSegmentE8uint16_t">
-<span id="_CPPv3N5rogue9protocols4rssi6Client16setLocMaxSegmentE8uint16_t"></span><span id="_CPPv2N5rogue9protocols4rssi6Client16setLocMaxSegmentE8uint16_t"></span><span id="rogue::protocols::rssi::Client::setLocMaxSegment__uint16_t"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1ab991c1709c5312214c41524beeddb038"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setLocMaxSegment</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">val</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client16setLocMaxSegmentE8uint16_t" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3N5rogue9protocols4rssi6Client16setLocMaxSegmentE8uint16_t"></span><span id="_CPPv2N5rogue9protocols4rssi6Client16setLocMaxSegmentE8uint16_t"></span><span id="rogue::protocols::rssi::Client::setLocMaxSegment__uint16_t"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1ab991c1709c5312214c41524beeddb038"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setLocMaxSegment</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">val</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client16setLocMaxSegmentE8uint16_t" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8h_source.html#l00159"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8cpp_source.html#l00168"><span class="pre">[impl]</span></a></dt>
 <dd><p>Sets the local maximum segment size in bytes. </p>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6Client16getLocMaxSegmentEv">
-<span id="_CPPv3N5rogue9protocols4rssi6Client16getLocMaxSegmentEv"></span><span id="_CPPv2N5rogue9protocols4rssi6Client16getLocMaxSegmentEv"></span><span id="rogue::protocols::rssi::Client::getLocMaxSegment"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1ab0eb63c5026b99da0e963ff77717fadb"></span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getLocMaxSegment</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client16getLocMaxSegmentEv" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3N5rogue9protocols4rssi6Client16getLocMaxSegmentEv"></span><span id="_CPPv2N5rogue9protocols4rssi6Client16getLocMaxSegmentEv"></span><span id="rogue::protocols::rssi::Client::getLocMaxSegment"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1ab0eb63c5026b99da0e963ff77717fadb"></span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getLocMaxSegment</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client16getLocMaxSegmentEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8h_source.html#l00161"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8cpp_source.html#l00172"><span class="pre">[impl]</span></a></dt>
 <dd><p>Returns the local maximum segment size in bytes. </p>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6Client16setLocCumAckToutE8uint16_t">
-<span id="_CPPv3N5rogue9protocols4rssi6Client16setLocCumAckToutE8uint16_t"></span><span id="_CPPv2N5rogue9protocols4rssi6Client16setLocCumAckToutE8uint16_t"></span><span id="rogue::protocols::rssi::Client::setLocCumAckTout__uint16_t"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1aad279848bf8f2fe3731d093deefe4878"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setLocCumAckTout</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">val</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client16setLocCumAckToutE8uint16_t" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3N5rogue9protocols4rssi6Client16setLocCumAckToutE8uint16_t"></span><span id="_CPPv2N5rogue9protocols4rssi6Client16setLocCumAckToutE8uint16_t"></span><span id="rogue::protocols::rssi::Client::setLocCumAckTout__uint16_t"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1aad279848bf8f2fe3731d093deefe4878"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setLocCumAckTout</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">val</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client16setLocCumAckToutE8uint16_t" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8h_source.html#l00164"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8cpp_source.html#l00176"><span class="pre">[impl]</span></a></dt>
 <dd><p>Sets the local cumulative-ACK timeout. </p>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6Client16getLocCumAckToutEv">
-<span id="_CPPv3N5rogue9protocols4rssi6Client16getLocCumAckToutEv"></span><span id="_CPPv2N5rogue9protocols4rssi6Client16getLocCumAckToutEv"></span><span id="rogue::protocols::rssi::Client::getLocCumAckTout"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1a6d532b0332d73d4c0d2b4ce0d3f957fd"></span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getLocCumAckTout</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client16getLocCumAckToutEv" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3N5rogue9protocols4rssi6Client16getLocCumAckToutEv"></span><span id="_CPPv2N5rogue9protocols4rssi6Client16getLocCumAckToutEv"></span><span id="rogue::protocols::rssi::Client::getLocCumAckTout"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1a6d532b0332d73d4c0d2b4ce0d3f957fd"></span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getLocCumAckTout</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client16getLocCumAckToutEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8h_source.html#l00166"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8cpp_source.html#l00180"><span class="pre">[impl]</span></a></dt>
 <dd><p>Returns the local cumulative-ACK timeout. </p>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6Client16setLocRetranToutE8uint16_t">
-<span id="_CPPv3N5rogue9protocols4rssi6Client16setLocRetranToutE8uint16_t"></span><span id="_CPPv2N5rogue9protocols4rssi6Client16setLocRetranToutE8uint16_t"></span><span id="rogue::protocols::rssi::Client::setLocRetranTout__uint16_t"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1a5f46f9c559a093d0543d4a814051bb60"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setLocRetranTout</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">val</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client16setLocRetranToutE8uint16_t" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3N5rogue9protocols4rssi6Client16setLocRetranToutE8uint16_t"></span><span id="_CPPv2N5rogue9protocols4rssi6Client16setLocRetranToutE8uint16_t"></span><span id="rogue::protocols::rssi::Client::setLocRetranTout__uint16_t"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1a5f46f9c559a093d0543d4a814051bb60"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setLocRetranTout</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">val</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client16setLocRetranToutE8uint16_t" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8h_source.html#l00169"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8cpp_source.html#l00184"><span class="pre">[impl]</span></a></dt>
 <dd><p>Sets the local retransmit timeout. </p>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6Client16getLocRetranToutEv">
-<span id="_CPPv3N5rogue9protocols4rssi6Client16getLocRetranToutEv"></span><span id="_CPPv2N5rogue9protocols4rssi6Client16getLocRetranToutEv"></span><span id="rogue::protocols::rssi::Client::getLocRetranTout"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1abc76fe6e670cd83f5fd5dbef6837dfcc"></span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getLocRetranTout</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client16getLocRetranToutEv" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3N5rogue9protocols4rssi6Client16getLocRetranToutEv"></span><span id="_CPPv2N5rogue9protocols4rssi6Client16getLocRetranToutEv"></span><span id="rogue::protocols::rssi::Client::getLocRetranTout"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1abc76fe6e670cd83f5fd5dbef6837dfcc"></span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getLocRetranTout</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client16getLocRetranToutEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8h_source.html#l00171"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8cpp_source.html#l00188"><span class="pre">[impl]</span></a></dt>
 <dd><p>Returns the local retransmit timeout. </p>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6Client14setLocNullToutE8uint16_t">
-<span id="_CPPv3N5rogue9protocols4rssi6Client14setLocNullToutE8uint16_t"></span><span id="_CPPv2N5rogue9protocols4rssi6Client14setLocNullToutE8uint16_t"></span><span id="rogue::protocols::rssi::Client::setLocNullTout__uint16_t"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1ab0befd5f73ef70846a735f101ada5210"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setLocNullTout</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">val</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client14setLocNullToutE8uint16_t" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3N5rogue9protocols4rssi6Client14setLocNullToutE8uint16_t"></span><span id="_CPPv2N5rogue9protocols4rssi6Client14setLocNullToutE8uint16_t"></span><span id="rogue::protocols::rssi::Client::setLocNullTout__uint16_t"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1ab0befd5f73ef70846a735f101ada5210"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setLocNullTout</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">val</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client14setLocNullToutE8uint16_t" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8h_source.html#l00174"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8cpp_source.html#l00192"><span class="pre">[impl]</span></a></dt>
 <dd><p>Sets the local null-segment timeout. </p>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6Client14getLocNullToutEv">
-<span id="_CPPv3N5rogue9protocols4rssi6Client14getLocNullToutEv"></span><span id="_CPPv2N5rogue9protocols4rssi6Client14getLocNullToutEv"></span><span id="rogue::protocols::rssi::Client::getLocNullTout"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1aee11b9f5fe8490ac198db25f199c3d20"></span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getLocNullTout</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client14getLocNullToutEv" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3N5rogue9protocols4rssi6Client14getLocNullToutEv"></span><span id="_CPPv2N5rogue9protocols4rssi6Client14getLocNullToutEv"></span><span id="rogue::protocols::rssi::Client::getLocNullTout"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1aee11b9f5fe8490ac198db25f199c3d20"></span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getLocNullTout</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client14getLocNullToutEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8h_source.html#l00176"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8cpp_source.html#l00196"><span class="pre">[impl]</span></a></dt>
 <dd><p>Returns the local null-segment timeout. </p>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6Client15setLocMaxRetranE7uint8_t">
-<span id="_CPPv3N5rogue9protocols4rssi6Client15setLocMaxRetranE7uint8_t"></span><span id="_CPPv2N5rogue9protocols4rssi6Client15setLocMaxRetranE7uint8_t"></span><span id="rogue::protocols::rssi::Client::setLocMaxRetran__uint8_t"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1a7befbcf70a3107629fe478b7cf56b454"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setLocMaxRetran</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">val</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client15setLocMaxRetranE7uint8_t" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3N5rogue9protocols4rssi6Client15setLocMaxRetranE7uint8_t"></span><span id="_CPPv2N5rogue9protocols4rssi6Client15setLocMaxRetranE7uint8_t"></span><span id="rogue::protocols::rssi::Client::setLocMaxRetran__uint8_t"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1a7befbcf70a3107629fe478b7cf56b454"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setLocMaxRetran</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">val</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client15setLocMaxRetranE7uint8_t" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8h_source.html#l00179"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8cpp_source.html#l00200"><span class="pre">[impl]</span></a></dt>
 <dd><p>Sets the local maximum retransmit count. </p>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6Client15getLocMaxRetranEv">
-<span id="_CPPv3N5rogue9protocols4rssi6Client15getLocMaxRetranEv"></span><span id="_CPPv2N5rogue9protocols4rssi6Client15getLocMaxRetranEv"></span><span id="rogue::protocols::rssi::Client::getLocMaxRetran"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1a3491b4558abcce9f40db4f9ea3952aa5"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getLocMaxRetran</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client15getLocMaxRetranEv" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3N5rogue9protocols4rssi6Client15getLocMaxRetranEv"></span><span id="_CPPv2N5rogue9protocols4rssi6Client15getLocMaxRetranEv"></span><span id="rogue::protocols::rssi::Client::getLocMaxRetran"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1a3491b4558abcce9f40db4f9ea3952aa5"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getLocMaxRetran</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client15getLocMaxRetranEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8h_source.html#l00181"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8cpp_source.html#l00204"><span class="pre">[impl]</span></a></dt>
 <dd><p>Returns the local maximum retransmit count. </p>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6Client15setLocMaxCumAckE7uint8_t">
-<span id="_CPPv3N5rogue9protocols4rssi6Client15setLocMaxCumAckE7uint8_t"></span><span id="_CPPv2N5rogue9protocols4rssi6Client15setLocMaxCumAckE7uint8_t"></span><span id="rogue::protocols::rssi::Client::setLocMaxCumAck__uint8_t"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1aae431656a2241c7cb5f6f242f64b7f76"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setLocMaxCumAck</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">val</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client15setLocMaxCumAckE7uint8_t" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3N5rogue9protocols4rssi6Client15setLocMaxCumAckE7uint8_t"></span><span id="_CPPv2N5rogue9protocols4rssi6Client15setLocMaxCumAckE7uint8_t"></span><span id="rogue::protocols::rssi::Client::setLocMaxCumAck__uint8_t"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1aae431656a2241c7cb5f6f242f64b7f76"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setLocMaxCumAck</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">val</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client15setLocMaxCumAckE7uint8_t" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8h_source.html#l00184"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8cpp_source.html#l00208"><span class="pre">[impl]</span></a></dt>
 <dd><p>Sets the local maximum cumulative-ACK interval. </p>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6Client15getLocMaxCumAckEv">
-<span id="_CPPv3N5rogue9protocols4rssi6Client15getLocMaxCumAckEv"></span><span id="_CPPv2N5rogue9protocols4rssi6Client15getLocMaxCumAckEv"></span><span id="rogue::protocols::rssi::Client::getLocMaxCumAck"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1a312c0903bce637977f7a03b9d8d2330c"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getLocMaxCumAck</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client15getLocMaxCumAckEv" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3N5rogue9protocols4rssi6Client15getLocMaxCumAckEv"></span><span id="_CPPv2N5rogue9protocols4rssi6Client15getLocMaxCumAckEv"></span><span id="rogue::protocols::rssi::Client::getLocMaxCumAck"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1a312c0903bce637977f7a03b9d8d2330c"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getLocMaxCumAck</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client15getLocMaxCumAckEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8h_source.html#l00186"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8cpp_source.html#l00212"><span class="pre">[impl]</span></a></dt>
 <dd><p>Returns the local maximum cumulative-ACK interval. </p>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6Client13curMaxBuffersEv">
-<span id="_CPPv3N5rogue9protocols4rssi6Client13curMaxBuffersEv"></span><span id="_CPPv2N5rogue9protocols4rssi6Client13curMaxBuffersEv"></span><span id="rogue::protocols::rssi::Client::curMaxBuffers"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1ad6b8a61ae890f783005da3f87f60b7f1"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">curMaxBuffers</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client13curMaxBuffersEv" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3N5rogue9protocols4rssi6Client13curMaxBuffersEv"></span><span id="_CPPv2N5rogue9protocols4rssi6Client13curMaxBuffersEv"></span><span id="rogue::protocols::rssi::Client::curMaxBuffers"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1ad6b8a61ae890f783005da3f87f60b7f1"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">curMaxBuffers</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client13curMaxBuffersEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8h_source.html#l00189"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8cpp_source.html#l00216"><span class="pre">[impl]</span></a></dt>
 <dd><p>Returns the negotiated maximum outstanding-buffer count. </p>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6Client13curMaxSegmentEv">
-<span id="_CPPv3N5rogue9protocols4rssi6Client13curMaxSegmentEv"></span><span id="_CPPv2N5rogue9protocols4rssi6Client13curMaxSegmentEv"></span><span id="rogue::protocols::rssi::Client::curMaxSegment"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1aadeb507fe0fcd9a75119f6cab167cb3f"></span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">curMaxSegment</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client13curMaxSegmentEv" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3N5rogue9protocols4rssi6Client13curMaxSegmentEv"></span><span id="_CPPv2N5rogue9protocols4rssi6Client13curMaxSegmentEv"></span><span id="rogue::protocols::rssi::Client::curMaxSegment"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1aadeb507fe0fcd9a75119f6cab167cb3f"></span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">curMaxSegment</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client13curMaxSegmentEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8h_source.html#l00191"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8cpp_source.html#l00220"><span class="pre">[impl]</span></a></dt>
 <dd><p>Returns the negotiated maximum segment size in bytes. </p>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6Client13curCumAckToutEv">
-<span id="_CPPv3N5rogue9protocols4rssi6Client13curCumAckToutEv"></span><span id="_CPPv2N5rogue9protocols4rssi6Client13curCumAckToutEv"></span><span id="rogue::protocols::rssi::Client::curCumAckTout"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1abc80f072aea0468b955f646534eced37"></span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">curCumAckTout</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client13curCumAckToutEv" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3N5rogue9protocols4rssi6Client13curCumAckToutEv"></span><span id="_CPPv2N5rogue9protocols4rssi6Client13curCumAckToutEv"></span><span id="rogue::protocols::rssi::Client::curCumAckTout"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1abc80f072aea0468b955f646534eced37"></span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">curCumAckTout</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client13curCumAckToutEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8h_source.html#l00193"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8cpp_source.html#l00224"><span class="pre">[impl]</span></a></dt>
 <dd><p>Returns the negotiated cumulative-ACK timeout. </p>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6Client13curRetranToutEv">
-<span id="_CPPv3N5rogue9protocols4rssi6Client13curRetranToutEv"></span><span id="_CPPv2N5rogue9protocols4rssi6Client13curRetranToutEv"></span><span id="rogue::protocols::rssi::Client::curRetranTout"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1a4bd5dd46e13cac5784a22640d7ce00ef"></span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">curRetranTout</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client13curRetranToutEv" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3N5rogue9protocols4rssi6Client13curRetranToutEv"></span><span id="_CPPv2N5rogue9protocols4rssi6Client13curRetranToutEv"></span><span id="rogue::protocols::rssi::Client::curRetranTout"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1a4bd5dd46e13cac5784a22640d7ce00ef"></span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">curRetranTout</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client13curRetranToutEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8h_source.html#l00195"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8cpp_source.html#l00228"><span class="pre">[impl]</span></a></dt>
 <dd><p>Returns the negotiated retransmit timeout. </p>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6Client11curNullToutEv">
-<span id="_CPPv3N5rogue9protocols4rssi6Client11curNullToutEv"></span><span id="_CPPv2N5rogue9protocols4rssi6Client11curNullToutEv"></span><span id="rogue::protocols::rssi::Client::curNullTout"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1a9f1cb222a7bb86d9e09f049d9d3e3d77"></span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">curNullTout</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client11curNullToutEv" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3N5rogue9protocols4rssi6Client11curNullToutEv"></span><span id="_CPPv2N5rogue9protocols4rssi6Client11curNullToutEv"></span><span id="rogue::protocols::rssi::Client::curNullTout"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1a9f1cb222a7bb86d9e09f049d9d3e3d77"></span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">curNullTout</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client11curNullToutEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8h_source.html#l00197"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8cpp_source.html#l00232"><span class="pre">[impl]</span></a></dt>
 <dd><p>Returns the negotiated null-segment timeout. </p>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6Client12curMaxRetranEv">
-<span id="_CPPv3N5rogue9protocols4rssi6Client12curMaxRetranEv"></span><span id="_CPPv2N5rogue9protocols4rssi6Client12curMaxRetranEv"></span><span id="rogue::protocols::rssi::Client::curMaxRetran"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1a32daac8d7e69a07dc3f8d19e2b91f86f"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">curMaxRetran</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client12curMaxRetranEv" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3N5rogue9protocols4rssi6Client12curMaxRetranEv"></span><span id="_CPPv2N5rogue9protocols4rssi6Client12curMaxRetranEv"></span><span id="rogue::protocols::rssi::Client::curMaxRetran"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1a32daac8d7e69a07dc3f8d19e2b91f86f"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">curMaxRetran</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client12curMaxRetranEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8h_source.html#l00199"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8cpp_source.html#l00236"><span class="pre">[impl]</span></a></dt>
 <dd><p>Returns the negotiated maximum retransmit count. </p>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6Client12curMaxCumAckEv">
-<span id="_CPPv3N5rogue9protocols4rssi6Client12curMaxCumAckEv"></span><span id="_CPPv2N5rogue9protocols4rssi6Client12curMaxCumAckEv"></span><span id="rogue::protocols::rssi::Client::curMaxCumAck"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1a007e0d712f509c6ab504a9481d12514c"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">curMaxCumAck</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client12curMaxCumAckEv" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3N5rogue9protocols4rssi6Client12curMaxCumAckEv"></span><span id="_CPPv2N5rogue9protocols4rssi6Client12curMaxCumAckEv"></span><span id="rogue::protocols::rssi::Client::curMaxCumAck"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1a007e0d712f509c6ab504a9481d12514c"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">curMaxCumAck</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client12curMaxCumAckEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8h_source.html#l00201"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8cpp_source.html#l00240"><span class="pre">[impl]</span></a></dt>
 <dd><p>Returns the negotiated maximum cumulative-ACK interval. </p>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6Client13resetCountersEv">
-<span id="_CPPv3N5rogue9protocols4rssi6Client13resetCountersEv"></span><span id="_CPPv2N5rogue9protocols4rssi6Client13resetCountersEv"></span><span id="rogue::protocols::rssi::Client::resetCounters"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1aa0646da1ae1175679c2cdec329b8744b"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">resetCounters</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client13resetCountersEv" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3N5rogue9protocols4rssi6Client13resetCountersEv"></span><span id="_CPPv2N5rogue9protocols4rssi6Client13resetCountersEv"></span><span id="rogue::protocols::rssi::Client::resetCounters"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1aa0646da1ae1175679c2cdec329b8744b"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">resetCounters</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client13resetCountersEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8h_source.html#l00204"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8cpp_source.html#l00244"><span class="pre">[impl]</span></a></dt>
 <dd><p>Resets runtime counters. </p>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6Client10setTimeoutE8uint32_t">
-<span id="_CPPv3N5rogue9protocols4rssi6Client10setTimeoutE8uint32_t"></span><span id="_CPPv2N5rogue9protocols4rssi6Client10setTimeoutE8uint32_t"></span><span id="rogue::protocols::rssi::Client::setTimeout__uint32_t"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1a6e29fca12590fd213ad680b970d7061f"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setTimeout</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">timeout</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client10setTimeoutE8uint32_t" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3N5rogue9protocols4rssi6Client10setTimeoutE8uint32_t"></span><span id="_CPPv2N5rogue9protocols4rssi6Client10setTimeoutE8uint32_t"></span><span id="rogue::protocols::rssi::Client::setTimeout__uint32_t"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1a6e29fca12590fd213ad680b970d7061f"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setTimeout</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">timeout</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client10setTimeoutE8uint32_t" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8h_source.html#l00210"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8cpp_source.html#l00249"><span class="pre">[impl]</span></a></dt>
 <dd><p>Sets timeout in microseconds for frame transmits. </p>
+<p>Set timeout for frame transmits in microseconds.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>timeout</strong> – Timeout in microseconds. </p>
@@ -424,14 +451,16 @@ operation.</p>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6Client4stopEv">
-<span id="_CPPv3N5rogue9protocols4rssi6Client4stopEv"></span><span id="_CPPv2N5rogue9protocols4rssi6Client4stopEv"></span><span id="rogue::protocols::rssi::Client::stop"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1a01a7b1d8e4688abee7796d4b82d9d42d"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">stop</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client4stopEv" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3N5rogue9protocols4rssi6Client4stopEv"></span><span id="_CPPv2N5rogue9protocols4rssi6Client4stopEv"></span><span id="rogue::protocols::rssi::Client::stop"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1a01a7b1d8e4688abee7796d4b82d9d42d"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">stop</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client4stopEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8h_source.html#l00213"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8cpp_source.html#l00254"><span class="pre">[impl]</span></a></dt>
 <dd><p>Stops the RSSI connection. </p>
+<p>Send reset and close. </p>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6Client5startEv">
-<span id="_CPPv3N5rogue9protocols4rssi6Client5startEv"></span><span id="_CPPv2N5rogue9protocols4rssi6Client5startEv"></span><span id="rogue::protocols::rssi::Client::start"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1a89c5fb6fe44563cbf4eae460e04d6c22"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">start</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client5startEv" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3N5rogue9protocols4rssi6Client5startEv"></span><span id="_CPPv2N5rogue9protocols4rssi6Client5startEv"></span><span id="rogue::protocols::rssi::Client::start"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1a89c5fb6fe44563cbf4eae460e04d6c22"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">start</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client5startEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8h_source.html#l00216"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8cpp_source.html#l00259"><span class="pre">[impl]</span></a></dt>
 <dd><p>Starts or restarts RSSI connection establishment. </p>
+<p>Start. </p>
 </dd></dl>
 
 </div>
@@ -439,22 +468,26 @@ operation.</p>
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-static-functions">Public Static Functions</p>
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6Client6createE8uint32_t">
-<span id="_CPPv3N5rogue9protocols4rssi6Client6createE8uint32_t"></span><span id="_CPPv2N5rogue9protocols4rssi6Client6createE8uint32_t"></span><span id="rogue::protocols::rssi::Client::create__uint32_t"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1a0aded35ef972f7fd098bced1fc92caa0"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">protocols</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">rssi</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue9protocols4rssi6ClientE" title="rogue::protocols::rssi::Client"><span class="n"><span class="pre">Client</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">create</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">segSize</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client6createE8uint32_t" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3N5rogue9protocols4rssi6Client6createE8uint32_t"></span><span id="_CPPv2N5rogue9protocols4rssi6Client6createE8uint32_t"></span><span id="rogue::protocols::rssi::Client::create__uint32_t"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1aaf2b168ca044467f5a132967988c8d9f"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">protocols</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">rssi</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue9protocols4rssi6ClientE" title="rogue::protocols::rssi::Client"><span class="n"><span class="pre">Client</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">create</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">segSize</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client6createE8uint32_t" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8h_source.html#l00069"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8cpp_source.html#l00038"><span class="pre">[impl]</span></a></dt>
 <dd><p>Creates an RSSI client bundle. </p>
+<p>Class creation.</p>
 <p>Parameter semantics are identical to the constructor; see <code class="docutils literal notranslate"><span class="pre">Client()</span></code> for bundle-construction details. This static factory is the preferred construction path when the object is shared across Rogue graph connections or exposed to Python. It returns <code class="docutils literal notranslate"><span class="pre">std::shared_ptr</span></code> ownership compatible with Rogue pointer typedefs.</p>
+<p><em>Company : SLAC National Accelerator Laboratory </em></p>
+<p>Description: <em>RSSI  Class </em></p>
+<p>This file is part of the rogue software platform. It is subject to the license terms in the LICENSE.txt file found in the top-level directory of this distribution and at: <a class="reference external" href="https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html">https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html</a>. No part of the rogue software platform, including this file, may be copied, modified, propagated, or distributed except according to the terms <em>contained in the LICENSE.txt file. </em></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>segSize</strong> – Initial local maximum segment size. </p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Shared pointer to the created client bundle. </p>
+<dd class="field-even"><p>Shared pointer to the created client bundle.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols4rssi6Client12setup_pythonEv">
-<span id="_CPPv3N5rogue9protocols4rssi6Client12setup_pythonEv"></span><span id="_CPPv2N5rogue9protocols4rssi6Client12setup_pythonEv"></span><span id="rogue::protocols::rssi::Client::setup_python"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1af00a09b8990d60a1a3dae5fe93bbee4e"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setup_python</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client12setup_pythonEv" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3N5rogue9protocols4rssi6Client12setup_pythonEv"></span><span id="_CPPv2N5rogue9protocols4rssi6Client12setup_pythonEv"></span><span id="rogue::protocols::rssi::Client::setup_python"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Client_1ab3c1debb4f53c671cc16401035e4e284"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setup_python</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi6Client12setup_pythonEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8h_source.html#l00072"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/rssi_2Client_8cpp_source.html#l00043"><span class="pre">[impl]</span></a></dt>
 <dd><p>Registers Python bindings for this class. </p>
 </dd></dl>
 
@@ -462,12 +495,14 @@ operation.</p>
 </dd></dl>
 
 </section>
+</section>
+</section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="index.html" class="btn btn-neutral float-left" title="RSSI Protocol Class Descriptions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="index.html" class="btn btn-neutral float-left" title="rogue::protocols::rssi" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="server.html" class="btn btn-neutral float-right" title="Server" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

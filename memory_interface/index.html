@@ -1,0 +1,232 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Memory Interface &mdash; Rogue v6.8.5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=346ffc18" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=8960aef2"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script src="../_static/custom.js?v=b11a05f1"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Connecting Memory Elements" href="connecting.html" />
+    <link rel="prev" title="Testing The Custom Module" href="../custom_module/testing.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Memory Interface</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="connecting.html">Connecting Memory Elements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="master.html">Memory Master Patterns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="slave.html">Memory Slave Patterns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hub.html">Memory Hub Patterns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tcp_bridge.html">Memory TCP Bridge</a></li>
+<li class="toctree-l2"><a class="reference internal" href="transactions.html">Memory Transactions and Lifecycle</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API Reference</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Memory Interface</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/memory_interface/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="memory-interface">
+<span id="interfaces-memory"></span><span id="memory-interface-docs"></span><h1>Memory Interface<a class="headerlink" href="#memory-interface" title="Link to this heading"></a></h1>
+<p>The Rogue memory interface moves register and memory transactions between
+<code class="docutils literal notranslate"><span class="pre">Master</span></code> and <code class="docutils literal notranslate"><span class="pre">Slave</span></code> objects through a composable bus graph.</p>
+<p>You usually encounter this layer when building or debugging custom register-bus
+topologies, protocol gateways, or address translators. In many PyRogue
+applications, the lower-level memory wiring is hidden beneath <code class="docutils literal notranslate"><span class="pre">Device</span></code> and
+<code class="docutils literal notranslate"><span class="pre">Root</span></code> abstractions. When those abstractions are not enough, the memory
+interface provides the primitives needed to build the bus directly.</p>
+<p>At a high level, the memory interface is used to:</p>
+<ul class="simple">
+<li><p>Initiate reads, writes, posted writes, and verify operations</p></li>
+<li><p>Route transactions through address windows and translation layers</p></li>
+<li><p>Split or transform transactions when a bus topology requires it</p></li>
+<li><p>Bridge register access across protocol boundaries such as TCP</p></li>
+</ul>
+<section id="core-types">
+<h2>Core Types<a class="headerlink" href="#core-types" title="Link to this heading"></a></h2>
+<p>Four types appear throughout the memory interface:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Master</span></code> initiates transactions</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Slave</span></code> services incoming transactions</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Hub</span></code> routes, offsets, or splits transactions between bus segments</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Transaction</span></code> carries address, type, size, data access, timeout state, and
+completion or error information</p></li>
+</ul>
+<p>Each memory access is represented by a <code class="docutils literal notranslate"><span class="pre">Transaction</span></code> object. That
+<code class="docutils literal notranslate"><span class="pre">Transaction</span></code> moves through the bus graph, with <code class="docutils literal notranslate"><span class="pre">Hub</span></code> layers adjusting
+addresses or generating downstream work as needed before a final <code class="docutils literal notranslate"><span class="pre">Slave</span></code>
+services the request.</p>
+</section>
+<section id="implementation-model">
+<h2>Implementation Model<a class="headerlink" href="#implementation-model" title="Link to this heading"></a></h2>
+<p>The memory interface implementation lives in C++ for deterministic behavior and
+performance. Python bindings expose the same primitives so custom bus graphs can
+still be assembled and integrated in Python-based applications.</p>
+<p>That split supports a practical workflow:</p>
+<ol class="arabic simple">
+<li><p>Build and connect the memory graph in Python when exploring a design.</p></li>
+<li><p>Validate addressing, routing, and transaction behavior.</p></li>
+<li><p>Move only the performance-critical or hardware-facing pieces into C++ when
+needed.</p></li>
+</ol>
+</section>
+<section id="connection-model">
+<h2>Connection Model<a class="headerlink" href="#connection-model" title="Link to this heading"></a></h2>
+<p>Memory links use the same operator style as other Rogue connection graphs:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">master</span> <span class="pre">&gt;&gt;</span> <span class="pre">slave</span></code> creates a one-way memory path</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">slave</span> <span class="pre">&lt;&lt;</span> <span class="pre">master</span></code> creates the same path in reverse syntax</p></li>
+<li><p>Python helper: <code class="docutils literal notranslate"><span class="pre">pyrogue.busConnect(source,</span> <span class="pre">dest)</span></code></p></li>
+<li><p>C++ helper: <code class="docutils literal notranslate"><span class="pre">rogueBusConnect(source,</span> <span class="pre">dest)</span></code></p></li>
+</ul>
+<p>Bus topology is often rooted in one or more protocol or hardware-facing
+<code class="docutils literal notranslate"><span class="pre">Slave</span></code> objects, with <code class="docutils literal notranslate"><span class="pre">Hub</span></code> layers and custom memory components organizing
+address windows between them.</p>
+</section>
+<section id="what-to-explore-next">
+<h2>What To Explore Next<a class="headerlink" href="#what-to-explore-next" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Bus wiring patterns: <a class="reference internal" href="connecting.html"><span class="doc">Connecting Memory Elements</span></a></p></li>
+<li><p>Transaction lifecycle details: <a class="reference internal" href="transactions.html"><span class="doc">Memory Transactions and Lifecycle</span></a></p></li>
+<li><p>Custom <code class="docutils literal notranslate"><span class="pre">Master</span></code> patterns: <a class="reference internal" href="master.html"><span class="doc">Memory Master Patterns</span></a></p></li>
+<li><p>Custom <code class="docutils literal notranslate"><span class="pre">Slave</span></code> patterns: <a class="reference internal" href="slave.html"><span class="doc">Memory Slave Patterns</span></a></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Hub</span></code> translation patterns: <a class="reference internal" href="hub.html"><span class="doc">Memory Hub Patterns</span></a></p></li>
+<li><p>TCP bridge usage: <a class="reference internal" href="tcp_bridge.html"><span class="doc">Memory TCP Bridge</span></a></p></li>
+</ul>
+</section>
+<section id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Python:</p>
+<ul>
+<li><p><a class="reference internal" href="../api/python/rogue/interfaces/memory/master.html"><span class="doc">Master</span></a></p></li>
+<li><p><a class="reference internal" href="../api/python/rogue/interfaces/memory/slave.html"><span class="doc">Slave</span></a></p></li>
+<li><p><a class="reference internal" href="../api/python/rogue/interfaces/memory/hub.html"><span class="doc">Hub</span></a></p></li>
+<li><p><a class="reference internal" href="../api/python/rogue/interfaces/memory/transaction.html"><span class="doc">Transaction</span></a></p></li>
+</ul>
+</li>
+<li><p>C++:</p>
+<ul>
+<li><p><a class="reference internal" href="../api/cpp/interfaces/memory/master.html"><span class="doc">Master</span></a></p></li>
+<li><p><a class="reference internal" href="../api/cpp/interfaces/memory/slave.html"><span class="doc">Slave</span></a></p></li>
+<li><p><a class="reference internal" href="../api/cpp/interfaces/memory/hub.html"><span class="doc">Hub</span></a></p></li>
+<li><p><a class="reference internal" href="../api/cpp/interfaces/memory/transaction.html"><span class="doc">Transaction</span></a></p></li>
+</ul>
+</li>
+</ul>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Memory Interface:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="connecting.html">Connecting Memory Elements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="master.html">Memory Master Patterns</a></li>
+<li class="toctree-l1"><a class="reference internal" href="slave.html">Memory Slave Patterns</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hub.html">Memory Hub Patterns</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tcp_bridge.html">Memory TCP Bridge</a></li>
+<li class="toctree-l1"><a class="reference internal" href="transactions.html">Memory Transactions and Lifecycle</a></li>
+</ul>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../custom_module/testing.html" class="btn btn-neutral float-left" title="Testing The Custom Module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="connecting.html" class="btn btn-neutral float-right" title="Connecting Memory Elements" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

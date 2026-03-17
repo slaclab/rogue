@@ -1,0 +1,344 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Connecting Streams &mdash; Rogue v6.8.5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=346ffc18" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=8960aef2"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script src="../_static/custom.js?v=b11a05f1"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Frame Model" href="frame_model.html" />
+    <link rel="prev" title="Stream Interface" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Stream Interface</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Connecting Streams</a></li>
+<li class="toctree-l2"><a class="reference internal" href="frame_model.html">Frame Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sending.html">Sending Frames</a></li>
+<li class="toctree-l2"><a class="reference internal" href="receiving.html">Receiving Frames</a></li>
+<li class="toctree-l2"><a class="reference internal" href="built_in_modules.html">Built-in Stream Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../custom_module/index.html">Creating Custom Modules</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API Reference</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Stream Interface</a></li>
+      <li class="breadcrumb-item active">Connecting Streams</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/stream_interface/connecting.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="connecting-streams">
+<span id="stream-interface-connecting"></span><span id="interfaces-stream-connecting"></span><h1>Connecting Streams<a class="headerlink" href="#connecting-streams" title="Link to this heading"></a></h1>
+<p>A stream topology connects sources, processors, and sinks through stream
+master/slave links. In practical systems, a hardware ingress source (for
+example <code class="docutils literal notranslate"><span class="pre">AxiStreamDma</span></code>) is often shaped by stream modules and then routed to
+an output sink such as a file writer.</p>
+<p>Each stream <code class="docutils literal notranslate"><span class="pre">Master</span></code> can connect to one or more <code class="docutils literal notranslate"><span class="pre">Slave</span></code> endpoints. The
+first attached slave becomes the primary slave, which matters because that
+slave usually services frame-allocation requests from the master. The primary
+slave is also the last endpoint to receive a transmitted frame, so a diagnostic
+tap or monitor branch should usually be attached after the main processing
+path, not before it.</p>
+<section id="operator-syntax-and-helper-functions">
+<h2>Operator Syntax And Helper Functions<a class="headerlink" href="#operator-syntax-and-helper-functions" title="Link to this heading"></a></h2>
+<p>Rogue supports connection operators directly on stream objects:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">&gt;&gt;</span></code> for one-way source-to-destination links</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;&lt;</span></code> for one-way destination-from-source links</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">==</span></code> for bi-directional links between dual-role endpoints</p></li>
+</ul>
+<section id="python-usage">
+<h3>Python Usage<a class="headerlink" href="#python-usage" title="Link to this heading"></a></h3>
+<p>In Python, operator syntax is generally preferred because it is concise and
+reads like a pipeline.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">src</span> <span class="o">&gt;&gt;</span> <span class="n">stage1</span> <span class="o">&gt;&gt;</span> <span class="n">stage2</span> <span class="o">&gt;&gt;</span> <span class="n">dst</span>
+<span class="n">dst</span> <span class="o">&lt;&lt;</span> <span class="n">src</span>
+<span class="n">ep_a</span> <span class="o">==</span> <span class="n">ep_b</span>
+</pre></div>
+</div>
+<p>Equivalent helper functions are also available:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+
+<span class="n">pr</span><span class="o">.</span><span class="n">streamConnect</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">dst</span><span class="p">)</span>
+<span class="n">pr</span><span class="o">.</span><span class="n">streamConnectBiDir</span><span class="p">(</span><span class="n">ep_a</span><span class="p">,</span> <span class="n">ep_b</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="c-usage">
+<h3>C++ Usage<a class="headerlink" href="#c-usage" title="Link to this heading"></a></h3>
+<p>In C++, operator syntax works the same way, but chained expressions require
+pointer dereferencing and can become harder to read.</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="n">src</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">fifo</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">rate</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">writer</span><span class="o">-&gt;</span><span class="n">getChannel</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="o">*</span><span class="n">epA</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">epB</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>For readability, many users prefer helper macros from
+<code class="docutils literal notranslate"><span class="pre">#include</span> <span class="pre">&quot;rogue/Helpers.h&quot;</span></code>:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">rogueStreamConnect</span><span class="p">(</span><span class="n">src</span><span class="p">,</span><span class="w"> </span><span class="n">fifo</span><span class="p">);</span>
+<span class="n">rogueStreamConnect</span><span class="p">(</span><span class="n">fifo</span><span class="p">,</span><span class="w"> </span><span class="n">rate</span><span class="p">);</span>
+<span class="n">rogueStreamConnect</span><span class="p">(</span><span class="n">rate</span><span class="p">,</span><span class="w"> </span><span class="n">writer</span><span class="o">-&gt;</span><span class="n">getChannel</span><span class="p">(</span><span class="mi">0</span><span class="p">));</span>
+<span class="n">rogueStreamConnectBiDir</span><span class="p">(</span><span class="n">epA</span><span class="p">,</span><span class="w"> </span><span class="n">epB</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="connection-semantics-and-ordering">
+<h2>Connection Semantics And Ordering<a class="headerlink" href="#connection-semantics-and-ordering" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">master</span> <span class="pre">&gt;&gt;</span> <span class="pre">slave</span></code> and <code class="docutils literal notranslate"><span class="pre">slave</span> <span class="pre">&lt;&lt;</span> <span class="pre">master</span></code> create one-way links.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">endpointA</span> <span class="pre">==</span> <span class="pre">endpointB</span></code> creates links both ways.</p></li>
+<li><p>The first slave attached to a master is the primary slave.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">reqFrame(size,</span> <span class="pre">zeroCopyEn)</span></code> allocation requests go to the primary slave.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sendFrame(frame)</span></code> delivers to secondary slaves first, then the primary.</p></li>
+</ul>
+<p>That final ordering matters if the primary path consumes or empties a
+zero-copy frame.</p>
+</section>
+<section id="fan-out-topology-primary-processing-diagnostic-debug">
+<h2>Fan-Out Topology: Primary Processing + Diagnostic Debug<a class="headerlink" href="#fan-out-topology-primary-processing-diagnostic-debug" title="Link to this heading"></a></h2>
+<p>A common pattern is to keep the primary path unmodified while creating a
+secondary branch for reduced-rate diagnostics.</p>
+<section id="python">
+<h3>Python<a class="headerlink" href="#python" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">rogue.hardware.axi</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">rha</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">rogue.interfaces.stream</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ris</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">rogue.utilities.fileio</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ruf</span>
+
+<span class="c1"># Open a DMA stream</span>
+<span class="n">dma</span> <span class="o">=</span> <span class="n">rha</span><span class="o">.</span><span class="n">AxiStreamDma</span><span class="p">(</span><span class="s1">&#39;/dev/datadev_0&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Primary processing path: fifo + rate limit + file writer</span>
+<span class="n">fifo</span> <span class="o">=</span> <span class="n">ris</span><span class="o">.</span><span class="n">Fifo</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+<span class="n">rate</span> <span class="o">=</span> <span class="n">ris</span><span class="o">.</span><span class="n">RateDrop</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">)</span>  <span class="c1"># about 5 Hz</span>
+<span class="n">writer</span> <span class="o">=</span> <span class="n">ruf</span><span class="o">.</span><span class="n">StreamWriter</span><span class="p">()</span>
+<span class="n">writer</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;diagnostic.dat&#39;</span><span class="p">)</span>
+
+<span class="c1"># Dump raw DMA traffic to terminal</span>
+<span class="n">debug</span> <span class="o">=</span> <span class="n">ris</span><span class="o">.</span><span class="n">Slave</span><span class="p">()</span>
+<span class="n">debug</span><span class="o">.</span><span class="n">setDebug</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="s1">&#39;DMA Debug&#39;</span><span class="p">)</span>
+
+<span class="c1"># Connect the streams</span>
+<span class="c1"># Attach processing chain first (primary), then add debug branch</span>
+<span class="n">dma</span> <span class="o">&gt;&gt;</span> <span class="n">fifo</span> <span class="o">&gt;&gt;</span> <span class="n">rate</span> <span class="o">&gt;&gt;</span> <span class="n">writer</span><span class="o">.</span><span class="n">getChannel</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">dma</span> <span class="o">&gt;&gt;</span> <span class="n">debug</span>
+</pre></div>
+</div>
+</section>
+<section id="c">
+<h3>C++<a class="headerlink" href="#c" title="Link to this heading"></a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;rogue/Helpers.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;rogue/hardware/axi/AxiStreamDma.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;rogue/interfaces/stream/Fifo.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;rogue/interfaces/stream/RateDrop.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;rogue/utilities/fileio/StreamWriter.h&quot;</span>
+
+<span class="k">namespace</span><span class="w"> </span><span class="nn">rha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nn">rogue</span><span class="o">::</span><span class="nn">hardware</span><span class="o">::</span><span class="nn">axi</span><span class="p">;</span>
+<span class="k">namespace</span><span class="w"> </span><span class="nn">ris</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nn">rogue</span><span class="o">::</span><span class="nn">interfaces</span><span class="o">::</span><span class="nn">stream</span><span class="p">;</span>
+<span class="k">namespace</span><span class="w"> </span><span class="nn">ruf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nn">rogue</span><span class="o">::</span><span class="nn">utilities</span><span class="o">::</span><span class="nn">fileio</span><span class="p">;</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">   </span><span class="k">auto</span><span class="w"> </span><span class="n">dma</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">rha</span><span class="o">::</span><span class="n">AxiStreamDma</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="s">&quot;/dev/datadev_0&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">);</span>
+<span class="w">   </span><span class="k">auto</span><span class="w"> </span><span class="n">fifo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ris</span><span class="o">::</span><span class="n">Fifo</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span><span class="w"> </span><span class="mi">64</span><span class="p">,</span><span class="w"> </span><span class="nb">false</span><span class="p">);</span>
+<span class="w">   </span><span class="k">auto</span><span class="w"> </span><span class="n">rate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ris</span><span class="o">::</span><span class="n">RateDrop</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="nb">true</span><span class="p">,</span><span class="w"> </span><span class="mf">0.2</span><span class="p">);</span>
+<span class="w">   </span><span class="k">auto</span><span class="w"> </span><span class="n">debug</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">ris</span><span class="o">::</span><span class="n">Slave</span><span class="o">::</span><span class="n">create</span><span class="p">();</span>
+<span class="w">   </span><span class="n">debug</span><span class="o">-&gt;</span><span class="n">setDebug</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;DMA Debug&quot;</span><span class="p">);</span>
+
+<span class="w">   </span><span class="k">auto</span><span class="w"> </span><span class="n">writer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ruf</span><span class="o">::</span><span class="n">StreamWriter</span><span class="o">::</span><span class="n">create</span><span class="p">();</span>
+<span class="w">   </span><span class="n">writer</span><span class="o">-&gt;</span><span class="n">open</span><span class="p">(</span><span class="s">&quot;diagnostic.dat&quot;</span><span class="p">);</span>
+
+<span class="w">   </span><span class="c1">// Attach processing chain first (primary), then add debug branch</span>
+<span class="w">   </span><span class="n">rogueStreamConnect</span><span class="p">(</span><span class="n">dma</span><span class="p">,</span><span class="w"> </span><span class="n">fifo</span><span class="p">);</span>
+<span class="w">   </span><span class="n">rogueStreamConnect</span><span class="p">(</span><span class="n">fifo</span><span class="p">,</span><span class="w"> </span><span class="n">rate</span><span class="p">);</span>
+<span class="w">   </span><span class="n">rogueStreamConnect</span><span class="p">(</span><span class="n">rate</span><span class="p">,</span><span class="w"> </span><span class="n">writer</span><span class="o">-&gt;</span><span class="n">getChannel</span><span class="p">(</span><span class="mi">1</span><span class="p">));</span>
+<span class="w">   </span><span class="n">rogueStreamConnect</span><span class="p">(</span><span class="n">dma</span><span class="p">,</span><span class="w"> </span><span class="n">debug</span><span class="p">);</span>
+
+<span class="w">   </span><span class="c1">// Equivalent operator-style form:</span>
+<span class="w">   </span><span class="c1">// *(*(*dma &gt;&gt; fifo) &gt;&gt; rate) &gt;&gt; writer-&gt;getChannel(1);</span>
+<span class="w">   </span><span class="c1">// *dma &gt;&gt; debug;</span>
+
+<span class="w">   </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="bi-directional-links-dma-tcp-bridge">
+<h2>Bi-directional links (DMA &lt;-&gt; TCP bridge)<a class="headerlink" href="#bi-directional-links-dma-tcp-bridge" title="Link to this heading"></a></h2>
+<p>When both endpoints implement stream master and stream slave behavior, <code class="docutils literal notranslate"><span class="pre">==</span></code>
+creates symmetric links in both directions.</p>
+<p>This is common for bridge-style endpoints such as TCP links, where transmit and
+receive paths both need to be wired. Using <code class="docutils literal notranslate"><span class="pre">==</span></code> keeps the two directions
+paired and avoids accidentally connecting only half of the link.</p>
+<section id="id1">
+<h3>Python<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">rogue.hardware.axi</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">rha</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">rogue.interfaces.stream</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ris</span>
+
+<span class="n">dma</span> <span class="o">=</span> <span class="n">rha</span><span class="o">.</span><span class="n">AxiStreamDma</span><span class="p">(</span><span class="s1">&#39;/dev/datadev_0&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+<span class="n">net</span> <span class="o">=</span> <span class="n">ris</span><span class="o">.</span><span class="n">TcpClient</span><span class="p">(</span><span class="s1">&#39;192.168.1.10&#39;</span><span class="p">,</span> <span class="mi">8000</span><span class="p">)</span>
+
+<span class="c1"># Preferred operator form</span>
+<span class="n">dma</span> <span class="o">==</span> <span class="n">net</span>
+</pre></div>
+</div>
+</section>
+<section id="id2">
+<h3>C++<a class="headerlink" href="#id2" title="Link to this heading"></a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;rogue/Helpers.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;rogue/hardware/axi/AxiStreamDma.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;rogue/interfaces/stream/TcpClient.h&quot;</span>
+
+<span class="k">namespace</span><span class="w"> </span><span class="nn">rha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nn">rogue</span><span class="o">::</span><span class="nn">hardware</span><span class="o">::</span><span class="nn">axi</span><span class="p">;</span>
+<span class="k">namespace</span><span class="w"> </span><span class="nn">ris</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nn">rogue</span><span class="o">::</span><span class="nn">interfaces</span><span class="o">::</span><span class="nn">stream</span><span class="p">;</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">   </span><span class="k">auto</span><span class="w"> </span><span class="n">dma</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rha</span><span class="o">::</span><span class="n">AxiStreamDma</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="s">&quot;/dev/datadev_0&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">);</span>
+<span class="w">   </span><span class="k">auto</span><span class="w"> </span><span class="n">net</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ris</span><span class="o">::</span><span class="n">TcpClient</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="s">&quot;192.168.1.10&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">8000</span><span class="p">);</span>
+
+<span class="w">   </span><span class="o">*</span><span class="n">dma</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">net</span><span class="p">;</span>
+<span class="w">   </span><span class="c1">// or: rogueStreamConnectBiDir(dma, net);</span>
+<span class="w">   </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="what-to-explore-next">
+<h2>What To Explore Next<a class="headerlink" href="#what-to-explore-next" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Frame production patterns: <a class="reference internal" href="sending.html"><span class="doc">Sending Frames</span></a></p></li>
+<li><p>Frame consumption patterns: <a class="reference internal" href="receiving.html"><span class="doc">Receiving Frames</span></a></p></li>
+<li><p>Built-in module behavior and tuning: <a class="reference internal" href="built_in_modules.html"><span class="doc">Built-in Stream Modules</span></a></p></li>
+<li><p>Stream section overview: <a class="reference internal" href="index.html"><span class="doc">Stream Interface</span></a></p></li>
+</ul>
+</section>
+<section id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Python:</p>
+<ul>
+<li><p><a class="reference internal" href="../api/python/rogue/interfaces/stream/fifo.html"><span class="doc">Fifo</span></a></p></li>
+<li><p><a class="reference internal" href="../api/python/rogue/interfaces/stream/ratedrop.html"><span class="doc">RateDrop</span></a></p></li>
+<li><p><a class="reference internal" href="../api/python/rogue/interfaces/stream/slave.html"><span class="doc">Slave</span></a></p></li>
+<li><p><a class="reference internal" href="../api/python/rogue/interfaces/stream/tcpclient.html"><span class="doc">TcpClient</span></a></p></li>
+<li><p><a class="reference internal" href="../api/python/rogue/hardware/axi/axistreamdma.html"><span class="doc">AxiStreamDma</span></a></p></li>
+<li><p><a class="reference internal" href="../api/python/pyrogue/utilities/fileio/streamwriter.html"><span class="doc">StreamWriter</span></a></p></li>
+</ul>
+</li>
+<li><p>C++:</p>
+<ul>
+<li><p><a class="reference internal" href="../api/cpp/interfaces/stream/fifo.html"><span class="doc">Fifo</span></a></p></li>
+<li><p><a class="reference internal" href="../api/cpp/interfaces/stream/rateDrop.html"><span class="doc">RateDrop</span></a></p></li>
+<li><p><a class="reference internal" href="../api/cpp/interfaces/stream/slave.html"><span class="doc">Slave</span></a></p></li>
+<li><p><a class="reference internal" href="../api/cpp/interfaces/stream/tcpClient.html"><span class="doc">TcpClient</span></a></p></li>
+<li><p><a class="reference internal" href="../api/cpp/hardware/axi/axiStreamDma.html"><span class="doc">AxiStreamDma</span></a></p></li>
+<li><p><a class="reference internal" href="../api/cpp/utilities/fileio/writer.html"><span class="doc">StreamWriter</span></a></p></li>
+</ul>
+</li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Stream Interface" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="frame_model.html" class="btn btn-neutral float-right" title="Frame Model" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

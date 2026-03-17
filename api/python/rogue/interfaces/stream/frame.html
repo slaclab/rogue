@@ -1,0 +1,429 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Frame &mdash; Rogue v6.8.5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom.css?v=346ffc18" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=8960aef2"></script>
+      <script src="../../../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../../../_static/custom.js?v=b11a05f1"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" />
+    <link rel="next" title="Fifo" href="fifo.html" />
+    <link rel="prev" title="Slave" href="slave.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../../../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../../../index.html">Python API</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../../../pyrogue/index.html">pyrogue</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../../index.html">rogue</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../../version.html">rogue.Version</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../logging.html">rogue.Logging</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../generalerror.html">rogue.GeneralError</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="../index.html">rogue.interfaces</a><ul class="current">
+<li class="toctree-l5 current"><a class="reference internal" href="index.html">rogue.interfaces.stream</a><ul class="current">
+<li class="toctree-l6"><a class="reference internal" href="master.html">Master</a></li>
+<li class="toctree-l6"><a class="reference internal" href="slave.html">Slave</a></li>
+<li class="toctree-l6 current"><a class="current reference internal" href="#">Frame</a></li>
+<li class="toctree-l6"><a class="reference internal" href="fifo.html">Fifo</a></li>
+<li class="toctree-l6"><a class="reference internal" href="filter.html">Filter</a></li>
+<li class="toctree-l6"><a class="reference internal" href="ratedrop.html">RateDrop</a></li>
+<li class="toctree-l6"><a class="reference internal" href="tcpcore.html">TcpCore</a></li>
+<li class="toctree-l6"><a class="reference internal" href="tcpclient.html">TcpClient</a></li>
+<li class="toctree-l6"><a class="reference internal" href="tcpserver.html">TcpServer</a></li>
+<li class="toctree-l6"><a class="reference internal" href="variable.html">Variable</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="../memory/index.html">rogue.interfaces.memory</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../zmqclient.html">ZmqClient</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../../protocols/index.html">rogue.protocols</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../hardware/index.html">rogue.hardware</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../utilities/index.html">rogue.utilities</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../cpp/index.html">C++ API</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">API Reference</a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Python API</a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">rogue</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">rogue.interfaces</a></li>
+          <li class="breadcrumb-item"><a href="index.html">rogue.interfaces.stream</a></li>
+      <li class="breadcrumb-item active">Frame</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../../_sources/api/python/rogue/interfaces/stream/frame.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="frame">
+<span id="api-python-interfaces-stream-frame"></span><h1>Frame<a class="headerlink" href="#frame" title="Link to this heading"></a></h1>
+<p>For conceptual usage, see:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../../../../../stream_interface/frame_model.html"><span class="doc">Frame Model</span></a></p></li>
+<li><p><a class="reference internal" href="../../../../../stream_interface/sending.html"><span class="doc">Sending Frames</span></a></p></li>
+<li><p><a class="reference internal" href="../../../../../stream_interface/receiving.html"><span class="doc">Receiving Frames</span></a></p></li>
+</ul>
+<p class="rubric">Implementation</p>
+<p>This Python API is provided by a Rogue C++ class exported into Python.</p>
+<p>Native C++ class:
+- <a class="reference internal" href="../../../../cpp/interfaces/stream/frame.html"><span class="doc">Frame</span></a></p>
+<section id="generated-api">
+<h2>Generated API<a class="headerlink" href="#generated-api" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="rogue.interfaces.stream.Frame">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">rogue.interfaces.stream.</span></span><span class="sig-name descname"><span class="pre">Frame</span></span><a class="headerlink" href="#rogue.interfaces.stream.Frame" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/stream/frame.html#_CPPv4N5rogue10interfaces6stream5FrameE" title="rogue::interfaces::stream::Frame"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">rogue::interfaces::stream::Frame</span></code></a></p>
+<p>Binding source: <a class="reference external" href="../../../../../_doxygen/Frame_8cpp_source.html">[Frame.cpp]</a></p>
+<p>Container for one stream frame payload and metadata.</p>
+<p>In Rogue stream interfaces, each logical frame in flight is represented by one <code class="docutils literal notranslate"><span class="pre">Frame</span></code> instance. The frame object does not directly allocate contiguous payload memory. Instead, it owns an ordered list of <code class="docutils literal notranslate"><span class="pre">Buffer</span></code> objects that provide the underlying storage. <code class="docutils literal notranslate"><span class="pre">FrameIterator</span></code> traverses payload bytes across buffer boundaries, so higher-level protocol code can read or write frame content without manual buffer stitching. The frame also carries transport metadata (<code class="docutils literal notranslate"><span class="pre">flags</span></code>, <code class="docutils literal notranslate"><span class="pre">channel</span></code>, <code class="docutils literal notranslate"><span class="pre">error</span></code>) and payload accounting (<code class="docutils literal notranslate"><span class="pre">size</span></code>, <code class="docutils literal notranslate"><span class="pre">payload</span></code>, and available space).</p>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/stream/frame.html#_CPPv4N5rogue10interfaces6stream5FrameE" title="rogue::interfaces::stream::Frame"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">rogue::interfaces::stream::Frame</span></code></a></p>
+<p>Constructs an empty frame.</p>
+<p>This constructor is a low-level C++ allocation path. Prefer <code class="docutils literal notranslate"><span class="pre">create()</span></code> when shared ownership or Python exposure is required.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.interfaces.stream.Frame.lock">
+<span class="sig-name descname"><span class="pre">lock</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rogue.interfaces.stream.Frame.lock" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/stream/frame.html#_CPPv4N5rogue10interfaces6stream5Frame4lockEv" title="rogue::interfaces::stream::Frame::lock"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::stream::Frame::lock()</span></code></a></p>
+<p>Locks the frame and returns a scoped lock object.</p>
+<p>Acquire this lock before operating on a <code class="docutils literal notranslate"><span class="pre">Frame</span></code> object from user code, especially when reading or writing payload bytes, adjusting payload size, or changing metadata fields (<code class="docutils literal notranslate"><span class="pre">flags</span></code>, <code class="docutils literal notranslate"><span class="pre">channel</span></code>, <code class="docutils literal notranslate"><span class="pre">error</span></code>). This is the standard synchronization mechanism for frame access and should be treated as required whenever a frame can be observed or modified outside a single thread’s private scope. Exposed as <code class="docutils literal notranslate"><span class="pre">lock()</span></code> in Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Shared pointer to a <code class="docutils literal notranslate"><span class="pre">FrameLock</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.interfaces.stream.Frame.getSize">
+<span class="sig-name descname"><span class="pre">getSize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rogue.interfaces.stream.Frame.getSize" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/stream/frame.html#_CPPv4N5rogue10interfaces6stream5Frame7getSizeEv" title="rogue::interfaces::stream::Frame::getSize"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::stream::Frame::getSize()</span></code></a></p>
+<p>Returns total raw frame capacity in bytes.</p>
+<p>This function returns the full buffer size. Exposed as <code class="docutils literal notranslate"><span class="pre">getSize()</span></code> in Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Total raw buffer size of frame in bytes.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.interfaces.stream.Frame.getAvailable">
+<span class="sig-name descname"><span class="pre">getAvailable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rogue.interfaces.stream.Frame.getAvailable" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/stream/frame.html#_CPPv4N5rogue10interfaces6stream5Frame12getAvailableEv" title="rogue::interfaces::stream::Frame::getAvailable"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::stream::Frame::getAvailable()</span></code></a></p>
+<p>Returns remaining available payload space in bytes.</p>
+<p>This is the space remaining for payload. Exposed as <code class="docutils literal notranslate"><span class="pre">getAvailable()</span></code> in Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Remaining bytes available for payload in the frame.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.interfaces.stream.Frame.getPayload">
+<span class="sig-name descname"><span class="pre">getPayload</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rogue.interfaces.stream.Frame.getPayload" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/stream/frame.html#_CPPv4N5rogue10interfaces6stream5Frame10getPayloadEv" title="rogue::interfaces::stream::Frame::getPayload"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::stream::Frame::getPayload()</span></code></a></p>
+<p>Returns current payload size in bytes. Exposed as <code class="docutils literal notranslate"><span class="pre">getPayload()</span></code> in Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Total payload bytes in the frame.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.interfaces.stream.Frame.read">
+<span class="sig-name descname"><span class="pre">read</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">offset</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#rogue.interfaces.stream.Frame.read" title="Link to this definition"></a></dt>
+<dd><p>C++: <code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::stream::Frame::read()</span></code></p>
+<p>offset</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.interfaces.stream.Frame.getBa">
+<span class="sig-name descname"><span class="pre">getBa</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">offset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">count</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#rogue.interfaces.stream.Frame.getBa" title="Link to this definition"></a></dt>
+<dd><p>C++: <code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::stream::Frame::getBa()</span></code></p>
+<p>count</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.interfaces.stream.Frame.getMemoryview">
+<span class="sig-name descname"><span class="pre">getMemoryview</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rogue.interfaces.stream.Frame.getMemoryview" title="Link to this definition"></a></dt>
+<dd><p>C++: <code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::stream::Frame::getMemoryview()</span></code></p>
+<p>No binding docstring provided.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.interfaces.stream.Frame.write">
+<span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">offset</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#rogue.interfaces.stream.Frame.write" title="Link to this definition"></a></dt>
+<dd><p>C++: <code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::stream::Frame::write()</span></code></p>
+<p>offset</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.interfaces.stream.Frame.setError">
+<span class="sig-name descname"><span class="pre">setError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">error</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#rogue.interfaces.stream.Frame.setError" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/stream/frame.html#_CPPv4N5rogue10interfaces6stream5Frame8setErrorE7uint8_t" title="rogue::interfaces::stream::Frame::setError"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::stream::Frame::setError()</span></code></a></p>
+<p>Sets frame error status value. Exposed as <code class="docutils literal notranslate"><span class="pre">setError()</span></code> in Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>error</strong> – New error value.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.interfaces.stream.Frame.getError">
+<span class="sig-name descname"><span class="pre">getError</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rogue.interfaces.stream.Frame.getError" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/stream/frame.html#_CPPv4N5rogue10interfaces6stream5Frame8getErrorEv" title="rogue::interfaces::stream::Frame::getError"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::stream::Frame::getError()</span></code></a></p>
+<p>Returns frame error status value.</p>
+<p>The error value is application specific, depending on the stream Master implementation. A non-zero value is considered an error. Exposed as <code class="docutils literal notranslate"><span class="pre">getError()</span></code> in Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Error status value.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.interfaces.stream.Frame.setFlags">
+<span class="sig-name descname"><span class="pre">setFlags</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flags</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#rogue.interfaces.stream.Frame.setFlags" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/stream/frame.html#_CPPv4N5rogue10interfaces6stream5Frame8setFlagsE8uint16_t" title="rogue::interfaces::stream::Frame::setFlags"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::stream::Frame::setFlags()</span></code></a></p>
+<p>Sets 16-bit frame flags field. Exposed as <code class="docutils literal notranslate"><span class="pre">setFlags()</span></code> in Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>flags</strong> – 16-bit flag value.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.interfaces.stream.Frame.getFlags">
+<span class="sig-name descname"><span class="pre">getFlags</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rogue.interfaces.stream.Frame.getFlags" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/stream/frame.html#_CPPv4N5rogue10interfaces6stream5Frame8getFlagsEv" title="rogue::interfaces::stream::Frame::getFlags"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::stream::Frame::getFlags()</span></code></a></p>
+<p>Returns 16-bit frame flags field.</p>
+<p>The Frame flags field is a 16-bit application specific field for passing data between a stream Master and Slave. A typical use in Rogue is to pass the first and last user Axi-Stream fields. Exposed as <code class="docutils literal notranslate"><span class="pre">getFlags()</span></code> in Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>16-bit flag value.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.interfaces.stream.Frame.setFirstUser">
+<span class="sig-name descname"><span class="pre">setFirstUser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fuser</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#rogue.interfaces.stream.Frame.setFirstUser" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/stream/frame.html#_CPPv4N5rogue10interfaces6stream5Frame12setFirstUserE7uint8_t" title="rogue::interfaces::stream::Frame::setFirstUser"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::stream::Frame::setFirstUser()</span></code></a></p>
+<p>Sets the lower 8-bit user field in flags (SSI/Axi-Stream). Exposed as <code class="docutils literal notranslate"><span class="pre">setFirstUser()</span></code> to Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>fuser</strong> – 8-bit first-user value.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.interfaces.stream.Frame.getFirstUser">
+<span class="sig-name descname"><span class="pre">getFirstUser</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rogue.interfaces.stream.Frame.getFirstUser" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/stream/frame.html#_CPPv4N5rogue10interfaces6stream5Frame12getFirstUserEv" title="rogue::interfaces::stream::Frame::getFirstUser"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::stream::Frame::getFirstUser()</span></code></a></p>
+<p>Returns the lower 8-bit user field from flags (SSI/Axi-Stream).</p>
+<p>The first user value is stored in the lower 8 bits of the flag field. Exposed as <code class="docutils literal notranslate"><span class="pre">getFirstUser()</span></code> in Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>8-bit first-user value.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.interfaces.stream.Frame.setLastUser">
+<span class="sig-name descname"><span class="pre">setLastUser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fuser</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#rogue.interfaces.stream.Frame.setLastUser" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/stream/frame.html#_CPPv4N5rogue10interfaces6stream5Frame11setLastUserE7uint8_t" title="rogue::interfaces::stream::Frame::setLastUser"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::stream::Frame::setLastUser()</span></code></a></p>
+<p>Sets the upper 8-bit user field in flags (SSI/Axi-Stream). Exposed as <code class="docutils literal notranslate"><span class="pre">setLastUser()</span></code> to Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>fuser</strong> – 8-bit last-user value.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.interfaces.stream.Frame.getLastUser">
+<span class="sig-name descname"><span class="pre">getLastUser</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rogue.interfaces.stream.Frame.getLastUser" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/stream/frame.html#_CPPv4N5rogue10interfaces6stream5Frame11getLastUserEv" title="rogue::interfaces::stream::Frame::getLastUser"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::stream::Frame::getLastUser()</span></code></a></p>
+<p>Returns the upper 8-bit user field from flags (SSI/Axi-Stream).</p>
+<p>The last user value is stored in the upper 8 bits of the flag field. Exposed as <code class="docutils literal notranslate"><span class="pre">getLastUser()</span></code> in Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>8-bit last-user value.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.interfaces.stream.Frame.setChannel">
+<span class="sig-name descname"><span class="pre">setChannel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">channel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#rogue.interfaces.stream.Frame.setChannel" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/stream/frame.html#_CPPv4N5rogue10interfaces6stream5Frame10setChannelE7uint8_t" title="rogue::interfaces::stream::Frame::setChannel"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::stream::Frame::setChannel()</span></code></a></p>
+<p>Sets frame channel value. Exposed as <code class="docutils literal notranslate"><span class="pre">setChannel()</span></code> in Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>channel</strong> – 8-bit channel ID.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.interfaces.stream.Frame.getChannel">
+<span class="sig-name descname"><span class="pre">getChannel</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rogue.interfaces.stream.Frame.getChannel" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/stream/frame.html#_CPPv4N5rogue10interfaces6stream5Frame10getChannelEv" title="rogue::interfaces::stream::Frame::getChannel"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::stream::Frame::getChannel()</span></code></a></p>
+<p>Returns frame channel value.</p>
+<p>Most Frames in Rogue will not use this channel field since most Master to Slave connections are not channelized. Exceptions include data coming out of a data file reader. Exposed as <code class="docutils literal notranslate"><span class="pre">getChannel()</span></code> in Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>8-bit channel ID.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.interfaces.stream.Frame.getNumpy">
+<span class="sig-name descname"><span class="pre">getNumpy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">offset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">count</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#rogue.interfaces.stream.Frame.getNumpy" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/stream/frame.html#_CPPv4N5rogue10interfaces6stream5Frame8getNumpyE8uint32_t8uint32_t" title="rogue::interfaces::stream::Frame::getNumpy"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::stream::Frame::getNumpy()</span></code></a></p>
+<p>Reads frame data and returns it as a NumPy <code class="docutils literal notranslate"><span class="pre">uint8</span></code> array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>offset</strong> – Byte offset in frame payload to start reading from.</p></li>
+<li><p><strong>count</strong> – Number of bytes to read.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>One-dimensional NumPy array of <code class="docutils literal notranslate"><span class="pre">uint8</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.interfaces.stream.Frame.putNumpy">
+<span class="sig-name descname"><span class="pre">putNumpy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">offset</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#rogue.interfaces.stream.Frame.putNumpy" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/stream/frame.html#_CPPv4N5rogue10interfaces6stream5Frame8putNumpyEN5boost6python6objectE8uint32_t" title="rogue::interfaces::stream::Frame::putNumpy"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::stream::Frame::putNumpy()</span></code></a></p>
+<p>Writes NumPy array data into the frame payload.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>offset</strong> – Byte offset in frame payload to start writing to.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="slave.html" class="btn btn-neutral float-left" title="Slave" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="fifo.html" class="btn btn-neutral float-right" title="Fifo" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

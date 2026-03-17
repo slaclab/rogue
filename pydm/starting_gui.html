@@ -6,25 +6,26 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Starting The Rogue PyDM GUI &mdash; Rogue v6.8.4 documentation</title>
+  <title>Starting The Rogue PyDM GUI &mdash; Rogue v6.8.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
-      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=f9c5c301" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=346ffc18" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=2d182aeb"></script>
+      <script src="../_static/documentation_options.js?v=8960aef2"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script src="../_static/custom.js?v=b11a05f1"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Starting The Rogue PyDM Timeplot GUI" href="timeplot_gui.html" />
-    <link rel="prev" title="Using the PyDM Gui" href="index.html" /> 
+    <link rel="prev" title="Using The PyDM GUI" href="index.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -35,7 +36,7 @@
 
           
           
-          <a href="../introduction/index.html" class="icon icon-home">
+          <a href="../index.html" class="icon icon-home">
             Rogue
           </a>
 <div role="search">
@@ -45,51 +46,45 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../introduction/index.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../getting_started/index.html">PyRogue Tree Getting Started Guide</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../advanced_examples/index.html">Advanced Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installing/index.html">Installing &amp; Compiling Rogue</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../pyrogue_tree/index.html">PyRogue Tree</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../interfaces/index.html">Interfaces</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../utilities/index.html">Utilities</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../hardware/index.html">Hardware</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../protocols/index.html">Protocols</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../built_in_modules/index.html">Built-in Modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../logging/index.html">Logging In Rogue</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../custom_module/index.html">Creating Custom Modules</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="index.html">Using the PyDM Gui</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Starting The Rogue PyDM GUI</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#using-the-command-line">Using The Command Line</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#using-a-python-script">Using A Python Script</a></li>
-</ul>
-</li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Using The PyDM GUI</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Starting The Rogue PyDM GUI</a></li>
 <li class="toctree-l2"><a class="reference internal" href="timeplot_gui.html">Starting The Rogue PyDM Timeplot GUI</a></li>
-<li class="toctree-l2"><a class="reference internal" href="channel_urls.html">Channel URLS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="channel_urls.html">Channel URLs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="rogue_widgets.html">Rogue Widgets</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cookbook/index.html">Cookbook</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../migration/index.html">Migration Notes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../documentation_index.html">Table of Contents</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../installing/index.html">Installing &amp; Compiling Rogue</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api/index.html">API Reference</a></li>
 </ul>
 
-        </div>
+</div>
       </div>
     </nav>
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../introduction/index.html">Rogue</a>
+          <a href="../index.html">Rogue</a>
       </nav>
 
       <div class="wy-nav-content">
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../introduction/index.html" class="icon icon-home" aria-label="Home"></a></li>
-          <li class="breadcrumb-item"><a href="index.html">Using the PyDM Gui</a></li>
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Using The PyDM GUI</a></li>
       <li class="breadcrumb-item active">Starting The Rogue PyDM GUI</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/pydm/starting_gui.rst.txt" rel="nofollow"> View page source</a>
@@ -102,49 +97,166 @@
              
   <section id="starting-the-rogue-pydm-gui">
 <span id="starting-gui"></span><h1>Starting The Rogue PyDM GUI<a class="headerlink" href="#starting-the-rogue-pydm-gui" title="Link to this heading"></a></h1>
-<p>The Rogue PyDM GUI can be started either from the command line or within a python application.</p>
-<section id="using-the-command-line">
-<h2>Using The Command Line<a class="headerlink" href="#using-the-command-line" title="Link to this heading"></a></h2>
-<p>You use the rogue module from the command line to start the GUI in the following way:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>pyrogue<span class="w"> </span>gui
-</pre></div>
-</div>
-<p>This will start the default Rogue debug GUI and connect to the first Rogue server it fines while scanning the typical server ports opened by a Rogue instance.</p>
-<p>You can also specify one or more Rogue server addresses on the command line:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>pyrogue<span class="w"> </span>--server<span class="w"> </span>localhost:9099<span class="w"> </span>gui
-</pre></div>
-</div>
-<p>Or for connecting to multiple Rogue servers:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>pyrogue<span class="w"> </span>--server<span class="w"> </span>localhost:9099,otherhost1:9099,otherhost2:9099<span class="w"> </span>gui
-</pre></div>
-</div>
-<p>The default GUI only supports a connection to one server at a time and will only display the debug GUI for the first server in the list. The additional servers are available in the PyDM session, but require a custom GUI to be created either programically or using the PyQT designer application.</p>
-<p>The PyDM channel prefix for each instance of Rogue to which is is connected is rogue://n/ where n is the 0 based serial number of the server instance passed on the command line.</p>
-<p>If you have created a custom PyDM display using the designer tool, you can start that display from the command line by passing the path to the created designer ui file:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>pyrogue<span class="w"> </span>--server<span class="w"> </span>localhost:9099,otherhost1:9099,otherhost2:9099<span class="w"> </span>--ui<span class="w"> </span>path/to/file.ui<span class="w"> </span>gui
-</pre></div>
-</div>
+<p>The standard Rogue PyDM GUI is the general-purpose browser for a running
+PyRogue tree. It is most useful during bring-up and debugging, when you want
+broad visibility into Devices, Variables, Commands, run-control state, and the
+system log without first building a custom operator screen.</p>
+<p>The GUI can be launched either from the command line or from a Python
+application. Both paths ultimately run the same Rogue PyDM support code against
+one or more Rogue servers.</p>
+<section id="how-the-gui-is-structured">
+<h2>How The GUI Is Structured<a class="headerlink" href="#how-the-gui-is-structured" title="Link to this heading"></a></h2>
+<p>The default top-level display is implemented in
+<code class="docutils literal notranslate"><span class="pre">python/pyrogue/pydm/pydmTop.py</span></code>. It creates two tabs:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">System</span></code> for root-level controls, <code class="docutils literal notranslate"><span class="pre">RunControl</span></code> widgets, <code class="docutils literal notranslate"><span class="pre">DataWriter</span></code>
+widgets, and the system log.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Debug</span> <span class="pre">Tree</span></code> for the full tree browser.</p></li>
+</ul>
+<p>That structure is useful context when deciding whether the stock GUI is enough
+or whether a custom screen would better match the operator workflow.</p>
 </section>
-<section id="using-a-python-script">
-<h2>Using A Python Script<a class="headerlink" href="#using-a-python-script" title="Link to this heading"></a></h2>
-<p>The alternative way to start the PyDM GUI is to execute the Rogue helper function for starting PyDM from within a python script, using the Rogue Virtual Client, or directly with a local Rogue root:</p>
+<section id="starting-from-the-command-line">
+<h2>Starting From The Command Line<a class="headerlink" href="#starting-from-the-command-line" title="Link to this heading"></a></h2>
+<p>The normal command-line entry point is:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pyrogue<span class="w"> </span>gui
+</pre></div>
+</div>
+<p>By default the command-line tool connects to <code class="docutils literal notranslate"><span class="pre">localhost:9099</span></code>. To point the
+GUI at a specific server, pass <code class="docutils literal notranslate"><span class="pre">--server</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pyrogue<span class="w"> </span>--server<span class="w"> </span>localhost:9099<span class="w"> </span>gui
+</pre></div>
+</div>
+<p>You can also provide a comma-separated server list:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pyrogue<span class="w"> </span>--server<span class="w"> </span>localhost:9099,otherhost1:9099,otherhost2:9099<span class="w"> </span>gui
+</pre></div>
+</div>
+<p>Rogue exposes all of those servers to the PyDM session, but the stock debug
+GUI is designed around one top-level tree browser rooted at <code class="docutils literal notranslate"><span class="pre">rogue://0/root</span></code>.
+In practice, multi-server sessions are most useful when you are providing a
+custom UI file that deliberately binds channels to multiple server indices.</p>
+</section>
+<section id="starting-a-custom-ui-file">
+<h2>Starting A Custom UI File<a class="headerlink" href="#starting-a-custom-ui-file" title="Link to this heading"></a></h2>
+<p>If you already have a PyDM <code class="docutils literal notranslate"><span class="pre">.ui</span></code> file, launch it through the same entry point
+with <code class="docutils literal notranslate"><span class="pre">--ui</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pyrogue<span class="w"> </span>--server<span class="w"> </span>localhost:9099<span class="w"> </span>--ui<span class="w"> </span>path/to/file.ui<span class="w"> </span>gui
+</pre></div>
+</div>
+<p>This is the normal way to deploy a custom PyDM screen against a Rogue server.
+The Rogue plugin and channel handling still come from the same runtime support
+as the stock GUI.</p>
+<p>If the custom screen should work against different systems, prefer the
+<code class="docutils literal notranslate"><span class="pre">root</span></code> alias in channel URLs instead of hard-coding a specific <code class="docutils literal notranslate"><span class="pre">Root</span></code> name.
+That keeps the UI portable across applications with different root-class names.</p>
+</section>
+<section id="custom-python-top-level-displays">
+<h2>Custom Python Top-Level Displays<a class="headerlink" href="#custom-python-top-level-displays" title="Link to this heading"></a></h2>
+<p>PyDM also supports top-level displays implemented directly in Python. The usual
+pattern is to subclass <code class="xref py py-class docutils literal notranslate"><span class="pre">pydm.Display</span></code>, build the layout in code, and
+return <code class="docutils literal notranslate"><span class="pre">None</span></code> from <code class="docutils literal notranslate"><span class="pre">ui_filepath()</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pydm</span><span class="w"> </span><span class="kn">import</span> <span class="n">Display</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qtpy.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QVBoxLayout</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pyrogue.pydm.widgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">DebugTree</span><span class="p">,</span> <span class="n">SystemWindow</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyTop</span><span class="p">(</span><span class="n">Display</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">macros</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="n">parent</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">,</span> <span class="n">macros</span><span class="o">=</span><span class="n">macros</span><span class="p">)</span>
+
+        <span class="n">layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">SystemWindow</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">init_channel</span><span class="o">=</span><span class="s1">&#39;rogue://0/root&#39;</span><span class="p">))</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">DebugTree</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">init_channel</span><span class="o">=</span><span class="s1">&#39;rogue://0/root&#39;</span><span class="p">))</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">ui_filepath</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">None</span>
+</pre></div>
+</div>
+<p>To launch that display, pass the Python file path through <code class="docutils literal notranslate"><span class="pre">ui=</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue.pydm</span>
 
-<span class="k">with</span> <span class="n">MyRoot</span><span class="p">()</span> <span class="k">as</span> <span class="n">root</span><span class="p">:</span>
-     <span class="n">pyrogue</span><span class="o">.</span><span class="n">pydm</span><span class="o">.</span><span class="n">runPyDM</span><span class="p">(</span><span class="n">root</span><span class="o">=</span><span class="n">root</span><span class="p">,</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;MyTitle&#39;</span><span class="p">,</span><span class="n">sizeX</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span><span class="n">sizeY</span><span class="o">=</span><span class="mi">500</span><span class="p">)</span>
+<span class="n">pyrogue</span><span class="o">.</span><span class="n">pydm</span><span class="o">.</span><span class="n">runPyDM</span><span class="p">(</span>
+    <span class="n">serverList</span><span class="o">=</span><span class="s1">&#39;localhost:9099&#39;</span><span class="p">,</span>
+    <span class="n">ui</span><span class="o">=</span><span class="s1">&#39;path/to/my_top.py&#39;</span><span class="p">,</span>
+    <span class="n">title</span><span class="o">=</span><span class="s1">&#39;My System&#39;</span><span class="p">,</span>
+<span class="p">)</span>
 </pre></div>
 </div>
-<p>The possible args that can be passed to the runPyDm function are:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>serverList: A string list of Rogue servers to connect to. i.e. localhost:9099,server1:9099,server2:9099</p></li>
-<li><p>root: An existing Rogue root object using a virutal client or local root</p></li>
-<li><p>ui: The path to a UI file created with the PyQT designer tool</p></li>
-<li><p>title: The title of the main window</p></li>
-<li><p>sizeX: The GUI size in the X dimension</p></li>
-<li><p>sizeY: The GUI size in the Y dimension</p></li>
+<p>This is slightly awkward, but it reflects how PyDM loads custom top-level
+displays today. Rogue is forwarding that loader mechanism rather than defining
+a separate display-construction API of its own.</p>
+</section>
+<section id="starting-from-python">
+<h2>Starting From Python<a class="headerlink" href="#starting-from-python" title="Link to this heading"></a></h2>
+<p>The Python entry point is <a class="reference internal" href="../api/python/pyrogue/pydm_runpydm.html#pyrogue.pydm.runPyDM" title="pyrogue.pydm.runPyDM"><code class="xref py py-func docutils literal notranslate"><span class="pre">pyrogue.pydm.runPyDM()</span></code></a>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue.pydm</span>
+
+<span class="n">pyrogue</span><span class="o">.</span><span class="n">pydm</span><span class="o">.</span><span class="n">runPyDM</span><span class="p">(</span>
+    <span class="n">serverList</span><span class="o">=</span><span class="s1">&#39;localhost:9099&#39;</span><span class="p">,</span>
+    <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Remote System&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>If the GUI is part of the same Python application as a local Root, the usual
+pattern is to expose that Root through a ZMQ server and then pass its address
+to <a class="reference internal" href="../api/python/pyrogue/pydm_runpydm.html#pyrogue.pydm.runPyDM" title="pyrogue.pydm.runPyDM"><code class="xref py py-func docutils literal notranslate"><span class="pre">pyrogue.pydm.runPyDM()</span></code></a>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue.pydm</span>
+
+<span class="k">with</span> <span class="n">MyRoot</span><span class="p">()</span> <span class="k">as</span> <span class="n">root</span><span class="p">:</span>
+    <span class="n">pyrogue</span><span class="o">.</span><span class="n">pydm</span><span class="o">.</span><span class="n">runPyDM</span><span class="p">(</span>
+        <span class="n">serverList</span><span class="o">=</span><span class="n">root</span><span class="o">.</span><span class="n">zmqServer</span><span class="o">.</span><span class="n">address</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="s1">&#39;My System&#39;</span><span class="p">,</span>
+        <span class="n">sizeX</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+        <span class="n">sizeY</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+<p>In practice, <code class="docutils literal notranslate"><span class="pre">runPyDM</span></code> always connects through the Rogue client interface
+path rather than attaching directly to the Root object.</p>
+<p>The current <a class="reference internal" href="../api/python/pyrogue/pydm_runpydm.html#pyrogue.pydm.runPyDM" title="pyrogue.pydm.runPyDM"><code class="xref py py-func docutils literal notranslate"><span class="pre">pyrogue.pydm.runPyDM()</span></code></a> signature accepts <code class="docutils literal notranslate"><span class="pre">serverList</span></code>
+and does not accept a <code class="docutils literal notranslate"><span class="pre">root=</span></code> argument. Older examples that passed a local
+<code class="docutils literal notranslate"><span class="pre">Root</span></code> directly are stale and should be updated to expose a server first.</p>
+</section>
+<section id="important-runtime-options">
+<h2>Important Runtime Options<a class="headerlink" href="#important-runtime-options" title="Link to this heading"></a></h2>
+<p>The main <a class="reference internal" href="../api/python/pyrogue/pydm_runpydm.html#pyrogue.pydm.runPyDM" title="pyrogue.pydm.runPyDM"><code class="xref py py-func docutils literal notranslate"><span class="pre">pyrogue.pydm.runPyDM()</span></code></a> options are:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">serverList</span></code>: Comma-separated list of <code class="docutils literal notranslate"><span class="pre">host:port</span></code> server addresses.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ui</span></code>: Optional custom <code class="docutils literal notranslate"><span class="pre">.ui</span></code> file or Python file containing a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">pydm.Display</span></code> top-level.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">title</span></code>: Window title.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sizeX</span></code> and <code class="docutils literal notranslate"><span class="pre">sizeY</span></code>: Initial window size.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">maxListExpand</span></code> and <code class="docutils literal notranslate"><span class="pre">maxListSize</span></code>: Limits used by the debug-tree view.</p></li>
 </ul>
-</div></blockquote>
+<p>The command-line launcher defaults to <code class="docutils literal notranslate"><span class="pre">localhost:9099</span></code>. The Python helper’s
+function signature currently defaults to <code class="docutils literal notranslate"><span class="pre">localhost:9090</span></code>, so in practice it
+is better to pass <code class="docutils literal notranslate"><span class="pre">serverList</span></code> explicitly rather than rely on the helper
+default.</p>
+</section>
+<section id="rogue-channel-prefix">
+<h2>Rogue Channel Prefix<a class="headerlink" href="#rogue-channel-prefix" title="Link to this heading"></a></h2>
+<p>Rogue PyDM channels use the <code class="docutils literal notranslate"><span class="pre">rogue://</span></code> prefix. The first server in the
+session is index <code class="docutils literal notranslate"><span class="pre">0</span></code>, the second is <code class="docutils literal notranslate"><span class="pre">1</span></code>, and so on. A typical channel
+looks like:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>rogue://0/root.MyDevice.MyVariable
+</pre></div>
+</div>
+<p>The full channel syntax is covered in <a class="reference internal" href="channel_urls.html"><span class="doc">Channel URLs</span></a>.</p>
+</section>
+<section id="what-to-explore-next">
+<h2>What To Explore Next<a class="headerlink" href="#what-to-explore-next" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Rogue channel syntax: <a class="reference internal" href="channel_urls.html"><span class="doc">Channel URLs</span></a></p></li>
+<li><p>Widget set for custom screens: <a class="reference internal" href="rogue_widgets.html"><span class="doc">Rogue Widgets</span></a></p></li>
+<li><p>Time-series plotting UI: <a class="reference internal" href="timeplot_gui.html"><span class="doc">Starting The Rogue PyDM Timeplot GUI</span></a></p></li>
+<li><p>ZMQ server setup used by PyDM sessions: <a class="reference internal" href="../pyrogue_tree/client_interfaces/zmq_server.html"><span class="doc">Python ZMQServer</span></a></p></li>
+</ul>
+</section>
+<section id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Python: <a class="reference internal" href="../api/python/pyrogue/pydm_runpydm.html"><span class="doc">runPyDM</span></a></p></li>
+</ul>
 </section>
 </section>
 
@@ -152,7 +264,7 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="index.html" class="btn btn-neutral float-left" title="Using the PyDM Gui" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="index.html" class="btn btn-neutral float-left" title="Using The PyDM GUI" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="timeplot_gui.html" class="btn btn-neutral float-right" title="Starting The Rogue PyDM Timeplot GUI" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

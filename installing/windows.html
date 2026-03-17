@@ -6,20 +6,21 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Setting Up Ubuntu On Windows &mdash; Rogue v6.8.4 documentation</title>
+  <title>Setting Up Ubuntu On Windows &mdash; Rogue v6.8.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
-      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=f9c5c301" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=346ffc18" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=2d182aeb"></script>
+      <script src="../_static/documentation_options.js?v=8960aef2"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script src="../_static/custom.js?v=b11a05f1"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -35,7 +36,7 @@
 
           
           
-          <a href="../introduction/index.html" class="icon icon-home">
+          <a href="../index.html" class="icon icon-home">
             Rogue
           </a>
 <div role="search">
@@ -45,58 +46,48 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../introduction/index.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../getting_started/index.html">PyRogue Tree Getting Started Guide</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../advanced_examples/index.html">Advanced Tutorials</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../pyrogue_tree/index.html">PyRogue Tree</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../interfaces/index.html">Interfaces</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../utilities/index.html">Utilities</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../hardware/index.html">Hardware</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../protocols/index.html">Protocols</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../logging/index.html">Logging In Rogue</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../custom_module/index.html">Creating Custom Modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../pydm/index.html">Using the PyDM Gui</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../migration/index.html">Migration Notes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../documentation_index.html">Table of Contents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Introduction</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Installing &amp; Compiling Rogue</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="miniforge.html">Installing Rogue With Miniforge</a></li>
 <li class="toctree-l2"><a class="reference internal" href="miniforge_build.html">Building Rogue Inside Miniforge</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docker.html">Installing Rogue Docker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docker.html">Running Rogue With Docker</a></li>
 <li class="toctree-l2"><a class="reference internal" href="build.html">Building Rogue From Source</a></li>
 <li class="toctree-l2"><a class="reference internal" href="application.html">Compiling A Rogue Application</a></li>
 <li class="toctree-l2"><a class="reference internal" href="firewall.html">Rogue and Miniforge behind a firewall</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Setting Up Ubuntu On Windows</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#wsl2-graphics-support">WSL2 Graphics Support</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#install-ubuntu-on-windows">Install Ubuntu On Windows</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#verify-wsl2">Verify WSL2</a></li>
-</ul>
-</li>
-</ul>
-</li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Setting Up Ubuntu On Windows</a></li>
 <li class="toctree-l2"><a class="reference internal" href="yocto.html">Setting Up Rogue In Yocto</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migration/index.html">Migration Notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api/index.html">API Reference</a></li>
 </ul>
 
-        </div>
+</div>
       </div>
     </nav>
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../introduction/index.html">Rogue</a>
+          <a href="../index.html">Rogue</a>
       </nav>
 
       <div class="wy-nav-content">
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../introduction/index.html" class="icon icon-home" aria-label="Home"></a></li>
-          <li class="breadcrumb-item"><a href="../documentation_index.html">Table of Contents</a></li>
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="index.html">Installing &amp; Compiling Rogue</a></li>
       <li class="breadcrumb-item active">Setting Up Ubuntu On Windows</li>
       <li class="wy-breadcrumbs-aside">
@@ -110,34 +101,40 @@
              
   <section id="setting-up-ubuntu-on-windows">
 <span id="installing-windows"></span><h1>Setting Up Ubuntu On Windows<a class="headerlink" href="#setting-up-ubuntu-on-windows" title="Link to this heading"></a></h1>
-<p>The following instructions setup an <em>Ubuntu On Windows</em> environment required for running Rogue in Miniforge (or build from source) in Windows.
-These instructions are valid for Windows 11 with WSL2.</p>
-<p>For detailed installation instructions, refer to the official Microsoft WSL documentation:</p>
+<p>Running Rogue on Windows starts with setting up Ubuntu under WSL2. Rogue
+itself is not installed natively on Windows; the supported path is to run it
+inside the Linux environment provided by WSL2.</p>
+<p>These instructions are valid for Windows 11 with WSL2.</p>
+<p>For detailed installation instructions, refer to the official Microsoft WSL
+documentation:</p>
 <p><a class="reference external" href="https://learn.microsoft.com/en-us/windows/wsl/install">https://learn.microsoft.com/en-us/windows/wsl/install</a></p>
 <section id="wsl2-graphics-support">
 <h2>WSL2 Graphics Support<a class="headerlink" href="#wsl2-graphics-support" title="Link to this heading"></a></h2>
-<p>Windows 11 includes WSLg (Windows Subsystem for Linux GUI), which provides native support for running graphical Linux applications.
+<p>Windows 11 includes WSLg (Windows Subsystem for Linux GUI), which provides
+native support for running graphical Linux applications.
 No additional X server installation is required.</p>
 </section>
 <section id="install-ubuntu-on-windows">
 <h2>Install Ubuntu On Windows<a class="headerlink" href="#install-ubuntu-on-windows" title="Link to this heading"></a></h2>
-<p>Open up the <em>Microsoft Store</em> icon from the main menu. In the search box
-enter the text <em>Ubuntu</em>. Select the <em>Ubuntu</em> icon (latest LTS version such as Ubuntu 24.04 LTS)
-and install the package.</p>
-<p>Once installation is complete you can find Ubuntu on the main menu as <em>Ubuntu</em>. A bash text
-window will open with an Ubuntu bash prompt.</p>
+<p>Open the Microsoft Store from the main menu. Search for <code class="docutils literal notranslate"><span class="pre">Ubuntu</span></code>, select a
+current LTS release such as Ubuntu 24.04 LTS, and install it.</p>
+<p>Once installation is complete, Ubuntu appears in the main menu. Launch it to
+open a Bash shell in the new Linux environment.</p>
 <section id="verify-wsl2">
 <h3>Verify WSL2<a class="headerlink" href="#verify-wsl2" title="Link to this heading"></a></h3>
-<p>To verify you are running WSL2, open a Windows PowerShell or Command Prompt window and run as adminstrator:</p>
+<p>To verify you are running WSL2, open a Windows PowerShell or Command Prompt
+window as administrator and run:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">wsl</span> <span class="o">--</span><span class="nb">list</span> <span class="o">--</span><span class="n">verbose</span>
 </pre></div>
 </div>
-<p>Ensure your Ubuntu distribution shows version 2. If it shows version 1, upgrade it with:</p>
+<p>Ensure your Ubuntu distribution shows version 2. If it shows version 1, upgrade
+it with:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">wsl</span> <span class="o">--</span><span class="nb">set</span><span class="o">-</span><span class="n">version</span> <span class="n">Ubuntu</span> <span class="mi">2</span>
 </pre></div>
 </div>
-<p>You are now able to install and run miniforge as described in <a class="reference internal" href="miniforge.html#installing-miniforge"><span class="std std-ref">Installing Rogue With Miniforge</span></a>.
-Graphical applications will automatically display using WSLg without additional configuration.</p>
+<p>You can now install and run Miniforge as described in
+<a class="reference internal" href="miniforge.html#installing-miniforge"><span class="std std-ref">Installing Rogue With Miniforge</span></a>. Graphical applications display through WSLg
+without additional X server configuration.</p>
 </section>
 </section>
 </section>

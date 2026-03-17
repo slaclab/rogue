@@ -1,0 +1,242 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UART Memory &mdash; Rogue v6.8.5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=346ffc18" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=8960aef2"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/custom.js?v=b11a05f1"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="GPIB Control" href="gpib.html" />
+    <link rel="prev" title="Xilinx Protocols" href="xilinx/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Built-in Modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../interfaces/index.html">Interfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../simulation/index.html">Simulation Utilities</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Protocols</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="udp/index.html">UDP Protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rssi/index.html">RSSI Protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="packetizer/index.html">Packetizer Protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="network.html">Network Wrapper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="batcher/index.html">Batcher Protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epicsV4/index.html">EPICS V4 Access</a></li>
+<li class="toctree-l3"><a class="reference internal" href="srp/index.html">SRP Protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="xilinx/index.html">Xilinx Protocols</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">UART Memory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gpib.html">GPIB Control</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../hardware/index.html">Hardware</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../utilities/index.html">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">API Reference</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Built-in Modules</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Protocols</a></li>
+      <li class="breadcrumb-item active">UART Memory</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/built_in_modules/protocols/uart.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="uart-memory">
+<span id="protocols-uart"></span><h1>UART Memory<a class="headerlink" href="#uart-memory" title="Link to this heading"></a></h1>
+<p>For simple serial register access, PyRogue provides
+<code class="docutils literal notranslate"><span class="pre">pyrogue.protocols.UartMemory</span></code>. This helper adapts a text-based UART command
+protocol into Rogue memory transactions, making it useful for low-rate control
+and monitor channels, bring-up paths on embedded hardware, and systems that
+expose a simple UART register monitor in firmware.</p>
+<p><code class="docutils literal notranslate"><span class="pre">UartMemory</span></code> lives in the <code class="docutils literal notranslate"><span class="pre">pyrogue.protocols</span></code> namespace and implements a
+memory <code class="docutils literal notranslate"><span class="pre">Slave</span></code> with 32-bit access granularity. Transactions are queued and
+processed on a dedicated worker thread, so the interface can participate in the
+managed <code class="docutils literal notranslate"><span class="pre">Root</span></code> lifecycle through <code class="docutils literal notranslate"><span class="pre">addInterface()</span></code> or <code class="docutils literal notranslate"><span class="pre">addProtocol()</span></code>.</p>
+<section id="transaction-model">
+<h2>Transaction Model<a class="headerlink" href="#transaction-model" title="Link to this heading"></a></h2>
+<p>Each write transaction is split into 32-bit words and sent as
+<code class="docutils literal notranslate"><span class="pre">w</span> <span class="pre">&lt;addr&gt;</span> <span class="pre">&lt;data&gt;</span></code>. Each read or verify transaction is split the same way and
+issued as <code class="docutils literal notranslate"><span class="pre">r</span> <span class="pre">&lt;addr&gt;</span></code>. Returned data is packed back into the transaction
+buffer in little-endian form. Empty responses, malformed responses, or non-zero
+status values are reported as transaction errors. Posted writes are not
+supported by this implementation.</p>
+</section>
+<section id="configuration-example">
+<h2>Configuration Example<a class="headerlink" href="#configuration-example" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue.protocols</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">UartRegBlock</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="c1"># Add RemoteVariable definitions here for your UART-backed register map.</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyRoot</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;MyRoot&#39;</span><span class="p">)</span>
+
+        <span class="n">uart_mem</span> <span class="o">=</span> <span class="n">pyrogue</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">UartMemory</span><span class="p">(</span>
+            <span class="s1">&#39;/dev/ttyUSB0&#39;</span><span class="p">,</span>
+            <span class="mi">115200</span><span class="p">,</span>
+            <span class="n">timeout</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">UartRegBlock</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;UartRegs&#39;</span><span class="p">,</span>
+            <span class="n">offset</span><span class="o">=</span><span class="mh">0x0</span><span class="p">,</span>
+            <span class="n">memBase</span><span class="o">=</span><span class="n">uart_mem</span><span class="p">,</span>
+        <span class="p">))</span>
+</pre></div>
+</div>
+</section>
+<section id="key-constructor-arguments">
+<h2>Key Constructor Arguments<a class="headerlink" href="#key-constructor-arguments" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">device</span></code> selects the serial port path, such as <code class="docutils literal notranslate"><span class="pre">/dev/ttyUSB0</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">baud</span></code> selects the UART baud rate.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">timeout</span></code> controls line-read timeout behavior.</p></li>
+<li><p>Additional keyword arguments are passed through to <code class="docutils literal notranslate"><span class="pre">serial.Serial</span></code> for
+platform-specific serial settings.</p></li>
+</ul>
+</section>
+<section id="operational-notes">
+<h2>Operational Notes<a class="headerlink" href="#operational-notes" title="Link to this heading"></a></h2>
+<p>Confirm that serial settings such as baud, parity, and stop bits match the
+endpoint firmware. Keep transactions aligned to 32-bit words for predictable
+behavior, because the implementation always operates one 32-bit word at a time.
+This interface is best suited to low-rate memory access rather than bulk data
+paths.</p>
+</section>
+<section id="logging">
+<h2>Logging<a class="headerlink" href="#logging" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">UartMemory</span></code> uses Python logging. The logger name includes the serial device
+path, following the pattern <code class="docutils literal notranslate"><span class="pre">pyrogue.UartMemory.&lt;device&gt;</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+
+<span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;pyrogue.UartMemory&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The current implementation has several transaction-level debug statements in
+the code commented out, so enabling the logger is most useful when those debug
+calls are active or when additional UART diagnostics are added.</p>
+</section>
+<section id="related-topics">
+<h2>Related Topics<a class="headerlink" href="#related-topics" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Memory-style transaction flow: <a class="reference internal" href="../../memory_interface/index.html"><span class="doc">Memory Interface</span></a></p></li>
+<li><p>Managed interface lifecycle: <a class="reference internal" href="../../pyrogue_tree/core/device.html#pyrogue-tree-node-device-managed-interfaces"><span class="std std-ref">Example: Runtime Work In _start() And _stop()</span></a></p></li>
+</ul>
+</section>
+<section id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Python:</p>
+<ul>
+<li><p><a class="reference internal" href="../../api/python/pyrogue/protocols/uartmemory.html"><span class="doc">UartMemory</span></a></p></li>
+</ul>
+</li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="xilinx/index.html" class="btn btn-neutral float-left" title="Xilinx Protocols" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="gpib.html" class="btn btn-neutral float-right" title="GPIB Control" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,244 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stream Interface &mdash; Rogue v6.8.5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=346ffc18" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=8960aef2"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script src="../_static/custom.js?v=b11a05f1"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Connecting Streams" href="connecting.html" />
+    <link rel="prev" title="Using the Command Line Client" href="../pyrogue_tree/client_interfaces/commandline.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Stream Interface</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="connecting.html">Connecting Streams</a></li>
+<li class="toctree-l2"><a class="reference internal" href="frame_model.html">Frame Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sending.html">Sending Frames</a></li>
+<li class="toctree-l2"><a class="reference internal" href="receiving.html">Receiving Frames</a></li>
+<li class="toctree-l2"><a class="reference internal" href="built_in_modules.html">Built-in Stream Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../custom_module/index.html">Creating Custom Modules</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API Reference</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Stream Interface</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/stream_interface/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="stream-interface">
+<span id="interfaces-stream"></span><span id="stream-interface-overview"></span><span id="stream-interface-docs"></span><h1>Stream Interface<a class="headerlink" href="#stream-interface" title="Link to this heading"></a></h1>
+<p>The stream interface is Rogue’s bulk-data path for moving <code class="docutils literal notranslate"><span class="pre">Frame</span></code> objects
+between modules. A <code class="docutils literal notranslate"><span class="pre">Master</span></code> produces <code class="docutils literal notranslate"><span class="pre">Frame</span></code> objects, one or more
+<code class="docutils literal notranslate"><span class="pre">Slave</span></code> objects consume them, and the stream graph between them can be
+composed from reusable buffering, filtering, rate-control, debug, and bridge
+modules.</p>
+<p>You use the stream interface when the application needs to move payload-oriented
+data rather than register transactions. Typical examples include acquisition
+pipelines, decoder chains, packet processing, diagnostic monitor branches, file
+capture, and network export of streaming data. Instead of writing one large
+processing loop, you connect small stream components that each perform one job.</p>
+<section id="quick-connection-example">
+<h2>Quick Connection Example<a class="headerlink" href="#quick-connection-example" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">rogue.interfaces.stream</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ris</span>
+
+<span class="n">src</span> <span class="o">=</span> <span class="n">MyCustomMaster</span><span class="p">()</span>
+<span class="n">fifo</span> <span class="o">=</span> <span class="n">ris</span><span class="o">.</span><span class="n">Fifo</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+<span class="n">rate</span> <span class="o">=</span> <span class="n">ris</span><span class="o">.</span><span class="n">RateDrop</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>  <span class="c1"># Keep at most one Frame every 0.1 s</span>
+<span class="n">dst</span> <span class="o">=</span> <span class="n">MyCustomSlave</span><span class="p">()</span>
+
+<span class="n">src</span> <span class="o">&gt;&gt;</span> <span class="n">fifo</span> <span class="o">&gt;&gt;</span> <span class="n">rate</span> <span class="o">&gt;&gt;</span> <span class="n">dst</span>
+</pre></div>
+</div>
+<p>In this chain, <code class="docutils literal notranslate"><span class="pre">Fifo</span></code> absorbs bursts by queuing incoming <code class="docutils literal notranslate"><span class="pre">Frame</span></code> objects
+and <code class="docutils literal notranslate"><span class="pre">RateDrop</span></code> reduces how often the downstream <code class="docutils literal notranslate"><span class="pre">Slave</span></code> receives traffic.
+This is a common pattern when the producer runs faster than a monitor, logger,
+or analysis stage.</p>
+</section>
+<section id="connection-model">
+<h2>Connection Model<a class="headerlink" href="#connection-model" title="Link to this heading"></a></h2>
+<p>Rogue overloads a few operators to make stream topology construction concise:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">master</span> <span class="pre">&gt;&gt;</span> <span class="pre">slave</span></code> creates a one-way connection</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">slave</span> <span class="pre">&lt;&lt;</span> <span class="pre">master</span></code> creates the same one-way connection with reversed syntax</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">endpointA</span> <span class="pre">==</span> <span class="pre">endpointB</span></code> creates a bi-directional connection for endpoints
+that implement both <code class="docutils literal notranslate"><span class="pre">Master</span></code> and <code class="docutils literal notranslate"><span class="pre">Slave</span></code> behavior</p></li>
+</ul>
+<p>A single <code class="docutils literal notranslate"><span class="pre">Master</span></code> can connect to multiple downstream <code class="docutils literal notranslate"><span class="pre">Slave</span></code> objects. The
+first attached <code class="docutils literal notranslate"><span class="pre">Slave</span></code> becomes the primary <code class="docutils literal notranslate"><span class="pre">Slave</span></code>. That matters because
+the primary <code class="docutils literal notranslate"><span class="pre">Slave</span></code> services <code class="docutils literal notranslate"><span class="pre">reqFrame()</span></code> allocation requests, and
+<code class="docutils literal notranslate"><span class="pre">sendFrame()</span></code> delivers to secondary <code class="docutils literal notranslate"><span class="pre">Slave</span></code> objects before the primary one.
+That ordering is important when the primary path consumes or empties a
+zero-copy <code class="docutils literal notranslate"><span class="pre">Frame</span></code>.</p>
+</section>
+<section id="implementation-model">
+<h2>Implementation Model<a class="headerlink" href="#implementation-model" title="Link to this heading"></a></h2>
+<p>The stream interface implementation lives in C++ for performance and predictable
+threaded behavior. Rogue exposes these classes to Python, so stream topologies
+can be built and orchestrated in Python while the high-rate transport and
+processing path remains in C++.</p>
+<p>That split makes a practical workflow possible:</p>
+<ol class="arabic simple">
+<li><p>Build and connect the stream graph in Python first.</p></li>
+<li><p>Validate the topology with realistic traffic and debugging tools.</p></li>
+<li><p>Move only the bottleneck stages into C++ when measurements justify it.</p></li>
+</ol>
+</section>
+<section id="core-types">
+<h2>Core Types<a class="headerlink" href="#core-types" title="Link to this heading"></a></h2>
+<p>Three types appear throughout the stream interface:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Master</span></code> is the source endpoint that allocates and transmits <code class="docutils literal notranslate"><span class="pre">Frame</span></code>
+objects.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Slave</span></code> is the sink endpoint that receives <code class="docutils literal notranslate"><span class="pre">Frame</span></code> objects and may also
+participate in <code class="docutils literal notranslate"><span class="pre">Frame</span></code> allocation.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Frame</span></code> is the payload and metadata container that moves through the graph.</p></li>
+</ul>
+<p>A <code class="docutils literal notranslate"><span class="pre">Frame</span></code> payload may span multiple underlying <code class="docutils literal notranslate"><span class="pre">Buffer</span></code> objects. In C++,
+<code class="docutils literal notranslate"><span class="pre">FrameIterator</span></code> lets code traverse those bytes without manually managing
+buffer boundaries.</p>
+</section>
+<section id="what-to-explore-next">
+<h2>What To Explore Next<a class="headerlink" href="#what-to-explore-next" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Connection semantics: <a class="reference internal" href="connecting.html"><span class="doc">Connecting Streams</span></a></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Frame</span></code> semantics and metadata: <a class="reference internal" href="frame_model.html"><span class="doc">Frame Model</span></a></p></li>
+<li><p>Custom transmitters: <a class="reference internal" href="sending.html"><span class="doc">Sending Frames</span></a></p></li>
+<li><p>Custom receivers: <a class="reference internal" href="receiving.html"><span class="doc">Receiving Frames</span></a></p></li>
+<li><p>Built-in stream modules: <a class="reference internal" href="built_in_modules.html"><span class="doc">Built-in Stream Modules</span></a></p></li>
+</ul>
+</section>
+<section id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Python:</p>
+<ul>
+<li><p><a class="reference internal" href="../api/python/rogue/interfaces/stream/master.html"><span class="doc">Master</span></a></p></li>
+<li><p><a class="reference internal" href="../api/python/rogue/interfaces/stream/slave.html"><span class="doc">Slave</span></a></p></li>
+<li><p><a class="reference internal" href="../api/python/rogue/interfaces/stream/frame.html"><span class="doc">Frame</span></a></p></li>
+</ul>
+</li>
+<li><p>C++:</p>
+<ul>
+<li><p><a class="reference internal" href="../api/cpp/interfaces/stream/master.html"><span class="doc">Master</span></a></p></li>
+<li><p><a class="reference internal" href="../api/cpp/interfaces/stream/slave.html"><span class="doc">Slave</span></a></p></li>
+<li><p><a class="reference internal" href="../api/cpp/interfaces/stream/frame.html"><span class="doc">Frame</span></a></p></li>
+</ul>
+</li>
+</ul>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Stream Interface:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="connecting.html">Connecting Streams</a></li>
+<li class="toctree-l1"><a class="reference internal" href="frame_model.html">Frame Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sending.html">Sending Frames</a></li>
+<li class="toctree-l1"><a class="reference internal" href="receiving.html">Receiving Frames</a></li>
+<li class="toctree-l1"><a class="reference internal" href="built_in_modules.html">Built-in Stream Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../custom_module/index.html">Creating Custom Modules</a></li>
+</ul>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../pyrogue_tree/client_interfaces/commandline.html" class="btn btn-neutral float-left" title="Using the Command Line Client" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="connecting.html" class="btn btn-neutral float-right" title="Connecting Streams" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

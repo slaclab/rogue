@@ -4,7 +4,10 @@
 ControllerV2
 ============
 
-TODO
+``ControllerV2`` is the packetizer v2 controller implementation used by
+``CoreV2`` and includes inbound/outbound CRC handling controls.
+This page is reference-only; for version-selection guidance see
+:doc:`/built_in_modules/protocols/packetizer/coreV2`.
 
 
 ControllerV2 objects in C++ are referenced by the following shared pointer typedef:

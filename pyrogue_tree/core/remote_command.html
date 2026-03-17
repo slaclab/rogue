@@ -1,0 +1,416 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RemoteCommand &mdash; Rogue v6.8.5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=346ffc18" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=8960aef2"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/custom.js?v=b11a05f1"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Blocks" href="block.html" />
+    <link rel="prev" title="LocalCommand" href="local_command.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">PyRogue Tree</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Components And Concepts</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="root.html">Root</a></li>
+<li class="toctree-l3"><a class="reference internal" href="device.html">Device</a></li>
+<li class="toctree-l3"><a class="reference internal" href="variable.html">Variable</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="command.html">Command</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="local_command.html">LocalCommand</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">RemoteCommand</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="block.html">Blocks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="block_operations.html">Device Block Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="model.html">Model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fixed_point_models.html">Fixed-Point Models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="poll_queue.html">PollQueue</a></li>
+<li class="toctree-l3"><a class="reference internal" href="yaml_configuration.html">YAML Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="memory_variable_stream.html">Variable Update Stream</a></li>
+<li class="toctree-l3"><a class="reference internal" href="groups.html">Groups</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../builtin_devices/index.html">Built-in Devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../client_interfaces/index.html">Client Interfaces</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">API Reference</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">PyRogue Tree</a></li>
+          <li class="breadcrumb-item"><a href="index.html">PyRogue Tree Components And Concepts</a></li>
+          <li class="breadcrumb-item"><a href="command.html">Command</a></li>
+      <li class="breadcrumb-item active">RemoteCommand</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/pyrogue_tree/core/remote_command.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="remotecommand">
+<span id="pyrogue-tree-node-command-remote-command"></span><h1>RemoteCommand<a class="headerlink" href="#remotecommand" title="Link to this heading"></a></h1>
+<p><a class="reference internal" href="../../api/python/pyrogue/remotecommand.html#pyrogue.RemoteCommand" title="pyrogue.RemoteCommand"><code class="xref py py-class docutils literal notranslate"><span class="pre">RemoteCommand</span></code></a> is the right choice when a tree action is
+really a hardware-backed write, but should read like a command rather than like
+persistent state. It combines <code class="docutils literal notranslate"><span class="pre">Command</span></code> invocation behavior with
+<code class="docutils literal notranslate"><span class="pre">RemoteVariable</span></code> register mapping.</p>
+<p>Typical use cases include:</p>
+<ul class="simple">
+<li><p>Triggering a hardware reset register</p></li>
+<li><p>Pulsing a self-clearing strobe bit</p></li>
+<li><p>Touching a command register with a fixed value</p></li>
+<li><p>Issuing a posted write when the command bit should not be read back</p></li>
+</ul>
+<section id="when-to-use-remotecommand">
+<h2>When To Use RemoteCommand<a class="headerlink" href="#when-to-use-remotecommand" title="Link to this heading"></a></h2>
+<p>Use <code class="docutils literal notranslate"><span class="pre">RemoteCommand</span></code> when the tree should expose “do this now”, but the
+implementation still lives in a memory-mapped field.</p>
+<p>This is often a better fit than a writable <code class="docutils literal notranslate"><span class="pre">RemoteVariable</span></code> for reset pulses,
+update strobes, trigger bits, apply bits, and other actions that are not meant
+to represent persistent operator-managed state.</p>
+</section>
+<section id="what-you-usually-set">
+<h2>What You Usually Set<a class="headerlink" href="#what-you-usually-set" title="Link to this heading"></a></h2>
+<p>Most <code class="docutils literal notranslate"><span class="pre">RemoteCommand</span></code> definitions use the shared command behavior from
+<a class="reference internal" href="command.html"><span class="doc">Command</span></a> together with the remote mapping parameters
+that describe the hardware field:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">offset</span></code> for the register address</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">bitSize</span></code> and <code class="docutils literal notranslate"><span class="pre">bitOffset</span></code> for the command field</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">base</span></code> for the underlying data model</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">function</span></code> for the command action policy</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">value</span></code> when the command has a meaningful default argument</p></li>
+</ul>
+<p>In practice, <code class="docutils literal notranslate"><span class="pre">function</span></code> is the parameter that most strongly determines what
+invoking the command actually does.</p>
+</section>
+<section id="how-remotecommand-works">
+<h2>How RemoteCommand Works<a class="headerlink" href="#how-remotecommand-works" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">RemoteCommand</span></code> is still a <code class="docutils literal notranslate"><span class="pre">Command</span></code> node, so users invoke it as
+<code class="docutils literal notranslate"><span class="pre">cmd()</span></code> or <code class="docutils literal notranslate"><span class="pre">cmd(arg)</span></code>. Under the hood, the command callback receives the
+normal command wrapper keywords:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">root</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dev</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cmd</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">arg</span></code></p></li>
+</ul>
+<p>For <code class="docutils literal notranslate"><span class="pre">RemoteCommand</span></code>, the callback usually operates by calling methods on
+<code class="docutils literal notranslate"><span class="pre">cmd</span></code> such as:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">cmd.set(value)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cmd.get(read=True)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cmd.post(value)</span></code></p></li>
+</ul>
+<p>That is why the built-in helper functions work so well here: they are small
+command policies layered on top of the mapped register field.</p>
+</section>
+<section id="built-in-command-functions">
+<h2>Built-In Command Functions<a class="headerlink" href="#built-in-command-functions" title="Link to this heading"></a></h2>
+<p>PyRogue includes several built-in helper functions on
+<a class="reference internal" href="../../api/python/pyrogue/basecommand.html#pyrogue.BaseCommand" title="pyrogue.BaseCommand"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseCommand</span></code></a> that are commonly passed as the <code class="docutils literal notranslate"><span class="pre">function</span></code>
+for a <code class="docutils literal notranslate"><span class="pre">RemoteCommand</span></code>.</p>
+<p>In code, these are often referenced as either <code class="docutils literal notranslate"><span class="pre">pr.BaseCommand.touchOne</span></code> or
+<code class="docutils literal notranslate"><span class="pre">pr.RemoteCommand.touchOne</span></code> because <code class="docutils literal notranslate"><span class="pre">RemoteCommand</span></code> inherits from
+<code class="docutils literal notranslate"><span class="pre">BaseCommand</span></code>.</p>
+<p>The most important ones are:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">toggle</span></code> writes <code class="docutils literal notranslate"><span class="pre">1</span></code> and then <code class="docutils literal notranslate"><span class="pre">0</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">touchOne</span></code> writes <code class="docutils literal notranslate"><span class="pre">1</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">touchZero</span></code> writes <code class="docutils literal notranslate"><span class="pre">0</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">touch</span></code> writes the supplied argument, or <code class="docutils literal notranslate"><span class="pre">1</span></code> when no argument is given</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">postedTouchOne</span></code> posts <code class="docutils literal notranslate"><span class="pre">1</span></code> without the normal blocking write path</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">postedTouchZero</span></code> posts <code class="docutils literal notranslate"><span class="pre">0</span></code> without the normal blocking write path</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">postedTouch</span></code> posts the supplied argument</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">createTouch(value)</span></code> creates a helper that always writes one fixed value</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">createPostedTouch(value)</span></code> creates a posted helper for one fixed value</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">createToggle(values)</span></code> creates a helper that writes a configured sequence
+of values</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">setArg</span></code> writes the supplied argument</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">setAndVerifyArg</span></code> writes the supplied argument and checks that it reads
+back correctly</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">read</span></code> performs a read of the mapped command field</p></li>
+</ul>
+<p>The right helper depends on the hardware semantics.</p>
+<section id="toggle-for-pulse-style-commands">
+<h3><code class="docutils literal notranslate"><span class="pre">toggle</span></code> For Pulse-Style Commands<a class="headerlink" href="#toggle-for-pulse-style-commands" title="Link to this heading"></a></h3>
+<p>Use <code class="docutils literal notranslate"><span class="pre">toggle</span></code> when the action is represented by a <code class="docutils literal notranslate"><span class="pre">1</span> <span class="pre">-&gt;</span> <span class="pre">0</span></code> pulse.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyDevice</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteCommand</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;CountReset&#39;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Pulse the hardware counter reset bit&#39;</span><span class="p">,</span>
+            <span class="n">offset</span><span class="o">=</span><span class="mh">0x00</span><span class="p">,</span>
+            <span class="n">bitSize</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">bitOffset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">base</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
+            <span class="n">function</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">BaseCommand</span><span class="o">.</span><span class="n">toggle</span><span class="p">,</span>
+        <span class="p">))</span>
+</pre></div>
+</div>
+<p>This is one of the most common <code class="docutils literal notranslate"><span class="pre">RemoteCommand</span></code> patterns in real hardware
+trees.</p>
+</section>
+<section id="touchone-and-touchzero-for-fixed-value-writes">
+<h3><code class="docutils literal notranslate"><span class="pre">touchOne</span></code> And <code class="docutils literal notranslate"><span class="pre">touchZero</span></code> For Fixed-Value Writes<a class="headerlink" href="#touchone-and-touchzero-for-fixed-value-writes" title="Link to this heading"></a></h3>
+<p>Use these when the hardware action is a single fixed write rather than a pulse
+sequence.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyDevice</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteCommand</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;DeviceUpdate&#39;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Latch recently written configuration values&#39;</span><span class="p">,</span>
+            <span class="n">offset</span><span class="o">=</span><span class="mh">0x3FC</span><span class="p">,</span>
+            <span class="n">bitSize</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">base</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
+            <span class="n">function</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">BaseCommand</span><span class="o">.</span><span class="n">touchZero</span><span class="p">,</span>
+        <span class="p">))</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">touchOne</span></code> is similarly common for self-clearing strobe bits that trigger on
+the write of <code class="docutils literal notranslate"><span class="pre">1</span></code>.</p>
+</section>
+<section id="touch-for-argument-driven-writes">
+<h3><code class="docutils literal notranslate"><span class="pre">touch</span></code> For Argument-Driven Writes<a class="headerlink" href="#touch-for-argument-driven-writes" title="Link to this heading"></a></h3>
+<p>Use <code class="docutils literal notranslate"><span class="pre">touch</span></code> when the command should write the caller-provided argument.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyDevice</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteCommand</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;FreezeDebug&#39;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Write the debug freeze control field&#39;</span><span class="p">,</span>
+            <span class="n">offset</span><span class="o">=</span><span class="mh">0xA0</span><span class="p">,</span>
+            <span class="n">bitSize</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">base</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
+            <span class="n">value</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">function</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">BaseCommand</span><span class="o">.</span><span class="n">touch</span><span class="p">,</span>
+        <span class="p">))</span>
+</pre></div>
+</div>
+<p>Calling <code class="docutils literal notranslate"><span class="pre">FreezeDebug(1)</span></code> writes <code class="docutils literal notranslate"><span class="pre">1</span></code>. Calling <code class="docutils literal notranslate"><span class="pre">FreezeDebug(0)</span></code> writes
+<code class="docutils literal notranslate"><span class="pre">0</span></code>. If the caller omits the argument, <code class="docutils literal notranslate"><span class="pre">touch</span></code> falls back to <code class="docutils literal notranslate"><span class="pre">1</span></code>.</p>
+</section>
+<section id="postedtouch-for-posted-writes">
+<h3><code class="docutils literal notranslate"><span class="pre">postedTouch...</span></code> For Posted Writes<a class="headerlink" href="#postedtouch-for-posted-writes" title="Link to this heading"></a></h3>
+<p>Use the posted variants when the hardware command should be issued through
+<code class="docutils literal notranslate"><span class="pre">post()</span></code> rather than the normal blocking write path.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyDevice</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteCommand</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;FpgaReload&#39;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Request FPGA reload through a posted write&#39;</span><span class="p">,</span>
+            <span class="n">offset</span><span class="o">=</span><span class="mh">0x104</span><span class="p">,</span>
+            <span class="n">bitSize</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">bitOffset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">base</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
+            <span class="n">function</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">BaseCommand</span><span class="o">.</span><span class="n">postedTouchOne</span><span class="p">,</span>
+        <span class="p">))</span>
+</pre></div>
+</div>
+<p>This pattern is useful when the command bit is self-clearing, has unusual
+readback behavior, or should not participate in the normal write/verify path.</p>
+</section>
+<section id="createtouch-and-createtoggle-for-captured-policies">
+<h3><code class="docutils literal notranslate"><span class="pre">createTouch</span></code> And <code class="docutils literal notranslate"><span class="pre">createToggle</span></code> For Captured Policies<a class="headerlink" href="#createtouch-and-createtoggle-for-captured-policies" title="Link to this heading"></a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">create...</span></code> helpers are factories that return command functions with a
+captured fixed value or sequence. They are useful when the hardware protocol
+does not match one of the standard one-line helpers directly.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyDevice</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteCommand</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;SpecialKick&#39;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Write the required three-step kick sequence&#39;</span><span class="p">,</span>
+            <span class="n">offset</span><span class="o">=</span><span class="mh">0x20</span><span class="p">,</span>
+            <span class="n">bitSize</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
+            <span class="n">base</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
+            <span class="n">function</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">BaseCommand</span><span class="o">.</span><span class="n">createToggle</span><span class="p">([</span><span class="mh">0x5A</span><span class="p">,</span> <span class="mh">0xA5</span><span class="p">,</span> <span class="mh">0x00</span><span class="p">]),</span>
+        <span class="p">))</span>
+</pre></div>
+</div>
+<p>Likewise, <code class="docutils literal notranslate"><span class="pre">createTouch(0x81)</span></code> is a compact way to define a command that
+always writes <code class="docutils literal notranslate"><span class="pre">0x81</span></code>. <code class="docutils literal notranslate"><span class="pre">createPostedTouch(0x81)</span></code> does the same thing
+through <code class="docutils literal notranslate"><span class="pre">post()</span></code> instead of <code class="docutils literal notranslate"><span class="pre">set()</span></code>.</p>
+</section>
+<section id="setarg-and-setandverifyarg-for-argument-carrying-commands">
+<h3><code class="docutils literal notranslate"><span class="pre">setArg</span></code> And <code class="docutils literal notranslate"><span class="pre">setAndVerifyArg</span></code> For Argument-Carrying Commands<a class="headerlink" href="#setarg-and-setandverifyarg-for-argument-carrying-commands" title="Link to this heading"></a></h3>
+<p>These helpers are useful when the command node should behave like an explicit
+command wrapper around a writable field.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyDevice</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteCommand</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;StartAddress&#39;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Write the capture start address through a command node&#39;</span><span class="p">,</span>
+            <span class="n">offset</span><span class="o">=</span><span class="mh">0x40</span><span class="p">,</span>
+            <span class="n">bitSize</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span>
+            <span class="n">base</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
+            <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">function</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">BaseCommand</span><span class="o">.</span><span class="n">setAndVerifyArg</span><span class="p">,</span>
+        <span class="p">))</span>
+</pre></div>
+</div>
+<p>This is less common than the strobe-style helpers, but it can be useful when
+you want the tree surface to read like an action rather than like persistent
+register state.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">read</span></code> helper is also available, though it is more specialized. It is
+mainly useful for diagnostic or synchronization cases where invoking the
+command should explicitly perform a read of the mapped command field.</p>
+</section>
+</section>
+<section id="custom-command-functions">
+<h2>Custom Command Functions<a class="headerlink" href="#custom-command-functions" title="Link to this heading"></a></h2>
+<p>You are not limited to the built-in helpers. A custom callback is appropriate
+when the hardware action needs a small amount of extra policy.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyDevice</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteCommand</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;ReloadAtAddress&#39;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Write a reload request using the current address field&#39;</span><span class="p">,</span>
+            <span class="n">offset</span><span class="o">=</span><span class="mh">0x104</span><span class="p">,</span>
+            <span class="n">bitSize</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">base</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
+            <span class="n">function</span><span class="o">=</span><span class="k">lambda</span> <span class="n">cmd</span><span class="p">:</span> <span class="n">cmd</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+        <span class="p">))</span>
+</pre></div>
+</div>
+<p>Use a custom function when the command behavior is still simple but does not
+fit one of the built-in helpers cleanly.</p>
+</section>
+<section id="what-to-explore-next">
+<h2>What To Explore Next<a class="headerlink" href="#what-to-explore-next" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Software-defined commands: <a class="reference internal" href="local_command.html"><span class="doc">LocalCommand</span></a></p></li>
+<li><p>Shared command behavior: <a class="reference internal" href="command.html"><span class="doc">Command</span></a></p></li>
+<li><p>Hardware-backed Variables: <a class="reference internal" href="remote_variable.html"><span class="doc">RemoteVariable</span></a></p></li>
+</ul>
+</section>
+<section id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<p>See <a class="reference internal" href="../../api/python/pyrogue/remotecommand.html"><span class="doc">RemoteCommand</span></a> for generated API details.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="local_command.html" class="btn btn-neutral float-left" title="LocalCommand" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="block.html" class="btn btn-neutral float-right" title="Blocks" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

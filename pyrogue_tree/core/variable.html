@@ -1,0 +1,428 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Variable &mdash; Rogue v6.8.5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=346ffc18" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=8960aef2"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/custom.js?v=b11a05f1"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="LocalVariable" href="local_variable.html" />
+    <link rel="prev" title="Device" href="device.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">PyRogue Tree</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Components And Concepts</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="root.html">Root</a></li>
+<li class="toctree-l3"><a class="reference internal" href="device.html">Device</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Variable</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="local_variable.html">LocalVariable</a></li>
+<li class="toctree-l4"><a class="reference internal" href="remote_variable.html">RemoteVariable</a></li>
+<li class="toctree-l4"><a class="reference internal" href="link_variable.html">LinkVariable</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="command.html">Command</a></li>
+<li class="toctree-l3"><a class="reference internal" href="block.html">Blocks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="block_operations.html">Device Block Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="model.html">Model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fixed_point_models.html">Fixed-Point Models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="poll_queue.html">PollQueue</a></li>
+<li class="toctree-l3"><a class="reference internal" href="yaml_configuration.html">YAML Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="memory_variable_stream.html">Variable Update Stream</a></li>
+<li class="toctree-l3"><a class="reference internal" href="groups.html">Groups</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../builtin_devices/index.html">Built-in Devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../client_interfaces/index.html">Client Interfaces</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">API Reference</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">PyRogue Tree</a></li>
+          <li class="breadcrumb-item"><a href="index.html">PyRogue Tree Components And Concepts</a></li>
+      <li class="breadcrumb-item active">Variable</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/pyrogue_tree/core/variable.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="variable">
+<span id="pyrogue-tree-node-variable"></span><h1>Variable<a class="headerlink" href="#variable" title="Link to this heading"></a></h1>
+<p>Variables are the value-carrying Nodes in the PyRogue tree. They are the main
+way a tree exposes state to users, GUIs, scripts, and higher-level software.
+In practice, most of what operators read and most of what applications
+configure flows through <code class="docutils literal notranslate"><span class="pre">Variable</span></code> Nodes.</p>
+<p>A Variable can represent:</p>
+<ul class="simple">
+<li><p>Software-owned state.</p></li>
+<li><p>A hardware register or bit field.</p></li>
+<li><p>A derived engineering view computed from other Variables.</p></li>
+</ul>
+<p>That breadth is why Variable design matters so much to the quality of a tree.
+Good Variables make the system readable, scriptable, and safe to operate.</p>
+<section id="what-variables-provide">
+<h2>What Variables Provide<a class="headerlink" href="#what-variables-provide" title="Link to this heading"></a></h2>
+<p>Across the different subtypes, Variables provide a shared set of behaviors:</p>
+<ul class="simple">
+<li><p>Typed values and display formatting.</p></li>
+<li><p>Access-mode control such as <code class="docutils literal notranslate"><span class="pre">RW</span></code>, <code class="docutils literal notranslate"><span class="pre">RO</span></code>, and <code class="docutils literal notranslate"><span class="pre">WO</span></code>.</p></li>
+<li><p>Units, enums, limits, and display metadata.</p></li>
+<li><p>Update notifications for GUIs and remote listeners.</p></li>
+<li><p>Optional polling and hardware-backed access behavior.</p></li>
+</ul>
+<p>Those common behaviors are what make local, remote, and linked Variables feel
+like one coherent part of the tree, even though their implementations differ.</p>
+<p>For hardware-backed Variables, the actual bus activity still flows through the
+foundational <code class="docutils literal notranslate"><span class="pre">Device</span></code> transaction model built around write, verify, read,
+and check. Variable APIs present the value-oriented surface, while <code class="docutils literal notranslate"><span class="pre">Device</span></code>
+owns the bulk traversal and transaction model underneath.</p>
+</section>
+<section id="what-you-usually-set">
+<h2>What You Usually Set<a class="headerlink" href="#what-you-usually-set" title="Link to this heading"></a></h2>
+<p>The generated API reference contains the full constructor signature for each
+Variable class. The narrative docs have a narrower job: explain the shared
+parameters that most often shape how a Variable behaves in a tree. The subtype
+pages then add the parameters that matter most for their own behavior, such as
+<code class="docutils literal notranslate"><span class="pre">offset</span></code> for <code class="docutils literal notranslate"><span class="pre">RemoteVariable</span></code> or <code class="docutils literal notranslate"><span class="pre">dependencies</span></code> for <code class="docutils literal notranslate"><span class="pre">LinkVariable</span></code>.</p>
+<p>Across the Variable types, these are the parameters that usually deserve the
+most attention:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 22.0%" />
+<col style="width: 78.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Role</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">name</span></code></p></td>
+<td><p>Defines the tree path segment and the attribute name users interact
+with.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">description</span></code></p></td>
+<td><p>Provides short operator-facing help text for GUIs, scripts, and other
+tooling.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">mode</span></code></p></td>
+<td><p>Controls read and write policy, usually <code class="docutils literal notranslate"><span class="pre">RW</span></code>, <code class="docutils literal notranslate"><span class="pre">RO</span></code>, or <code class="docutils literal notranslate"><span class="pre">WO</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">disp</span></code></p></td>
+<td><p>Formats values for display-oriented APIs such as <code class="docutils literal notranslate"><span class="pre">getDisp()</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">enum</span></code></p></td>
+<td><p>Maps integer values to named states.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">units</span></code></p></td>
+<td><p>Labels the engineering meaning of the value.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">pollInterval</span></code></p></td>
+<td><p>Enables periodic refresh for changing status or telemetry.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">hidden</span></code></p></td>
+<td><p>Removes the Variable from normal user-facing views when set to
+<code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">groups</span></code></p></td>
+<td><p>Adds labels that tree-level tools and workflows can use for filtering
+or policy decisions.</p></td>
+</tr>
+</tbody>
+</table>
+<p>Start by getting <code class="docutils literal notranslate"><span class="pre">name</span></code> and <code class="docutils literal notranslate"><span class="pre">description</span></code> right. Those two fields do most
+of the work of making a tree understandable to users, GUIs, and scripts, and
+they usually matter more than lower-priority metadata.</p>
+<p>Use <code class="docutils literal notranslate"><span class="pre">mode</span></code> to express intent clearly. <code class="docutils literal notranslate"><span class="pre">RW</span></code> fits normal configuration and
+readable state, <code class="docutils literal notranslate"><span class="pre">RO</span></code> fits telemetry, status, counters, and derived views,
+and <code class="docutils literal notranslate"><span class="pre">WO</span></code> fits strobes, triggers, and other write-only control surfaces.</p>
+<p>Use <code class="docutils literal notranslate"><span class="pre">disp</span></code>, <code class="docutils literal notranslate"><span class="pre">enum</span></code>, and <code class="docutils literal notranslate"><span class="pre">units</span></code> to make the value readable in operator
+terms instead of exposing only the raw stored representation. That is often
+the difference between a tree that feels like a register map and one that
+feels like an interface.</p>
+<p>Use <code class="docutils literal notranslate"><span class="pre">pollInterval</span></code> selectively for changing status and telemetry. Values
+that rarely change usually read better as on-demand state than as constant
+background traffic. For the scheduling model behind polling, see
+<a class="reference internal" href="poll_queue.html"><span class="doc">PollQueue</span></a>.</p>
+<p>Use <code class="docutils literal notranslate"><span class="pre">hidden</span></code> and <code class="docutils literal notranslate"><span class="pre">groups</span></code> to control how the Variable participates in
+presentation and higher-level workflows. <code class="docutils literal notranslate"><span class="pre">hidden=True</span></code> removes it from
+normal user-facing views, while <code class="docutils literal notranslate"><span class="pre">groups</span></code> provides labels for filtering and
+policy decisions. For the grouping model itself, see
+<a class="reference internal" href="groups.html"><span class="doc">Groups</span></a>.</p>
+</section>
+<section id="choosing-the-right-variable-type">
+<h2>Choosing The Right Variable Type<a class="headerlink" href="#choosing-the-right-variable-type" title="Link to this heading"></a></h2>
+<p>PyRogue provides three primary Variable subtypes:</p>
+<div class="toctree-wrapper compound">
+</div>
+<p>Choose:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="local_variable.html"><span class="doc">LocalVariable</span></a> when the value is owned by Python
+logic rather than by hardware registers.</p></li>
+<li><p><a class="reference internal" href="remote_variable.html"><span class="doc">RemoteVariable</span></a> when the value maps into hardware
+memory or register space.</p></li>
+<li><p><a class="reference internal" href="link_variable.html"><span class="doc">LinkVariable</span></a> when you want a derived view built
+from one or more other Variables.</p></li>
+</ul>
+<p>That is also the conceptual progression most users need: software-owned
+state first, then register-backed state, then derived operator-facing views
+built on top of the others.</p>
+</section>
+<section id="common-design-questions">
+<h2>Common Design Questions<a class="headerlink" href="#common-design-questions" title="Link to this heading"></a></h2>
+<p>When defining a Variable, the important questions are usually:</p>
+<ul class="simple">
+<li><p>Who owns the value: software, hardware, or another Variable?</p></li>
+<li><p>Should users see the raw value, a converted value, or both?</p></li>
+<li><p>Is the value read-only, write-only, or read-write?</p></li>
+<li><p>Should it participate in polling or only update on demand?</p></li>
+<li><p>Does the displayed form need units, enums, or custom formatting?</p></li>
+</ul>
+<p>Those questions affect not only the Variable subtype, but also how clear the
+tree will be to remote tools such as PyDM and command-line clients.</p>
+</section>
+<section id="polling-and-update-behavior">
+<h2>Polling And Update Behavior<a class="headerlink" href="#polling-and-update-behavior" title="Link to this heading"></a></h2>
+<p>Variables with non-zero <code class="docutils literal notranslate"><span class="pre">pollInterval</span></code> participate in the Root-owned polling
+workflow. That is most often relevant for hardware-backed status and telemetry
+values that change over time.</p>
+<p>In general:</p>
+<ul class="simple">
+<li><p>Poll values that operators or software genuinely need to monitor.</p></li>
+<li><p>Avoid turning rarely used configuration registers into continuously polled
+traffic.</p></li>
+<li><p>Use derived Variables carefully when their dependencies are polled, so the
+resulting update behavior stays understandable.</p></li>
+</ul>
+<p>For the scheduling model itself, see <a class="reference internal" href="poll_queue.html"><span class="doc">PollQueue</span></a>.</p>
+</section>
+<section id="value-presentation-and-value-storage">
+<h2>Value Presentation And Value Storage<a class="headerlink" href="#value-presentation-and-value-storage" title="Link to this heading"></a></h2>
+<p>One of the most useful ways to think about Variables is to separate what users
+see from how values are stored.</p>
+<p>Examples:</p>
+<ul class="simple">
+<li><p>A <code class="docutils literal notranslate"><span class="pre">RemoteVariable</span></code> may store a raw register value while presenting units,
+limits, and formatting metadata.</p></li>
+<li><p>A <code class="docutils literal notranslate"><span class="pre">LinkVariable</span></code> may expose engineering units while leaving the raw
+register access available through one or more underlying Variables.</p></li>
+<li><p>A <code class="docutils literal notranslate"><span class="pre">LocalVariable</span></code> may present a live view of Python-owned state without any
+hardware transaction path at all.</p></li>
+</ul>
+<p>This is one of the core reasons PyRogue trees work well for both hardware
+developers and operators: the same system can preserve raw control surfaces and
+also expose safer, more meaningful user-facing values.</p>
+</section>
+<section id="core-access-methods">
+<h2>Core Access Methods<a class="headerlink" href="#core-access-methods" title="Link to this heading"></a></h2>
+<p>Across the Variable subtypes, the most important day-to-day APIs are
+<code class="docutils literal notranslate"><span class="pre">get()</span></code>, <code class="docutils literal notranslate"><span class="pre">set()</span></code>, and for hardware-backed cases, sometimes <code class="docutils literal notranslate"><span class="pre">post()</span></code>.</p>
+<p>At a conceptual level:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">get()</span></code> returns a Variable value in its native Python type</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">set()</span></code> accepts a native Python value and updates the Variable</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">post()</span></code> issues a posted (non-blocking) write for hardware-backed Variables</p></li>
+</ul>
+<p>For hardware-backed Variables, those calls may also initiate bus activity.
+For software-backed or linked Variables, <code class="docutils literal notranslate"><span class="pre">get()</span></code> and <code class="docutils literal notranslate"><span class="pre">set()</span></code> call into the
+subtype’s local or linked behavior instead.</p>
+<p>The most important control flags are:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">read</span></code> on <code class="docutils literal notranslate"><span class="pre">get()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">write</span></code> on <code class="docutils literal notranslate"><span class="pre">set()</span></code></p></li>
+</ul>
+<p>Using <code class="docutils literal notranslate"><span class="pre">get(read=True)</span></code> means “refresh from the underlying source before
+returning the value.” For a <code class="docutils literal notranslate"><span class="pre">RemoteVariable</span></code>, that usually means issuing a
+hardware read. Using <code class="docutils literal notranslate"><span class="pre">get(read=False)</span></code> means “return the currently cached
+value without forcing a new transaction.”</p>
+<p>Using <code class="docutils literal notranslate"><span class="pre">set(write=True)</span></code> means “apply the new value and push it through the
+normal write path.” Using <code class="docutils literal notranslate"><span class="pre">set(write=False)</span></code> means “update or stage the value
+without immediately committing it.” That distinction matters in bulk
+configuration flows, linked conversions, and any code that wants to stage
+several dependent updates before writing them together.</p>
+<p><code class="docutils literal notranslate"><span class="pre">post(value)</span></code> is narrower than the core <code class="docutils literal notranslate"><span class="pre">Device</span></code> block operations. It is a
+per-Variable hardware API that issues a posted write directly through the
+backing <code class="docutils literal notranslate"><span class="pre">Block</span></code> rather than through the normal <code class="docutils literal notranslate"><span class="pre">parent.writeBlocks()</span></code> path.
+That makes it useful for self-clearing command bits, trigger registers, and
+<code class="docutils literal notranslate"><span class="pre">RemoteCommand</span></code> helpers whose intended hardware interaction is specifically a
+posted write.</p>
+<p>Those same ideas propagate into <code class="docutils literal notranslate"><span class="pre">LinkVariable</span></code> callbacks. A good
+<code class="docutils literal notranslate"><span class="pre">linkedGet</span></code> should normally respect the caller’s <code class="docutils literal notranslate"><span class="pre">read</span></code> choice, and a good
+<code class="docutils literal notranslate"><span class="pre">linkedSet</span></code> should normally respect the caller’s <code class="docutils literal notranslate"><span class="pre">write</span></code> choice.</p>
+</section>
+<section id="display-oriented-access">
+<h2>Display-Oriented Access<a class="headerlink" href="#display-oriented-access" title="Link to this heading"></a></h2>
+<p>PyRogue also exposes display-form accessors alongside the native-value access
+methods:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">getDisp()</span></code> performs <code class="docutils literal notranslate"><span class="pre">get()</span></code> and returns the display-formatted string</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">setDisp()</span></code> parses a display-formatted string and then calls <code class="docutils literal notranslate"><span class="pre">set()</span></code></p></li>
+</ul>
+<p>The display form is built from the Variable’s <code class="docutils literal notranslate"><span class="pre">disp</span></code> setting.</p>
+<p>In the common case, <code class="docutils literal notranslate"><span class="pre">disp</span></code> is a Python format string such as:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">'{:d}'</span></code> for decimal integers</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'{:#x}'</span></code> for hexadecimal integers</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'{:.3f}'</span></code> for fixed-point floating-point display</p></li>
+</ul>
+<p>When <code class="docutils literal notranslate"><span class="pre">getDisp()</span></code> or <code class="docutils literal notranslate"><span class="pre">valueDisp()</span></code> is called, PyRogue formats the current
+native value through that <code class="docutils literal notranslate"><span class="pre">disp</span></code> string. When <code class="docutils literal notranslate"><span class="pre">setDisp()</span></code> is called,
+PyRogue parses the display-form input back into the native value type and then
+calls <code class="docutils literal notranslate"><span class="pre">set()</span></code>.</p>
+<p>Two special cases are also common:</p>
+<ul class="simple">
+<li><p>Enum-backed Variables can use display mappings so the user sees names rather
+than raw numeric values.</p></li>
+<li><p>Array-valued Variables format each element using the same display rule.</p></li>
+</ul>
+<p>These methods are useful when the interaction is text-oriented rather than
+type-oriented, for example:</p>
+<ul class="simple">
+<li><p>Command-line tools</p></li>
+<li><p>GUI widgets</p></li>
+<li><p>YAML and other serialized configuration flows</p></li>
+<li><p>Enum-backed or formatted values where the display form matters</p></li>
+</ul>
+</section>
+<section id="cached-value-shortcuts">
+<h2>Cached Value Shortcuts<a class="headerlink" href="#cached-value-shortcuts" title="Link to this heading"></a></h2>
+<p>Two related convenience methods expose the cached value without forcing a new
+read:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">value()</span></code> is equivalent to <code class="docutils literal notranslate"><span class="pre">get(read=False)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">valueDisp()</span></code> is equivalent to <code class="docutils literal notranslate"><span class="pre">getDisp(read=False)</span></code></p></li>
+</ul>
+<p>These are useful when the caller wants the current tree state as it already
+exists locally, without implying that the underlying source should be accessed
+again.</p>
+</section>
+<section id="advanced-related-topics">
+<h2>Advanced Related Topics<a class="headerlink" href="#advanced-related-topics" title="Link to this heading"></a></h2>
+<p>Some Variable mechanics are important, but they read better as separate pages:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="block.html"><span class="doc">Blocks</span></a> for how hardware-backed Variables are grouped
+into transaction units.</p></li>
+<li><p><a class="reference internal" href="model.html"><span class="doc">Model</span></a> for how typed byte conversion works.</p></li>
+<li><p><a class="reference internal" href="memory_variable_stream.html"><span class="doc">Variable Update Stream</span></a> for bridging Variable
+updates into stream-processing paths.</p></li>
+</ul>
+<p>Those are all part of the Variable story, but they are advanced enough that
+they should not interrupt the basic explanation of what a Variable is and when
+to use each subtype.</p>
+</section>
+<section id="what-to-explore-next">
+<h2>What To Explore Next<a class="headerlink" href="#what-to-explore-next" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Software-owned values: <a class="reference internal" href="local_variable.html"><span class="doc">LocalVariable</span></a></p></li>
+<li><p>Register-backed values: <a class="reference internal" href="remote_variable.html"><span class="doc">RemoteVariable</span></a></p></li>
+<li><p>Derived values and engineering views: <a class="reference internal" href="link_variable.html"><span class="doc">LinkVariable</span></a></p></li>
+<li><p>Typed conversion rules: <a class="reference internal" href="model.html"><span class="doc">Model</span></a></p></li>
+<li><p>Block transaction behavior: <a class="reference internal" href="block.html"><span class="doc">Blocks</span></a></p></li>
+</ul>
+</section>
+<section id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<p>See <a class="reference internal" href="../../api/python/pyrogue/basevariable.html"><span class="doc">BaseVariable</span></a> for generated API details.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="device.html" class="btn btn-neutral float-left" title="Device" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="local_variable.html" class="btn btn-neutral float-right" title="LocalVariable" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

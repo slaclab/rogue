@@ -1,0 +1,391 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Memory Hub Patterns &mdash; Rogue v6.8.5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=346ffc18" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=8960aef2"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script src="../_static/custom.js?v=b11a05f1"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Memory TCP Bridge" href="tcp_bridge.html" />
+    <link rel="prev" title="Memory Slave Patterns" href="slave.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Memory Interface</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="connecting.html">Connecting Memory Elements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="master.html">Memory Master Patterns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="slave.html">Memory Slave Patterns</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Memory Hub Patterns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tcp_bridge.html">Memory TCP Bridge</a></li>
+<li class="toctree-l2"><a class="reference internal" href="transactions.html">Memory Transactions and Lifecycle</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API Reference</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Memory Interface</a></li>
+      <li class="breadcrumb-item active">Memory Hub Patterns</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/memory_interface/hub.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="memory-hub-patterns">
+<span id="memory-interface-hub"></span><span id="interfaces-memory-hub-ex"></span><h1>Memory Hub Patterns<a class="headerlink" href="#memory-hub-patterns" title="Link to this heading"></a></h1>
+<p>A <code class="docutils literal notranslate"><span class="pre">Hub</span></code> sits between upstream memory initiators and downstream memory
+responders. It can apply address offsets, group bus segments, translate one
+addressing model into another, or split one incoming <code class="docutils literal notranslate"><span class="pre">Transaction</span></code> into
+multiple downstream operations.</p>
+<p>Most users do not need to subclass a raw <code class="docutils literal notranslate"><span class="pre">Hub</span></code> directly. In PyRogue,
+<code class="docutils literal notranslate"><span class="pre">Device</span></code> already builds on hub behavior and is the usual way to organize a
+memory map. Custom <code class="docutils literal notranslate"><span class="pre">Hub</span></code> code becomes useful when the bus behavior itself must
+be translated or manipulated.</p>
+<p>Typical cases include paged register windows, composite address maps that need
+special routing, or adaptation layers where one upstream transaction becomes
+several downstream register operations.</p>
+<section id="what-a-hub-does">
+<h2>What A <code class="docutils literal notranslate"><span class="pre">Hub</span></code> Does<a class="headerlink" href="#what-a-hub-does" title="Link to this heading"></a></h2>
+<p>Compared with a plain <code class="docutils literal notranslate"><span class="pre">Slave</span></code>, a <code class="docutils literal notranslate"><span class="pre">Hub</span></code> usually has two extra jobs:</p>
+<ul class="simple">
+<li><p>It exposes an upstream address window that may differ from the downstream one</p></li>
+<li><p>It may need to generate multiple downstream transactions to service one
+upstream request</p></li>
+</ul>
+<p>That makes <code class="docutils literal notranslate"><span class="pre">Hub</span></code> the right abstraction whenever address translation is part of
+the design.</p>
+</section>
+<section id="python-translation-hub-example">
+<h2>Python Translation Hub Example<a class="headerlink" href="#python-translation-hub-example" title="Link to this heading"></a></h2>
+<p>The example below sketches a paged translation device. Imagine a downstream
+hardware block that exposes:</p>
+<ul class="simple">
+<li><p>An address register at <code class="docutils literal notranslate"><span class="pre">0x100</span></code></p></li>
+<li><p>A write-data register at <code class="docutils literal notranslate"><span class="pre">0x104</span></code></p></li>
+<li><p>A read-data register at <code class="docutils literal notranslate"><span class="pre">0x108</span></code></p></li>
+</ul>
+<p>The <code class="docutils literal notranslate"><span class="pre">Hub</span></code> translates one upstream read or write request into those staged
+register operations.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">rogue.interfaces.memory</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">rim</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyTranslationDevice</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1"># Local register space is 12 bytes. Upstream transactions are fixed</span>
+        <span class="c1"># at 4 bytes for this example.</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">hubMin</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">hubMax</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_doTransaction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tran</span><span class="p">):</span>
+        <span class="c1"># Serialize access because the staged protocol below is not safe for</span>
+        <span class="c1"># overlapping transactions.</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_memLock</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">tran</span><span class="o">.</span><span class="n">lock</span><span class="p">():</span>
+                <span class="n">addr</span> <span class="o">=</span> <span class="n">tran</span><span class="o">.</span><span class="n">address</span><span class="p">()</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;little&#39;</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">_setError</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+                <span class="c1"># Program the address register</span>
+                <span class="n">tid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqTransaction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_getAddress</span><span class="p">()</span> <span class="o">|</span> <span class="mh">0x100</span><span class="p">,</span>
+                                           <span class="n">addr</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">rim</span><span class="o">.</span><span class="n">Write</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_waitTransaction</span><span class="p">(</span><span class="n">tid</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getError</span><span class="p">()</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+                    <span class="n">tran</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_getError</span><span class="p">())</span>
+                    <span class="k">return</span>
+
+                <span class="k">if</span> <span class="n">tran</span><span class="o">.</span><span class="n">type</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="n">rim</span><span class="o">.</span><span class="n">Write</span><span class="p">,</span> <span class="n">rim</span><span class="o">.</span><span class="n">Post</span><span class="p">):</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(</span><span class="n">tran</span><span class="o">.</span><span class="n">size</span><span class="p">())</span>
+                    <span class="n">tran</span><span class="o">.</span><span class="n">getData</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+                    <span class="c1"># Program the write-data register</span>
+                    <span class="n">tid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqTransaction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_getAddress</span><span class="p">()</span> <span class="o">|</span> <span class="mh">0x104</span><span class="p">,</span>
+                                               <span class="n">data</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">rim</span><span class="o">.</span><span class="n">Write</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_waitTransaction</span><span class="p">(</span><span class="n">tid</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getError</span><span class="p">()</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+                        <span class="n">tran</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_getError</span><span class="p">())</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">tran</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(</span><span class="n">tran</span><span class="o">.</span><span class="n">size</span><span class="p">())</span>
+
+                    <span class="c1"># Read back from the read-data register</span>
+                    <span class="n">tid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqTransaction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_getAddress</span><span class="p">()</span> <span class="o">|</span> <span class="mh">0x108</span><span class="p">,</span>
+                                               <span class="n">data</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">rim</span><span class="o">.</span><span class="n">Read</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_waitTransaction</span><span class="p">(</span><span class="n">tid</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getError</span><span class="p">()</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+                        <span class="n">tran</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_getError</span><span class="p">())</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">tran</span><span class="o">.</span><span class="n">setData</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+                        <span class="n">tran</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>This pattern is often easier to integrate as a <code class="docutils literal notranslate"><span class="pre">Device</span></code> than as a raw
+<code class="docutils literal notranslate"><span class="pre">Hub</span></code>, because the <code class="docutils literal notranslate"><span class="pre">Device</span></code> participates naturally in the normal PyRogue
+tree and already carries locking and address-map structure with it.</p>
+</section>
+<section id="using-a-python-device-hub">
+<h2>Using A Python Device Hub<a class="headerlink" href="#using-a-python-device-hub" title="Link to this heading"></a></h2>
+<p>Once the translation logic is packaged as a <code class="docutils literal notranslate"><span class="pre">Device</span></code>, it can be inserted into
+an ordinary PyRogue tree like any other node. That is usually the most useful
+way to deploy a hub-style translation layer in practice.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">ExampleRoot</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;MyRoot&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Add an FPGA-facing device at 0x1000 that contains the staged</span>
+        <span class="c1"># paged-memory interface used by the translation device.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">SomeFpgaDevice</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Fpga&quot;</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mh">0x1000</span><span class="p">))</span>
+
+        <span class="c1"># Add the translation device at relative offset 0x10 within Fpga.</span>
+        <span class="c1"># Its downstream base address becomes 0x1010, while it exposes its</span>
+        <span class="c1"># own translated upstream address space to child devices.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Fpga</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">MyTranslationDevice</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;TranBase&quot;</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mh">0x10</span><span class="p">))</span>
+
+        <span class="c1"># Add a child device that exists in the translated address space</span>
+        <span class="c1"># managed by TranBase.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">TranBase</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">SomeDevice</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;DevA&quot;</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mh">0x200</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>In this arrangement, <code class="docutils literal notranslate"><span class="pre">TranBase</span></code> acts as an address-space boundary inside the
+tree. Upstream code interacts with child devices beneath <code class="docutils literal notranslate"><span class="pre">TranBase</span></code> using the
+translated address map, while the <code class="docutils literal notranslate"><span class="pre">MyTranslationDevice</span></code> implementation
+converts those accesses into the staged downstream register operations required
+by the hardware block.</p>
+</section>
+<section id="c-hub-example">
+<h2>C++ Hub Example<a class="headerlink" href="#c-hub-example" title="Link to this heading"></a></h2>
+<p>The old documentation had a much better raw <code class="docutils literal notranslate"><span class="pre">Hub</span></code> example here, because it
+showed the mechanics of translating one upstream <code class="docutils literal notranslate"><span class="pre">Transaction</span></code> into staged
+downstream accesses. That level of detail is useful, so the example below
+brings that style back in a cleaned-up form.</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;array&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;mutex&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;rogue/interfaces/memory/Hub.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;rogue/interfaces/memory/Constants.h&quot;</span>
+
+<span class="k">namespace</span><span class="w"> </span><span class="nn">rim</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nn">rogue</span><span class="o">::</span><span class="nn">interfaces</span><span class="o">::</span><span class="nn">memory</span><span class="p">;</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyHub</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">rim</span><span class="o">::</span><span class="n">Hub</span><span class="w"> </span><span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+<span class="w">   </span><span class="k">using</span><span class="w"> </span><span class="n">Ptr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">MyHub</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">   </span><span class="k">static</span><span class="w"> </span><span class="n">Ptr</span><span class="w"> </span><span class="nf">create</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">MyHub</span><span class="o">&gt;</span><span class="p">();</span><span class="w"> </span><span class="p">}</span>
+
+<span class="w">   </span><span class="n">MyHub</span><span class="p">()</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">rim</span><span class="o">::</span><span class="n">Hub</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{}</span>
+
+<span class="w">   </span><span class="c1">// The paged protocol below is not safe for overlapping transactions,</span>
+<span class="w">   </span><span class="c1">// so serialize access through the Hub.</span>
+<span class="w">   </span><span class="n">std</span><span class="o">::</span><span class="n">mutex</span><span class="w"> </span><span class="n">lock_</span><span class="p">;</span>
+
+<span class="w">   </span><span class="kt">void</span><span class="w"> </span><span class="nf">doTransaction</span><span class="p">(</span><span class="n">rim</span><span class="o">::</span><span class="n">TransactionPtr</span><span class="w"> </span><span class="n">tran</span><span class="p">)</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">std</span><span class="o">::</span><span class="n">lock_guard</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">mutex</span><span class="o">&gt;</span><span class="w"> </span><span class="n">lock</span><span class="p">(</span><span class="n">lock_</span><span class="p">);</span>
+<span class="w">      </span><span class="k">auto</span><span class="w"> </span><span class="n">tranLock</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">();</span>
+
+<span class="w">      </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">tid</span><span class="p">;</span>
+<span class="w">      </span><span class="n">std</span><span class="o">::</span><span class="n">array</span><span class="o">&lt;</span><span class="kt">uint8_t</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="o">&gt;</span><span class="w"> </span><span class="n">addrBytes</span><span class="p">{};</span>
+
+<span class="w">      </span><span class="c1">// The address seen by the Hub is relative to its upstream window.</span>
+<span class="w">      </span><span class="k">const</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">addr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">address</span><span class="p">());</span>
+<span class="w">      </span><span class="n">addrBytes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">uint8_t</span><span class="o">&gt;</span><span class="p">((</span><span class="n">addr</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w">  </span><span class="o">&amp;</span><span class="w"> </span><span class="mh">0xFF</span><span class="p">);</span>
+<span class="w">      </span><span class="n">addrBytes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">uint8_t</span><span class="o">&gt;</span><span class="p">((</span><span class="n">addr</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="mi">8</span><span class="p">)</span><span class="w">  </span><span class="o">&amp;</span><span class="w"> </span><span class="mh">0xFF</span><span class="p">);</span>
+<span class="w">      </span><span class="n">addrBytes</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">uint8_t</span><span class="o">&gt;</span><span class="p">((</span><span class="n">addr</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="mi">16</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mh">0xFF</span><span class="p">);</span>
+<span class="w">      </span><span class="n">addrBytes</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">uint8_t</span><span class="o">&gt;</span><span class="p">((</span><span class="n">addr</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="mi">24</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mh">0xFF</span><span class="p">);</span>
+
+<span class="w">      </span><span class="c1">// Clear any previous downstream error state.</span>
+<span class="w">      </span><span class="n">setError</span><span class="p">(</span><span class="s">&quot;&quot;</span><span class="p">);</span>
+
+<span class="w">      </span><span class="c1">// Program the downstream address register at offset 0x100.</span>
+<span class="w">      </span><span class="n">tid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">reqTransaction</span><span class="p">(</span><span class="n">getAddress</span><span class="p">()</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="mh">0x100</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="n">addrBytes</span><span class="p">.</span><span class="n">data</span><span class="p">(),</span><span class="w"> </span><span class="n">rim</span><span class="o">::</span><span class="n">Write</span><span class="p">);</span>
+<span class="w">      </span><span class="n">waitTransaction</span><span class="p">(</span><span class="n">tid</span><span class="p">);</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">getError</span><span class="p">()</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">error</span><span class="p">(</span><span class="n">getError</span><span class="p">());</span>
+<span class="w">         </span><span class="k">return</span><span class="p">;</span>
+<span class="w">      </span><span class="p">}</span>
+
+<span class="w">      </span><span class="c1">// Handle write and posted-write requests by staging the write data</span>
+<span class="w">      </span><span class="c1">// into the downstream data register at offset 0x104.</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">type</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">rim</span><span class="o">::</span><span class="n">Write</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">type</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">rim</span><span class="o">::</span><span class="n">Post</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="n">tid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">reqTransaction</span><span class="p">(</span><span class="n">getAddress</span><span class="p">()</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="mh">0x104</span><span class="p">,</span>
+<span class="w">                              </span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">(),</span>
+<span class="w">                              </span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">begin</span><span class="p">(),</span>
+<span class="w">                              </span><span class="n">rim</span><span class="o">::</span><span class="n">Write</span><span class="p">);</span>
+<span class="w">         </span><span class="n">waitTransaction</span><span class="p">(</span><span class="n">tid</span><span class="p">);</span>
+
+<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">getError</span><span class="p">()</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">error</span><span class="p">(</span><span class="n">getError</span><span class="p">());</span>
+<span class="w">         </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">done</span><span class="p">();</span>
+<span class="w">         </span><span class="p">}</span>
+<span class="w">      </span><span class="p">}</span>
+
+<span class="w">      </span><span class="c1">// Handle read and verify-read requests by pulling data from the</span>
+<span class="w">      </span><span class="c1">// downstream read-data register at offset 0x108.</span>
+<span class="w">      </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="n">tid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">reqTransaction</span><span class="p">(</span><span class="n">getAddress</span><span class="p">()</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="mh">0x108</span><span class="p">,</span>
+<span class="w">                              </span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">(),</span>
+<span class="w">                              </span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">begin</span><span class="p">(),</span>
+<span class="w">                              </span><span class="n">rim</span><span class="o">::</span><span class="n">Read</span><span class="p">);</span>
+<span class="w">         </span><span class="n">waitTransaction</span><span class="p">(</span><span class="n">tid</span><span class="p">);</span>
+
+<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">getError</span><span class="p">()</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">error</span><span class="p">(</span><span class="n">getError</span><span class="p">());</span>
+<span class="w">         </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">done</span><span class="p">();</span>
+<span class="w">         </span><span class="p">}</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">   </span><span class="p">}</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+</section>
+<section id="design-notes">
+<h2>Design Notes<a class="headerlink" href="#design-notes" title="Link to this heading"></a></h2>
+<p>The most important design question for a custom <code class="docutils literal notranslate"><span class="pre">Hub</span></code> is whether the incoming
+thread should block while downstream work completes. The example above does
+block, which keeps the flow easy to follow but also means only one staged
+transaction can be in progress at a time. In simple register-window protocols
+that is often acceptable. In more complex or slower bus paths, it may be better
+to queue the work and complete it asynchronously.</p>
+<p>If the design forwards data pointers from the original <code class="docutils literal notranslate"><span class="pre">Transaction</span></code> into
+downstream work, lock scope and object lifetime need especially careful
+attention. In many cases it is safer to copy the data into a new local buffer,
+even if that costs some performance.</p>
+</section>
+<section id="logging">
+<h2>Logging<a class="headerlink" href="#logging" title="Link to this heading"></a></h2>
+<p>The base Rogue memory <code class="docutils literal notranslate"><span class="pre">Hub</span></code> uses Rogue C++ logging with the logger name
+<code class="docutils literal notranslate"><span class="pre">pyrogue.memory.Hub</span></code>.</p>
+<p>Enable that logger before constructing the object if you want visibility into
+the base hub behavior:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">rogue</span>
+
+<span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">setFilter</span><span class="p">(</span><span class="s1">&#39;pyrogue.memory.Hub&#39;</span><span class="p">,</span> <span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">Debug</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>For custom <code class="docutils literal notranslate"><span class="pre">Hub</span></code> subclasses, it is often worth adding a second
+subclass-specific logger if the translation or split logic is non-trivial.</p>
+</section>
+<section id="what-to-explore-next">
+<h2>What To Explore Next<a class="headerlink" href="#what-to-explore-next" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Connection and addressing patterns: <a class="reference internal" href="connecting.html"><span class="doc">Connecting Memory Elements</span></a></p></li>
+<li><p>Asynchronous completion patterns in <code class="docutils literal notranslate"><span class="pre">Slave</span></code> implementations:
+<a class="reference internal" href="slave.html"><span class="doc">Memory Slave Patterns</span></a></p></li>
+<li><p>Transaction lifecycle details: <a class="reference internal" href="transactions.html"><span class="doc">Memory Transactions and Lifecycle</span></a></p></li>
+</ul>
+</section>
+<section id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Python:</p>
+<ul>
+<li><p><a class="reference internal" href="../api/python/rogue/interfaces/memory/hub.html"><span class="doc">Hub</span></a></p></li>
+</ul>
+</li>
+<li><p>C++:</p>
+<ul>
+<li><p><a class="reference internal" href="../api/cpp/interfaces/memory/hub.html"><span class="doc">Hub</span></a></p></li>
+</ul>
+</li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="slave.html" class="btn btn-neutral float-left" title="Memory Slave Patterns" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tcp_bridge.html" class="btn btn-neutral float-right" title="Memory TCP Bridge" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -6,25 +6,26 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Logging In Rogue &mdash; Rogue v6.8.4 documentation</title>
+  <title>Logging In Rogue &mdash; Rogue v6.8.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
-      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=f9c5c301" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=346ffc18" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=2d182aeb"></script>
+      <script src="../_static/documentation_options.js?v=8960aef2"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script src="../_static/custom.js?v=b11a05f1"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Creating Custom Modules" href="../custom_module/index.html" />
-    <link rel="prev" title="Epics PV Server Protocol" href="../protocols/pyrogue/epicspvserver.html" /> 
+    <link rel="next" title="Using The PyDM GUI" href="../pydm/index.html" />
+    <link rel="prev" title="Decompressing Frames" href="../built_in_modules/utilities/compression/decompress.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -35,7 +36,7 @@
 
           
           
-          <a href="../introduction/index.html" class="icon icon-home">
+          <a href="../index.html" class="icon icon-home">
             Rogue
           </a>
 <div role="search">
@@ -45,40 +46,38 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../introduction/index.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../getting_started/index.html">PyRogue Tree Getting Started Guide</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../advanced_examples/index.html">Advanced Tutorials</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../pyrogue_tree/index.html">PyRogue Tree</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../interfaces/index.html">Interfaces</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../utilities/index.html">Utilities</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../hardware/index.html">Hardware</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../protocols/index.html">Protocols</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Logging In Rogue</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../custom_module/index.html">Creating Custom Modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../pydm/index.html">Using the PyDM Gui</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../migration/index.html">Migration Notes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../documentation_index.html">Table of Contents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migration/index.html">Migration Notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api/index.html">API Reference</a></li>
 </ul>
 
-        </div>
+</div>
       </div>
     </nav>
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../introduction/index.html">Rogue</a>
+          <a href="../index.html">Rogue</a>
       </nav>
 
       <div class="wy-nav-content">
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../introduction/index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
       <li class="breadcrumb-item active">Logging In Rogue</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/logging/index.rst.txt" rel="nofollow"> View page source</a>
@@ -91,162 +90,281 @@
              
   <section id="logging-in-rogue">
 <span id="logging"></span><h1>Logging In Rogue<a class="headerlink" href="#logging-in-rogue" title="Link to this heading"></a></h1>
-<p>The following table are the known logging paths for entities within Rogue. Values in brackets
-are dynamic values dervied from the instance.</p>
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p>Type</p></th>
-<th class="head"><p>Section</p></th>
-<th class="head"><p>Class</p></th>
-<th class="head"><p>Log Path</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p>C++</p></td>
-<td><p>interfaces/stream</p></td>
-<td><p>Slave</p></td>
-<td><p>pyrogue.stream.[name] (passed to setDebug)</p></td>
-</tr>
-<tr class="row-odd"><td><p>C++</p></td>
-<td><p>interfaces/stream</p></td>
-<td><p>Fifo</p></td>
-<td><p>pyrogue.stream.Fifo</p></td>
-</tr>
-<tr class="row-even"><td><p>C++</p></td>
-<td><p>interfaces/stream</p></td>
-<td><p>Filter</p></td>
-<td><p>pyrogue.stream.Filter</p></td>
-</tr>
-<tr class="row-odd"><td><p>C++</p></td>
-<td><p>interfaces/stream</p></td>
-<td><p>TcpClient</p></td>
-<td><p>pyrogue.stream.TcpCore.[addr].Client.[port]</p></td>
-</tr>
-<tr class="row-even"><td><p>C++</p></td>
-<td><p>interfaces/stream</p></td>
-<td><p>TcpServer</p></td>
-<td><p>pyrogue.stream.TcpCore.[addr].Server.[port]</p></td>
-</tr>
-<tr class="row-odd"><td><p>C++</p></td>
-<td><p>interfaces/memory</p></td>
-<td><p>Master</p></td>
-<td><p>pyrogue.memory.Master</p></td>
-</tr>
-<tr class="row-even"><td><p>C++</p></td>
-<td><p>interfaces/memory</p></td>
-<td><p>Block</p></td>
-<td><p>pyrogue.memory.Block.path</p></td>
-</tr>
-<tr class="row-odd"><td><p>C++</p></td>
-<td><p>interfaces/memory</p></td>
-<td><p>Transaction</p></td>
-<td><p>pyrogue.memory.Master.Transaction</p></td>
-</tr>
-<tr class="row-even"><td><p>C++</p></td>
-<td><p>interfaces/memory</p></td>
-<td><p>TcpClient</p></td>
-<td><p>pyrogue.memory.TcpClient.[addr].[port]</p></td>
-</tr>
-<tr class="row-odd"><td><p>C++</p></td>
-<td><p>interfaces/memory</p></td>
-<td><p>TcpServer</p></td>
-<td><p>pyrogue.memory.TcpServer.[addr].[port]</p></td>
-</tr>
-<tr class="row-even"><td><p>C++</p></td>
-<td><p>hardware</p></td>
-<td><p>MemMap</p></td>
-<td><p>pyrogue.MemMap</p></td>
-</tr>
-<tr class="row-odd"><td><p>C++</p></td>
-<td><p>hardware/axi</p></td>
-<td><p>AxiMemMap</p></td>
-<td><p>pyrogue.axi.AxiMemMap</p></td>
-</tr>
-<tr class="row-even"><td><p>C++</p></td>
-<td><p>hardware/axi</p></td>
-<td><p>AxiStreamDma</p></td>
-<td><p>pyrogue.axi.AxiStreamDma</p></td>
-</tr>
-<tr class="row-odd"><td><p>C++</p></td>
-<td><p>hardware/pgp</p></td>
-<td><p>PgpCard</p></td>
-<td><p>pyrogue.hardware.PgpCard</p></td>
-</tr>
-<tr class="row-even"><td><p>C++</p></td>
-<td><p>utilities</p></td>
-<td><p>PrbsTx</p></td>
-<td><p>pyrogue.prbs.tx</p></td>
-</tr>
-<tr class="row-odd"><td><p>C++</p></td>
-<td><p>utilities</p></td>
-<td><p>PrbsRx</p></td>
-<td><p>pyrogue.prbs.rx</p></td>
-</tr>
-<tr class="row-even"><td><p>C++</p></td>
-<td><p>utilities/fileio</p></td>
-<td><p>StreamWriter</p></td>
-<td><p>pyrogue.fileio.StreamWriter</p></td>
-</tr>
-<tr class="row-odd"><td><p>C++</p></td>
-<td><p>interfaces</p></td>
-<td><p>ZmqServer</p></td>
-<td><p>pyrogue.ZmqServer</p></td>
-</tr>
-<tr class="row-even"><td><p>C++</p></td>
-<td><p>interfaces</p></td>
-<td><p>ZmqClient</p></td>
-<td><p>pyrogue.ZmqClient</p></td>
-</tr>
-<tr class="row-odd"><td><p>C++</p></td>
-<td><p>protocols/rssi</p></td>
-<td><p>Controller</p></td>
-<td><p>pyrogue.rssi.Controller</p></td>
-</tr>
-<tr class="row-even"><td><p>C++</p></td>
-<td><p>protocols/batcher</p></td>
-<td><p>CoreV1</p></td>
-<td><p>pyrogue.batcher.CoreV1</p></td>
-</tr>
-<tr class="row-odd"><td><p>C++</p></td>
-<td><p>protocols/udp</p></td>
-<td><p>Server</p></td>
-<td><p>pyrogue.udp.Server</p></td>
-</tr>
-<tr class="row-even"><td><p>C++</p></td>
-<td><p>protocols/udp</p></td>
-<td><p>Client</p></td>
-<td><p>pyrogue.udp.Client</p></td>
-</tr>
-<tr class="row-odd"><td><p>C++</p></td>
-<td><p>protocols/srp</p></td>
-<td><p>SrpV0</p></td>
-<td><p>pyrogue.SrpV0</p></td>
-</tr>
-<tr class="row-even"><td><p>C++</p></td>
-<td><p>protocols/srp</p></td>
-<td><p>SrpV3</p></td>
-<td><p>pyrogue.SrpV3</p></td>
-</tr>
-<tr class="row-odd"><td><p>C++</p></td>
-<td><p>protocols/packetizer</p></td>
-<td><p>Controller</p></td>
-<td><p>pyrogue.packetizer.Controller</p></td>
-</tr>
-<tr class="row-even"><td><p>C++</p></td>
-<td></td>
-<td><p>LibraryBase</p></td>
-<td><p>pyrogue.LibraryBase</p></td>
-</tr>
-</tbody>
-</table>
+<p>Rogue currently has two logging systems:</p>
+<ul class="simple">
+<li><p>Python/PyRogue code uses the standard Python <code class="docutils literal notranslate"><span class="pre">logging</span></code> module.</p></li>
+<li><p>Many C++ modules exposed to Python use Rogue’s C++ <code class="docutils literal notranslate"><span class="pre">rogue.Logging</span></code> class.</p></li>
+</ul>
+<p>As a user, this split is the main thing to understand. The APIs are different,
+the logger names are constructed differently, and only the Python logging path
+feeds the PyRogue <code class="docutils literal notranslate"><span class="pre">Root.SystemLog</span></code> mechanism.</p>
+<section id="how-to-think-about-it">
+<h2>How To Think About It<a class="headerlink" href="#how-to-think-about-it" title="Link to this heading"></a></h2>
+<p>When you are debugging a problem, first identify which side emitted the message:</p>
+<ul class="simple">
+<li><p>Pure Python / PyRogue class:
+configure it with Python <code class="docutils literal notranslate"><span class="pre">logging</span></code>.</p></li>
+<li><p>C++-backed Rogue object:
+configure it with <code class="docutils literal notranslate"><span class="pre">rogue.Logging</span></code>.</p></li>
+</ul>
+<p>If you are not sure, the practical rule is:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">self._log</span> <span class="pre">=</span> <span class="pre">pyrogue.logInit(...)</span></code> means Python logging.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">rogue::Logging::create(&quot;...&quot;)</span></code> means Rogue C++ logging.</p></li>
+</ul>
+</section>
+<section id="python-logging-in-pyrogue">
+<h2>Python Logging In PyRogue<a class="headerlink" href="#python-logging-in-pyrogue" title="Link to this heading"></a></h2>
+<p>PyRogue nodes and many Python helper classes create loggers with
+<code class="docutils literal notranslate"><span class="pre">pyrogue.logInit()</span></code> in [python/pyrogue/_Node.py](/Users/bareese/rogue/python/pyrogue/_Node.py).
+That function ultimately returns a standard Python logger from
+<code class="docutils literal notranslate"><span class="pre">logging.getLogger(...)</span></code>.</p>
+<section id="logger-naming-rules">
+<h3>Logger Naming Rules<a class="headerlink" href="#logger-naming-rules" title="Link to this heading"></a></h3>
+<p>The logger name starts with <code class="docutils literal notranslate"><span class="pre">pyrogue</span></code> and then appends type/class/path
+information. Common patterns are:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pyrogue.Root.&lt;RootSubclass&gt;.&lt;path&gt;</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pyrogue.Device.&lt;DeviceSubclass&gt;.&lt;path&gt;</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pyrogue.Variable.&lt;VariableSubclass&gt;.&lt;path&gt;</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pyrogue.Command.&lt;CommandSubclass&gt;.&lt;path&gt;</span></code></p></li>
+</ul>
+<p>Because the full node path is usually included after tree attachment, Python
+logger names are often predictable once you know the object path.</p>
+<p>Examples from current code:</p>
+<ul class="simple">
+<li><p>A Device named <code class="docutils literal notranslate"><span class="pre">Top.MyDevice</span></code> will typically log under a name beginning
+with <code class="docutils literal notranslate"><span class="pre">pyrogue.Device.&lt;ClassName&gt;.Top.MyDevice</span></code>.</p></li>
+<li><p>The file reader uses <code class="docutils literal notranslate"><span class="pre">pyrogue.FileReader</span></code> in
+[python/pyrogue/utilities/fileio/_FileReader.py](/Users/bareese/rogue/python/pyrogue/utilities/fileio/_FileReader.py).</p></li>
+</ul>
+</section>
+<section id="how-to-enable-python-logging">
+<h3>How To Enable Python Logging<a class="headerlink" href="#how-to-enable-python-logging" title="Link to this heading"></a></h3>
+<p>Use the standard Python logging API:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+
+<span class="c1"># Enable all PyRogue Python loggers.</span>
+<span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;pyrogue&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+
+<span class="c1"># Or target one subtree.</span>
+<span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;pyrogue.Device.MyDevice&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If you already have the object instance, the fastest way to discover the exact
+logger name is to inspect <code class="docutils literal notranslate"><span class="pre">obj._log.name</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">my_device</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="python-log-output-and-systemlog">
+<h3>Python Log Output And SystemLog<a class="headerlink" href="#python-log-output-and-systemlog" title="Link to this heading"></a></h3>
+<p>PyRogue <code class="docutils literal notranslate"><span class="pre">Root</span></code> installs a Python logging handler on the <code class="docutils literal notranslate"><span class="pre">pyrogue</span></code> logger in
+[python/pyrogue/_Root.py:199](/Users/bareese/rogue/python/pyrogue/_Root.py:199).
+That handler mirrors Python log records into:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Root.SystemLog</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Root.SystemLogLast</span></code></p></li>
+</ul>
+<p>This is what powers:</p>
+<ul class="simple">
+<li><p>The PyDM System Log widget</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pyrogue.interfaces.SystemLogMonitor</span></code></p></li>
+<li><p>SQL log capture via <code class="docutils literal notranslate"><span class="pre">SqlLogger</span></code></p></li>
+</ul>
+<p>Important limitation:
+Python log records under the <code class="docutils literal notranslate"><span class="pre">pyrogue</span></code> logger hierarchy are captured there,
+but Rogue C++ <code class="docutils literal notranslate"><span class="pre">rogue.Logging</span></code> output is not automatically mirrored into
+<code class="docutils literal notranslate"><span class="pre">SystemLog</span></code>.</p>
+</section>
+</section>
+<section id="rogue-c-logging">
+<h2>Rogue C++ Logging<a class="headerlink" href="#rogue-c-logging" title="Link to this heading"></a></h2>
+<p>Many C++ modules use <code class="docutils literal notranslate"><span class="pre">rogue::Logging</span></code> from
+[include/rogue/Logging.h](/Users/bareese/rogue/include/rogue/Logging.h) and
+[src/rogue/Logging.cpp](/Users/bareese/rogue/src/rogue/Logging.cpp).</p>
+<section id="key-api">
+<h3>Key API<a class="headerlink" href="#key-api" title="Link to this heading"></a></h3>
+<p>The Python-visible API is:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">rogue</span>
+
+<span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">Warning</span><span class="p">)</span>
+<span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">setFilter</span><span class="p">(</span><span class="s1">&#39;pyrogue.udp&#39;</span><span class="p">,</span> <span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">Debug</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Severity constants are:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">rogue.Logging.Critical</span></code> = 50</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">rogue.Logging.Error</span></code> = 40</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">rogue.Logging.Thread</span></code> = 35</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">rogue.Logging.Warning</span></code> = 30</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">rogue.Logging.Info</span></code> = 20</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">rogue.Logging.Debug</span></code> = 10</p></li>
+</ul>
+</section>
+<section id="id1">
+<h3>Logger Naming Rules<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<p>Each C++ logger is created with <code class="docutils literal notranslate"><span class="pre">rogue::Logging::create(&quot;name&quot;)</span></code>.
+Rogue then prepends <code class="docutils literal notranslate"><span class="pre">pyrogue.</span></code> internally, so:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Logging::create(&quot;udp.Client&quot;)</span></code> becomes <code class="docutils literal notranslate"><span class="pre">pyrogue.udp.Client</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Logging::create(&quot;packetizer.Controller&quot;)</span></code> becomes
+<code class="docutils literal notranslate"><span class="pre">pyrogue.packetizer.Controller</span></code></p></li>
+</ul>
+<p>Some logger names are static, and some are built dynamically at runtime.</p>
+<p>Examples currently in the codebase:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pyrogue.udp.Client</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pyrogue.udp.Server</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pyrogue.rssi.controller</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pyrogue.packetizer.Controller</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pyrogue.SrpV0</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pyrogue.SrpV3</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pyrogue.xilinx.xvc</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pyrogue.xilinx.jtag</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pyrogue.fileio.StreamWriter</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pyrogue.prbs.tx</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pyrogue.prbs.rx</span></code></p></li>
+</ul>
+<p>Dynamic example:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pyrogue.stream.TcpCore.&lt;addr&gt;.Client.&lt;port&gt;</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pyrogue.stream.TcpCore.&lt;addr&gt;.Server.&lt;port&gt;</span></code></p></li>
+</ul>
+<p>That dynamic pattern is constructed in
+[src/rogue/interfaces/stream/TcpCore.cpp](/Users/bareese/rogue/src/rogue/interfaces/stream/TcpCore.cpp).</p>
+</section>
+<section id="how-to-enable-c-logging">
+<h3>How To Enable C++ Logging<a class="headerlink" href="#how-to-enable-c-logging" title="Link to this heading"></a></h3>
+<p>Global level:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">rogue</span>
+
+<span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">Debug</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Prefix filter:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">rogue</span>
+
+<span class="c1"># Enable only UDP-related C++ logs</span>
+<span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">setFilter</span><span class="p">(</span><span class="s1">&#39;pyrogue.udp&#39;</span><span class="p">,</span> <span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">Debug</span><span class="p">)</span>
+
+<span class="c1"># Enable only one logger family</span>
+<span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">setFilter</span><span class="p">(</span><span class="s1">&#39;pyrogue.packetizer&#39;</span><span class="p">,</span> <span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">Debug</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Important caveat:
+<code class="docutils literal notranslate"><span class="pre">rogue.Logging.setLevel()</span></code> and <code class="docutils literal notranslate"><span class="pre">rogue.Logging.setFilter()</span></code> affect logger
+objects when they are created. Existing logger instances keep the level that was
+copied into them at construction time.</p>
+<p>In practice, this means:</p>
+<ul class="simple">
+<li><p>Set C++ logging filters before constructing the objects you want to debug.</p></li>
+<li><p>If the objects already exist, changing the filter may not affect them.</p></li>
+</ul>
+<p>This behavior comes directly from
+[src/rogue/Logging.cpp](/Users/bareese/rogue/src/rogue/Logging.cpp), where the
+logger copies the global/filter level into <code class="docutils literal notranslate"><span class="pre">level_</span></code> in the constructor and
+does not re-check filters for each message.</p>
+</section>
+</section>
+<section id="how-to-find-the-right-logger-name">
+<h2>How To Find The Right Logger Name<a class="headerlink" href="#how-to-find-the-right-logger-name" title="Link to this heading"></a></h2>
+<p>This is the main usability problem today. The most reliable approaches are:</p>
+<ol class="arabic simple">
+<li><p>For Python objects, inspect <code class="docutils literal notranslate"><span class="pre">obj._log.name</span></code>.</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">my_obj</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>For C++-backed modules, search the source for <code class="docutils literal notranslate"><span class="pre">Logging::create(&quot;...&quot;)</span></code>.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>rg<span class="w"> </span><span class="s1">&#39;Logging::create\(&quot;&#39;</span><span class="w"> </span>src<span class="w"> </span>include
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p>For dynamic C++ logger names, read the constructor that builds the string.
+<code class="docutils literal notranslate"><span class="pre">TcpCore</span></code> is a good example of this pattern.</p></li>
+<li><p>If you know the subsystem, use a prefix filter rather than an exact full
+logger name. For example:</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">setFilter</span><span class="p">(</span><span class="s1">&#39;pyrogue.udp&#39;</span><span class="p">,</span> <span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">Debug</span><span class="p">)</span>
+<span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">setFilter</span><span class="p">(</span><span class="s1">&#39;pyrogue.xilinx&#39;</span><span class="p">,</span> <span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">Debug</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="recommended-usage-patterns">
+<h2>Recommended Usage Patterns<a class="headerlink" href="#recommended-usage-patterns" title="Link to this heading"></a></h2>
+<p>For Python/PyRogue classes:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+
+<span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;pyrogue&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
+<span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;pyrogue.Device.MyDevice&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>For C++ Rogue modules:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">rogue</span>
+
+<span class="c1"># Do this before creating the object you want to debug.</span>
+<span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">setFilter</span><span class="p">(</span><span class="s1">&#39;pyrogue.udp&#39;</span><span class="p">,</span> <span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">Debug</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>For mixed Python + C++ applications:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">rogue</span>
+
+<span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;pyrogue&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+<span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">setFilter</span><span class="p">(</span><span class="s1">&#39;pyrogue.rssi&#39;</span><span class="p">,</span> <span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">Debug</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Python:</p>
+<ul>
+<li><p><a class="reference internal" href="../api/python/rogue/logging.html"><span class="doc">rogue.Logging</span></a></p></li>
+</ul>
+</li>
+<li><p>C++:</p>
+<ul>
+<li><p><a class="reference internal" href="../api/cpp/logging.html"><span class="doc">rogue::Logging</span></a></p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="current-rough-edges">
+<h2>Current Rough Edges<a class="headerlink" href="#current-rough-edges" title="Link to this heading"></a></h2>
+<p>The codebase works today, but there are a few real pain points:</p>
+<ul class="simple">
+<li><p>Python and C++ logging use different APIs.</p></li>
+<li><p>C++ logger names are not easy to discover unless you inspect source.</p></li>
+<li><p>C++ filter changes are not dynamically applied to existing logger instances.</p></li>
+<li><p>Only Python <code class="docutils literal notranslate"><span class="pre">pyrogue</span></code> logs flow into <code class="docutils literal notranslate"><span class="pre">Root.SystemLog</span></code> / PyDM system-log
+tooling.</p></li>
+</ul>
+<p>Those are good targets for future code cleanup, but the current documentation
+should at least make existing behavior predictable.</p>
+</section>
+<section id="related-tools">
+<h2>Related Tools<a class="headerlink" href="#related-tools" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>SQL-backed storage of PyRogue <code class="docutils literal notranslate"><span class="pre">SystemLog</span></code> entries:
+<a class="reference internal" href="../built_in_modules/interfaces/sql.html"><span class="doc">SQL Logging</span></a></p></li>
+<li><p>PyDM system log display:
+<a class="reference internal" href="../pydm/index.html"><span class="doc">Using The PyDM GUI</span></a></p></li>
+<li><p>Client-side log monitoring:
+<a class="reference internal" href="../pyrogue_tree/client_interfaces/commandline.html"><span class="doc">Using the Command Line Client</span></a></p></li>
+</ul>
+</section>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../protocols/pyrogue/epicspvserver.html" class="btn btn-neutral float-left" title="Epics PV Server Protocol" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../custom_module/index.html" class="btn btn-neutral float-right" title="Creating Custom Modules" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../built_in_modules/utilities/compression/decompress.html" class="btn btn-neutral float-left" title="Decompressing Frames" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../pydm/index.html" class="btn btn-neutral float-right" title="Using The PyDM GUI" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
