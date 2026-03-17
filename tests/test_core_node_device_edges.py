@@ -70,6 +70,36 @@ class RepeatedRoot(pr.Root):
         self.add(RepeatedDevice(name="Pack", mem_base=self._mem))
 
 
+@pytest.mark.xfail(
+    raises=pr.NodeError,
+    reason="addRemoteVariables(..., pack=True) collides with the generated array container name",
+    strict=True,
+)
+def test_add_remote_variables_pack_mode_currently_collides():
+    class PackedDevice(pr.Device):
+        def __init__(self, mem_base, **kwargs):
+            super().__init__(memBase=mem_base, **kwargs)
+            self.addRemoteVariables(
+                name="PackedField",
+                number=3,
+                stride=4,
+                offset=0x0,
+                bitSize=8,
+                base=pr.UInt,
+                mode="RW",
+                pack=True,
+            )
+
+    class PackedRoot(pr.Root):
+        def __init__(self):
+            super().__init__(name="root", pollEn=False)
+            self._mem = rogue.interfaces.memory.Emulate(4, 0x4000)
+            self.addInterface(self._mem)
+            self.add(PackedDevice(name="Pack", mem_base=self._mem))
+
+    PackedRoot()
+
+
 def test_node_match_array_access_find_and_repr():
     with NodeEdgeRoot() as root:
         assert "root.Top" in repr(root.Top)
