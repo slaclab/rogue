@@ -913,6 +913,7 @@ class Root(pr.Device):
                         raise Exception("loadYaml: Invalid load file: {}, must be a directory or end in .yml or .yaml".format(rl))
 
                     else:
+                        zip_yaml = []
 
                         # Iterate through directory contents
                         for zfn in myzip.namelist():
@@ -923,7 +924,11 @@ class Root(pr.Device):
 
                                 # Entry ends in .yml or *.yml and is in current directory
                                 if '/' not in spt and (spt[-4:] == '.yml' or spt[-5:] == '.yaml'):
-                                    lst.append(base + '/' + zfn)
+                                    zip_yaml.append(base + '/' + zfn)
+
+                        # Keep zip-directory loads aligned with normal directory
+                        # loads by applying a lexicographic pathname sort.
+                        lst.extend(sorted(zip_yaml))
 
             # Entry is a directory
             elif os.path.isdir(rl):
