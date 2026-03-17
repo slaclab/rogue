@@ -876,7 +876,14 @@ class BaseVariable(pr.Node):
         -------
         None
         """
-        self.set(self.parseDisp(sValue), write=write, index=index)
+        value = self.parseDisp(sValue)
+
+        # Indexed writes into ndarray-backed variables expect a scalar element,
+        # not the 0-D ndarray produced by np.array(ast.literal_eval(...)).
+        if index >= 0 and isinstance(value, np.ndarray) and value.ndim == 0:
+            value = value.item()
+
+        self.set(value, write=write, index=index)
 
     @property
     def nativeType(self) -> Type[object]:
@@ -970,7 +977,11 @@ class BaseVariable(pr.Node):
 
                     # Single entry item
                     if ':' not in keys[0]:
-                        self.setDisp(d, write=writeEach, index=idxSlice[0])
+                        if isinstance(idxSlice, list):
+                            idx = idxSlice[0]
+                        else:
+                            idx = idxSlice
+                        self.setDisp(d, write=writeEach, index=idx)
 
                     # Multi entry item
                     else:
