@@ -1,5 +1,4 @@
 import pyrogue as pr
-import pytest
 
 
 class ProcessDevice(pr.Process):

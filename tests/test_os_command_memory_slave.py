@@ -81,4 +81,3 @@ def test_os_command_memory_slave_reports_errors_and_duplicate_addresses():
         @slave.command(0x20, pr.UInt(8))
         def duplicate(_slave, arg):
             return arg
-

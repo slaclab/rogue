@@ -2,7 +2,6 @@ import io
 
 import numpy as np
 import pyrogue as pr
-import pytest
 import rogue.interfaces.memory
 
 

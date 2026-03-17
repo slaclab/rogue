@@ -1,6 +1,5 @@
 import pyrogue as pr
 import pytest
-import rogue.interfaces.memory
 
 
 class ChildDevice(pr.Device):

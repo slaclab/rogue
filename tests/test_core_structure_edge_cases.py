@@ -121,7 +121,9 @@ def test_root_listener_done_callback_and_cpp_variable_listener(wait_until):
 
         # _addListenerCpp wraps each registration in a fresh lambda, so two
         # registrations should generate two display-string callbacks.
-        cpp_listener = lambda path, value: disp_updates.append((path, value))
+        def cpp_listener(path, value):
+            disp_updates.append((path, value))
+
         root.HexValue._addListenerCpp(cpp_listener)
         root.HexValue._addListenerCpp(cpp_listener)
 
@@ -291,7 +293,9 @@ def test_variable_listener_add_remove_and_call_disp(wait_until):
         assert root.FmtCmd.callDisp() == "255"
 
         called = []
-        listener = lambda path, value: called.append((path, value.value))
+        def listener(path, value):
+            called.append((path, value.value))
+
         root.Parent.ConfigValue.addListener(listener)
         root.Parent.ConfigValue.addListener(listener)
         root.Parent.ConfigValue.set(22)

@@ -1,4 +1,3 @@
-import pyrogue as pr
 import pyrogue.interfaces.simulation as sim_mod
 import rogue.interfaces.memory
 

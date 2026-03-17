@@ -4,7 +4,6 @@ import logging
 import pyrogue as pr
 import pyrogue.interfaces as pr_intf
 import pyrogue.interfaces._SqlLogging as sql_logging_mod
-import pytest
 import sqlalchemy
 
 
