@@ -16,6 +16,9 @@
 name: Rogue Integration
 on: [push]
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   full_build_test:
     name: Full Build Test
