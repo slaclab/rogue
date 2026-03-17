@@ -186,6 +186,7 @@ class UartMemory(rogue.interfaces.memory.Slave):
             transaction = self._workerQueue.get()
 
             if transaction is None:
+                self._workerQueue.task_done()
                 break
 
             with transaction.lock():
@@ -199,3 +200,5 @@ class UartMemory(rogue.interfaces.memory.Slave):
                 else:
                     # Posted writes not supported (for now)
                     transaction.error(f'Unsupported transaction type: {transaction.type()}')
+
+            self._workerQueue.task_done()
