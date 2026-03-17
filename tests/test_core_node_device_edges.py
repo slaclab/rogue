@@ -80,12 +80,7 @@ class RepeatedRoot(pr.Root):
         self.add(RepeatedDevice(name="Pack", mem_base=self._mem))
 
 
-@pytest.mark.xfail(
-    raises=pr.NodeError,
-    reason="addRemoteVariables(..., pack=True) collides with the generated array container name",
-    strict=True,
-)
-def test_add_remote_variables_pack_mode_currently_collides():
+def test_add_remote_variables_pack_mode_exposes_all_alias():
     class PackedDevice(pr.Device):
         def __init__(self, mem_base, **kwargs):
             super().__init__(memBase=mem_base, **kwargs)
@@ -107,7 +102,17 @@ def test_add_remote_variables_pack_mode_currently_collides():
             self.addInterface(self._mem)
             self.add(PackedDevice(name="Pack", mem_base=self._mem))
 
-    PackedRoot()
+    with PackedRoot() as root:
+        assert sorted(root.Pack.PackedField.keys()) == [0, 1, 2]
+
+        packed = root.Pack.PackedField_All
+        packed.set("1_2_3", write=False)
+
+        # The packed alias leaves the indexed array container at PackedField.
+        assert root.Pack.PackedField[0].value() == 3
+        assert root.Pack.PackedField[1].value() == 2
+        assert root.Pack.PackedField[2].value() == 1
+        assert packed.get(read=False) == "0x1_0x2_0x3"
 
 
 def test_node_match_array_access_find_and_repr():
