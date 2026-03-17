@@ -992,11 +992,22 @@ class BaseVariable(pr.Node):
                             s = shlex.shlex(" " + d.lstrip('[').rstrip(']') + " ",posix=True)
                             s.whitespace_split=True
                             s.whitespace=','
+                            values = [val.strip() for val in s]
+                        elif isinstance(d, Iterable):
+                            values = list(d)
                         else:
-                            s = d
+                            values = [d]
 
-                        for val,i in zip(s,idxSlice):
-                            self.setDisp(val.strip(), write=writeEach, index=i)
+                        # A scalar YAML value should broadcast across the
+                        # entire selected slice, matching the documented
+                        # ``Array[1:3]: value`` semantics.
+                        if len(values) == 1 and len(idxSlice) > 1:
+                            values *= len(idxSlice)
+
+                        for val,i in zip(values,idxSlice):
+                            if isinstance(val, str):
+                                val = val.strip()
+                            self.setDisp(val, write=writeEach, index=i)
             else:
                 self._log.warning(f"Skipping set for Entry {self.name} with mode {self._mode}. Enabled Modes={modes}.")
 
