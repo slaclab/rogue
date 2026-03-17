@@ -104,6 +104,7 @@ class VariableWaitClass(object):
             for v in self._vlist:
                 v.addListener(self._varUpdate)
                 self._values[v.path]  = v.getVariableValue(read=False)
+                self._values[v.path].updated = False
                 self._updated[v.path] = False
 
     def wait(self) -> bool:
@@ -126,12 +127,13 @@ class VariableWaitClass(object):
 
     def get_values(self) -> dict:
         """Return the latest collected variable values."""
-        return {k: self._values[k] for k in self._vlist}
+        return {k: self._values[k.path] for k in self._vlist}
 
     def _varUpdate(self, path: str, varValue: Any) -> None:
         """Listener callback used to capture variable updates."""
         with self._cv:
             if path in self._values:
+                varValue.updated = True
                 self._values[path] = varValue
                 self._updated[path] = True
                 self._cv.notify()
@@ -199,6 +201,7 @@ class VariableValue(object):
         self.valueDisp = var.genDisp(self.value)
         self.disp      = var.disp
         self.enum      = var.enum
+        self.updated   = False
 
         self.status, self.severity = var._alarmState(self.value)
 
