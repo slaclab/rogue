@@ -54,6 +54,18 @@ def test_add_library_path_handles_relative_absolute_and_zip(tmp_path, monkeypatc
         pr.addLibraryPath("missing-lib")
 
 
+def test_add_library_path_uses_module_location_when_argv_is_empty(tmp_path, monkeypatch):
+    rel_dir = tmp_path / "relative-lib"
+    rel_dir.mkdir()
+
+    monkeypatch.setattr(hf.sys, "argv", [])
+    monkeypatch.setattr(hf, "__file__", str(tmp_path / "helper_module.py"))
+    monkeypatch.setattr(hf.sys, "path", [])
+
+    pr.addLibraryPath("relative-lib")
+    assert hf.sys.path == [str(rel_dir)]
+
+
 def test_yaml_helpers_support_includes_zip_and_ordered_updates(tmp_path):
     child = tmp_path / "child.yaml"
     child.write_text("leaf: 7\n")
@@ -149,6 +161,124 @@ def test_function_wrapper_filters_supported_arguments():
         monkeypatch.undo()
 
     assert pr.functionWrapper(None, ["root", "dev"])(None, "r", "d") is None
+
+
+def test_wait_cntrlc_handles_sigterm_and_keyboard_interrupt(monkeypatch, capsys):
+    handlers = {}
+
+    monkeypatch.setattr(hf.signal, "signal", lambda sig, func: handlers.__setitem__(sig, func))
+
+    # Simulate a SIGTERM arriving during the first sleep call.
+    def trigger_sigterm(_delay):
+        handlers[hf.signal.SIGTERM](None, None)
+
+    monkeypatch.setattr(hf.time, "sleep", trigger_sigterm)
+    pr.waitCntrlC()
+    out = capsys.readouterr().out
+    assert "Running. Hit cntrl-c" in out
+    assert "Got SIGTERM, exiting" in out
+
+    # Then verify the keyboard-interrupt path separately.
+    monkeypatch.setattr(hf.time, "sleep", lambda _delay: (_ for _ in ()).throw(KeyboardInterrupt()))
+    pr.waitCntrlC()
+    out = capsys.readouterr().out
+    assert "Got cntrl-c, exiting" in out
+
+
+class FakeStreamMaster:
+    def __init__(self):
+        self.slaves = []
+
+    def _addSlave(self, slave):
+        self.slaves.append(slave)
+
+
+class FakeStreamSlave:
+    pass
+
+
+class StreamMasterWrapper:
+    def __init__(self, master):
+        self.master = master
+
+    def _getStreamMaster(self):
+        return self.master
+
+
+class StreamSlaveWrapper:
+    def __init__(self, slave):
+        self.slave = slave
+
+    def _getStreamSlave(self):
+        return self.slave
+
+
+class StreamBiDirWrapper:
+    def __init__(self, master, slave):
+        self.master = master
+        self.slave = slave
+
+    def _getStreamMaster(self):
+        return self.master
+
+    def _getStreamSlave(self):
+        return self.slave
+
+
+class FakeMemoryMaster:
+    def __init__(self):
+        self.slave = None
+
+    def _setSlave(self, slave):
+        self.slave = slave
+
+
+class FakeMemorySlave:
+    pass
+
+
+class MemoryMasterWrapper:
+    def __init__(self, master):
+        self.master = master
+
+    def _getMemoryMaster(self):
+        return self.master
+
+
+class MemorySlaveWrapper:
+    def __init__(self, slave):
+        self.slave = slave
+
+    def _getMemorySlave(self):
+        return self.slave
+
+
+def test_stream_and_bus_connect_use_wrapper_accessors(monkeypatch):
+    stream_master = FakeStreamMaster()
+    stream_slave = FakeStreamSlave()
+    mem_master = FakeMemoryMaster()
+    mem_slave = FakeMemorySlave()
+
+    # Patch the Rogue base classes so the helper takes the wrapped-object
+    # branch without requiring real C++ transport instances in the test.
+    monkeypatch.setattr(hf.ris, "Master", type("PatchedStreamMaster", (), {}))
+    monkeypatch.setattr(hf.ris, "Slave", type("PatchedStreamSlave", (), {}))
+    monkeypatch.setattr(hf.rim, "Master", type("PatchedMemMaster", (), {}))
+    monkeypatch.setattr(hf.rim, "Slave", type("PatchedMemSlave", (), {}))
+
+    pr.streamConnect(StreamMasterWrapper(stream_master), StreamSlaveWrapper(stream_slave))
+    assert stream_master.slaves == [stream_slave]
+
+    other_master = FakeStreamMaster()
+    other_slave = FakeStreamSlave()
+    endpoint_a = StreamBiDirWrapper(stream_master, stream_slave)
+    endpoint_b = StreamBiDirWrapper(other_master, other_slave)
+    pr.streamConnectBiDir(endpoint_a, endpoint_b)
+    assert stream_master.slaves[-1] is other_slave
+    assert other_master.slaves == [stream_slave]
+
+    pr.busConnect(MemoryMasterWrapper(mem_master), MemorySlaveWrapper(mem_slave))
+    assert mem_master.slave is mem_slave
 
 
 def test_doc_helpers_render_expected_rst_fragments():
