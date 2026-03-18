@@ -9,6 +9,7 @@
 #-----------------------------------------------------------------------------
 
 import zipfile
+from pathlib import Path
 
 import pyrogue as pr
 import pytest
@@ -156,6 +157,24 @@ def test_root_save_yaml_zip_and_load_yaml_from_zip_dir(tmp_path):
 
         assert root.Top.RemoteValue.value() == 14
         assert root.Top.Child.LocalCfg.value() == 21
+
+
+def test_root_load_config_and_save_config_round_trip(tmp_path):
+    config_in = Path(__file__).with_name("fixtures") / "load_config_input.yml"
+    config_out = tmp_path / "output.yml"
+
+    with IoRoot() as root:
+        # Keep one smoke test for the command-style config wrappers so the
+        # newer YAML tests do not need to duplicate the older API surface.
+        root.LoadConfig(str(config_in))
+        root.SaveConfig(str(config_out))
+
+        assert root.Top.RemoteValue.value() == 5
+        assert root.Top.Child.LocalCfg.value() == 7
+
+    saved = pr.yamlToData(fName=str(config_out))
+    assert saved["root"]["Top"]["RemoteValue"] == 0x5
+    assert saved["root"]["Top"]["Child"]["LocalCfg"] == 7
 
 
 def test_root_remote_variable_dump_and_invalid_load_path(tmp_path, monkeypatch):
