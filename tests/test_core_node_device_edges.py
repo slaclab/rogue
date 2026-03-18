@@ -9,6 +9,7 @@
 #-----------------------------------------------------------------------------
 
 import pyrogue as pr
+import pyrogue.interfaces as pr_interfaces
 import pytest
 import rogue.interfaces.memory
 
@@ -78,6 +79,23 @@ class RepeatedRoot(pr.Root):
         self._mem = rogue.interfaces.memory.Emulate(4, 0x4000)
         self.addInterface(self._mem)
         self.add(RepeatedDevice(name="Pack", mem_base=self._mem))
+
+
+class ExposedNode(pr.Device):
+    @property
+    @pr.expose
+    def exposed_prop(self):
+        return "value"
+
+    @pr.expose
+    def exposed_method(self, arg, *, kw=None):
+        return arg, kw
+
+
+class ArrayLeaf(pr.Device):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.add(pr.LocalVariable(name="LeafValue", value=kwargs["offset"]))
 
 
 def test_add_remote_variables_pack_mode_exposes_all_alias():
@@ -172,6 +190,28 @@ def test_node_groups_dir_get_nodes_and_hidden_propagation():
     assert root.Top.CfgValue.hidden is False
 
 
+def test_node_reduce_add_iterable_and_array_helpers():
+    root = NodeEdgeRoot()
+
+    # add() accepts iterables of Nodes and registers array-style children in both
+    # the flat node list and the array lookup structure.
+    root.Top.add([
+        pr.LocalVariable(name="ExtraArray[0]", value=1),
+        pr.LocalVariable(name="ExtraArray[1]", value=2),
+    ])
+    assert root.Top.ExtraArray[0].value() == 1
+    assert root.Top.ExtraArray[1].value() == 2
+
+    reduced = ExposedNode(name="Expose").__reduce__()
+    factory, args = reduced
+    assert factory is pr_interfaces.VirtualFactory
+    attrs = args[0]
+    assert attrs["name"] == "Expose"
+    assert "exposed_prop" in attrs["props"]
+    assert attrs["funcs"]["exposed_method"]["args"] == ["arg"]
+    assert attrs["funcs"]["exposed_method"]["kwargs"] == ["kw"]
+
+
 def test_node_recursive_helpers_and_managed_interfaces():
     root = NodeEdgeRoot()
     root.start()
@@ -244,6 +284,13 @@ def test_node_add_errors_and_special_name_warning(monkeypatch):
         with pytest.raises(pr.NodeError, match="non device node"):
             root.Top.CfgValue.add(pr.LocalVariable(name="Nested", value=1))
 
+        attached = pr.LocalVariable(name="Attached", value=3)
+        # Simulate a node that is already attached elsewhere without needing to
+        # start a second tree just to populate ``_parent``.
+        attached._parent = root.Top
+        with pytest.raises(pr.NodeError, match="already attached"):
+            root.Top.Child.add(attached)
+
         root.start()
         with pytest.raises(pr.NodeError, match="already started"):
             root.Top.Child.add(root.Top.CfgValue)
@@ -256,3 +303,40 @@ def test_node_add_errors_and_special_name_warning(monkeypatch):
     monkeypatch.setattr(root.Top._log, "warning", lambda *args: warnings.append(args))
     root.Top.add(pr.LocalVariable(name="Bad-Name", value=1))
     assert warnings == [("Node %s with one or more special characters will cause lookup errors.", "Bad-Name")]
+
+
+def test_iterate_dict_slice_holes_and_array_device_generation(tmp_path, capsys):
+    root = NodeEdgeRoot()
+
+    # Sparse array keys should still allow slice lookup without raising.
+    root.Top.add(pr.LocalVariable(name="Sparse[3]", value=7))
+    nodes, keys = root.Top.nodeMatch("Sparse[1:4]")
+    assert [node.path for node in nodes] == ["Sparse[3]"]
+    assert keys is None
+
+    class ArrayRoot(pr.Root):
+        def __init__(self):
+            super().__init__(name="root", pollEn=False)
+            self.add(pr.ArrayDevice(
+                name="LeafArray",
+                arrayClass=ArrayLeaf,
+                number=2,
+                stride=0x10,
+                arrayArgs=[{"name": "Custom[0]"}, {}],
+            ))
+
+    with ArrayRoot() as array_root:
+        assert array_root.LeafArray.Custom[0].LeafValue.value() == 0
+        assert array_root.LeafArray.ArrayLeaf[1].LeafValue.value() == 0x10
+
+        # printYaml() is a thin wrapper, but capturing its output closes a
+        # branch in Node and verifies it delegates to getYaml() correctly.
+        array_root.LeafArray.printYaml(readFirst=False, recurse=True)
+        out = capsys.readouterr().out
+        assert "LeafValue: 0" in out
+
+        array_root.LeafArray.genDocuments(str(tmp_path))
+        top_doc = (tmp_path / "root_LeafArray.rst").read_text()
+        child_doc = (tmp_path / "root_LeafArray_Custom[0].rst").read_text()
+        assert "Sub Devices:" in top_doc
+        assert "Variable List" in child_doc
