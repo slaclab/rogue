@@ -8,6 +8,8 @@
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 
+import time
+
 import pyrogue as pr
 import pytest
 
@@ -94,6 +96,11 @@ class VariableCommandDevice(pr.Device):
             function=self._command_raises,
         ))
 
+        self.add(pr.LocalCommand(
+            name="BlockingCommand",
+            function=self._blocking_command,
+        ))
+
     def _set_stored(self, *, value, **_kwargs):
         self._stored = value
 
@@ -110,6 +117,11 @@ class VariableCommandDevice(pr.Device):
 
     def _command_raises(self):
         raise RuntimeError("boom")
+
+    def _blocking_command(self, arg):
+        # Keep a short real delay here so the test checks the synchronous call
+        # path without making the suite noticeably slower.
+        time.sleep(arg)
 
 
 class CommandRoot(pr.Root):
@@ -184,3 +196,12 @@ def test_command_call_metadata_and_exceptions():
 
         with pytest.raises(RuntimeError, match="boom"):
             root.Dev.CommandRaises()
+
+
+def test_local_command_call_blocks_until_completion():
+    with CommandRoot() as root:
+        start = time.perf_counter()
+        root.Dev.BlockingCommand.call(0.05)
+        elapsed = time.perf_counter() - start
+
+        assert elapsed >= 0.04
