@@ -57,6 +57,13 @@ class VariableCommandDevice(pr.Device):
         ))
 
         self.add(pr.LocalVariable(
+            name="PropertyVar",
+            value=1.0,
+            minimum=1.0,
+            maximum=100.0,
+        ))
+
+        self.add(pr.LocalVariable(
             name="Source",
             value=7,
             localSet=self._set_stored,
@@ -144,6 +151,22 @@ def test_link_variable_tracks_dependency_and_variable_dict_filters():
 
         status = root.Dev._getDict(modes=["RO"], incGroups="Status")
         assert set(status.keys()) == {"ModeRO"}
+
+
+def test_local_variable_properties_and_poll_interval_round_trip():
+    with CommandRoot() as root:
+        root.Dev.PropertyVar.setPollInterval(1.0)
+        assert root.Dev.PropertyVar.pollInterval == 1.0
+        assert root.Dev.PropertyVar.minimum == 1.0
+        assert root.Dev.PropertyVar.maximum == 100.0
+
+
+def test_local_variable_constructor_errors():
+    with pytest.raises(Exception):
+        pr.LocalVariable(name="MissingValue")
+
+    with pytest.raises(Exception):
+        pr.LocalVariable(name="InvalidMode", value=0, mode="INV")
 
 
 def test_command_call_metadata_and_exceptions():
