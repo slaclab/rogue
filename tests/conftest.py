@@ -10,6 +10,7 @@
 
 import time
 import logging
+import socket
 
 import pyrogue as pr
 import pytest
@@ -64,6 +65,31 @@ def quiet_rogue_stdout_logs():
 @pytest.fixture
 def wait_until():
     return wait_for
+
+
+def _find_free_port_block(host="127.0.0.1", count=3, start=20000, stop=60000):
+    for base in range(start, stop - count):
+        sockets = []
+        try:
+            for port in range(base, base + count):
+                sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                sock.bind((host, port))
+                sockets.append(sock)
+            return base
+        except OSError:
+            pass
+        finally:
+            for sock in sockets:
+                sock.close()
+
+    raise RuntimeError(f"Unable to find {count} consecutive free ports on {host}")
+
+
+@pytest.fixture
+def free_zmq_port():
+    # Rogue's ZMQ server uses a base port plus adjacent ports, so integration
+    # tests need a free consecutive block rather than a single ephemeral port.
+    return _find_free_port_block()
 
 
 @pytest.fixture

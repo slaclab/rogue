@@ -9,6 +9,7 @@
 #-----------------------------------------------------------------------------
 
 import pyrogue as pr
+import pyrogue.interfaces as pr_interfaces
 import pytest
 
 
@@ -32,6 +33,13 @@ class ZmqIntegrationDevice(pr.Device):
             enum={0: "Zero", 1: "One"},
         ))
 
+        self.add(pr.LocalVariable(
+            name="HiddenValue",
+            value=5,
+            mode="RW",
+            groups=["NoServe"],
+        ))
+
         self.add(pr.LocalCommand(
             name="Multiply",
             value=0,
@@ -41,21 +49,21 @@ class ZmqIntegrationDevice(pr.Device):
 
 
 class ZmqIntegrationRoot(pr.Root):
-    def __init__(self):
+    def __init__(self, *, port):
         super().__init__(name="Top", pollEn=False)
         self.add(ZmqIntegrationDevice(name="Dev"))
 
-        # Bind to an ephemeral port so the test can run alongside other local
-        # Rogue services without depending on a fixed editor/CI port layout.
-        self.zmqServer = pr.interfaces.ZmqServer(root=self, addr="127.0.0.1", port=0)
+        # Use a caller-provided free port block because this Rogue build does
+        # not support auto-binding ZMQ servers with port=0.
+        self.zmqServer = pr_interfaces.ZmqServer(root=self, addr="*", port=port)
         self.addInterface(self.zmqServer)
 
 
-def test_virtual_client_over_zmq(wait_until):
-    pr.interfaces.VirtualClient.ClientCache.clear()
+def test_virtual_client_over_zmq(wait_until, free_zmq_port):
+    pr_interfaces.VirtualClient.ClientCache.clear()
 
-    with ZmqIntegrationRoot() as root:
-        client = pr.interfaces.VirtualClient(addr="127.0.0.1", port=root.zmqServer.port())
+    with ZmqIntegrationRoot(port=free_zmq_port) as root:
+        client = pr_interfaces.VirtualClient(addr="127.0.0.1", port=root.zmqServer.port())
 
         try:
             remote_root = client.root
@@ -86,4 +94,29 @@ def test_virtual_client_over_zmq(wait_until):
             assert wait_until(lambda: ("Top.Dev.Value", 9) in updates, timeout=5.0)
         finally:
             client.stop()
-            pr.interfaces.VirtualClient.ClientCache.clear()
+            pr_interfaces.VirtualClient.ClientCache.clear()
+
+
+def test_virtual_client_respects_noserve_update_filter(wait_until, free_zmq_port):
+    pr_interfaces.VirtualClient.ClientCache.clear()
+
+    with ZmqIntegrationRoot(port=free_zmq_port) as root:
+        client = pr_interfaces.VirtualClient(addr="127.0.0.1", port=root.zmqServer.port())
+
+        try:
+            remote_dev = client.root.Dev
+            visible_updates = []
+
+            # The NoServe group suppresses publication entirely, so the hidden
+            # node is not exposed through the remote tree at all.
+            remote_dev.Value.addListener(lambda path, value: visible_updates.append((path, value.value)))
+            assert client.root.getNode("Top.Dev.HiddenValue") is None
+            assert not hasattr(remote_dev, "HiddenValue")
+
+            root.Dev.Value.set(11)
+            root.Dev.HiddenValue.set(17)
+
+            assert wait_until(lambda: ("Top.Dev.Value", 11) in visible_updates, timeout=5.0)
+        finally:
+            client.stop()
+            pr_interfaces.VirtualClient.ClientCache.clear()
