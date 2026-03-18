@@ -9,9 +9,11 @@
 #-----------------------------------------------------------------------------
 
 import time
+import logging
 
 import pyrogue as pr
 import pytest
+import rogue
 import rogue.interfaces.memory
 
 
@@ -31,6 +33,32 @@ class MemoryRoot(pr.Root):
         # without needing external hardware or sockets.
         self._mem = rogue.interfaces.memory.Emulate(mem_width, mem_size)
         self.addInterface(self._mem)
+
+
+@pytest.fixture(autouse=True)
+def quiet_memory_emulate_logs():
+    # The shared memory-emulator fixtures create a lot of low-value startup and
+    # allocation chatter. Keep the default suite readable while still allowing
+    # individual tests to raise this logger when they explicitly care.
+    logger = logging.getLogger("pyrogue.memory.Emulate")
+    old_level = logger.level
+    logger.setLevel(logging.WARNING)
+    try:
+        yield
+    finally:
+        logger.setLevel(old_level)
+
+
+@pytest.fixture(autouse=True)
+def quiet_rogue_stdout_logs():
+    # Native Rogue stdout logging is useful for manual debugging, but it
+    # overwhelms normal test output once many memory-emulator fixtures run.
+    old_stdout = rogue.Logging.emitStdout()
+    rogue.Logging.setEmitStdout(False)
+    try:
+        yield
+    finally:
+        rogue.Logging.setEmitStdout(old_stdout)
 
 
 @pytest.fixture

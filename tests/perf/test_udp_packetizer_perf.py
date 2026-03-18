@@ -18,16 +18,15 @@ import time
 import threading
 import pytest
 
-pytestmark = pytest.mark.integration
+pytestmark = [pytest.mark.integration, pytest.mark.perf]
 
 #rogue.Logging.setLevel(rogue.Logging.Debug)
 
-# This is a protocol-stack regression test for UDP/RSSI/packetizer behavior,
-# including out-of-order delivery. Smaller frame counts are enough to validate
-# the path without turning the test into a stress benchmark.
-FrameCount = 200
-FrameSize  = 2048
-DrainTimeout = 10.0
+# Keep the original larger workload here so this file remains a meaningful
+# soak / throughput benchmark for the UDP/RSSI/packetizer stack.
+FrameCount = 10000
+FrameSize  = 10000
+DrainTimeout = 30.0
 
 class RssiOutOfOrder(rogue.interfaces.stream.Slave, rogue.interfaces.stream.Master):
 

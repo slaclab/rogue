@@ -15,15 +15,14 @@ import rogue
 import time
 import pytest
 
-pytestmark = pytest.mark.integration
+pytestmark = [pytest.mark.integration, pytest.mark.perf]
 
 #rogue.Logging.setLevel(rogue.Logging.Debug)
 
-# This test is an end-to-end bridge regression check, not a throughput
-# benchmark. Keep the payload modest so it still exercises the real TCP stream
-# path without dominating integration runtime.
-FrameCount = 200
-FrameSize  = 2048
+# Keep the original larger payload here so this file serves as a soak /
+# throughput-style benchmark rather than a correctness-focused regression test.
+FrameCount = 10000
+FrameSize  = 10000
 def data_path():
     # Bridge server
     serv = rogue.interfaces.stream.TcpServer("127.0.0.1",9000)
@@ -47,8 +46,7 @@ def data_path():
     for _ in range(FrameCount):
         prbsTx.genFrame(FrameSize)
 
-    # Allow time for the stream path to drain, but do not turn the test into a
-    # long-running soak benchmark.
+    # Wait long enough for the higher-volume perf workload to drain.
     for i in range(200):
         if prbsRx.getRxCount() == FrameCount:
             break

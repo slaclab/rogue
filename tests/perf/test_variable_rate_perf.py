@@ -14,6 +14,9 @@ import pyrogue as pr
 import pyrogue.interfaces.simulation
 import rogue.interfaces.memory
 import time
+import pytest
+
+pytestmark = pytest.mark.perf
 
 try:
     import hwcounter
