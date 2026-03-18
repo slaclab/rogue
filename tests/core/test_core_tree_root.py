@@ -95,3 +95,15 @@ def test_root_start_stop_manages_interfaces():
 
     assert root.running is False
     assert root.recording.stopped == 1
+
+
+def test_root_context_manager_honors_startup_flags():
+    # Keep the old root smoke test here so generic lifecycle coverage lives in
+    # one place instead of a separate tiny standalone module.
+    with pr.Root(name="root", timeout=2.0, initRead=True, initWrite=True) as root:
+        assert root.path == "root"
+        assert root._initRead is True
+        assert root._initWrite is True
+        assert root.running is True
+
+    assert root.running is False
