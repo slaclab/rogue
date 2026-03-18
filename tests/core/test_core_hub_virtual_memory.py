@@ -28,17 +28,17 @@ import rogue.interfaces.memory
 import threading
 import random
 
-class HubTestDev(pr.Device):
+class HubVirtualDevice(pr.Device):
 
     # Read address space of the device.
     WRITE_ADDR  = 0x000
     READ_ADDR   = 0x004
 
-    # Any addresses above this value are treated as vritual
+    # Any addresses above this value are treated as virtual.
     OFFSET_ADDR = 0x100
     MAX_RETRIES = 5
 
-    def __init__(self,**kwargs):
+    def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
         self._lock = threading.Lock()
@@ -84,12 +84,12 @@ class HubTestDev(pr.Device):
 
     # Return the command field from the read data
     @classmethod
-    def cmd_address(cls, data): # returns address data
+    def cmd_address(cls, data):
         return (data & 0x7FFF0000) >> 20
 
     # Return the data field from the read data
     @classmethod
-    def cmd_data(cls, data):  # returns data
+    def cmd_data(cls, data):
         return (data & 0xFFFFF)
 
     # Build the data field for a write command
@@ -117,11 +117,11 @@ class HubTestDev(pr.Device):
         return int.from_bytes(dataBytes, 'little', signed=False), self._getError()
 
     # Execute write to the passed virtual address
-    def _doVirtualWrite(self,address,data):
-        return self._wrapWriteTransaction(self.cmd_make(read=0,  address=(address - self.OFFSET_ADDR), data=data))
+    def _doVirtualWrite(self, address, data):
+        return self._wrapWriteTransaction(self.cmd_make(read=0, address=(address - self.OFFSET_ADDR), data=data))
 
     # Execute read from the passed virtual address, retry until data is ready
-    def _doVirtualRead(self,address):
+    def _doVirtualRead(self, address):
         writeData = self.cmd_make(read=1, address=(address - self.OFFSET_ADDR), data=0)
 
         rsp = self._wrapWriteTransaction(writeData)
@@ -143,10 +143,10 @@ class HubTestDev(pr.Device):
             if self.cmd_address(data) == (address - self.OFFSET_ADDR):
                 return self.cmd_data(data), ""
 
-        return None,"Indirect Read Timeout"
+        return None, "Indirect Read Timeout"
 
     # Intercept transactions
-    def _doTransaction(self,transaction):
+    def _doTransaction(self, transaction):
         with self._lock:
 
             addr = transaction.address()
@@ -164,7 +164,7 @@ class HubTestDev(pr.Device):
 
                         cmdDataBytes = bytearray(transaction.size())
                         transaction.getData(cmdDataBytes,0)
-                        rsp = self._doVirtualWrite(addr,int.from_bytes(cmdDataBytes,byteorder='little', signed=False))
+                        rsp = self._doVirtualWrite(addr, int.from_bytes(cmdDataBytes, byteorder='little', signed=False))
 
                         if rsp != "":
                             transaction.error(rsp)
@@ -184,7 +184,7 @@ class HubTestDev(pr.Device):
 
 
 # Device which emulates the SPI interface under tests.
-class LocalEmulate(rogue.interfaces.memory.Slave):
+class HubCommandEmulator(rogue.interfaces.memory.Slave):
 
     def __init__(self, *, minWidth=4, maxSize=0xFFFFFFFF):
         rogue.interfaces.memory.Slave.__init__(self,4,4)
@@ -248,44 +248,45 @@ class LocalEmulate(rogue.interfaces.memory.Slave):
         else:
             transaction.error(f"Invalid transaction. Addr:{address:#x}, size:{size}, type:{type}")
 
-class DummyTree(pr.Root):
+class HubVirtualRoot(pr.Root):
 
     def __init__(self):
-        pr.Root.__init__(self,
-            name='dummyTree',
-            description="Dummy tree for example",
+        pr.Root.__init__(
+            self,
+            name='hubRoot',
+            description="Root for testing device-local virtual hub accesses",
             timeout=2.0,
-            pollEn=False)
+            pollEn=False,
+        )
 
-        # Use a memory space emulator
-        sim = LocalEmulate()
+        # Back the virtual hub logic with a local fake command/data register pair.
+        sim = HubCommandEmulator()
         self.addInterface(sim)
 
-        self.add(HubTestDev(
+        self.add(HubVirtualDevice(
+            name    = 'HubDevice',
             offset  = 0x0,
             memBase = sim,
         ))
 
-def test_hub():
+def test_virtual_hub_register_access():
 
-    with DummyTree() as root:
+    with HubVirtualRoot() as root:
 
-        test = [int(random.random()*100) for i in range(10)]
-
-        for i in range(10):
-            root.HubTestDev.Reg[i].set(test[i])
+        expected = [int(random.random()*100) for i in range(10)]
 
         for i in range(10):
-            val = root.HubTestDev.Reg[i].get()
-            if test[i] != val:
-                raise AssertionError(f'read mismatch at reg {i}. Got {val} exp {test[i]}')
+            root.HubDevice.Reg[i].set(expected[i])
 
-        root.HubTestDev.Write.set(root.HubTestDev.cmd_make(1,5*4,0))
-        val = root.HubTestDev.cmd_data(root.HubTestDev.Read.get())
+        for i in range(10):
+            val = root.HubDevice.Reg[i].get()
+            assert expected[i] == val, f"read mismatch at reg {i}. Got {val} exp {expected[i]}"
 
-        if test[5] != val:
-            raise AssertionError(f'read mismatch at reg 5. Got {val} exp {test[5]}')
+        root.HubDevice.Write.set(root.HubDevice.cmd_make(1, 5 * 4, 0))
+        val = root.HubDevice.cmd_data(root.HubDevice.Read.get())
+
+        assert expected[5] == val, f"read mismatch at reg 5. Got {val} exp {expected[5]}"
 
 
 if __name__ == "__main__":
-    test_hub()
+    test_virtual_hub_register_access()

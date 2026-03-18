@@ -9,20 +9,11 @@
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 
-# Comment added by rherbst for demonstration purposes.
 import pyrogue as pr
-import pyrogue.interfaces.simulation
 import rogue.interfaces.memory
 
-#rogue.Logging.setLevel(rogue.Logging.Debug)
-#import logging
-#logger = logging.getLogger('pyrogue')
-#logger.setLevel(logging.DEBUG)
-
-class SimpleDev(pr.Device):
-
-    def __init__(self,**kwargs):
-
+class RemoteIntDevice(pr.Device):
+    def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
         self.add(pr.RemoteVariable(
@@ -79,29 +70,22 @@ class SimpleDev(pr.Device):
             mode         = "RW",
         ))
 
-class DummyTree(pr.Root):
-
+class RemoteIntRoot(pr.Root):
     def __init__(self):
-        pr.Root.__init__(self,
-            name='dummyTree',
-            description="Dummy tree for example",
-            timeout=2.0,
-            pollEn=False)
+        super().__init__(name='dummyTree', description="Dummy tree for example", timeout=2.0, pollEn=False)
 
-        # Use a memory space emulator
-        #sim = pr.interfaces.simulation.MemEmulate()
+        # Exercise signed remote-variable conversion against the real memory block path.
         sim = rogue.interfaces.memory.Emulate(4,0x1000)
         self.addInterface(sim)
 
-        self.add(SimpleDev(
+        self.add(RemoteIntDevice(
             name    = 'SimpleDev',
             offset  = 0x80000,
             memBase = sim,
         ))
 
-def test_int():
-
-    with DummyTree() as root:
+def test_remote_int_model_reads_and_writes_signed_values():
+    with RemoteIntRoot() as root:
 
         root.SimpleDev.SimpleTestAA.set(-1)
         root.SimpleDev.SimpleTestAB.set(2)
@@ -117,9 +101,8 @@ def test_int():
         retBC = root.SimpleDev.SimpleTestBC.get()
         retBD = root.SimpleDev.SimpleTestBD.get()
 
-        if (retAA != -1) or (retAB != 2) or (retBA != -2) or (retBB != -5) or (retBC != 7) or (retBD != -7):
-            raise AssertionError(f'Verification Failure: retAA={retAA}, retAB={retAB}, retBA={retBA}, retBB={retBB}, retBC={retBC}, retBD={retBD}')
+        assert (retAA, retAB, retBA, retBB, retBC, retBD) == (-1, 2, -2, -5, 7, -7)
 
 
 if __name__ == "__main__":
-    test_int()
+    test_remote_int_model_reads_and_writes_signed_values()
