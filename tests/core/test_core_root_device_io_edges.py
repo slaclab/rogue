@@ -12,7 +12,7 @@ import zipfile
 
 import pyrogue as pr
 import pytest
-import rogue.interfaces.memory
+from conftest import MemoryRoot
 
 
 class ManagedThing:
@@ -41,12 +41,9 @@ class IoChild(pr.Device):
         self.add(pr.LocalVariable(name="LocalCfg", value=2, groups=["Cfg"]))
 
 
-class IoRoot(pr.Root):
+class IoRoot(MemoryRoot):
     def __init__(self):
-        super().__init__(name="root", pollEn=False)
-        self._mem = rogue.interfaces.memory.Emulate(4, 0x4000)
-        self.addInterface(self._mem)
-
+        super().__init__(name="root")
         self.primary = ManagedThing("primary")
         self.proto = ManagedThing("proto")
         self.extra = ManagedThing("extra")

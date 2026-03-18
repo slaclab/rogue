@@ -10,7 +10,7 @@
 
 import pyrogue as pr
 import pytest
-import rogue.interfaces.memory
+from conftest import MemoryRoot
 
 
 class ResetChild(pr.Device):
@@ -63,12 +63,10 @@ class ResetParent(pr.Device):
         self.enable_events.append(value)
 
 
-class StructureRoot(pr.Root):
+class StructureRoot(MemoryRoot):
     def __init__(self):
-        super().__init__(name="root", pollEn=False)
+        super().__init__(name="root")
         self.initialize_calls = 0
-        self._mem = rogue.interfaces.memory.Emulate(4, 0x4000)
-        self.addInterface(self._mem)
         self.add(ResetParent(name="Parent", mem_base=self._mem))
         self.add(pr.LocalVariable(
             name="HexValue",

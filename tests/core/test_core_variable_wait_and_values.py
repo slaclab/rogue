@@ -14,6 +14,7 @@ import time
 import numpy as np
 import pyrogue as pr
 import rogue.interfaces.memory
+from conftest import MemoryRoot
 
 
 class WaitDevice(pr.Device):
@@ -99,11 +100,9 @@ class WaitDevice(pr.Device):
         return self.set_calls[-1][0] if self.set_calls else 5
 
 
-class WaitRoot(pr.Root):
+class WaitRoot(MemoryRoot):
     def __init__(self):
-        super().__init__(name="root", pollEn=False)
-        self._mem = rogue.interfaces.memory.Emulate(4, 0x4000)
-        self.addInterface(self._mem)
+        super().__init__(name="root")
         self.add(WaitDevice(name="Dev", mem_base=self._mem))
 
 

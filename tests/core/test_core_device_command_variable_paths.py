@@ -13,6 +13,7 @@ import io
 import numpy as np
 import pyrogue as pr
 import rogue.interfaces.memory
+from conftest import MemoryRoot
 
 
 class ChildDevice(pr.Device):
@@ -97,13 +98,11 @@ class CommandVarDevice(pr.Device):
         ))
 
 
-class CoreRoot(pr.Root):
+class CoreRoot(MemoryRoot):
     def __init__(self):
-        super().__init__(name="root", pollEn=False)
-        mem = rogue.interfaces.memory.Emulate(4, 0x4000)
-        self.addInterface(mem)
-        self.add(ParentDevice(name="Parent", mem_base=mem))
-        self.add(CommandVarDevice(name="CmdDev", mem_base=mem, offset=0x100))
+        super().__init__(name="root")
+        self.add(ParentDevice(name="Parent", mem_base=self._mem))
+        self.add(CommandVarDevice(name="CmdDev", mem_base=self._mem, offset=0x100))
 
 
 def test_device_block_operations_respect_bulk_flags_and_recurse(monkeypatch):

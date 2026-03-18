@@ -11,7 +11,7 @@
 import pyrogue as pr
 import pyrogue.interfaces as pr_interfaces
 import pytest
-import rogue.interfaces.memory
+from conftest import MemoryRoot
 
 
 class ManagedInterface:
@@ -45,12 +45,9 @@ class RecursiveDevice(pr.Device):
         self.marker.append(token)
 
 
-class NodeEdgeRoot(pr.Root):
+class NodeEdgeRoot(MemoryRoot):
     def __init__(self):
-        super().__init__(name="root", pollEn=False)
-        self._mem = rogue.interfaces.memory.Emulate(4, 0x4000)
-        self.addInterface(self._mem)
-
+        super().__init__(name="root")
         self.managed = ManagedInterface()
         self.add(RecursiveDevice(name="Top", mem_base=self._mem))
         self.Top.addInterface(self.managed)
@@ -73,11 +70,9 @@ class RepeatedDevice(pr.Device):
         )
 
 
-class RepeatedRoot(pr.Root):
+class RepeatedRoot(MemoryRoot):
     def __init__(self):
-        super().__init__(name="root", pollEn=False)
-        self._mem = rogue.interfaces.memory.Emulate(4, 0x4000)
-        self.addInterface(self._mem)
+        super().__init__(name="root")
         self.add(RepeatedDevice(name="Pack", mem_base=self._mem))
 
 
@@ -113,11 +108,9 @@ def test_add_remote_variables_pack_mode_exposes_all_alias():
                 pack=True,
             )
 
-    class PackedRoot(pr.Root):
+    class PackedRoot(MemoryRoot):
         def __init__(self):
-            super().__init__(name="root", pollEn=False)
-            self._mem = rogue.interfaces.memory.Emulate(4, 0x4000)
-            self.addInterface(self._mem)
+            super().__init__(name="root")
             self.add(PackedDevice(name="Pack", mem_base=self._mem))
 
     with PackedRoot() as root:

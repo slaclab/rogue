@@ -25,11 +25,11 @@ def wait_for(predicate, timeout=2.0, interval=0.01):
 
 
 class MemoryRoot(pr.Root):
-    def __init__(self, **kwargs):
+    def __init__(self, *, mem_width=4, mem_size=0x4000, **kwargs):
         super().__init__(pollEn=False, **kwargs)
         # Use a local memory emulator so tests can exercise RemoteVariable paths
         # without needing external hardware or sockets.
-        self._mem = rogue.interfaces.memory.Emulate(4, 0x4000)
+        self._mem = rogue.interfaces.memory.Emulate(mem_width, mem_size)
         self.addInterface(self._mem)
 
 

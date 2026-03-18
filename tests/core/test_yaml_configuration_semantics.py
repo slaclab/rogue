@@ -9,8 +9,8 @@
 #-----------------------------------------------------------------------------
 
 import pyrogue as pr
-import rogue.interfaces.memory
 import zipfile
+from conftest import MemoryRoot
 
 
 class ConfigLeaf(pr.Device):
@@ -28,11 +28,9 @@ class ConfigLeaf(pr.Device):
         ))
 
 
-class YamlConfigRoot(pr.Root):
+class YamlConfigRoot(MemoryRoot):
     def __init__(self):
-        super().__init__(name="root", pollEn=False)
-        self._mem = rogue.interfaces.memory.Emulate(4, 0x4000)
-        self.addInterface(self._mem)
+        super().__init__(name="root")
         self.add(ConfigLeaf(name="SomeDeviceArray[0]", offset=0x000, mem_base=self._mem))
         self.add(ConfigLeaf(name="SomeDeviceArray[1]", offset=0x100, mem_base=self._mem))
         self.add(ConfigLeaf(name="SomeDeviceArray[2]", offset=0x200, mem_base=self._mem))
