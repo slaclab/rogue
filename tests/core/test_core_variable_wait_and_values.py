@@ -10,6 +10,7 @@
 
 import threading
 import time
+import io
 
 import numpy as np
 import pyrogue as pr
@@ -159,6 +160,7 @@ def test_variable_value_metadata_and_array_display_paths():
         wave = root.Dev.Waveform.getVariableValue(read=False)
         assert wave.valueDisp == "[1, 2, 3]"
         assert root.Dev.Waveform.parseDisp("[4, 5, 6]").tolist() == [4, 5, 6]
+        assert root.Dev.Counter.parseDisp(11) == 11
 
         props = root.Dev.Counter.properties()
         assert props["class"] == "LocalVariable"
@@ -203,3 +205,25 @@ def test_local_and_remote_variable_edge_operations(monkeypatch):
         # Getter-only local variables should still materialize a native type at finish-init time.
         assert root.Dev.GetterOnly.value() == 12
         assert root.Dev.GetterOnly.nativeType is int
+
+
+def test_variable_set_dict_mode_skips_and_generates_docs(monkeypatch):
+    warnings = []
+
+    with WaitRoot() as root:
+        monkeypatch.setattr(root.Dev.Counter._log, "warning", lambda msg, *args: warnings.append(msg % args))
+
+        root.Dev.Counter._setDict(9, writeEach=False, modes=["RO"])
+        assert root.Dev.Counter.value() == 0
+        assert warnings == [
+            "Skipping set for Entry Counter with mode RW. Enabled Modes=['RO']."
+        ]
+
+        assert root.Dev.Counter._getDict(modes=["RO"]) is None
+
+        buffer = io.StringIO()
+        root.Dev.Counter._genDocs(buffer)
+        docs = buffer.getvalue()
+        assert "root.Dev.Counter" in docs
+        assert "lowWarning" in docs
+        assert "highAlarm" in docs
