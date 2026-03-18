@@ -11,18 +11,12 @@
 
 import pyrogue as pr
 import pyrogue.interfaces.simulation
+import pytest
 
-# We expect Errors with this test, so turn off logging of them
-#import rogue
-#rogue.Logging.setLevel(rogue.Logging.Warning)
-#import logging
-#logger = logging.getLogger('pyrogue')
-#logger.setLevel(logging.DEBUG)
+pytestmark = pytest.mark.integration
 
-class SimpleDev(pr.Device):
-
-    def __init__(self,**kwargs):
-
+class RetryMemoryDevice(pr.Device):
+    def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
         self.add(pr.RemoteVariable(
@@ -86,28 +80,22 @@ class SimpleDev(pr.Device):
         ))
 
 
-class DummyTree(pr.Root):
-
+class RetryMemoryRoot(pr.Root):
     def __init__(self):
-        pr.Root.__init__(self,
-                         name='dummyTree',
-                         description="Dummy tree for example",
-                         timeout=.01,
-                         pollEn=False)
+        super().__init__(name='dummyTree', description="Dummy tree for example", timeout=.01, pollEn=False)
 
-        # Use a memory space emulator
+        # Drop the first few transactions so retry handling is exercised.
         sim = pr.interfaces.simulation.MemEmulate(dropCount=2)
         self.addInterface(sim)
 
-        self.add(SimpleDev(
+        self.add(RetryMemoryDevice(
             name    = 'SimpleDev',
             offset  = 0x80000,
             memBase = sim
         ))
 
 def test_memory():
-
-    with DummyTree() as root:
+    with RetryMemoryRoot() as root:
 
         for i in range(10):
 
@@ -125,8 +113,14 @@ def test_memory():
             retBC = root.SimpleDev.SimpleTestBC.get()
             retBD = root.SimpleDev.SimpleTestBD.get()
 
-            if (retAA != 0x40 + i) or (retAB != 0x80 + i) or (retBA != 0x41 + i) or (retBB != 0x42 + i) or (retBC != 0x43 + i) or (retBD != 0x44 + i):
-                raise AssertionError(f'Verification Failure: retAA={retAA}, retAB={retAB}, retBA={retBA}, retBB={retBB}, retBC={retBC}, retBD={retBD}')
+            assert (retAA, retAB, retBA, retBB, retBC, retBD) == (
+                0x40 + i,
+                0x80 + i,
+                0x41 + i,
+                0x42 + i,
+                0x43 + i,
+                0x44 + i,
+            )
 
 
 if __name__ == "__main__":

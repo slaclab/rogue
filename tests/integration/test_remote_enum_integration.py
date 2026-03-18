@@ -9,22 +9,14 @@
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 
-# Comment added by rherbst for demonstration purposes.
 import pyrogue as pr
-import pyrogue.interfaces.simulation
 import rogue.interfaces.memory
 import pytest
 
 pytestmark = pytest.mark.integration
-#rogue.Logging.setLevel(rogue.Logging.Warning)
-#import logging
-#logger = logging.getLogger('pyrogue')
-#logger.setLevel(logging.DEBUG)
 
-class EnumDev(pr.Device):
-
-    def __init__(self,**kwargs):
-
+class EnumTransportDevice(pr.Device):
+    def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
         self.add(pr.RemoteVariable(
@@ -56,51 +48,36 @@ class EnumDev(pr.Device):
             },
         ))
 
-class DummyTree(pr.Root):
-
+class EnumTransportRoot(pr.Root):
     def __init__(self):
-        pr.Root.__init__(self,
-                         name='dummyTree',
-                         description="Dummy tree for example",
-                         timeout=2.0,
-                         pollEn=False)
+        super().__init__(name='dummyTree', description="Dummy tree for example", timeout=2.0, pollEn=False)
 
-        # Use a memory space emulator
-        #sim = pr.interfaces.simulation.MemEmulate()
         sim = rogue.interfaces.memory.Emulate(4,0x1000)
         self.addInterface(sim)
 
-        # Create a memory gateway
         ms = rogue.interfaces.memory.TcpServer("127.0.0.1",9080)
         self.addInterface(ms)
-
-        # Connect the memory gateways together
         sim << ms
 
-        # Create a memory gateway
         mc = rogue.interfaces.memory.TcpClient("127.0.0.1",9080, True)
         self.memClient = mc
         self.addInterface(mc)
 
-        # Add Device
-        self.add(EnumDev(
+        # Exercise enum conversion over the real TCP memory transport.
+        self.add(EnumTransportDevice(
             name       = 'Dev',
             offset     = 0x0,
             memBase    = mc,
         ))
-def test_enum():
 
-    with DummyTree() as root:
+
+def test_enum():
+    with EnumTransportRoot() as root:
         for i in range(3):
             root.Dev.Config.setDisp(f'Config{i}')
-            config =  root.Dev.Config.get()
-            if ( config != (2-i) ):
-                raise AssertionError( f'root.Dev.config.get()={config}' )
+            assert root.Dev.Config.get() == (2 - i)
 
-        # Test the undef enum case
-        status = root.Dev.Status.getDisp()
-        if ( status != 'INVALID: 3'):
-            raise AssertionError( f'root.Dev.Status.getDisp()={status}' )
+        assert root.Dev.Status.getDisp() == 'INVALID: 3'
 
 if __name__ == "__main__":
     test_enum()

@@ -9,25 +9,15 @@
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 
-# Comment added by rherbst for demonstration purposes.
 import pyrogue as pr
-import pyrogue.interfaces.simulation
 import rogue.interfaces.memory
 import pytest
 
 pytestmark = pytest.mark.integration
 
-#rogue.Logging.setLevel(rogue.Logging.Debug)
-#import logging
-#logger = logging.getLogger('pyrogue')
-#logger.setLevel(logging.DEBUG)
-
-class SimpleDev(pr.Device):
-
-    def __init__(self,**kwargs):
-
+class MixedWidthDevice(pr.Device):
+    def __init__(self, **kwargs):
         super().__init__(**kwargs)
-
         self.add(pr.RemoteVariable(
             name         = "SimpleTestAA",
             offset       =  0x1c,
@@ -82,15 +72,13 @@ class SimpleDev(pr.Device):
             mode         = "RW",
         ))
 
-class MemDev(pr.Device):
-
-    def __init__(self,**kwargs):
-
+class OverlapMemoryDevice(pr.Device):
+    def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
         for i in range(int(256/4)):
             for j in range(4):
-                # 4 bytes all in the same 32-bit address alignment across multiple 32-bit word boundaries
+                # Sweep byte accesses across multiple 32-bit word boundaries.
                 value = 4*i+j
                 self.add(pr.RemoteVariable(
                     name         = f'TestBlockBytes[{value}]',
@@ -102,8 +90,7 @@ class MemDev(pr.Device):
                 ))
 
         for i in range(256):
-            # Sweeping across a non-byte remote variable with overlapping 32-bit address alignments
-            # with same offsets for all variables (sometimes ASIC designers do this registers definition)
+            # Sweep a 9-bit field across overlapping 32-bit words.
             self.add(pr.RemoteVariable(
                 name         = f'TestBlockBits[{i}]',
                 offset       = 0x100,
@@ -114,54 +101,42 @@ class MemDev(pr.Device):
             ))
 
 
-class DummyTree(pr.Root):
-
+class MemoryTransportRoot(pr.Root):
     def __init__(self):
-        pr.Root.__init__(self,
-                         name='dummyTree',
-                         description="Dummy tree for example",
-                         timeout=2.0,
-                         pollEn=False)
+        super().__init__(name='dummyTree', description="Dummy tree for example", timeout=2.0, pollEn=False)
 
-        # Use a memory space emulator
-        #sim = pr.interfaces.simulation.MemEmulate()
+        # Exercise the real TCP memory gateway path over a local emulator.
         sim = rogue.interfaces.memory.Emulate(4,0x1000)
         self.addInterface(sim)
 
-        # Create a memory gateway
         ms = rogue.interfaces.memory.TcpServer("127.0.0.1",9060)
         self.addInterface(ms)
-
-        # Connect the memory gateways together
         sim << ms
 
-        # Create a memory gateway
         mc = rogue.interfaces.memory.TcpClient("127.0.0.1",9060)
         self.addInterface(mc)
 
-        # Add Device
         for i in range(4):
-            self.add(MemDev(
+            self.add(OverlapMemoryDevice(
                 name       = f'MemDev[{i}]',
                 offset     = i*0x10000,
                 memBase    = mc,
             ))
 
-        self.add(SimpleDev(
+        self.add(MixedWidthDevice(
             name    = 'SimpleDev',
             offset  = 0x80000,
             memBase = mc,
         ))
+
 def test_memory():
+    with MemoryTransportRoot() as root:
 
-    with DummyTree() as root:
-
-        # Load the R/W variables
         for dev in range(2):
-            writeVar = (dev == 0)
+            write_var = dev == 0
             for i in range(256):
-                root.MemDev[dev].TestBlockBytes[i].set(value=i,write=writeVar)
-                root.MemDev[dev].TestBlockBits[i].set(value=i,write=writeVar)
+                root.MemDev[dev].TestBlockBytes[i].set(value=i, write=write_var)
+                root.MemDev[dev].TestBlockBits[i].set(value=i, write=write_var)
 
         root.SimpleDev.SimpleTestAA.set(0x40)
         root.SimpleDev.SimpleTestAB.set(0x80)
@@ -170,23 +145,19 @@ def test_memory():
         root.SimpleDev.SimpleTestBC.set(0x43)
         root.SimpleDev.SimpleTestBD.set(0x44)
 
-        # Bulk Write Device
         root.MemDev[1].WriteDevice()
-
-        # Bulk Read Device
         root.MemDev[3].ReadDevice()
 
-        # Verify all the RW and RO variables
         for dev in range(4):
             for i in range(256):
-                if dev!=3:
+                if dev != 3:
                     retByte = root.MemDev[dev].TestBlockBytes[i].get()
                     retBit  = root.MemDev[dev].TestBlockBits[i].get()
                 else:
                     retByte = root.MemDev[dev].TestBlockBytes[i].value()
                     retBit  = root.MemDev[dev].TestBlockBits[i].value()
-                if (retByte != i) or (retBit != i):
-                    raise AssertionError(f'{root.MemDev[dev].path}: Verification Failure: i={i}, TestBlockBytes={retByte}, TestBlockBits={retBit}')
+                assert retByte == i, f"{root.MemDev[dev].path}: byte mismatch at {i}"
+                assert retBit == i, f"{root.MemDev[dev].path}: bit mismatch at {i}"
 
         retAA = root.SimpleDev.SimpleTestAA.get()
         retAB = root.SimpleDev.SimpleTestAB.get()
@@ -195,8 +166,7 @@ def test_memory():
         retBC = root.SimpleDev.SimpleTestBC.get()
         retBD = root.SimpleDev.SimpleTestBD.get()
 
-        if (retAA != 0x40) or (retAB != 0x80) or (retBA != 0x41) or (retBB != 0x42) or (retBC != 0x43) or (retBD != 0x44):
-            raise AssertionError(f'Verification Failure: retAA={retAA}, retAB={retAB}, retBA={retBA}, retBB={retBB}, retBC={retBC}, retBD={retBD}')
+        assert (retAA, retAB, retBA, retBB, retBC, retBD) == (0x40, 0x80, 0x41, 0x42, 0x43, 0x44)
 
 
 if __name__ == "__main__":
