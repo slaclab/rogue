@@ -102,18 +102,18 @@ class OverlapMemoryDevice(pr.Device):
 
 
 class MemoryTransportRoot(pr.Root):
-    def __init__(self):
+    def __init__(self, *, port):
         super().__init__(name='dummyTree', description="Dummy tree for example", timeout=2.0, pollEn=False)
 
         # Exercise the real TCP memory gateway path over a local emulator.
         sim = rogue.interfaces.memory.Emulate(4,0x1000)
         self.addInterface(sim)
 
-        ms = rogue.interfaces.memory.TcpServer("127.0.0.1",9060)
+        ms = rogue.interfaces.memory.TcpServer("127.0.0.1", port)
         self.addInterface(ms)
         sim << ms
 
-        mc = rogue.interfaces.memory.TcpClient("127.0.0.1",9060)
+        mc = rogue.interfaces.memory.TcpClient("127.0.0.1", port)
         self.addInterface(mc)
 
         for i in range(4):
@@ -129,8 +129,8 @@ class MemoryTransportRoot(pr.Root):
             memBase = mc,
         ))
 
-def test_memory():
-    with MemoryTransportRoot() as root:
+def test_memory(free_tcp_port):
+    with MemoryTransportRoot(port=free_tcp_port) as root:
 
         for dev in range(2):
             write_var = dev == 0

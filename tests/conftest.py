@@ -93,6 +93,12 @@ def free_zmq_port():
 
 
 @pytest.fixture
+def free_tcp_port():
+    # Most TCP-backed integration tests only need one caller-selected port.
+    return _find_free_port_block(count=1)
+
+
+@pytest.fixture
 def memory_root():
     root = MemoryRoot(name="root")
     with root:

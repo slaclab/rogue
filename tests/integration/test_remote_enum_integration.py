@@ -49,17 +49,17 @@ class EnumTransportDevice(pr.Device):
         ))
 
 class EnumTransportRoot(pr.Root):
-    def __init__(self):
+    def __init__(self, *, port):
         super().__init__(name='dummyTree', description="Dummy tree for example", timeout=2.0, pollEn=False)
 
         sim = rogue.interfaces.memory.Emulate(4,0x1000)
         self.addInterface(sim)
 
-        ms = rogue.interfaces.memory.TcpServer("127.0.0.1",9080)
+        ms = rogue.interfaces.memory.TcpServer("127.0.0.1", port)
         self.addInterface(ms)
         sim << ms
 
-        mc = rogue.interfaces.memory.TcpClient("127.0.0.1",9080, True)
+        mc = rogue.interfaces.memory.TcpClient("127.0.0.1", port, True)
         self.memClient = mc
         self.addInterface(mc)
 
@@ -71,8 +71,8 @@ class EnumTransportRoot(pr.Root):
         ))
 
 
-def test_enum():
-    with EnumTransportRoot() as root:
+def test_enum(free_tcp_port):
+    with EnumTransportRoot(port=free_tcp_port) as root:
         for i in range(3):
             root.Dev.Config.setDisp(f'Config{i}')
             assert root.Dev.Config.get() == (2 - i)

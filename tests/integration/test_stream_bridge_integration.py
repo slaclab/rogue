@@ -26,10 +26,10 @@ FRAME_DRAIN_POLLS = 200
 FRAME_DRAIN_INTERVAL = 0.1
 
 
-def run_stream_bridge_path():
+def run_stream_bridge_path(port):
     """Validate TCP bridge delivery with PRBS payload checking enabled."""
-    server = rogue.interfaces.stream.TcpServer("127.0.0.1", 9000)
-    client = rogue.interfaces.stream.TcpClient("127.0.0.1", 9000)
+    server = rogue.interfaces.stream.TcpServer("127.0.0.1", port)
+    client = rogue.interfaces.stream.TcpClient("127.0.0.1", port)
 
     prbs_tx = rogue.utilities.Prbs()
     prbs_rx = rogue.utilities.Prbs()
@@ -52,8 +52,8 @@ def run_stream_bridge_path():
     assert prbs_rx.getRxCount() == FRAME_COUNT
     assert prbs_rx.getRxErrors() == 0
 
-def test_data_path():
-    run_stream_bridge_path()
+def test_data_path(free_tcp_port):
+    run_stream_bridge_path(free_tcp_port)
 
 if __name__ == "__main__":
-    test_data_path()
+    run_stream_bridge_path(9000)
