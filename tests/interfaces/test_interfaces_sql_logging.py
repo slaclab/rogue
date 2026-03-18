@@ -10,6 +10,7 @@
 
 import json
 import logging
+import time
 
 import pyrogue as pr
 import pyrogue.interfaces as pr_intf
@@ -35,6 +36,15 @@ def _read_rows(url, table):
         return conn.execute(sqlalchemy.text(f"SELECT * FROM {table}")).fetchall()
 
 
+def _wait_for(predicate, timeout=2.0, interval=0.01):
+    deadline = time.time() + timeout
+    while time.time() < deadline:
+        if predicate():
+            return True
+        time.sleep(interval)
+    return predicate()
+
+
 def test_sql_logger_writes_variable_and_syslog_rows(tmp_path):
     db_path = tmp_path / "sql_logger.db"
     url = f"sqlite:///{db_path}"
@@ -53,6 +63,17 @@ def test_sql_logger_writes_variable_and_syslog_rows(tmp_path):
         # RootLogHandler stores this in SystemLogLast, which the SqlLogger sees
         # as just another variable update on the subscribed path.
         log.info("sql logger message")
+
+        # The syslog row still uses the live Root->SqlLogger listener path, but
+        # CI can be fast enough that _stop() races the listener callback. Wait
+        # until the row is present instead of assuming immediate delivery.
+        assert _wait_for(
+            lambda: any(
+                row.name == "pyrogue.test.sql" and row.message == "sql logger message"
+                for row in _read_rows(url, "syslog")
+            ),
+            timeout=2.0,
+        )
 
         logger._stop()
 
