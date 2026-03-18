@@ -114,6 +114,23 @@ class Process(pr.Device):
         if self._retVar is not None and self._retVar not in self:
             self.add(self._retVar)
 
+    def _updateProgress(self) -> None:
+        """Clamp progress to the valid 0.0-1.0 range.
+
+        The step counter may temporarily run ahead of the declared total, or
+        the total may still be zero while a process is being configured.
+        Keep Progress bounded so helper callers cannot trip the variable range
+        checks just by updating Step and TotalSteps in an unexpected order.
+        """
+        total = self.TotalSteps.value()
+
+        if total <= 0:
+            progress = 0.0
+        else:
+            progress = min(self.Step.value() / total, 1.0)
+
+        self.Progress.set(progress)
+
     def _incrementSteps(self, incr: int) -> None:
         """Increment step counter and update progress.
 
@@ -124,7 +141,7 @@ class Process(pr.Device):
         """
         with self.Step.lock:
             self.Step.set(self.Step.value() + incr)
-        self.Progress.set(self.Step.value()/self.TotalSteps.value())
+        self._updateProgress()
 
     def _setSteps(self, value: int) -> None:
         """Set absolute step counter and update progress.
@@ -135,7 +152,7 @@ class Process(pr.Device):
             New step index.
         """
         self.Step.set(value)
-        self.Progress.set(self.Step.value()/self.TotalSteps.value())
+        self._updateProgress()
 
     def _startProcess(self) -> None:
         """ """
@@ -168,7 +185,7 @@ class Process(pr.Device):
         with self._lock:
             if self.Running.value() is False:
                 if arg is not None and self._argVar is not None:
-                    self.nodes[self._argVar].setDisp(arg)
+                    self._argVar.setDisp(arg)
 
                 self._runEn  = True
                 self._thread = threading.Thread(target=self._run)
@@ -217,7 +234,7 @@ class Process(pr.Device):
         else:
             self.Message.setDisp("Started")
             self.TotalSteps.set(100)
-            for i in range(101):
+            for i in range(100):
                 if self._runEn is False:
                     break
                 time.sleep(1)
