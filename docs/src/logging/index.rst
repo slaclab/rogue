@@ -17,10 +17,19 @@ Internally, many C++-backed Rogue modules still use ``rogue.Logging``. In the
 recommended unified mode, those messages are forwarded into Python logging so
 they appear in the same logging path as the rest of the application.
 
+For a quick reference of common logger names and patterns, see
+:doc:`/logging/logger_names`.
+
 How To Think About It
 =====================
 
-When you are debugging a problem, first identify which side emitted the message:
+For new PyRogue applications, the practical rule is:
+
+- turn on unified logging
+- configure the relevant ``pyrogue...`` logger with Python ``logging``
+
+If you are working in older code or a standalone Rogue transport script, first
+identify which side emitted the message:
 
 - Pure Python / PyRogue class:
   configure it with Python ``logging``.
@@ -181,6 +190,11 @@ Severity constants are:
 - ``rogue.Logging.Debug`` = 10
 
 Filter matching is prefix-based. These are equivalent:
+
+.. code-block:: python
+
+   rogue.Logging.setFilter('udp', rogue.Logging.Debug)
+   rogue.Logging.setFilter('pyrogue.udp', rogue.Logging.Debug)
 
 Logger Naming Rules
 -------------------

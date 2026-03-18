@@ -5,6 +5,9 @@ Logger Names
 This page collects common Rogue and PyRogue logger names in one place. Use it
 as a quick reference when enabling logging for a specific subsystem.
 
+It replaces the older single-page logger-name table that previously lived in
+``logging/index.rst``.
+
 If you already have the object instance, prefer:
 
 .. code-block:: python
@@ -31,6 +34,9 @@ Protocols
    * - Packetizer
      - ``pyrogue.packetizer.Controller``
      - Framing, drop, timeout, CRC behavior
+   * - Batcher
+     - ``pyrogue.batcher.CoreV1``, ``pyrogue.batcher.CoreV2``
+     - Super-header processing and record framing
    * - SRP
      - ``pyrogue.SrpV0``, ``pyrogue.SrpV3``
      - Request/response header processing
@@ -101,6 +107,9 @@ Hardware And Utilities
    * - File writer
      - ``pyrogue.fileio.StreamWriter``
      - File open/close, rollover, write path
+   * - ZMQ client transport
+     - ``pyrogue.ZmqClient``
+     - Client-side request/update transport
    * - ZMQ server transport
      - ``pyrogue.ZmqServer``
      - Underlying server transport
