@@ -20,14 +20,13 @@ import pytest
 
 pytestmark = pytest.mark.integration
 
-#rogue.Logging.setLevel(rogue.Logging.Debug)
-
 # This is a protocol-stack regression test for UDP/RSSI/packetizer behavior,
 # including out-of-order delivery. Smaller frame counts are enough to validate
 # the path without turning the test into a stress benchmark.
-FrameCount = 200
-FrameSize  = 2048
-DrainTimeout = 10.0
+FRAME_COUNT = 200
+FRAME_SIZE = 2048
+DRAIN_TIMEOUT = 10.0
+CONNECTION_TIMEOUT = 10
 
 class RssiOutOfOrder(rogue.interfaces.stream.Slave, rogue.interfaces.stream.Master):
 
@@ -41,11 +40,11 @@ class RssiOutOfOrder(rogue.interfaces.stream.Slave, rogue.interfaces.stream.Mast
         self._cnt    = 0
 
     @property
-    def period(self,value):
+    def period(self):
         return self._period
 
     @period.setter
-    def period(self,value):
+    def period(self, value):
         with self._lock:
             self._period = value
 
@@ -74,102 +73,77 @@ class RssiOutOfOrder(rogue.interfaces.stream.Slave, rogue.interfaces.stream.Mast
                 self._sendFrame(frame)
 
 
-def data_path(ver,jumbo):
-    print("Testing ver={} jumbo={}".format(ver,jumbo))
+def build_packetizer_pair(version):
+    """Return matching packetizer endpoints for the requested wire version."""
+    if version == 1:
+        return rogue.protocols.packetizer.Core(True), rogue.protocols.packetizer.Core(True)
+    return rogue.protocols.packetizer.CoreV2(True, True, True), rogue.protocols.packetizer.CoreV2(True, True, True)
 
-    # UDP Server
-    serv = rogue.protocols.udp.Server(0,jumbo)
-    port = serv.getPort()
 
-    # UDP Client
-    client = rogue.protocols.udp.Client("127.0.0.1",port,jumbo)
+def run_udp_packetizer_path(version, jumbo):
+    """Validate UDP/RSSI/packetizer delivery under periodic out-of-order frames."""
+    server = rogue.protocols.udp.Server(0, jumbo)
+    port = server.getPort()
+    client = rogue.protocols.udp.Client("127.0.0.1", port, jumbo)
 
-    # RSSI
-    sRssi = rogue.protocols.rssi.Server(serv.maxPayload() - 8)
-    cRssi = rogue.protocols.rssi.Client(client.maxPayload() - 8)
+    server_rssi = rogue.protocols.rssi.Server(server.maxPayload() - 8)
+    client_rssi = rogue.protocols.rssi.Client(client.maxPayload() - 8)
 
-    # Packetizer
-    if ver == 1:
-        sPack = rogue.protocols.packetizer.Core(True)
-        cPack = rogue.protocols.packetizer.Core(True)
-    else:
-        sPack = rogue.protocols.packetizer.CoreV2(True,True,True)
-        cPack = rogue.protocols.packetizer.CoreV2(True,True,True)
+    server_pack, client_pack = build_packetizer_pair(version)
 
-    # PRBS
-    prbsTx = rogue.utilities.Prbs()
-    prbsRx = rogue.utilities.Prbs()
+    prbs_tx = rogue.utilities.Prbs()
+    prbs_rx = rogue.utilities.Prbs()
+    out_of_order = RssiOutOfOrder(period=0)
 
-    # Out of order module on client side
-    coo = RssiOutOfOrder(period=0)
+    prbs_tx >> client_pack.application(0)
+    client_rssi.application() == client_pack.transport()
+    client_rssi.transport() >> out_of_order >> client >> client_rssi.transport()
 
-    # Client stream
-    prbsTx >> cPack.application(0)
-    cRssi.application() == cPack.transport()
+    server == server_rssi.transport()
+    server_rssi.application() == server_pack.transport()
+    server_pack.application(0) >> prbs_rx
 
-    # Insert out of order in the outbound direction
-    cRssi.transport() >> coo >> client >> cRssi.transport()
+    # Start with orderly transport first so the RSSI session comes up cleanly
+    # before periodic reordering is introduced.
+    server_rssi._start()
+    client_rssi._start()
 
-    # Server stream
-    serv == sRssi.transport()
-    sRssi.application() == sPack.transport()
-    sPack.application(0) >> prbsRx
-
-    # Start RSSI with out of order disabled
-    sRssi._start()
-    cRssi._start()
-
-    # Wait for connection
-    cnt = 0
-    print("Waiting for RSSI connection")
-    while not cRssi.getOpen():
+    waited = 0
+    while not client_rssi.getOpen():
         time.sleep(1)
-        cnt += 1
+        waited += 1
+        if waited == CONNECTION_TIMEOUT:
+            client_rssi._stop()
+            server_rssi._stop()
+            raise AssertionError(f"RSSI timeout error. Ver={version} Jumbo={jumbo}")
 
-        if cnt == 10:
-            cRssi._stop()
-            sRssi._stop()
-            raise AssertionError('RSSI timeout error. Ver={} Jumbo={}'.format(ver,jumbo))
+    out_of_order.period = 10
+    for _ in range(FRAME_COUNT):
+        prbs_tx.genFrame(FRAME_SIZE)
 
-    # Enable out of order with a period of 10
-    coo.period = 10
+    out_of_order.period = 0
 
-    print("Generating Frames")
-    for _ in range(FrameCount):
-        prbsTx.genFrame(FrameSize)
-
-    # Disable out of order
-    coo.period = 0
-
-    # Wait for the stack to drain rather than assuming a fixed wall-clock delay.
-    print("Waiting for frame drain")
     start = time.time()
-    while prbsRx.getRxCount() != FrameCount:
+    while prbs_rx.getRxCount() != FRAME_COUNT:
         time.sleep(0.1)
-        if (time.time() - start) > DrainTimeout:
-            cRssi._stop()
-            sRssi._stop()
-            raise AssertionError('Frame drain timeout. Ver={} Jumbo={} Got = {} expected = {}'.format(
-                ver,
-                jumbo,
-                prbsRx.getRxCount(),
-                FrameCount))
+        if (time.time() - start) > DRAIN_TIMEOUT:
+            client_rssi._stop()
+            server_rssi._stop()
+            raise AssertionError(
+                f"Frame drain timeout. Ver={version} Jumbo={jumbo} "
+                f"Got = {prbs_rx.getRxCount()} expected = {FRAME_COUNT}"
+            )
 
-    # Stop connection
-    print("Closing Link")
-    cRssi._stop()
-    sRssi._stop()
+    client_rssi._stop()
+    server_rssi._stop()
 
-    if prbsRx.getRxErrors() != 0:
-        raise AssertionError('PRBS Frame errors detected! Ver={} Jumbo={}'.format(ver,jumbo))
+    assert prbs_rx.getRxErrors() == 0
 
-    print("Done testing ver={} jumbo={}".format(ver,jumbo))
 
-def test_data_path():
-    data_path(1,True)
-    data_path(2,True)
-    data_path(1,False)
-    data_path(2,False)
+@pytest.mark.parametrize("version,jumbo", [(1, True), (2, True), (1, False), (2, False)])
+def test_data_path(version, jumbo):
+    run_udp_packetizer_path(version, jumbo)
 
 if __name__ == "__main__":
-    test_data_path()
+    for version, jumbo in [(1, True), (2, True), (1, False), (2, False)]:
+        run_udp_packetizer_path(version, jumbo)

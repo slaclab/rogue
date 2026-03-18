@@ -17,54 +17,43 @@ import pytest
 
 pytestmark = pytest.mark.integration
 
-#rogue.Logging.setLevel(rogue.Logging.Debug)
-
 # This test is an end-to-end bridge regression check, not a throughput
 # benchmark. Keep the payload modest so it still exercises the real TCP stream
 # path without dominating integration runtime.
-FrameCount = 200
-FrameSize  = 2048
-def data_path():
-    # Bridge server
-    serv = rogue.interfaces.stream.TcpServer("127.0.0.1",9000)
+FRAME_COUNT = 200
+FRAME_SIZE = 2048
+FRAME_DRAIN_POLLS = 200
+FRAME_DRAIN_INTERVAL = 0.1
 
-    # Bridge client
-    client = rogue.interfaces.stream.TcpClient("127.0.0.1",9000)
 
-    # PRBS
-    prbsTx = rogue.utilities.Prbs()
-    prbsRx = rogue.utilities.Prbs()
+def run_stream_bridge_path():
+    """Validate TCP bridge delivery with PRBS payload checking enabled."""
+    server = rogue.interfaces.stream.TcpServer("127.0.0.1", 9000)
+    client = rogue.interfaces.stream.TcpClient("127.0.0.1", 9000)
 
-    # Client stream
-    serv << prbsTx
+    prbs_tx = rogue.utilities.Prbs()
+    prbs_rx = rogue.utilities.Prbs()
 
-    # Server stream
-    prbsRx << client
+    server << prbs_tx
+    prbs_rx << client
 
-    prbsRx.checkPayload(True)
+    prbs_rx.checkPayload(True)
 
-    print("Generating Frames")
-    for _ in range(FrameCount):
-        prbsTx.genFrame(FrameSize)
+    for _ in range(FRAME_COUNT):
+        prbs_tx.genFrame(FRAME_SIZE)
 
     # Allow time for the stream path to drain, but do not turn the test into a
     # long-running soak benchmark.
-    for i in range(200):
-        if prbsRx.getRxCount() == FrameCount:
+    for _ in range(FRAME_DRAIN_POLLS):
+        if prbs_rx.getRxCount() == FRAME_COUNT:
             break
-        time.sleep(.1)
+        time.sleep(FRAME_DRAIN_INTERVAL)
 
-
-    if prbsRx.getRxCount() != FrameCount:
-        raise AssertionError('Frame count error. Got = {} expected = {}'.format(prbsRx.getRxCount(),FrameCount))
-
-    if prbsRx.getRxErrors() != 0:
-        raise AssertionError('PRBS Frame errors detected! Errors = {}'.format(prbsRx.getRxErrors()))
-
-    print("Done testing")
+    assert prbs_rx.getRxCount() == FRAME_COUNT
+    assert prbs_rx.getRxErrors() == 0
 
 def test_data_path():
-    data_path()
+    run_stream_bridge_path()
 
 if __name__ == "__main__":
     test_data_path()
