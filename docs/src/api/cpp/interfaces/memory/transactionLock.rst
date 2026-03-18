@@ -4,7 +4,7 @@
 TransactionLock
 ===============
 
-For conceptual transaction lifecycle and lock semantics, see:
+For conceptual usage, see:
 
 - :doc:`/memory_interface/transactions`
 

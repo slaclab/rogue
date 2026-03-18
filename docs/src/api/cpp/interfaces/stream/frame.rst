@@ -4,13 +4,21 @@
 Frame
 =====
 
-For conceptual guidance on stream architecture and pipeline usage, see:
+For conceptual usage, see:
 
 - :doc:`/stream_interface/index`
 - :doc:`/stream_interface/frame_model`
 - :doc:`/stream_interface/connecting`
 
-Frame objects in C++ are referenced by the following shared pointer typedef:
+Python binding
+--------------
+
+This C++ class is also exported into Python as ``rogue.interfaces.stream.Frame``.
+
+Python API page:
+- :doc:`/api/python/rogue/interfaces/stream/frame`
+
+objects in C++ are referenced by the following shared pointer typedef:
 
 .. doxygentypedef:: rogue::interfaces::stream::FramePtr
 

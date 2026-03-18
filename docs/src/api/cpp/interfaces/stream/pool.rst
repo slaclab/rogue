@@ -4,7 +4,7 @@
 Pool
 ====
 
-For conceptual guidance on frame/buffer pool usage, see:
+For conceptual usage, see:
 
 - :doc:`/stream_interface/index`
 

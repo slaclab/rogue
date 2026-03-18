@@ -4,14 +4,21 @@
 Block
 =====
 
-For conceptual guidance on block behavior and variable-to-transaction mapping,
-see:
+For conceptual usage, see:
 
 - :ref:`pyrogue_tree_node_block`
 - :doc:`/memory_interface/index`
 
 
-Block objects in C++ are referenced by the following shared pointer typedef:
+Python binding
+--------------
+
+This C++ class is also exported into Python as ``rogue.interfaces.memory.Block``.
+
+Python API page:
+- :doc:`/api/python/rogue/interfaces/memory/block`
+
+objects in C++ are referenced by the following shared pointer typedef:
 
 .. doxygentypedef:: rogue::interfaces::memory::BlockPtr
 

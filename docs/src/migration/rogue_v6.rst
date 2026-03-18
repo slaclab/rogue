@@ -33,7 +33,7 @@ Similiarly the previous feature which allowed the user to pass the root class to
 
 More information can be found in:
 
-- :doc:`/api/python/interfaces_zmqserver`
+- :doc:`/api/python/pyrogue/interfaces/zmqserver`
 - :doc:`/pyrogue_tree/client_interfaces/index`
 
 

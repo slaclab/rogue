@@ -4,8 +4,8 @@
 Rogue File Data Format
 ======================
 
-This page documents the default on-disk record format used by
-:ref:`utilities_fileio_writer` and consumed by :ref:`utilities_fileio_reader`.
+The default on-disk record format used by :ref:`utilities_fileio_writer` and
+consumed by :ref:`utilities_fileio_reader` is documented here.
 
 Default Framed Mode
 ===================
@@ -61,7 +61,7 @@ Bit-level view of ``headerB``:
    |   Channel ID   |  Frame Error   |      Frame Flags[15:0]       |
    +----------------+----------------+-------------------------------+
 
-Concrete example
+Concrete Example
 ================
 
 If a frame has:

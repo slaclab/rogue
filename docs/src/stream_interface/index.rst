@@ -6,17 +6,19 @@
 Stream Interface
 ================
 
-The stream interface is Rogue's bulk-data path for moving frame-based payloads
-between modules. A ``Master`` produces
-:ref:`frames <interfaces_stream_frame>`, and one or more ``Slave`` endpoints
-consume them.
+The stream interface is Rogue's bulk-data path for moving ``Frame`` objects
+between modules. A ``Master`` produces ``Frame`` objects, one or more
+``Slave`` objects consume them, and the stream graph between them can be
+composed from reusable buffering, filtering, rate-control, debug, and bridge
+modules.
 
-Streams give you a composable way to build software dataflows: acquisition
-pipelines, decode/transform stages, fan-out monitor paths, network bridges,
-and rate-controlled or filtered side channels. Instead of hard-wiring one large
-processing loop, you connect focused modules that each do one job well.
+You use the stream interface when the application needs to move payload-oriented
+data rather than register transactions. Typical examples include acquisition
+pipelines, decoder chains, packet processing, diagnostic monitor branches, file
+capture, and network export of streaming data. Instead of writing one large
+processing loop, you connect small stream components that each perform one job.
 
-Quick connection example
+Quick Connection Example
 ========================
 
 .. code-block:: python
@@ -25,109 +27,85 @@ Quick connection example
 
    src = MyCustomMaster()
    fifo = ris.Fifo(100, 0, True)
-   rate = ris.RateDrop(True, 0.1)  # Keep at most one frame every 0.1 s (10 Hz)
+   rate = ris.RateDrop(True, 0.1)  # Keep at most one Frame every 0.1 s
    dst = MyCustomSlave()
 
    src >> fifo >> rate >> dst
 
-In this chain, ``Fifo`` smooths bursty traffic by queuing frames, and
-``RateDrop`` enforces a lower output rate before frames reach the final
-consumer. This pattern is useful when upstream data production is faster than a
-downstream processing or monitoring stage.
+In this chain, ``Fifo`` absorbs bursts by queuing incoming ``Frame`` objects
+and ``RateDrop`` reduces how often the downstream ``Slave`` receives traffic.
+This is a common pattern when the producer runs faster than a monitor, logger,
+or analysis stage.
 
-Rogue overloads a few operators to make topology construction concise:
-``master >> slave`` and ``slave << master`` create one-way links, while
-``endpointA == endpointB`` creates a bi-directional connection for endpoints
-that implement both stream-master and stream-slave behavior.
-
-For ``ris.Fifo(maxDepth, trimSize, noCopy)``:
-
-- ``maxDepth``: queue depth threshold in frames. If non-zero, incoming frames
-  are dropped once the FIFO reaches this depth.
-- ``trimSize``: copy-size limit in bytes when ``noCopy`` is ``False``. ``0``
-  means copy the full payload.
-- ``noCopy``: if ``True``, enqueue the original frame object (no payload copy,
-  ``trimSize`` ignored). If ``False``, allocate and copy into a new frame.
-
-For ``ris.RateDrop(period, value)``:
-
-- ``period``: selects mode.
-  ``True`` means time-period mode; ``False`` means count mode.
-- ``value``:
-  if ``period=True``, interpreted as seconds between forwarded frames
-  (for example, ``0.1`` gives about 10 Hz).
-  if ``period=False``, interpreted as a drop-count setting, where one frame is
-  forwarded and then roughly ``value`` frames are suppressed before forwarding
-  again.
-
-Implementation model
-====================
-
-The stream interface implementation is in C++ for performance and deterministic
-threaded behavior. Rogue exposes these classes to Python via bindings, so you
-can compose and orchestrate stream topologies in Python while keeping the
-high-rate transport and processing path in C++.
-
-Python bindings are typically used for:
-
-- Rapid bring-up and topology prototyping
-- Scripted integration testing and validation harnesses
-- Hybrid systems where orchestration is in Python and throughput-critical path
-  stays in C++
-
-Practical workflow:
-
-1. Build and connect stream modules in Python first.
-2. Validate behavior with realistic traffic and instrumentation.
-3. Move only bottleneck stages to C++ when needed.
-
-Class-by-class C++ API details are in :doc:`/api/cpp/interfaces/stream/index`.
-Python API reference starts at :doc:`/api/python/index`.
-
-Core objects
-============
-
-- ``Master``: source endpoint that allocates and transmits frames.
-- ``Slave``: sink endpoint that receives frames and can also provide frame
-  allocation through the pool interface.
-- ``Frame``: payload + metadata container (flags, channel, error).
-
-Frame model
-===========
-
-A frame payload may span multiple underlying buffers. In C++,
-:ref:`interfaces_stream_frame_iterator` iterates payload bytes across buffer
-boundaries without manual segment management.
-
-Frame semantics and APIs are summarized in :doc:`/stream_interface/frame_model`.
-
-Connection model
+Connection Model
 ================
 
-A single ``Master`` can connect to multiple slaves.
+Rogue overloads a few operators to make stream topology construction concise:
 
-- The first attached slave is primary.
-- The primary slave services ``reqFrame()`` allocation requests.
-- ``sendFrame()`` forwards to all attached slaves, with the primary slave
-  receiving last.
+- ``master >> slave`` creates a one-way connection
+- ``slave << master`` creates the same one-way connection with reversed syntax
+- ``endpointA == endpointB`` creates a bi-directional connection for endpoints
+  that implement both ``Master`` and ``Slave`` behavior
 
-That ordering is important when the primary path may consume or empty a frame
-(for example, zero-copy sinks).
+A single ``Master`` can connect to multiple downstream ``Slave`` objects. The
+first attached ``Slave`` becomes the primary ``Slave``. That matters because
+the primary ``Slave`` services ``reqFrame()`` allocation requests, and
+``sendFrame()`` delivers to secondary ``Slave`` objects before the primary one.
+That ordering is important when the primary path consumes or empties a
+zero-copy ``Frame``.
+
+Implementation Model
+====================
+
+The stream interface implementation lives in C++ for performance and predictable
+threaded behavior. Rogue exposes these classes to Python, so stream topologies
+can be built and orchestrated in Python while the high-rate transport and
+processing path remains in C++.
+
+That split makes a practical workflow possible:
+
+1. Build and connect the stream graph in Python first.
+2. Validate the topology with realistic traffic and debugging tools.
+3. Move only the bottleneck stages into C++ when measurements justify it.
+
+Core Types
+==========
+
+Three types appear throughout the stream interface:
+
+- ``Master`` is the source endpoint that allocates and transmits ``Frame``
+  objects.
+- ``Slave`` is the sink endpoint that receives ``Frame`` objects and may also
+  participate in ``Frame`` allocation.
+- ``Frame`` is the payload and metadata container that moves through the graph.
+
+A ``Frame`` payload may span multiple underlying ``Buffer`` objects. In C++,
+``FrameIterator`` lets code traverse those bytes without manually managing
+buffer boundaries.
 
 What To Explore Next
 ====================
 
 - Connection semantics: :doc:`/stream_interface/connecting`
-- Frame semantics and APIs: :doc:`/stream_interface/frame_model`
+- ``Frame`` semantics and metadata: :doc:`/stream_interface/frame_model`
 - Custom transmitters: :doc:`/stream_interface/sending`
 - Custom receivers: :doc:`/stream_interface/receiving`
-- Built-in modules: :doc:`/stream_interface/built_in_modules`
+- Built-in stream modules: :doc:`/stream_interface/built_in_modules`
 
-Core API reference:
+API Reference
+=============
 
-- :doc:`/api/cpp/interfaces/stream/master`
-- :doc:`/api/cpp/interfaces/stream/slave`
-- :doc:`/api/cpp/interfaces/stream/frame`
+- Python:
+
+  - :doc:`/api/python/rogue/interfaces/stream/master`
+  - :doc:`/api/python/rogue/interfaces/stream/slave`
+  - :doc:`/api/python/rogue/interfaces/stream/frame`
+
+- C++:
+
+  - :doc:`/api/cpp/interfaces/stream/master`
+  - :doc:`/api/cpp/interfaces/stream/slave`
+  - :doc:`/api/cpp/interfaces/stream/frame`
 
 .. toctree::
    :maxdepth: 1
@@ -138,9 +116,4 @@ Core API reference:
    sending
    receiving
    built_in_modules
-   fifo
-   filter
-   rate_drop
-   tcp_bridge
-   debugStreams
    /custom_module/index

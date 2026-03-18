@@ -4,7 +4,7 @@
 Frame Accessor
 ==============
 
-For conceptual guidance on frame data access patterns, see:
+For conceptual usage, see:
 
 - :doc:`/stream_interface/index`
 

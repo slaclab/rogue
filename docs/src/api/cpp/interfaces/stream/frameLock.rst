@@ -4,7 +4,7 @@
 Frame Lock
 ==========
 
-For conceptual guidance on asynchronous frame access patterns, see:
+For conceptual usage, see:
 
 - :doc:`/stream_interface/index`
 

@@ -1,14 +1,12 @@
 .. _protocols_udp_classes:
 
-===============================
-UDP Protocol Class Descriptions
-===============================
+======================
+rogue::protocols::udp
+======================
 
-This section provides C++ API reference pages for
+These pages provide the C++ API reference for
 ``rogue::protocols::udp`` classes.
 
-For conceptual guidance, lifecycle notes, and integration examples, see
-:doc:`/built_in_modules/protocols/udp/index`.
 
 .. toctree::
    :maxdepth: 1
@@ -17,3 +15,8 @@ For conceptual guidance, lifecycle notes, and integration examples, see
    core
    server
    client
+
+
+.. rubric:: Related Topics
+
+- :doc:`/built_in_modules/protocols/udp/index`

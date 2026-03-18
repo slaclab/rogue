@@ -4,19 +4,38 @@
 Device
 ======
 
-Device Definition
-=================
+A :py:class:`~pyrogue.Device` is the primary composition unit in a PyRogue
+tree. ``Device`` is where most hardware abstractions and subsystem boundaries
+are expressed: devices hold child Devices, Variables, and Commands, and they
+also participate in the memory-routing and block-traversal behavior that backs
+hardware access.
 
-A :py:class:`~pyrogue.Device` is the primary composition unit in a PyRogue tree.
-Devices can contain:
+If ``Root`` is the application owner, ``Device`` is the structural unit that
+turns the application into an organized tree.
 
-* Child Devices
-* Variables (local, remote, link)
-* Commands (local, remote)
+That relationship is literal in the implementation: :py:class:`~pyrogue.Root`
+inherits from :py:class:`~pyrogue.Device`. This matters because the top of the
+tree uses the same composition and traversal model as every other Device, while
+adding the extra lifecycle and application-level behavior described on the
+``Root`` page.
 
-Most user-facing hardware abstractions are implemented as ``Device`` subclasses.
-At runtime, a Device also participates in memory routing behavior through the
-Rogue memory hub stack.
+What A Device Does
+==================
+
+A ``Device`` usually serves two roles at once:
+
+* It groups related Nodes into a coherent modular subtree.
+* It provides the address and transaction context that hardware-backed
+  Variables use for block operations.
+
+That means a Device is not just a folder-like container. It is also part of the
+runtime path for reads, writes, resets, and startup behavior.
+
+Typical contents of a Device:
+
+* Child ``Device`` instances for hierarchical composition.
+* ``Variable`` Nodes for telemetry and configuration.
+* ``Command`` Nodes for actions and procedures.
 
 .. code-block:: python
 
@@ -25,244 +44,142 @@ Rogue memory hub stack.
    class MyDevice(pr.Device):
        def __init__(self, **kwargs):
            super().__init__(description='Example device', **kwargs)
-           self.add(pr.LocalVariable(name='Mode', mode='RW', value=0))
-           self.add(pr.LocalCommand(name='Reset', function=self._reset))
+
+           self.add(pr.LocalVariable(
+               name='Mode',
+               mode='RW',
+               value=0,
+           ))
+
+           self.add(pr.LocalCommand(
+               name='Reset',
+               function=self._reset,
+           ))
 
        def _reset(self):
            pass
 
-Key Attributes
---------------
+The important design question at Device scope is usually, "What belongs in one
+subtree?" Good Device boundaries often follow hardware blocks, functional
+subsystems, or operator-facing units of control.
 
-In addition to inherited :ref:`Node <pyrogue_tree_node>` attributes, common
-Device-level attributes include:
+Key Device Properties
+=====================
 
-* ``offset`` / ``address``
-* ``memBase``
-* ``enable``
+Common Device-level properties include:
 
-The ``enable`` Variable allows tree-level logic to disable a full Device subtree
-for hardware access while keeping Node metadata available.
+* ``offset`` for placing the Device within the parent memory address space.
+* ``memBase`` for the memory interface used by hardware-backed children.
+* ``enable`` for controlling whether the subtree participates in hardware
+  access behavior.
+* ``forceCheckEach`` for forcing block reads, writes, and verifies to check
+  each transaction immediately rather than deferring completion checks.
 
-Relationship to Hub
--------------------
+The built-in ``enable`` Variable is especially important because it lets a tree
+keep its full structure visible while disabling hardware interaction for one
+subtree.
 
-Conceptually, a Device behaves as a Hub in the memory routing stack:
+Composition And Tree Structure
+==============================
 
-* Variable/Block transactions are addressed relative to the Device base
-* Child Devices can inherit base/memory routing from parent Devices
-* A child Device can also be attached to an independent memory path when needed
+Most PyRogue trees are built by defining Device subclasses and nesting them.
+That makes ``Device.add(...)`` one of the central APIs in day-to-day PyRogue
+work.
 
-Key Methods
------------
+In practice:
 
-Commonly used methods:
+* ``Root`` defines the top of the hierarchy.
+* Top-level Devices partition the design into major subsystems.
+* Child Devices refine that structure until Variables and Commands sit at the
+  right operational boundary.
 
-* :py:meth:`~pyrogue.Device.add`
-* :py:meth:`~pyrogue.Device.addRemoteVariables`
-* :py:meth:`~pyrogue.Device.hideVariables`
-* :py:meth:`~pyrogue.Device.initialize`
-* :py:meth:`~pyrogue.Device.hardReset`
-* :py:meth:`~pyrogue.Device.countReset`
-* :py:meth:`~pyrogue.Device.writeBlocks`
-* :py:meth:`~pyrogue.Device.verifyBlocks`
-* :py:meth:`~pyrogue.Device.readBlocks`
-* :py:meth:`~pyrogue.Device.checkBlocks`
+That pattern is why the readability of the tree matters. A good Device layout
+is not only easier to maintain in code; it also produces clearer paths, clearer
+PyDM navigation, and better remote-client ergonomics.
 
-.. _pyrogue_tree_node_device_managed_interfaces:
+Managed Interfaces And Protocol Ownership
+=========================================
 
-Managed Interfaces: ``addInterface()`` and ``addProtocol()``
--------------------------------------------------------------
+Devices can also own helper objects that need coordinated runtime startup and
+shutdown. The standard way to register those objects is
+:py:meth:`~pyrogue.Device.addInterface`, which also has the alias
+:py:meth:`~pyrogue.Device.addProtocol`.
 
-Devices can own stream/memory/protocol helper objects that need coordinated
-startup/shutdown with the Device tree.
+Typical managed objects include:
 
-Canonical term used in this documentation:
-``Managed Interface Lifecycle``.
-This refers to the ``_start()`` / ``_stop()`` callback contract for objects
-registered through :py:meth:`~pyrogue.Device.addInterface`.
-
-Use :py:meth:`~pyrogue.Device.addInterface` (or alias
-:py:meth:`~pyrogue.Device.addProtocol`) to register:
-
-* Rogue memory or stream interface objects
-* Protocol servers/clients
-* Any custom object that implements ``_start()`` and/or ``_stop()``
+* Rogue memory or stream interfaces.
+* Protocol servers or clients.
+* Custom helpers that implement ``_start()`` and/or ``_stop()``.
 
 At runtime:
 
-* :py:meth:`~pyrogue.Device._start` calls ``_start()`` on each managed object if
-  the method exists
-* :py:meth:`~pyrogue.Device._stop` calls ``_stop()`` on each managed object if
-  the method exists
-* Both then recurse to child Devices
+* :py:meth:`~pyrogue.Device._start` calls ``_start()`` on registered objects if
+  the method exists.
+* :py:meth:`~pyrogue.Device._stop` calls ``_stop()`` on registered objects if
+  the method exists.
+* Both methods then recurse into child Devices.
 
-This is why top-level interfaces are commonly added at Root scope using
-``root.addInterface(...)`` (``Root`` is a ``Device`` subclass).
+This is why top-level interfaces are commonly registered on ``Root``:
+``Root`` is itself a ``Device``, so it participates in the same managed
+interface lifecycle.
 
-Device Read/Write Operations
+There is not yet a separate page dedicated to this lifecycle. For the Root side
+of the same startup and shutdown behavior, see :doc:`/pyrogue_tree/core/root`.
+
+Device Lifecycle Hooks
+======================
+
+Most Device subclasses are created entirely in ``__init__``, but there are a
+few important lifecycle hooks for behavior that depends on tree attachment or a
+running system context.
+
+Attachment And Startup Order
 ----------------------------
 
-Bulk config/read/write operations traverse the tree and issue Block transactions
-through Device Block APIs.
-
-Default behavior of Block APIs
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-* :py:meth:`~pyrogue.Device.writeBlocks`
-  initiates write transactions for this Device's Blocks (bulk-enabled Blocks by
-  default), then optionally recurses into child Devices.
-* :py:meth:`~pyrogue.Device.verifyBlocks`
-  initiates verify transactions, then optionally recurses.
-* :py:meth:`~pyrogue.Device.readBlocks`
-  initiates read transactions, then optionally recurses.
-* :py:meth:`~pyrogue.Device.checkBlocks`
-  waits/checks completion of initiated transactions, then optionally recurses.
-
-All four methods also support a ``variable=...`` path for targeted operations
-on a specific Variable's Block instead of full-device traversal.
-
-Parameter behavior quick reference
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Shared parameters:
-
-* ``recurse``: include child Devices when ``True``.
-* ``variable``: operate on one Variable's Block instead of full-device Block traversal.
-* ``**kwargs``: forwarded to lower-level transaction helpers.
-
-Method-specific parameters:
-
-* ``writeBlocks(force=False, checkEach=False, index=-1, ...)``
-
-  * ``force``: write even when values are not marked stale.
-  * ``checkEach``: request per-transaction checking behavior (also affected by ``Device.forceCheckEach``).
-  * ``index``: index for array-variable targeted operations.
-
-* ``verifyBlocks(checkEach=False, ...)``
-
-  * ``checkEach``: request per-transaction checking behavior.
-
-* ``readBlocks(checkEach=False, index=-1, ...)``
-
-  * ``checkEach``: request per-transaction checking behavior.
-  * ``index``: index for array-variable targeted operations.
-
-* ``checkBlocks(...)``
-
-  * Checks completion/acknowledgement of previously initiated transactions.
-
-Direct API references:
-
-* :py:meth:`~pyrogue.Device.writeBlocks`
-* :py:meth:`~pyrogue.Device.verifyBlocks`
-* :py:meth:`~pyrogue.Device.readBlocks`
-* :py:meth:`~pyrogue.Device.checkBlocks`
-* :doc:`/api/python/device`
-
-Where these methods are invoked
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-These APIs are usually called by higher-level workflows rather than directly by
-application code.
-
-Single-variable access path:
-
-* :py:meth:`~pyrogue.RemoteVariable.set` calls
-  ``parent.writeBlocks(..., variable=self)`` and, depending on arguments,
-  ``parent.verifyBlocks(..., variable=self)`` and
-  ``parent.checkBlocks(..., variable=self)``.
-* :py:meth:`~pyrogue.RemoteVariable.get` calls
-  ``parent.readBlocks(..., variable=self)`` and optionally
-  ``parent.checkBlocks(..., variable=self)``.
-
-Bulk configuration/read path:
-
-* Root ``LoadConfig`` / ``setYaml`` stage values through tree dictionary apply
-  and then, when ``writeEach=False``, call Root ``_write()`` which performs:
-  recursive ``writeBlocks`` -> ``verifyBlocks`` -> ``checkBlocks``.
-* Root ``WriteAll`` and ``ReadAll`` commands call Root ``_write()`` and
-  ``_read()``, which issue recursive all-Block operations.
-
-This is why overriding ``writeBlocks``/``readBlocks`` at Device scope is the
-normal extension point for hardware-specific sequencing behavior.
-
-Lifecycle Hooks and Override Guidance
--------------------------------------
-
-During :py:meth:`~pyrogue.Root.start`, Device lifecycle progresses in this order:
+During :py:meth:`~pyrogue.Root.start`, Device lifecycle progresses in this
+order:
 
 #. :py:meth:`~pyrogue.Device._rootAttached`
-#. :py:meth:`~pyrogue.Node._finishInit` recursion
+#. :py:meth:`~pyrogue.Node._finishInit`
 #. :py:meth:`~pyrogue.Device._start`
 
 During :py:meth:`~pyrogue.Root.stop`, Root calls
 :py:meth:`~pyrogue.Device._stop` recursively.
 
-Guidance by hook
-^^^^^^^^^^^^^^^^
+What Each Hook Is For
+---------------------
 
 * :py:meth:`~pyrogue.Device._rootAttached`
 
-  * This is when ``self.root`` becomes valid and path/parent context is attached.
-  * Default behavior also attaches children, builds Device Blocks, and applies
-    ``_defaults`` overrides.
-  * Use for: structural attachment-time setup that requires resolved tree context.
-  * Avoid: initiating hardware transactions or starting runtime threads/services.
-  * In most subclasses, do not override unless you need custom attach semantics.
-    If you override, call ``super()._rootAttached(parent, root)``.
+  Use this for structure-dependent setup that requires valid ``root``,
+  ``parent``, or path context. This is also when Device Block (memory) layout is built.
+  During this step, the Device walks its Variables, groups compatible
+  hardware-backed Variables into ``Block`` objects, attaches any pre-created
+  custom Blocks, and records the Block structure that later bulk operations
+  traverse.
 
 * :py:meth:`~pyrogue.Node._finishInit`
 
-  * Runs after full attach; Variables use this stage to finalize defaults and
-    poll/dependency metadata.
-  * For Device subclasses, overriding is uncommon. Prefer ``__init__`` for
-    static construction and ``_start()`` for runtime actions.
-  * If overridden, keep it lightweight and call ``super()._finishInit()``.
+  Use this sparingly for final initialization that depends on the attached
+  hierarchy. Most Device subclasses do not need to override it.
 
 * :py:meth:`~pyrogue.Device._start`
 
-  * Runtime start hook called from Root after attach/init and worker startup.
-  * Use for: starting Device-owned threads, enabling runtime subscriptions, and
-    other actions that require a running system context.
-  * Avoid: mutating tree structure (adding/removing Nodes or changing Block layout).
-  * If overridden, preserve default managed-interface behavior by calling
-    ``super()._start()`` unless you intentionally replace it.
+  Use this for runtime startup work such as enabling subscriptions, opening
+  services, or starting Device-owned threads.
 
 * :py:meth:`~pyrogue.Device._stop`
 
-  * Runtime teardown hook called during Root stop.
-  * Use for: stopping threads/services and releasing runtime resources.
-  * If overridden, call ``super()._stop()`` to preserve managed-interface stop.
+  Use this for runtime teardown and resource cleanup.
 
-Operational hooks and Block sequencing hooks
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+The practical rule is simple: use ``__init__`` for static tree construction,
+use ``_rootAttached`` for attach-time structure work, and use ``_start`` and
+``_stop`` for live runtime behavior.
 
-* Operational hooks:
-  :py:meth:`~pyrogue.Device.initialize`,
-  :py:meth:`~pyrogue.Device.hardReset`,
-  :py:meth:`~pyrogue.Device.countReset`,
-  :py:meth:`~pyrogue.Device.enableChanged`
-* Block sequencing hooks:
-  :py:meth:`~pyrogue.Device.writeBlocks`,
-  :py:meth:`~pyrogue.Device.verifyBlocks`,
-  :py:meth:`~pyrogue.Device.readBlocks`,
-  :py:meth:`~pyrogue.Device.checkBlocks`
+.. _pyrogue_tree_node_device_managed_interfaces:
 
-``initialize``/``hardReset``/``countReset`` are invoked by Root-level command
-workflows, not automatically by ``Root.start()``/``Root.stop()``.
-
-Practical note on variable access timing
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-* ``self.root`` is not valid before ``_rootAttached``.
-* RemoteVariable Block mapping is finalized during ``_rootAttached``.
-* Variable shadow values can be set before start (for example with ``write=False``),
-  but hardware-backed reads/writes should be treated as runtime operations and
-  performed after Root has started.
-
-Example: prefer ``_start()``/``_stop()`` for runtime work
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Example: Runtime Work In ``_start()`` And ``_stop()``
+-----------------------------------------------------
 
 .. code-block:: python
 
@@ -290,125 +207,147 @@ Example: prefer ``_start()``/``_stop()`` for runtime work
 
        def _worker(self):
            while self._runWorker:
-               # Runtime activity here
                time.sleep(0.1)
 
-Custom Read/Write Operations
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Foundational Transaction Operations
+===================================
 
-Override Block APIs when hardware requires extra ordering that is not captured
-by standard Block traversal alone.
+``Device`` is where the PyRogue tree's foundational hardware transaction
+operations come together. At this level, four ideas matter:
 
-Common reasons to override:
+* ``write`` sends staged values from the tree toward hardware.
+* ``verify`` checks that hardware matches the expected value after a write.
+* ``read`` fetches current hardware state back into the tree.
+* ``check`` waits for initiated transactions to complete and surfaces errors.
 
-* One register must be written before or after bulk config writes
-* Paged/banked register windows need explicit page-select writes around access
-* A side-effect register must be pulsed to commit staged settings
-* Custom sequencing across child Devices is required
+Those operations are foundational because they are reused throughout the tree:
+bulk configuration, per-Variable access, YAML apply paths, and many custom
+hardware procedures all build on the same model.
 
-If a Device needs custom sequencing around default Block operations, override:
+One PyRogue design choice is especially important here: transaction initiation
+is intentionally separated from completion. ``write``, ``verify``, and
+``read`` start work, while ``check`` is the step that waits for the
+responses. That separation lets a ``Device`` issue many operations first and
+then retire them as a group.
+
+Posted writes also exist in PyRogue, but they are usually exposed through
+per-Variable ``post()`` methods and posted ``RemoteCommand`` helpers rather
+than as a foundational full-Device traversal API.
+
+Device-Level Block APIs
+=======================
+
+``Device`` is where those operations become tree traversal methods. Device-level
+block APIs traverse the tree and issue transactions for the ``Block`` objects
+attached to that Device and, optionally, its children.
+
+The main methods are:
 
 * :py:meth:`~pyrogue.Device.writeBlocks`
 * :py:meth:`~pyrogue.Device.verifyBlocks`
 * :py:meth:`~pyrogue.Device.readBlocks`
 * :py:meth:`~pyrogue.Device.checkBlocks`
 
-General override pattern
-""""""""""""""""""""""""
+At a high level:
 
-Keep default traversal unless you explicitly want to replace it:
+* ``writeBlocks`` initiates write transactions.
+* ``verifyBlocks`` initiates verify transactions.
+* ``readBlocks`` initiates read transactions.
+* ``checkBlocks`` waits for previously initiated transactions to complete.
 
-* Call ``super()`` for standard Block behavior
-* Preserve key arguments (``recurse``, ``variable``, ``checkEach``, ``**kwargs``)
-* Add only the extra hardware-specific step(s)
+All four methods can operate on the full Device subtree or on the Block backing
+one specific Variable, and they are the normal override points when hardware
+requires custom sequencing.
 
-Example: activation register after config writes
-""""""""""""""""""""""""""""""""""""""""""""""""
+If a Device should always use stricter transaction-by-transaction completion
+checking, set ``self.forceCheckEach = True`` in the subclass. That causes the
+Device-level block methods to behave as though ``checkEach=True`` had been
+requested on each call.
 
-Some ASICs require an explicit apply/activate write after normal register
-configuration is sent.
+For the detailed traversal model, ordering rules, and single-Variable versus
+full-subtree behavior, see :doc:`/pyrogue_tree/core/block_operations`.
+
+Where These Methods Fit
+-----------------------
+
+These methods are often used indirectly rather than called manually.
+
+Common examples:
+
+* :py:meth:`~pyrogue.RemoteVariable.set` uses Device block-write paths for
+  hardware-backed writes.
+* :py:meth:`~pyrogue.RemoteVariable.get` uses Device block-read paths for
+  hardware-backed reads.
+* Root-level YAML and bulk commands call recursive Device block operations
+  across the tree.
+
+That is why Device block methods are the normal extension point when hardware
+requires custom sequencing.
+
+Custom Sequencing
+-----------------
+
+Override the block APIs when hardware access requires more than the default
+tree traversal. Common reasons include:
+
+* Required pre- or post-register writes.
+* Paged or banked register windows.
+* Commit or strobe registers that must be pulsed around updates.
+* Custom ordering across child Devices.
 
 .. code-block:: python
 
-   import pyrogue as pr
-
-   class AsicDevice(pr.Device):
-       def writeBlocks(self, *, force=False, recurse=True, variable=None, checkEach=False, index=-1, **kwargs):
-           # Normal write traversal first.
+   class SequencedDevice(pyrogue.Device):
+       def writeBlocks(self, *, force=False, recurse=True, variable=None, checkEach=False, index=-1):
+           # Pre-transaction behavior.
            super().writeBlocks(
                force=force,
                recurse=recurse,
                variable=variable,
                checkEach=checkEach,
                index=index,
-               **kwargs,
            )
+           # Post-transaction behavior.
 
-           # Only run activation for full-device writes.
-           if variable is None:
-               # Commit/apply staged config in ASIC.
-               self.Activate.set(1, write=True, verify=False, check=True)
+For the lower-level transaction and grouping model behind those APIs, see
+:doc:`/pyrogue_tree/core/block` and
+:doc:`/pyrogue_tree/core/block_operations`.
 
-Example: page-select around reads
-"""""""""""""""""""""""""""""""""
+Relationship To The Memory Hub Model
+====================================
 
-.. code-block:: python
+Under the hood, ``pyrogue.Device`` participates in the Rogue memory hub stack.
+Conceptually, a Device behaves like a Hub:
 
-   import pyrogue as pr
+* Block transactions are addressed relative to the Device base.
+* Child Devices can inherit the parent's routing context.
+* A child Device can also be attached to a different memory path when needed.
 
-   class PagedDevice(pr.Device):
-       def readBlocks(self, *, recurse=True, variable=None, checkEach=False, index=-1, **kwargs):
-           if variable is None:
-               # Select status page before bulk read.
-               self.PageSel.set(2, write=True, verify=False, check=True)
-
-           super().readBlocks(
-               recurse=recurse,
-               variable=variable,
-               checkEach=checkEach,
-               index=index,
-               **kwargs,
-           )
-
-Implementation Boundary (Python and C++)
-----------------------------------------
-
-From a Python API perspective, you use ``pyrogue.Device`` methods such as
-``readBlocks`` and ``writeBlocks``.
-
-Under the hood, ``pyrogue.Device`` is built on the Rogue memory interface
-Hub/Master/Slave stack. In particular, a Device participates in memory routing
-as a Hub, and forwards block transactions toward downstream memory slaves.
-
-Where Hub fits in transaction flow
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-The C++ Hub implementation (``src/rogue/interfaces/memory/Hub.cpp``):
-
-* Applies local address offset when forwarding transactions downstream
-* Can split large transactions into sub-transactions based on downstream
-  max-access limits
-* Allows custom transaction translation by overriding ``_doTransaction`` in
-  Python/C++ subclasses
-
-Conceptual transaction path:
-
-* Variable operation -> Block transaction -> Device/Hub routing ->
-  downstream slave access -> completion/check -> Variable update notify
+That is the reason Device composition and transaction behavior are so closely
+linked in PyRogue. Tree structure and hardware-access structure are related,
+even though they are not always identical.
 
 For deeper memory-stack behavior, see:
 
 * :doc:`/pyrogue_tree/core/block`
-* :doc:`/memory_interface/hub`
-* :doc:`/memory_interface/slave`
-* :doc:`/api/cpp/interfaces/memory/index`
+* :doc:`/memory_interface/index`
 
+Operational Hooks And Decorators
+================================
 
-Device Command Decorators
--------------------------
+In addition to startup and block sequencing hooks, Device subclasses commonly
+override operational hooks such as:
 
-Device supports decorators that create :py:class:`~pyrogue.LocalCommand` Nodes.
-You can use decorators on local functions created in ``__init__``.
+* :py:meth:`~pyrogue.Device.initialize`
+* :py:meth:`~pyrogue.Device.hardReset`
+* :py:meth:`~pyrogue.Device.countReset`
+* :py:meth:`~pyrogue.Device.enableChanged`
+
+These support system-level workflows invoked from Root commands or from custom
+application logic.
+
+Device also supports decorators that create :py:class:`~pyrogue.LocalCommand`
+Nodes from local functions.
 
 .. code-block:: python
 
@@ -416,22 +355,15 @@ You can use decorators on local functions created in ``__init__``.
    def _readConfig(self, arg):
        self.root.loadYaml(name=arg, writeEach=False, modes=['RW', 'WO'])
 
-Special Device Subclasses
-=========================
+What To Explore Next
+====================
 
-PyRogue provides several built-in ``Device`` subclasses for common workflows.
-These are documented in the dedicated built-in section:
+* Variable behavior and type choices: :doc:`/pyrogue_tree/core/variable`
+* Command behavior and invocation: :doc:`/pyrogue_tree/core/command`
+* Block transaction behavior: :doc:`/pyrogue_tree/core/block`
+* Built-in Device catalog: :doc:`/pyrogue_tree/builtin_devices/index`
 
-* :doc:`/pyrogue_tree/builtin_devices/index`
+API Reference
+=============
 
-Frequently used examples include:
-
-* :doc:`/pyrogue_tree/builtin_devices/run_control`
-* :doc:`/pyrogue_tree/builtin_devices/data_writer`
-* :doc:`/pyrogue_tree/builtin_devices/data_receiver`
-* :doc:`/pyrogue_tree/builtin_devices/prbspair`
-
-Device API Reference
-==========================
-
-See :doc:`/api/python/device` for generated API details.
+See :doc:`/api/python/pyrogue/device` for generated API details.

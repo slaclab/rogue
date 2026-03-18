@@ -11,21 +11,24 @@ In most applications you do not instantiate it directly. It is created by
 :py:class:`~pyrogue.Root` and controlled through Root-level APIs/Variables such
 as ``PollEn`` and Variable ``pollInterval``.
 
-Polling strategy
+Polling is one of the places where the PyRogue tree stops being a static object
+model and becomes a live system. Once enabled, the poll queue continually
+issues background reads for the Variables that asked for them.
+
+Polling Strategy
 ================
 
-- Poll only values that change over time and are operationally important.
-- Keep fast and slow update classes on separate poll intervals where possible.
-- Avoid aggressive polling on high-latency links unless required.
+Use polling for status that genuinely changes over time and that operators or
+software need to see without an explicit read.
 
-Common pattern
-==============
+In practice:
 
-1. Assign poll intervals by value volatility and operator need.
-2. Validate update rate under realistic network and load conditions.
-3. Move exceptions to event-driven paths or explicit Command reads when needed.
+* Poll telemetry, counters, and dynamic status.
+* Keep fast and slow update classes on separate poll intervals where possible.
+* Avoid aggressive polling on high-latency or low-bandwidth links unless the
+  application really needs it.
 
-What it does
+What It Does
 ============
 
 At runtime, PollQueue:
@@ -36,8 +39,12 @@ At runtime, PollQueue:
 * Waits for completion via ``checkTransaction``
 * Wraps each poll batch in ``root.updateGroup()`` so updates are coalesced
 
-Block-Level Scheduling Behavior
-===============================
+The block-level design is important. PollQueue does not schedule one hardware
+transaction per Variable. It schedules one transaction per ``Block``, because
+that is the real memory transaction unit underneath the Variable API.
+
+Block-Level Scheduling
+======================
 
 Polling is organized per Block:
 
@@ -47,24 +54,36 @@ Polling is organized per Block:
 * If no Variables in a Block have ``pollInterval > 0``, that Block is removed
   from the poll queue
 
-Special case for Variables without a hardware Block:
+That behavior preserves the efficiency benefit of Block grouping. Two Variables
+in the same register word do not create two independent background reads.
+
+There is one special case for Variables without a hardware Block:
 
 * For dependency-only Variables (for example LinkVariables without ``_block``),
   interval updates are propagated to dependencies
 
+The implementation also schedules new poll entries for immediate service when
+polling is enabled. In practice, a newly polled Variable usually gets its
+first background read right away rather than waiting for one full interval.
+
 Control and Lifecycle
 =====================
 
-* Poll thread starts during :py:meth:`~pyrogue.Root.start`.
-* ``Root.PollEn`` controls pause/unpause (enabled when ``True``).
+* The poll thread is created by ``Root`` and starts during :py:meth:`~pyrogue.Root.start`.
+* Poll activity begins paused; ``Root.PollEn`` enables or disables active polling.
 * Poll thread exits during :py:meth:`~pyrogue.Root.stop`.
 * :py:meth:`~pyrogue.Root.pollBlock` can temporarily block polling inside a
   context manager.
 
+``pollBlock()`` is the important synchronization tool when a short software
+sequence should not race with background reads. Internally, PollQueue tracks a
+block counter and waits until those critical sections are released before
+issuing the next poll batch.
+
 Usage Examples
 ==============
 
-Basic polling on a RemoteVariable
+Basic Polling On A RemoteVariable
 ---------------------------------
 
 .. code-block:: python
@@ -83,7 +102,7 @@ Basic polling on a RemoteVariable
                pollInterval=1.0,  # poll every second
            ))
 
-Runtime control from Root
+Runtime Control From Root
 -------------------------
 
 .. code-block:: python
@@ -95,7 +114,7 @@ Runtime control from Root
    # Change polling rate dynamically for one Variable
    root.MyDevice.AdcRaw.setPollInterval(0.2)
 
-Temporarily block polling during a critical sequence
+Temporarily Block Polling During A Critical Sequence
 ----------------------------------------------------
 
 .. code-block:: python
@@ -105,7 +124,14 @@ Temporarily block polling during a critical sequence
        root.MyDevice.SomeControl.set(1)
        root.MyDevice.OtherControl.set(0)
 
-PollQueue API Reference
-=============================
+What To Explore Next
+====================
 
-See :doc:`/api/python/pollqueue` for generated API details.
+* Variable polling configuration: :doc:`/pyrogue_tree/core/variable`
+* Root lifecycle and background services: :doc:`/pyrogue_tree/core/root`
+* Block transaction grouping: :doc:`/pyrogue_tree/core/block`
+
+API Reference
+=============
+
+See :doc:`/api/python/pyrogue/pollqueue` for generated API details.

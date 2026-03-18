@@ -17,7 +17,7 @@ Use ``VirtualClient`` when you need:
 Unlike :doc:`/pyrogue_tree/client_interfaces/simple`, ``VirtualClient`` depends
 on broader Rogue/PyRogue libraries.
 
-Basic usage
+Basic Usage
 ===========
 
 .. code-block:: python
@@ -34,7 +34,7 @@ Basic usage
        root.AxiVersion.ScratchPad.setDisp('0x100')
        root.SomeCommand.exec('0x100')
 
-Access to metadata and listeners
+Access To Metadata And Listeners
 ================================
 
 Because the tree is mirrored, you can inspect Variable metadata and attach
@@ -56,7 +56,7 @@ listeners in the same style as server-side code.
 
        root.UpTime.addListener(listener)
 
-Waiting on Variable conditions
+Waiting On Variable Conditions
 ==============================
 
 ``VariableWait`` is useful when client logic needs to block until one or more
@@ -76,7 +76,7 @@ Variable conditions are satisfied.
        )
 
 
-Link-state monitoring
+Link-State Monitoring
 =====================
 
 ``VirtualClient`` exposes connection state and link monitor callbacks.
@@ -106,8 +106,8 @@ This logger is useful for client-side connection/setup issues and for
 understanding mirrored-tree behavior. It complements, rather than replaces,
 the server-side transport logging on the ZMQ server.
 
-What To Explore Next
-====================
+Related Topics
+==============
 
 - Server endpoint and port behavior: :doc:`/pyrogue_tree/client_interfaces/zmq_server`
 - Minimal string-path client usage: :doc:`/pyrogue_tree/client_interfaces/simple`
@@ -116,4 +116,4 @@ What To Explore Next
 API Reference
 =============
 
-See :doc:`/api/python/interfaces_virtualclient` for generated API details.
+See :doc:`/api/python/pyrogue/interfaces/virtualclient` for generated API details.

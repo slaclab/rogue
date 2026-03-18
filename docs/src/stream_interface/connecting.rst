@@ -10,7 +10,14 @@ master/slave links. In practical systems, a hardware ingress source (for
 example ``AxiStreamDma``) is often shaped by stream modules and then routed to
 an output sink such as a file writer.
 
-Operator syntax and helper functions
+Each stream ``Master`` can connect to one or more ``Slave`` endpoints. The
+first attached slave becomes the primary slave, which matters because that
+slave usually services frame-allocation requests from the master. The primary
+slave is also the last endpoint to receive a transmitted frame, so a diagnostic
+tap or monitor branch should usually be attached after the main processing
+path, not before it.
+
+Operator Syntax And Helper Functions
 ====================================
 
 Rogue supports connection operators directly on stream objects:
@@ -19,7 +26,7 @@ Rogue supports connection operators directly on stream objects:
 - ``<<`` for one-way destination-from-source links
 - ``==`` for bi-directional links between dual-role endpoints
 
-Python usage
+Python Usage
 ------------
 
 In Python, operator syntax is generally preferred because it is concise and
@@ -40,7 +47,7 @@ Equivalent helper functions are also available:
    pr.streamConnect(src, dst)
    pr.streamConnectBiDir(ep_a, ep_b)
 
-C++ usage
+C++ Usage
 ---------
 
 In C++, operator syntax works the same way, but chained expressions require
@@ -61,7 +68,7 @@ For readability, many users prefer helper macros from
    rogueStreamConnect(rate, writer->getChannel(0));
    rogueStreamConnectBiDir(epA, epB);
 
-Connection semantics and ordering
+Connection Semantics And Ordering
 =================================
 
 - ``master >> slave`` and ``slave << master`` create one-way links.
@@ -73,12 +80,7 @@ Connection semantics and ordering
 That final ordering matters if the primary path consumes or empties a
 zero-copy frame.
 
-Concrete examples
-=================
-
-
-
-Fan-out topology: primary processing + diagnostic debug
+Fan-Out Topology: Primary Processing + Diagnostic Debug
 =======================================================
 
 A common pattern is to keep the primary path unmodified while creating a
@@ -155,6 +157,10 @@ Bi-directional links (DMA <-> TCP bridge)
 When both endpoints implement stream master and stream slave behavior, ``==``
 creates symmetric links in both directions.
 
+This is common for bridge-style endpoints such as TCP links, where transmit and
+receive paths both need to be wired. Using ``==`` keeps the two directions
+paired and avoids accidentally connecting only half of the link.
+
 Python
 ------
 
@@ -192,10 +198,31 @@ C++
       return 0;
    }
 
-What to explore next
+What To Explore Next
 ====================
 
 - Frame production patterns: :doc:`/stream_interface/sending`
 - Frame consumption patterns: :doc:`/stream_interface/receiving`
 - Built-in module behavior and tuning: :doc:`/stream_interface/built_in_modules`
 - Stream section overview: :doc:`/stream_interface/index`
+
+API Reference
+=============
+
+- Python:
+
+  - :doc:`/api/python/rogue/interfaces/stream/fifo`
+  - :doc:`/api/python/rogue/interfaces/stream/ratedrop`
+  - :doc:`/api/python/rogue/interfaces/stream/slave`
+  - :doc:`/api/python/rogue/interfaces/stream/tcpclient`
+  - :doc:`/api/python/rogue/hardware/axi/axistreamdma`
+  - :doc:`/api/python/pyrogue/utilities/fileio/streamwriter`
+
+- C++:
+
+  - :doc:`/api/cpp/interfaces/stream/fifo`
+  - :doc:`/api/cpp/interfaces/stream/rateDrop`
+  - :doc:`/api/cpp/interfaces/stream/slave`
+  - :doc:`/api/cpp/interfaces/stream/tcpClient`
+  - :doc:`/api/cpp/hardware/axi/axiStreamDma`
+  - :doc:`/api/cpp/utilities/fileio/writer`

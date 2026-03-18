@@ -1,14 +1,12 @@
 .. _protocols_packetizer_classes:
 
-======================================
-Packetizer Protocol Class Descriptions
-======================================
+=============================
+rogue::protocols::packetizer
+=============================
 
-This section provides C++ API reference pages for
+These pages provide the C++ API reference for
 ``rogue::protocols::packetizer`` classes.
 
-For conceptual guidance and version-selection notes, see
-:doc:`/built_in_modules/protocols/packetizer/index`.
 
 .. toctree::
    :maxdepth: 1
@@ -21,3 +19,8 @@ For conceptual guidance and version-selection notes, see
    controllerV2
    application
    transport
+
+
+.. rubric:: Related Topics
+
+- :doc:`/built_in_modules/protocols/packetizer/index`

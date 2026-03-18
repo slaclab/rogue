@@ -36,7 +36,7 @@ PyRogue nodes and many Python helper classes create loggers with
 That function ultimately returns a standard Python logger from
 ``logging.getLogger(...)``.
 
-Logger naming rules
+Logger Naming Rules
 -------------------
 
 The logger name starts with ``pyrogue`` and then appends type/class/path
@@ -91,7 +91,7 @@ That handler mirrors Python log records into:
 
 This is what powers:
 
-- the PyDM System Log widget
+- The PyDM System Log widget
 - ``pyrogue.interfaces.SystemLogMonitor``
 - SQL log capture via ``SqlLogger``
 
@@ -128,7 +128,7 @@ Severity constants are:
 - ``rogue.Logging.Info`` = 20
 - ``rogue.Logging.Debug`` = 10
 
-Logger naming rules
+Logger Naming Rules
 -------------------
 
 Each C++ logger is created with ``rogue::Logging::create("name")``.
@@ -258,6 +258,17 @@ For mixed Python + C++ applications:
 
    logging.getLogger('pyrogue').setLevel(logging.DEBUG)
    rogue.Logging.setFilter('pyrogue.rssi', rogue.Logging.Debug)
+
+API Reference
+=============
+
+- Python:
+
+  - :doc:`/api/python/rogue/logging`
+
+- C++:
+
+  - :doc:`/api/cpp/logging`
 
 Current Rough Edges
 ===================

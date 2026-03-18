@@ -14,3 +14,8 @@
 .rst-content dl.py.attribute + dl.py.property {
   margin-top: 1rem;
 }
+
+.rst-content .sig .rogue-source-link {
+  margin-left: 0.5rem;
+  font-size: 0.875em;
+}

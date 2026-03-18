@@ -16,7 +16,7 @@ It is a good fit when you need:
 Compared to :doc:`/pyrogue_tree/client_interfaces/virtual`, ``SimpleClient``
 is intentionally narrower in scope but faster to adopt in small scripts.
 
-Basic usage
+Basic Usage
 ===========
 
 .. code-block:: python
@@ -39,7 +39,7 @@ Basic usage
        # Execute a command
        client.exec('root.SomeCommand', '0x100')
 
-Update callbacks
+Update Callbacks
 ================
 
 ``SimpleClient`` can register a callback that is invoked for each Variable
@@ -75,14 +75,14 @@ In practice, troubleshooting usually relies on:
 If you need richer client-side observability, :doc:`virtual` is the better
 interface because it exposes a Python logger and richer mirrored-tree state.
 
-What To Explore Next
-====================
+Related Topics
+==============
 
 - Server-side transport setup: :doc:`/pyrogue_tree/client_interfaces/zmq_server`
 - Mirrored-tree access model: :doc:`/pyrogue_tree/client_interfaces/virtual`
 - CLI operations for quick checks: :doc:`/pyrogue_tree/client_interfaces/commandline`
 
 API Reference
-==============
+=============
 
-:doc:`/api/python/interfaces_simpleclient`
+:doc:`/api/python/pyrogue/interfaces/simpleclient`

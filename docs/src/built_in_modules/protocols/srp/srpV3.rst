@@ -4,18 +4,25 @@
 SRP Protocol Version 3
 ======================
 
-`SrpV3` converts Rogue memory transactions into SRPv3 stream frames and decodes
-responses from hardware. In a typical system, those SRP frames are carried over
-Rogue stream transports and terminate at FPGA/ASIC SRP logic that performs
-register access.
+For current SRP register links, Rogue provides
+``rogue.protocols.srp.SrpV3``. ``SrpV3`` converts Rogue memory transactions
+into SRPv3 stream frames and decodes hardware responses back into memory
+transaction completion.
 
 Rogue does not re-document the SRPv3 wire format here. Use the protocol
 specification for packet-level details:
 
 - SRPv3 reference: https://confluence.slac.stanford.edu/x/cRmVD
 
-Implementation notes
---------------------
+When To Use ``SrpV3``
+=====================
+
+- Use for current systems unless endpoint compatibility requires :doc:`srpV0`.
+- Use when the link needs SRP register semantics rather than raw commands.
+- Pair it with a stream transport such as DMA or UDP/RSSI/packetizer.
+
+Behavior
+========
 
 - Rogue can issue multiple SRPv3 requests before responses return; these are
   tracked as in-flight transactions by transaction ID.
@@ -31,22 +38,20 @@ Implementation notes
 - ``SrpV3`` enforces 4-byte alignment and defaults to a 4096-byte max
   transaction size (from constructor ``memory::Slave(4, 4096)``).
 
-Threading and locking model
----------------------------
+The class sits directly between the memory and stream interfaces. Connect it to
+a lower stream transport, then use the SRP object as the ``memBase`` for
+PyRogue devices or other memory clients.
+
+Threading And Locking
+=====================
 
 - ``doTransaction()`` and ``acceptFrame()`` can be invoked from different
   runtime contexts.
 - In-flight transaction matching is protected by the base memory-slave mutex.
 - Per-transaction payload/state access is protected via ``TransactionLock``.
 
-Integration references
-----------------------
-
-- :doc:`/memory_interface/tcp_bridge`
-- :doc:`/built_in_modules/hardware/dma/stream`
-
 Logging
--------
+=======
 
 ``SrpV3`` uses Rogue C++ logging, not Python ``logging``.
 
@@ -59,15 +64,12 @@ Logging
 Set the filter before constructing the ``SrpV3`` object. Rogue C++ loggers
 copy their level when the logger instance is created.
 
-Python usage examples
----------------------
+Python Example
+==============
 
 The most common PyRogue pattern is to construct the transport and ``SrpV3``
 inside a ``Root`` subclass, then pass the SRP object as ``memBase`` when adding
 devices.
-
-Root + Device(memBase=srp) with AXI Stream DMA
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: python
 
@@ -92,7 +94,7 @@ Root + Device(memBase=srp) with AXI Stream DMA
        def __init__(self, dev='/dev/datadev_0', **kwargs):
            super().__init__(timeout=2.0, **kwargs)
 
-           # Stream transport carrying SRPv3 frames (register channel).
+           # Stream transport carrying SRPv3 frames.
            self.regStream = rogue.hardware.axi.AxiStreamDma(dev, 0, True)
 
            # SRPv3 protocol bridge.
@@ -112,10 +114,17 @@ Root + Device(memBase=srp) with AXI Stream DMA
                expand=True,
            ))
 
-Related docs
-------------
+Related Topics
+==============
 
+- :doc:`/memory_interface/tcp_bridge`
+- :doc:`/built_in_modules/hardware/dma/stream`
 - :doc:`/built_in_modules/protocols/srp/index`
-- C++ API: :doc:`/api/cpp/protocols/srp/srpV3`
 - SRPv0 comparison: :doc:`srpV0`
 - Command-only path: :doc:`cmd`
+
+API Reference
+=============
+
+- Python: :doc:`/api/python/rogue/protocols/srp/srpv3`
+- C++: :doc:`/api/cpp/protocols/srp/srpV3`

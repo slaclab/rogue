@@ -4,7 +4,7 @@
 Buffer
 ======
 
-For conceptual guidance on frame and buffer data handling, see:
+For conceptual usage, see:
 
 - :doc:`/stream_interface/index`
 

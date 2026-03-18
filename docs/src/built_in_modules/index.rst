@@ -4,42 +4,58 @@
 Built-in Modules
 ================
 
-Built-in Modules collects core Rogue components that are commonly assembled
-into complete systems: hardware interfaces, protocol stacks, utilities, and
-integration helpers.
+Rogue comes with a number of built-in modules that are useful for assembling
+actual applications. These modules are built on top of the core Rogue and
+PyRogue APIs, so they fit naturally into the usual design flow for tree
+construction, transport setup, simulation, file handling, and hardware access.
 
-In practice, this section is where transport and system-integration work gets
-done:
+These pages are organized for discovery first, but they also make the
+namespace split explicit so it is clear whether you are working with a
+top-level PyRogue ``Device``, a submodule wrapper, or a lower-level Rogue
+endpoint.
 
-- Hardware links to FPGA/driver interfaces
-- Protocol layers for framing, reliability, and remote register access
-- Utility blocks for recording, playback, PRBS, and data conditioning
-- Simulation and operations integrations used during development and testing
+Three layers matter when choosing a module family:
 
-Most deployments combine this section with :doc:`/stream_interface/index`,
-:doc:`/memory_interface/index`, and :doc:`/pyrogue_tree/index`.
+- ``pyrogue``
+  Top-level tree-facing classes such as ``RunControl``, ``Process``,
+  ``DataWriter``, and ``DataReceiver``. Those are documented in
+  :doc:`/pyrogue_tree/builtin_devices/index`.
+- ``pyrogue.<submodule>``
+  Python integrations and wrapper devices such as
+  ``pyrogue.utilities.fileio.StreamWriter`` or
+  ``pyrogue.protocols.UdpRssiPack``.
+- ``rogue.<submodule>``
+  Lower-level exported Rogue modules such as
+  ``rogue.utilities.fileio.StreamWriter`` or
+  ``rogue.protocols.udp.Client``.
 
-Subsection guide
-================
+Most systems use more than one of these layers at once. A tree often exposes
+top-level ``pyrogue`` devices for operations and monitoring, then relies on
+``pyrogue.<submodule>`` wrappers or direct ``rogue.<submodule>`` endpoints to
+handle file I/O, protocol transport, simulation, or hardware access.
 
-- :doc:`/built_in_modules/interfaces/index`
-  Interface adapters and integration helpers such as SQL logging, version
-  checks, C++ API wrapping, and OS-backed memory bridges.
-- :doc:`/built_in_modules/simulation/index`
-  Software-only stand-ins for memory/link behavior used in bring-up and
-  integration testing.
-- :doc:`/built_in_modules/protocols/index`
-  Transport/control protocol layers (UDP, RSSI, SRP, packetizer, batcher,
-  Xilinx, EPICS, UART).
-- :doc:`/built_in_modules/hardware/index`
-  Hardware-facing modules and driver-backed interfaces (AXI and raw access).
+Subtopics
+=========
+
 - :doc:`/built_in_modules/utilities/index`
-  Reusable utility components for file I/O, PRBS, compression, and related
-  support workflows.
+  Stream-support modules such as file I/O, PRBS, compression, and HLS helpers.
+- :doc:`/built_in_modules/protocols/index`
+  Transport, framing, and register-access layers such as UDP, RSSI, SRP,
+  packetizer, batcher, Xilinx, UART, and GPIB-related helpers.
+- :doc:`/built_in_modules/interfaces/index`
+  External integration helpers such as SQL logging, C++ embedding, version
+  checks, and OS-backed memory bridges.
+- :doc:`/built_in_modules/hardware/index`
+  Driver-backed hardware endpoints that connect host software to firmware data
+  paths.
+- :doc:`/built_in_modules/simulation/index`
+  Software-only stand-ins for memory and link behavior used during development
+  and integration testing.
 
-What To Explore Next
-====================
+Related Topics
+==============
 
+- Top-level PyRogue built-ins: :doc:`/pyrogue_tree/builtin_devices/index`
 - Stream dataflow architecture: :doc:`/stream_interface/index`
 - Memory transaction architecture: :doc:`/memory_interface/index`
 - PyRogue tree composition and lifecycle: :doc:`/pyrogue_tree/index`

@@ -15,16 +15,16 @@ encoding/decoding workflows.
 Why Models Exist
 ================
 
-Models separate three concerns:
+Models separate three closely related concerns:
 
-1. hardware representation (bits/bytes, endianness, signedness)
-2. Python-facing type and formatting behavior
-3. conversion logic used during Block access
+1. Hardware representation such as bit width, endianness, and signedness.
+2. Python-facing type behavior such as ``int``, ``bool``, ``float``, or ``str``.
+3. Conversion logic used by ``Block`` staging and transaction code.
 
 This keeps Variable definitions clear and lets the same conversion behavior be
 reused across many registers.
 
-Model selection in Variables
+How Variables Select A Model
 ============================
 
 Most users select a Model when defining each ``RemoteVariable``.
@@ -44,19 +44,48 @@ Most users select a Model when defining each ``RemoteVariable``.
                base=pr.UInt,   # Model selection
            ))
 
-Built-in Model families
+In the current implementation, ``RemoteVariable`` usually receives a Model
+class such as ``pr.UInt`` or ``pr.Float`` rather than a pre-built instance.
+The Variable constructor then instantiates the Model using the Variable's
+effective bit width.
+
+That is why ``base=pr.UInt`` is the normal form. For custom or parameterized
+Models such as fixed-point encodings, the ``base`` you pass must still line up
+with the Variable's bit layout.
+
+What A Model Defines
+====================
+
+A Model is more than a byte-conversion helper. It also defines metadata that
+shapes how the Variable behaves in Python and in the generated tree metadata.
+
+Common Model responsibilities include:
+
+* ``pytype`` for the native Python-facing type.
+* ``defaultdisp`` for the default display format when the Variable does not
+  override ``disp``.
+* ``minValue()`` and ``maxValue()`` for default limit behavior.
+* ``toBytes()`` and ``fromBytes()`` for raw conversion.
+* ``fromString()`` for display-string parsing.
+* ``modelId`` for the lower-level Rogue memory-processing path.
+
+This is why Models belong conceptually between :doc:`/pyrogue_tree/core/variable`
+and :doc:`/pyrogue_tree/core/block`: Variables present the value-oriented API,
+Models define the encoding, and Blocks move the bytes.
+
+Built-In Model Families
 =======================
 
 Common built-in Models include:
 
 * Integer: ``UInt``, ``UIntBE``, ``UIntReversed``, ``Int``, ``IntBE``
 * Boolean: ``Bool``
-* Text/bytes: ``String``, ``Bytes``
+* Text: ``String``
 * Floating point: ``Float``, ``FloatBE``, ``Double``, ``DoubleBE``
 * Fixed point: ``Fixed``, ``UFixed``
-* Custom conversion hook: ``PyFunc``
+* Custom Python conversion path: Models that use ``modelId = rim.PyFunc``
 
-Built-in Model types
+Built-In Model Types
 ====================
 
 +---------------------------------------------+-----------------------+-------------------+----------------+------------------------------------------------+
@@ -92,21 +121,58 @@ Built-in Model types
 For low-level Model class reference and constants, see
 :doc:`/api/cpp/interfaces/memory/model`.
 
-Model conversion flow in Block access
+Fixed-Point Models
+==================
+
+``Fixed`` and ``UFixed`` are important enough, and nuanced enough in
+practice, that they now have their own focused page:
+
+* :doc:`/pyrogue_tree/core/fixed_point_models`
+
+That page explains the fixed-point mental model, ``bitSize`` and ``binPoint``,
+the conversion formulas, numeric range, and a worked example.
+
+Model Utility Helpers
+=====================
+
+The Python Model module also includes a few small helpers that are useful when
+you need to reason about raw layouts or write a custom Model:
+
+* :py:func:`~pyrogue.wordCount` computes how many words are needed for a bit width.
+* :py:func:`~pyrogue.byteCount` computes how many bytes are needed for a bit width.
+* :py:func:`~pyrogue.reverseBits` reverses bit significance across a fixed width.
+* :py:func:`~pyrogue.twosComplement` interprets a value with two's-complement sign semantics.
+
+These are especially useful in custom conversion code and in documentation
+examples where raw register layout matters.
+
+Model Instances And Caching
+===========================
+
+One implementation detail is worth knowing when you use Model classes directly:
+the ``Model`` metaclass caches instances by constructor arguments.
+
+In practice, repeated requests for the same Model and parameters, such as
+``pr.UInt(16)``, return the same shared Model instance. Most users do not need
+to think about this because Variables create Models for them, but it explains
+why Models are treated more like reusable type descriptors than like
+per-Variable mutable state.
+
+Model Conversion Flow In Block Access
 =====================================
 
 When a Variable is read or written:
 
-1. Variable logic resolves its Model and layout metadata
-2. Block conversion methods pack/unpack values for that Model
-3. Block transaction methods move bytes to/from hardware
+1. Variable logic resolves its Model and layout metadata.
+2. Block conversion methods pack or unpack values for that Model.
+3. Block transaction methods move bytes to or from hardware.
 
 Model selection answers "how bytes map to values"; Block transactions answer
 "when bytes move."
 
 For transaction flow details, see :doc:`/pyrogue_tree/core/block`.
 
-Custom Model example
+Custom Model Example
 ====================
 
 Use a custom Model when built-ins do not match an encoding format.
@@ -155,30 +221,33 @@ Use a custom Model when built-ins do not match an encoding format.
                base=BitReversedUInt,
            ))
 
-How ``BitReversedUInt`` differs from built-in ``UInt``
-=======================================================
+This is the same overall pattern used by built-in Models: define the Python
+type behavior and the byte conversion behavior in one reusable object, then
+attach that Model to one or more Variables.
+
+How ``BitReversedUInt`` Differs From Built-In ``UInt``
+======================================================
 
 This example shows a register layout where hardware bit order differs from
 normal integer interpretation:
 
-* Built-in ``UInt`` assumes standard bit significance ordering
-* ``BitReversedUInt`` reverses bits on write/read so software uses normal
-  integer semantics while memory uses reversed bit positions
-* This is useful for some custom ASIC or I2C peripheral register definitions
+* Built-in ``UInt`` assumes standard bit significance ordering.
+* ``BitReversedUInt`` reverses bits on write and read so software uses normal
+  integer semantics while memory uses reversed bit positions.
+* This is useful for custom register layouts where the hardware view is not a
+  normal integer bit ordering.
 
-For examples of built-in and custom Model definitions, see
-``python/pyrogue/_Model.py``.
+What To Explore Next
+====================
 
-Reference links
-===============
+* Variable type and access behavior: :doc:`/pyrogue_tree/core/variable`
+* Block packing and transaction flow: :doc:`/pyrogue_tree/core/block`
+* Fixed-point usage details: :doc:`/pyrogue_tree/core/fixed_point_models`
 
-* Python Model base/reference: :doc:`/api/python/model`
+API Reference
+=============
+
+* Python Model base/reference: :doc:`/api/python/pyrogue/model`
 * C++ memory Model reference: :doc:`/api/cpp/interfaces/memory/model`
-* Model helpers: :doc:`/api/python/wordcount`, :doc:`/api/python/bytecount`,
-  :doc:`/api/python/reversebits`, :doc:`/api/python/twoscomplement`
-
-Where to explore next
-=====================
-
-* Block transaction and grouping behavior: :doc:`/pyrogue_tree/core/block`
-* Variable usage patterns: :doc:`/pyrogue_tree/core/variable`
+* Model helpers: :doc:`/api/python/pyrogue/wordcount`, :doc:`/api/python/pyrogue/bytecount`,
+  :doc:`/api/python/pyrogue/reversebits`, :doc:`/api/python/pyrogue/twoscomplement`

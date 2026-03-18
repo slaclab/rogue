@@ -24,17 +24,18 @@ Workflow
 5. Validate full behavior with:
    :doc:`/getting_started/pyrogue_tree_example/full_root`
 
-What this tutorial emphasizes
+What This Tutorial Emphasizes
 =============================
 
 - Choosing between ``RemoteVariable``, ``LocalVariable``, and ``LinkVariable``
 - Keeping command semantics explicit and testable
 - Organizing blocks and models for long-term maintainability
 
-Related API reference
-=====================
+API Reference
+=============
 
-- :doc:`/api/python/device`
-- :doc:`/api/python/basevariable`
-- :doc:`/api/python/basecommand`
-- :doc:`/api/python/model`
+- Python:
+  :doc:`/api/python/pyrogue/device`
+  :doc:`/api/python/pyrogue/basevariable`
+  :doc:`/api/python/pyrogue/basecommand`
+  :doc:`/api/python/pyrogue/model`

@@ -10,7 +10,7 @@ TCP. In practice, this is the primary remote-control path used by tools such
 as PyDM GUIs, :ref:`interfaces_clients_simple`, and
 :ref:`interfaces_clients_virtual`.
 
-What it provides
+What It Provides
 ================
 
 At startup, the server binds three TCP-backed ZeroMQ endpoints using a base
@@ -24,7 +24,7 @@ From the client perspective, this gives access to the same tree content
 available inside the Root process: read/write Variables, execute Commands, and
 monitor value updates.
 
-Common usage pattern
+Common Usage Pattern
 ====================
 
 Create the server in ``Root.__init__`` and register it as an interface:
@@ -57,7 +57,7 @@ Notes
 * After ``root.start()``, inspect the selected port range with
   ``root.zmqServer.port()`` and ``root.zmqServer.address``.
 
-Client access examples
+Client Access Examples
 ======================
 
 Simple client (lightweight, string operations):
@@ -112,8 +112,8 @@ Separately, ``ZmqServer._start()`` prints the selected ports and example client
 commands to stdout. Those startup messages are not controlled by the logging
 API.
 
-What To Explore Next
-====================
+Related Topics
+==============
 
 - Lightweight scripting client: :doc:`/pyrogue_tree/client_interfaces/simple`
 - Mirrored tree client: :doc:`/pyrogue_tree/client_interfaces/virtual`
@@ -122,4 +122,4 @@ What To Explore Next
 API Reference
 =============
 
-See :doc:`/api/python/interfaces_zmqserver` for generated API details.
+See :doc:`/api/python/pyrogue/interfaces/zmqserver` for generated API details.
