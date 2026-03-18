@@ -71,7 +71,7 @@ jobs:
       - name: Rogue Tests
         run: |
           source setup_rogue.sh
-          python -m pytest --cov
+          python -m pytest -n auto --dist loadfile --cov
 
       # Compile API Test
       - name: Compile API Test
@@ -183,7 +183,7 @@ jobs:
       - name: Rogue Tests
         shell: bash -el {0}
         run: |
-          python -m pytest
+          python -m pytest -n auto --dist loadfile
 
 
 # ----------------------------------------------------------------------------
