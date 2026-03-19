@@ -35,6 +35,39 @@
 namespace bp = boost::python;
 #endif
 
+namespace {
+
+constexpr uint32_t kRetryLogIntervalSeconds = 30;
+
+void logWaitRetry(rogue::LoggingPtr log, double seconds, uint32_t& lastLoggedSeconds) {
+    uint32_t elapsedSeconds = static_cast<uint32_t>(seconds);
+
+    if (elapsedSeconds == 0) return;
+
+    if (lastLoggedSeconds == 0) {
+        log->warning(
+            "Timeout waiting for response after %" PRIu32 " seconds, server may be busy. Continuing to wait...",
+            elapsedSeconds);
+        lastLoggedSeconds = elapsedSeconds;
+        return;
+    }
+
+    if (elapsedSeconds >= (lastLoggedSeconds + kRetryLogIntervalSeconds)) {
+        log->warning("Still waiting for response after %" PRIu32 " seconds, server may be busy...", elapsedSeconds);
+        lastLoggedSeconds = elapsedSeconds;
+    }
+}
+
+void logWaitRecovered(rogue::LoggingPtr log, double seconds) {
+    uint32_t elapsedSeconds = static_cast<uint32_t>(seconds);
+
+    if (elapsedSeconds != 0) {
+        log->warning("Received response from server after %" PRIu32 " seconds.", elapsedSeconds);
+    }
+}
+
+}  // namespace
+
 rogue::interfaces::ZmqClientPtr rogue::interfaces::ZmqClient::create(const std::string& addr, uint16_t port, bool doString) {
     rogue::interfaces::ZmqClientPtr ret = std::make_shared<rogue::interfaces::ZmqClient>(addr, port, doString);
     return (ret);
@@ -172,6 +205,7 @@ std::string rogue::interfaces::ZmqClient::sendString(const std::string& path, co
     zmq_msg_t msg;
     std::string data;
     double seconds = 0;
+    uint32_t lastLoggedSeconds = 0;
 
     if (!doString_) throw rogue::GeneralError::create("ZmqClient::sendString", "Invalid send call in standard mode");
 
@@ -190,7 +224,7 @@ std::string rogue::interfaces::ZmqClient::sendString(const std::string& path, co
         if (zmq_recvmsg(this->zmqReq_, &msg, 0) <= 0) {
             seconds += static_cast<double>(timeout_) / 1000.0;
             if (waitRetry_) {
-                log_->error("Timeout waiting for response after %d Seconds, server may be busy! Waiting...", static_cast<int>(seconds));
+                logWaitRetry(log_, seconds, lastLoggedSeconds);
                 zmq_msg_close(&msg);
             } else {
                 throw rogue::GeneralError::create("ZmqClient::sendString",
@@ -202,7 +236,7 @@ std::string rogue::interfaces::ZmqClient::sendString(const std::string& path, co
         }
     }
 
-    if (seconds != 0) log_->error("Finally got response from server after %d seconds!", static_cast<int>(seconds));
+    logWaitRecovered(log_, seconds);
 
     data = std::string((const char*)zmq_msg_data(&msg), zmq_msg_size(&msg));
     zmq_msg_close(&msg);
@@ -233,6 +267,7 @@ bp::object rogue::interfaces::ZmqClient::send(bp::object value) {
     Py_buffer valueBuf;
     bp::object ret;
     double seconds = 0;
+    uint32_t lastLoggedSeconds = 0;
 
     if (doString_) throw rogue::GeneralError::create("ZmqClient::send", "Invalid send call in string mode");
 
@@ -252,8 +287,7 @@ bp::object rogue::interfaces::ZmqClient::send(bp::object value) {
             if (zmq_recvmsg(this->zmqReq_, &rxMsg, 0) <= 0) {
                 seconds += static_cast<double>(timeout_) / 1000.0;
                 if (waitRetry_) {
-                    log_->error("Timeout waiting for response after %d Seconds, server may be busy! Waiting...",
-                                static_cast<int>(seconds));
+                    logWaitRetry(log_, seconds, lastLoggedSeconds);
                     zmq_msg_close(&rxMsg);
                 } else {
                     throw rogue::GeneralError::create(
@@ -267,7 +301,7 @@ bp::object rogue::interfaces::ZmqClient::send(bp::object value) {
         }
     }
 
-    if (seconds != 0) log_->error("Finally got response from server after %d seconds!", static_cast<int>(seconds));
+    logWaitRecovered(log_, seconds);
 
     PyObject* val = Py_BuildValue("y#", zmq_msg_data(&rxMsg), zmq_msg_size(&rxMsg));
 
