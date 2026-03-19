@@ -38,7 +38,28 @@ class Plotter(PyDMFrame):
         self._systemLog = None
         self._node = None
         self._canvas = None
+        self._nav = None
         self._fig = None
+
+    def _clear_plot(self) -> None:
+        """Release the current canvas, toolbar, and figure."""
+        if self._canvas is not None:
+            self._vb.removeWidget(self._canvas)
+            self._canvas.close()
+            self._canvas.setParent(None)
+            self._canvas.deleteLater()
+            self._canvas = None
+
+        if self._nav is not None:
+            self._vb.removeWidget(self._nav)
+            self._nav.close()
+            self._nav.setParent(None)
+            self._nav.deleteLater()
+            self._nav = None
+
+        if self._fig is not None:
+            self._fig.clear()
+            self._fig = None
 
     def connection_changed(self, connected: bool) -> None:
         """Build the layout after the first successful channel connection."""
@@ -55,15 +76,15 @@ class Plotter(PyDMFrame):
 
     def value_changed(self, new_val: object) -> None:
         """Replace the displayed plot with the latest figure object."""
-        if self._canvas is not None:
-            self._vb.removeWidget(self._canvas)
-            self._vb.removeWidget(self._nav)
-            self._canvas.setParent(None)
-            self._nav.setParent(None)
-            del self._canvas, self._nav, self._fig
+        self._clear_plot()
 
         self._fig = new_val
         self._canvas = FigureCanvas(self._fig)
         self._nav = NavigationToolbar(self._canvas, self)
         self._vb.addWidget(self._nav)
         self._vb.addWidget(self._canvas)
+
+    def closeEvent(self, event) -> None:
+        """Release embedded plot resources when the widget closes."""
+        self._clear_plot()
+        super(Plotter, self).closeEvent(event)
