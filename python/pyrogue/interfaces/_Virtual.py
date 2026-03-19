@@ -326,6 +326,18 @@ class VirtualClient(rogue.interfaces.ZmqClient):
     port : int
         host port
 
+    linkTimeout : float, optional
+        Idle timeout in seconds before the client marks the link down when no
+        publish updates or successful replies have been observed. This is the
+        primary operational timeout knob for both hardware and simulation
+        applications.
+
+    requestStallTimeout : float | None, optional
+        Optional policy timeout for how long a single in-flight request may
+        remain outstanding before the client declares the connection stalled.
+        This is disabled by default and is typically only useful when a
+        deployment has a well-defined upper bound for legitimate request time.
+
     Attributes
     ----------
     linked: bool
@@ -359,7 +371,12 @@ class VirtualClient(rogue.interfaces.ZmqClient):
         linkTimeout: float | None = None,
         requestStallTimeout: float | None = None,
     ) -> "VirtualClient":
-        """Return cached client instances keyed by ``(addr, port)``."""
+        """Return cached client instances keyed by ``(addr, port)``.
+
+        Timeout arguments configure the cached instance for that server. If a
+        client already exists for the same ``(addr, port)``, new timeout values
+        are applied to the shared instance.
+        """
         newHash = hash((addr, port))
 
         if newHash in cls.ClientCache:
@@ -374,6 +391,24 @@ class VirtualClient(rogue.interfaces.ZmqClient):
         linkTimeout: float | None = None,
         requestStallTimeout: float | None = None,
     ) -> None:
+        """Create or reconfigure a cached virtual client instance.
+
+        Parameters
+        ----------
+        addr : str, optional
+            Server host name or address.
+        port : int, optional
+            Base ZMQ server port.
+        linkTimeout : float | None, optional
+            Idle timeout in seconds before the link is considered down. If not
+            provided, the default is 10 seconds or the value from
+            ``ROGUE_VIRTUAL_LINK_TIMEOUT``.
+        requestStallTimeout : float | None, optional
+            Optional maximum age of an in-flight request before the client
+            treats it as stalled. ``None`` or non-positive values disable this
+            policy. In practice this is usually left disabled unless a system
+            has a known upper bound for valid request duration.
+        """
         if getattr(self, "_vcInitialized", False):
             if linkTimeout is not None or requestStallTimeout is not None:
                 self.setTimeoutConfig(linkTimeout=linkTimeout, requestStallTimeout=requestStallTimeout)
@@ -474,7 +509,7 @@ class VirtualClient(rogue.interfaces.ZmqClient):
 
     @property
     def requestStallTimeout(self) -> float | None:
-        """Maximum in-flight request age before it is treated as stalled."""
+        """Optional maximum in-flight request age before it is treated as stalled."""
         return self._requestStallTimeout
 
     def setTimeoutConfig(
@@ -483,7 +518,13 @@ class VirtualClient(rogue.interfaces.ZmqClient):
         linkTimeout: float | None = None,
         requestStallTimeout: float | None = None,
     ) -> None:
-        """Update link and request-stall timeout settings."""
+        """Update link and request-stall timeout settings.
+
+        ``linkTimeout`` is the normal tuning knob for clients that need to
+        tolerate longer busy periods. ``requestStallTimeout`` is an optional
+        policy threshold and is most useful only when a deployment has a clear,
+        finite upper bound for legitimate request duration.
+        """
         if linkTimeout is not None:
             self._linkTimeout = float(linkTimeout)
 
