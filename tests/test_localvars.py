@@ -191,13 +191,15 @@ def test_local_variable_type_check_warning(caplog):
 
 
 def test_local_variable_type_check_disable(caplog):
-    with pyrogue.Root(name='LocalRoot', description='Local root') as root:
-        root.add(pyrogue.Device(name='myDevice'))
-        root.myDevice.add(pyrogue.LocalVariable(
-            name='var',
-            value=0.0,
-            typeCheck=False,
-            mode='RW'))
+    root = pyrogue.Root(name='LocalRoot', description='Local root')
+    root.add(pyrogue.Device(name='myDevice'))
+    root.myDevice.add(pyrogue.LocalVariable(
+        name='var',
+        value=0.0,
+        typeCheck=False,
+        mode='RW'))
+
+    with root:
 
         caplog.clear()
         caplog.set_level(logging.WARNING)
@@ -209,8 +211,10 @@ def test_local_variable_type_check_disable(caplog):
 
 
 def test_data_receiver_disables_type_check(caplog):
-    with pyrogue.Root(name='LocalRoot', description='Local root') as root:
-        root.add(pyrogue.DataReceiver(name='Rx'))
+    root = pyrogue.Root(name='LocalRoot', description='Local root')
+    root.add(pyrogue.DataReceiver(name='Rx'))
+
+    with root:
 
         caplog.clear()
         caplog.set_level(logging.WARNING)
