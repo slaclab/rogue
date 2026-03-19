@@ -74,8 +74,10 @@ Important implications:
 
 * ``LocalVariable`` does not automatically coerce later writes to match the
   seed type.
-* A type mismatch currently produces a warning during ``set()``, not an
-  exception.
+* With the default ``typeCheck=True``, a type mismatch currently produces a
+  warning during ``set()``, not an exception.
+* Set ``typeCheck=False`` when a ``LocalVariable`` intentionally needs to
+  accept multiple Python value types over its lifetime.
 * ``typeStr`` is display metadata; it does not enforce conversion by itself.
 
 If you define a callback-only ``LocalVariable`` with ``localGet`` and no

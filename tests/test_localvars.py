@@ -9,6 +9,7 @@
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 
+import logging
 import pyrogue
 
 # Test values
@@ -176,6 +177,48 @@ def test_local_root():
         max_read=root.myDevice.var_with_properties.maximum
         if max_read != max_set:
             raise AssertionError('Minimum was set to {} but was read as {}'.format(max_set, max_read))
+
+
+def test_local_variable_type_check_warning(caplog):
+    with LocalRoot() as root:
+        caplog.clear()
+        caplog.set_level(logging.WARNING)
+
+        root.myDevice.var.set('wrong-type')
+
+        assert root.myDevice.var.get() == 'wrong-type'
+        assert 'Expecting' in caplog.text
+
+
+def test_local_variable_type_check_disable(caplog):
+    with pyrogue.Root(name='LocalRoot', description='Local root') as root:
+        root.add(pyrogue.Device(name='myDevice'))
+        root.myDevice.add(pyrogue.LocalVariable(
+            name='var',
+            value=0.0,
+            typeCheck=False,
+            mode='RW'))
+
+        caplog.clear()
+        caplog.set_level(logging.WARNING)
+
+        root.myDevice.var.set('wrong-type')
+
+        assert root.myDevice.var.get() == 'wrong-type'
+        assert caplog.text == ''
+
+
+def test_data_receiver_disables_type_check(caplog):
+    with pyrogue.Root(name='LocalRoot', description='Local root') as root:
+        root.add(pyrogue.DataReceiver(name='Rx'))
+
+        caplog.clear()
+        caplog.set_level(logging.WARNING)
+
+        root.Rx.Data.set({'decoded': 1}, write=True)
+
+        assert root.Rx.Data.get() == {'decoded': 1}
+        assert caplog.text == ''
 
 if __name__ == "__main__":
     test_local_root()

@@ -391,7 +391,7 @@ class LocalBlock(object):
             if index >= 0:
                 self._value[index] = value
             else:
-                if not isinstance(value, var._nativeType):
+                if var._typeCheck and not isinstance(value, var._nativeType):
                     self._log.warning( f'{var.path}: Expecting {var._nativeType}: Currently a warning but in the future this will be an error' )
                     #raise TypeError(f"Error - {var.path}: Expecting {var._nativeType} but got {type(value)}")
 
