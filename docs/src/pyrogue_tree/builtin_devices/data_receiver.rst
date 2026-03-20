@@ -43,7 +43,7 @@ Most ``DataReceiver`` definitions revolve around:
 
 The built-in ``Data`` ``LocalVariable`` is created with ``typeCheck=False`` so
 subclasses can publish decoded objects without triggering ``LocalVariable``
-type warnings.
+type errors.
 
 In many practical subclasses, the main customization is not the constructor
 arguments but the ``process(frame)`` override.

@@ -9,7 +9,6 @@
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 
-import logging
 import pyrogue
 
 # Test values
@@ -179,18 +178,17 @@ def test_local_root():
             raise AssertionError('Minimum was set to {} but was read as {}'.format(max_set, max_read))
 
 
-def test_local_variable_type_check_warning(caplog):
+def test_local_variable_type_check_error():
     with LocalRoot() as root:
-        caplog.clear()
-        caplog.set_level(logging.WARNING)
+        try:
+            root.myDevice.var.set('wrong-type')
+            raise AssertionError('Changing a LocalVariable type did not raise an exception')
+        except pyrogue.VariableError as exc:
+            assert 'typeCheck=False' in str(exc)
+            assert 'expected' in str(exc)
 
-        root.myDevice.var.set('wrong-type')
 
-        assert root.myDevice.var.get() == 'wrong-type'
-        assert 'Expecting' in caplog.text
-
-
-def test_local_variable_type_check_disable(caplog):
+def test_local_variable_type_check_disable():
     root = pyrogue.Root(name='LocalRoot', description='Local root')
     root.add(pyrogue.Device(name='myDevice'))
     root.myDevice.add(pyrogue.LocalVariable(
@@ -200,29 +198,19 @@ def test_local_variable_type_check_disable(caplog):
         mode='RW'))
 
     with root:
-
-        caplog.clear()
-        caplog.set_level(logging.WARNING)
-
         root.myDevice.var.set('wrong-type')
 
         assert root.myDevice.var.get() == 'wrong-type'
-        assert caplog.text == ''
 
 
-def test_data_receiver_disables_type_check(caplog):
+def test_data_receiver_disables_type_check():
     root = pyrogue.Root(name='LocalRoot', description='Local root')
     root.add(pyrogue.DataReceiver(name='Rx'))
 
     with root:
-
-        caplog.clear()
-        caplog.set_level(logging.WARNING)
-
         root.Rx.Data.set({'decoded': 1}, write=True)
 
         assert root.Rx.Data.get() == {'decoded': 1}
-        assert caplog.text == ''
 
 if __name__ == "__main__":
     test_local_root()

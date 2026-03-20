@@ -263,7 +263,7 @@ class BaseVariable(pr.Node):
     typeStr : str, optional (default = "Unknown")
         Type string for display.
     typeCheck : bool, optional (default = True)
-        If True, warn when later writes change the seeded Python type.
+        If True, raise an error when later writes change the seeded Python type.
     bulkOpEn : bool, optional (default = True)
         Enable bulk operations.
     offset : int, optional (default = 0)
@@ -1635,7 +1635,7 @@ class LocalVariable(BaseVariable):
     typeStr : str, optional (default = "Unknown")
         Type string for display.
     typeCheck : bool, optional (default = True)
-        If True, warn when later writes change the seeded Python type.
+        If True, raise an error when later writes change the seeded Python type.
     bulkOpEn : bool, optional (default = True)
         Enable bulk operations.
     guiGroup : str, optional
