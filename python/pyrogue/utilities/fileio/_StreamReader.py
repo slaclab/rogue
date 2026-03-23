@@ -57,7 +57,9 @@ class StreamReader(pyrogue.Device):
 
         self.add(pyrogue.LocalVariable(
             name='isOpen',
-            function=self._isOpen,
+            mode='RO',
+            value=False,
+            localGet=self._isOpen,
             description='Data file is open.'))
 
     def _open(self) -> None:
