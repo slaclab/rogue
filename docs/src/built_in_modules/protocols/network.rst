@@ -45,8 +45,9 @@ Implementation Details
 - Packetizer selection by ``packVer``:
   ``packVer=1`` uses ``packetizer.Core(enSsi)``;
   ``packVer=2`` uses ``packetizer.CoreV2(False, True, enSsi)``.
-- RSSI segment size is derived from transport payload budget:
-  ``udp.maxPayload() - 8``.
+- RSSI segment size is derived from the full transport payload budget:
+  ``udp.maxPayload()``. The RSSI controller internally reserves its own
+  8-byte header within that segment size.
 
 When To Use
 ===========

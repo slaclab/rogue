@@ -56,9 +56,9 @@ Payload Sizing And MTU
 - Jumbo mode (``jumbo=True``): ``8972`` bytes payload
 - Standard mode (``jumbo=False``): ``1472`` bytes payload
 
-When UDP is used under RSSI, RSSI payload is typically derived from UDP payload
-budget (for example ``udp.maxPayload() - 8`` as used in integration tests and
-wrapper patterns).
+When UDP is used under RSSI, the RSSI segment size is typically derived from
+the full UDP payload budget (for example ``udp.maxPayload()``). RSSI then
+reserves its own 8-byte header within that segment size.
 
 Threading And Lifecycle
 =======================
@@ -96,8 +96,8 @@ Python Example
    serv = rogue.protocols.udp.Server(0, True)
    cli = rogue.protocols.udp.Client("127.0.0.1", serv.getPort(), True)
 
-   s_rssi = rogue.protocols.rssi.Server(serv.maxPayload() - 8)
-   c_rssi = rogue.protocols.rssi.Client(cli.maxPayload() - 8)
+   s_rssi = rogue.protocols.rssi.Server(serv.maxPayload())
+   c_rssi = rogue.protocols.rssi.Client(cli.maxPayload())
 
    s_pkt = rogue.protocols.packetizer.CoreV2(True, True, True)
    c_pkt = rogue.protocols.packetizer.CoreV2(True, True, True)

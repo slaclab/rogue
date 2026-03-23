@@ -77,12 +77,12 @@ class UdpRssiPack(pr.Device):
         # Check if running as server
         if server:
             self._udp  = rogue.protocols.udp.Server(port,jumbo)
-            self._rssi = rogue.protocols.rssi.Server(self._udp.maxPayload()-8)
+            self._rssi = rogue.protocols.rssi.Server(self._udp.maxPayload())
 
         # Else running as client
         else:
             self._udp  = rogue.protocols.udp.Client(host,port,jumbo)
-            self._rssi = rogue.protocols.rssi.Client(self._udp.maxPayload()-8)
+            self._rssi = rogue.protocols.rssi.Client(self._udp.maxPayload())
 
         # Check if Packeterizer Version 2: https://confluence.slac.stanford.edu/x/3nh4DQ
         if packVer == 2:

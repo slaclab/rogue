@@ -138,7 +138,7 @@ shape:
 
    # Server side
    s_udp = rogue.protocols.udp.Server(0, True)
-   s_rssi = rogue.protocols.rssi.Server(s_udp.maxPayload() - 8)
+   s_rssi = rogue.protocols.rssi.Server(s_udp.maxPayload())
    s_pack = rogue.protocols.packetizer.CoreV2(True, True, True)
 
    s_udp == s_rssi.transport()
@@ -146,7 +146,7 @@ shape:
 
    # Client side
    c_udp = rogue.protocols.udp.Client("127.0.0.1", s_udp.getPort(), True)
-   c_rssi = rogue.protocols.rssi.Client(c_udp.maxPayload() - 8)
+   c_rssi = rogue.protocols.rssi.Client(c_udp.maxPayload())
    c_pack = rogue.protocols.packetizer.CoreV2(True, True, True)
 
    c_udp == c_rssi.transport()
@@ -172,10 +172,10 @@ C++ Example
    namespace rpr = rogue::protocols::rssi;
 
    auto sUdp  = rpu::Server::create(0, true);
-   auto sRssi = rpr::Server::create(sUdp->maxPayload() - 8);
+   auto sRssi = rpr::Server::create(sUdp->maxPayload());
 
    auto cUdp  = rpu::Client::create("127.0.0.1", sUdp->getPort(), true);
-   auto cRssi = rpr::Client::create(cUdp->maxPayload() - 8);
+   auto cRssi = rpr::Client::create(cUdp->maxPayload());
 
    sUdp == sRssi->transport();
    cUdp == cRssi->transport();

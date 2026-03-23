@@ -73,7 +73,7 @@ Python Example
    import rogue.protocols.rssi
 
    udp = rogue.protocols.udp.Server(0, True)
-   rssi = rogue.protocols.rssi.Server(udp.maxPayload() - 8)
+   rssi = rogue.protocols.rssi.Server(udp.maxPayload())
 
    # Link-layer stream connection.
    udp == rssi.transport()
@@ -89,7 +89,7 @@ Standalone script pattern:
 .. code-block:: python
 
    udp = rogue.protocols.udp.Server(0, True)
-   rssi = rogue.protocols.rssi.Server(udp.maxPayload() - 8)
+   rssi = rogue.protocols.rssi.Server(udp.maxPayload())
    udp == rssi.transport()
 
    rssi._start()

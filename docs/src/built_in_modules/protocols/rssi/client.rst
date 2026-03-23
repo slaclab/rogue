@@ -20,7 +20,7 @@ Construction
 
 ``Client(segSize)`` is shaped primarily by ``segSize``, the initial local
 maximum segment size in bytes. In real deployments this is usually derived from
-the lower transport payload budget, for example ``udp.maxPayload() - 8``.
+the full lower transport payload budget, for example ``udp.maxPayload()``.
 
 Use ``transport()`` to connect the lower transport and ``application()`` to
 connect upper protocol blocks such as packetizer or SRP.
@@ -73,7 +73,7 @@ Python Example
    import rogue.protocols.rssi
 
    udp = rogue.protocols.udp.Client("127.0.0.1", 8200, True)
-   rssi = rogue.protocols.rssi.Client(udp.maxPayload() - 8)
+   rssi = rogue.protocols.rssi.Client(udp.maxPayload())
 
    # Link-layer stream connection.
    udp == rssi.transport()
@@ -89,7 +89,7 @@ Standalone script pattern:
 .. code-block:: python
 
    udp = rogue.protocols.udp.Client("127.0.0.1", 8200, True)
-   rssi = rogue.protocols.rssi.Client(udp.maxPayload() - 8)
+   rssi = rogue.protocols.rssi.Client(udp.maxPayload())
    udp == rssi.transport()
 
    rssi._start()

@@ -63,7 +63,8 @@ class Server {
      * is shared across Rogue graph connections or exposed to Python.
      * It returns `std::shared_ptr` ownership compatible with Rogue pointer typedefs.
      *
-     * @param segSize Initial local maximum segment size.
+     * @param segSize Initial local maximum segment size, including the RSSI
+     * header bytes carried on the lower transport.
      * @return Shared pointer to the created server bundle.
      */
     static std::shared_ptr<rogue::protocols::rssi::Server> create(uint32_t segSize);
@@ -78,7 +79,8 @@ class Server {
      * This constructor is a low-level C++ allocation path.
      * Prefer `create()` when shared ownership or Python exposure is required.
      *
-     * @param segSize Initial local maximum segment size.
+     * @param segSize Initial local maximum segment size, including the RSSI
+     * header bytes carried on the lower transport.
      */
     explicit Server(uint32_t segSize);
 
