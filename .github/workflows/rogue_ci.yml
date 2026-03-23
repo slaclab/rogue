@@ -16,6 +16,10 @@
 name: Rogue Integration
 on: [push]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   full_build_test:
     name: Full Build Test
@@ -23,22 +27,9 @@ jobs:
     steps:
 
       # This step checks out a copy of your repository.
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
-      - uses: actions/setup-python@v4
-        with:
-          python-version: 3.12
-          cache: 'pip'
-          cache-dependency-path: 'pip_requirements.txt'
-
-      # Install dependencies
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install doxygen doxygen-doc libzmq3-dev libboost-all-dev bzip2 libbz2-dev
-          pip install -r pip_requirements.txt
 
       - name: Check for trailing whitespace and tabs
         run: |
@@ -53,6 +44,21 @@ jobs:
             echo "Error: Tab characters found in the repository! Please use spaces for indentation."
             exit 1
           fi
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.12
+          cache: 'pip'
+          cache-dependency-path: |
+            pip_requirements_ci.txt
+            pip_requirements_docs.txt
+
+      # Install dependencies
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libzmq3-dev libboost-all-dev bzip2 libbz2-dev
+          python -m pip install -r pip_requirements_ci.txt
 
       # Run Linters
       - name: Python and C++ Linters
@@ -95,6 +101,13 @@ jobs:
           codecov
           coverage report -m
 
+      - name: Install documentation dependencies
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y doxygen
+          python -m pip install -r pip_requirements_docs.txt
+
       # Generate Documentation
       - name: Generate Documentation
         if: startsWith(github.ref, 'refs/tags/')
@@ -105,7 +118,7 @@ jobs:
 
       - name: Deploy Documentation
         if: startsWith(github.ref, 'refs/tags/')
-        uses: peaceiris/actions-gh-pages@v3
+        uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GH_TOKEN }}
           publish_dir: docs/build/html
@@ -118,14 +131,14 @@ jobs:
     steps:
 
       # This step checks out a copy of your repository.
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install libzmq3-dev libboost-all-dev bzip2 libbz2-dev
+          sudo apt-get install -y libzmq3-dev libboost-all-dev bzip2 libbz2-dev
 
       # Rogue
       - name: Build Rogue
@@ -141,32 +154,51 @@ jobs:
     name: macOS arm64 Build Test
     runs-on: macos-15
     timeout-minutes: 60
+    defaults:
+      run:
+        shell: bash -el {0}
     steps:
 
       # This step checks out a copy of your repository.
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 1
 
-      - name: Setup Miniforge Environment
+      - name: Setup Miniforge
         uses: conda-incubator/setup-miniconda@v3
         with:
           miniforge-variant: Miniforge3
           miniforge-version: latest
           auto-activate: false
           activate-environment: rogue_build
-          environment-file: conda.yml
           conda-remove-defaults: true
           use-mamba: true
+          use-only-tar-bz2: true
 
-      - name: Install Python test/documentation dependencies
-        shell: bash -el {0}
+      - name: Get cache date
+        id: conda-cache-date
+        run: echo "today=$(/bin/date -u '+%Y%m%d')" >> "$GITHUB_OUTPUT"
+
+      - name: Cache conda packages
+        uses: actions/cache@v4
+        with:
+          path: ~/conda_pkgs_dir
+          key: conda-pkgs-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('conda.yml') }}
+
+      - name: Cache conda environment
+        id: conda-env-cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.CONDA }}/envs/rogue_build
+          key: conda-env-${{ runner.os }}-${{ runner.arch }}-${{ steps.conda-cache-date.outputs.today }}-${{ hashFiles('conda.yml') }}
+
+      - name: Create conda environment
+        if: steps.conda-env-cache.outputs.cache-hit != 'true'
         run: |
-          python -m pip install -r pip_requirements.txt
+          mamba env update -n rogue_build -f conda.yml
 
       # Rogue
       - name: Build Rogue
-        shell: bash -el {0}
         run: |
           python -c "import numpy; print(numpy.get_include())"
           mkdir build; cd build
@@ -175,13 +207,11 @@ jobs:
           make install
 
       - name: Rogue Import Smoke Test
-        shell: bash -el {0}
         run: |
           python -c "import rogue, pyrogue; print('rogue import ok')"
 
       # Run Python tests (exclude separate C++ api_test job on macOS)
       - name: Rogue Tests
-        shell: bash -el {0}
         run: |
           python -m pytest
 
