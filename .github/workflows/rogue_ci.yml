@@ -175,10 +175,6 @@ jobs:
           use-mamba: true
           use-only-tar-bz2: true
 
-      - name: Get cache date
-        id: conda-cache-date
-        run: echo "today=$(/bin/date -u '+%Y%m%d')" >> "$GITHUB_OUTPUT"
-
       - name: Cache conda packages
         uses: actions/cache@v4
         with:
@@ -190,7 +186,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ${{ env.CONDA }}/envs/rogue_build
-          key: conda-env-${{ runner.os }}-${{ runner.arch }}-${{ steps.conda-cache-date.outputs.today }}-${{ hashFiles('conda.yml') }}
+          key: conda-env-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('conda.yml') }}
 
       - name: Create conda environment
         if: steps.conda-env-cache.outputs.cache-hit != 'true'
