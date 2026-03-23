@@ -445,76 +445,76 @@ class LocalBlock(object):
     def _iadd(self, other: Any) -> None:
         """In-place add helper for local blocks."""
         with self._lock:
-            self.set(None, self.get(None) + other)
+            self.set(self._variable, self.get(self._variable) + other)
             if self._enable:
                 self._variable._queueUpdate()
 
     def _isub(self, other: Any) -> None:
         """In-place subtract helper for local blocks."""
         with self._lock:
-            self.set(None, self.get(None) - other)
+            self.set(self._variable, self.get(self._variable) - other)
             if self._enable:
                 self._variable._queueUpdate()
 
     def _imul(self, other: Any) -> None:
         """In-place multiply helper for local blocks."""
         with self._lock:
-            self.set(None, self.get(None) * other)
+            self.set(self._variable, self.get(self._variable) * other)
             if self._enable:
                 self._variable._queueUpdate()
 
     def _imatmul(self, other: Any) -> None:
         """In-place matrix multiply helper for local blocks."""
         with self._lock:
-            self.set(None, self.get(None) @ other)
+            self.set(self._variable, self.get(self._variable) @ other)
             self._variable._queueUpdate()
 
     def _itruediv(self, other: Any) -> None:
         """In-place true division helper for local blocks."""
         with self._lock:
-            self.set(None, self.get(None) / other)
+            self.set(self._variable, self.get(self._variable) / other)
             if self._enable:
                 self._variable._queueUpdate()
 
     def _ifloordiv(self, other: Any) -> None:
         """In-place floor division helper for local blocks."""
         with self._lock:
-            self.set(None, self.get(None) // other)
+            self.set(self._variable, self.get(self._variable) // other)
             if self._enable:
                 self._variable._queueUpdate()
 
     def _imod(self, other: Any) -> None:
         """In-place modulo helper for local blocks."""
         with self._lock:
-            self.set(None, self.get(None) % other)
+            self.set(self._variable, self.get(self._variable) % other)
             if self._enable:
                 self._variable._queueUpdate()
 
     def _ipow(self, other: Any) -> None:
         """In-place power helper for local blocks."""
         with self._lock:
-            self.set(None, self.get(None) ** other)
+            self.set(self._variable, self.get(self._variable) ** other)
             if self._enable:
                 self._variable._queueUpdate()
 
     def _ilshift(self, other: Any) -> None:
         """In-place left shift helper for local blocks."""
         with self._lock:
-            self.set(None, self.get(None) << other)
+            self.set(self._variable, self.get(self._variable) << other)
             if self._enable:
                 self._variable._queueUpdate()
 
     def _irshift(self, other: Any) -> None:
         """In-place right shift helper for local blocks."""
         with self._lock:
-            self.set(None, self.get(None) >> other)
+            self.set(self._variable, self.get(self._variable) >> other)
             if self._enable:
                 self._variable._queueUpdate()
 
     def _iand(self, other: Any) -> None:
         """In-place bitwise-and helper for local blocks."""
         with self._lock:
-            self.set(None, self.get(None) & other)
+            self.set(self._variable, self.get(self._variable) & other)
             if self._enable:
                 self._variable._queueUpdate()
 
@@ -522,13 +522,13 @@ class LocalBlock(object):
         """In-place bitwise-xor helper for local blocks."""
 
         with self._lock:
-            self.set(None, self.get(None) ^ other)
+            self.set(self._variable, self.get(self._variable) ^ other)
             if self._enable:
                 self._variable._queueUpdate()
 
     def _ior(self, other: Any) -> None:
         """In-place bitwise-or helper for local blocks."""
         with self._lock:
-            self.set(None, self.get(None) | other)
+            self.set(self._variable, self.get(self._variable) | other)
             if self._enable:
                 self._variable._queueUpdate()
