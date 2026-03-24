@@ -85,3 +85,12 @@ def test_data_receiver_error_path_reset_and_stream_connect(monkeypatch):
     assert (rx >> marker) is marker
     assert (rx << marker) is marker
     assert connections == [(rx, marker), (marker, rx)]
+
+
+def test_data_receiver_disables_type_check():
+    root = pr.Root(name="root", pollEn=False)
+    root.add(pr.DataReceiver(name="Rx"))
+
+    with root:
+        root.Rx.Data.set({"decoded": 1}, write=True)
+        assert root.Rx.Data.get() == {"decoded": 1}

@@ -181,6 +181,26 @@ def test_local_variable_constructor_errors():
         pr.LocalVariable(name="InvalidMode", value=0, mode="INV")
 
 
+def test_local_variable_type_check_error():
+    with CommandRoot() as root:
+        with pytest.raises(pr.VariableError, match="typeCheck=False"):
+            root.Dev.ModeRW.set("wrong-type")
+
+
+def test_local_variable_type_check_disable():
+    root = pr.Root(name="root", pollEn=False)
+    root.add(pr.Device(name="Dev"))
+    root.Dev.add(pr.LocalVariable(
+        name="ModeRW",
+        value=0.0,
+        typeCheck=False,
+    ))
+
+    with root:
+        root.Dev.ModeRW.set("wrong-type")
+        assert root.Dev.ModeRW.get() == "wrong-type"
+
+
 def test_command_call_metadata_and_exceptions():
     with CommandRoot() as root:
         assert root.Dev.CommandWithArg.arg is True
