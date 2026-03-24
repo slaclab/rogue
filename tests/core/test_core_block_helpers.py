@@ -33,6 +33,7 @@ class FakeVariable:
         self.mode = "RW"
         self.parent = None
         self._nativeType = native_type
+        self._typeCheck = True
         self._updateNotify = update_notify
         self.queue_updates = 0
         self.path = "Root.Var"
