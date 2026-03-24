@@ -42,15 +42,15 @@ class SimpleDev(pr.Device):
             mode  = 'RW'))
 
         self.add(pr.LocalCommand(
-            name='ResetLocalRwInt',
-            function=lambda dev: dev.LocalRwInt.set(0),
-            description='Reset LocalRwInt to 0',
+            name        = 'ResetLocalRwInt',
+            function    = lambda dev: dev.LocalRwInt.set(0),
+            description = 'Reset LocalRwInt to 0',
         ))
 
         self.add(pr.LocalCommand(
-            name='SetLocalRwInt',
-            function=lambda dev, arg: dev.LocalRwInt.set(arg),
-            description='Set LocalRwInt to arg value',
+            name        = 'SetLocalRwInt',
+            function    = lambda dev, arg: dev.LocalRwInt.set(arg),
+            description = 'Set LocalRwInt to arg value',
         ))
 
         self.add(pr.RemoteVariable(
@@ -107,13 +107,13 @@ class LocalRootWithEpics(LocalRoot):
         if use_map:
             # PV map
             pv_map = {
-                'LocalRoot.SimpleDev.LocalRwInt'   : epics_prefix+':LocalRoot:SimpleDev:LocalRwInt',
-                'LocalRoot.SimpleDev.LocalWoInt'   : epics_prefix+':LocalRoot:SimpleDev:LocalWoInt',
-                'LocalRoot.SimpleDev.LocalRwFloat' : epics_prefix+':LocalRoot:SimpleDev:LocalRwFloat',
-                'LocalRoot.SimpleDev.RemoteRwInt'  : epics_prefix+':LocalRoot:SimpleDev:RemoteRwInt',
-                'LocalRoot.SimpleDev.RemoteWoInt'    : epics_prefix+':LocalRoot:SimpleDev:RemoteWoInt',
-                'LocalRoot.SimpleDev.ResetLocalRwInt': epics_prefix+':LocalRoot:SimpleDev:ResetLocalRwInt',
-                'LocalRoot.SimpleDev.SetLocalRwInt'  : epics_prefix+':LocalRoot:SimpleDev:SetLocalRwInt',
+                'LocalRoot.SimpleDev.LocalRwInt'      : epics_prefix+':LocalRoot:SimpleDev:LocalRwInt',
+                'LocalRoot.SimpleDev.LocalWoInt'      : epics_prefix+':LocalRoot:SimpleDev:LocalWoInt',
+                'LocalRoot.SimpleDev.LocalRwFloat'    : epics_prefix+':LocalRoot:SimpleDev:LocalRwFloat',
+                'LocalRoot.SimpleDev.RemoteRwInt'     : epics_prefix+':LocalRoot:SimpleDev:RemoteRwInt',
+                'LocalRoot.SimpleDev.RemoteWoInt'     : epics_prefix+':LocalRoot:SimpleDev:RemoteWoInt',
+                'LocalRoot.SimpleDev.ResetLocalRwInt' : epics_prefix+':LocalRoot:SimpleDev:ResetLocalRwInt',
+                'LocalRoot.SimpleDev.SetLocalRwInt'   : epics_prefix+':LocalRoot:SimpleDev:SetLocalRwInt',
             }
         else:
             pv_map=None
@@ -223,7 +223,7 @@ def test_local_root():
             # context's NTScalar unwrapping for subsequent get() calls.
             rpc_ctxt = Context('pva')
             uri = NTURI([])
-            result = rpc_ctxt.rpc(rpc_pv, uri.wrap(rpc_pv))
+            rpc_ctxt.rpc(rpc_pv, uri.wrap(rpc_pv))
             rpc_ctxt.close()
 
             wait_pv_value(ctxt, pv_name, 0)
@@ -237,7 +237,7 @@ def test_local_root():
             test_value=99
             rpc_ctxt = Context('pva')
             uri = NTURI([('arg', 'i')])
-            result = rpc_ctxt.rpc(rpc_pv, uri.wrap(rpc_pv, kws={'arg': test_value}))
+            rpc_ctxt.rpc(rpc_pv, uri.wrap(rpc_pv, kws={'arg': test_value}))
             rpc_ctxt.close()
 
             wait_pv_value(ctxt, pv_name, test_value)
