@@ -47,6 +47,12 @@ class SimpleDev(pr.Device):
             description='Reset LocalRwInt to 0',
         ))
 
+        self.add(pr.LocalCommand(
+            name='SetLocalRwInt',
+            function=lambda dev, arg: dev.LocalRwInt.set(arg),
+            description='Set LocalRwInt to arg value',
+        ))
+
         self.add(pr.RemoteVariable(
             name      = "RemoteRwInt",
             offset    = 0x000,
@@ -107,6 +113,7 @@ class LocalRootWithEpics(LocalRoot):
                 'LocalRoot.SimpleDev.RemoteRwInt'  : epics_prefix+':LocalRoot:SimpleDev:RemoteRwInt',
                 'LocalRoot.SimpleDev.RemoteWoInt'    : epics_prefix+':LocalRoot:SimpleDev:RemoteWoInt',
                 'LocalRoot.SimpleDev.ResetLocalRwInt': epics_prefix+':LocalRoot:SimpleDev:ResetLocalRwInt',
+                'LocalRoot.SimpleDev.SetLocalRwInt'  : epics_prefix+':LocalRoot:SimpleDev:SetLocalRwInt',
             }
         else:
             pv_map=None
@@ -223,6 +230,20 @@ def test_local_root():
             test_result=ctxt.get(pv_name)
             if test_result != 0:
                 raise AssertionError('RPC reset failed: pv_name={}: expected=0; test_result={}'.format(pv_name, test_result))
+
+            # Test RPC with argument: call rpc with arg to set LocalRwInt to a specific value
+            pv_name=device_epics_prefix+':LocalRwInt'
+            rpc_pv=device_epics_prefix+':SetLocalRwInt'
+            test_value=99
+            rpc_ctxt = Context('pva')
+            uri = NTURI([('arg', 'i')])
+            result = rpc_ctxt.rpc(rpc_pv, uri.wrap(rpc_pv, kws={'arg': test_value}))
+            rpc_ctxt.close()
+
+            wait_pv_value(ctxt, pv_name, test_value)
+            test_result=ctxt.get(pv_name)
+            if test_result != test_value:
+                raise AssertionError('RPC set failed: pv_name={}: expected={}; test_result={}'.format(pv_name, test_value, test_result))
 
 if __name__ == "__main__":
     test_local_root()
