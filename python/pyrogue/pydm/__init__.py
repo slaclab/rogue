@@ -14,11 +14,48 @@
 #-----------------------------------------------------------------------------
 import os
 import signal
+import inspect
+from collections.abc import Callable
 from types import FrameType
 
 import pydm
 import pydm.data_plugins
+from pydm import Display
 from pyrogue.pydm.data_plugins.rogue_plugin import RoguePlugin
+from pydm.widgets.rules import register_widget_rules
+from pydm.utilities import establish_widget_connections
+
+
+def _constructDisplay(
+    *,
+    display: type[Display] | None,
+    display_factory: Callable[..., Display] | None,
+    args: list[str],
+) -> Display | None:
+    """Construct a PyDM ``Display`` from a class or factory."""
+    target = display_factory if display_factory is not None else display
+    if target is None:
+        return None
+
+    if display is not None:
+        return display(parent=None, args=args, macros=None)
+
+    sig = inspect.signature(target)
+    kwargs = {}
+    for name in sig.parameters:
+        if name == 'parent':
+            kwargs[name] = None
+        elif name == 'args':
+            kwargs[name] = args
+        elif name == 'macros':
+            kwargs[name] = None
+
+    disp = target(**kwargs)
+
+    if not isinstance(disp, Display):
+        raise TypeError("display_factory must return a pydm.Display instance")
+
+    return disp
 
 # Define a signal handler to ensure the application quits gracefully
 def pydmSignalHandler(sig: int, frame: FrameType | None) -> None:
@@ -39,6 +76,8 @@ def pydmSignalHandler(sig: int, frame: FrameType | None) -> None:
 def runPyDM(
     serverList: str = 'localhost:9090',
     ui: str | None = None,
+    display: type[Display] | None = None,
+    display_factory: Callable[..., Display] | None = None,
     title: str | None = None,
     sizeX: int = 800,
     sizeY: int = 1000,
@@ -52,7 +91,12 @@ def runPyDM(
     serverList : str, optional
         Comma-separated list of ``host:port`` Rogue servers.
     ui : str | None, optional
-        Optional UI file path. Defaults to ``pydmTop.py`` in this package.
+        Optional UI file path. Defaults to ``pydmTop.py`` in this package if
+        neither ``display`` nor ``display_factory`` is supplied.
+    display : type[pydm.Display] | None, optional
+        Optional top-level ``pydm.Display`` subclass to instantiate directly.
+    display_factory : callable | None, optional
+        Optional factory that returns a ``pydm.Display`` instance.
     title : str | None, optional
         Optional window title. Defaults to ``"Rogue Server: <servers>"``.
     sizeX : int, optional
@@ -69,12 +113,14 @@ def runPyDM(
     None
         This function runs the Qt event loop until the application exits.
     """
+    if sum(v is not None for v in (ui, display, display_factory)) > 1:
+        raise ValueError("ui, display, and display_factory are mutually exclusive")
 
     # Set the ROGUE_SERVERS environment variable
     os.environ['ROGUE_SERVERS'] = serverList
 
-    # Set the UI file to a default value if not provided
-    if ui is None or ui == '':
+    # Set the UI file to a default value only for the file-based launch path
+    if (ui is None or ui == '') and display is None and display_factory is None:
         ui = os.path.dirname(os.path.abspath(__file__)) + '/pydmTop.py'
 
     # Set the title to a default value if not provided
@@ -101,6 +147,14 @@ def runPyDM(
                                hide_nav_bar=True,
                                hide_menu_bar=True,
                                hide_status_bar=True)
+
+    custom_display = _constructDisplay(display=display, display_factory=display_factory, args=args)
+    if custom_display is not None:
+        establish_widget_connections(custom_display)
+        register_widget_rules(custom_display)
+        if app.main_window.home_widget is None:
+            app.main_window.home_widget = custom_display
+        app.main_window.set_display_widget(custom_display)
 
     # Setup signal handling for CTRL+C and SIGTERM for handling termination signal
     signal.signal(signal.SIGINT, pydmSignalHandler)
