@@ -70,8 +70,8 @@ if args.cmd == 'gui':
 
 elif args.cmd == 'timeplot':
     import pyrogue.pydm
-    ui=os.path.dirname(os.path.abspath(__file__))+'/pydm/TimePlotTop.py'
-    pyrogue.pydm.runPyDM(serverList=args.server, ui=ui)
+    from pyrogue.pydm.TimePlotTop import TimePlotTop
+    pyrogue.pydm.runPyDM(serverList=args.server, display=TimePlotTop)
 
 # System log
 elif args.cmd == 'syslog':
