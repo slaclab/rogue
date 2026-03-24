@@ -425,8 +425,8 @@ def functionWrapper(
     -----
     - C++-bound callables may not be introspectable; in that case this wrapper
       currently forwards no callback arguments.
-    - ``callArgs`` should contain trusted identifier strings because wrapper
-      code is generated dynamically.
+    - ``callArgs`` defines the canonical callback keyword names that may be
+      forwarded to ``function``.
     """
 
     # Build a stable no-op wrapper for unset callbacks.
