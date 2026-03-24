@@ -418,8 +418,8 @@ def functionWrapper(
     Returns
     -------
     callable
-        Wrapper callable with signature ``(function, *callArgs)`` that invokes
-        ``function`` using only supported keyword arguments.
+        Wrapper callable that accepts ``function=...`` plus keyword arguments
+        from ``callArgs`` and invokes ``function`` using only supported names.
 
     Notes
     -----
@@ -429,25 +429,46 @@ def functionWrapper(
       code is generated dynamically.
     """
 
+    # Build a stable no-op wrapper for unset callbacks.
     if function is None:
-        return eval("lambda " + ", ".join(['function'] + callArgs) + ": None")
+        def _none_wrapper(*, function: Callable[..., Any] | None = None, **kwargs: Any) -> None:
+            return None
+        return _none_wrapper
 
-    # Find the arg overlaps
+    # Determine accepted callback keyword names once at wrapper construction.
+    accepted_names: set[str] = set()
+    accepts_var_kwargs = False
+    introspection_failed = False
+
     try:
-        # Function args
-        fargs = inspect.getfullargspec(function).args + inspect.getfullargspec(function).kwonlyargs
-
-        # Build overlapping arg list
-        args = [f'{k}={k}' for k in fargs if k != 'self' and k in callArgs]
-
-    # handle c++ functions, no args supported for now
+        sig = inspect.signature(function)
+        for name, param in sig.parameters.items():
+            if name == 'self':
+                continue
+            if param.kind in (inspect.Parameter.POSITIONAL_OR_KEYWORD, inspect.Parameter.KEYWORD_ONLY):
+                accepted_names.add(name)
+            elif param.kind == inspect.Parameter.VAR_KEYWORD:
+                accepts_var_kwargs = True
     except Exception:
-        args = []
+        # Preserve legacy behavior for non-introspectable callables (for
+        # example some C++ bindings): call with no forwarded callback args.
+        introspection_failed = True
 
-    # Build the function
-    ls = "lambda " + ", ".join(['function'] + callArgs) + ": function(" + ", ".join(args) + ")"
-    #print("Creating Function: " + ls)
-    return eval(ls)
+    def _wrapper(*, function: Callable[..., Any], **kwargs: Any) -> Any:
+        if function is None:
+            return None
+
+        if introspection_failed:
+            return function()
+
+        if accepts_var_kwargs:
+            forwarded = {k: kwargs[k] for k in callArgs if k in kwargs}
+        else:
+            forwarded = {k: kwargs[k] for k in accepted_names if k in kwargs}
+
+        return function(**forwarded)
+
+    return _wrapper
 
 
 def genDocTableHeader(fields: Sequence[str], indent: int, width: int) -> str:
