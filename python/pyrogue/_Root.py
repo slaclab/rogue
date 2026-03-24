@@ -93,6 +93,15 @@ class RootLogHandler(logging.Handler):
         logging.Handler.__init__(self)
         self._root = root
 
+    def _isSystemLogRecord(self, record: logging.LogRecord) -> bool:
+        """Return True when a record originated from SystemLog bookkeeping."""
+        for attr in ('SystemLog', 'SystemLogLast'):
+            var = getattr(self._root, attr, None)
+            log = getattr(var, '_log', None)
+            if log is not None and record.name == log.name:
+                return True
+        return False
+
     def emit(self, record: logging.LogRecord) -> None:
         """
         Parameters
@@ -102,6 +111,9 @@ class RootLogHandler(logging.Handler):
         """
 
         if not self._root.running:
+            return
+
+        if self._isSystemLogRecord(record):
             return
 
         with self._root.updateGroup():
@@ -913,6 +925,7 @@ class Root(pr.Device):
                         raise Exception("loadYaml: Invalid load file: {}, must be a directory or end in .yml or .yaml".format(rl))
 
                     else:
+                        zip_yaml = []
 
                         # Iterate through directory contents
                         for zfn in myzip.namelist():
@@ -923,7 +936,11 @@ class Root(pr.Device):
 
                                 # Entry ends in .yml or *.yml and is in current directory
                                 if '/' not in spt and (spt[-4:] == '.yml' or spt[-5:] == '.yaml'):
-                                    lst.append(base + '/' + zfn)
+                                    zip_yaml.append(base + '/' + zfn)
+
+                        # Keep zip-directory loads aligned with normal directory
+                        # loads by applying a lexicographic pathname sort.
+                        lst.extend(sorted(zip_yaml))
 
             # Entry is a directory
             elif os.path.isdir(rl):
@@ -1143,6 +1160,10 @@ class Root(pr.Device):
         self.SystemLog.set(SystemLogInit)
         self.SystemLogLast.set('')
 
+    def _isSystemLogVar(self, var: Any) -> bool:
+        """Return True when a queued variable is one of the system-log mirrors."""
+        return var is self.SystemLog or var is self.SystemLogLast
+
     def _queueUpdates(self, var: Any) -> None:
         """
         Parameters
@@ -1183,11 +1204,14 @@ class Root(pr.Device):
 
             # Process list
             elif len(uvars) > 0:
-                self._log.debug(
-                    "Process update group. Length=%s. Entry=%s",
-                    len(uvars),
-                    list(uvars.keys())[0],
-                )
+                syslogOnly = all(self._isSystemLogVar(v) for v in uvars.values())
+
+                if not syslogOnly:
+                    self._log.debug(
+                        "Process update group. Length=%s. Entry=%s",
+                        len(uvars),
+                        list(uvars.keys())[0],
+                    )
 
                 # Copy list and add listeners
                 nvars = uvars.copy()
@@ -1224,11 +1248,12 @@ class Root(pr.Device):
                             except Exception as e:
                                 pr.logException(self._log,e)
 
-                self._log.debug(
-                    "Done update group. Length=%s. Entry=%s",
-                    len(uvars),
-                    list(uvars.keys())[0],
-                )
+                if not syslogOnly:
+                    self._log.debug(
+                        "Done update group. Length=%s. Entry=%s",
+                        len(uvars),
+                        list(uvars.keys())[0],
+                    )
 
             # Set done
             self._updateQueue.task_done()

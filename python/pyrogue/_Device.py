@@ -359,13 +359,13 @@ class Device(pr.Node,rim.Hub):
         if pack:
             varList = getattr(self, kwargs['name']).values()
 
-            def linkedSet(dev: Any, var: pr.LinkVariable, val: str, write: bool) -> None:
+            def linkedSet(dev: Any, var: pr.LinkVariable, value: str, write: bool) -> None:
                 """Split a packed display string and write each element variable."""
-                if val == '':
+                if value == '':
                     return
-                values = reversed(val.split('_'))
-                for variable, value in zip(varList, values):
-                    variable.setDisp(value, write=write)
+                values = reversed(value.split('_'))
+                for variable, item in zip(varList, values):
+                    variable.setDisp(item, write=write)
 
             def linkedGet(dev: Any, var: pr.LinkVariable, read: bool) -> str:
                 """Join element display values into one packed underscore string."""
@@ -373,6 +373,9 @@ class Device(pr.Node,rim.Hub):
                 return '_'.join(reversed(values))
 
             name = kwargs.pop('name')
+            # Preserve the indexed array container at ``name`` and expose the
+            # packed LinkVariable using the historical ``<name>_All`` alias.
+            name += '_All'
             kwargs.pop('value', None)
 
             lv = pr.LinkVariable(name=name, value='', dependencies=varList, linkedGet=linkedGet, linkedSet=linkedSet, **kwargs)
