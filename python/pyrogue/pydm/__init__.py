@@ -1,4 +1,7 @@
 #-----------------------------------------------------------------------------
+from __future__ import annotations
+
+#-----------------------------------------------------------------------------
 # Company    : SLAC National Accelerator Laboratory
 #-----------------------------------------------------------------------------
 #  Description:
@@ -17,13 +20,10 @@ import signal
 import inspect
 from collections.abc import Callable
 from types import FrameType
+from typing import TYPE_CHECKING
 
-import pydm
-import pydm.data_plugins
-from pydm import Display
-from pyrogue.pydm.data_plugins.rogue_plugin import RoguePlugin
-from pydm.widgets.rules import register_widget_rules
-from pydm.utilities import establish_widget_connections
+if TYPE_CHECKING:
+    from pydm import Display
 
 
 def _constructDisplay(
@@ -33,6 +33,8 @@ def _constructDisplay(
     args: list[str],
 ) -> Display | None:
     """Construct a PyDM ``Display`` from a class or factory."""
+    from pydm import Display
+
     target = display_factory if display_factory is not None else display
     if target is None:
         return None
@@ -68,6 +70,8 @@ def pydmSignalHandler(sig: int, frame: FrameType | None) -> None:
     frame : types.FrameType | None
         Current stack frame provided by :mod:`signal`.
     """
+    import pydm
+
     app = pydm.PyDMApplication.instance()
     if app is not None:
         app.closeAllWindows()
@@ -113,6 +117,13 @@ def runPyDM(
     None
         This function runs the Qt event loop until the application exits.
     """
+    import pydm
+    import pydm.data_plugins
+    from pydm.utilities import establish_widget_connections
+    from pydm.widgets.rules import register_widget_rules
+
+    from pyrogue.pydm.data_plugins.rogue_plugin import RoguePlugin
+
     if sum(v is not None for v in (ui, display, display_factory)) > 1:
         raise ValueError("ui, display, and display_factory are mutually exclusive")
 
