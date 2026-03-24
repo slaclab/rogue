@@ -33,6 +33,9 @@ class Process(pr.Device):
         Process callback. The wrapper provides keyword arguments
         ``root``, ``dev``, and ``arg``; the function may accept any subset
         of these names.
+        Progress may be updated either as a direct fractional value with
+        :meth:`setProgress`, or as a step-based ratio using
+        :meth:`setTotalSteps`, :meth:`setStep`, and :meth:`incrementSteps`.
     **kwargs : Any
         Additional arguments forwarded to ``Device``.
     """
@@ -83,8 +86,11 @@ class Process(pr.Device):
             disp = '{:1.2f}',
             minimum=0.0,
             maximum=1.0,
+            localSet=self._clampProgressValue,
             pollInterval=1.0,
             description='Percent complete: 0 - 100 %.'))
+        self.Progress._block._minimum = None
+        self.Progress._block._maximum = None
 
         self.add(pr.LocalVariable(
             name='Message',
@@ -98,13 +104,16 @@ class Process(pr.Device):
             mode = 'RO',
             pollInterval=1.0,
             value = 1,
-            description = "Current number of steps"))
+            localSet=self._updateProgress,
+            description = "Current number of completed steps. Prefer setStep() or incrementSteps()."))
 
         self.add(pr.LocalVariable(
             name = 'TotalSteps',
             mode = 'RO',
+            pollInterval=1.0,
             value = 1,
-            description = "Total number of loops steps for the process"))
+            localSet=self._updateProgress,
+            description = "Total number of process steps. Prefer setTotalSteps()."))
 
         # Add arg variable if not already added
         if self._argVar is not None and self._argVar not in self:
@@ -113,6 +122,17 @@ class Process(pr.Device):
         # Add return variable if not already added
         if self._retVar is not None and self._retVar not in self:
             self.add(self._retVar)
+
+    def _clampProgressValue(
+        self,
+        *,
+        var: pr.BaseVariable | None = None,
+        value: Any,
+        **kwargs: Any,
+    ) -> None:
+        """Clamp direct Progress writes while preserving the variable metadata range."""
+        if var is not None and hasattr(var, "_block"):
+            var._block._value = max(0.0, min(float(value), 1.0))
 
     def _updateProgress(self) -> None:
         """Clamp progress to the valid 0.0-1.0 range.
@@ -127,9 +147,55 @@ class Process(pr.Device):
         if total <= 0:
             progress = 0.0
         else:
-            progress = min(self.Step.value() / total, 1.0)
+            progress = max(0.0, min(self.Step.value() / total, 1.0))
 
         self.Progress.set(progress)
+
+    def setProgress(self, value: float) -> None:
+        """Set fractional progress directly.
+
+        Parameters
+        ----------
+        value : float
+            Fractional completion value. Values outside the valid ``0.0`` to
+            ``1.0`` range are clamped before updating ``Progress``.
+        """
+        self.Progress.set(max(0.0, min(float(value), 1.0)))
+
+    def setTotalSteps(self, value: int) -> None:
+        """Set the total number of steps used for step-based progress.
+
+        Parameters
+        ----------
+        value : int
+            Total number of expected steps. Non-positive totals cause the
+            derived progress ratio to read back as ``0.0``.
+        """
+        self.TotalSteps.set(value)
+
+    def setStep(self, value: int) -> None:
+        """Set the absolute completed-step count and refresh progress.
+
+        Parameters
+        ----------
+        value : int
+            Absolute completed-step count used when deriving progress from
+            ``Step`` and ``TotalSteps``.
+        """
+        self.Step.set(value)
+
+    def incrementSteps(self, incr: int = 1) -> None:
+        """Advance the completed-step count and refresh progress.
+
+        Parameters
+        ----------
+        incr : int, optional
+            Number of completed steps to add. The updated progress ratio is
+            recomputed from ``Step`` and ``TotalSteps`` and clamped into the
+            valid ``0.0`` to ``1.0`` range.
+        """
+        with self.Step.lock:
+            self.Step.set(self.Step.value() + incr)
 
     def _incrementSteps(self, incr: int) -> None:
         """Increment step counter and update progress.
@@ -138,10 +204,13 @@ class Process(pr.Device):
         ----------
         incr : int
             Number of steps to add.
+
+        Notes
+        -----
+        Compatibility wrapper for existing code. Prefer
+        :meth:`incrementSteps` in new code.
         """
-        with self.Step.lock:
-            self.Step.set(self.Step.value() + incr)
-        self._updateProgress()
+        self.incrementSteps(incr)
 
     def _setSteps(self, value: int) -> None:
         """Set absolute step counter and update progress.
@@ -150,9 +219,13 @@ class Process(pr.Device):
         ----------
         value : int
             New step index.
+
+        Notes
+        -----
+        Compatibility wrapper for existing code. Prefer :meth:`setStep` in
+        new code.
         """
-        self.Step.set(value)
-        self._updateProgress()
+        self.setStep(value)
 
     def _startProcess(self) -> None:
         """ """
@@ -214,8 +287,8 @@ class Process(pr.Device):
         # User has provided a function Update status at start and end and call their function
         if self._function is not None:
             self.Message.setDisp("Running")
-            self.Progress.set(0.0)
-            self.Step.set(0)
+            self.setStep(0)
+            self.setProgress(0.0)
 
             if self._argVar is not None:
                 arg = self._argVar.get()
@@ -228,16 +301,17 @@ class Process(pr.Device):
                 self._retVar.set(ret)
 
             self.Message.setDisp("Done")
-            self.Progress.set(1.0)
+            self.setProgress(1.0)
 
         # No function run example process
         else:
             self.Message.setDisp("Started")
-            self.TotalSteps.set(100)
+            self.setStep(0)
+            self.setTotalSteps(100)
             for i in range(100):
                 if self._runEn is False:
                     break
                 time.sleep(1)
-                self._setSteps(i+1)
+                self.setStep(i+1)
                 self.Message.setDisp(f"Running for {i} seconds.")
             self.Message.setDisp("Done")
