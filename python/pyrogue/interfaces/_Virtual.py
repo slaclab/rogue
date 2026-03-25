@@ -346,12 +346,25 @@ class VirtualClient(rogue.interfaces.ZmqClient):
             return super(VirtualClient, cls).__new__(cls, addr, port)
 
     def __init__(self, addr: str = "localhost", port: int = 9099) -> None:
-        if hash((addr,port)) in VirtualClient.ClientCache:
+        cache_key = hash((addr, port))
+
+        if cache_key in VirtualClient.ClientCache:
             return
 
-        VirtualClient.ClientCache[hash((addr, port))] = self
+        self._addr = addr
+        self._port = port
+        self._cacheKey = cache_key
+        self._monEnable = False
+        self._monThread = None
 
-        rogue.interfaces.ZmqClient.__init__(self,addr,port,False)
+        VirtualClient.ClientCache[cache_key] = self
+
+        try:
+            rogue.interfaces.ZmqClient.__init__(self,addr,port,False)
+        except Exception:
+            self._removeFromCache()
+            raise
+
         self._varListeners = []
         self._monitors = []
         self._root  = None
@@ -368,6 +381,7 @@ class VirtualClient(rogue.interfaces.ZmqClient):
         try:
             self._root = self._remoteAttr('__ROOT__',None)
         except Exception:
+            self._closeTransport()
             error_message = (
                 f"\n\nFailed to connect to {addr}:{port}!\n\n"
                 "Possible causes for the issue:\n"
@@ -387,7 +401,7 @@ class VirtualClient(rogue.interfaces.ZmqClient):
         self._root._root   = self._root
         self._root._client = self
 
-        setattr(self,self._root.name,self._root)
+        self._setRootAlias()
 
         # Link tracking
         self._link  = True
@@ -395,8 +409,30 @@ class VirtualClient(rogue.interfaces.ZmqClient):
 
         # Create monitoring thread
         self._monEnable = True
-        self._monThread = threading.Thread(target=self._monWorker)
+        self._monThread = threading.Thread(target=self._monWorker, daemon=True)
         self._monThread.start()
+
+    def _removeFromCache(self) -> None:
+        """Remove this client from the shared cache when it is no longer usable."""
+        if getattr(self, "_cacheKey", None) in VirtualClient.ClientCache and VirtualClient.ClientCache[self._cacheKey] is self:
+            del VirtualClient.ClientCache[self._cacheKey]
+
+    def _closeTransport(self) -> None:
+        """Stop background activity and release the underlying ZMQ client."""
+        self._monEnable = False
+        self._removeFromCache()
+        rogue.interfaces.ZmqClient._stop(self)
+
+    def _setRootAlias(self) -> None:
+        """Expose the remote root on ``client.<RootName>`` when that name is safe."""
+        if hasattr(type(self), self._root.name) or self._root.name in self.__dict__:
+            self._log.debug(
+                "Skipping root alias '%s' because it conflicts with an existing VirtualClient attribute",
+                self._root.name,
+            )
+            return
+
+        setattr(self, self._root.name, self._root)
 
     def addLinkMonitor(self, function: Callable[[bool], None]) -> None:
         """
@@ -484,7 +520,7 @@ class VirtualClient(rogue.interfaces.ZmqClient):
 
     def stop(self) -> None:
         """Stop the monitor thread and release resources."""
-        self._monEnable = False
+        self._closeTransport()
 
     @property
     def root(self) -> "VirtualNode":
@@ -493,11 +529,11 @@ class VirtualClient(rogue.interfaces.ZmqClient):
 
     def __hash__(self) -> int:
         """Hash based on host and port."""
-        return hash((self._host, self._port))
+        return hash((self._addr, self._port))
 
     def __eq__(self, other: "VirtualClient") -> bool:
         """Compare by host and port."""
-        return (self.host, self.port) == (other._host, other._port)
+        return (self._addr, self._port) == (other._addr, other._port)
 
     def __ne__(self, other: "VirtualClient") -> bool:
         """Compare by host and port."""

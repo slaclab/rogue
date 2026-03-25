@@ -84,6 +84,10 @@ rogue::interfaces::ZmqClient::ZmqClient(const std::string& addr, uint16_t port, 
         if (zmq_setsockopt(this->zmqSub_, ZMQ_LINGER, &val, sizeof(int32_t)) != 0)
             throw(rogue::GeneralError("ZmqClient::ZmqClient", "Failed to set socket linger"));
 
+        val = 100;
+        if (zmq_setsockopt(this->zmqSub_, ZMQ_RCVTIMEO, &val, sizeof(int32_t)) != 0)
+            throw(rogue::GeneralError("ZmqClient::ZmqClient", "Failed to set socket timeout"));
+
         if (zmq_connect(this->zmqSub_, temp.c_str()) < 0)
             throw(rogue::GeneralError::create("ZmqClient::ZmqClient",
                                               "Failed to connect to port %" PRIu16 " at address %s",
@@ -319,6 +323,8 @@ void rogue::interfaces::ZmqClient::runThread() {
             bp::object dat = bp::object(handle);
             this->doUpdate(dat);
 #endif
+            zmq_msg_close(&msg);
+        } else {
             zmq_msg_close(&msg);
         }
     }
