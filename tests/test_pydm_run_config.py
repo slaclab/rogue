@@ -20,12 +20,22 @@ def _load_pydm_module(call_log):
 
     fake_pydm = types.ModuleType("pydm")
     fake_pydm.PyDMApplication = type("FakeApp", (), {"instance": staticmethod(lambda: None)})
+    fake_pydm.Display = type("FakeDisplay", (), {})
 
     fake_pydm_data_plugins = types.ModuleType("pydm.data_plugins")
     fake_pydm_data_plugins.plugin_modules = {}
     fake_pydm_data_plugins.initialize_plugins_if_needed = lambda: None
     fake_pydm_data_plugins.add_plugin = lambda plugin: None
     fake_pydm.data_plugins = fake_pydm_data_plugins
+
+    fake_pydm_widgets = types.ModuleType("pydm.widgets")
+    fake_pydm_widgets.__path__ = []
+
+    fake_pydm_widgets_rules = types.ModuleType("pydm.widgets.rules")
+    fake_pydm_widgets_rules.register_widget_rules = lambda widget: None
+
+    fake_pydm_utilities = types.ModuleType("pydm.utilities")
+    fake_pydm_utilities.establish_widget_connections = lambda widget: None
 
     fake_pyrogue = types.ModuleType("pyrogue")
     fake_pyrogue.__path__ = []
@@ -48,6 +58,9 @@ def _load_pydm_module(call_log):
     for name, module in {
         "pydm": fake_pydm,
         "pydm.data_plugins": fake_pydm_data_plugins,
+        "pydm.widgets": fake_pydm_widgets,
+        "pydm.widgets.rules": fake_pydm_widgets_rules,
+        "pydm.utilities": fake_pydm_utilities,
         "pyrogue": fake_pyrogue,
         "pyrogue.interfaces": fake_pyrogue_interfaces,
         "pyrogue.pydm": fake_pyrogue_pydm,

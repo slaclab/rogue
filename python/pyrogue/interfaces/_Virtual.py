@@ -364,6 +364,11 @@ class VirtualClient(rogue.interfaces.ZmqClient):
         stall = float(value)
         return None if stall <= 0 else stall
 
+    @staticmethod
+    def _defaultConnectTimeout() -> float:
+        """Return the startup handshake timeout in seconds."""
+        return max(0.1, float(os.getenv("ROGUE_VIRTUAL_CONNECT_TIMEOUT", "5.0")))
+
     def __new__(
         cls: type["VirtualClient"],
         addr: str = "localhost",
@@ -414,10 +419,18 @@ class VirtualClient(rogue.interfaces.ZmqClient):
                 self.setTimeoutConfig(linkTimeout=linkTimeout, requestStallTimeout=requestStallTimeout)
             return
 
-        VirtualClient.ClientCache[hash((addr, port))] = self
+        self._cacheKey = hash((addr, port))
+        self._monEnable = False
+        self._monThread = None
         self._vcInitialized = True
+        VirtualClient.ClientCache[self._cacheKey] = self
 
-        rogue.interfaces.ZmqClient.__init__(self,addr,port,False)
+        try:
+            rogue.interfaces.ZmqClient.__init__(self,addr,port,False)
+        except Exception:
+            self._removeFromCache()
+            self._vcInitialized = False
+            raise
         self._varListeners = []
         self._monitors = []
         self._root  = None
@@ -439,8 +452,9 @@ class VirtualClient(rogue.interfaces.ZmqClient):
         self.setTimeout(1000,False)
 
         try:
-            self._root = self._remoteAttr('__ROOT__',None)
+            self._root = self._waitForRoot()
         except Exception:
+            self._cleanupFailedInit()
             error_message = (
                 f"\n\nFailed to connect to {addr}:{port}!\n\n"
                 "Possible causes for the issue:\n"
@@ -470,6 +484,37 @@ class VirtualClient(rogue.interfaces.ZmqClient):
         self._monEnable = True
         self._monThread = threading.Thread(target=self._monWorker)
         self._monThread.start()
+
+    def _removeFromCache(self) -> None:
+        """Remove this client from the shared cache when it is no longer valid."""
+        if getattr(self, "_cacheKey", None) in VirtualClient.ClientCache and VirtualClient.ClientCache[self._cacheKey] is self:
+            del VirtualClient.ClientCache[self._cacheKey]
+
+    def _cleanupFailedInit(self) -> None:
+        """Release transport resources after a failed bootstrap handshake."""
+        self._monEnable = False
+        self._removeFromCache()
+        self._vcInitialized = False
+        try:
+            rogue.interfaces.ZmqClient._stop(self)
+        except Exception:
+            pass
+
+    def _waitForRoot(self) -> "VirtualNode":
+        """Retry the initial ``__ROOT__`` handshake for a bounded startup window."""
+        deadline = time.monotonic() + self._defaultConnectTimeout()
+        last_error = None
+
+        while time.monotonic() < deadline:
+            try:
+                return self._remoteAttr('__ROOT__',None)
+            except Exception as exc:
+                last_error = exc
+
+        if last_error is not None:
+            raise last_error
+
+        raise Exception("Timed out waiting for initial root handshake")
 
     def addLinkMonitor(self, function: Callable[[bool], None]) -> None:
         """
