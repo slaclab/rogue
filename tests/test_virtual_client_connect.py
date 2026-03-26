@@ -14,7 +14,6 @@ import time
 
 import pyrogue
 import pyrogue.interfaces
-import pytest
 
 
 def _test_port(index: int) -> int:
