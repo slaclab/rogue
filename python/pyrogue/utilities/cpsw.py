@@ -188,7 +188,7 @@ def exportSubDevice(device: pyrogue.Device, indent: int, deviceList: dict[str, l
         dn = f"{device.__class__.__name__}"
 
     dat  = " " * indent +  "#########################################################\n"
-    dat += " " * indent + f"{device.name}\n"
+    dat += " " * indent + f"{device.name}:\n"
     dat += " " * indent + f"    <<: *{dn}\n"
     dat += " " * indent +  "    at:\n"
     dat += " " * indent + f"      offset: {device.offset:#x}\n"
@@ -263,7 +263,7 @@ def exportDevice(device: pyrogue.Device, deviceList: dict[str, list[str]], dataD
         ddat +=  f"#once {tname}\n"
         ddat +=  include + "\n"
         ddat +=  f"{tname}: &{tname}\n"
-        ddat  =  "  class: MMIODev\n"
+        ddat +=  "  class: MMIODev\n"
         ddat +=  "  configPrio: 1\n"
         ddat += f"  description: {device.description}\n"
         ddat += f"  size: {size:#x}\n"

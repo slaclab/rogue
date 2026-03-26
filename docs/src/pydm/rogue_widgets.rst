@@ -65,7 +65,9 @@ inspection. Use custom screens with Rogue widgets when you want:
 
 For code-constructed displays, the normal top-level object is a
 :py:class:`pydm.Display` subclass. Rogue's widgets are then added to that
-display just like any other Qt/PyDM widget tree. The launcher details for that
+display just like any other Qt/PyDM widget tree. Those displays can now be
+launched directly through :py:func:`pyrogue.pydm.runPyDM` using the
+``display=`` or ``display_factory=`` arguments. The launcher details for that
 pattern are covered in :doc:`starting_gui`.
 
 What To Explore Next

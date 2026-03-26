@@ -265,6 +265,8 @@ class BaseVariable(pr.Node):
         Enable update notifications.
     typeStr : str, optional (default = "Unknown")
         Type string for display.
+    typeCheck : bool, optional (default = True)
+        If True, raise an error when later writes change the seeded Python type.
     bulkOpEn : bool, optional (default = True)
         Enable bulk operations.
     offset : int, optional (default = 0)
@@ -302,6 +304,7 @@ class BaseVariable(pr.Node):
         pollInterval: Any = 0,
         updateNotify: bool = True,
         typeStr: str = 'Unknown',
+        typeCheck: bool = True,
         bulkOpEn: bool = True,
         offset: int = 0,
         guiGroup: str | None = None,
@@ -322,6 +325,7 @@ class BaseVariable(pr.Node):
         self._highAlarm     = highAlarm
         self._default       = value
         self._typeStr       = typeStr
+        self._typeCheck     = typeCheck
         self._block         = None
         self._pollInterval  = pollInterval
         self._nativeType    = None
@@ -1655,6 +1659,8 @@ class LocalVariable(BaseVariable):
         Enable update notifications.
     typeStr : str, optional (default = "Unknown")
         Type string for display.
+    typeCheck : bool, optional (default = True)
+        If True, raise an error when later writes change the seeded Python type.
     bulkOpEn : bool, optional (default = True)
         Enable bulk operations.
     guiGroup : str, optional
@@ -1684,6 +1690,7 @@ class LocalVariable(BaseVariable):
                  pollInterval: Any = 0,
                  updateNotify: bool = True,
                  typeStr: str = 'Unknown',
+                 typeCheck: bool = True,
                  bulkOpEn: bool = True,
                  guiGroup: str | None = None,
                  **kwargs: Any) -> None:
@@ -1698,7 +1705,7 @@ class LocalVariable(BaseVariable):
                               minimum=minimum, maximum=maximum, typeStr=typeStr,
                               lowWarning=lowWarning, lowAlarm=lowAlarm,
                               highWarning=highWarning, highAlarm=highAlarm,
-                              pollInterval=pollInterval,updateNotify=updateNotify, bulkOpEn=bulkOpEn,
+                              pollInterval=pollInterval,updateNotify=updateNotify, typeCheck=typeCheck, bulkOpEn=bulkOpEn,
                               guiGroup=guiGroup, **kwargs)
 
         self._block = pr.LocalBlock(variable=self,
