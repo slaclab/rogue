@@ -104,6 +104,7 @@ class VariableWaitClass(object):
             for v in self._vlist:
                 v.addListener(self._varUpdate)
                 self._values[v.path]  = v.getVariableValue(read=False)
+                self._values[v.path].updated = False
                 self._updated[v.path] = False
 
     def wait(self) -> bool:
@@ -126,12 +127,13 @@ class VariableWaitClass(object):
 
     def get_values(self) -> dict:
         """Return the latest collected variable values."""
-        return {k: self._values[k] for k in self._vlist}
+        return {k: self._values[k.path] for k in self._vlist}
 
     def _varUpdate(self, path: str, varValue: Any) -> None:
         """Listener callback used to capture variable updates."""
         with self._cv:
             if path in self._values:
+                varValue.updated = True
                 self._values[path] = varValue
                 self._updated[path] = True
                 self._cv.notify()
@@ -199,6 +201,7 @@ class VariableValue(object):
         self.valueDisp = var.genDisp(self.value)
         self.disp      = var.disp
         self.enum      = var.enum
+        self.updated   = False
 
         self.status, self.severity = var._alarmState(self.value)
 
@@ -880,7 +883,14 @@ class BaseVariable(pr.Node):
         -------
         None
         """
-        self.set(self.parseDisp(sValue), write=write, index=index)
+        value = self.parseDisp(sValue)
+
+        # Indexed writes into ndarray-backed variables expect a scalar element,
+        # not the 0-D ndarray produced by np.array(ast.literal_eval(...)).
+        if index >= 0 and isinstance(value, np.ndarray) and value.ndim == 0:
+            value = value.item()
+
+        self.set(value, write=write, index=index)
 
     @property
     def nativeType(self) -> Type[object]:
@@ -974,7 +984,11 @@ class BaseVariable(pr.Node):
 
                     # Single entry item
                     if ':' not in keys[0]:
-                        self.setDisp(d, write=writeEach, index=idxSlice[0])
+                        if isinstance(idxSlice, list):
+                            idx = idxSlice[0]
+                        else:
+                            idx = idxSlice
+                        self.setDisp(d, write=writeEach, index=idx)
 
                     # Multi entry item
                     else:
@@ -982,11 +996,22 @@ class BaseVariable(pr.Node):
                             s = shlex.shlex(" " + d.lstrip('[').rstrip(']') + " ",posix=True)
                             s.whitespace_split=True
                             s.whitespace=','
+                            values = [val.strip() for val in s]
+                        elif isinstance(d, Iterable):
+                            values = list(d)
                         else:
-                            s = d
+                            values = [d]
 
-                        for val,i in zip(s,idxSlice):
-                            self.setDisp(val.strip(), write=writeEach, index=i)
+                        # A scalar YAML value should broadcast across the
+                        # entire selected slice, matching the documented
+                        # ``Array[1:3]: value`` semantics.
+                        if len(values) == 1 and len(idxSlice) > 1:
+                            values *= len(idxSlice)
+
+                        for val,i in zip(values,idxSlice):
+                            if isinstance(val, str):
+                                val = val.strip()
+                            self.setDisp(val, write=writeEach, index=i)
             else:
                 self._log.warning(f"Skipping set for Entry {self.name} with mode {self._mode}. Enabled Modes={modes}.")
 
