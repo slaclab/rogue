@@ -112,6 +112,16 @@ Separately, ``ZmqServer._start()`` prints the selected ports and example client
 commands to stdout. Those startup messages are not controlled by the logging
 API.
 
+Client-side request/retry logging comes from ``pyrogue.ZmqClient`` rather than
+``ZmqServer``. During long waits, that logging is intentionally throttled:
+
+- one warning when the client first enters the retry loop
+- periodic "still waiting" warnings at a lower cadence
+- one recovery message when the response arrives
+
+This keeps long but valid transactions visible without generating a warning
+every socket-timeout interval.
+
 Related Topics
 ==============
 

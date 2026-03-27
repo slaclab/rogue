@@ -149,10 +149,29 @@ class RogueConnection(PyDMConnection):
 
     def linkState(self, state: bool) -> None:
         """Emit PyDM connection state updates from link-monitor callbacks."""
+        self.connection_state_signal.emit(state)
+
+        # PyDM labels display the raw channel string while disconnected.
+        # Static Rogue channels such as '/name' do not necessarily receive a
+        # fresh monitor update after the server becomes responsive again, so
+        # push the current value on reconnection to restore the intended text.
         if state:
-            self.connection_state_signal.emit(True)
+            self._emitCurrentValue()
+
+    def _emitCurrentValue(self) -> None:
+        """Emit the current node value/name without changing listener wiring."""
+        if self._node is None:
+            return
+
+        if self._notDev:
+            if self._mode == 'name':
+                self.new_value_signal[str].emit(self._node.name)
+            elif self._mode == 'path':
+                self.new_value_signal[str].emit(self._node.path)
+            else:
+                self._updateVariable(self._node.path, self._node.getVariableValue(read=False, index=self._index))
         else:
-            self.connection_state_signal.emit(False)
+            self.new_value_signal[str].emit(self._node.name)
 
 
     def _updateVariable(self, path: str, varValue: VariableValue) -> None:
@@ -265,18 +284,15 @@ class RogueConnection(PyDMConnection):
 
             self.prec_signal.emit(self._node.precision)
 
-            if self._mode == 'name':
+            if self._mode == 'name' or self._mode == 'path':
                 self.write_access_signal.emit(False)
-                self.new_value_signal[str].emit(self._node.name)
-            elif self._mode == 'path' or self._mode == 'path':
-                self.write_access_signal.emit(False)
-                self.new_value_signal[str].emit(self._node.path)
             else:
                 self.write_access_signal.emit(self._cmd or self._node.mode!='RO')
-                self._updateVariable(self._node.path,self._node.getVariableValue(read=False, index=self._index))
+
+            self._emitCurrentValue()
 
         else:
-            self.new_value_signal[str].emit(self._node.name)
+            self._emitCurrentValue()
 
     def remove_listener(self, channel: PyDMChannel, destroying: bool) -> None:
         """Detach listener resources associated with this connection.
