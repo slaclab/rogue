@@ -22,6 +22,8 @@ from collections.abc import Callable
 from types import FrameType
 from typing import TYPE_CHECKING
 
+from pyrogue.interfaces import VirtualClient
+
 if TYPE_CHECKING:
     from pydm import Display
 
@@ -76,6 +78,32 @@ def pydmSignalHandler(sig: int, frame: FrameType | None) -> None:
     if app is not None:
         app.closeAllWindows()
 
+
+def _configureVirtualClients(
+    serverList: str,
+    *,
+    linkTimeout: float,
+    requestStallTimeout: float | None,
+) -> None:
+    """Preconfigure cached VirtualClient instances for each GUI server.
+
+    The GUI shares one cached VirtualClient per ``host:port`` endpoint. This
+    helper applies timeout settings before PyDM widgets create channels so the
+    whole session uses consistent link-state behavior.
+    """
+    for server in serverList.split(","):
+        server = server.strip()
+        if server == "":
+            continue
+
+        host, port = server.rsplit(":", 1)
+        VirtualClient(
+            addr=host,
+            port=int(port),
+            linkTimeout=linkTimeout,
+            requestStallTimeout=requestStallTimeout,
+        )
+
 # Function to run the PyDM application with specified parameters
 def runPyDM(
     serverList: str = 'localhost:9090',
@@ -87,6 +115,8 @@ def runPyDM(
     sizeY: int = 1000,
     maxListExpand: int = 5,
     maxListSize: int = 100,
+    linkTimeout: float = 10.0,
+    requestStallTimeout: float | None = None,
 ) -> None:
     """Launch the default Rogue PyDM application.
 
@@ -111,6 +141,15 @@ def runPyDM(
         Debug-tree auto-expand depth argument forwarded to the UI.
     maxListSize : int, optional
         Debug-tree list-size cap argument forwarded to the UI.
+    linkTimeout : float, optional
+        Idle timeout in seconds for VirtualClient link-state detection. This is
+        the normal tuning knob for long-running hardware or simulation
+        transactions and defaults to 10 seconds.
+    requestStallTimeout : float | None, optional
+        In-flight request age in seconds before the VirtualClient declares the
+        server stalled. ``None`` disables stalled-request detection, which is
+        usually the right default unless the application has a strict upper
+        bound for valid request duration.
 
     Returns
     -------
@@ -129,6 +168,12 @@ def runPyDM(
 
     # Set the ROGUE_SERVERS environment variable
     os.environ['ROGUE_SERVERS'] = serverList
+
+    _configureVirtualClients(
+        serverList,
+        linkTimeout=linkTimeout,
+        requestStallTimeout=requestStallTimeout,
+    )
 
     # Set the UI file to a default value only for the file-based launch path
     if (ui is None or ui == '') and display is None and display_factory is None:

@@ -99,21 +99,21 @@ class SqlLogger(object):
         self._thread.join()
         print('Sql logger stopped')
 
-    def insert_from_q(self, entry: tuple[str, Any], conn: sqlalchemy.Connection) -> None:
+    def insert_from_q(self, entry: tuple[str, pr.VariableValue], conn: sqlalchemy.Connection) -> None:
         """
         Insert a single queue entry into the database.
 
         Parameters
         ----------
         entry : tuple
-            (path, value) for variables or (path, log_data) for syslog.
+            ``(path, var_value)`` from a root variable listener callback.
         conn : object
             SQLAlchemy connection for the transaction.
         """
 
         # Syslog
         if entry[0] == self._sysLogPath:
-            val = json.loads(entry[1])
+            val = json.loads(entry[1].value)
 
             ins = self._logTable.insert().values(
                 name=val['name'],
