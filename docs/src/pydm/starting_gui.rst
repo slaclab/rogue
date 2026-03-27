@@ -95,7 +95,8 @@ return ``None`` from ``ui_filepath()``:
        def ui_filepath(self):
            return None
 
-To launch that display, pass the Python file path through ``ui=``:
+Rogue now supports passing that top-level class directly to
+:py:func:`pyrogue.pydm.runPyDM`:
 
 .. code-block:: python
 
@@ -103,13 +104,34 @@ To launch that display, pass the Python file path through ``ui=``:
 
    pyrogue.pydm.runPyDM(
        serverList='localhost:9099',
+       display=MyTop,
+       title='My System',
+   )
+
+If the display needs custom constructor behavior, pass a small factory
+instead:
+
+.. code-block:: python
+
+   pyrogue.pydm.runPyDM(
+       serverList='localhost:9099',
+       display_factory=lambda: MyTop(mode='ops'),
+       title='My System',
+   )
+
+The older file-based pattern still works:
+
+.. code-block:: python
+
+   pyrogue.pydm.runPyDM(
+       serverList='localhost:9099',
        ui='path/to/my_top.py',
        title='My System',
    )
 
-This is slightly awkward, but it reflects how PyDM loads custom top-level
-displays today. Rogue is forwarding that loader mechanism rather than defining
-a separate display-construction API of its own.
+That ``ui=`` form is still useful for Qt Designer ``.ui`` files and remains
+supported for backward compatibility, but for Python-defined top-level displays
+the direct ``display=`` path is the cleaner Rogue-facing API.
 
 Starting From Python
 ====================
@@ -140,6 +162,8 @@ to :py:func:`pyrogue.pydm.runPyDM`:
            title='My System',
            sizeX=1000,
            sizeY=500,
+           linkTimeout=600.0,
+           requestStallTimeout=None,
        )
 
 In practice, ``runPyDM`` always connects through the Rogue client interface
@@ -155,16 +179,36 @@ Important Runtime Options
 The main :py:func:`pyrogue.pydm.runPyDM` options are:
 
 - ``serverList``: Comma-separated list of ``host:port`` server addresses.
-- ``ui``: Optional custom ``.ui`` file or Python file containing a
-  :py:class:`pydm.Display` top-level.
+- ``ui``: Optional custom ``.ui`` file or legacy file-based top-level path.
+- ``display``: A :py:class:`pydm.Display` subclass to instantiate directly.
+- ``display_factory``: A callable that returns a
+  :py:class:`pydm.Display` instance.
 - ``title``: Window title.
 - ``sizeX`` and ``sizeY``: Initial window size.
 - ``maxListExpand`` and ``maxListSize``: Limits used by the debug-tree view.
+- ``linkTimeout``: Idle timeout for the cached ``VirtualClient`` instances
+  used by the GUI. This is the primary knob for tolerating long busy periods.
+- ``requestStallTimeout``: Optional per-request stall policy for the cached
+  ``VirtualClient`` instances. This is disabled by default and usually only
+  makes sense when the application has a strict upper bound for valid request
+  duration.
 
 The command-line launcher defaults to ``localhost:9099``. The Python helper's
 function signature currently defaults to ``localhost:9090``, so in practice it
 is better to pass ``serverList`` explicitly rather than rely on the helper
 default.
+
+For simulation or co-simulation applications, the common pattern is to leave
+``requestStallTimeout`` disabled and increase ``linkTimeout`` to match the
+expected busy period:
+
+.. code-block:: python
+
+   pyrogue.pydm.runPyDM(
+       serverList=root.zmqServer.address,
+       linkTimeout=600.0,
+       requestStallTimeout=None,
+   )
 
 Rogue Channel Prefix
 ====================

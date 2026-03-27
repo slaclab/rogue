@@ -183,7 +183,9 @@ if ( NOT ROGUE_VERSION )
    find_package(Git QUIET)
    if (GIT_FOUND)
       execute_process (
-         COMMAND ${GIT_EXECUTABLE} --git-dir=${CMAKE_SOURCE_DIR}/.git --work-tree=${CMAKE_SOURCE_DIR} describe --tags --dirty
+         # Restrict auto-versioning to release tags so helper tags do not
+         # produce invalid Python package versions.
+         COMMAND ${GIT_EXECUTABLE} --git-dir=${CMAKE_SOURCE_DIR}/.git --work-tree=${CMAKE_SOURCE_DIR} describe --tags --dirty --match v*
          RESULT_VARIABLE ROGUE_GIT_DESCRIBE_RESULT
          OUTPUT_VARIABLE ROGUE_GIT_DESCRIBE_OUTPUT
          ERROR_QUIET
