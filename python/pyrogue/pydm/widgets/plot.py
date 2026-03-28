@@ -136,9 +136,6 @@ class Plotter(PyDMFrame):
             self._vb.addWidget(nav)
         self._vb.addWidget(canvas)
 
-        # Realize any pending deferred deletes promptly.
-        QCoreApplication.sendPostedEvents(None, QEvent.DeferredDelete)
-
     def closeEvent(self, event) -> None:
         """Release embedded plot resources when the widget closes."""
         self._clear_plot()
