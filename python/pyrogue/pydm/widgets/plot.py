@@ -111,8 +111,12 @@ class Plotter(PyDMFrame):
             except Exception:
                 pass
 
-        # Flush deferred deletes so old Qt objects do not pile up.
-        QCoreApplication.sendPostedEvents(None, QEvent.DeferredDelete)
+        # Flush deferred deletes for the widgets we just scheduled, so old Qt
+        # objects do not pile up without impacting unrelated Qt objects.
+        if old_nav is not None:
+            QCoreApplication.sendPostedEvents(old_nav, QEvent.DeferredDelete)
+        if old_canvas is not None:
+            QCoreApplication.sendPostedEvents(old_canvas, QEvent.DeferredDelete)
 
     def connection_changed(self, connected: bool) -> None:
         """Build the layout after the first successful channel connection."""
