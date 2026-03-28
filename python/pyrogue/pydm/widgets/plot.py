@@ -15,7 +15,6 @@ from __future__ import annotations
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 from pydm.widgets.frame import PyDMFrame
-from pyrogue.pydm.data_plugins.rogue_plugin import nodeFromAddress
 from qtpy.QtWidgets import QVBoxLayout, QWidget
 from qtpy.QtCore import QCoreApplication, QEvent
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
@@ -25,7 +24,17 @@ import matplotlib.pyplot as plt
 
 
 class Plotter(PyDMFrame):
-    """PyDM widget that displays an incoming matplotlib figure published by a pyrogue Variable."""
+    """PyDM widget that displays an incoming matplotlib figure published by a pyrogue Variable.
+
+    Parameters
+    ----------
+    parent : QWidget | None, optional
+        Parent Qt widget.
+    init_channel : str | None, optional
+        Initial Rogue channel address.
+    show_toolbar : bool, optional
+        If ``True``, display the matplotlib navigation toolbar above the plot.
+    """
 
     def __init__(
         self,
@@ -36,7 +45,6 @@ class Plotter(PyDMFrame):
         super().__init__(parent, init_channel)
 
         self._systemLog = None
-        self._node = None
         self._vb: QVBoxLayout | None = None
 
         self._canvas: FigureCanvas | None = None
@@ -49,9 +57,6 @@ class Plotter(PyDMFrame):
         """Build the widget layout before embedding the plot widgets."""
         if self._vb is not None:
             return
-
-        if self._node is None and self.channel is not None:
-            self._node = nodeFromAddress(self.channel)
 
         self._vb = QVBoxLayout()
         self.setLayout(self._vb)
