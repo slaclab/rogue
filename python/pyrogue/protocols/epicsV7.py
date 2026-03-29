@@ -179,8 +179,49 @@ class EpicsPvHolder(object):
             self._record = builder.stringIn(self._suffix)
 
     def _varUpdated(self, path, value):
-        """Called when the backing PyRogue variable changes. Implemented in Plan 03."""
-        pass
+        """Called when the backing PyRogue variable changes; pushes new value to EPICS record."""
+        if self._record is None:
+            return
+        try:
+            v = self._var
+            typeStr = v.typeStr if v.typeStr is not None else ''
+
+            # --- ndarray ---
+            if v.nativeType is np.ndarray:
+                if value.value is not None:
+                    self._record.set(value.value)
+                return
+
+            # --- enum (VAR-01, VAR-04 push direction) ---
+            if v.disp == 'enum':
+                enum_strings = list(v.enum.values())
+                disp = value.valueDisp if value.valueDisp is not None else ''
+                try:
+                    idx = enum_strings.index(disp)
+                except ValueError:
+                    idx = 0
+                self._record.set(idx)
+                return
+
+            # --- string / list / dict / None (VAR-05 push direction) ---
+            if (v.nativeType is list or v.nativeType is dict or
+                    typeStr in ('str', 'list', 'dict', 'NoneType') or typeStr == ''):
+                disp = value.valueDisp if value.valueDisp is not None else ''
+                # Truncate to EPICS string limit (39 chars for stringIn/Out)
+                self._record.set(str(disp)[:39])
+                return
+
+            # --- All numeric types (int, float, bool) with alarm severity (VAR-06) ---
+            if value.value is None:
+                return
+            sev = EpicsConvSeverity(value)
+            if typeStr == 'Bool':
+                self._record.set(int(value.value), severity=sev)
+            else:
+                self._record.set(value.value, severity=sev)
+
+        except Exception:
+            pass  # Listener callbacks must not raise; softioc may call this from IOC thread
 
     def _on_put(self, new_value):
         """Called by softioc when a CA/PVA client writes to this PV."""
