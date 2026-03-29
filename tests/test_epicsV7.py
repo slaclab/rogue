@@ -224,7 +224,7 @@ class DevWithCounter(pr.Device):
 
 
 class LocalRootWithCounter(pr.Root):
-    def __init__(self, tcp_port=9076):
+    def __init__(self, tcp_port=9077):
         pr.Root.__init__(self,
                          name='LocalRoot',
                          description='Local root with counter',
