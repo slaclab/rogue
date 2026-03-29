@@ -306,7 +306,7 @@ def test_local_root():
 def test_increment_on_read():
     """Test hardware-read-on-get: LocalVariable with localGet counter returns incrementing values on consecutive gets"""
 
-    with LocalRootWithCounter() as root:
+    with LocalRootWithCounter() as _:
         ctxt2 = Context('pva')
         pv_name = epics_prefix + ':LocalRoot:CounterDev:IncrOnRead'
 

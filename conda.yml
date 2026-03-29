@@ -25,7 +25,6 @@ dependencies:
   - breathe
   - pyserial
   - p4p
-  - softioc
   - sqlalchemy
   - pydm>=1.18.0
   - matplotlib
