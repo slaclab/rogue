@@ -41,6 +41,7 @@ requirements:
      - pydm
      - pyserial
      - matplotlib
+     - softioc
 
 about:
    home: https://github.com/slaclab/rogue
