@@ -61,10 +61,6 @@ def EpicsConvSeverity(varValue: pyrogue.VariableValue) -> int:
 class EpicsPvHolder(object):
     """Holds and manages a single EPICS PV backed by a PyRogue variable.
 
-    Full record creation and variable listener logic is implemented in Plan 02.
-    This stub stores the variable reference and EPICS name, and registers the
-    variable listener.
-
     Parameters
     ----------
     var : pyrogue.BaseVariable
@@ -81,18 +77,144 @@ class EpicsPvHolder(object):
         self._suffix = suffix
         self._record = None
         self._var.addListener(self._varUpdated)
+        self._createRecord()
 
     def _createRecord(self):
-        """Create the softioc record for this PV. Implemented in Plan 02."""
-        pass
+        """Create the softioc record for this PV based on variable type and mode."""
+        v = self._var
+        is_writable = v.isCommand or v.mode in ('RW', 'WO')
+
+        # --- Command (TYPE-12) ---
+        if v.isCommand:
+            self._record = builder.longOut(self._suffix, on_update=self._on_put)
+            return
+
+        # Determine typeStr safely
+        typeStr = v.typeStr if v.typeStr is not None else ''
+
+        # --- ndarray (TYPE-08) ---
+        if v.nativeType is np.ndarray:
+            # Determine FTVL from typeStr; default DOUBLE
+            ftvl_map = {
+                'UInt8': 'UCHAR', 'UInt16': 'USHORT', 'UInt32': 'ULONG',
+                'Int8': 'CHAR', 'Int16': 'SHORT', 'Int32': 'LONG',
+                'Float32': 'FLOAT', 'Float64': 'DOUBLE', 'Double64': 'DOUBLE',
+            }
+            ftvl = 'DOUBLE'
+            for k, tv in ftvl_map.items():
+                if k in typeStr:
+                    ftvl = tv
+                    break
+            # Get initial value to determine length
+            varVal = v.getVariableValue(read=False)
+            length = varVal.value.size if varVal.value is not None else 1
+            if is_writable:
+                self._record = builder.WaveformOut(self._suffix, length=length, FTVL=ftvl, on_update=self._on_put)
+            else:
+                self._record = builder.WaveformIn(self._suffix, length=length, FTVL=ftvl)
+            return
+
+        # --- enum (TYPE-06) ---
+        if v.disp == 'enum':
+            enum_strings = list(v.enum.values())
+            if is_writable:
+                self._record = builder.mbbOut(self._suffix, *enum_strings, on_update=self._on_put)
+            else:
+                self._record = builder.mbbIn(self._suffix, *enum_strings)
+            return
+
+        # --- string / list / dict / None (TYPE-07) ---
+        if (v.nativeType is list or v.nativeType is dict or
+                typeStr in ('str', 'list', 'dict', 'NoneType') or typeStr == ''):
+            if is_writable:
+                self._record = builder.stringOut(self._suffix, on_update=self._on_put)
+            else:
+                self._record = builder.stringIn(self._suffix)
+            return
+
+        # --- Bool (TYPE-09) ---
+        if typeStr == 'Bool':
+            if is_writable:
+                self._record = builder.longOut(self._suffix, on_update=self._on_put)
+            else:
+                self._record = builder.longIn(self._suffix)
+            return
+
+        # --- UInt64 / Int64 → float (TYPE-02) ---
+        if typeStr in ('UInt64', 'Int64'):
+            if is_writable:
+                self._record = builder.aOut(self._suffix, on_update=self._on_put)
+            else:
+                self._record = builder.aIn(self._suffix)
+            return
+
+        # --- UInt8/16/32 and Int8/16/32 → long (TYPE-01, TYPE-03) ---
+        if any(typeStr.startswith(p) for p in ('UInt8', 'UInt16', 'UInt32', 'Int8', 'Int16', 'Int32')):
+            if is_writable:
+                self._record = builder.longOut(self._suffix, on_update=self._on_put)
+            else:
+                self._record = builder.longIn(self._suffix)
+            return
+
+        # --- Float32 (TYPE-04) ---
+        if 'Float32' in typeStr:
+            if is_writable:
+                self._record = builder.aOut(self._suffix, on_update=self._on_put)
+            else:
+                self._record = builder.aIn(self._suffix)
+            return
+
+        # --- Float64 / Double64 (TYPE-05) ---
+        if 'Float64' in typeStr or 'Double64' in typeStr:
+            if is_writable:
+                self._record = builder.aOut(self._suffix, on_update=self._on_put)
+            else:
+                self._record = builder.aIn(self._suffix)
+            return
+
+        # --- Fallback: string ---
+        if is_writable:
+            self._record = builder.stringOut(self._suffix, on_update=self._on_put)
+        else:
+            self._record = builder.stringIn(self._suffix)
 
     def _varUpdated(self, path, value):
-        """Called when the backing PyRogue variable changes. Implemented in Plan 02."""
+        """Called when the backing PyRogue variable changes. Implemented in Plan 03."""
         pass
 
-    def _on_put(self, value):
-        """Called when a client writes to this PV. Implemented in Plan 02."""
-        pass
+    def _on_put(self, new_value):
+        """Called by softioc when a CA/PVA client writes to this PV."""
+        try:
+            v = self._var
+            # Command (TYPE-12): non-zero → pass value, zero → no-arg call
+            if v.isCommand:
+                if new_value != 0:
+                    v(new_value)
+                else:
+                    v()
+                return
+            typeStr = v.typeStr if v.typeStr is not None else ''
+            # Enum (VAR-04): softioc passes index int; map to display string
+            if v.disp == 'enum':
+                enum_strings = list(v.enum.values())
+                if 0 <= new_value < len(enum_strings):
+                    v.setDisp(enum_strings[new_value])
+                return
+            # String (VAR-05): decode bytes if needed
+            if (v.nativeType is list or v.nativeType is dict or
+                    typeStr in ('str', 'list', 'dict', 'NoneType')):
+                if isinstance(new_value, (bytes, bytearray)):
+                    new_value = new_value.decode('utf-8', errors='replace')
+                v.setDisp(str(new_value))
+                return
+            # Bool: convert to int
+            if typeStr == 'Bool':
+                v.set(int(new_value))
+                return
+            # All numeric types (VAR-03)
+            v.set(new_value)
+        except Exception:
+            pass  # softioc on_update callbacks must not raise
 
 
 class EpicsPvServer(object):
