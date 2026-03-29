@@ -127,9 +127,9 @@ class EpicsPvHolder(object):
         if (v.nativeType is list or v.nativeType is dict or
                 typeStr in ('str', 'list', 'dict', 'NoneType') or typeStr == ''):
             if is_writable:
-                self._record = builder.stringOut(self._suffix, on_update=self._on_put)
+                self._record = builder.longStringOut(self._suffix, on_update=self._on_put)
             else:
-                self._record = builder.stringIn(self._suffix)
+                self._record = builder.longStringIn(self._suffix)
             return
 
         # --- Bool (TYPE-09) ---
@@ -140,12 +140,12 @@ class EpicsPvHolder(object):
                 self._record = builder.longIn(self._suffix)
             return
 
-        # --- UInt64 / Int64 → float (TYPE-02) ---
+        # --- UInt64 / Int64 → int64 (TYPE-02) ---
         if typeStr in ('UInt64', 'Int64'):
             if is_writable:
-                self._record = builder.aOut(self._suffix, on_update=self._on_put)
+                self._record = builder.int64Out(self._suffix, on_update=self._on_put)
             else:
-                self._record = builder.aIn(self._suffix)
+                self._record = builder.int64In(self._suffix)
             return
 
         # --- UInt8/16/32 and Int8/16/32 → long (TYPE-01, TYPE-03) ---
@@ -174,9 +174,9 @@ class EpicsPvHolder(object):
 
         # --- Fallback: string ---
         if is_writable:
-            self._record = builder.stringOut(self._suffix, on_update=self._on_put)
+            self._record = builder.longStringOut(self._suffix, on_update=self._on_put)
         else:
-            self._record = builder.stringIn(self._suffix)
+            self._record = builder.longStringIn(self._suffix)
 
     def _varUpdated(self, path, value):
         """Called when the backing PyRogue variable changes; pushes new value to EPICS record."""
@@ -207,8 +207,8 @@ class EpicsPvHolder(object):
             if (v.nativeType is list or v.nativeType is dict or
                     typeStr in ('str', 'list', 'dict', 'NoneType') or typeStr == ''):
                 disp = value.valueDisp if value.valueDisp is not None else ''
-                # Truncate to EPICS string limit (39 chars for stringIn/Out)
-                self._record.set(str(disp)[:39])
+                # longStringIn/Out supports arbitrary length strings
+                self._record.set(str(disp))
                 return
 
             # --- All numeric types (int, float, bool) with alarm severity (VAR-06) ---
@@ -353,6 +353,7 @@ class EpicsPvServer(object):
 
         # CRITICAL: SetDeviceName MUST be called before any record creation
         builder.SetDeviceName(self._base)
+        self._log.info(f"epicsV7: SetDeviceName({self._base}) called, creating {len(self._root.variableList)} PV holders")
 
         # Create all PV holders (record creation happens inside EpicsPvHolder._createRecord)
         for v in self._root.variableList:
@@ -384,6 +385,7 @@ class EpicsPvServer(object):
                     self._log.error(f"Failed to find {k} from pvMap in Rogue tree!")
 
         # CRITICAL: LoadDatabase after ALL records created, before iocInit
+        self._log.info(f"epicsV7: Created {len(self._holders)} PV holders, calling LoadDatabase()")
         builder.LoadDatabase()
 
         # Start IOC in background daemon thread (only once per process)
@@ -391,10 +393,8 @@ class EpicsPvServer(object):
             _ioc_started = True
 
             def _run_ioc():
-                try:
-                    dispatcher = AsyncioDispatcher(loop=asyncio.new_event_loop())
-                except TypeError:
-                    dispatcher = AsyncioDispatcher()
+                # Let AsyncioDispatcher create and manage its own event loop
+                dispatcher = AsyncioDispatcher()
                 softioc.iocInit(dispatcher)
 
             self._thread = threading.Thread(target=_run_ioc, name='epicsV7-ioc', daemon=True)
