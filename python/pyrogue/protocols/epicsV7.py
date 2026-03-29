@@ -15,7 +15,6 @@
 
 import pyrogue
 import threading
-import asyncio
 import warnings
 import numpy as np
 
