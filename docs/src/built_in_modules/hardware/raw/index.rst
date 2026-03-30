@@ -100,9 +100,16 @@ Logging
 
 ``MemMap`` uses Rogue C++ logging:
 
-- ``pyrogue.MemMap``
+- Logger name: ``pyrogue.MemMap``
+- Unified Logging API:
+  ``pyrogue.setLogLevel('pyrogue.MemMap', 'DEBUG')``
+- Legacy Logging API:
+  ``rogue.Logging.setFilter('pyrogue.MemMap', rogue.Logging.Debug)``
+- Typical messages: mapped-range creation, issued transactions, and transaction
+  timeout warnings
 
-Enable it before construction:
+You can enable it before or after construction. Enable it before construction
+only if you want constructor or initial startup messages:
 
 .. code-block:: python
 

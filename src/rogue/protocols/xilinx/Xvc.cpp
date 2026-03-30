@@ -139,7 +139,7 @@ int rpx::Xvc::xfer(uint8_t* txBuffer,
     // Note that class Xvc is both a stream master & a stream slave (here a master)
     ris::FramePtr frame;
 
-    log_->debug("Tx buffer has %", PRIi32, " bytes to send\n", txBytes);
+    log_->debug("Tx buffer has %" PRIu32 " bytes to send", static_cast<uint32_t>(txBytes));
 
     // Generate frame
     frame = reqFrame(txBytes, true);
@@ -149,7 +149,7 @@ int rpx::Xvc::xfer(uint8_t* txBuffer,
     ris::FrameIterator iter = frame->begin();
     ris::toFrame(iter, txBytes, txBuffer);
 
-    log_->debug("Sending new frame of size %", PRIi32, frame->getSize());
+    log_->debug("Sending new frame of size %" PRIu32, frame->getSize());
 
     // Send frame
     if (txBytes) sendFrame(frame);
@@ -163,7 +163,7 @@ int rpx::Xvc::xfer(uint8_t* txBuffer,
 
     // Process reply when available
     if (!queue_.empty() && (frame = queue_.pop()) != nullptr) {
-        log_->debug("Receiving new frame of size %", PRIi32, frame->getSize());
+        log_->debug("Receiving new frame of size %" PRIu32, frame->getSize());
 
         // Read received data into the hdbuf and rxb buffers
         rogue::GilRelease noGil;

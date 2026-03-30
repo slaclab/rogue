@@ -17,6 +17,7 @@
 #include "rogue/Directives.h"
 
 #include "rogue/Logging.h"
+#include "rogue/ScopedGil.h"
 
 #include <inttypes.h>
 #include <stdarg.h>
@@ -40,6 +41,31 @@
 namespace bp = boost::python;
 #endif
 
+namespace {
+uint32_t currentThreadId() {
+#if defined(__linux__)
+    return syscall(SYS_gettid);
+#elif defined(__APPLE__) && defined(__MACH__)
+    uint64_t tid64;
+    pthread_threadid_np(NULL, &tid64);
+    return static_cast<uint32_t>(tid64);
+#else
+    return 0;
+#endif
+}
+
+std::string loggerComponent(const std::string& name) {
+    const std::string prefix = "pyrogue.";
+    size_t start = 0;
+    size_t end;
+
+    if (name.rfind(prefix, 0) == 0) start = prefix.size();
+    end = name.find('.', start);
+    if (end == std::string::npos) return name.substr(start);
+    return name.substr(start, end - start);
+}
+}  // namespace
+
 const uint32_t rogue::Logging::Critical;
 const uint32_t rogue::Logging::Error;
 const uint32_t rogue::Logging::Thread;
@@ -56,61 +82,178 @@ std::mutex rogue::Logging::levelMtx_;
 // Filter list
 std::vector<rogue::LogFilter*> rogue::Logging::filters_;
 
+// Active loggers
+std::vector<rogue::Logging*> rogue::Logging::loggers_;
+
+// Python forwarding enable
+bool rogue::Logging::forwardPython_ = false;
+
+// Stdout emission enable
+bool rogue::Logging::emitStdout_ = true;
+
 // Crate logger
 rogue::LoggingPtr rogue::Logging::create(const std::string& name, bool quiet) {
     rogue::LoggingPtr log = std::make_shared<rogue::Logging>(name, quiet);
     return log;
 }
 
-rogue::Logging::Logging(const std::string& name, bool quiet) {
-    std::vector<rogue::LogFilter*>::iterator it;
+std::string rogue::Logging::normalizeName(const std::string& name) {
+    if (name.rfind("pyrogue.", 0) == 0) return name;
+    if (name == "pyrogue") return name;
+    return "pyrogue." + name;
+}
 
-    name_ = "pyrogue." + name;
+rogue::Logging::Logging(const std::string& name, bool quiet) {
+    name_ = normalizeName(name);
 
     levelMtx_.lock();
+    updateLevelLocked();
+    loggers_.push_back(this);
+    levelMtx_.unlock();
 
-    level_ = gblLevel_;
+    if (!quiet) warning("Starting logger with level = %" PRIu32, level_.load());
+}
 
-    for (it = filters_.begin(); it < filters_.end(); it++) {
-        if (name_.find((*it)->name_) == 0) {
-            if ((*it)->level_ < level_) level_ = (*it)->level_;
+rogue::Logging::~Logging() {
+    std::vector<rogue::Logging*>::iterator it;
+
+    levelMtx_.lock();
+    for (it = loggers_.begin(); it < loggers_.end(); ++it) {
+        if (*it == this) {
+            loggers_.erase(it);
+            break;
         }
     }
     levelMtx_.unlock();
-
-    if (!quiet) warning("Starting logger with level = %" PRIu32, level_);
 }
 
-rogue::Logging::~Logging() {}
+void rogue::Logging::updateLevelLocked() {
+    std::vector<rogue::LogFilter*>::iterator it;
+    uint32_t level = gblLevel_;
+
+    for (it = filters_.begin(); it < filters_.end(); ++it) {
+        if (name_.find((*it)->name_) == 0) {
+            if ((*it)->level_ < level) level = (*it)->level_;
+        }
+    }
+
+    level_.store(level);
+}
 
 void rogue::Logging::setLevel(uint32_t level) {
+    std::vector<rogue::Logging*>::iterator it;
+
     levelMtx_.lock();
     gblLevel_ = level;
+    for (it = loggers_.begin(); it < loggers_.end(); ++it) (*it)->updateLevelLocked();
     levelMtx_.unlock();
 }
 
 void rogue::Logging::setFilter(const std::string& name, uint32_t level) {
+    std::vector<rogue::Logging*>::iterator it;
+
     levelMtx_.lock();
 
-    rogue::LogFilter* flt = new rogue::LogFilter(name, level);
+    rogue::LogFilter* flt = new rogue::LogFilter(normalizeName(name), level);
 
     filters_.push_back(flt);
+
+    for (it = loggers_.begin(); it < loggers_.end(); ++it) (*it)->updateLevelLocked();
 
     levelMtx_.unlock();
 }
 
+void rogue::Logging::setForwardPython(bool enable) {
+    levelMtx_.lock();
+    forwardPython_ = enable;
+    levelMtx_.unlock();
+}
+
+bool rogue::Logging::forwardPython() {
+    bool enable;
+    levelMtx_.lock();
+    enable = forwardPython_;
+    levelMtx_.unlock();
+    return enable;
+}
+
+void rogue::Logging::setEmitStdout(bool enable) {
+    levelMtx_.lock();
+    emitStdout_ = enable;
+    levelMtx_.unlock();
+}
+
+bool rogue::Logging::emitStdout() {
+    bool enable;
+    levelMtx_.lock();
+    enable = emitStdout_;
+    levelMtx_.unlock();
+    return enable;
+}
+
 void rogue::Logging::intLog(uint32_t level, const char* fmt, va_list args) {
-    if (level < level_) return;
+    if (level < level_.load()) return;
 
     struct timeval tme;
     char buffer[1000];
     vsnprintf(buffer, sizeof(buffer), fmt, args);
     gettimeofday(&tme, NULL);
-    printf("%" PRIi64 ".%06" PRIi64 ":%s: %s\n",
-           static_cast<int64_t>(tme.tv_sec),
-           static_cast<int64_t>(tme.tv_usec),
-           name_.c_str(),
-           buffer);
+    if (emitStdout()) {
+        printf("%" PRIi64 ".%06" PRIi64 ":%s: %s\n",
+               static_cast<int64_t>(tme.tv_sec),
+               static_cast<int64_t>(tme.tv_usec),
+               name_.c_str(),
+               buffer);
+    }
+
+#ifndef NO_PYTHON
+    if (forwardPython()) {
+        rogue::ScopedGil gil;
+        try {
+            bp::object logging = bp::import("logging");
+            bp::object logger  = logging.attr("getLogger")(name_);
+
+            if (bp::extract<bool>(logger.attr("isEnabledFor")(level))) {
+                bp::dict record;
+                uint32_t tid   = currentThreadId();
+                uint32_t pid   = static_cast<uint32_t>(getpid());
+                double created = static_cast<double>(tme.tv_sec) + (static_cast<double>(tme.tv_usec) / 1000000.0);
+                std::string component = loggerComponent(name_);
+
+                record["name"] = name_;
+                record["msg"] = buffer;
+                record["args"] = bp::tuple();
+                record["levelno"] = level;
+                record["levelname"] = logging.attr("getLevelName")(level);
+                record["pathname"] = "<rogue>";
+                record["filename"] = "<rogue>";
+                record["module"] = "rogue";
+                record["exc_info"] = bp::object();
+                record["exc_text"] = bp::object();
+                record["stack_info"] = bp::object();
+                record["lineno"] = 0;
+                record["funcName"] = "<rogue>";
+                record["created"] = created;
+                record["msecs"] = static_cast<double>(tme.tv_usec) / 1000.0;
+                record["relativeCreated"] = 0.0;
+                record["thread"] = tid;
+                record["threadName"] = "rogue";
+                record["process"] = pid;
+                record["processName"] = "rogue";
+                record["rogue_cpp"] = true;
+                record["rogue_tid"] = tid;
+                record["rogue_pid"] = pid;
+                record["rogue_logger"] = name_;
+                record["rogue_timestamp"] = created;
+                record["rogue_component"] = component;
+
+                logger.attr("handle")(logging.attr("makeLogRecord")(record));
+            }
+        } catch (const bp::error_already_set&) {
+            PyErr_Print();
+        }
+    }
+#endif
 }
 
 void rogue::Logging::log(uint32_t level, const char* fmt, ...) {
@@ -156,19 +299,12 @@ void rogue::Logging::debug(const char* fmt, ...) {
 }
 
 void rogue::Logging::logThreadId() {
-    uint32_t tid;
-
-#if defined(__linux__)
-    tid = syscall(SYS_gettid);
-#elif defined(__APPLE__) && defined(__MACH__)
-    uint64_t tid64;
-    pthread_threadid_np(NULL, &tid64);
-    tid = static_cast<uint32_t>(tid64);
-#else
-    tid = 0;
-#endif
-
+    uint32_t tid = currentThreadId();
     this->log(Thread, "PID=%" PRIu32 ", TID=%" PRIu32, getpid(), tid);
+}
+
+const std::string& rogue::Logging::name() const {
+    return name_;
 }
 
 void rogue::Logging::setup_python() {
@@ -178,11 +314,22 @@ void rogue::Logging::setup_python() {
         .staticmethod("setLevel")
         .def("setFilter", &rogue::Logging::setFilter)
         .staticmethod("setFilter")
+        .def("setForwardPython", &rogue::Logging::setForwardPython)
+        .staticmethod("setForwardPython")
+        .def("forwardPython", &rogue::Logging::forwardPython)
+        .staticmethod("forwardPython")
+        .def("setEmitStdout", &rogue::Logging::setEmitStdout)
+        .staticmethod("setEmitStdout")
+        .def("emitStdout", &rogue::Logging::emitStdout)
+        .staticmethod("emitStdout")
+        .def("normalizeName", &rogue::Logging::normalizeName)
+        .staticmethod("normalizeName")
         .def_readonly("Critical", &rogue::Logging::Critical)
         .def_readonly("Error", &rogue::Logging::Error)
         .def_readonly("Thread", &rogue::Logging::Thread)
         .def_readonly("Warning", &rogue::Logging::Warning)
         .def_readonly("Info", &rogue::Logging::Info)
-        .def_readonly("Debug", &rogue::Logging::Debug);
+        .def_readonly("Debug", &rogue::Logging::Debug)
+        .def("name", &rogue::Logging::name, bp::return_value_policy<bp::copy_const_reference>());
 #endif
 }

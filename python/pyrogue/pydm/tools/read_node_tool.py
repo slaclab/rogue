@@ -53,15 +53,15 @@ class ReadNode(ExternalTool):
             node.ReadDevice(False)
 
         elif node.isinstance(pyrogue.BaseCommand):
-            logger.warning("Can't read from non variable: {}".format(node.path))
+            logger.warning("Can't read from non variable: %s", node.path)
 
         elif node.isinstance(pyrogue.BaseVariable):
             if node.mode == 'WO':
-                logger.warning("Can't read from write only variable: {}".format(node.path))
+                logger.warning("Can't read from write only variable: %s", node.path)
             else:
                 node.get()
         else:
-            logger.warning("Invalid node for read: {}".format(node.path))
+            logger.warning("Invalid node for read: %s", node.path)
 
     def to_json(self) -> str:
         """Return serialized tool configuration."""

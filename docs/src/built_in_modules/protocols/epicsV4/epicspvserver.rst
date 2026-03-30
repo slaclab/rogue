@@ -176,8 +176,8 @@ Logging
 ``EpicsPvServer`` uses Python logging.
 
 - Logger name: ``pyrogue.EpicsPvServer``
-- Configuration API:
-  ``logging.getLogger('pyrogue.EpicsPvServer').setLevel(logging.DEBUG)``
+- Logging API:
+  ``pyrogue.setLogLevel('pyrogue.EpicsPvServer', 'DEBUG')``
 
 This logger is used for PV mapping errors and other server-side operational
 messages emitted by the Python implementation.

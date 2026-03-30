@@ -54,7 +54,7 @@ class ReadRecursive(ExternalTool):
         elif node.isinstance(pyrogue.BaseVariable):
             node.parent.ReadDevice(True)
         else:
-            logger.warning("Invalid node for recursive read: {}".format(node.path))
+            logger.warning("Invalid node for recursive read: %s", node.path)
 
     def to_json(self) -> str:
         """Return serialized tool configuration."""

@@ -131,8 +131,13 @@ Logging
 Packetizer v2 logs through the same controller logger used by v1:
 
 - ``pyrogue.packetizer.Controller``
+- Unified Logging API:
+  ``pyrogue.setLogLevel('pyrogue.packetizer', 'DEBUG')``
+- Legacy Logging API:
+  ``rogue.Logging.setFilter('pyrogue.packetizer', rogue.Logging.Debug)``
 
-Enable it before constructing packetizer objects:
+You can enable it before or after constructing packetizer objects. Enable it
+before construction only if you want constructor or earliest startup messages:
 
 .. code-block:: python
 

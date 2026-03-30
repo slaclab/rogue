@@ -546,7 +546,7 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
         write : bool, optional (default = True)
             If True, perform a hardware write transaction.
         """
-        self._log.debug("{}.set({})".format(self, value))
+        self._log.debug("%s.set(%r)", self, value)
         try:
             self._set(value,index)
 

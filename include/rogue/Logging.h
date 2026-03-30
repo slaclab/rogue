@@ -20,6 +20,7 @@
 
 #include <stdint.h>
 
+#include <atomic>
 #include <exception>
 #include <memory>
 #include <mutex>
@@ -65,10 +66,21 @@ class Logging {
     // Name/level filters
     static std::vector<rogue::LogFilter*> filters_;
 
+    // Active logger instances
+    static std::vector<rogue::Logging*> loggers_;
+
+    // Optional forwarding of Rogue C++ logs into Python logging
+    static bool forwardPython_;
+
+    // Optional emission of Rogue C++ logs to stdout
+    static bool emitStdout_;
+
     void intLog(uint32_t level, const char* format, va_list args);
 
+    void updateLevelLocked();
+
     // Local logger level
-    uint32_t level_;
+    std::atomic<uint32_t> level_;
 
     // Logger name
     std::string name_;
@@ -131,6 +143,37 @@ class Logging {
     static void setFilter(const std::string& filter, uint32_t level);
 
     /**
+     * @brief Enables or disables forwarding Rogue C++ logs into Python logging.
+     * @param enable When true, emitted C++ log messages are also sent to the
+     *               Python ``logging`` logger with the same fully-qualified name.
+     */
+    static void setForwardPython(bool enable);
+
+    /**
+     * @brief Returns whether Rogue C++ logs are currently forwarded to Python logging.
+     */
+    static bool forwardPython();
+
+    /**
+     * @brief Enables or disables direct stdout emission of Rogue C++ logs.
+     * @param enable When false, Rogue C++ logs are not printed directly by the
+     *               native logger sink.
+     */
+    static void setEmitStdout(bool enable);
+
+    /**
+     * @brief Returns whether Rogue C++ logs are currently emitted to stdout.
+     */
+    static bool emitStdout();
+
+    /**
+     * @brief Normalizes logger names to the emitted Rogue namespace.
+     * @param name Logger name or prefix.
+     * @return Name prefixed with ``pyrogue.`` when required.
+     */
+    static std::string normalizeName(const std::string& name);
+
+    /**
      * @brief Emits a formatted log message at a specified level.
      * @param level Severity level.
      * @param fmt `printf`-style format string.
@@ -150,6 +193,9 @@ class Logging {
 
     /** @brief Emits the current thread id through this logger. */
     void logThreadId();
+
+    /** @brief Returns the fully-qualified emitted logger name. */
+    const std::string& name() const;
 
     /** @brief Registers Python bindings for `Logging`. */
     static void setup_python();

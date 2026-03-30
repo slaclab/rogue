@@ -46,4 +46,5 @@ API Reference
    :maxdepth: 1
    :caption: Migration:
 
+   logging_unified
    rogue_v6

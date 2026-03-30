@@ -62,7 +62,7 @@ void rpp::ControllerV1::transportRx(ris::FramePtr frame) {
     uint32_t flags;
     uint8_t* data;
 
-    if (frame->isEmpty()) log_->warning("Empty frame received At Transport");
+    if (frame->isEmpty()) log_->warning("Empty frame received on transport input");
 
     rogue::GilRelease noGil;
     ris::FrameLockPtr flock = frame->lock();
@@ -192,7 +192,7 @@ void rpp::ControllerV1::applicationRx(ris::FramePtr frame, uint8_t tDest) {
     gettimeofday(&startTime, NULL);
     timeradd(&startTime, &timeout_, &endTime);
 
-    if (frame->isEmpty()) log_->warning("Empty frame received at application");
+    if (frame->isEmpty()) log_->warning("Empty frame received on application input");
 
     if (frame->getError()) return;
 
