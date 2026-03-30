@@ -358,6 +358,7 @@ class EpicsPvServer(object):
         self._incGroups = incGroups
         self._excGroups = excGroups
         self._pvMap = pvMap if pvMap is not None else {}
+        self._caNameMap = {}  # rogue path -> hashed CA name (only for PVs that were hashed)
         self._holders = []
         self._thread = None
         self._started = False  # Track if this instance has been started
@@ -378,21 +379,31 @@ class EpicsPvServer(object):
         """
         Print or write the PV mapping to file.
 
+        For PVs whose CA record name was hashed (name exceeded 60 chars),
+        an annotation showing the CA short name is appended.
+
         Parameters
         ----------
         fname : str, optional
             If provided, write mapping to this file; otherwise print to stdout.
         """
+        lines = []
+        for k, v in self._pvMap.items():
+            line = "{} -> {}".format(v, k)
+            if k in self._caNameMap:
+                line += "  (CA: {})".format(self._caNameMap[k])
+            lines.append(line)
+
         if fname is not None:
             try:
                 with open(fname, 'w') as f:
-                    for k, v in self._pvMap.items():
-                        print("{} -> {}".format(v, k), file=f)
+                    for line in lines:
+                        print(line, file=f)
             except Exception:
                 raise Exception("Failed to dump epics map to {}".format(fname))
         else:
-            for k, v in self._pvMap.items():
-                print("{} -> {}".format(v, k))
+            for line in lines:
+                print(line)
 
     def _start(self) -> None:
         """Start the EPICS IOC and register all variables.
@@ -424,6 +435,10 @@ class EpicsPvServer(object):
         self._log.info(f"epicsV7: SetDeviceName({self._base}) called, creating {len(self._root.variableList)} PV holders")
 
         # Create all PV holders (record creation happens inside EpicsPvHolder._createRecord)
+        # Collision detection: maps hashed eSuffix -> original v.path
+        # Used to detect if two distinct variables hash to the same short name
+        _hashCollisions = {}
+
         for v in self._root.variableList:
             eName = None
             eSuffix = None
@@ -433,13 +448,36 @@ class EpicsPvServer(object):
                     # PV naming: base:path.replace('.', ':')
                     # suffix is the part AFTER base: (relative to SetDeviceName)
                     suffix = v.path.replace('.', ':')
+                    eSuffix = _make_epics_suffix(self._base, suffix)
+
+                    # Full long name always stored in _pvMap (per HASH-05)
                     eName = self._base + ':' + suffix
-                    eSuffix = suffix
                     self._pvMap[v.path] = eName
+
+                    # Track CA name if it was hashed (per OPS-02)
+                    if eSuffix != suffix:
+                        caName = self._base + ':' + eSuffix
+                        self._caNameMap[v.path] = caName
+
+                    # Collision detection (per COLL-01): check BEFORE any builder call
+                    if eSuffix in _hashCollisions:
+                        raise RuntimeError(
+                            f"epicsV7: Hash collision detected! "
+                            f"Two variables map to the same CA suffix '{eSuffix}': "
+                            f"'{_hashCollisions[eSuffix]}' and '{v.path}'"
+                        )
+                    _hashCollisions[eSuffix] = v.path
+
             elif v.path in self._pvMap:
                 eName = self._pvMap[v.path]
                 # Derive suffix: strip "base:" prefix
-                eSuffix = eName[len(self._base) + 1:] if eName.startswith(self._base + ':') else eName
+                suffix = eName[len(self._base) + 1:] if eName.startswith(self._base + ':') else eName
+                eSuffix = _make_epics_suffix(self._base, suffix)
+
+                # Track CA name if it was hashed (explicit pvMap mode)
+                if eSuffix != suffix:
+                    caName = self._base + ':' + eSuffix
+                    self._caNameMap[v.path] = caName
 
             if eName is not None:
                 holder = EpicsPvHolder(v, eName, eSuffix)
