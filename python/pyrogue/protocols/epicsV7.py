@@ -16,6 +16,7 @@
 import pyrogue
 import threading
 import warnings
+import hashlib
 import numpy as np
 
 try:
@@ -33,6 +34,34 @@ except Exception:
 
 # Module-level flag: EPICS IOC can only be initialized once per process
 _ioc_started = False
+
+_EPICS_MAX_NAME_LEN = 60
+
+
+def _make_epics_suffix(base, suffix):
+    """
+    Return suffix unchanged if the full PV name fits within the CA limit.
+
+    When ``base:suffix`` exceeds ``_EPICS_MAX_NAME_LEN`` characters, return
+    a deterministic hashed short suffix of the form ``tail_XXXXXXXXXX``
+    (10 lowercase hex characters derived from SHA-1 of the full name).
+
+    Parameters
+    ----------
+    base : str
+        The EPICS PV base name (device prefix).
+    suffix : str
+        The PV suffix derived from the pyrogue variable path.
+
+    Returns
+    -------
+    str
+        The original suffix if it fits, or a hashed ``tail_`` suffix.
+    """
+    fullName = f"{base}:{suffix}"
+    if len(fullName) <= _EPICS_MAX_NAME_LEN:
+        return suffix
+    return "tail_" + hashlib.sha1(fullName.encode()).hexdigest()[:10]
 
 
 def EpicsConvSeverity(varValue: pyrogue.VariableValue) -> int:
