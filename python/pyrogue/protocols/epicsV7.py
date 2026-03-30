@@ -13,7 +13,6 @@
 # contained in the LICENSE.txt file.
 # -----------------------------------------------------------------------------
 
-import time
 import pyrogue
 import threading
 import warnings
@@ -414,16 +413,18 @@ class EpicsPvServer(object):
 
             # Create dispatcher and start IOC
             dispatcher = AsyncioDispatcher()
+            ioc_ready = threading.Event()
 
             def _run_ioc():
                 # AsyncioDispatcher creates and manages its own event loop
                 softioc.iocInit(dispatcher, enable_pva=True)
+                ioc_ready.set()
 
             self._thread = threading.Thread(target=_run_ioc, name='epicsV7-ioc', daemon=True)
             self._thread.start()
 
-            # Wait for IOC to finish initialization
-            time.sleep(0.5)  # Give IOC thread time to start
+            # Block until iocInit signals completion
+            ioc_ready.wait()
         else:
             self._log.warning("epicsV7: IOC already started in this process; skipping iocInit")
 
