@@ -84,13 +84,9 @@ class Process(pr.Device):
             units='Pct',
             value=0.0,
             disp = '{:1.2f}',
-            minimum=0.0,
-            maximum=1.0,
             localSet=self._clampProgressValue,
             pollInterval=1.0,
             description='Percent complete: 0 - 100 %.'))
-        self.Progress._block._minimum = None
-        self.Progress._block._maximum = None
 
         self.add(pr.LocalVariable(
             name='Message',
