@@ -32,6 +32,13 @@ except Exception:
         "Note: softioc requires EPICS base to be available on your system."
     )
 
+try:
+    import p4p.server
+    import p4p.server.thread
+    import p4p.nt
+except Exception:
+    pass  # p4p is optional; PVA long-name aliases will be unavailable
+
 # Module-level flag: EPICS IOC can only be initialized once per process
 _ioc_started = False
 
@@ -86,6 +93,159 @@ def EpicsConvSeverity(varValue: pyrogue.VariableValue) -> int:
         return 0
 
 
+def _epicsV7_to_pva_type(var):
+    """
+    Map a PyRogue variable to a p4p NTScalar type character.
+
+    Mirrors the type dispatch in EpicsPvHolder._createRecord so the PVA
+    long-name SharedPV uses the same type as the softioc CA record.
+
+    Parameters
+    ----------
+    var : pyrogue.BaseVariable
+        PyRogue variable whose type is to be mapped.
+
+    Returns
+    -------
+    str
+        A p4p type character: ``'i'``, ``'l'``, ``'f'``, ``'d'``, ``'s'``,
+        ``'enum'``, or ``'ndarray'``.
+    """
+    typeStr = var.typeStr if var.typeStr is not None else ''
+    if var.nativeType is np.ndarray:
+        return 'ndarray'
+    if var.disp == 'enum':
+        enum_strings = list(var.enum.values())
+        if len(enum_strings) <= 16:
+            return 'enum'
+        else:
+            return 's'  # large-enum fallback: matches longStringOut in softioc
+    if (var.nativeType is list or var.nativeType is dict or
+            typeStr in ('str', 'list', 'dict', 'NoneType') or typeStr == ''):
+        return 's'
+    if typeStr == 'Bool':
+        return 'i'
+    if typeStr in ('UInt64', 'Int64'):
+        return 'l'
+    if (typeStr == 'int' or
+            any(typeStr.startswith(p) for p in
+                ('UInt8', 'UInt16', 'UInt32', 'Int8', 'Int16', 'Int32'))):
+        return 'i'
+    if 'Float32' in typeStr:
+        return 'f'
+    if typeStr == 'float' or 'Float64' in typeStr or 'Double64' in typeStr:
+        return 'd'
+    return 's'
+
+
+def _make_shared_pv(var, pva_type, handler):
+    """
+    Create a p4p SharedPV for a long-name PVA alias.
+
+    The SharedPV is initialised with the current variable value so that the
+    first pvget from a PVA client returns a valid reading rather than
+    ``Disconnected`` (PVA-05).
+
+    Parameters
+    ----------
+    var : pyrogue.BaseVariable
+        PyRogue variable providing the initial value.
+    pva_type : str
+        Type character returned by ``_epicsV7_to_pva_type``.
+    handler : p4p.server.thread.Handler
+        Put handler that will receive PVA write requests.
+
+    Returns
+    -------
+    p4p.server.thread.SharedPV
+    """
+    varVal = var.getVariableValue(read=False)
+    if pva_type == 'ndarray':
+        nt = p4p.nt.NTScalar('ad')
+        iv = varVal.value if varVal.value is not None else np.array([], dtype=np.float64)
+    elif pva_type == 'enum':
+        nt = p4p.nt.NTEnum(display=False, control=False, valueAlarm=False)
+        enum_strings = list(var.enum.values())
+        disp = varVal.valueDisp if varVal.valueDisp is not None else ''
+        try:
+            idx = enum_strings.index(disp)
+        except ValueError:
+            idx = 0
+        iv = {'choices': enum_strings, 'index': idx}
+    elif pva_type == 's':
+        nt = p4p.nt.NTScalar('s', display=False, control=False, valueAlarm=False)
+        iv = nt.wrap(varVal.valueDisp if varVal.valueDisp is not None else '')
+    else:
+        nt = p4p.nt.NTScalar(pva_type, display=False, control=False, valueAlarm=False)
+        iv = nt.wrap(varVal.value if varVal.value is not None else 0)
+    return p4p.server.thread.SharedPV(queue=None, handler=handler, initial=iv, nt=nt)
+
+
+def _post_pv_long(pv_long, pva_type, var, value):
+    """
+    Post an updated value to the long-name SharedPV from ``_varUpdated``.
+
+    Mirrors the epicsV4.py ``_varUpdated`` post pattern for each type.
+
+    Parameters
+    ----------
+    pv_long : p4p.server.thread.SharedPV
+        The SharedPV serving the full long PVA name.
+    pva_type : str
+        Type character returned by ``_epicsV7_to_pva_type``.
+    var : pyrogue.BaseVariable
+        The backing PyRogue variable (unused currently; kept for symmetry).
+    value : pyrogue.VariableValue
+        New variable value to publish.
+    """
+    if pva_type == 'enum':
+        pv_long.post(value.valueDisp if value.valueDisp is not None else '')
+    elif pva_type == 'ndarray':
+        if value.value is None:
+            return
+        pv_long.post(value.value)
+    elif pva_type == 's':
+        pv_long.post(str(value.valueDisp) if value.valueDisp is not None else '')
+    else:
+        # Numeric scalar
+        if value.value is None:
+            return
+        curr = pv_long.current()
+        curr.raw.value = value.value
+        pv_long.post(curr)
+
+
+class EpicsPvaLongNameHandler(p4p.server.thread.Handler):
+    """Routes PVA put on a long-name alias back to the parent EpicsPvHolder._on_put.
+
+    Parameters
+    ----------
+    holder : EpicsPvHolder
+        The holder instance that owns the softioc record and the ``_on_put``
+        callback.
+    """
+
+    def __init__(self, holder):
+        self._holder = holder
+
+    def put(self, pv, op):
+        # CRITICAL: signature is (self, pv, op) — two args after self
+        # Confirmed in p4p 4.2.2 p4p/server/raw.py:56
+        try:
+            pva_type = self._holder._pva_type
+            if pva_type == 'enum':
+                self._holder._on_put(int(op.value()))
+            elif pva_type == 's':
+                self._holder._on_put(op.value().raw.value)
+            elif pva_type == 'ndarray':
+                self._holder._on_put(op.value().raw.value.copy())
+            else:
+                self._holder._on_put(op.value().raw.value)
+            op.done()
+        except Exception as e:
+            op.done(error=str(e))
+
+
 class EpicsPvHolder(object):
     """Holds and manages a single EPICS PV backed by a PyRogue variable.
 
@@ -99,13 +259,21 @@ class EpicsPvHolder(object):
         PV name suffix relative to the device base name.
     """
 
-    def __init__(self, var, name: str, suffix: str) -> None:
+    def __init__(self, var, name: str, suffix: str, provider=None, long_name=None) -> None:
         self._var = var
         self._name = name
         self._suffix = suffix
         self._record = None
         # True for writable (Out) records; Out records have process=False support
         self._is_writable = var.isCommand or var.mode in ('RW', 'WO')
+        # PVA long-name alias (only for hashed PVs)
+        self._pv_long = None
+        self._pva_type = None
+        if provider is not None and long_name is not None:
+            self._pva_type = _epicsV7_to_pva_type(var)
+            handler = EpicsPvaLongNameHandler(self)
+            self._pv_long = _make_shared_pv(var, self._pva_type, handler)
+            provider.add(long_name, self._pv_long)
         self._createRecord()
         # Add listener to sync future updates from PyRogue to EPICS
         self._var.addListener(self._varUpdated)
@@ -236,6 +404,9 @@ class EpicsPvHolder(object):
             if v.nativeType is np.ndarray:
                 if value.value is not None:
                     self._record.set(value.value, process=proc)
+                    # PVA long-name alias: dual-post (PVA-03)
+                    if self._pv_long is not None:
+                        _post_pv_long(self._pv_long, self._pva_type, self._var, value)
                 return
 
             # --- enum (VAR-01, VAR-04 push direction) ---
@@ -252,6 +423,9 @@ class EpicsPvHolder(object):
                 else:
                     # longString fallback: set by display string
                     self._record.set(str(disp), process=proc)
+                # PVA long-name alias: dual-post (PVA-03)
+                if self._pv_long is not None:
+                    _post_pv_long(self._pv_long, self._pva_type, self._var, value)
                 return
 
             # --- string / list / dict / None (VAR-05 push direction) ---
@@ -260,6 +434,9 @@ class EpicsPvHolder(object):
                 disp = value.valueDisp if value.valueDisp is not None else ''
                 # longStringIn/Out supports arbitrary length strings
                 self._record.set(str(disp), process=proc)
+                # PVA long-name alias: dual-post (PVA-03)
+                if self._pv_long is not None:
+                    _post_pv_long(self._pv_long, self._pva_type, self._var, value)
                 return
 
             # --- All numeric types (int, float, bool) with alarm severity (VAR-06) ---
@@ -271,6 +448,9 @@ class EpicsPvHolder(object):
             else:
                 # Use value directly, not severity parameter (softioc 4.7+ doesn't support severity on all record types)
                 self._record.set(value.value, process=proc)
+            # PVA long-name alias: dual-post (PVA-03)
+            if self._pv_long is not None:
+                _post_pv_long(self._pv_long, self._pva_type, self._var, value)
 
         except Exception:
             pass  # Listener callbacks must not raise; softioc may call this from IOC thread
@@ -360,6 +540,7 @@ class EpicsPvServer(object):
         self._pvMap = pvMap if pvMap is not None else {}
         self._caNameMap = {}  # rogue path -> hashed CA name (only for PVs that were hashed)
         self._holders = []
+        self._provider = None
         self._thread = None
         self._started = False  # Track if this instance has been started
         root.addProtocol(self)
@@ -424,6 +605,14 @@ class EpicsPvServer(object):
         self._started = True
         self._log.info(f"epicsV7: First _start() call for base={self._base}")
 
+        # Create StaticProvider for PVA long-name aliases BEFORE variable loop
+        # (EpicsPvHolder.provider.add() is called inside the constructor)
+        try:
+            self._provider = p4p.server.StaticProvider('epicsV7-long-names')
+        except Exception:
+            self._provider = None
+            self._log.warning("epicsV7: p4p not available; PVA long-name aliases disabled")
+
         # Determine mapping mode
         if not self._pvMap:
             doAll = True
@@ -480,7 +669,12 @@ class EpicsPvServer(object):
                     self._caNameMap[v.path] = caName
 
             if eName is not None:
-                holder = EpicsPvHolder(v, eName, eSuffix)
+                is_hashed = (eSuffix != suffix)
+                holder = EpicsPvHolder(
+                    v, eName, eSuffix,
+                    provider=self._provider if (is_hashed and self._provider is not None) else None,
+                    long_name=eName if is_hashed else None,
+                )
                 self._holders.append(holder)
 
         # Verify all explicit pvMap entries were found
@@ -526,10 +720,39 @@ class EpicsPvServer(object):
             except Exception as e:
                 self._log.error(f"epicsV7: Failed to initialize {holder._name}: {e}")
 
+        # Register PVA long-name provider AFTER initial value sweep
+        # so all SharedPVs have values before clients can connect (PVA-05)
+        if self._provider is not None:
+            try:
+                p4p.server.installProvider('epicsV7-long-names', self._provider)
+                self._log.info("epicsV7: PVA long-name provider installed")
+            except Exception as e:
+                self._log.error(f"epicsV7: Failed to install PVA long-name provider: {e}")
+
     def _stop(self) -> None:
         """Stop the EPICS IOC.
 
         softioc has no programmatic stop API; the IOC thread is a daemon and
-        will exit automatically when the process exits.
+        will exit automatically when the process exits. The PVA long-name
+        provider is removed and all SharedPVs are closed.
         """
-        pass
+        if self._provider is not None:
+            try:
+                p4p.server.removeProvider('epicsV7-long-names')
+            except Exception:
+                pass
+            for holder in self._holders:
+                if holder._pv_long is not None:
+                    # Set to None BEFORE close to prevent _varUpdated from
+                    # posting to a closed PV (pitfall 4 prevention)
+                    pv = holder._pv_long
+                    holder._pv_long = None
+                    try:
+                        pv.close(destroy=True)
+                    except Exception:
+                        pass
+            try:
+                self._provider.close()
+            except Exception:
+                pass
+            self._provider = None
