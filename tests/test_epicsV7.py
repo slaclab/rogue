@@ -160,10 +160,17 @@ class LocalRoot(pr.Root):
         self.memClient = mc
         self.addInterface(mc)
 
-        # Add Device
+        # Add SimpleDev
         self.add(SimpleDev(
             name    = 'SimpleDev',
             offset  = 0x0000,
+            memBase = mc,
+        ))
+
+        # Add CounterDev (both devices share same Root and IOC)
+        self.add(DevWithCounter(
+            name    = 'CounterDev',
+            offset  = 0x1000,
             memBase = mc,
         ))
 
@@ -221,47 +228,6 @@ class DevWithCounter(pr.Device):
             mode     = 'RW',
             localGet = counter_get,
         ))
-
-
-class LocalRootWithCounter(pr.Root):
-    def __init__(self, tcp_port=9077):
-        pr.Root.__init__(self,
-                         name='LocalRoot',
-                         description='Local root with counter',
-                         timeout=2.0,
-                         pollEn=False)
-
-        # Use a memory space emulator
-        sim = rogue.interfaces.memory.Emulate(4, 0x1000)
-        self.addInterface(sim)
-
-        # Create a memory gateway server
-        ms = rogue.interfaces.memory.TcpServer("127.0.0.1", tcp_port)
-        self.addInterface(ms)
-
-        # Connect the memory gateways together
-        sim << ms
-
-        # Create a memory gateway client
-        mc = rogue.interfaces.memory.TcpClient("127.0.0.1", tcp_port, True)
-        self.memClient = mc
-        self.addInterface(mc)
-
-        # Add counter device
-        self.add(DevWithCounter(
-            name    = 'CounterDev',
-            offset  = 0x0000,
-            memBase = mc,
-        ))
-
-        self.epics = pyrogue.protocols.epicsV7.EpicsPvServer(
-            base      = epics_prefix,
-            root      = self,
-            pvMap     = None,
-            incGroups = None,
-            excGroups = None,
-        )
-        self.addProtocol(self.epics)
 
 
 # TEST-10: convergence helper
@@ -473,30 +439,24 @@ def test_local_root():
             raise AssertionError('Array: pv_name={}: test_value={}; test_result={}'.format(
                 pv_name, test_value, test_result))
 
-    ctxt.close()
-
-
-def test_increment_on_read():
-    """Test hardware-read-on-get: LocalVariable with localGet counter returns incrementing values on consecutive gets"""
-
-    with LocalRootWithCounter() as _:
-        ctxt2 = Context('pva')
-        pv_name = epics_prefix + ':LocalRoot:CounterDev:IncrOnRead'
+        # TEST-21: Increment on read (CounterDev in same Root)
+        counter_pv = epics_prefix + ':LocalRoot:CounterDev:IncrOnRead'
 
         # Wait for PV to become available (TEST-10 coverage)
-        wait_pv_value(ctxt2, pv_name, _read_counter[0])
+        wait_pv_value(ctxt, counter_pv, _read_counter[0])
 
         # TEST-09: consecutive gets must return strictly incrementing values
-        v1 = ctxt2.get(pv_name)
-        v2 = ctxt2.get(pv_name)
-        v3 = ctxt2.get(pv_name)
+        v1 = ctxt.get(counter_pv)
+        v2 = ctxt.get(counter_pv)
+        v3 = ctxt.get(counter_pv)
 
-        assert v2 > v1, 'Expected increment on read: v1={}, v2={}'.format(v1, v2)
-        assert v3 > v2, 'Expected increment on read: v2={}, v3={}'.format(v2, v3)
+        if not (v2 > v1):
+            raise AssertionError('Expected increment on read: v1={}, v2={}'.format(v1, v2))
+        if not (v3 > v2):
+            raise AssertionError('Expected increment on read: v2={}, v3={}'.format(v2, v3))
 
-        ctxt2.close()
+    ctxt.close()
 
 
 if __name__ == '__main__':
     test_local_root()
-    test_increment_on_read()
