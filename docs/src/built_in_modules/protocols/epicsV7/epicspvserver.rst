@@ -84,6 +84,56 @@ The common setup follows this pattern:
 4. Use any EPICS client (CA or PVA) to put and get values.
 5. Invoke PyRogue Commands using a plain put to the command's PV.
 
+PV Name Length Handling
+=======================
+
+EPICS CA enforces a 60-character limit on PV names (``PVNAME_STRINGSZ = 61``
+in EPICS Base). When the full name ``base:path`` would exceed 60 characters,
+``EpicsPvServer`` automatically shortens the softioc record name to a
+deterministic hash of the form ``tail_XXXXXXXXXX`` (10 lowercase hex digits
+derived from SHA-1 of the full name). CA clients use this hashed short name;
+PVA clients can use the full human-readable name via a PVA alias — they never
+need to know about the hash.
+
+- Names at or below 60 characters are published unchanged. Existing deployments
+  are completely unaffected.
+- Two distinct variable paths that hash to the same short name cause
+  ``_start()`` to raise ``RuntimeError`` immediately before any record is
+  created.
+- ``list()`` always returns full long names regardless of whether a PV was
+  hashed.
+- ``dump()`` annotates each hashed PV with its CA short name in the form
+  ``(CA: base:tail_XXXXXXXXXX)``.
+
+Example output from ``dump()`` for a hashed PV::
+
+   MyIoc:LocalRoot:MyDevice:ThisIsAVeryLongVariableNameThatExceedsSixtyCharacterLimit  (CA: MyIoc:tail_3f9a1b2c4d)
+
+PVA Transparency for Long Names
+---------------------------------
+
+For every PV whose CA record name was hashed, ``EpicsPvServer`` additionally
+registers the full long name as a PVA-only channel backed by a
+``p4p.server.SharedPV``. This means:
+
+- PVA clients connect using the full, human-readable name.
+- Reads on the long PVA name return the current PyRogue variable value.
+- Writes on the long PVA name update the same PyRogue variable as a CA write
+  via the short name.
+- A CA write via the short name is immediately visible to PVA clients on the
+  long name, and vice versa — with no feedback loops.
+
+.. code-block:: python
+
+   from p4p.client.thread import Context
+
+   ctxt = Context('pva')
+
+   # PVA clients always use the full name — no knowledge of the hash required.
+   full_name = 'MyIoc:LocalRoot:MyDevice:ThisIsAVeryLongVariableNameThatExceedsSixtyCharacterLimit'
+   value = ctxt.get(full_name)
+   ctxt.put(full_name, 42)
+
 Hardware-Read-on-GET
 =====================
 

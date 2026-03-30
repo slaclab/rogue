@@ -30,6 +30,29 @@ Type Mapping and Updates
 - Strings, lists, dictionaries, and unsupported native types fall back to a
   string-oriented EPICS representation.
 
+PV Name Hashing and PVA Alias
+=============================
+
+When the full PV name ``base:path`` exceeds EPICS CA's 60-character limit,
+``EpicsPvServer`` assigns the softioc record a hashed short name of the form
+``tail_XXXXXXXXXX``. The holder stores this short name and transparently
+manages both the CA record and a PVA alias for the full long name.
+
+For hashed PVs, the holder additionally owns a ``p4p.server.SharedPV`` served
+under the full long name via a dedicated ``p4p.server.Server``. Variable
+updates fan out to both:
+
+1. The softioc CA record (existing behavior — unchanged for all PVs).
+2. The ``SharedPV`` via ``post()``, so PVA clients on the long name see the
+   new value immediately.
+
+Writes arriving on the PVA long name are routed through the same ``_on_put``
+path as CA writes, updating the PyRogue variable exactly once with no feedback
+loop.
+
+PVs whose names are 60 characters or fewer have no ``SharedPV`` and behave
+identically to before this change.
+
 Hardware-Read-on-GET
 ====================
 
