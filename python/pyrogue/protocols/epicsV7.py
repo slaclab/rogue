@@ -267,13 +267,26 @@ class EpicsPvHolder(object):
         # True for writable (Out) records; Out records have process=False support
         self._is_writable = var.isCommand or var.mode in ('RW', 'WO')
         # PVA long-name alias (only for hashed PVs)
+        # Each hashed PV gets its own StaticProvider and p4p.server.Server so
+        # p4p 4.2.2 routes requests correctly. Multiple providers in a single
+        # Server are not routed correctly in p4p 4.2.2 — one Server per PV is
+        # required. The p4p servers all fall back to available ports; PVA UDP
+        # discovery ensures clients find all of them transparently.
         self._pv_long = None
         self._pva_type = None
-        if provider is not None and long_name is not None:
-            self._pva_type = _epicsV7_to_pva_type(var)
-            handler = EpicsPvaLongNameHandler(self)
-            self._pv_long = _make_shared_pv(var, self._pva_type, handler)
-            provider.add(long_name, self._pv_long)
+        self._pv_provider = None  # per-PV StaticProvider
+        self._pv_server = None    # per-PV p4p.server.Server
+        if long_name is not None:
+            try:
+                self._pva_type = _epicsV7_to_pva_type(var)
+                handler = EpicsPvaLongNameHandler(self)
+                self._pv_long = _make_shared_pv(var, self._pva_type, handler)
+                self._pv_provider = p4p.server.StaticProvider()
+                self._pv_provider.add(long_name, self._pv_long)
+            except Exception:
+                self._pv_long = None
+                self._pva_type = None
+                self._pv_provider = None
         self._createRecord()
         # Add listener to sync future updates from PyRogue to EPICS
         self._var.addListener(self._varUpdated)
@@ -540,7 +553,6 @@ class EpicsPvServer(object):
         self._pvMap = pvMap if pvMap is not None else {}
         self._caNameMap = {}  # rogue path -> hashed CA name (only for PVs that were hashed)
         self._holders = []
-        self._provider = None
         self._thread = None
         self._started = False  # Track if this instance has been started
         root.addProtocol(self)
@@ -605,14 +617,6 @@ class EpicsPvServer(object):
         self._started = True
         self._log.info(f"epicsV7: First _start() call for base={self._base}")
 
-        # Create StaticProvider for PVA long-name aliases BEFORE variable loop
-        # (EpicsPvHolder.provider.add() is called inside the constructor)
-        try:
-            self._provider = p4p.server.StaticProvider('epicsV7-long-names')
-        except Exception:
-            self._provider = None
-            self._log.warning("epicsV7: p4p not available; PVA long-name aliases disabled")
-
         # Determine mapping mode
         if not self._pvMap:
             doAll = True
@@ -672,7 +676,6 @@ class EpicsPvServer(object):
                 is_hashed = (eSuffix != suffix)
                 holder = EpicsPvHolder(
                     v, eName, eSuffix,
-                    provider=self._provider if (is_hashed and self._provider is not None) else None,
                     long_name=eName if is_hashed else None,
                 )
                 self._holders.append(holder)
@@ -720,39 +723,50 @@ class EpicsPvServer(object):
             except Exception as e:
                 self._log.error(f"epicsV7: Failed to initialize {holder._name}: {e}")
 
-        # Register PVA long-name provider AFTER initial value sweep
-        # so all SharedPVs have values before clients can connect (PVA-05)
-        if self._provider is not None:
-            try:
-                p4p.server.installProvider('epicsV7-long-names', self._provider)
-                self._log.info("epicsV7: PVA long-name provider installed")
-            except Exception as e:
-                self._log.error(f"epicsV7: Failed to install PVA long-name provider: {e}")
+        # Start one p4p.server.Server per long-name alias AFTER initial value sweep
+        # so SharedPVs have current values before clients can connect (PVA-05).
+        # p4p 4.2.2 does not correctly route requests when multiple providers
+        # (or multiple SharedPVs) share a single Server — one Server per PV is
+        # required for correct routing. Servers fall back to available ports when
+        # softioc holds 5075; PVA UDP discovery finds all servers transparently.
+        pva_server_count = 0
+        for holder in self._holders:
+            if holder._pv_provider is not None:
+                try:
+                    holder._pv_server = p4p.server.Server(providers=[holder._pv_provider])
+                    pva_server_count += 1
+                except Exception as e:
+                    holder._pv_server = None
+                    self._log.error(f"epicsV7: Failed to start PVA server for {holder._name}: {e}")
+        if pva_server_count:
+            self._log.info(f"epicsV7: Started {pva_server_count} PVA long-name server(s)")
 
     def _stop(self) -> None:
         """Stop the EPICS IOC.
 
         softioc has no programmatic stop API; the IOC thread is a daemon and
-        will exit automatically when the process exits. The PVA long-name
-        provider is removed and all SharedPVs are closed.
+        will exit automatically when the process exits. Each per-PV p4p server
+        and its StaticProvider are stopped, and all SharedPVs are closed.
         """
-        if self._provider is not None:
-            try:
-                p4p.server.removeProvider('epicsV7-long-names')
-            except Exception:
-                pass
-            for holder in self._holders:
-                if holder._pv_long is not None:
-                    # Set to None BEFORE close to prevent _varUpdated from
-                    # posting to a closed PV (pitfall 4 prevention)
-                    pv = holder._pv_long
-                    holder._pv_long = None
-                    try:
-                        pv.close(destroy=True)
-                    except Exception:
-                        pass
-            try:
-                self._provider.close()
-            except Exception:
-                pass
-            self._provider = None
+        for holder in self._holders:
+            if holder._pv_server is not None:
+                try:
+                    holder._pv_server.stop()
+                except Exception:
+                    pass
+                holder._pv_server = None
+            if holder._pv_long is not None:
+                # Set to None BEFORE close to prevent _varUpdated from
+                # posting to a closed PV (pitfall 4 prevention)
+                pv = holder._pv_long
+                holder._pv_long = None
+                try:
+                    pv.close(destroy=True)
+                except Exception:
+                    pass
+            if holder._pv_provider is not None:
+                try:
+                    holder._pv_provider.close()
+                except Exception:
+                    pass
+                holder._pv_provider = None
