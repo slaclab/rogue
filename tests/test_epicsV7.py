@@ -159,6 +159,34 @@ class SimpleDev(pr.Device):
             mode  = 'RW'))
 
 
+class LongNameSubDev(pr.Device):
+    """Device with variable names that exceed the 60-char EPICS CA limit when
+    combined with the base prefix, to test transparent PV name hashing."""
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+        # This variable's full PV name will be:
+        # test_ioc_v7:LocalRoot:LongNameSubDev:ThisIsAVeryLongVariableNameThatExceedsSixtyCharacterLimit
+        # Which is well over 60 chars, triggering the hash path.
+        self.add(pr.LocalVariable(
+            name  = 'ThisIsAVeryLongVariableNameThatExceedsSixtyCharacterLimit',
+            value = 0,
+            mode  = 'RW'))
+
+        # A second long-named variable to verify both get hashed independently
+        self.add(pr.LocalVariable(
+            name  = 'AnotherExtremelyLongVariableNameForTestingHashBehavior',
+            value = 3.14,
+            mode  = 'RW'))
+
+        # A short-named variable in the same device to verify it is NOT hashed
+        self.add(pr.LocalVariable(
+            name  = 'ShortVar',
+            value = 42,
+            mode  = 'RW'))
+
+
 class LocalRoot(pr.Root):
     def __init__(self, tcp_port=9075):
         pr.Root.__init__(self,
@@ -195,6 +223,11 @@ class LocalRoot(pr.Root):
             name    = 'CounterDev',
             offset  = 0x1000,
             memBase = mc,
+        ))
+
+        # Add LongNameSubDev for long PV name hashing tests
+        self.add(LongNameSubDev(
+            name    = 'LongNameSubDev',
         ))
 
 
@@ -495,6 +528,95 @@ def test_local_root():
             raise AssertionError('Expected increment on read: v1={}, v2={}'.format(v1, v2))
         if not (v3 > v2):
             raise AssertionError('Expected increment on read: v2={}, v3={}'.format(v2, v3))
+
+        # ---- Long PV name hashing tests (Phase 2: HASH-05, OPS-01, OPS-02, TEST-03) ----
+
+        # Verify the long-named PVs are accessible via PVA using hashed CA names.
+        # The suffix is hashed to tail_XXXXXXXXXX when base:suffix > 60 chars.
+        from pyrogue.protocols.epicsV7 import _make_epics_suffix
+
+        long_var_name_1 = 'ThisIsAVeryLongVariableNameThatExceedsSixtyCharacterLimit'
+        long_suffix_1 = 'LocalRoot:LongNameSubDev:' + long_var_name_1
+        hashed_suffix_1 = _make_epics_suffix(epics_prefix, long_suffix_1)
+        hashed_pv_1 = epics_prefix + ':' + hashed_suffix_1
+
+        long_var_name_2 = 'AnotherExtremelyLongVariableNameForTestingHashBehavior'
+        long_suffix_2 = 'LocalRoot:LongNameSubDev:' + long_var_name_2
+        hashed_suffix_2 = _make_epics_suffix(epics_prefix, long_suffix_2)
+        hashed_pv_2 = epics_prefix + ':' + hashed_suffix_2
+
+        short_pv = epics_prefix + ':LocalRoot:LongNameSubDev:ShortVar'
+
+        # TEST-03a: Verify hashed PVs are reachable (HASH-05)
+        # The hashed suffix should start with 'tail_' since the full name exceeds 60 chars
+        assert hashed_suffix_1.startswith('tail_'), \
+            'Expected hashed suffix for long var 1, got: {}'.format(hashed_suffix_1)
+        assert hashed_suffix_2.startswith('tail_'), \
+            'Expected hashed suffix for long var 2, got: {}'.format(hashed_suffix_2)
+
+        # Verify PVs are accessible via the hashed CA names
+        wait_pv_value(ctxt, hashed_pv_1, 0)
+        wait_pv_value(ctxt, hashed_pv_2, True,
+                      transform=lambda v: abs(v - 3.14) < 0.01)
+
+        # TEST-03b: RW round-trip on a hashed PV (HASH-05)
+        test_value = 777
+        ctxt.put(hashed_pv_1, test_value)
+        wait_pv_value(ctxt, hashed_pv_1, test_value)
+        test_result = ctxt.get(hashed_pv_1)
+        if test_result != test_value:
+            raise AssertionError(
+                'Long-name PV RW failed: pv_name={}: expected={}; got={}'.format(
+                    hashed_pv_1, test_value, test_result))
+
+        # TEST-03c: Short-named PV in same device is NOT hashed (zero regression)
+        wait_pv_value(ctxt, short_pv, 42)
+        test_value = 99
+        ctxt.put(short_pv, test_value)
+        wait_pv_value(ctxt, short_pv, test_value)
+        test_result = ctxt.get(short_pv)
+        if test_result != test_value:
+            raise AssertionError(
+                'Short-name PV in LongNameSubDev failed: expected={}; got={}'.format(
+                    test_value, test_result))
+
+        # TEST-03d: list() returns full long names, not hashed names (OPS-01)
+        pv_map = root.epics.list()
+        long_path_1 = 'LocalRoot.LongNameSubDev.' + long_var_name_1
+        full_long_name_1 = epics_prefix + ':' + long_suffix_1
+        assert long_path_1 in pv_map, \
+            'list() missing long-named PV path: {}'.format(long_path_1)
+        assert pv_map[long_path_1] == full_long_name_1, \
+            'list() should show full long name, got: {}'.format(pv_map[long_path_1])
+
+        # TEST-03e: dump() shows annotation for hashed PVs (OPS-02)
+        import io
+        import sys
+        dump_output = io.StringIO()
+        old_stdout = sys.stdout
+        sys.stdout = dump_output
+        root.epics.dump()
+        sys.stdout = old_stdout
+        dump_text = dump_output.getvalue()
+
+        # Verify dump contains the full long name
+        assert full_long_name_1 in dump_text, \
+            'dump() should contain full long name: {}'.format(full_long_name_1)
+        # Verify dump contains the CA annotation for the hashed PV
+        assert '(CA: ' + hashed_pv_1 + ')' in dump_text, \
+            'dump() should annotate hashed PV with CA name: {}'.format(hashed_pv_1)
+
+        # TEST-03f: Verify all existing short-named PVs still work (zero regression)
+        # Re-verify a basic RW round-trip on a standard PV
+        std_pv = epics_prefix + ':LocalRoot:SimpleDev:LocalRwInt'
+        test_value = 12345
+        ctxt.put(std_pv, test_value)
+        wait_pv_value(ctxt, std_pv, test_value)
+        test_result = ctxt.get(std_pv)
+        if test_result != test_value:
+            raise AssertionError(
+                'Zero-regression check failed on standard PV: expected={}; got={}'.format(
+                    test_value, test_result))
 
     ctxt.close()
 
