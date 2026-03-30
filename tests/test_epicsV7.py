@@ -9,12 +9,23 @@
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 
+import platform
+import sys
 import time
 import pyrogue as pr
 import pyrogue.protocols.epicsV7
 import rogue.interfaces.memory
 
 from p4p.client.thread import Context
+import pytest
+
+# TODO: p4p cannot discover the softioc/PVXS server on macOS ARM64 because
+# macOS does not support UDP broadcast on the loopback interface (lo0).
+# Fix the PVA discovery mechanism and remove this skip.
+if sys.platform == 'darwin' and platform.machine() == 'arm64':
+    pytest.skip('test_epicsV7 skipped on macOS ARM64: softioc/PVXS PVA '
+                'discovery does not work over loopback on this platform',
+                allow_module_level=True)
 
 epics_prefix = 'test_ioc_v7'
 PropagateTimeout = 10.0

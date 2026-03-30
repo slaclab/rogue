@@ -180,13 +180,10 @@ jobs:
           python -c "import rogue, pyrogue; print('rogue import ok')"
 
       # Run Python tests (exclude separate C++ api_test job on macOS)
-      # TODO: test_epicsV7.py is skipped on macOS ARM64 because p4p cannot
-      #       discover the softioc/PVXS server on macOS loopback (no UDP
-      #       broadcast support).  Fix discovery and re-enable this test.
       - name: Rogue Tests
         shell: bash -el {0}
         run: |
-          python -m pytest --ignore=tests/test_epicsV7.py
+          python -m pytest
 
 
 # ----------------------------------------------------------------------------
