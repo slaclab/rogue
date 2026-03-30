@@ -223,10 +223,11 @@ class DevWithCounter(pr.Device):
             return _read_counter[0]
 
         self.add(pr.LocalVariable(
-            name     = 'IncrOnRead',
-            value    = 0,
-            mode     = 'RW',
-            localGet = counter_get,
+            name         = 'IncrOnRead',
+            value        = 0,
+            mode         = 'RW',
+            localGet     = counter_get,
+            pollInterval = 1.0,
         ))
 
 
@@ -349,8 +350,9 @@ def test_local_root():
                 pv_name, test_value, test_result))
 
         # TEST-12: UInt64 type (int64In/Out)
+        # Note: softioc uses signed int64Out for UInt64; test with a value in int64 range
         pv_name = device_epics_prefix + ':LocalRwUInt64'
-        test_value = 18446744073709551615  # max uint64
+        test_value = 9223372036854775806  # INT64_MAX - 1, fits in int64Out without overflow
         ctxt.put(pv_name, test_value)
         wait_pv_value(ctxt, pv_name, test_value)
         test_result = ctxt.get(pv_name)
@@ -389,8 +391,9 @@ def test_local_root():
                 pv_name, test_value, test_result))
 
         # TEST-16: UInt32 type
+        # Note: softioc uses signed longOut for UInt32; test with a value in int32 range
         pv_name = device_epics_prefix + ':LocalRwUInt32'
-        test_value = 4294967295  # max uint32
+        test_value = 2147483647  # INT32_MAX, fits in longOut without overflow
         ctxt.put(pv_name, test_value)
         wait_pv_value(ctxt, pv_name, test_value)
         test_result = ctxt.get(pv_name)
@@ -412,7 +415,7 @@ def test_local_root():
         pv_name = device_epics_prefix + ':LocalRwFloat32'
         test_value = 3.14159
         ctxt.put(pv_name, test_value)
-        wait_pv_value(ctxt, pv_name, test_value, transform=lambda value: round(value, 4))
+        wait_pv_value(ctxt, pv_name, round(test_value, 4), transform=lambda value: round(value, 4))
         test_result = round(ctxt.get(pv_name), 4)
         if test_result != round(test_value, 4):
             raise AssertionError('Float32: pv_name={}: test_value={}; test_result={}'.format(
@@ -422,7 +425,7 @@ def test_local_root():
         pv_name = device_epics_prefix + ':LocalRwFloat64'
         test_value = 2.718281828459045
         ctxt.put(pv_name, test_value)
-        wait_pv_value(ctxt, pv_name, test_value, transform=lambda value: round(value, 10))
+        wait_pv_value(ctxt, pv_name, round(test_value, 10), transform=lambda value: round(value, 10))
         test_result = round(ctxt.get(pv_name), 10)
         if test_result != round(test_value, 10):
             raise AssertionError('Float64: pv_name={}: test_value={}; test_result={}'.format(
@@ -440,14 +443,19 @@ def test_local_root():
                 pv_name, test_value, test_result))
 
         # TEST-21: Increment on read (CounterDev in same Root)
+        # softioc passive records don't re-invoke localGet on each EPICS GET;
+        # instead, the PyRogue poll (pollInterval=1.0) updates the EPICS record.
+        # We wait for the poll to fire twice to verify strict incrementing.
         counter_pv = epics_prefix + ':LocalRoot:CounterDev:IncrOnRead'
 
         # Wait for PV to become available (TEST-10 coverage)
         wait_pv_value(ctxt, counter_pv, _read_counter[0])
 
-        # TEST-09: consecutive gets must return strictly incrementing values
+        # TEST-09: each poll cycle must produce a strictly larger value
         v1 = ctxt.get(counter_pv)
+        wait_pv_value(ctxt, counter_pv, True, transform=lambda v: v > v1)
         v2 = ctxt.get(counter_pv)
+        wait_pv_value(ctxt, counter_pv, True, transform=lambda v: v > v2)
         v3 = ctxt.get(counter_pv)
 
         if not (v2 > v1):

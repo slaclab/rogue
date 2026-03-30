@@ -75,6 +75,8 @@ class EpicsPvHolder(object):
         self._name = name
         self._suffix = suffix
         self._record = None
+        # True for writable (Out) records; Out records have process=False support
+        self._is_writable = var.isCommand or var.mode in ('RW', 'WO')
         self._createRecord()
         # Add listener to sync future updates from PyRogue to EPICS
         self._var.addListener(self._varUpdated)
@@ -86,7 +88,8 @@ class EpicsPvHolder(object):
 
         # --- Command (TYPE-12) ---
         if v.isCommand:
-            self._record = builder.longOut(self._suffix, on_update=self._on_put)
+            # always_update=True ensures callback fires even for value=0 (needed for no-arg commands)
+            self._record = builder.longOut(self._suffix, on_update=self._on_put, always_update=True)
             return
 
         # Determine typeStr safely
@@ -187,10 +190,15 @@ class EpicsPvHolder(object):
             v = self._var
             typeStr = v.typeStr if v.typeStr is not None else ''
 
+            # Use process=False for writable (Out) records to prevent on_update feedback:
+            # record.set() calls db_put_field() which re-triggers _process() → on_update.
+            # process=False suppresses that re-trigger while still updating record.VAL.
+            proc = False if self._is_writable else True
+
             # --- ndarray ---
             if v.nativeType is np.ndarray:
                 if value.value is not None:
-                    self._record.set(value.value)
+                    self._record.set(value.value, process=proc)
                 return
 
             # --- enum (VAR-01, VAR-04 push direction) ---
@@ -201,7 +209,7 @@ class EpicsPvHolder(object):
                     idx = enum_strings.index(disp)
                 except ValueError:
                     idx = 0
-                self._record.set(idx)
+                self._record.set(idx, process=proc)
                 return
 
             # --- string / list / dict / None (VAR-05 push direction) ---
@@ -209,7 +217,7 @@ class EpicsPvHolder(object):
                     typeStr in ('str', 'list', 'dict', 'NoneType') or typeStr == ''):
                 disp = value.valueDisp if value.valueDisp is not None else ''
                 # longStringIn/Out supports arbitrary length strings
-                self._record.set(str(disp))
+                self._record.set(str(disp), process=proc)
                 return
 
             # --- All numeric types (int, float, bool) with alarm severity (VAR-06) ---
@@ -217,10 +225,10 @@ class EpicsPvHolder(object):
                 return
             sev = EpicsConvSeverity(value)
             if typeStr == 'Bool':
-                self._record.set(int(value.value), severity=sev)
+                self._record.set(int(value.value), severity=sev, process=proc)
             else:
                 # Use value directly, not severity parameter (softioc 4.7+ doesn't support severity on all record types)
-                self._record.set(value.value)
+                self._record.set(value.value, process=proc)
 
         except Exception:
             pass  # Listener callbacks must not raise; softioc may call this from IOC thread
@@ -229,12 +237,13 @@ class EpicsPvHolder(object):
         """Called by softioc when a CA/PVA client writes to this PV."""
         try:
             v = self._var
-            # Command (TYPE-12): non-zero → pass value, zero → no-arg call
+            # Command (TYPE-12): value 0 → no-arg call, non-zero → pass as argument
+            # always_update=True ensures callback fires for value=0 (needed for no-arg commands)
             if v.isCommand:
-                if new_value != 0:
-                    v(new_value)
+                if new_value == 0:
+                    v()  # No-arg call
                 else:
-                    v()
+                    v(new_value)  # Call with argument
                 return
             typeStr = v.typeStr if v.typeStr is not None else ''
             # Enum (VAR-04): softioc passes index int; map to display string
