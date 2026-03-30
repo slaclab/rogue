@@ -60,6 +60,7 @@ class RunControl(pr.Device):
         value = [k for k,v in states.items()][0]
 
         self._thread = None
+        self._threadLock = threading.Lock()
         self._cmd = cmd
 
         self.add(pr.LocalVariable(
@@ -95,16 +96,25 @@ class RunControl(pr.Device):
         Sub-classes may override this method to integrate with
         external run-control hardware or software.
         """
-        if changed:
-            if self.runState.valueDisp() == 'Running':
-                #print("Starting run")
-                self._thread = threading.Thread(target=self._run)
-                self._thread.start()
-            elif self._thread is not None:
-                #print("Stopping run")
-                if threading.current_thread() is not self._thread:
-                    self._thread.join()
-                self._thread = None
+        if not changed:
+            return
+
+        if self.runState.valueDisp() == 'Running':
+            thread = None
+            with self._threadLock:
+                if self._thread is None or not self._thread.is_alive():
+                    thread = threading.Thread(target=self._run)
+                    self._thread = thread
+
+            if thread is not None:
+                thread.start()
+
+        else:
+            with self._threadLock:
+                thread = self._thread
+
+            if thread is not None and threading.current_thread() is not thread:
+                thread.join()
 
     def _setRunRate(self, value: int) -> None:
         """Set run rate.
@@ -118,12 +128,17 @@ class RunControl(pr.Device):
         #print("Thread start")
         self.runCount.set(0)
 
-        with self.root.updateGroup(period=1.0):
+        try:
+            with self.root.updateGroup(period=1.0):
 
-            while (self.runState.valueDisp() == 'Running'):
-                time.sleep(1.0 / float(self.runRate.value()))
-                if self._cmd is not None:
-                    self._cmd()
+                while (self.runState.valueDisp() == 'Running'):
+                    time.sleep(1.0 / float(self.runRate.value()))
+                    if self._cmd is not None:
+                        self._cmd()
 
-                with self.runCount.lock:
-                    self.runCount.set(self.runCount.value() + 1)
+                    with self.runCount.lock:
+                        self.runCount.set(self.runCount.value() + 1)
+        finally:
+            with self._threadLock:
+                if self._thread is threading.current_thread():
+                    self._thread = None
