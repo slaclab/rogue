@@ -120,10 +120,18 @@ class EpicsPvHolder(object):
         # --- enum (TYPE-06) ---
         if v.disp == 'enum':
             enum_strings = list(v.enum.values())
-            if is_writable:
-                self._record = builder.mbbOut(self._suffix, *enum_strings, on_update=self._on_put)
+            if len(enum_strings) <= 16:
+                # mbbIn/mbbOut support at most 16 states (EPICS hard limit)
+                if is_writable:
+                    self._record = builder.mbbOut(self._suffix, *enum_strings, on_update=self._on_put)
+                else:
+                    self._record = builder.mbbIn(self._suffix, *enum_strings)
             else:
-                self._record = builder.mbbIn(self._suffix, *enum_strings)
+                # Fall back to string record for large enums
+                if is_writable:
+                    self._record = builder.longStringOut(self._suffix, on_update=self._on_put)
+                else:
+                    self._record = builder.longStringIn(self._suffix)
             return
 
         # --- string / list / dict / None (TYPE-07) ---
@@ -205,11 +213,16 @@ class EpicsPvHolder(object):
             if v.disp == 'enum':
                 enum_strings = list(v.enum.values())
                 disp = value.valueDisp if value.valueDisp is not None else ''
-                try:
-                    idx = enum_strings.index(disp)
-                except ValueError:
-                    idx = 0
-                self._record.set(idx, process=proc)
+                if len(enum_strings) <= 16:
+                    # mbb record: set by index
+                    try:
+                        idx = enum_strings.index(disp)
+                    except ValueError:
+                        idx = 0
+                    self._record.set(idx, process=proc)
+                else:
+                    # longString fallback: set by display string
+                    self._record.set(str(disp), process=proc)
                 return
 
             # --- string / list / dict / None (VAR-05 push direction) ---
@@ -246,11 +259,18 @@ class EpicsPvHolder(object):
                     v(new_value)  # Call with argument
                 return
             typeStr = v.typeStr if v.typeStr is not None else ''
-            # Enum (VAR-04): softioc passes index int; map to display string
+            # Enum (VAR-04): softioc passes index int for mbb, or string for longString fallback
             if v.disp == 'enum':
                 enum_strings = list(v.enum.values())
-                if 0 <= new_value < len(enum_strings):
-                    v.setDisp(enum_strings[new_value])
+                if len(enum_strings) <= 16:
+                    # mbb record: new_value is an index int
+                    if 0 <= new_value < len(enum_strings):
+                        v.setDisp(enum_strings[new_value])
+                else:
+                    # longString fallback: new_value is already the display string
+                    if isinstance(new_value, (bytes, bytearray)):
+                        new_value = new_value.decode('utf-8', errors='replace')
+                    v.setDisp(str(new_value))
                 return
             # String (VAR-05): decode bytes if needed
             if (v.nativeType is list or v.nativeType is dict or
