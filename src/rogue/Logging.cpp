@@ -209,42 +209,49 @@ void rogue::Logging::intLog(uint32_t level, const char* fmt, va_list args) {
 #ifndef NO_PYTHON
     if (forwardPython()) {
         rogue::ScopedGil gil;
-        bp::object logging = bp::import("logging");
-        bp::dict record;
-        bp::object logger = logging.attr("getLogger")(name_);
-        uint32_t tid      = currentThreadId();
-        uint32_t pid      = static_cast<uint32_t>(getpid());
-        double created    = static_cast<double>(tme.tv_sec) + (static_cast<double>(tme.tv_usec) / 1000000.0);
-        std::string component = loggerComponent(name_);
+        try {
+            bp::object logging = bp::import("logging");
+            bp::object logger  = logging.attr("getLogger")(name_);
 
-        record["name"] = name_;
-        record["msg"] = buffer;
-        record["args"] = bp::tuple();
-        record["levelno"] = level;
-        record["levelname"] = logging.attr("getLevelName")(level);
-        record["pathname"] = "<rogue>";
-        record["filename"] = "<rogue>";
-        record["module"] = "rogue";
-        record["exc_info"] = bp::object();
-        record["exc_text"] = bp::object();
-        record["stack_info"] = bp::object();
-        record["lineno"] = 0;
-        record["funcName"] = "<rogue>";
-        record["created"] = created;
-        record["msecs"] = static_cast<double>(tme.tv_usec) / 1000.0;
-        record["relativeCreated"] = 0.0;
-        record["thread"] = tid;
-        record["threadName"] = "rogue";
-        record["process"] = pid;
-        record["processName"] = "rogue";
-        record["rogue_cpp"] = true;
-        record["rogue_tid"] = tid;
-        record["rogue_pid"] = pid;
-        record["rogue_logger"] = name_;
-        record["rogue_timestamp"] = created;
-        record["rogue_component"] = component;
+            if (bp::extract<bool>(logger.attr("isEnabledFor")(level))) {
+                bp::dict record;
+                uint32_t tid   = currentThreadId();
+                uint32_t pid   = static_cast<uint32_t>(getpid());
+                double created = static_cast<double>(tme.tv_sec) + (static_cast<double>(tme.tv_usec) / 1000000.0);
+                std::string component = loggerComponent(name_);
 
-        logger.attr("handle")(logging.attr("makeLogRecord")(record));
+                record["name"] = name_;
+                record["msg"] = buffer;
+                record["args"] = bp::tuple();
+                record["levelno"] = level;
+                record["levelname"] = logging.attr("getLevelName")(level);
+                record["pathname"] = "<rogue>";
+                record["filename"] = "<rogue>";
+                record["module"] = "rogue";
+                record["exc_info"] = bp::object();
+                record["exc_text"] = bp::object();
+                record["stack_info"] = bp::object();
+                record["lineno"] = 0;
+                record["funcName"] = "<rogue>";
+                record["created"] = created;
+                record["msecs"] = static_cast<double>(tme.tv_usec) / 1000.0;
+                record["relativeCreated"] = 0.0;
+                record["thread"] = tid;
+                record["threadName"] = "rogue";
+                record["process"] = pid;
+                record["processName"] = "rogue";
+                record["rogue_cpp"] = true;
+                record["rogue_tid"] = tid;
+                record["rogue_pid"] = pid;
+                record["rogue_logger"] = name_;
+                record["rogue_timestamp"] = created;
+                record["rogue_component"] = component;
+
+                logger.attr("handle")(logging.attr("makeLogRecord")(record));
+            }
+        } catch (const bp::error_already_set&) {
+            PyErr_Print();
+        }
     }
 #endif
 }
