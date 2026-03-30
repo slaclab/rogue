@@ -10,6 +10,7 @@
 #-----------------------------------------------------------------------------
 
 import platform
+import re
 import sys
 import time
 import pyrogue as pr
@@ -310,6 +311,42 @@ def wait_pv_value(ctxt, pv_name, expected, timeout=PropagateTimeout, transform=N
                 value if 'value' in locals() else 'unavailable'))
 
         time.sleep(0.1)
+
+
+def test_pv_name_hash():
+    """Unit tests for _make_epics_suffix and _EPICS_MAX_NAME_LEN -- no IOC required."""
+    from pyrogue.protocols.epicsV7 import _make_epics_suffix, _EPICS_MAX_NAME_LEN
+
+    assert _EPICS_MAX_NAME_LEN == 60
+
+    # Short name unchanged
+    assert _make_epics_suffix('TestBase', 'Short') == 'Short'
+
+    # Exactly 60 chars unchanged (10 + 1 + 49 = 60)
+    base = 'B' * 10
+    suffix = 'S' * 49
+    assert len(base + ':' + suffix) == 60
+    assert _make_epics_suffix(base, suffix) == suffix
+
+    # 61 chars triggers hash (10 + 1 + 50 = 61)
+    suffix61 = 'S' * 50
+    result = _make_epics_suffix(base, suffix61)
+    assert result != suffix61
+    assert re.match(r'^tail_[0-9a-f]{10}$', result)
+
+    # Deterministic
+    long_suffix = 'LongSuffix' + 'A' * 50
+    r1 = _make_epics_suffix('TestBase', long_suffix)
+    assert r1 == _make_epics_suffix('TestBase', long_suffix)
+
+    # Different inputs produce different hashes
+    assert _make_epics_suffix('TestBase', 'LongSuffix' + 'A' * 50) != \
+           _make_epics_suffix('TestBase', 'LongSuffix' + 'B' * 50)
+
+    # Hash uses full name (different base → different hash for same suffix)
+    long_s = 'SameSuffix' + 'Z' * 50
+    assert _make_epics_suffix('Base1' + 'X' * 20, long_s) != \
+           _make_epics_suffix('Base2' + 'X' * 20, long_s)
 
 
 def test_local_root():
