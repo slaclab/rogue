@@ -113,7 +113,7 @@ splitter and inverter usage:
 - v1 path: ``pyrogue.batcher.CoreV1``
 - v2 path: ``pyrogue.batcher.CoreV2``
 - Unified Logging API:
-  ``logging.getLogger('pyrogue.batcher.CoreV2').setLevel(logging.DEBUG)``
+  ``pyrogue.setLogLevel('pyrogue.batcher.CoreV2', 'DEBUG')``
 - Legacy Logging API:
   ``rogue.Logging.setFilter('pyrogue.batcher.CoreV2', rogue.Logging.Debug)``
 You can enable the logger before or during processing. Enable it before frames

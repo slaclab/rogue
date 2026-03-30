@@ -102,7 +102,7 @@ Logging
 
 - Logger name: ``pyrogue.MemMap``
 - Unified Logging API:
-  ``logging.getLogger('pyrogue.MemMap').setLevel(logging.DEBUG)``
+  ``pyrogue.setLogLevel('pyrogue.MemMap', 'DEBUG')``
 - Legacy Logging API:
   ``rogue.Logging.setFilter('pyrogue.MemMap', rogue.Logging.Debug)``
 - Typical messages: mapped-range creation, issued transactions, and transaction

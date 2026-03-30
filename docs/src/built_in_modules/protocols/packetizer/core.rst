@@ -128,7 +128,7 @@ Packetizer logging is emitted by the shared controller logger:
 
 - ``pyrogue.packetizer.Controller``
 - Unified Logging API:
-  ``logging.getLogger('pyrogue.packetizer').setLevel(logging.DEBUG)``
+  ``pyrogue.setLogLevel('pyrogue.packetizer', 'DEBUG')``
 - Legacy Logging API:
   ``rogue.Logging.setFilter('pyrogue.packetizer', rogue.Logging.Debug)``
 

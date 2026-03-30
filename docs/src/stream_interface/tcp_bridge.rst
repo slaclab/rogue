@@ -165,7 +165,7 @@ Examples:
 - ``pyrogue.stream.TcpCore.127.0.0.1.Server.8000``
 - ``pyrogue.stream.TcpCore.192.168.1.10.Client.8000``
 - Unified Logging API:
-  ``logging.getLogger('pyrogue.stream.TcpCore').setLevel(logging.DEBUG)``
+  ``pyrogue.setLogLevel('pyrogue.stream.TcpCore', 'DEBUG')``
 - Legacy Logging API:
   ``rogue.Logging.setFilter('pyrogue.stream.TcpCore', rogue.Logging.Debug)``
 

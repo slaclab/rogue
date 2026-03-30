@@ -104,7 +104,7 @@ The transaction runtime uses a Rogue C++ logger:
 
 - Logger name: ``pyrogue.memory.Transaction``
 - Unified Logging API:
-  ``logging.getLogger('pyrogue.memory.Transaction').setLevel(logging.DEBUG)``
+  ``pyrogue.setLogLevel('pyrogue.memory.Transaction', 'DEBUG')``
 - Legacy Logging API:
   ``rogue.Logging.setFilter('pyrogue.memory.Transaction', rogue.Logging.Debug)``
 

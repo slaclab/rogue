@@ -119,7 +119,7 @@ Both SQL helpers use Python logging.
 - ``SqlLogger`` logger name: ``pyrogue.SqlLogger``
 - ``SqlReader`` logger name: ``pyrogue.SqlReader``
 - Logging API:
-  ``logging.getLogger('pyrogue.SqlLogger').setLevel(logging.DEBUG)``
+  ``pyrogue.setLogLevel('pyrogue.SqlLogger', 'DEBUG')``
 
 ``SqlLogger`` logs database open failures, connection success, and worker-side
 database write failures. 

@@ -94,7 +94,7 @@ For transport logging, enable the Rogue C++ logger:
 
 - Logger name: ``pyrogue.ZmqServer``
 - Unified Logging API:
-  ``logging.getLogger('pyrogue.ZmqServer').setLevel(logging.DEBUG)``
+  ``pyrogue.setLogLevel('pyrogue.ZmqServer', 'DEBUG')``
 - Legacy Logging API:
   ``rogue.Logging.setFilter('pyrogue.ZmqServer', rogue.Logging.Debug)``
 
@@ -107,7 +107,7 @@ Example:
    import pyrogue.interfaces
 
    pyrogue.setUnifiedLogging(True)
-   logging.getLogger('pyrogue.ZmqServer').setLevel(logging.DEBUG)
+   pyrogue.setLogLevel('pyrogue.ZmqServer', 'DEBUG')
    server = pyrogue.interfaces.ZmqServer(root=root, addr='127.0.0.1', port=9099)
 
 That enables the C++ transport logger. Separately, ``ZmqServer._start()``

@@ -11,7 +11,7 @@ logging style for new Python code:
    import pyrogue as pr
 
    pr.setUnifiedLogging(True)
-   logging.getLogger('pyrogue').setLevel(logging.INFO)
+   pr.setLogLevel('pyrogue', 'INFO')
 
 What changed
 ============
@@ -30,8 +30,11 @@ That direct API is still supported, but for new Python applications the
 recommended approach is:
 
 - enable unified logging with ``pyrogue.setUnifiedLogging(True)``
-- configure logger levels through Python ``logging``
+- configure both the Python logger level and the Rogue C++ filter
 - let ``Root.SystemLog`` capture both Python and forwarded C++ records
+
+For most applications, the simplest way to do that is
+``pyrogue.setLogLevel(name, level)``.
 
 Compatibility
 =============
@@ -65,8 +68,8 @@ After:
    import pyrogue as pr
 
    pr.setUnifiedLogging(True)
-   logging.getLogger('pyrogue.udp').setLevel(logging.DEBUG)
-   logging.getLogger('pyrogue.rssi').setLevel(logging.DEBUG)
+   pr.setLogLevel('udp', 'DEBUG')
+   pr.setLogLevel('rssi', 'DEBUG')
 
 Notes
 =====
@@ -74,5 +77,7 @@ Notes
 - Python-only modules continue to use normal Python ``logging``.
 - C++-backed modules can still be configured through direct ``rogue.Logging``
   calls when needed.
+- ``pyrogue.setUnifiedLogging(True)`` changes where Rogue C++ logs are sent,
+  but it does not by itself lower the Rogue C++ filter threshold.
 - Module-specific documentation now lists the logger name or pattern for each
   subsystem.

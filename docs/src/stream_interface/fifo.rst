@@ -176,7 +176,7 @@ Logging
 
 - ``pyrogue.stream.Fifo``
 - Unified Logging API:
-  ``logging.getLogger('pyrogue.stream.Fifo').setLevel(logging.DEBUG)``
+  ``pyrogue.setLogLevel('pyrogue.stream.Fifo', 'DEBUG')``
 - Legacy Logging API:
   ``rogue.Logging.setFilter('pyrogue.stream.Fifo', rogue.Logging.Debug)``
 

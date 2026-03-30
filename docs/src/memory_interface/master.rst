@@ -163,7 +163,7 @@ The base Rogue memory ``Master`` uses Rogue C++ logging with the logger name
 
 - Logger name: ``pyrogue.memory.Master``
 - Unified Logging API:
-  ``logging.getLogger('pyrogue.memory.Master').setLevel(logging.DEBUG)``
+  ``pyrogue.setLogLevel('pyrogue.memory.Master', 'DEBUG')``
 - Legacy Logging API:
   ``rogue.Logging.setFilter('pyrogue.memory.Master', rogue.Logging.Debug)``
 You can enable that logger before or after constructing the object. Enable it

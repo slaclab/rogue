@@ -6,8 +6,9 @@ Logging In Rogue
 
 Many Rogue and PyRogue modules emit useful log messages for transport bring-up,
 transaction debugging, protocol state, and application behavior. The important
-user-facing point is that these messages can be enabled and filtered with the
-normal Python logging API.
+user-facing point is that these messages can be routed into the normal Python
+logging path, but C++-backed Rogue loggers still have their own Rogue-side
+filter threshold.
 
 For new Python code, the recommended interface is to use the unified PyRogue
 logging path so both Python-side loggers and C++-backed Rogue loggers are
@@ -26,7 +27,11 @@ How To Think About It
 For new PyRogue applications, the practical rule is:
 
 - turn on unified logging
-- configure the relevant ``pyrogue...`` logger with Python ``logging``
+- configure the Python logger and the Rogue C++ filter for the subsystem you
+  care about
+
+The easiest way to do that is ``pyrogue.setLogLevel(...)``. It updates both the
+Python logger level and the Rogue C++ filter for the normalized logger name.
 
 If you are working in older code or a standalone Rogue transport script, first
 identify which side emitted the message:
@@ -86,8 +91,8 @@ For a normal PyRogue application:
    import pyrogue as pr
 
    pr.setUnifiedLogging(True)
-   logging.getLogger('pyrogue').setLevel(logging.INFO)
-   logging.getLogger('pyrogue.udp').setLevel(logging.DEBUG)
+   pr.setLogLevel('pyrogue', 'INFO')
+   pr.setLogLevel('udp', 'DEBUG')
 
 This does three things:
 
@@ -95,6 +100,20 @@ This does three things:
 - The native Rogue stdout sink is disabled to avoid duplicate output.
 - In a running ``Root``, forwarded C++ messages can flow into
   ``Root.SystemLog``.
+
+Important: ``setUnifiedLogging(True)`` changes where Rogue C++ log records are
+delivered, but it does not by itself lower the Rogue C++ filter threshold.
+If you only call:
+
+.. code-block:: python
+
+   pr.setUnifiedLogging(True)
+   logging.getLogger('pyrogue.SrpV3').setLevel(logging.DEBUG)
+
+then the Python logger is ready for debug output, but the Rogue C++ logger may
+still be filtering at ``Error``. In that case no forwarded ``DEBUG`` records
+will be emitted. Use ``pyrogue.setLogLevel('SrpV3', 'DEBUG')`` or call
+``rogue.Logging.setFilter(...)`` explicitly.
 
 If you are already constructing a ``Root``, ``unifyLogs=True`` is a convenient
 wrapper around the same behavior:
@@ -272,7 +291,9 @@ Debug one Python subtree:
 
 .. code-block:: python
 
-   logging.getLogger('pyrogue.Device.MyDevice').setLevel(logging.DEBUG)
+   import pyrogue as pr
+
+   pr.setLogLevel('pyrogue.Device.MyDevice', 'DEBUG')
 
 Debug one C++ subsystem in a PyRogue app:
 
@@ -282,7 +303,7 @@ Debug one C++ subsystem in a PyRogue app:
    import pyrogue as pr
 
    pr.setUnifiedLogging(True)
-   logging.getLogger('pyrogue.xilinx').setLevel(logging.DEBUG)
+   pr.setLogLevel('xilinx', 'DEBUG')
 
 Debug one C++ subsystem in a standalone script:
 

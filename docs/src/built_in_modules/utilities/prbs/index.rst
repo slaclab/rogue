@@ -81,7 +81,7 @@ two static logger names:
 - ``pyrogue.prbs.tx``
 - ``pyrogue.prbs.rx``
 - Unified Logging API:
-  ``logging.getLogger('pyrogue.prbs').setLevel(logging.DEBUG)``
+  ``pyrogue.setLogLevel('pyrogue.prbs', 'DEBUG')``
 - Legacy Logging API:
   ``rogue.Logging.setFilter('pyrogue.prbs', rogue.Logging.Debug)``
 

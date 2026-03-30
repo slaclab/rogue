@@ -54,7 +54,7 @@ Logging
 
 - Logger name: ``pyrogue.SrpV0``
 - Unified Logging API:
-  ``logging.getLogger('pyrogue.SrpV0').setLevel(logging.DEBUG)``
+  ``pyrogue.setLogLevel('SrpV0', 'DEBUG')``
 - Legacy Logging API:
   ``rogue.Logging.setFilter('pyrogue.SrpV0', rogue.Logging.Debug)``
 - Typical messages: transmitted request headers, received response headers,

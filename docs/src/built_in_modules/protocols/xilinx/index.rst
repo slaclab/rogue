@@ -204,7 +204,7 @@ Xilinx support uses Rogue C++ logging:
 - ``pyrogue.xilinx.jtag`` for protocol-level query and shift debugging.
 
 - Unified Logging API:
-  ``logging.getLogger('pyrogue.xilinx').setLevel(logging.DEBUG)``
+  ``pyrogue.setLogLevel('pyrogue.xilinx', 'DEBUG')``
 - Legacy Logging API:
   ``rogue.Logging.setFilter('pyrogue.xilinx', rogue.Logging.Debug)``
 

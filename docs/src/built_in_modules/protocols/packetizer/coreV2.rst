@@ -132,7 +132,7 @@ Packetizer v2 logs through the same controller logger used by v1:
 
 - ``pyrogue.packetizer.Controller``
 - Unified Logging API:
-  ``logging.getLogger('pyrogue.packetizer').setLevel(logging.DEBUG)``
+  ``pyrogue.setLogLevel('pyrogue.packetizer', 'DEBUG')``
 - Legacy Logging API:
   ``rogue.Logging.setFilter('pyrogue.packetizer', rogue.Logging.Debug)``
 

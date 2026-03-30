@@ -132,7 +132,7 @@ Logging
 
 - ``pyrogue.stream.Filter``
 - Unified Logging API:
-  ``logging.getLogger('pyrogue.stream.Filter').setLevel(logging.DEBUG)``
+  ``pyrogue.setLogLevel('pyrogue.stream.Filter', 'DEBUG')``
 - Legacy Logging API:
   ``rogue.Logging.setFilter('pyrogue.stream.Filter', rogue.Logging.Debug)``
 

@@ -138,7 +138,7 @@ Logging
 
 - Logger name: ``pyrogue.VirtualClient``
 - Logging API:
-  ``logging.getLogger('pyrogue.VirtualClient').setLevel(logging.DEBUG)``
+  ``pyrogue.setLogLevel('pyrogue.VirtualClient', 'DEBUG')``
 
 This logger is useful for client-side connection/setup issues and for
 understanding mirrored-tree behavior. It complements, rather than replaces,

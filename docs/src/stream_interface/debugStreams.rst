@@ -93,7 +93,7 @@ debug messages:
 
 - Dynamic logger pattern: ``pyrogue.<name>``
 - Unified Logging API:
-  ``logging.getLogger('pyrogue.stream.debug').setLevel(logging.DEBUG)``
+  ``pyrogue.setLogLevel('pyrogue.stream.debug', 'DEBUG')``
 - Legacy Logging API:
   ``rogue.Logging.setFilter('pyrogue.stream.debug', rogue.Logging.Debug)``
 

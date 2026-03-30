@@ -83,7 +83,7 @@ Logging
 
 - Logger name: ``pyrogue.axi.AxiMemMap``
 - Unified Logging API:
-  ``logging.getLogger('pyrogue.axi.AxiMemMap').setLevel(logging.DEBUG)``
+  ``pyrogue.setLogLevel('pyrogue.axi.AxiMemMap', 'DEBUG')``
 - Legacy Logging API:
   ``rogue.Logging.setFilter('pyrogue.axi.AxiMemMap', rogue.Logging.Debug)``
 - Typical messages: transaction issue/completion flow and transaction timeouts

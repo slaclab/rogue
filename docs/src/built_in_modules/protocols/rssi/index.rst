@@ -193,7 +193,7 @@ Static logger name:
 
 - ``pyrogue.rssi.controller``
 - Unified Logging API:
-  ``logging.getLogger('pyrogue.rssi').setLevel(logging.DEBUG)``
+  ``pyrogue.setLogLevel('pyrogue.rssi', 'DEBUG')``
 - Legacy Logging API:
   ``rogue.Logging.setFilter('pyrogue.rssi', rogue.Logging.Debug)``
 

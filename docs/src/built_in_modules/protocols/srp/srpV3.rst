@@ -56,8 +56,8 @@ Logging
 ``SrpV3`` uses Rogue C++ logging.
 
 - Logger name: ``pyrogue.SrpV3``
-- Unified Logging API:
-  ``logging.getLogger('pyrogue.SrpV3').setLevel(logging.DEBUG)``
+- Recommended unified one-liner:
+  ``pyrogue.setLogLevel('SrpV3', 'DEBUG')``
 - Legacy Logging API:
   ``rogue.Logging.setFilter('pyrogue.SrpV3', rogue.Logging.Debug)``
 - Typical messages: transmitted request headers, received response headers,

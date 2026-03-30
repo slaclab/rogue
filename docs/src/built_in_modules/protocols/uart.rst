@@ -84,9 +84,9 @@ path, following the pattern ``pyrogue.UartMemory.<device>``.
 
 .. code-block:: python
 
-   import logging
+   import pyrogue
 
-   logging.getLogger('pyrogue.UartMemory').setLevel(logging.DEBUG)
+   pyrogue.setLogLevel('pyrogue.UartMemory', 'DEBUG')
 
 The current implementation has several transaction-level debug statements in
 the code commented out, so enabling the logger is most useful when those debug
