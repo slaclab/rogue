@@ -299,39 +299,39 @@ def wait_pv_value(ctxt, pv_name, expected, timeout=PropagateTimeout, transform=N
 
 
 def test_pv_name_hash():
-    """Unit tests for _make_epics_suffix and _EPICS_MAX_NAME_LEN -- no IOC required."""
-    from pyrogue.protocols.epicsV7 import _make_epics_suffix, _EPICS_MAX_NAME_LEN
+    """Unit tests for _make_epicsV7_suffix and _EPICS_MAX_NAME_LEN -- no IOC required."""
+    from pyrogue.protocols.epicsV7 import _make_epicsV7_suffix, _EPICS_MAX_NAME_LEN
 
     assert _EPICS_MAX_NAME_LEN == 60
 
     # Short name unchanged
-    assert _make_epics_suffix('TestBase', 'Short') == 'Short'
+    assert _make_epicsV7_suffix('TestBase', 'Short') == 'Short'
 
     # Exactly 60 chars unchanged (10 + 1 + 49 = 60)
     base = 'B' * 10
     suffix = 'S' * 49
     assert len(base + ':' + suffix) == 60
-    assert _make_epics_suffix(base, suffix) == suffix
+    assert _make_epicsV7_suffix(base, suffix) == suffix
 
     # 61 chars triggers hash (10 + 1 + 50 = 61)
     suffix61 = 'S' * 50
-    result = _make_epics_suffix(base, suffix61)
+    result = _make_epicsV7_suffix(base, suffix61)
     assert result != suffix61
     assert re.match(r'^tail_[0-9a-f]{10}$', result)
 
     # Deterministic
     long_suffix = 'LongSuffix' + 'A' * 50
-    r1 = _make_epics_suffix('TestBase', long_suffix)
-    assert r1 == _make_epics_suffix('TestBase', long_suffix)
+    r1 = _make_epicsV7_suffix('TestBase', long_suffix)
+    assert r1 == _make_epicsV7_suffix('TestBase', long_suffix)
 
     # Different inputs produce different hashes
-    assert _make_epics_suffix('TestBase', 'LongSuffix' + 'A' * 50) != \
-           _make_epics_suffix('TestBase', 'LongSuffix' + 'B' * 50)
+    assert _make_epicsV7_suffix('TestBase', 'LongSuffix' + 'A' * 50) != \
+           _make_epicsV7_suffix('TestBase', 'LongSuffix' + 'B' * 50)
 
     # Hash uses full name (different base → different hash for same suffix)
     long_s = 'SameSuffix' + 'Z' * 50
-    assert _make_epics_suffix('Base1' + 'X' * 20, long_s) != \
-           _make_epics_suffix('Base2' + 'X' * 20, long_s)
+    assert _make_epicsV7_suffix('Base1' + 'X' * 20, long_s) != \
+           _make_epicsV7_suffix('Base2' + 'X' * 20, long_s)
 
 
 def test_local_root():
@@ -548,16 +548,16 @@ def test_local_root():
 
         # Verify the long-named PVs are accessible via PVA using hashed CA names.
         # The suffix is hashed to tail_XXXXXXXXXX when base:suffix > 60 chars.
-        from pyrogue.protocols.epicsV7 import _make_epics_suffix
+        from pyrogue.protocols.epicsV7 import _make_epicsV7_suffix
 
         long_var_name_1 = 'ThisIsAVeryLongVariableNameThatExceedsSixtyCharacterLimit'
         long_suffix_1 = 'LocalRoot:LongNameSubDev:' + long_var_name_1
-        hashed_suffix_1 = _make_epics_suffix(epics_prefix, long_suffix_1)
+        hashed_suffix_1 = _make_epicsV7_suffix(epics_prefix, long_suffix_1)
         hashed_pv_1 = epics_prefix + ':' + hashed_suffix_1
 
         long_var_name_2 = 'AnotherExtremelyLongVariableNameForTestingHashBehavior'
         long_suffix_2 = 'LocalRoot:LongNameSubDev:' + long_var_name_2
-        hashed_suffix_2 = _make_epics_suffix(epics_prefix, long_suffix_2)
+        hashed_suffix_2 = _make_epicsV7_suffix(epics_prefix, long_suffix_2)
         hashed_pv_2 = epics_prefix + ':' + hashed_suffix_2
 
         short_pv = epics_prefix + ':LocalRoot:LongNameSubDev:ShortVar'

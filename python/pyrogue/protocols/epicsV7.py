@@ -45,7 +45,7 @@ _ioc_started = False
 _EPICS_MAX_NAME_LEN = 60
 
 
-def _make_epics_suffix(base, suffix):
+def _make_epicsV7_suffix(base, suffix):
     """
     Return suffix unchanged if the full PV name fits within the CA limit.
 
@@ -662,7 +662,7 @@ class EpicsPvServer(object):
                     # PV naming: base:path.replace('.', ':')
                     # suffix is the part AFTER base: (relative to SetDeviceName)
                     suffix = v.path.replace('.', ':')
-                    eSuffix = _make_epics_suffix(self._base, suffix)
+                    eSuffix = _make_epicsV7_suffix(self._base, suffix)
 
                     # Full long name always stored in _pvMap (per HASH-05)
                     eName = self._base + ':' + suffix
@@ -686,7 +686,7 @@ class EpicsPvServer(object):
                 eName = self._pvMap[v.path]
                 # Derive suffix: strip "base:" prefix
                 suffix = eName[len(self._base) + 1:] if eName.startswith(self._base + ':') else eName
-                eSuffix = _make_epics_suffix(self._base, suffix)
+                eSuffix = _make_epicsV7_suffix(self._base, suffix)
 
                 # Track CA name if it was hashed (explicit pvMap mode)
                 if eSuffix != suffix:
