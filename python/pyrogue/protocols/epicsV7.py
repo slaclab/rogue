@@ -534,8 +534,9 @@ class EpicsPvServer(object):
     EPICS PV server that exposes PyRogue variables as EPICS process variables.
 
     Uses pythonSoftIOC (softioc) to serve variables from a PyRogue tree over
-    the EPICS CA/PVA protocol. softIocPVA processes records on every PVA GET,
-    triggering real hardware reads through the Rogue variable tree.
+    the EPICS CA/PVA protocol. Records are updated when PyRogue variable
+    listeners fire (e.g. via auto-polling or explicit reads); softioc does not
+    invoke a Python callback on client caget/ctxt.get().
 
     Parameters
     ----------

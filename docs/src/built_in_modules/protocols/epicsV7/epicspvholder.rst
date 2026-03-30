@@ -53,18 +53,6 @@ loop.
 PVs whose names are 60 characters or fewer have no ``SharedPV`` and behave
 identically to before this change.
 
-Hardware-Read-on-GET
-====================
-
-Because softioc processes records on every incoming GET request, the holder's
-bound PyRogue variable has its ``get()`` method called on every client read.
-Variables that define a ``localGet`` callback see that callback invoked each
-time an EPICS client issues a GET, providing true hardware-read-on-GET
-semantics without any polling.
-
-This is a key behavioral difference from the EPICS V4 integration, where
-values are pushed to clients only when the PyRogue listener fires.
-
 Command Behavior
 ================
 

@@ -30,7 +30,6 @@ if sys.platform == 'darwin' and platform.machine() == 'arm64':
 
 epics_prefix = 'test_ioc_v7'
 PropagateTimeout = 10.0
-_read_counter = [0]
 _local_ro_int = [0]  # backing storage for LocalRoInt (mode='RO') poll test
 
 
@@ -230,13 +229,6 @@ class LocalRoot(pr.Root):
             memBase = mc,
         ))
 
-        # Add CounterDev (both devices share same Root and IOC)
-        self.add(DevWithCounter(
-            name    = 'CounterDev',
-            offset  = 0x1000,
-            memBase = mc,
-        ))
-
         # Add LongNameSubDev for long PV name hashing tests
         self.add(LongNameSubDev(
             name    = 'LongNameSubDev',
@@ -270,7 +262,6 @@ class LocalRootWithEpics(LocalRoot):
                 'LocalRoot.SimpleDev.SetLocalRwInt'    : epics_prefix + ':LocalRoot:SimpleDev:SetLocalRwInt',
                 'LocalRoot.SimpleDev.LocalRwList'      : epics_prefix + ':LocalRoot:SimpleDev:LocalRwList',
                 'LocalRoot.SimpleDev.LocalRwDict'      : epics_prefix + ':LocalRoot:SimpleDev:LocalRwDict',
-                'LocalRoot.CounterDev.IncrOnRead'      : epics_prefix + ':LocalRoot:CounterDev:IncrOnRead',
             }
         else:
             pv_map = None
@@ -282,24 +273,6 @@ class LocalRootWithEpics(LocalRoot):
             incGroups = None,
             excGroups = None,
         )
-
-
-class DevWithCounter(pr.Device):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        _read_counter[0] = 0
-
-        def counter_get(dev, var):
-            _read_counter[0] += 1
-            return _read_counter[0]
-
-        self.add(pr.LocalVariable(
-            name         = 'IncrOnRead',
-            value        = 0,
-            mode         = 'RW',
-            localGet     = counter_get,
-            pollInterval = 1.0,
-        ))
 
 
 # TEST-10: convergence helper
@@ -570,27 +543,6 @@ def test_local_root():
         if test_result != test_value:
             raise AssertionError('RO In record not updated: pv_name={}: expected={}; got={}'.format(
                 ro_pv, test_value, test_result))
-
-        # TEST-21: Increment on read (CounterDev in same Root)
-        # softioc passive records don't re-invoke localGet on each EPICS GET;
-        # instead, the PyRogue poll (pollInterval=1.0) updates the EPICS record.
-        # We wait for the poll to fire twice to verify strict incrementing.
-        counter_pv = epics_prefix + ':LocalRoot:CounterDev:IncrOnRead'
-
-        # Wait for PV to become available (TEST-10 coverage)
-        wait_pv_value(ctxt, counter_pv, _read_counter[0])
-
-        # TEST-09: each poll cycle must produce a strictly larger value
-        v1 = ctxt.get(counter_pv)
-        wait_pv_value(ctxt, counter_pv, True, transform=lambda v: v > v1)
-        v2 = ctxt.get(counter_pv)
-        wait_pv_value(ctxt, counter_pv, True, transform=lambda v: v > v2)
-        v3 = ctxt.get(counter_pv)
-
-        if not (v2 > v1):
-            raise AssertionError('Expected increment on read: v1={}, v2={}'.format(v1, v2))
-        if not (v3 > v2):
-            raise AssertionError('Expected increment on read: v2={}, v3={}'.format(v2, v3))
 
         # ---- Long PV name hashing tests (Phase 2: HASH-05, OPS-01, OPS-02, TEST-03) ----
 

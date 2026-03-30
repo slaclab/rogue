@@ -144,18 +144,16 @@ registers the full long name as a PVA-only channel backed by a
    value = ctxt.get(full_name)
    ctxt.put(full_name, 42)
 
-Hardware-Read-on-GET
-=====================
+Live Hardware Values
+====================
 
-A key feature of the V7 integration is hardware-read-on-GET semantics.
-Because softIocPVA processes a record on every incoming GET request, the
-bound PyRogue variable's ``get()`` method is called each time a client reads
-the value. For variables with a ``localGet`` callback, this means the callback
-fires on every client read rather than only when the Rogue tree fires a change
-notification.
-
-This makes the V7 server suitable for hardware polling use cases where the
-latest value must be fetched from hardware on every read.
+softioc does not expose a Python callback that fires when a CA or PVA client
+issues a ``caget`` / ``ctxt.get()``. Both EPICS V4 and V7 integrations serve
+the most recently pushed value from the EPICS record buffer. To ensure clients
+receive up-to-date hardware values, the Rogue server process must execute
+hardware reads itself — either via PyRogue auto-polling (``pollInterval`` on
+variables or ``pollEn=True`` on the Root) or by calling device-level read
+commands explicitly.
 
 Commands via caput
 ==================
@@ -211,7 +209,6 @@ The key differences when migrating:
 When To Use It
 ==============
 
-- You need hardware-read-on-GET semantics for ``localGet`` variables.
 - Your deployment requires CA compatibility alongside PVA.
 - You want to avoid the p4p SharedPV server in favor of standard softIocPVA.
 

@@ -30,14 +30,19 @@ The V7 integration uses softioc (pythonSoftIOC) instead of p4p. This provides:
 
 - **Real EPICS records** — softIocPVA creates longIn/longOut, ai/ao, and
   other record types rather than SharedPV objects.
-- **Hardware-read-on-GET** — softioc processes a record on every PVA GET
-  request, calling the PyRogue variable's ``get()`` (and any ``localGet``
-  hook) each time. Variables with custom ``localGet`` callbacks see their
-  callback invoked on every client read, not only when the Rogue tree fires
-  a change notification.
 - **Commands via caput** — PyRogue Commands are exposed as longOut records.
   Clients invoke them with a plain put (value is forwarded as the command
   argument), not with an RPC call.
+
+.. note::
+
+   Neither softioc nor p4p exposes a Python callback that fires when a CA or
+   PVA client issues a ``caget`` / ``ctxt.get()``. Both EPICS V4 and V7
+   integrations serve the most recently pushed value from the EPICS record
+   buffer. To ensure clients receive up-to-date hardware values, the Rogue
+   server process must execute hardware reads itself — either via PyRogue
+   auto-polling (``pollInterval`` on variables or ``pollEn=True`` on the
+   Root) or by calling device-level read commands explicitly.
 
 Installation
 ============

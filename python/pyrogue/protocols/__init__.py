@@ -11,4 +11,3 @@
 #-----------------------------------------------------------------------------
 from pyrogue.protocols._Network import *
 from pyrogue.protocols._uart import *
-from pyrogue.protocols import epicsV7
