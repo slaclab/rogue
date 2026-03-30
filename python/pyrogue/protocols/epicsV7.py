@@ -37,7 +37,14 @@ try:
     import p4p.server.thread
     import p4p.nt
 except Exception:
-    pass  # p4p is optional; PVA long-name aliases will be unavailable
+    warnings.warn(
+        "PVAccess for Python (P4P) is not installed.\n\n"
+        "To install with pip:\n"
+        "    pip install p4p\n\n"
+        "To install with Conda:\n"
+        "    conda install -c conda-forge p4p\n\n"
+        "Note: p4p requires EPICS base to be available on your system."
+    )
 
 # Module-level flag: EPICS IOC can only be initialized once per process
 _ioc_started = False
