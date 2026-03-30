@@ -142,7 +142,7 @@ class LocalRoot(pr.Root):
                          name='LocalRoot',
                          description='Local root',
                          timeout=2.0,
-                         pollEn=False)
+                         pollEn=True)
 
         # Use a memory space emulator
         sim = rogue.interfaces.memory.Emulate(4, 0x1000)

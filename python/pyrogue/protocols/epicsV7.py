@@ -75,8 +75,9 @@ class EpicsPvHolder(object):
         self._name = name
         self._suffix = suffix
         self._record = None
-        self._var.addListener(self._varUpdated)
         self._createRecord()
+        # Add listener to sync future updates from PyRogue to EPICS
+        self._var.addListener(self._varUpdated)
 
     def _createRecord(self):
         """Create the softioc record for this PV based on variable type and mode."""
@@ -147,8 +148,9 @@ class EpicsPvHolder(object):
                 self._record = builder.int64In(self._suffix)
             return
 
-        # --- UInt8/16/32 and Int8/16/32 → long (TYPE-01, TYPE-03) ---
-        if any(typeStr.startswith(p) for p in ('UInt8', 'UInt16', 'UInt32', 'Int8', 'Int16', 'Int32')):
+        # --- UInt8/16/32, Int8/16/32, and plain 'int' → long (TYPE-01, TYPE-03) ---
+        if (typeStr == 'int' or
+                any(typeStr.startswith(p) for p in ('UInt8', 'UInt16', 'UInt32', 'Int8', 'Int16', 'Int32'))):
             if is_writable:
                 self._record = builder.longOut(self._suffix, on_update=self._on_put)
             else:
@@ -163,8 +165,8 @@ class EpicsPvHolder(object):
                 self._record = builder.aIn(self._suffix)
             return
 
-        # --- Float64 / Double64 (TYPE-05) ---
-        if 'Float64' in typeStr or 'Double64' in typeStr:
+        # --- Float64 / Double64 and plain 'float' (TYPE-05) ---
+        if typeStr == 'float' or 'Float64' in typeStr or 'Double64' in typeStr:
             if is_writable:
                 self._record = builder.aOut(self._suffix, on_update=self._on_put)
             else:
@@ -217,7 +219,8 @@ class EpicsPvHolder(object):
             if typeStr == 'Bool':
                 self._record.set(int(value.value), severity=sev)
             else:
-                self._record.set(value.value, severity=sev)
+                # Use value directly, not severity parameter (softioc 4.7+ doesn't support severity on all record types)
+                self._record.set(value.value)
 
         except Exception:
             pass  # Listener callbacks must not raise; softioc may call this from IOC thread
@@ -299,6 +302,7 @@ class EpicsPvServer(object):
         self._pvMap = pvMap if pvMap is not None else {}
         self._holders = []
         self._thread = None
+        self._started = False  # Track if this instance has been started
         root.addProtocol(self)
 
     def list(self) -> dict:
@@ -343,6 +347,14 @@ class EpicsPvServer(object):
 
         if not self._root.running:
             raise Exception("epicsV7 cannot be set up on a tree that is not started")
+
+        # Prevent duplicate _start() calls - softioc can only LoadDatabase once per process
+        if self._started:
+            self._log.info(f"epicsV7: Already started, skipping duplicate _start() call for base={self._base}")
+            return
+
+        self._started = True
+        self._log.info(f"epicsV7: First _start() call for base={self._base}")
 
         # Determine mapping mode
         if not self._pvMap:
@@ -391,15 +403,32 @@ class EpicsPvServer(object):
         if not _ioc_started:
             _ioc_started = True
 
+            # Create dispatcher and start IOC
+            dispatcher = AsyncioDispatcher()
+
             def _run_ioc():
-                # Let AsyncioDispatcher create and manage its own event loop
-                dispatcher = AsyncioDispatcher()
-                softioc.iocInit(dispatcher)
+                # AsyncioDispatcher creates and manages its own event loop
+                softioc.iocInit(dispatcher, enable_pva=True)
 
             self._thread = threading.Thread(target=_run_ioc, name='epicsV7-ioc', daemon=True)
             self._thread.start()
+
+            # Wait for IOC to finish initialization
+            import time
+            time.sleep(0.5)  # Give IOC thread time to start
         else:
             self._log.warning("epicsV7: IOC already started in this process; skipping iocInit")
+
+        # Initialize all record values from current PyRogue variable values
+        # This must happen AFTER iocInit so records can accept updates
+        self._log.info(f"epicsV7: Initializing {len(self._holders)} record values from PyRogue variables")
+        for holder in self._holders:
+            try:
+                varVal = holder._var.getVariableValue(read=False)
+                if varVal is not None:
+                    holder._varUpdated(holder._var.path, varVal)
+            except Exception as e:
+                self._log.error(f"epicsV7: Failed to initialize {holder._name}: {e}")
 
     def _stop(self) -> None:
         """Stop the EPICS IOC.
