@@ -13,6 +13,7 @@
 # contained in the LICENSE.txt file.
 # -----------------------------------------------------------------------------
 
+import time
 import pyrogue
 import threading
 import warnings
@@ -359,8 +360,7 @@ class EpicsPvServer(object):
 
         # Prevent duplicate _start() calls - softioc can only LoadDatabase once per process
         if self._started:
-            self._log.info(f"epicsV7: Already started, skipping duplicate _start() call for base={self._base}")
-            return
+            raise Exception(f"epicsV7: Duplicate _start() call for base={self._base}. Protocol may have been added twice.")
 
         self._started = True
         self._log.info(f"epicsV7: First _start() call for base={self._base}")
@@ -423,7 +423,6 @@ class EpicsPvServer(object):
             self._thread.start()
 
             # Wait for IOC to finish initialization
-            import time
             time.sleep(0.5)  # Give IOC thread time to start
         else:
             self._log.warning("epicsV7: IOC already started in this process; skipping iocInit")

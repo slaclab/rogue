@@ -135,6 +135,18 @@ class SimpleDev(pr.Device):
             mode   = 'WO',
         ))
 
+        # Test list nativeType (longStringIn/Out)
+        self.add(pr.LocalVariable(
+            name  = 'LocalRwList',
+            value = [1, 2, 3],
+            mode  = 'RW'))
+
+        # Test dict nativeType (longStringIn/Out)
+        self.add(pr.LocalVariable(
+            name  = 'LocalRwDict',
+            value = {'a': 1, 'b': 2},
+            mode  = 'RW'))
+
 
 class LocalRoot(pr.Root):
     def __init__(self, tcp_port=9075):
@@ -199,6 +211,9 @@ class LocalRootWithEpics(LocalRoot):
                 'LocalRoot.SimpleDev.RemoteWoInt'      : epics_prefix + ':LocalRoot:SimpleDev:RemoteWoInt',
                 'LocalRoot.SimpleDev.ResetLocalRwInt'  : epics_prefix + ':LocalRoot:SimpleDev:ResetLocalRwInt',
                 'LocalRoot.SimpleDev.SetLocalRwInt'    : epics_prefix + ':LocalRoot:SimpleDev:SetLocalRwInt',
+                'LocalRoot.SimpleDev.LocalRwList'      : epics_prefix + ':LocalRoot:SimpleDev:LocalRwList',
+                'LocalRoot.SimpleDev.LocalRwDict'      : epics_prefix + ':LocalRoot:SimpleDev:LocalRwDict',
+                'LocalRoot.CounterDev.IncrOnRead'      : epics_prefix + ':LocalRoot:CounterDev:IncrOnRead',
             }
         else:
             pv_map = None
@@ -210,7 +225,6 @@ class LocalRootWithEpics(LocalRoot):
             incGroups = None,
             excGroups = None,
         )
-        self.addProtocol(self.epics)
 
 
 class DevWithCounter(pr.Device):
@@ -441,6 +455,14 @@ def test_local_root():
         if not np.array_equal(test_result, test_value):
             raise AssertionError('Array: pv_name={}: test_value={}; test_result={}'.format(
                 pv_name, test_value, test_result))
+
+        # TEST-22: list nativeType (longStringIn/Out) — verify PV is accessible
+        pv_name = device_epics_prefix + ':LocalRwList'
+        wait_pv_value(ctxt, pv_name, True, transform=lambda v: isinstance(v, str) and len(v) > 0)
+
+        # TEST-23: dict nativeType (longStringIn/Out) — verify PV is accessible
+        pv_name = device_epics_prefix + ':LocalRwDict'
+        wait_pv_value(ctxt, pv_name, True, transform=lambda v: isinstance(v, str) and len(v) > 0)
 
         # TEST-21: Increment on read (CounterDev in same Root)
         # softioc passive records don't re-invoke localGet on each EPICS GET;
