@@ -618,6 +618,65 @@ def test_local_root():
                 'Zero-regression check failed on standard PV: expected={}; got={}'.format(
                     test_value, test_result))
 
+        # ---- PVA long-name alias tests (Phase 3: PVA-01 through PVA-05, TEST-02) ----
+
+        # Compute full long PVA names for the hashed PVs
+        long_pv_full_1 = epics_prefix + ':' + long_suffix_1
+        long_pv_full_2 = epics_prefix + ':' + long_suffix_2
+
+        # TEST-02a: pvget on full long name returns current value (PVA-01, PVA-05)
+        # The hashed PV was left at test_value=777 from TEST-03b above
+        wait_pv_value(ctxt, long_pv_full_1, 777)
+
+        # TEST-02b: pvput via full long name, read back via long name (PVA-02)
+        test_value = 888
+        ctxt.put(long_pv_full_1, test_value)
+        wait_pv_value(ctxt, long_pv_full_1, test_value)
+        test_result = ctxt.get(long_pv_full_1)
+        if test_result != test_value:
+            raise AssertionError(
+                'PVA long-name put/get failed: pv={}: expected={}; got={}'.format(
+                    long_pv_full_1, test_value, test_result))
+
+        # TEST-02c: PVA write via long name visible on hashed CA name (PVA-03 fan-out)
+        test_value = 555
+        ctxt.put(long_pv_full_1, test_value)
+        wait_pv_value(ctxt, hashed_pv_1, test_value)
+        test_result = ctxt.get(hashed_pv_1)
+        if test_result != test_value:
+            raise AssertionError(
+                'PVA->CA fan-out failed: long={} CA={}: expected={}; got={}'.format(
+                    long_pv_full_1, hashed_pv_1, test_value, test_result))
+
+        # TEST-02d: CA write via short name visible on full long name (PVA-03 reverse fan-out)
+        test_value = 444
+        ctxt.put(hashed_pv_1, test_value)
+        wait_pv_value(ctxt, long_pv_full_1, test_value)
+        test_result = ctxt.get(long_pv_full_1)
+        if test_result != test_value:
+            raise AssertionError(
+                'CA->PVA fan-out failed: CA={} long={}: expected={}; got={}'.format(
+                    hashed_pv_1, long_pv_full_1, test_value, test_result))
+
+        # TEST-02e: Second hashed PV (float) accessible via full long name (PVA-01)
+        wait_pv_value(ctxt, long_pv_full_2, True,
+                      transform=lambda v: isinstance(v, float))
+        test_value = 2.718
+        ctxt.put(long_pv_full_2, test_value)
+        wait_pv_value(ctxt, long_pv_full_2, round(test_value, 3),
+                      transform=lambda v: round(v, 3))
+
+        # TEST-02f: Short-named PVs unaffected by PVA alias layer (zero regression)
+        std_pv = epics_prefix + ':LocalRoot:SimpleDev:LocalRwInt'
+        test_value = 54321
+        ctxt.put(std_pv, test_value)
+        wait_pv_value(ctxt, std_pv, test_value)
+        test_result = ctxt.get(std_pv)
+        if test_result != test_value:
+            raise AssertionError(
+                'Zero-regression after PVA alias layer: expected={}; got={}'.format(
+                    test_value, test_result))
+
     ctxt.close()
 
 
