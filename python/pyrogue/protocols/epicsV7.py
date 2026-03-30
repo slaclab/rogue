@@ -425,15 +425,16 @@ class EpicsPvHolder(object):
             v = self._var
             typeStr = v.typeStr if v.typeStr is not None else ''
 
-            # Use process=False for writable (Out) records to prevent on_update feedback:
-            # record.set() calls db_put_field() which re-triggers _process() → on_update.
-            # process=False suppresses that re-trigger while still updating record.VAL.
-            proc = False if self._is_writable else True
+            # ProcessDeviceSupportOut.set() accepts process=False to prevent on_update re-trigger.
+            # ProcessDeviceSupportIn.set() has NO process parameter — passing process= raises
+            # TypeError which is silently swallowed, leaving In records stuck at 0.
+            # Use **_set_kw to pass process=False only for writable (Out) records.
+            _set_kw = {'process': False} if self._is_writable else {}
 
             # --- ndarray ---
             if v.nativeType is np.ndarray:
                 if value.value is not None:
-                    self._record.set(value.value, process=proc)
+                    self._record.set(value.value, **_set_kw)
                     # PVA long-name alias: dual-post (PVA-03)
                     if self._pv_long is not None:
                         _post_pv_long(self._pv_long, self._pva_type, self._var, value)
@@ -449,10 +450,10 @@ class EpicsPvHolder(object):
                         idx = enum_strings.index(disp)
                     except ValueError:
                         idx = 0
-                    self._record.set(idx, process=proc)
+                    self._record.set(idx, **_set_kw)
                 else:
                     # longString fallback: set by display string
-                    self._record.set(str(disp), process=proc)
+                    self._record.set(str(disp), **_set_kw)
                 # PVA long-name alias: dual-post (PVA-03)
                 if self._pv_long is not None:
                     _post_pv_long(self._pv_long, self._pva_type, self._var, value)
@@ -463,7 +464,7 @@ class EpicsPvHolder(object):
                     typeStr in ('str', 'list', 'dict', 'NoneType') or typeStr == ''):
                 disp = value.valueDisp if value.valueDisp is not None else ''
                 # longStringIn/Out supports arbitrary length strings
-                self._record.set(str(disp), process=proc)
+                self._record.set(str(disp), **_set_kw)
                 # PVA long-name alias: dual-post (PVA-03)
                 if self._pv_long is not None:
                     _post_pv_long(self._pv_long, self._pva_type, self._var, value)
@@ -474,10 +475,10 @@ class EpicsPvHolder(object):
                 return
             sev = EpicsConvSeverity(value)
             if typeStr == 'Bool':
-                self._record.set(int(value.value), severity=sev, process=proc)
+                self._record.set(int(value.value), severity=sev, **_set_kw)
             else:
                 # Use value directly, not severity parameter (softioc 4.7+ doesn't support severity on all record types)
-                self._record.set(value.value, process=proc)
+                self._record.set(value.value, **_set_kw)
             # PVA long-name alias: dual-post (PVA-03)
             if self._pv_long is not None:
                 _post_pv_long(self._pv_long, self._pva_type, self._var, value)

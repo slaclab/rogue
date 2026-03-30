@@ -31,6 +31,7 @@ if sys.platform == 'darwin' and platform.machine() == 'arm64':
 epics_prefix = 'test_ioc_v7'
 PropagateTimeout = 10.0
 _read_counter = [0]
+_local_ro_int = [0]  # backing storage for LocalRoInt (mode='RO') poll test
 
 
 class SimpleDev(pr.Device):
@@ -147,6 +148,16 @@ class SimpleDev(pr.Device):
             mode   = 'WO',
         ))
 
+        # Test mode='RO' (longIn); localGet backed by _local_ro_int so the test
+        # can control the value without needing to bypass mode restrictions.
+        self.add(pr.LocalVariable(
+            name         = 'LocalRoInt',
+            value        = 0,
+            mode         = 'RO',
+            localGet     = lambda dev, var: _local_ro_int[0],
+            pollInterval = 0.5,
+        ))
+
         # Test list nativeType (longStringIn/Out)
         self.add(pr.LocalVariable(
             name  = 'LocalRwList',
@@ -254,6 +265,7 @@ class LocalRootWithEpics(LocalRoot):
                 'LocalRoot.SimpleDev.LocalRwArray'     : epics_prefix + ':LocalRoot:SimpleDev:LocalRwArray',
                 'LocalRoot.SimpleDev.RemoteRwInt'      : epics_prefix + ':LocalRoot:SimpleDev:RemoteRwInt',
                 'LocalRoot.SimpleDev.RemoteWoInt'      : epics_prefix + ':LocalRoot:SimpleDev:RemoteWoInt',
+                'LocalRoot.SimpleDev.LocalRoInt'       : epics_prefix + ':LocalRoot:SimpleDev:LocalRoInt',
                 'LocalRoot.SimpleDev.ResetLocalRwInt'  : epics_prefix + ':LocalRoot:SimpleDev:ResetLocalRwInt',
                 'LocalRoot.SimpleDev.SetLocalRwInt'    : epics_prefix + ':LocalRoot:SimpleDev:SetLocalRwInt',
                 'LocalRoot.SimpleDev.LocalRwList'      : epics_prefix + ':LocalRoot:SimpleDev:LocalRwList',
@@ -544,6 +556,20 @@ def test_local_root():
         # TEST-23: dict nativeType (longStringIn/Out) — verify PV is accessible
         pv_name = device_epics_prefix + ':LocalRwDict'
         wait_pv_value(ctxt, pv_name, True, transform=lambda v: isinstance(v, str) and len(v) > 0)
+
+        # TEST-24: RO LocalVariable (longIn) — verifies _varUpdated works for In records.
+        # ProcessDeviceSupportIn.set() has NO process= parameter; passing process=True raises
+        # TypeError (silently swallowed), leaving the record stuck at 0.
+        # Control the value via _local_ro_int; wait for the 0.5 s poll to fire and
+        # update the EPICS longIn record, then verify PVA GET returns the new value.
+        ro_pv = device_epics_prefix + ':LocalRoInt'
+        test_value = 99
+        _local_ro_int[0] = test_value
+        wait_pv_value(ctxt, ro_pv, test_value)
+        test_result = ctxt.get(ro_pv)
+        if test_result != test_value:
+            raise AssertionError('RO In record not updated: pv_name={}: expected={}; got={}'.format(
+                ro_pv, test_value, test_result))
 
         # TEST-21: Increment on read (CounterDev in same Root)
         # softioc passive records don't re-invoke localGet on each EPICS GET;
