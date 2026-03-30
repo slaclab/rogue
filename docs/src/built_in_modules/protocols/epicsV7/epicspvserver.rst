@@ -42,6 +42,17 @@ uses two mapping modes:
 
 Default exclusion is ``['NoServe']`` when ``excGroups`` is not provided.
 
+.. note::
+
+   Passing ``root=self`` to the constructor automatically registers the server
+   with the Root lifecycle via ``addProtocol``. Do **not** call
+   ``self.addProtocol(self.epics)`` afterwards — doing so registers the server
+   twice and raises ``Exception: epicsV7: Duplicate _start() call`` at startup.
+
+   This differs from the EPICS V4 integration, where ``addProtocol`` must be
+   called explicitly. If you are migrating from V4, remove the
+   ``self.addProtocol(...)`` call.
+
 Setup Example
 =============
 
@@ -55,7 +66,8 @@ Setup Example
            super().__init__(name='MyRoot')
            # Add variables/devices here as usual.
 
-           # Build EPICS V7 server with automatic path-based naming.
+           # Passing root=self auto-registers with the Root lifecycle.
+           # Do NOT also call self.addProtocol(self.epics).
            self.epics = pep7.EpicsPvServer(
                base='MyIoc',
                root=self,
@@ -63,9 +75,6 @@ Setup Example
                excGroups=['NoServe'],
                pvMap=None,
            )
-
-           # Register as protocol so Root lifecycle starts/stops it.
-           self.addProtocol(self.epics)
 
    with MyRoot() as root:
        # Inspect active mapping.
@@ -79,8 +88,9 @@ Typical Usage Pattern
 The common setup follows this pattern:
 
 1. Create and start a ``Root`` with Local and Remote variables.
-2. Construct ``EpicsPvServer(base=..., root=..., pvMap=...)``.
-3. Register it with ``root.addProtocol(...)``.
+2. Construct ``EpicsPvServer(base=..., root=..., pvMap=...)`` — this
+   automatically registers the server with the Root lifecycle.
+3. Do **not** call ``root.addProtocol(...)`` — it is handled internally.
 4. Use any EPICS client (CA or PVA) to put and get values.
 5. Invoke PyRogue Commands using a plain put to the command's PV.
 
@@ -193,6 +203,10 @@ The key differences when migrating:
 3. Install ``softioc`` (``pip install softioc``) instead of or alongside ``p4p``.
    If you use ``p4p`` as a PVA client (for ``ctxt.get()`` / ``ctxt.put()``),
    keep it — only the server-side dependency changes.
+4. **Remove any** ``self.addProtocol(self.epics)`` **call.** In V4 this was
+   required; in V7 the constructor calls ``addProtocol`` automatically when
+   ``root=self`` is passed. Keeping the explicit call registers the server
+   twice and raises ``Exception: epicsV7: Duplicate _start() call`` at startup.
 
 When To Use It
 ==============
