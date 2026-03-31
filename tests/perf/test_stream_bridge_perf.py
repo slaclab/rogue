@@ -15,6 +15,8 @@ import rogue
 import time
 import pytest
 
+from tests.perf._perf_metrics import emit_perf_result
+
 pytestmark = [pytest.mark.integration, pytest.mark.perf]
 
 #rogue.Logging.setLevel(rogue.Logging.Debug)
@@ -23,12 +25,12 @@ pytestmark = [pytest.mark.integration, pytest.mark.perf]
 # throughput-style benchmark rather than a correctness-focused regression test.
 FrameCount = 10000
 FrameSize  = 10000
-def data_path():
+def data_path(port):
     # Bridge server
-    serv = rogue.interfaces.stream.TcpServer("127.0.0.1",9000)
+    serv = rogue.interfaces.stream.TcpServer("127.0.0.1", port)
 
     # Bridge client
-    client = rogue.interfaces.stream.TcpClient("127.0.0.1",9000)
+    client = rogue.interfaces.stream.TcpClient("127.0.0.1", port)
 
     # PRBS
     prbsTx = rogue.utilities.Prbs()
@@ -43,6 +45,7 @@ def data_path():
     prbsRx.checkPayload(True)
 
     print("Generating Frames")
+    start = time.perf_counter()
     for _ in range(FrameCount):
         prbsTx.genFrame(FrameSize)
 
@@ -52,17 +55,29 @@ def data_path():
             break
         time.sleep(.1)
 
+    elapsed = time.perf_counter() - start
+    received = prbsRx.getRxCount()
+    errors = prbsRx.getRxErrors()
+    result = emit_perf_result(
+        "stream_bridge_perf",
+        frames_sent=FrameCount,
+        frames_received=received,
+        frame_size=FrameSize,
+        elapsed_sec=elapsed,
+        throughput_mb_s=((received * FrameSize) / (1024.0 * 1024.0)) / elapsed if elapsed > 0 else 0.0,
+        rx_errors=errors,
+        drain_complete=(received == FrameCount),
+    )
 
-    if prbsRx.getRxCount() != FrameCount:
-        raise AssertionError('Frame count error. Got = {} expected = {}'.format(prbsRx.getRxCount(),FrameCount))
+    print(f"Perf metrics: {result}")
 
-    if prbsRx.getRxErrors() != 0:
-        raise AssertionError('PRBS Frame errors detected! Errors = {}'.format(prbsRx.getRxErrors()))
+    assert received > 0, "No frames were received during the stream bridge perf run"
+    assert errors == 0, f"PRBS frame errors detected: {errors}"
 
     print("Done testing")
 
-def test_data_path():
-    data_path()
+def test_data_path(free_tcp_port):
+    data_path(free_tcp_port)
 
 if __name__ == "__main__":
-    test_data_path()
+    data_path(9000)

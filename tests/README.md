@@ -38,6 +38,8 @@ Common commands:
   - `pytest tests/integration -q`
 - Performance subset:
   - `pytest tests/perf -q`
+- Performance subset with result export:
+  - `PERF_RESULTS_DIR=perf-results pytest tests/perf -q -s`
 
 Planning / handoff docs:
 

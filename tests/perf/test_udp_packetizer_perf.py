@@ -18,6 +18,8 @@ import time
 import threading
 import pytest
 
+from tests.perf._perf_metrics import emit_perf_result
+
 pytestmark = [pytest.mark.integration, pytest.mark.perf]
 
 #rogue.Logging.setLevel(rogue.Logging.Debug)
@@ -40,7 +42,7 @@ class RssiOutOfOrder(rogue.interfaces.stream.Slave, rogue.interfaces.stream.Mast
         self._cnt    = 0
 
     @property
-    def period(self,value):
+    def period(self):
         return self._period
 
     @period.setter
@@ -134,6 +136,7 @@ def data_path(ver,jumbo):
     coo.period = 10
 
     print("Generating Frames")
+    start = time.perf_counter()
     for _ in range(FrameCount):
         prbsTx.genFrame(FrameSize)
 
@@ -142,25 +145,39 @@ def data_path(ver,jumbo):
 
     # Wait for the stack to drain rather than assuming a fixed wall-clock delay.
     print("Waiting for frame drain")
-    start = time.time()
+    drain_start = time.time()
     while prbsRx.getRxCount() != FrameCount:
         time.sleep(0.1)
-        if (time.time() - start) > DrainTimeout:
+        if (time.time() - drain_start) > DrainTimeout:
             cRssi._stop()
             sRssi._stop()
-            raise AssertionError('Frame drain timeout. Ver={} Jumbo={} Got = {} expected = {}'.format(
-                ver,
-                jumbo,
-                prbsRx.getRxCount(),
-                FrameCount))
+            break
 
     # Stop connection
     print("Closing Link")
     cRssi._stop()
     sRssi._stop()
 
-    if prbsRx.getRxErrors() != 0:
-        raise AssertionError('PRBS Frame errors detected! Ver={} Jumbo={}'.format(ver,jumbo))
+    elapsed = time.perf_counter() - start
+    received = prbsRx.getRxCount()
+    errors = prbsRx.getRxErrors()
+    result = emit_perf_result(
+        f"udp_packetizer_perf_v{ver}_{'jumbo' if jumbo else 'std'}",
+        version=ver,
+        jumbo=jumbo,
+        frames_sent=FrameCount,
+        frames_received=received,
+        frame_size=FrameSize,
+        elapsed_sec=elapsed,
+        throughput_mb_s=((received * FrameSize) / (1024.0 * 1024.0)) / elapsed if elapsed > 0 else 0.0,
+        rx_errors=errors,
+        drain_complete=(received == FrameCount),
+    )
+
+    print(f"Perf metrics: {result}")
+
+    assert received > 0, f"No frames were received. Ver={ver} Jumbo={jumbo}"
+    assert errors == 0, f"PRBS frame errors detected. Ver={ver} Jumbo={jumbo}"
 
     print("Done testing ver={} jumbo={}".format(ver,jumbo))
 

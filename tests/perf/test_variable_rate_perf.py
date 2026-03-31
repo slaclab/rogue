@@ -18,6 +18,8 @@ import pytest
 
 pytestmark = pytest.mark.perf
 
+from tests.perf._perf_metrics import emit_perf_result
+
 try:
     import hwcounter
     HAS_HWCOUNTER = True
@@ -169,6 +171,7 @@ def test_rate():
 
         for name, operation in operations.items():
             result = _measure_operation(root, count, operation)
+            threshold_pass = True
 
             msg = (
                 f"{name}: avg {result['avg_ns']:.2e} ns/op, "
@@ -184,13 +187,26 @@ def test_rate():
 
             if HAS_HWCOUNTER:
                 if result['cycles'] > MaxCycles[name]:
+                    threshold_pass = False
                     failures.append(
                         f"{name}: cycles {result['cycles']:.2e} > {MaxCycles[name]:.2e}"
                     )
             elif result['avg_ns'] > MaxAvgNs[name]:
+                threshold_pass = False
                 failures.append(
                     f"{name}: avg_ns {result['avg_ns']:.2e} > {MaxAvgNs[name]:.2e}"
                 )
+
+            emit_perf_result(
+                f"variable_rate_perf_{name}",
+                benchmark=name,
+                avg_ns=result['avg_ns'],
+                rate_hz=result['rate_hz'],
+                cycles=result.get('cycles'),
+                threshold_pass=threshold_pass,
+                max_avg_ns=MaxAvgNs[name],
+                max_cycles=MaxCycles[name],
+            )
 
         assert not failures, "Rate check failed:\n" + "\n".join(failures)
 
