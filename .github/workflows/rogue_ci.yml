@@ -95,21 +95,6 @@ jobs:
           codecov
           coverage report -m
 
-      # Generate Documentation
-      - name: Generate Documentation
-        if: startsWith(github.ref, 'refs/tags/')
-        run: |
-          source setup_rogue.sh
-          cd docs
-          make html
-
-      - name: Deploy Documentation
-        if: startsWith(github.ref, 'refs/tags/')
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GH_TOKEN }}
-          publish_dir: docs/build/html
-
 # ----------------------------------------------------------------------------
 
   small_build_test:

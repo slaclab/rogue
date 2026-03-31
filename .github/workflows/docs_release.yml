@@ -1,0 +1,131 @@
+# ----------------------------------------------------------------------------
+# Title      : ROGUE Release Documentation Workflow
+# ----------------------------------------------------------------------------
+# This file is part of the rogue software package. It is subject to
+# the license terms in the LICENSE.txt file found in the top-level directory
+# of this distribution and at:
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+# No part of the rogue software package, including this file, may be
+# copied, modified, propagated, or distributed except according to the terms
+# contained in the LICENSE.txt file.
+# ----------------------------------------------------------------------------
+
+name: Release Documentation
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      target_ref:
+        description: "Git ref to build for staging validation"
+        required: false
+        type: string
+      version_label:
+        description: "Version label to publish inside the staging prefix"
+        required: false
+        default: "staged-release"
+        type: string
+      staging_prefix:
+        description: "Sandbox path on gh-pages for manual validation"
+        required: false
+        default: "staging-docs"
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  publish_docs:
+    name: Publish Release Docs
+    runs-on: ubuntu-24.04
+    env:
+      REPO_NAME: ${{ github.event.repository.name }}
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ inputs.target_ref || github.ref }}
+
+      - name: Set publish variables
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "DOCS_MODE=release" >> "$GITHUB_ENV"
+            echo "DOCS_VERSION=${{ inputs.version_label }}" >> "$GITHUB_ENV"
+            echo "DOCS_OUTPUT_ROOT=.tmp/gh-pages/${{ inputs.staging_prefix }}" >> "$GITHUB_ENV"
+            echo "ROGUE_DOCS_SITE_ROOT=/${REPO_NAME}/${{ inputs.staging_prefix }}" >> "$GITHUB_ENV"
+          else
+            echo "DOCS_MODE=release" >> "$GITHUB_ENV"
+            echo "DOCS_VERSION=${GITHUB_REF_NAME}" >> "$GITHUB_ENV"
+            echo "DOCS_OUTPUT_ROOT=.tmp/gh-pages" >> "$GITHUB_ENV"
+            echo "ROGUE_DOCS_SITE_ROOT=/${REPO_NAME}" >> "$GITHUB_ENV"
+          fi
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+          cache-dependency-path: "pip_requirements.txt"
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y doxygen doxygen-doc libzmq3-dev libboost-all-dev bzip2 libbz2-dev
+          pip install -r pip_requirements.txt
+
+      - name: Build Rogue
+        run: |
+          python -c "import numpy; print(numpy.get_include())"
+          mkdir build
+          cd build
+          cmake .. -DROGUE_INSTALL=local
+          make -j"$(nproc)" install
+
+      - name: Build documentation
+        env:
+          ROGUE_DOCS_SITE_ROOT: ${{ env.ROGUE_DOCS_SITE_ROOT }}
+        run: |
+          source setup_rogue.sh
+          cd docs
+          make html
+
+      - name: Prepare gh-pages worktree
+        run: |
+          rm -rf .tmp/gh-pages
+          mkdir -p .tmp
+          git fetch origin gh-pages || true
+          if git show-ref --verify --quiet refs/remotes/origin/gh-pages; then
+            git worktree add .tmp/gh-pages origin/gh-pages
+          else
+            git worktree add --detach .tmp/gh-pages
+            cd .tmp/gh-pages
+            git checkout --orphan gh-pages
+            git rm -rf . >/dev/null 2>&1 || true
+          fi
+          touch .tmp/gh-pages/.nojekyll
+
+      - name: Update published docs tree
+        run: |
+          python3 scripts/docs_publish.py \
+            --site-dir docs/build/html \
+            --output-root "${DOCS_OUTPUT_ROOT}" \
+            --site-root "${ROGUE_DOCS_SITE_ROOT}" \
+            --mode "${DOCS_MODE}" \
+            --version "${DOCS_VERSION}" \
+            --write-root-redirect
+
+      - name: Commit and push
+        run: |
+          cd .tmp/gh-pages
+          git add .
+          if git diff --cached --quiet; then
+            echo "No gh-pages changes to publish."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Publish docs for ${DOCS_VERSION}"
+          git push origin HEAD:gh-pages

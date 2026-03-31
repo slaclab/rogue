@@ -142,6 +142,11 @@ html_js_files = [
     'custom.js',
 ]
 
+html_context = {
+    'rogue_docs_site_root': os.environ.get('ROGUE_DOCS_SITE_ROOT', ''),
+    'rogue_docs_default_version': os.environ.get('ROGUE_DOCS_DEFAULT_VERSION', 'latest'),
+}
+
 # Custom sidebar templates, must be a dictionary that maps document names
 # to template names.
 #
