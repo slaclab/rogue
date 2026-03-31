@@ -23,6 +23,8 @@ import rogue.interfaces.memory
 
 from p4p.client.thread import Context
 from pyrogue.protocols.epicsV7 import (
+    EpicsConvSeverity,
+    EpicsConvStatus,
     _epicsV7_to_pva_type,
     _EPICS_MAX_NAME_LEN,
     _make_epicsV7_suffix,
@@ -244,6 +246,23 @@ class LongNameSubDev(pr.Device):
             typeStr = 'UInt32',
             mode    = 'RW'))
 
+        # Float64 variable with units and alarm thresholds for alarm metadata tests (PVA-06).
+        # Full PV name: test_ioc_v7:LocalRoot:LongNameSubDev:AlarmTestFloatWithUnitsAndThresholds
+        # = 74 chars > 60 → gets hashed CA name and a PVA long-name alias.
+        self.add(pr.LocalVariable(
+            name        = 'AlarmTestFloatWithUnitsAndThresholds',
+            value       = 0.0,
+            typeStr     = 'Float64',
+            mode        = 'RW',
+            units       = 'volts',
+            minimum     = 0.0,
+            maximum     = 10.0,
+            lowAlarm    = 1.0,
+            lowWarning  = 2.0,
+            highWarning = 8.0,
+            highAlarm   = 9.0,
+        ))
+
 
 class LocalRoot(pr.Root):
     def __init__(self, tcp_port=9075):
@@ -326,7 +345,7 @@ class LocalRootWithEpics(LocalRoot):
         )
 
 
-# TEST-10: convergence helper
+# TEST-01: convergence helper
 def wait_pv_value(ctxt, pv_name, expected, timeout=PropagateTimeout, transform=None):
     start = time.time()
 
@@ -440,6 +459,85 @@ def test_pva_type_mapping():
             pass
 
 
+def test_epics_conv_status_severity():
+    """Unit tests for EpicsConvStatus and EpicsConvSeverity -- no IOC required."""
+
+    class FakeVal:
+        def __init__(self, status='None', severity='None'):
+            self.status   = status
+            self.severity = severity
+
+    # EpicsConvStatus: all named alarm states map to their EPICS alarm status codes
+    assert EpicsConvStatus(FakeVal(status='AlarmLoLo'))  == 5  # epicsAlarmLoLo
+    assert EpicsConvStatus(FakeVal(status='AlarmLow'))   == 6  # epicsAlarmLow
+    assert EpicsConvStatus(FakeVal(status='AlarmHiHi'))  == 3  # epicsAlarmHiHi
+    assert EpicsConvStatus(FakeVal(status='AlarmHigh'))  == 4  # epicsAlarmHigh
+    assert EpicsConvStatus(FakeVal(status='None'))       == 0  # no alarm
+    assert EpicsConvStatus(FakeVal(status='Good'))       == 0  # no alarm
+    assert EpicsConvStatus(FakeVal(status=''))           == 0  # no alarm
+
+    # EpicsConvSeverity: maps severity strings to EPICS severity codes
+    assert EpicsConvSeverity(FakeVal(severity='AlarmMinor')) == 1  # epicsSevMinor
+    assert EpicsConvSeverity(FakeVal(severity='AlarmMajor')) == 2  # epicsSevMajor
+    assert EpicsConvSeverity(FakeVal(severity='None'))       == 0  # no alarm
+    assert EpicsConvSeverity(FakeVal(severity='Good'))       == 0  # no alarm
+    assert EpicsConvSeverity(FakeVal(severity=''))           == 0  # no alarm
+
+
+def test_make_shared_pv_alarm_display():
+    """Unit test: _make_shared_pv sets alarm and display metadata on the SharedPV initial value.
+
+    Verifies alarm.severity, alarm.status, display.units, display.limits, and
+    valueAlarm threshold fields without requiring a running IOC.
+    """
+
+    class FakeVarVal:
+        value     = 0.0
+        valueDisp = '0.0'
+        severity  = 'AlarmMinor'
+        status    = 'AlarmHigh'
+
+    class FakeVar:
+        typeStr     = 'Float64'
+        nativeType  = float
+        disp        = None
+        enum        = {}
+        description = 'Test variable'
+        units       = 'volts'
+        minimum     = 0.0
+        maximum     = 10.0
+        lowAlarm    = 1.0
+        lowWarning  = 2.0
+        highWarning = 8.0
+        highAlarm   = 9.0
+
+        def getVariableValue(self, read=False):
+            return FakeVarVal()
+
+    pv  = _make_shared_pv(FakeVar(), 'd', None)
+    curr = pv.current()
+    # SharedPV.current() returns the NType-wrapped form; .raw is the underlying Value
+    raw = curr.raw if hasattr(curr, 'raw') else curr
+
+    # Alarm fields populated from FakeVarVal.severity / .status
+    assert raw.alarm.severity == 1, \
+        'Expected severity=1 (AlarmMinor), got {}'.format(raw.alarm.severity)
+    assert raw.alarm.status == 4, \
+        'Expected status=4 (AlarmHigh), got {}'.format(raw.alarm.status)
+
+    # Display metadata
+    assert raw.display.units       == 'volts',         'Expected units=volts'
+    assert raw.display.description == 'Test variable', 'Expected description'
+    assert raw.display.limitHigh   == 10.0,            'Expected limitHigh=10.0'
+    assert raw.display.limitLow    == 0.0,             'Expected limitLow=0.0'
+
+    # Alarm threshold fields
+    assert raw.valueAlarm.highAlarmLimit   == 9.0, 'Expected highAlarmLimit=9.0'
+    assert raw.valueAlarm.highWarningLimit == 8.0, 'Expected highWarningLimit=8.0'
+    assert raw.valueAlarm.lowWarningLimit  == 2.0, 'Expected lowWarningLimit=2.0'
+    assert raw.valueAlarm.lowAlarmLimit    == 1.0, 'Expected lowAlarmLimit=1.0'
+
+
 def test_local_root():
     """Test EpicsV7 Server -- put/get round-trips, WO, float, remote, commands"""
 
@@ -458,74 +556,74 @@ def test_local_root():
         # Test list method
         root.epics.list()
 
-        # TEST-01: Wait for PVs to become visible through the EPICS server (TEST-10 coverage)
+        # TEST-02: Wait for PVs to become visible through the EPICS server (TEST-01 coverage)
         wait_pv_value(ctxt, device_epics_prefix + ':LocalRwInt', 0)
 
-        # TEST-02: RW a variable holding a scalar int value
+        # TEST-03: RW a variable holding a scalar int value
         pv_name = device_epics_prefix + ':LocalRwInt'
         test_value = 314
         ctxt.put(pv_name, test_value)
-        wait_pv_value(ctxt, pv_name, test_value)  # TEST-10 coverage
+        wait_pv_value(ctxt, pv_name, test_value)  # TEST-01 coverage
         test_result = ctxt.get(pv_name)
         if test_result != test_value:
             raise AssertionError('pv_name={}: test_value={}; test_result={}'.format(
                 pv_name, test_value, test_result))
 
-        # TEST-03: WO a variable holding a scalar int value
+        # TEST-04: WO a variable holding a scalar int value
         pv_name = device_epics_prefix + ':LocalWoInt'
         test_value = 314
         ctxt.put(pv_name, test_value)
 
-        # TEST-04: RW a variable holding a float value
+        # TEST-05: RW a variable holding a float value
         pv_name = device_epics_prefix + ':LocalRwFloat'
         test_value = 5.67
         ctxt.put(pv_name, test_value)
-        wait_pv_value(ctxt, pv_name, test_value, transform=lambda value: round(value, 2))  # TEST-10 coverage
+        wait_pv_value(ctxt, pv_name, test_value, transform=lambda value: round(value, 2))  # TEST-01 coverage
         test_result = round(ctxt.get(pv_name), 2)
         if test_result != test_value:
             raise AssertionError('pv_name={}: test_value={}; test_result={}'.format(
                 pv_name, test_value, test_result))
 
-        # TEST-05: RW a remote variable holding a scalar int value
+        # TEST-06: RW a remote variable holding a scalar int value
         pv_name = device_epics_prefix + ':RemoteRwInt'
         test_value = 314
         ctxt.put(pv_name, test_value)
-        wait_pv_value(ctxt, pv_name, test_value)  # TEST-10 coverage
+        wait_pv_value(ctxt, pv_name, test_value)  # TEST-01 coverage
         test_result = ctxt.get(pv_name)
         if test_result != test_value:
             raise AssertionError('pv_name={}: test_value={}; test_result={}'.format(
                 pv_name, test_value, test_result))
 
-        # TEST-06: WO a remote variable holding a scalar int value
+        # TEST-07: WO a remote variable holding a scalar int value
         pv_name = device_epics_prefix + ':RemoteWoInt'
         test_value = 314
         ctxt.put(pv_name, test_value)
 
-        # TEST-07: Commands invoked via caput (ctxt.put), NOT ctxt.rpc()
+        # TEST-08: Commands invoked via caput (ctxt.put), NOT ctxt.rpc()
         # No-arg command: set LocalRwInt non-zero, then reset via caput with value=0
         pv_name = device_epics_prefix + ':LocalRwInt'
         reset_pv = device_epics_prefix + ':ResetLocalRwInt'
         test_value = 42
         ctxt.put(pv_name, test_value)
-        wait_pv_value(ctxt, pv_name, test_value)  # TEST-10 coverage
+        wait_pv_value(ctxt, pv_name, test_value)  # TEST-01 coverage
         ctxt.put(reset_pv, 0)  # value=0 triggers no-arg command call
-        wait_pv_value(ctxt, pv_name, 0)  # TEST-10 coverage
+        wait_pv_value(ctxt, pv_name, 0)  # TEST-01 coverage
         test_result = ctxt.get(pv_name)
         if test_result != 0:
             raise AssertionError('Command reset failed: pv_name={}: expected=0; test_result={}'.format(
                 pv_name, test_result))
 
-        # TEST-07 (with-arg): caput with non-zero value sets LocalRwInt to that value
+        # TEST-09 (with-arg): caput with non-zero value sets LocalRwInt to that value
         set_pv = device_epics_prefix + ':SetLocalRwInt'
         test_value = 99
         ctxt.put(set_pv, test_value)
-        wait_pv_value(ctxt, pv_name, test_value)  # TEST-10 coverage
+        wait_pv_value(ctxt, pv_name, test_value)  # TEST-01 coverage
         test_result = ctxt.get(pv_name)
         if test_result != test_value:
             raise AssertionError('Command set failed: pv_name={}: expected={}; test_result={}'.format(
                 pv_name, test_value, test_result))
 
-        # TEST-11: Int64 type (int64In/Out)
+        # TEST-10: Int64 type (int64In/Out)
         pv_name = device_epics_prefix + ':LocalRwInt64'
         test_value = 9223372036854775807  # max int64
         ctxt.put(pv_name, test_value)
@@ -535,7 +633,7 @@ def test_local_root():
             raise AssertionError('Int64: pv_name={}: test_value={}; test_result={}'.format(
                 pv_name, test_value, test_result))
 
-        # TEST-12: UInt64 type (int64In/Out for CA; p4p type 'L' for PVA long-name alias)
+        # TEST-11: UInt64 type (int64In/Out for CA; p4p type 'L' for PVA long-name alias)
         # softioc still uses signed int64Out, so test within signed int64 range.
         pv_name = device_epics_prefix + ':LocalRwUInt64'
         test_value = 9223372036854775806  # INT64_MAX - 1, fits in int64Out without overflow
@@ -546,7 +644,7 @@ def test_local_root():
             raise AssertionError('UInt64: pv_name={}: test_value={}; test_result={}'.format(
                 pv_name, test_value, test_result))
 
-        # TEST-13: String type (longStringIn/Out) - test long strings > 40 chars
+        # TEST-12: String type (longStringIn/Out) - test long strings > 40 chars
         pv_name = device_epics_prefix + ':LocalRwString'
         test_value = 'This is a very long string that exceeds the old 40 character limit for EPICS stringIn/Out records'
         ctxt.put(pv_name, test_value)
@@ -556,7 +654,7 @@ def test_local_root():
             raise AssertionError('String: pv_name={}: test_value={}; test_result={}'.format(
                 pv_name, test_value, test_result))
 
-        # TEST-14: Bool type (softioc longIn/Out; p4p type '?' for PVA long-name alias)
+        # TEST-13: Bool type (softioc longIn/Out; p4p type '?' for PVA long-name alias)
         # softioc uses longOut so ctxt.get returns int; test True/False as int 1/0.
         pv_name = device_epics_prefix + ':LocalRwBool'
         for test_value in (1, 0):
@@ -567,7 +665,7 @@ def test_local_root():
                 raise AssertionError('Bool: pv_name={}: test_value={}; test_result={}'.format(
                     pv_name, test_value, test_result))
 
-        # TEST-15: Enum type
+        # TEST-14: Enum type
         pv_name = device_epics_prefix + ':LocalRwEnum'
         test_value = 2  # 'Auto'
         ctxt.put(pv_name, test_value)
@@ -577,7 +675,7 @@ def test_local_root():
             raise AssertionError('Enum: pv_name={}: test_value={}; test_result={}'.format(
                 pv_name, test_value, test_result))
 
-        # TEST-16: UInt32 type (softioc longIn/Out; p4p type 'I' for PVA long-name alias)
+        # TEST-15: UInt32 type (softioc longIn/Out; p4p type 'I' for PVA long-name alias)
         # softioc uses signed longOut, so test within signed int32 range.
         pv_name = device_epics_prefix + ':LocalRwUInt32'
         test_value = 2147483647  # INT32_MAX, fits in longOut without overflow
@@ -588,7 +686,7 @@ def test_local_root():
             raise AssertionError('UInt32: pv_name={}: test_value={}; test_result={}'.format(
                 pv_name, test_value, test_result))
 
-        # TEST-17: Int32 type
+        # TEST-16: Int32 type
         pv_name = device_epics_prefix + ':LocalRwInt32'
         test_value = -2147483648  # min int32
         ctxt.put(pv_name, test_value)
@@ -598,7 +696,7 @@ def test_local_root():
             raise AssertionError('Int32: pv_name={}: test_value={}; test_result={}'.format(
                 pv_name, test_value, test_result))
 
-        # TEST-25: UInt8 type (p4p type 'B')
+        # TEST-17: UInt8 type (p4p type 'B')
         pv_name = device_epics_prefix + ':LocalRwUInt8'
         test_value = 255  # max uint8
         ctxt.put(pv_name, test_value)
@@ -608,7 +706,7 @@ def test_local_root():
             raise AssertionError('UInt8: pv_name={}: test_value={}; test_result={}'.format(
                 pv_name, test_value, test_result))
 
-        # TEST-26: UInt16 type (p4p type 'H')
+        # TEST-18: UInt16 type (p4p type 'H')
         pv_name = device_epics_prefix + ':LocalRwUInt16'
         test_value = 65535  # max uint16
         ctxt.put(pv_name, test_value)
@@ -618,7 +716,7 @@ def test_local_root():
             raise AssertionError('UInt16: pv_name={}: test_value={}; test_result={}'.format(
                 pv_name, test_value, test_result))
 
-        # TEST-27: Int8 type (p4p type 'b')
+        # TEST-19: Int8 type (p4p type 'b')
         pv_name = device_epics_prefix + ':LocalRwInt8'
         test_value = -128  # min int8
         ctxt.put(pv_name, test_value)
@@ -628,7 +726,7 @@ def test_local_root():
             raise AssertionError('Int8: pv_name={}: test_value={}; test_result={}'.format(
                 pv_name, test_value, test_result))
 
-        # TEST-28: Int16 type (p4p type 'h')
+        # TEST-20: Int16 type (p4p type 'h')
         pv_name = device_epics_prefix + ':LocalRwInt16'
         test_value = -32768  # min int16
         ctxt.put(pv_name, test_value)
@@ -638,7 +736,7 @@ def test_local_root():
             raise AssertionError('Int16: pv_name={}: test_value={}; test_result={}'.format(
                 pv_name, test_value, test_result))
 
-        # TEST-18: Float32 type
+        # TEST-21: Float32 type
         pv_name = device_epics_prefix + ':LocalRwFloat32'
         test_value = 3.14159
         ctxt.put(pv_name, test_value)
@@ -648,7 +746,7 @@ def test_local_root():
             raise AssertionError('Float32: pv_name={}: test_value={}; test_result={}'.format(
                 pv_name, test_value, test_result))
 
-        # TEST-19: Float64 type
+        # TEST-22: Float64 type
         pv_name = device_epics_prefix + ':LocalRwFloat64'
         test_value = 2.718281828459045
         ctxt.put(pv_name, test_value)
@@ -658,7 +756,7 @@ def test_local_root():
             raise AssertionError('Float64: pv_name={}: test_value={}; test_result={}'.format(
                 pv_name, test_value, test_result))
 
-        # TEST-20: ndarray type (waveform)
+        # TEST-23: ndarray type (waveform)
         pv_name = device_epics_prefix + ':LocalRwArray'
         test_value = np.array([10.0, 20.0, 30.0, 40.0, 50.0])
         ctxt.put(pv_name, test_value)
@@ -668,15 +766,15 @@ def test_local_root():
             raise AssertionError('Array: pv_name={}: test_value={}; test_result={}'.format(
                 pv_name, test_value, test_result))
 
-        # TEST-22: list nativeType (longStringIn/Out) — verify PV is accessible
+        # TEST-24: list nativeType (longStringIn/Out) — verify PV is accessible
         pv_name = device_epics_prefix + ':LocalRwList'
         wait_pv_value(ctxt, pv_name, True, transform=lambda v: isinstance(v, str) and len(v) > 0)
 
-        # TEST-23: dict nativeType (longStringIn/Out) — verify PV is accessible
+        # TEST-25: dict nativeType (longStringIn/Out) — verify PV is accessible
         pv_name = device_epics_prefix + ':LocalRwDict'
         wait_pv_value(ctxt, pv_name, True, transform=lambda v: isinstance(v, str) and len(v) > 0)
 
-        # TEST-24: RO LocalVariable (longIn) — verifies _varUpdated works for In records.
+        # TEST-26: RO LocalVariable (longIn) — verifies _varUpdated works for In records.
         # ProcessDeviceSupportIn.set() has NO process= parameter; passing process=True raises
         # TypeError (silently swallowed), leaving the record stuck at 0.
         # Control the value via _local_ro_int; wait for the 0.5 s poll to fire and
@@ -690,7 +788,7 @@ def test_local_root():
             raise AssertionError('RO In record not updated: pv_name={}: expected={}; got={}'.format(
                 ro_pv, test_value, test_result))
 
-        # ---- Long PV name hashing tests (Phase 2: HASH-05, OPS-01, OPS-02, TEST-03) ----
+        # ---- Long PV name hashing tests (HASH-05, OPS-01, OPS-02) ----
 
         # Verify the long-named PVs are accessible via PVA using hashed CA names.
         # The suffix is hashed to tail_XXXXXXXXXX when base:suffix > 60 chars.
@@ -706,7 +804,7 @@ def test_local_root():
 
         short_pv = epics_prefix + ':LocalRoot:LongNameSubDev:ShortVar'
 
-        # TEST-03a: Verify hashed PVs are reachable (HASH-05)
+        # TEST-27: Verify hashed PVs are reachable (HASH-05)
         # The hashed suffix should start with 'tail_' since the full name exceeds 60 chars
         assert hashed_suffix_1.startswith('tail_'), \
             'Expected hashed suffix for long var 1, got: {}'.format(hashed_suffix_1)
@@ -718,7 +816,7 @@ def test_local_root():
         wait_pv_value(ctxt, hashed_pv_2, True,
                       transform=lambda v: abs(v - 3.14) < 0.01)
 
-        # TEST-03b: RW round-trip on a hashed PV (HASH-05)
+        # TEST-28: RW round-trip on a hashed PV (HASH-05)
         test_value = 777
         ctxt.put(hashed_pv_1, test_value)
         wait_pv_value(ctxt, hashed_pv_1, test_value)
@@ -728,7 +826,7 @@ def test_local_root():
                 'Long-name PV RW failed: pv_name={}: expected={}; got={}'.format(
                     hashed_pv_1, test_value, test_result))
 
-        # TEST-03c: Short-named PV in same device is NOT hashed (zero regression)
+        # TEST-29: Short-named PV in same device is NOT hashed (zero regression)
         wait_pv_value(ctxt, short_pv, 42)
         test_value = 99
         ctxt.put(short_pv, test_value)
@@ -739,7 +837,7 @@ def test_local_root():
                 'Short-name PV in LongNameSubDev failed: expected={}; got={}'.format(
                     test_value, test_result))
 
-        # TEST-03d: list() returns full long names, not hashed names (OPS-01)
+        # TEST-30: list() returns full long names, not hashed names (OPS-01)
         pv_map = root.epics.list()
         long_path_1 = 'LocalRoot.LongNameSubDev.' + long_var_name_1
         full_long_name_1 = epics_prefix + ':' + long_suffix_1
@@ -748,7 +846,7 @@ def test_local_root():
         assert pv_map[long_path_1] == full_long_name_1, \
             'list() should show full long name, got: {}'.format(pv_map[long_path_1])
 
-        # TEST-03e: dump() shows annotation for hashed PVs (OPS-02)
+        # TEST-31: dump() shows annotation for hashed PVs (OPS-02)
         dump_output = io.StringIO()
         old_stdout = sys.stdout
         sys.stdout = dump_output
@@ -763,7 +861,7 @@ def test_local_root():
         assert '(CA: ' + hashed_pv_1 + ')' in dump_text, \
             'dump() should annotate hashed PV with CA name: {}'.format(hashed_pv_1)
 
-        # TEST-03f: Verify all existing short-named PVs still work (zero regression)
+        # TEST-32: Verify all existing short-named PVs still work (zero regression)
         # Re-verify a basic RW round-trip on a standard PV
         std_pv = epics_prefix + ':LocalRoot:SimpleDev:LocalRwInt'
         test_value = 12345
@@ -775,17 +873,17 @@ def test_local_root():
                 'Zero-regression check failed on standard PV: expected={}; got={}'.format(
                     test_value, test_result))
 
-        # ---- PVA long-name alias tests (Phase 3: PVA-01 through PVA-05, TEST-02) ----
+        # ---- PVA long-name alias tests (PVA-01 through PVA-05) ----
 
         # Compute full long PVA names for the hashed PVs
         long_pv_full_1 = epics_prefix + ':' + long_suffix_1
         long_pv_full_2 = epics_prefix + ':' + long_suffix_2
 
-        # TEST-02a: pvget on full long name returns current value (PVA-01, PVA-05)
-        # The hashed PV was left at test_value=777 from TEST-03b above
+        # TEST-33: pvget on full long name returns current value (PVA-01, PVA-05)
+        # The hashed PV was left at test_value=777 from TEST-28 above
         wait_pv_value(ctxt, long_pv_full_1, 777)
 
-        # TEST-02b: pvput via full long name, read back via long name (PVA-02)
+        # TEST-34: pvput via full long name, read back via long name (PVA-02)
         test_value = 888
         ctxt.put(long_pv_full_1, test_value)
         wait_pv_value(ctxt, long_pv_full_1, test_value)
@@ -795,7 +893,7 @@ def test_local_root():
                 'PVA long-name put/get failed: pv={}: expected={}; got={}'.format(
                     long_pv_full_1, test_value, test_result))
 
-        # TEST-02c: PVA write via long name visible on hashed CA name (PVA-03 fan-out)
+        # TEST-35: PVA write via long name visible on hashed CA name (PVA-03 fan-out)
         test_value = 555
         ctxt.put(long_pv_full_1, test_value)
         wait_pv_value(ctxt, hashed_pv_1, test_value)
@@ -805,7 +903,7 @@ def test_local_root():
                 'PVA->CA fan-out failed: long={} CA={}: expected={}; got={}'.format(
                     long_pv_full_1, hashed_pv_1, test_value, test_result))
 
-        # TEST-02d: CA write via short name visible on full long name (PVA-03 reverse fan-out)
+        # TEST-36: CA write via short name visible on full long name (PVA-03 reverse fan-out)
         test_value = 444
         ctxt.put(hashed_pv_1, test_value)
         wait_pv_value(ctxt, long_pv_full_1, test_value)
@@ -815,7 +913,7 @@ def test_local_root():
                 'CA->PVA fan-out failed: CA={} long={}: expected={}; got={}'.format(
                     hashed_pv_1, long_pv_full_1, test_value, test_result))
 
-        # TEST-02e: Second hashed PV (float) accessible via full long name (PVA-01)
+        # TEST-37: Second hashed PV (float) accessible via full long name (PVA-01)
         wait_pv_value(ctxt, long_pv_full_2, True,
                       transform=lambda v: isinstance(v, float))
         test_value = 2.718
@@ -823,7 +921,7 @@ def test_local_root():
         wait_pv_value(ctxt, long_pv_full_2, round(test_value, 3),
                       transform=lambda v: round(v, 3))
 
-        # TEST-02f: Short-named PVs unaffected by PVA alias layer (zero regression)
+        # TEST-38: Short-named PVs unaffected by PVA alias layer (zero regression)
         std_pv = epics_prefix + ':LocalRoot:SimpleDev:LocalRwInt'
         test_value = 54321
         ctxt.put(std_pv, test_value)
@@ -836,7 +934,7 @@ def test_local_root():
 
         # ---- New type SharedPV tests (Bool '?', UInt32 'I') ----
 
-        # TEST-02g: Bool variable via PVA long-name alias (SharedPV type '?')
+        # TEST-39: Bool variable via PVA long-name alias (SharedPV type '?')
         # Verify the SharedPV is created and the full long name is accessible.
         long_bool_var = 'ThisIsAVeryLongBoolVariableNameForTestingBoolPvaType'
         long_bool_suffix = 'LocalRoot:LongNameSubDev:' + long_bool_var
@@ -851,7 +949,7 @@ def test_local_root():
         ctxt.put(long_bool_pv, False)
         wait_pv_value(ctxt, long_bool_pv, False, transform=lambda v: bool(v))
 
-        # TEST-02h: UInt32 variable via PVA long-name alias (SharedPV type 'I')
+        # TEST-40: UInt32 variable via PVA long-name alias (SharedPV type 'I')
         # Verify the SharedPV is created and the full long name is accessible.
         long_u32_var = 'ThisIsAVeryLongUInt32VariableNameThatExceedsSixtyCharLimit'
         long_u32_suffix = 'LocalRoot:LongNameSubDev:' + long_u32_var
@@ -868,6 +966,76 @@ def test_local_root():
         if test_result != test_value:
             raise AssertionError(
                 'UInt32 PVA long-name: expected={}; got={}'.format(test_value, test_result))
+
+        # ---- Alarm and display metadata on PVA long-name aliases (PVA-06) ----
+
+        # The alarm test variable is long enough to be hashed and get a PVA alias:
+        # test_ioc_v7:LocalRoot:LongNameSubDev:AlarmTestFloatWithUnitsAndThresholds = 74 chars
+        alarm_var_name   = 'AlarmTestFloatWithUnitsAndThresholds'
+        alarm_suffix     = 'LocalRoot:LongNameSubDev:' + alarm_var_name
+        alarm_long_pv    = epics_prefix + ':' + alarm_suffix
+        alarm_hashed_sfx = _make_epicsV7_suffix(epics_prefix, alarm_suffix)
+        assert alarm_hashed_sfx.startswith('tail_'), \
+            'Expected hashed suffix for alarm test var, got: {}'.format(alarm_hashed_sfx)
+
+        # Use a raw Context (unwraps={}) so ctxt_raw.get() returns the full p4p Value
+        # with alarm, display, and valueAlarm fields rather than the unwrapped scalar.
+        ctxt_raw = Context('pva', unwrap={})
+
+        # Reset variable to 0.0 (no alarm) and wait for the hashed CA PV to stabilise
+        root.LongNameSubDev.AlarmTestFloatWithUnitsAndThresholds.set(0.0)
+        alarm_hashed_pv = epics_prefix + ':' + alarm_hashed_sfx
+        wait_pv_value(ctxt, alarm_hashed_pv, 0.0, transform=lambda v: round(v, 1))
+
+        # TEST-41: Initial PVA value carries display metadata (units and limits)
+        raw_val = ctxt_raw.get(alarm_long_pv)
+        assert raw_val.display.units    == 'volts', \
+            'Expected display.units=volts, got: {}'.format(raw_val.display.units)
+        assert raw_val.display.limitHigh == 10.0, \
+            'Expected display.limitHigh=10.0, got: {}'.format(raw_val.display.limitHigh)
+        assert raw_val.display.limitLow  == 0.0, \
+            'Expected display.limitLow=0.0, got: {}'.format(raw_val.display.limitLow)
+
+        # TEST-42: Value within normal range → no alarm (severity=0, status=0)
+        root.LongNameSubDev.AlarmTestFloatWithUnitsAndThresholds.set(5.0)
+        time.sleep(0.5)
+        raw_val = ctxt_raw.get(alarm_long_pv)
+        assert raw_val.alarm.severity == 0, \
+            'Expected severity=0 for value=5.0, got: {}'.format(raw_val.alarm.severity)
+        assert raw_val.alarm.status == 0, \
+            'Expected status=0 for value=5.0, got: {}'.format(raw_val.alarm.status)
+
+        # TEST-43: Value above highAlarm → major alarm (severity=2, status=3 AlarmHiHi)
+        root.LongNameSubDev.AlarmTestFloatWithUnitsAndThresholds.set(9.5)
+        time.sleep(0.5)
+        raw_val = ctxt_raw.get(alarm_long_pv)
+        assert raw_val.alarm.severity == 2, \
+            'Expected severity=2 (major) for value=9.5 > highAlarm=9.0, got: {}'.format(
+                raw_val.alarm.severity)
+        assert raw_val.alarm.status == 3, \
+            'Expected status=3 (AlarmHiHi) for value=9.5, got: {}'.format(raw_val.alarm.status)
+
+        # TEST-44: Value below lowAlarm → major alarm (severity=2, status=5 AlarmLoLo)
+        root.LongNameSubDev.AlarmTestFloatWithUnitsAndThresholds.set(0.5)
+        time.sleep(0.5)
+        raw_val = ctxt_raw.get(alarm_long_pv)
+        assert raw_val.alarm.severity == 2, \
+            'Expected severity=2 (major) for value=0.5 < lowAlarm=1.0, got: {}'.format(
+                raw_val.alarm.severity)
+        assert raw_val.alarm.status == 5, \
+            'Expected status=5 (AlarmLoLo) for value=0.5, got: {}'.format(raw_val.alarm.status)
+
+        # TEST-45: Value between lowAlarm and lowWarning → minor alarm (severity=1, status=6)
+        root.LongNameSubDev.AlarmTestFloatWithUnitsAndThresholds.set(1.5)
+        time.sleep(0.5)
+        raw_val = ctxt_raw.get(alarm_long_pv)
+        assert raw_val.alarm.severity == 1, \
+            'Expected severity=1 (minor) for value=1.5 in (lowAlarm=1.0, lowWarning=2.0), got: {}'.format(
+                raw_val.alarm.severity)
+        assert raw_val.alarm.status == 6, \
+            'Expected status=6 (AlarmLow) for value=1.5, got: {}'.format(raw_val.alarm.status)
+
+        ctxt_raw.close()
 
     ctxt.close()
 
