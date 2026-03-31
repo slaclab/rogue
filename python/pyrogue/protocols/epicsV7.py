@@ -82,6 +82,32 @@ def _make_epicsV7_suffix(base, suffix):
     return "tail_" + hashlib.sha1(fullName.encode()).hexdigest()[:10]
 
 
+def EpicsConvStatus(varValue: pyrogue.VariableValue) -> int:
+    """
+    Convert PyRogue variable status to EPICS alarm status code.
+
+    Parameters
+    ----------
+    varValue : object
+        PyRogue variable value with ``status`` attribute.
+
+    Returns
+    -------
+    int
+        EPICS alarm status code (0=no alarm, 3=HiHi, 4=High, 5=LoLo, 6=Low).
+    """
+    if varValue.status == "AlarmLoLo":
+        return 5  # epicsAlarmLoLo
+    elif varValue.status == "AlarmLow":
+        return 6  # epicsAlarmLow
+    elif varValue.status == "AlarmHiHi":
+        return 3  # epicsAlarmHiHi
+    elif varValue.status == "AlarmHigh":
+        return 4  # epicsAlarmHigh
+    else:
+        return 0
+
+
 def EpicsConvSeverity(varValue: pyrogue.VariableValue) -> int:
     """
     Convert PyRogue variable severity to EPICS alarm severity code.
@@ -203,9 +229,27 @@ def _make_shared_pv(var, pva_type, handler):
         nt = p4p.nt.NTScalar('s', display=False, control=False)
         iv = nt.wrap(varVal.valueDisp if varVal.valueDisp is not None else '')
     else:
-        nt = p4p.nt.NTScalar(pva_type, display=False, control=False)
+        nt = p4p.nt.NTScalar(pva_type, display=True, control=False, valueAlarm=True)
         default = False if pva_type == '?' else 0
         iv = nt.wrap(varVal.value if varVal.value is not None else default)
+        iv.alarm.severity = EpicsConvSeverity(varVal)
+        iv.alarm.status = EpicsConvStatus(varVal)
+        if var.description is not None:
+            iv.display.description = var.description
+        if var.units is not None:
+            iv.display.units = var.units
+        if var.maximum is not None:
+            iv.display.limitHigh = var.maximum
+        if var.minimum is not None:
+            iv.display.limitLow = var.minimum
+        if var.lowWarning is not None:
+            iv.valueAlarm.lowWarningLimit = var.lowWarning
+        if var.lowAlarm is not None:
+            iv.valueAlarm.lowAlarmLimit = var.lowAlarm
+        if var.highWarning is not None:
+            iv.valueAlarm.highWarningLimit = var.highWarning
+        if var.highAlarm is not None:
+            iv.valueAlarm.highAlarmLimit = var.highAlarm
     return p4p.server.thread.SharedPV(queue=None, handler=handler, initial=iv, nt=nt)
 
 
@@ -240,6 +284,8 @@ def _post_pv_long(pv_long, pva_type, var, value):
             return
         curr = pv_long.current()
         curr.raw.value = value.value
+        curr.raw.alarm.severity = EpicsConvSeverity(value)
+        curr.raw.alarm.status = EpicsConvStatus(value)
         pv_long.post(curr)
 
 
