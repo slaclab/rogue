@@ -1,5 +1,7 @@
 Documentation Generation.
 
+Planning documents for docs publishing changes live under `docs/plans/`.
+
 Boost.Python API build-time generation:
 
 Python API pages for Boost.Python-exported Rogue classes can embed the
