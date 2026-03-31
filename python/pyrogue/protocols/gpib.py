@@ -109,17 +109,17 @@ class GpibController(rogue.interfaces.memory.Slave):
                     transaction.getData(valBytes, 0)
                     val = var.base.fromBytes(valBytes)
                     send = var.getExtraAttribute('key') + " " + var.genDisp(val)
-                    self._log.debug(f"Write Sending {send}")
+                    self._log.debug("Write sending %s", send)
                     self._gpib.write(send.encode('UTF-8'))
                     transaction.done()
 
                 # Read Path
                 elif (transaction.type() == rogue.interfaces.memory.Read or transaction.type() == rogue.interfaces.memory.Verify):
                     send = var.getExtraAttribute('key') + "?"
-                    self._log.debug(f"Read Sending {send}")
+                    self._log.debug("Read sending %s", send)
                     self._gpib.write(send.encode('UTF-8'))
                     valStr = self._gpib.read(readLen).decode('UTF-8').rstrip()
-                    self._log.debug(f"Read Got: {valStr}")
+                    self._log.debug("Read got: %s", valStr)
                     val = var.parseDisp(valStr)
                     valBytes = var.base.toBytes(val)
                     transaction.setData(valBytes, 0)

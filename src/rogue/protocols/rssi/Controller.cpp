@@ -372,12 +372,12 @@ void rpr::Controller::applicationRx(ris::FramePtr frame) {
     ris::FrameLockPtr flock = frame->lock();
 
     if (frame->isEmpty()) {
-        log_->warning("Dumping empty application frame");
+        log_->warning("Dropping empty application frame");
         return;
     }
 
     if (frame->getError()) {
-        log_->warning("Dumping errored frame");
+        log_->warning("Dropping errored application frame");
         return;
     }
 
@@ -777,7 +777,7 @@ struct timeval& rpr::Controller::stateClosedWait() {
         // Reset
         if (head->rst) {
             state_ = StClosed;
-            log_->warning("Closing link. Server=%" PRIu8, server_);
+            log_->warning("Closing link after reset request. Server=%" PRIu8, server_);
 
             // Syn ack
         } else if (head->syn && (head->ack || server_)) {
@@ -871,7 +871,7 @@ struct timeval& rpr::Controller::stateSendSynAck() {
     transportTx(head, true, true);
 
     // Update state
-    log_->warning("State is open. Server=%" PRIu8, server_);
+    log_->info("Link state is open. Server=%" PRIu8, server_);
     state_ = StOpen;
     return (cumAckToutD2_);
 }
@@ -892,7 +892,7 @@ struct timeval& rpr::Controller::stateSendSeqAck() {
 
     // Update state
     state_ = StOpen;
-    log_->warning("State is open. Server=%" PRIu8, server_);
+    log_->info("Link state is open. Server=%" PRIu8, server_);
     return (cumAckToutD2_);
 }
 
@@ -964,7 +964,7 @@ struct timeval& rpr::Controller::stateError() {
     transportTx(rst, true, true);
 
     downCount_++;
-    log_->warning("Entering closed state. Server=%" PRIu8, server_);
+    log_->warning("Entering closed state after reset. Server=%" PRIu8, server_);
     state_ = StClosed;
 
     // Reset queues

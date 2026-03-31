@@ -123,7 +123,7 @@ class EpicsPvHandler(p4p.server.thread.Handler):
                 op.done()
 
             except Exception as msg:
-                self._log.error(f"Got error on put: {msg}")
+                self._log.error("Got error on put: %s", msg)
                 op.done(error=str(msg))
 
         else:
@@ -451,8 +451,7 @@ class EpicsPvServer(object):
         if len(self._pvMap) != len(self._list):
             for k, v in self._pvMap.items():
                 if k not in self._list:
-                    self._log.error(
-                        f"Failed to find {k} from P4P mapping in Rogue tree!")
+                    self._log.error("Failed to find %s from P4P mapping in Rogue tree", k)
 
         self._server = p4p.server.Server(providers=[self._provider])
 

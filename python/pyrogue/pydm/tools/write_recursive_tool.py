@@ -53,7 +53,7 @@ class WriteVariable(ExternalTool):
         elif node.isinstance(pyrogue.BaseVariable):
             node.parent.WriteDevice(True)
         else:
-            logger.warning("Invalid node for recursive write: {}".format(node.path))
+            logger.warning("Invalid node for recursive write: %s", node.path)
 
     def to_json(self) -> str:
         """Return serialized tool configuration."""

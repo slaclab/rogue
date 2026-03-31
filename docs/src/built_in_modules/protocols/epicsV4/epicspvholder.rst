@@ -63,8 +63,8 @@ Logging
 server logger passed in from ``EpicsPvServer``:
 
 - Logger name: ``pyrogue.EpicsPvServer``
-- Configuration API:
-  ``logging.getLogger('pyrogue.EpicsPvServer').setLevel(logging.DEBUG)``
+- Logging API:
+  ``pyrogue.setLogLevel('pyrogue.EpicsPvServer', 'DEBUG')``
 
 That means put/get/rpc handling errors reported by a holder appear under the
 server logger rather than a per-PV logger.

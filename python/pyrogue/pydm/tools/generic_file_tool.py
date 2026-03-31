@@ -74,21 +74,21 @@ class OpenFileBrowse(ExternalTool):
             dataFile = dataFile[0]
 
         if dataFile == '':
-            logger.warning(f"Skipping empty file name for node {node.name}")
+            logger.warning("Skipping empty file name for node %s", node.name)
 
         if node.isinstance(pyrogue.BaseCommand):
             node.call(dataFile)
 
         elif node.isinstance(pyrogue.BaseVariable):
             if node.mode == 'RO':
-                logger.warning(f"Can't set file to RO node: {node.name}")
+                logger.warning("Can't set file to RO node: %s", node.name)
 
             else:
                 node.set(dataFile)
                 node.get()
 
         else:
-            logger.warning(f"File browser used with invalid node: {node.name}")
+            logger.warning("File browser used with invalid node: %s", node.name)
 
     def to_json(self) -> str:
         """Return serialized tool configuration."""
