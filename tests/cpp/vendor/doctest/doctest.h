@@ -120,7 +120,7 @@ inline void checkBinary(const Lhs& lhs,
 
 class Context {
   public:
-    Context(int argc = 0, char** argv = nullptr) : argc_(argc), argv_(argv) {}
+    explicit Context(int argc = 0, char** argv = nullptr) : argc_(argc), argv_(argv) {}
 
     int run() {
         bool listTests = false;
