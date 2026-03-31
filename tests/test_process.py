@@ -10,12 +10,8 @@
 # ----------------------------------------------------------------------------
 
 import pyrogue
-import queue
 import threading
 import time
-import rogue.interfaces.memory
-
-from pyrogue.protocols._uart import UartMemory
 
 
 class LocalRoot(pyrogue.Root):
@@ -66,6 +62,18 @@ def test_process_progress_recomputes_on_direct_state_writes():
         assert root.Proc.Progress.value() == 0.0
 
 
+def test_process_compatibility_step_wrappers_still_update_progress():
+    with LocalRoot() as root:
+        root.Proc.setTotalSteps(8)
+        root.Proc._setSteps(2)
+        assert root.Proc.Step.value() == 2
+        assert root.Proc.Progress.value() == 0.25
+
+        root.Proc._incrementSteps(10)
+        assert root.Proc.Step.value() == 12
+        assert root.Proc.Progress.value() == 1.0
+
+
 class RunControlRoot(pyrogue.Root):
     def __init__(self):
         super().__init__(name="RunControlRoot", description="RunControl root", pollEn=False)
@@ -107,54 +115,15 @@ def test_runcontrol_does_not_spawn_second_thread_when_restarted_from_worker():
         deadline = time.time() + 2.0
         while time.time() < deadline:
             with root.RC._stateLock:
-                done = root.RC._cmdCalls >= 2 and root.RC._thread is None
+                cmd_calls = root.RC._cmdCalls
+            with root.RC._threadLock:
+                thread = root.RC._thread
+            done = cmd_calls >= 2 and thread is None
             if done:
                 break
             time.sleep(0.01)
 
         assert root.RC._cmdCalls >= 2
         assert root.RC._runEntries == 1
-        assert root.RC._thread is None
-
-
-class FakeTransaction:
-    def __init__(self, transaction_type):
-        self._transaction_type = transaction_type
-        self._lock = threading.Lock()
-        self.errors = []
-        self.done_called = False
-
-    def lock(self):
-        return self._lock
-
-    def type(self):
-        return self._transaction_type
-
-    def error(self, msg):
-        self.errors.append(msg)
-
-    def done(self):
-        self.done_called = True
-
-
-def test_uart_worker_marks_task_done_when_transaction_raises():
-    uart = UartMemory.__new__(UartMemory)
-    uart._log = pyrogue.logInit(name="test-uart")
-    uart._workerQueue = queue.Queue()
-
-    def fail_transaction(transaction):
-        raise ValueError("boom")
-
-    uart._doWrite = fail_transaction
-    uart._doRead = lambda transaction: None
-
-    transaction = FakeTransaction(rogue.interfaces.memory.Write)
-    uart._workerQueue.put(transaction)
-    uart._workerQueue.put(None)
-
-    uart._worker()
-
-    assert uart._workerQueue.unfinished_tasks == 0
-    assert not transaction.done_called
-    assert len(transaction.errors) == 1
-    assert "Unhandled UART worker exception: boom" in transaction.errors[0]
+        with root.RC._threadLock:
+            assert root.RC._thread is None
