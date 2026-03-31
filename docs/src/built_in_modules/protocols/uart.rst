@@ -79,11 +79,14 @@ Logging
 ``UartMemory`` uses Python logging. The logger name includes the serial device
 path, following the pattern ``pyrogue.UartMemory.<device>``.
 
+- Pattern: ``pyrogue.UartMemory.<device>``
+- Example: ``pyrogue.UartMemory./dev/ttyUSB0``
+
 .. code-block:: python
 
-   import logging
+   import pyrogue
 
-   logging.getLogger('pyrogue.UartMemory').setLevel(logging.DEBUG)
+   pyrogue.setLogLevel('pyrogue.UartMemory', 'DEBUG')
 
 The current implementation has several transaction-level debug statements in
 the code commented out, so enabling the logger is most useful when those debug

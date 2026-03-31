@@ -120,8 +120,9 @@ Logging
 ``RateDrop`` uses Rogue C++ logging with the static logger name
 ``pyrogue.stream.RateDrop``.
 
-If you want implementation messages from the object itself, enable that logger
-before constructing the ``RateDrop``:
+You can enable that logger before or after constructing the ``RateDrop``.
+Enable it before construction only if you want constructor or earliest
+implementation messages from the object itself:
 
 .. code-block:: python
 

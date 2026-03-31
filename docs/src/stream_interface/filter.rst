@@ -130,7 +130,14 @@ Logging
 ``Filter`` uses Rogue C++ logging with the static logger name
 ``pyrogue.stream.Filter``.
 
-Enable that logger before constructing the object if you want implementation
+- ``pyrogue.stream.Filter``
+- Unified Logging API:
+  ``pyrogue.setLogLevel('pyrogue.stream.Filter', 'DEBUG')``
+- Legacy Logging API:
+  ``rogue.Logging.setFilter('pyrogue.stream.Filter', rogue.Logging.Debug)``
+
+You can enable that logger before or after constructing the object. Enable it
+before construction only if you want constructor or early implementation
 messages from the ``Filter`` itself:
 
 .. code-block:: python

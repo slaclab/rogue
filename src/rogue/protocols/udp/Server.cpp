@@ -19,8 +19,10 @@
 #include "rogue/protocols/udp/Server.h"
 
 #include <inttypes.h>
+#include <arpa/inet.h>
 #include <unistd.h>
 
+#include <cerrno>
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
@@ -93,6 +95,8 @@ rpu::Server::Server(uint16_t port, bool jumbo) : rpu::Core(jumbo) {
     threadEn_ = true;
     thread_   = new std::thread(&rpu::Server::runThread, this, std::weak_ptr<int>(scopePtr));
 
+    udpLog_->debug("UDP server ready. localPort=%" PRIu16 ", maxPayload=%" PRIu32, port_, maxPayload());
+
     // Set a thread name
 #ifndef __MACH__
     pthread_setname_np(thread_->native_handle(), "UdpServer");
@@ -108,6 +112,7 @@ void rpu::Server::stop() {
     if (threadEn_) {
         threadEn_ = false;
         thread_->join();
+        udpLog_->debug("Stopping UDP server on local port %" PRIu16, port_);
 
         ::close(fd_);
     }
@@ -134,7 +139,9 @@ void rpu::Server::acceptFrame(ris::FramePtr frame) {
 
     // Drop errored frames
     if (frame->getError()) {
-        udpLog_->warning("Server::acceptFrame: Dumping errored frame");
+        udpLog_->warning("Dropping errored outbound frame on local port %" PRIu16 ", error=0x%" PRIx8,
+                         port_,
+                         frame->getError());
         return;
     }
 
@@ -172,7 +179,9 @@ void rpu::Server::acceptFrame(ris::FramePtr frame) {
                                   timeout_.tv_usec);
                 res = 0;
             } else if ((res = sendmsg(fd_, &msg, 0)) < 0) {
-                udpLog_->warning("UDP Write Call Failed");
+                udpLog_->warning("UDP write call failed on server port %" PRIu16 ": %s",
+                                 port_,
+                                 std::strerror(errno));
             }
         } while (res == 0);  // Continue while write result was zero
     }
@@ -207,7 +216,11 @@ void rpu::Server::runThread(std::weak_ptr<int> lockPtr) {
         if (res > 0) {
             // Message was too big
             if (res > avail) {
-                udpLog_->warning("Receive data was too large. Dropping.");
+                udpLog_->warning("Receive data was too large on local port %" PRIu16 ". rx=%i, avail=%" PRIu32
+                                 ". Dropping.",
+                                 port_,
+                                 res,
+                                 avail);
             } else {
                 buff->setPayload(res);
                 sendFrame(frame);
@@ -219,6 +232,15 @@ void rpu::Server::runThread(std::weak_ptr<int> lockPtr) {
             // Lock before updating address
             if (memcmp(&remAddr_, &tmpAddr, sizeof(remAddr_)) != 0) {
                 std::lock_guard<std::mutex> lock(udpMtx_);
+                char tmpIp[INET_ADDRSTRLEN];
+                if (inet_ntop(AF_INET, &(tmpAddr.sin_addr), tmpIp, sizeof(tmpIp)) != NULL) {
+                    udpLog_->debug("UDP server peer updated on local port %" PRIu16 " to %s:%" PRIu16,
+                                   port_,
+                                   tmpIp,
+                                   ntohs(tmpAddr.sin_port));
+                } else {
+                    udpLog_->debug("UDP server peer updated on local port %" PRIu16, port_);
+                }
                 remAddr_ = tmpAddr;
             }
         } else {

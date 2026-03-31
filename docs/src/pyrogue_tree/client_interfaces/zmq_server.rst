@@ -93,24 +93,36 @@ There are two separate behaviors here:
 For transport logging, enable the Rogue C++ logger:
 
 - Logger name: ``pyrogue.ZmqServer``
-- Configuration API:
+- Unified Logging API:
+  ``pyrogue.setLogLevel('pyrogue.ZmqServer', 'DEBUG')``
+- Legacy Logging API:
   ``rogue.Logging.setFilter('pyrogue.ZmqServer', rogue.Logging.Debug)``
 
 Example:
 
 .. code-block:: python
 
-   import rogue
+   import logging
+   import pyrogue
    import pyrogue.interfaces
 
-   rogue.Logging.setFilter('pyrogue.ZmqServer', rogue.Logging.Debug)
+   pyrogue.setUnifiedLogging(True)
+   pyrogue.setLogLevel('pyrogue.ZmqServer', 'DEBUG')
    server = pyrogue.interfaces.ZmqServer(root=root, addr='127.0.0.1', port=9099)
 
-Set the filter before constructing the server object.
+That enables the C++ transport logger. Separately, ``ZmqServer._start()``
+prints the selected ports and example client commands to stdout. Those startup
+messages are not controlled by the logging API.
 
-Separately, ``ZmqServer._start()`` prints the selected ports and example client
-commands to stdout. Those startup messages are not controlled by the logging
-API.
+Client-side request/retry logging comes from ``pyrogue.ZmqClient`` rather than
+``ZmqServer``. During long waits, that logging is intentionally throttled:
+
+- one warning when the client first enters the retry loop
+- periodic "still waiting" warnings at a lower cadence
+- one recovery message when the response arrives
+
+This keeps long but valid transactions visible without generating a warning
+every socket-timeout interval.
 
 Related Topics
 ==============

@@ -14,6 +14,7 @@
 #-----------------------------------------------------------------------------
 
 import pyrogue
+import rogue.interfaces.memory
 import rogue.interfaces.stream
 from typing import Any, Callable
 
@@ -32,6 +33,7 @@ class OsCommandMemorySlave(rogue.interfaces.memory.Slave):
     def __init__(self, *, minWidth: int = 4, maxSize: int = 1024) -> None:
         rogue.interfaces.memory.Slave.__init__(self,minWidth,maxSize)
         self._cmdList = {}
+        self._log = pyrogue.logInit(cls=self, name="OsCommandMemorySlave", path=None)
 
     def _doTransaction(self, transaction: rogue.interfaces.memory.Transaction) -> None:
         """
@@ -58,22 +60,50 @@ class OsCommandMemorySlave(rogue.interfaces.memory.Slave):
                 transaction.getData(ba,0)
 
                 arg = self._cmdList[address]['base'].fromBytes(ba)
+                self._log.debug(
+                    "Dispatching write command at address=%#08x size=%s arg=%r",
+                    address,
+                    size,
+                    arg,
+                )
                 self._cmdList[address]['func'](self,arg=arg)
                 transaction.done()
             except Exception as msg:
+                self._log.error(
+                    "Write command failed at address=%#08x size=%s: %s",
+                    address,
+                    size,
+                    msg,
+                )
                 transaction.error(f"Transaction write error in command at {address:#08x}: {msg}")
 
         # Read
         else:
 
             try:
+                self._log.debug(
+                    "Dispatching read command at address=%#08x size=%s",
+                    address,
+                    size,
+                )
                 ret = self._cmdList[address]['func'](self,arg=None)
                 ba = self._cmdList[address]['base'].toBytes(ret)
 
                 transaction.setData(ba,0)
+                self._log.debug(
+                    "Read command completed at address=%#08x return=%r",
+                    address,
+                    ret,
+                )
                 transaction.done()
 
             except Exception as msg:
+                self._log.error(
+                    "Read command failed at address=%#08x size=%s: %s",
+                    address,
+                    size,
+                    msg,
+                )
                 transaction.error(f"Transaction read error in command at {address:#08x}: {msg}")
 
     def command(self, addr: int, base: pyrogue.Model) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
@@ -98,6 +128,7 @@ class OsCommandMemorySlave(rogue.interfaces.memory.Slave):
                 raise pyrogue.CommandError("Duplicate address in command generation")
 
             self._cmdList[addr] = {'base' : base, 'func' : func}
+            self._log.debug("Registered OS command at address=%#08x func=%s", addr, func.__name__)
 
             return func
         return _decorator

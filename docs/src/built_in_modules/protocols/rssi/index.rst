@@ -192,14 +192,10 @@ logging.
 Static logger name:
 
 - ``pyrogue.rssi.controller``
-
-Enable it before constructing RSSI objects:
-
-.. code-block:: python
-
-   import rogue
-
-   rogue.Logging.setFilter('pyrogue.rssi', rogue.Logging.Debug)
+- Unified Logging API:
+  ``pyrogue.setLogLevel('pyrogue.rssi', 'DEBUG')``
+- Legacy Logging API:
+  ``rogue.Logging.setFilter('pyrogue.rssi', rogue.Logging.Debug)``
 
 This is the most useful logger when debugging link bring-up, retransmission,
 and state transitions. The ``Client`` and ``Server`` wrappers themselves do not
