@@ -8,8 +8,10 @@ EPICS-facing protocol integration using softIocPVA (pythonSoftIOC) to serve
 PyRogue Variables as real EPICS records. The V7 integration supports both CA
 and PVA client access.
 
-Use these pages for conceptual behavior and integration patterns. API object
-details remain in the Python API reference.
+Use these pages for conceptual behavior and integration patterns. Generated
+API pages are available in the Python API reference:
+
+- :doc:`/api/python/pyrogue/protocols/epicsv7/index`
 
 How The EPICS V7 Integration Is Structured
 ==========================================

@@ -122,6 +122,4 @@ Related Topics
 API Reference
 =============
 
-Generated API docs for EPICS V7 are not published on a separate page yet.
-Use the class reference ``pyrogue.protocols.epicsV7.EpicsPvHolder`` in the
-Python API output when available.
+- Generated API page: :doc:`/api/python/pyrogue/protocols/epicsv7/epicspvholder`
