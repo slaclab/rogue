@@ -102,17 +102,32 @@ class RunControl(pr.Device):
         if self.runState.valueDisp() == 'Running':
             thread = None
             with self._threadLock:
+                # Only create a worker when there is no active run thread.
+                # This guards against repeated writes of "Running" and against
+                # a stop/start sequence issued from inside the worker itself
+                # before the old thread has actually exited.
                 if self._thread is None or not self._thread.is_alive():
                     thread = threading.Thread(target=self._run)
                     self._thread = thread
 
             if thread is not None:
+                # Start outside the lock so thread startup does not block other
+                # state transitions. The stored self._thread reference remains
+                # the ownership marker until _run() reaches its cleanup block.
                 thread.start()
 
         else:
             with self._threadLock:
                 thread = self._thread
 
+            # When a caller outside the worker requests "Stopped", wait for the
+            # current run thread to exit before returning so the state change is
+            # complete from the caller's perspective.
+            #
+            # The current_thread() check is required because _cmd() may stop
+            # the run by writing runState from inside the worker itself. A
+            # thread cannot join itself, so in that case we just let _run()
+            # fall out of its loop and perform the final cleanup.
             if thread is not None and threading.current_thread() is not thread:
                 thread.join()
 
@@ -140,5 +155,10 @@ class RunControl(pr.Device):
                         self.runCount.set(self.runCount.value() + 1)
         finally:
             with self._threadLock:
+                # Only the worker that currently owns self._thread is allowed
+                # to clear it. This avoids a race where a stop issued from
+                # inside the worker would otherwise clear the reference too
+                # early and allow a second worker to start before this one has
+                # fully exited.
                 if self._thread is threading.current_thread():
                     self._thread = None
