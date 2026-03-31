@@ -115,8 +115,8 @@ def _epicsV7_to_pva_type(var):
     Returns
     -------
     str
-        A p4p type character: ``'i'``, ``'l'``, ``'f'``, ``'d'``, ``'s'``,
-        ``'enum'``, or ``'ndarray'``.
+        A p4p type character: ``'?'``, ``'b'``/``'B'``/``'h'``/``'H'``/``'i'``/``'I'``/``'l'``/``'L'``,
+        ``'f'``, ``'d'``, ``'s'``, ``'enum'``, or ``'ndarray'``.
     """
     typeStr = var.typeStr if var.typeStr is not None else ''
     if var.nativeType is np.ndarray:
@@ -131,12 +131,19 @@ def _epicsV7_to_pva_type(var):
             typeStr in ('str', 'list', 'dict', 'NoneType') or typeStr == ''):
         return 's'
     if typeStr == 'Bool':
-        return 'i'
-    if typeStr in ('UInt64', 'Int64'):
+        return '?'
+    if typeStr == 'UInt64':
+        return 'L'
+    if typeStr == 'Int64':
         return 'l'
+    if typeStr == 'UInt32':
+        return 'I'
+    if typeStr == 'UInt16':
+        return 'H'
+    if typeStr == 'UInt8':
+        return 'B'
     if (typeStr == 'int' or
-            any(typeStr.startswith(p) for p in
-                ('UInt8', 'UInt16', 'UInt32', 'Int8', 'Int16', 'Int32'))):
+            any(typeStr.startswith(p) for p in ('Int8', 'Int16', 'Int32'))):
         return 'i'
     if 'Float32' in typeStr:
         return 'f'
@@ -180,11 +187,12 @@ def _make_shared_pv(var, pva_type, handler):
             idx = 0
         iv = {'choices': enum_strings, 'index': idx}
     elif pva_type == 's':
-        nt = p4p.nt.NTScalar('s', display=False, control=False, valueAlarm=False)
+        nt = p4p.nt.NTScalar('s', display=False, control=False)
         iv = nt.wrap(varVal.valueDisp if varVal.valueDisp is not None else '')
     else:
-        nt = p4p.nt.NTScalar(pva_type, display=False, control=False, valueAlarm=False)
-        iv = nt.wrap(varVal.value if varVal.value is not None else 0)
+        nt = p4p.nt.NTScalar(pva_type, display=False, control=False)
+        default = False if pva_type == '?' else 0
+        iv = nt.wrap(varVal.value if varVal.value is not None else default)
     return p4p.server.thread.SharedPV(queue=None, handler=handler, initial=iv, nt=nt)
 
 

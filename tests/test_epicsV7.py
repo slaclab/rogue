@@ -9,16 +9,24 @@
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 
+import io
 import platform
 import re
 import sys
 import time
+
+import numpy as np
+import pytest
 import pyrogue as pr
 import pyrogue.protocols.epicsV7
 import rogue.interfaces.memory
 
 from p4p.client.thread import Context
-import pytest
+from pyrogue.protocols.epicsV7 import (
+    _epicsV7_to_pva_type,
+    _EPICS_MAX_NAME_LEN,
+    _make_epicsV7_suffix,
+)
 
 # TODO: p4p cannot discover the softioc/PVXS server on macOS ARM64 because
 # macOS does not support UDP broadcast on the loopback interface (lo0).
@@ -90,9 +98,33 @@ class SimpleDev(pr.Device):
 
         # Test explicit integer types
         self.add(pr.LocalVariable(
+            name     = 'LocalRwUInt8',
+            value    = 0,
+            typeStr  = 'UInt8',
+            mode     = 'RW'))
+
+        self.add(pr.LocalVariable(
+            name     = 'LocalRwUInt16',
+            value    = 0,
+            typeStr  = 'UInt16',
+            mode     = 'RW'))
+
+        self.add(pr.LocalVariable(
             name     = 'LocalRwUInt32',
             value    = 0,
             typeStr  = 'UInt32',
+            mode     = 'RW'))
+
+        self.add(pr.LocalVariable(
+            name     = 'LocalRwInt8',
+            value    = 0,
+            typeStr  = 'Int8',
+            mode     = 'RW'))
+
+        self.add(pr.LocalVariable(
+            name     = 'LocalRwInt16',
+            value    = 0,
+            typeStr  = 'Int16',
             mode     = 'RW'))
 
         self.add(pr.LocalVariable(
@@ -115,7 +147,6 @@ class SimpleDev(pr.Device):
             mode     = 'RW'))
 
         # Test ndarray
-        import numpy as np
         self.add(pr.LocalVariable(
             name     = 'LocalRwArray',
             value    = np.array([1, 2, 3, 4, 5], dtype=np.float64),
@@ -197,6 +228,20 @@ class LongNameSubDev(pr.Device):
             value = 42,
             mode  = 'RW'))
 
+        # Long-named Bool variable to exercise the '?' SharedPV type on the PVA alias path
+        self.add(pr.LocalVariable(
+            name    = 'ThisIsAVeryLongBoolVariableNameForTestingBoolPvaType',
+            value   = False,
+            typeStr = 'Bool',
+            mode    = 'RW'))
+
+        # Long-named UInt32 variable to exercise the 'I' SharedPV type on the PVA alias path
+        self.add(pr.LocalVariable(
+            name    = 'ThisIsAVeryLongUInt32VariableNameThatExceedsSixtyCharLimit',
+            value   = 0,
+            typeStr = 'UInt32',
+            mode    = 'RW'))
+
 
 class LocalRoot(pr.Root):
     def __init__(self, tcp_port=9075):
@@ -250,7 +295,11 @@ class LocalRootWithEpics(LocalRoot):
                 'LocalRoot.SimpleDev.LocalRwString'    : epics_prefix + ':LocalRoot:SimpleDev:LocalRwString',
                 'LocalRoot.SimpleDev.LocalRwBool'      : epics_prefix + ':LocalRoot:SimpleDev:LocalRwBool',
                 'LocalRoot.SimpleDev.LocalRwEnum'      : epics_prefix + ':LocalRoot:SimpleDev:LocalRwEnum',
+                'LocalRoot.SimpleDev.LocalRwUInt8'     : epics_prefix + ':LocalRoot:SimpleDev:LocalRwUInt8',
+                'LocalRoot.SimpleDev.LocalRwUInt16'    : epics_prefix + ':LocalRoot:SimpleDev:LocalRwUInt16',
                 'LocalRoot.SimpleDev.LocalRwUInt32'    : epics_prefix + ':LocalRoot:SimpleDev:LocalRwUInt32',
+                'LocalRoot.SimpleDev.LocalRwInt8'      : epics_prefix + ':LocalRoot:SimpleDev:LocalRwInt8',
+                'LocalRoot.SimpleDev.LocalRwInt16'     : epics_prefix + ':LocalRoot:SimpleDev:LocalRwInt16',
                 'LocalRoot.SimpleDev.LocalRwInt32'     : epics_prefix + ':LocalRoot:SimpleDev:LocalRwInt32',
                 'LocalRoot.SimpleDev.LocalRwFloat32'   : epics_prefix + ':LocalRoot:SimpleDev:LocalRwFloat32',
                 'LocalRoot.SimpleDev.LocalRwFloat64'   : epics_prefix + ':LocalRoot:SimpleDev:LocalRwFloat64',
@@ -300,8 +349,6 @@ def wait_pv_value(ctxt, pv_name, expected, timeout=PropagateTimeout, transform=N
 
 def test_pv_name_hash():
     """Unit tests for _make_epicsV7_suffix and _EPICS_MAX_NAME_LEN -- no IOC required."""
-    from pyrogue.protocols.epicsV7 import _make_epicsV7_suffix, _EPICS_MAX_NAME_LEN
-
     assert _EPICS_MAX_NAME_LEN == 60
 
     # Short name unchanged
@@ -332,6 +379,54 @@ def test_pv_name_hash():
     long_s = 'SameSuffix' + 'Z' * 50
     assert _make_epicsV7_suffix('Base1' + 'X' * 20, long_s) != \
            _make_epicsV7_suffix('Base2' + 'X' * 20, long_s)
+
+
+def test_pva_type_mapping():
+    """Unit tests for _epicsV7_to_pva_type -- verifies all p4p type characters."""
+    class FakeVar:
+        def __init__(self, typeStr=None, nativeType=None, disp=None, enum=None):
+            self.typeStr   = typeStr
+            self.nativeType = nativeType
+            self.disp      = disp
+            self.enum      = enum or {}
+
+    # Bool → '?' (not 'i')
+    assert _epicsV7_to_pva_type(FakeVar(typeStr='Bool')) == '?'
+
+    # Unsigned 64-bit → 'L'; signed 64-bit → 'l'
+    assert _epicsV7_to_pva_type(FakeVar(typeStr='UInt64')) == 'L'
+    assert _epicsV7_to_pva_type(FakeVar(typeStr='Int64')) == 'l'
+
+    # Unsigned ints get distinct unsigned type characters
+    assert _epicsV7_to_pva_type(FakeVar(typeStr='UInt32')) == 'I'
+    assert _epicsV7_to_pva_type(FakeVar(typeStr='UInt16')) == 'H'
+    assert _epicsV7_to_pva_type(FakeVar(typeStr='UInt8')) == 'B'
+
+    # Signed ints → 'i'
+    assert _epicsV7_to_pva_type(FakeVar(typeStr='Int32')) == 'i'
+    assert _epicsV7_to_pva_type(FakeVar(typeStr='Int16')) == 'i'
+    assert _epicsV7_to_pva_type(FakeVar(typeStr='Int8')) == 'i'
+    assert _epicsV7_to_pva_type(FakeVar(typeStr='int')) == 'i'
+
+    # Float types
+    assert _epicsV7_to_pva_type(FakeVar(typeStr='Float32')) == 'f'
+    assert _epicsV7_to_pva_type(FakeVar(typeStr='Float64')) == 'd'
+    assert _epicsV7_to_pva_type(FakeVar(typeStr='Double64')) == 'd'
+    assert _epicsV7_to_pva_type(FakeVar(typeStr='float')) == 'd'
+
+    # String / collection types → 's'
+    assert _epicsV7_to_pva_type(FakeVar(typeStr='str')) == 's'
+    assert _epicsV7_to_pva_type(FakeVar(typeStr='NoneType')) == 's'
+    assert _epicsV7_to_pva_type(FakeVar(typeStr='')) == 's'
+    assert _epicsV7_to_pva_type(FakeVar(nativeType=list, typeStr='list')) == 's'
+    assert _epicsV7_to_pva_type(FakeVar(nativeType=dict, typeStr='dict')) == 's'
+
+    # ndarray → 'ndarray'
+    assert _epicsV7_to_pva_type(FakeVar(nativeType=np.ndarray)) == 'ndarray'
+
+    # Enum: ≤16 choices → 'enum'; >16 → 's'
+    assert _epicsV7_to_pva_type(FakeVar(disp='enum', enum={i: str(i) for i in range(3)})) == 'enum'
+    assert _epicsV7_to_pva_type(FakeVar(disp='enum', enum={i: str(i) for i in range(17)})) == 's'
 
 
 def test_local_root():
@@ -429,8 +524,8 @@ def test_local_root():
             raise AssertionError('Int64: pv_name={}: test_value={}; test_result={}'.format(
                 pv_name, test_value, test_result))
 
-        # TEST-12: UInt64 type (int64In/Out)
-        # Note: softioc uses signed int64Out for UInt64; test with a value in int64 range
+        # TEST-12: UInt64 type (int64In/Out for CA; p4p type 'L' for PVA long-name alias)
+        # softioc still uses signed int64Out, so test within signed int64 range.
         pv_name = device_epics_prefix + ':LocalRwUInt64'
         test_value = 9223372036854775806  # INT64_MAX - 1, fits in int64Out without overflow
         ctxt.put(pv_name, test_value)
@@ -450,15 +545,16 @@ def test_local_root():
             raise AssertionError('String: pv_name={}: test_value={}; test_result={}'.format(
                 pv_name, test_value, test_result))
 
-        # TEST-14: Bool type
+        # TEST-14: Bool type (softioc longIn/Out; p4p type '?' for PVA long-name alias)
+        # softioc uses longOut so ctxt.get returns int; test True/False as int 1/0.
         pv_name = device_epics_prefix + ':LocalRwBool'
-        test_value = 1  # True
-        ctxt.put(pv_name, test_value)
-        wait_pv_value(ctxt, pv_name, test_value)
-        test_result = ctxt.get(pv_name)
-        if test_result != test_value:
-            raise AssertionError('Bool: pv_name={}: test_value={}; test_result={}'.format(
-                pv_name, test_value, test_result))
+        for test_value in (1, 0):
+            ctxt.put(pv_name, test_value)
+            wait_pv_value(ctxt, pv_name, test_value)
+            test_result = ctxt.get(pv_name)
+            if test_result != test_value:
+                raise AssertionError('Bool: pv_name={}: test_value={}; test_result={}'.format(
+                    pv_name, test_value, test_result))
 
         # TEST-15: Enum type
         pv_name = device_epics_prefix + ':LocalRwEnum'
@@ -470,8 +566,8 @@ def test_local_root():
             raise AssertionError('Enum: pv_name={}: test_value={}; test_result={}'.format(
                 pv_name, test_value, test_result))
 
-        # TEST-16: UInt32 type
-        # Note: softioc uses signed longOut for UInt32; test with a value in int32 range
+        # TEST-16: UInt32 type (softioc longIn/Out; p4p type 'I' for PVA long-name alias)
+        # softioc uses signed longOut, so test within signed int32 range.
         pv_name = device_epics_prefix + ':LocalRwUInt32'
         test_value = 2147483647  # INT32_MAX, fits in longOut without overflow
         ctxt.put(pv_name, test_value)
@@ -489,6 +585,46 @@ def test_local_root():
         test_result = ctxt.get(pv_name)
         if test_result != test_value:
             raise AssertionError('Int32: pv_name={}: test_value={}; test_result={}'.format(
+                pv_name, test_value, test_result))
+
+        # TEST-25: UInt8 type (p4p type 'B')
+        pv_name = device_epics_prefix + ':LocalRwUInt8'
+        test_value = 255  # max uint8
+        ctxt.put(pv_name, test_value)
+        wait_pv_value(ctxt, pv_name, test_value)
+        test_result = ctxt.get(pv_name)
+        if test_result != test_value:
+            raise AssertionError('UInt8: pv_name={}: test_value={}; test_result={}'.format(
+                pv_name, test_value, test_result))
+
+        # TEST-26: UInt16 type (p4p type 'H')
+        pv_name = device_epics_prefix + ':LocalRwUInt16'
+        test_value = 65535  # max uint16
+        ctxt.put(pv_name, test_value)
+        wait_pv_value(ctxt, pv_name, test_value)
+        test_result = ctxt.get(pv_name)
+        if test_result != test_value:
+            raise AssertionError('UInt16: pv_name={}: test_value={}; test_result={}'.format(
+                pv_name, test_value, test_result))
+
+        # TEST-27: Int8 type (p4p type 'i')
+        pv_name = device_epics_prefix + ':LocalRwInt8'
+        test_value = -128  # min int8
+        ctxt.put(pv_name, test_value)
+        wait_pv_value(ctxt, pv_name, test_value)
+        test_result = ctxt.get(pv_name)
+        if test_result != test_value:
+            raise AssertionError('Int8: pv_name={}: test_value={}; test_result={}'.format(
+                pv_name, test_value, test_result))
+
+        # TEST-28: Int16 type (p4p type 'i')
+        pv_name = device_epics_prefix + ':LocalRwInt16'
+        test_value = -32768  # min int16
+        ctxt.put(pv_name, test_value)
+        wait_pv_value(ctxt, pv_name, test_value)
+        test_result = ctxt.get(pv_name)
+        if test_result != test_value:
+            raise AssertionError('Int16: pv_name={}: test_value={}; test_result={}'.format(
                 pv_name, test_value, test_result))
 
         # TEST-18: Float32 type
@@ -512,7 +648,6 @@ def test_local_root():
                 pv_name, test_value, test_result))
 
         # TEST-20: ndarray type (waveform)
-        import numpy as np
         pv_name = device_epics_prefix + ':LocalRwArray'
         test_value = np.array([10.0, 20.0, 30.0, 40.0, 50.0])
         ctxt.put(pv_name, test_value)
@@ -548,8 +683,6 @@ def test_local_root():
 
         # Verify the long-named PVs are accessible via PVA using hashed CA names.
         # The suffix is hashed to tail_XXXXXXXXXX when base:suffix > 60 chars.
-        from pyrogue.protocols.epicsV7 import _make_epicsV7_suffix
-
         long_var_name_1 = 'ThisIsAVeryLongVariableNameThatExceedsSixtyCharacterLimit'
         long_suffix_1 = 'LocalRoot:LongNameSubDev:' + long_var_name_1
         hashed_suffix_1 = _make_epicsV7_suffix(epics_prefix, long_suffix_1)
@@ -605,8 +738,6 @@ def test_local_root():
             'list() should show full long name, got: {}'.format(pv_map[long_path_1])
 
         # TEST-03e: dump() shows annotation for hashed PVs (OPS-02)
-        import io
-        import sys
         dump_output = io.StringIO()
         old_stdout = sys.stdout
         sys.stdout = dump_output
@@ -691,6 +822,41 @@ def test_local_root():
             raise AssertionError(
                 'Zero-regression after PVA alias layer: expected={}; got={}'.format(
                     test_value, test_result))
+
+        # ---- New type SharedPV tests (Bool '?', UInt32 'I') ----
+
+        # TEST-02g: Bool variable via PVA long-name alias (SharedPV type '?')
+        # Verify the SharedPV is created and the full long name is accessible.
+        long_bool_var = 'ThisIsAVeryLongBoolVariableNameForTestingBoolPvaType'
+        long_bool_suffix = 'LocalRoot:LongNameSubDev:' + long_bool_var
+        long_bool_pv = epics_prefix + ':' + long_bool_suffix
+        hashed_bool_suffix = _make_epicsV7_suffix(epics_prefix, long_bool_suffix)
+        assert hashed_bool_suffix.startswith('tail_'), \
+            'Expected hash for Bool long var, got: {}'.format(hashed_bool_suffix)
+
+        # Write True via full long PVA name; read back and verify
+        ctxt.put(long_bool_pv, True)
+        wait_pv_value(ctxt, long_bool_pv, True, transform=lambda v: bool(v))
+        ctxt.put(long_bool_pv, False)
+        wait_pv_value(ctxt, long_bool_pv, False, transform=lambda v: bool(v))
+
+        # TEST-02h: UInt32 variable via PVA long-name alias (SharedPV type 'I')
+        # Verify the SharedPV is created and the full long name is accessible.
+        long_u32_var = 'ThisIsAVeryLongUInt32VariableNameThatExceedsSixtyCharLimit'
+        long_u32_suffix = 'LocalRoot:LongNameSubDev:' + long_u32_var
+        long_u32_pv = epics_prefix + ':' + long_u32_suffix
+        hashed_u32_suffix = _make_epicsV7_suffix(epics_prefix, long_u32_suffix)
+        assert hashed_u32_suffix.startswith('tail_'), \
+            'Expected hash for UInt32 long var, got: {}'.format(hashed_u32_suffix)
+
+        # Write a value within int32 range (softioc longOut limitation) and verify round-trip
+        test_value = 12345678
+        ctxt.put(long_u32_pv, test_value)
+        wait_pv_value(ctxt, long_u32_pv, test_value)
+        test_result = ctxt.get(long_u32_pv)
+        if test_result != test_value:
+            raise AssertionError(
+                'UInt32 PVA long-name: expected={}; got={}'.format(test_value, test_result))
 
     ctxt.close()
 
