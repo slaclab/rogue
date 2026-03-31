@@ -26,6 +26,8 @@ from pyrogue.protocols.epicsV7 import (
     _epicsV7_to_pva_type,
     _EPICS_MAX_NAME_LEN,
     _make_epicsV7_suffix,
+    _make_shared_pv,
+    _PVA_UNSUPPORTED_TYPES,
 )
 
 # TODO: p4p cannot discover the softioc/PVXS server on macOS ARM64 because
@@ -402,11 +404,11 @@ def test_pva_type_mapping():
     assert _epicsV7_to_pva_type(FakeVar(typeStr='UInt16')) == 'H'
     assert _epicsV7_to_pva_type(FakeVar(typeStr='UInt8')) == 'B'
 
-    # Signed ints → 'i'
+    # Signed ints get distinct signed type characters
     assert _epicsV7_to_pva_type(FakeVar(typeStr='Int32')) == 'i'
-    assert _epicsV7_to_pva_type(FakeVar(typeStr='Int16')) == 'i'
-    assert _epicsV7_to_pva_type(FakeVar(typeStr='Int8')) == 'i'
     assert _epicsV7_to_pva_type(FakeVar(typeStr='int')) == 'i'
+    assert _epicsV7_to_pva_type(FakeVar(typeStr='Int16')) == 'h'
+    assert _epicsV7_to_pva_type(FakeVar(typeStr='Int8')) == 'b'
 
     # Float types
     assert _epicsV7_to_pva_type(FakeVar(typeStr='Float32')) == 'f'
@@ -427,6 +429,15 @@ def test_pva_type_mapping():
     # Enum: ≤16 choices → 'enum'; >16 → 's'
     assert _epicsV7_to_pva_type(FakeVar(disp='enum', enum={i: str(i) for i in range(3)})) == 'enum'
     assert _epicsV7_to_pva_type(FakeVar(disp='enum', enum={i: str(i) for i in range(17)})) == 's'
+
+    # Structural types are rejected by _make_shared_pv
+    assert _PVA_UNSUPPORTED_TYPES == frozenset(('v', 'U', 'S'))
+    for bad_type in _PVA_UNSUPPORTED_TYPES:
+        try:
+            _make_shared_pv(FakeVar(typeStr='int'), bad_type, None)
+            raise AssertionError(f"Expected ValueError for structural type '{bad_type}'")
+        except ValueError:
+            pass
 
 
 def test_local_root():
@@ -607,7 +618,7 @@ def test_local_root():
             raise AssertionError('UInt16: pv_name={}: test_value={}; test_result={}'.format(
                 pv_name, test_value, test_result))
 
-        # TEST-27: Int8 type (p4p type 'i')
+        # TEST-27: Int8 type (p4p type 'b')
         pv_name = device_epics_prefix + ':LocalRwInt8'
         test_value = -128  # min int8
         ctxt.put(pv_name, test_value)
@@ -617,7 +628,7 @@ def test_local_root():
             raise AssertionError('Int8: pv_name={}: test_value={}; test_result={}'.format(
                 pv_name, test_value, test_result))
 
-        # TEST-28: Int16 type (p4p type 'i')
+        # TEST-28: Int16 type (p4p type 'h')
         pv_name = device_epics_prefix + ':LocalRwInt16'
         test_value = -32768  # min int16
         ctxt.put(pv_name, test_value)

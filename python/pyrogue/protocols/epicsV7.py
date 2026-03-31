@@ -51,6 +51,10 @@ _ioc_started = False
 
 _EPICS_MAX_NAME_LEN = 60
 
+# p4p structural type characters that cannot be used as NTScalar SharedPV types.
+# Variant ('v'), union ('U'), and struct ('S') have no PyRogue scalar equivalent.
+_PVA_UNSUPPORTED_TYPES = frozenset(('v', 'U', 'S'))
+
 
 def _make_epicsV7_suffix(base, suffix):
     """
@@ -115,8 +119,9 @@ def _epicsV7_to_pva_type(var):
     Returns
     -------
     str
-        A p4p type character: ``'?'``, ``'b'``/``'B'``/``'h'``/``'H'``/``'i'``/``'I'``/``'l'``/``'L'``,
-        ``'f'``, ``'d'``, ``'s'``, ``'enum'``, or ``'ndarray'``.
+        A p4p scalar type character: ``'?'`` (bool),
+        ``'b'``/``'B'``/``'h'``/``'H'``/``'i'``/``'I'``/``'l'``/``'L'`` (int8–int64 / uint8–uint64),
+        ``'f'``/``'d'`` (float32/float64), ``'s'`` (string), ``'enum'``, or ``'ndarray'``.
     """
     typeStr = var.typeStr if var.typeStr is not None else ''
     if var.nativeType is np.ndarray:
@@ -142,9 +147,12 @@ def _epicsV7_to_pva_type(var):
         return 'H'
     if typeStr == 'UInt8':
         return 'B'
-    if (typeStr == 'int' or
-            any(typeStr.startswith(p) for p in ('Int8', 'Int16', 'Int32'))):
+    if typeStr == 'Int32' or typeStr == 'int':
         return 'i'
+    if typeStr == 'Int16':
+        return 'h'
+    if typeStr == 'Int8':
+        return 'b'
     if 'Float32' in typeStr:
         return 'f'
     if typeStr == 'float' or 'Float64' in typeStr or 'Double64' in typeStr:
@@ -173,6 +181,11 @@ def _make_shared_pv(var, pva_type, handler):
     -------
     p4p.server.thread.SharedPV
     """
+    if pva_type in _PVA_UNSUPPORTED_TYPES:
+        raise ValueError(
+            f"p4p type '{pva_type}' (variant/union/struct) cannot be used as a SharedPV "
+            f"scalar type; no PyRogue variable maps to this type"
+        )
     varVal = var.getVariableValue(read=False)
     if pva_type == 'ndarray':
         nt = p4p.nt.NTScalar('ad')
