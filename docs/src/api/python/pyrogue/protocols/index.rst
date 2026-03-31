@@ -15,10 +15,12 @@ Protocol wrappers implemented directly in PyRogue.
    gpibcontroller
    gpibdevice
    epicsv4/index
+   epicsv7/index
 
 
 .. rubric:: Related Topics
 
 - :doc:`/built_in_modules/protocols/index`
 - :doc:`/built_in_modules/protocols/epicsV4/index`
+- :doc:`/built_in_modules/protocols/epicsV7/index`
 - :doc:`/built_in_modules/protocols/gpib`
