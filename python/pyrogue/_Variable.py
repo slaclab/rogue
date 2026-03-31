@@ -547,7 +547,7 @@ class BaseVariable(pr.Node):
         interval : object
             Poll interval to use.
         """
-        self._log.debug(f'{self.path}.setPollInterval({interval}]')
+        self._log.debug("%s.setPollInterval(%s)", self.path, interval)
         self._pollInterval = interval
         self._updatePollInterval()
 
@@ -789,14 +789,19 @@ class BaseVariable(pr.Node):
                 if value in self.enum:
                     return self.enum[value]
                 else:
-                    self._log.warning("Invalid enum value {} in variable '{}'".format(value,self.path))
+                    self._log.warning("Invalid enum value %s in variable '%s'", value, self.path)
                     return f'INVALID: {value}'
             else:
                 return useDisp.format(value)
 
         except Exception as e:
             pr.logException(self._log,e)
-            self._log.error(f"Error generating disp for value {value} with type {type(value)} in variable {self.path}")
+            self._log.error(
+                "Error generating disp for value %r with type %s in variable %s",
+                value,
+                type(value),
+                self.path,
+            )
             raise e
 
     @pr.expose
@@ -973,7 +978,7 @@ class BaseVariable(pr.Node):
         if keys is not None:
 
             if len(keys) != 1 or (self.nativeType is not list and self.nativeType is not np.ndarray):
-                self._log.error(f"Entry {self.name} with key {keys} not found")
+                self._log.error("Entry %s with key %s not found", self.name, keys)
 
             elif self._mode in modes:
                 if keys[0] == '*' or keys[0] == ':':
@@ -1013,7 +1018,12 @@ class BaseVariable(pr.Node):
                                 val = val.strip()
                             self.setDisp(val, write=writeEach, index=i)
             else:
-                self._log.warning(f"Skipping set for Entry {self.name} with mode {self._mode}. Enabled Modes={modes}.")
+                self._log.warning(
+                    "Skipping set for Entry %s with mode %s. Enabled Modes=%s.",
+                    self.name,
+                    self._mode,
+                    modes,
+                )
 
         # Standard set
         elif self._mode in modes:
@@ -1024,7 +1034,12 @@ class BaseVariable(pr.Node):
             else:
                 self.setDisp(d,writeEach)
         else:
-            self._log.warning(f"Skipping set for Entry {self.name} with mode {self._mode}. Enabled Modes={modes}.")
+            self._log.warning(
+                "Skipping set for Entry %s with mode %s. Enabled Modes=%s.",
+                self.name,
+                self._mode,
+                modes,
+            )
 
     def _getDict(
         self,
@@ -1476,7 +1491,13 @@ class RemoteVariable(BaseVariable,rim.Variable):
 
         except Exception as e:
             pr.logException(self._log,e)
-            self._log.error("Error setting value '{}' to variable '{}' with type {}. Exception={}".format(value,self.path,self.typeStr,e))
+            self._log.error(
+                "Error setting value %r to variable %s with type %s. Exception=%s",
+                value,
+                self.path,
+                self.typeStr,
+                e,
+            )
             raise e
 
     @pr.expose
@@ -1506,7 +1527,12 @@ class RemoteVariable(BaseVariable,rim.Variable):
 
         except Exception as e:
             pr.logException(self._log,e)
-            self._log.error("Error posting value '{}' to variable '{}' with type {}".format(value,self.path,self.typeStr))
+            self._log.error(
+                "Error posting value %r to variable %s with type %s",
+                value,
+                self.path,
+                self.typeStr,
+            )
             raise e
 
     @pr.expose
@@ -1536,7 +1562,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
 
         except Exception as e:
             pr.logException(self._log,e)
-            self._log.error("Error reading value from variable '{}'".format(self.path))
+            self._log.error("Error reading value from variable %s", self.path)
             raise e
 
     @pr.expose
@@ -1746,7 +1772,7 @@ class LocalVariable(BaseVariable):
         -------
 
         """
-        self._log.debug("{}.set({})".format(self, value))
+        self._log.debug("%s.set(%r)", self, value)
 
         try:
 
@@ -1758,7 +1784,13 @@ class LocalVariable(BaseVariable):
 
         except Exception as e:
             pr.logException(self._log,e)
-            self._log.error("Error setting value '{}' to variable '{}' with type {}. Exception={}".format(value,self.path,self.typeStr,e))
+            self._log.error(
+                "Error setting value %r to variable %s with type %s. Exception=%s",
+                value,
+                self.path,
+                self.typeStr,
+                e,
+            )
             raise e
 
     @pr.expose
@@ -1779,7 +1811,7 @@ class LocalVariable(BaseVariable):
         -------
 
         """
-        self._log.debug("{}.post({})".format(self, value))
+        self._log.debug("%s.post(%r)", self, value)
 
         try:
             self._block.set(self, value, index)
@@ -1787,7 +1819,12 @@ class LocalVariable(BaseVariable):
 
         except Exception as e:
             pr.logException(self._log,e)
-            self._log.error("Error posting value '{}' to variable '{}' with type {}".format(value,self.path,self.typeStr))
+            self._log.error(
+                "Error posting value %r to variable %s with type %s",
+                value,
+                self.path,
+                self.typeStr,
+            )
             raise e
 
     @pr.expose
@@ -1819,7 +1856,7 @@ class LocalVariable(BaseVariable):
 
         except Exception as e:
             pr.logException(self._log,e)
-            self._log.error("Error reading value from variable '{}'".format(self.path))
+            self._log.error("Error reading value from variable %s", self.path)
             raise e
 
     def __get__(self) -> Any:
@@ -2016,7 +2053,7 @@ class LinkVariable(BaseVariable):
             self._linkedSetWrap(function=self._linkedSet, dev=self.parent, var=self, value=value, write=write, index=index, verify=verify, check=check)
         except Exception as e:
             pr.logException(self._log,e)
-            self._log.error("Error setting link variable '{}'".format(self.path))
+            self._log.error("Error setting link variable %s", self.path)
             raise e
 
     @pr.expose
@@ -2041,7 +2078,7 @@ class LinkVariable(BaseVariable):
             return self._linkedGetWrap(function=self._linkedGet, dev=self.parent, var=self, read=read, index=index, check=check)
         except Exception as e:
             pr.logException(self._log,e)
-            self._log.error("Error getting link variable '{}'".format(self.path))
+            self._log.error("Error getting link variable %s", self.path)
             raise e
 
 

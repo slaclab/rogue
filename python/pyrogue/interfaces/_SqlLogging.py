@@ -57,9 +57,9 @@ class SqlLogger(object):
 
         try:
             engine = sqlalchemy.create_engine(self._url) #, isolation_level="AUTOCOMMIT")
-            self._log.info("Opened database connection to {}".format(self._url))
+            self._log.info("Opened database connection to %s", self._url)
         except Exception as e:
-            self._log.error("Failed to open database connection to {}: {}".format(self._url,e))
+            self._log.error("Failed to open database connection to %s: %s", self._url, e)
             return
 
         #self._metadata = sqlalchemy.MetaData(engine)
@@ -183,7 +183,7 @@ class SqlLogger(object):
             except Exception as e:
                 self._engine = None
                 pr.logException(self._log,e)
-                self._log.error("Lost database connection to {}".format(self._url))
+                self._log.error("Lost database connection to %s", self._url)
 
     def _varUpdate(self, path: str, value: Any) -> None:
         """Queue a variable update for the worker to write to the database."""
@@ -206,9 +206,9 @@ class SqlReader(object):
 
         try:
             engine = sqlalchemy.create_engine(self._url)
-            self._log.info("Opened database connection to {}".format(self._url))
+            self._log.info("Opened database connection to %s", self._url)
         except Exception as e:
-            self._log.error("Failed to open database connection to {}: {}".format(self._url,e))
+            self._log.error("Failed to open database connection to %s: %s", self._url, e)
             return
 
         self._metadata = sqlalchemy.MetaData(engine)

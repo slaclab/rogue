@@ -101,6 +101,10 @@ rim::TcpServer::TcpServer(std::string addr, uint16_t port) {
     threadEn_     = true;
     this->thread_ = new std::thread(&rim::TcpServer::runThread, this);
 
+    this->bridgeLog_->debug("TCP memory bridge ready. request=%s response=%s",
+                            this->reqAddr_.c_str(),
+                            this->respAddr_.c_str());
+
     // Set a thread name
 #ifndef __MACH__
     pthread_setname_np(thread_->native_handle(), "TcpServer");
@@ -127,6 +131,9 @@ void rim::TcpServer::stop() {
         rogue::GilRelease noGil;
         threadEn_ = false;
         thread_->join();
+        this->bridgeLog_->debug("Stopping TCP memory bridge. request=%s response=%s",
+                                this->reqAddr_.c_str(),
+                                this->respAddr_.c_str());
         zmq_close(this->zmqResp_);
         zmq_close(this->zmqReq_);
         zmq_ctx_destroy(this->zmqCtx_);
@@ -175,7 +182,12 @@ void rim::TcpServer::runThread() {
             // Check sizes
             if ((zmq_msg_size(&(msg[0])) != 4) || (zmq_msg_size(&(msg[1])) != 8) || (zmq_msg_size(&(msg[2])) != 4) ||
                 (zmq_msg_size(&(msg[3])) != 4)) {
-                bridgeLog_->warning("Bad message sizes");
+                bridgeLog_->warning(
+                    "Bad message sizes. id=%zu addr=%zu size=%zu type=%zu",
+                    zmq_msg_size(&(msg[0])),
+                    zmq_msg_size(&(msg[1])),
+                    zmq_msg_size(&(msg[2])),
+                    zmq_msg_size(&(msg[3])));
                 for (x = 0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
                 continue;  // while (1)
             }

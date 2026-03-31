@@ -49,11 +49,27 @@ class SystemLogMonitor(object):
         if len(lst) > self._logCount:
             for i in range(self._logCount,len(lst)):
                 vv = lst[i]['message'].replace('\n', "\n                         ")
-                print("{}: {}".format(time.strftime("%Y-%m-%d %H:%M:%S %Z", time.localtime(lst[i]['created'])),vv))
+                tags = []
+                if lst[i].get('rogueCpp'):
+                    tags.append('C++')
+                if lst[i].get('rogueComponent') is not None:
+                    tags.append(lst[i]['rogueComponent'])
+                prefix = f" [{' '.join(tags)}]" if len(tags) > 0 else ''
+                print("{}{}: {}".format(time.strftime("%Y-%m-%d %H:%M:%S %Z", time.localtime(lst[i]['created'])), prefix, vv))
 
                 if self._details:
                     print("                   Name: {}".format(lst[i]['name']))
                     print("                  Level: {} ({})".format(lst[i]['levelName'],lst[i]['levelNumber']))
+                    if lst[i].get('rogueCpp'):
+                        print("                 Source: Rogue C++")
+                    if lst[i].get('rogueComponent') is not None:
+                        print("              Component: {}".format(lst[i]['rogueComponent']))
+                    if lst[i].get('rogueLogger') is not None:
+                        print("           Rogue Logger: {}".format(lst[i]['rogueLogger']))
+                    if lst[i].get('rogueTid') is not None:
+                        print("             Rogue TID: {}".format(lst[i]['rogueTid']))
+                    if lst[i].get('roguePid') is not None:
+                        print("             Rogue PID: {}".format(lst[i]['roguePid']))
 
                     if lst[i]['exception'] is not None:
                         print("              Exception: {}".format(lst[i]['exception']))
@@ -117,4 +133,3 @@ class VariableMonitor(object):
         """
         if self._path == key:
             self.display(varVal.valueDisp)
-

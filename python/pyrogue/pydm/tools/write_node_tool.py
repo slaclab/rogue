@@ -53,15 +53,15 @@ class WriteVariable(ExternalTool):
             node.WriteDevice(False)
 
         elif node.isinstance(pyrogue.BaseCommand):
-            logger.warning("Can't write to non variable: {}".format(node.path))
+            logger.warning("Can't write to non variable: %s", node.path)
 
         elif node.isinstance(pyrogue.BaseVariable):
             if node.mode == 'RO':
-                logger.warning("Can't write to read only variable: {}".format(node.path))
+                logger.warning("Can't write to read only variable: %s", node.path)
             else:
                 node.write()
         else:
-            logger.warning("Invalid node for write: {}".format(node.path))
+            logger.warning("Invalid node for write: %s", node.path)
 
     def to_json(self) -> str:
         """Return serialized tool configuration."""

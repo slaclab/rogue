@@ -126,6 +126,19 @@ class RootLogHandler(logging.Handler):
                        'levelName'   : record.levelname,
                        'levelNumber' : record.levelno }
 
+                if hasattr(record, 'rogue_cpp'):
+                    se['rogueCpp'] = record.rogue_cpp
+                if hasattr(record, 'rogue_tid'):
+                    se['rogueTid'] = record.rogue_tid
+                if hasattr(record, 'rogue_pid'):
+                    se['roguePid'] = record.rogue_pid
+                if hasattr(record, 'rogue_logger'):
+                    se['rogueLogger'] = record.rogue_logger
+                if hasattr(record, 'rogue_timestamp'):
+                    se['rogueTimestamp'] = record.rogue_timestamp
+                if hasattr(record, 'rogue_component'):
+                    se['rogueComponent'] = record.rogue_component
+
                 if record.exc_info is not None:
                     se['exception'] = record.exc_info[0].__name__
                     se['traceBack'] = []
@@ -177,6 +190,9 @@ class Root(pr.Device):
         Enable polling on start.
     maxLog : int, optional (default = 1000)
         Maximum log entries to retain.
+    unifyLogs : bool, optional (default = False)
+        Forward Rogue C++ logs into Python logging and disable the native Rogue
+        stdout sink to avoid duplicate output in mixed PyRogue applications.
     """
 
     def __enter__(self) -> Root:
@@ -196,7 +212,8 @@ class Root(pr.Device):
                  initRead: bool = False,
                  initWrite: bool = False,
                  pollEn: bool = True,
-                 maxLog: int = 1000) -> None:
+                 maxLog: int = 1000,
+                 unifyLogs: bool = False) -> None:
         """Initialize the root node, workers, and built-in variables/commands."""
         rogue.interfaces.stream.Master.__init__(self)
 
@@ -206,7 +223,11 @@ class Root(pr.Device):
         self._initWrite       = initWrite
         self._pollEn          = pollEn
         self._maxLog          = maxLog
+        self._unifyLogs       = unifyLogs
         self._doHeartbeat     = True # Backdoor flag
+
+        if self._unifyLogs:
+            pr.setUnifiedLogging(True)
 
         # Create log listener to add to SystemLog variable
         formatter = logging.Formatter("%(msg)s")
@@ -374,6 +395,8 @@ class Root(pr.Device):
         if self._running:
             raise pr.NodeError("Root is already started! Can't restart!")
 
+        self._log.info("Starting root lifecycle")
+
         # Call special root level rootAttached
         self._rootAttached()
 
@@ -393,9 +416,14 @@ class Root(pr.Device):
         # Look for overlaps
         for i in range(1,len(tmpList)):
 
-            self._log.debug("Comparing {} with address={:#x} to {} with address={:#x} and size={}".format(
-                            tmpList[i].path,  tmpList[i].address,
-                            tmpList[i-1].path,tmpList[i-1].address, tmpList[i-1].size))
+            self._log.debug(
+                "Comparing %s with address=%#x to %s with address=%#x and size=%s",
+                tmpList[i].path,
+                tmpList[i].address,
+                tmpList[i-1].path,
+                tmpList[i-1].address,
+                tmpList[i-1].size,
+            )
 
             # Detect overlaps
             if (tmpList[i].size != 0) and (tmpList[i]._reqSlaveId() == tmpList[i-1]._reqSlaveId()) and \
@@ -412,7 +440,10 @@ class Root(pr.Device):
 
         # Detect large timeout
         if self._timeout > 10.0:
-            self._log.warning(f"Large timeout value of {self._timeout} seconds detected. This may cause unexpected system behavior.")
+            self._log.warning(
+                "Large timeout value of %s seconds detected. This may cause unexpected system behavior.",
+                self._timeout,
+            )
 
         # Start update thread
         self._running = True
@@ -439,6 +470,7 @@ class Root(pr.Device):
         # Start poller if enabled
         self._pollQueue._start()
         self.PollEn.set(self._pollEn)
+        self._log.info("Root lifecycle started")
 
 
     def stop(self) -> None:
@@ -446,6 +478,7 @@ class Root(pr.Device):
         Call Device._stop() to recursively stop all Devices in the tree.
         """
 
+        self._log.info("Stopping root lifecycle")
         self._running = False
         self._updateQueue.put(None)
         self._updateThread.join()
@@ -454,6 +487,7 @@ class Root(pr.Device):
             self._pollQueue._stop()
 
         pr.Device._stop(self)
+        self._log.info("Root lifecycle stopped")
 
     @pr.expose
     @property
@@ -747,12 +781,12 @@ class Root(pr.Device):
 
     def _write(self) -> bool:
         """Write and verify all blocks."""
-        self._log.info("Start root write")
+        self._log.info("Start root write (forceWrite=%s)", self.ForceWrite.value())
         with self.pollBlock(), self.updateGroup():
             self.writeBlocks(force=self.ForceWrite.value(), recurse=True)
-            self._log.info("Verify root read")
+            self._log.info("Verify root write with readback")
             self.verifyBlocks(recurse=True)
-            self._log.info("Check root read")
+            self._log.info("Check verified root write transactions")
             self.checkBlocks(recurse=True)
 
         self._log.info("Done root write")
@@ -763,7 +797,7 @@ class Root(pr.Device):
         self._log.info("Start root read")
         with self.pollBlock(), self.updateGroup():
             self.readBlocks(recurse=True)
-            self._log.info("Check root read")
+            self._log.info("Check root read transactions")
             self.checkBlocks(recurse=True)
 
         self._log.info("Done root read")
@@ -918,16 +952,28 @@ class Root(pr.Device):
             else:
                 raise Exception("loadYaml: Invalid load file: {}, must be a directory or end in .yml or .yaml".format(rl))
 
+        self._log.info(
+            "Loading YAML config from %s file(s), writeEach=%s, modes=%s, incGroups=%s, excGroups=%s",
+            len(lst),
+            writeEach,
+            modes,
+            incGroups,
+            excGroups,
+        )
+
         # Read each file
         with self.pollBlock(), self.updateGroup():
             for fn in lst:
+                self._log.debug("Applying YAML config file %s", fn)
                 d = pr.yamlToData(fName=fn)
                 self._setDictRoot(d=d,writeEach=writeEach,modes=modes,incGroups=incGroups,excGroups=excGroups)
 
             if not writeEach:
+                self._log.info("Committing staged YAML config to hardware")
                 self._write()
 
         if self.InitAfterConfig.value():
+            self._log.info("Running initialize() after YAML config load")
             self.initialize()
 
         return True
@@ -1017,13 +1063,23 @@ class Root(pr.Device):
         """
         d = pr.yamlToData(yml)
 
+        self._log.info(
+            "Applying YAML text config, writeEach=%s, modes=%s, incGroups=%s, excGroups=%s",
+            writeEach,
+            modes,
+            incGroups,
+            excGroups,
+        )
+
         with self.pollBlock(), self.updateGroup():
             self._setDictRoot(d=d,writeEach=writeEach,modes=modes,incGroups=incGroups,excGroups=excGroups)
 
             if not writeEach:
+                self._log.info("Committing staged YAML text config to hardware")
                 self._write()
 
         if self.InitAfterConfig.value():
+            self._log.info("Running initialize() after YAML text config")
             self.initialize()
 
     def remoteVariableDump(
@@ -1096,7 +1152,7 @@ class Root(pr.Device):
             if node is not None:
                 node._setDict(d=value,writeEach=writeEach,modes=modes,incGroups=incGroups,excGroups=excGroups,keys=None)
             else:
-                self._log.error("Entry {} not found".format(key))
+                self._log.error("Entry %s not found", key)
 
 
     def _clearLog(self) -> None:
@@ -1151,7 +1207,11 @@ class Root(pr.Device):
                 syslogOnly = all(self._isSystemLogVar(v) for v in uvars.values())
 
                 if not syslogOnly:
-                    self._log.debug(F'Process update group. Length={len(uvars)}. Entry={list(uvars.keys())[0]}')
+                    self._log.debug(
+                        "Process update group. Length=%s. Entry=%s",
+                        len(uvars),
+                        list(uvars.keys())[0],
+                    )
 
                 # Copy list and add listeners
                 nvars = uvars.copy()
@@ -1189,7 +1249,11 @@ class Root(pr.Device):
                                 pr.logException(self._log,e)
 
                 if not syslogOnly:
-                    self._log.debug(F"Done update group. Length={len(uvars)}. Entry={list(uvars.keys())[0]}")
+                    self._log.debug(
+                        "Done update group. Length=%s. Entry=%s",
+                        len(uvars),
+                        list(uvars.keys())[0],
+                    )
 
             # Set done
             self._updateQueue.task_done()
