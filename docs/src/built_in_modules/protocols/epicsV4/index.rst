@@ -46,6 +46,16 @@ only the intended EPICS PV surface.
 For group semantics and filtering behavior in the tree model, see
 :doc:`/pyrogue_tree/core/groups`.
 
+.. note::
+
+   Neither softioc nor p4p exposes a Python callback that fires when a CA or
+   PVA client issues a ``caget`` / ``ctxt.get()``. Both EPICS V4 (p4p) and
+   V7 (softioc) integrations serve the most recently pushed value from the
+   EPICS record buffer. To ensure clients receive up-to-date hardware values,
+   the Rogue server process must execute hardware reads itself — either via
+   PyRogue auto-polling (``pollInterval`` on variables or ``pollEn=True`` on
+   the Root) or by calling device-level read commands explicitly.
+
 Subtopics
 =========
 
