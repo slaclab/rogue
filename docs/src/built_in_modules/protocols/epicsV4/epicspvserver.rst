@@ -79,6 +79,78 @@ The common setup follows this pattern:
 2. Construct ``EpicsPvServer(base=..., root=..., pvMap=...)``.
 3. Register it with ``root.addProtocol(...)``.
 4. Use a P4P client to put and get values and confirm round-trip behavior.
+5. Use ``ctxt.rpc()`` to invoke PyRogue Commands through EPICS.
+
+RPC for Commands
+================
+
+PyRogue Commands (``LocalCommand`` and ``RemoteCommand``) are automatically
+exposed through EPICS RPC when served by ``EpicsPvServer``. The server-side
+``EpicsPvHandler.rpc()`` method dispatches incoming RPC requests to the bound
+PyRogue Command.
+
+Commands appear in the PV namespace alongside variables and can be invoked from
+any P4P client using ``ctxt.rpc()``.
+
+Invoking a Command Without Arguments
+-------------------------------------
+
+Use an ``NTURI`` with an empty query to call a no-argument command:
+
+.. code-block:: python
+
+   from p4p.client.thread import Context
+   from p4p.nt import NTURI
+
+   ctxt = Context('pva')
+
+   pv_name = 'MyIoc:MyRoot:MyDevice:ResetCounter'
+   uri = NTURI([])
+   ctxt.rpc(pv_name, uri.wrap(pv_name))
+
+On the server side, the handler sees no ``arg`` field in the query and calls
+the command with no argument.
+
+Invoking a Command With an Argument
+------------------------------------
+
+To pass a value into a command, declare a query field named ``arg`` in the
+``NTURI``. The handler extracts ``val.arg`` from the query and forwards it
+to the PyRogue command:
+
+.. code-block:: python
+
+   from p4p.client.thread import Context
+   from p4p.nt import NTURI
+
+   ctxt = Context('pva')
+
+   pv_name = 'MyIoc:MyRoot:MyDevice:SetThreshold'
+   uri = NTURI([('arg', 'i')])   # 'i' = int32; use 'd' for float64, 's' for string
+   ctxt.rpc(pv_name, uri.wrap(pv_name, kws={'arg': 42}))
+
+The NTURI type code for the ``arg`` field should match the expected value type.
+Common type codes are ``'i'`` (int32), ``'l'`` (int64), ``'d'`` (float64), and
+``'s'`` (string).
+
+P4P Context Behavior After RPC
+-------------------------------
+
+.. note::
+
+   Calling ``ctxt.rpc()`` on a P4P ``Context`` may cause subsequent
+   ``ctxt.get()`` calls to return raw ``p4p.wrapper.Value`` structs instead of
+   auto-unwrapped scalars. If you need to continue using ``ctxt.get()`` after
+   an RPC call, use a separate ``Context`` for the RPC operation:
+
+   .. code-block:: python
+
+      rpc_ctxt = Context('pva')
+      rpc_ctxt.rpc(pv_name, uri.wrap(pv_name))
+      rpc_ctxt.close()
+
+      # The original context continues to return unwrapped scalars.
+      value = ctxt.get(other_pv)
 
 When To Use It
 ==============
@@ -105,7 +177,7 @@ Logging
 
 - Logger name: ``pyrogue.EpicsPvServer``
 - Logging API:
-  ``logging.getLogger('pyrogue.EpicsPvServer').setLevel(logging.DEBUG)``
+  ``pyrogue.setLogLevel('pyrogue.EpicsPvServer', 'DEBUG')``
 
 This logger is used for PV mapping errors and other server-side operational
 messages emitted by the Python implementation.

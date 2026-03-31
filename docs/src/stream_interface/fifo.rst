@@ -174,8 +174,15 @@ Logging
 ``Fifo`` uses Rogue C++ logging with the static logger name
 ``pyrogue.stream.Fifo``.
 
-Enable that logger before constructing the object if you want constructor-time
-and runtime messages from the ``Fifo`` implementation:
+- ``pyrogue.stream.Fifo``
+- Unified Logging API:
+  ``pyrogue.setLogLevel('pyrogue.stream.Fifo', 'DEBUG')``
+- Legacy Logging API:
+  ``rogue.Logging.setFilter('pyrogue.stream.Fifo', rogue.Logging.Debug)``
+
+You can enable that logger before or after constructing the object. Enable it
+before construction only if you want constructor-time messages in addition to
+runtime messages from the ``Fifo`` implementation:
 
 .. code-block:: python
 

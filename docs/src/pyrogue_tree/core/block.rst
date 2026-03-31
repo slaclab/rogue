@@ -176,7 +176,7 @@ bound into it.
 - Logger pattern: ``pyrogue.memory.block.<path>``
 - Example: ``pyrogue.memory.block.Root.MyDevice.MyRegister``
 - Unified Logging API:
-  ``logging.getLogger('pyrogue.memory.block').setLevel(logging.DEBUG)``
+  ``pyrogue.setLogLevel('pyrogue.memory.block', 'DEBUG')``
 - Legacy Logging API:
   ``rogue.Logging.setFilter('pyrogue.memory.block', rogue.Logging.Debug)``
 

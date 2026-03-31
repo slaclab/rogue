@@ -148,8 +148,14 @@ Examples:
 
 - ``pyrogue.memory.TcpServer.*.8000``
 - ``pyrogue.memory.TcpClient.127.0.0.1.8000``
+- Unified Logging API:
+  ``pyrogue.setLogLevel('pyrogue.memory.TcpServer', 'DEBUG')``
+- Legacy Logging API:
+  ``rogue.Logging.setFilter('pyrogue.memory.TcpServer', rogue.Logging.Debug)``
 
-Enable the logger before constructing the bridge object:
+You can enable the logger before or after constructing the bridge object.
+Enable it before construction only if you want constructor or initial
+connection-startup messages:
 
 .. code-block:: python
 

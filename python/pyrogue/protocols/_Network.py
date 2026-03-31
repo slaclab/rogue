@@ -391,6 +391,12 @@ class UdpRssiPack(pr.Device):
             return
 
         self._udp.setRxBufferCount(self._rssi.curMaxBuffers())
+        self._log.info(
+            "host=%s, port=%d -> Configured UDP RX buffer count to %s",
+            self._host,
+            self._port,
+            self._rssi.curMaxBuffers(),
+        )
         self._rxBufferConfigured = True
 
     def _armServerRxBufferUpdate(self) -> None:

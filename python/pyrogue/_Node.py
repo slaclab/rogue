@@ -16,149 +16,11 @@ from __future__ import annotations
 
 import collections
 import inspect
-import logging
 import re
-import sys
 from collections import OrderedDict as odict
 from typing import Any, Callable, Iterable, OrderedDict
 
 import pyrogue as pr
-import rogue
-
-
-def logException(log: logging.Logger, e: Exception) -> None:
-    """Log a memory error or a generic exception.
-
-    Parameters
-    ----------
-    log : logging.Logger
-        Logger used to record the exception.
-    e : Exception
-        Exception instance to log.
-    """
-    if isinstance(e,pr.MemoryError):
-        log.error(e)
-    else:
-        log.exception(e)
-
-
-def logInit(
-    cls: type[pr.Node] | None = None,
-    name: str | None = None,
-    path: str | None = None,
-) -> logging.Logger:
-    """Initialize a logger with a consistent PyRogue name.
-
-    Parameters
-    ----------
-    cls : object, optional
-        Instance used to derive the base-class tag.
-    name : str, optional
-        Node name to include in the logger.
-    path : str, optional
-        Full node path to include in the logger.
-
-    Returns
-    -------
-    logging.Logger
-        Configured logger instance.
-    """
-
-    # Support base class in order of precedence
-    baseClasses = odict({pr.BaseCommand : 'Command', pr.BaseVariable : 'Variable',
-                         pr.Root : 'Root', pr.Device : 'Device'})
-
-    """Init a logging object. Set global options."""
-    logging.basicConfig(
-        #level=logging.NOTSET,
-        format="%(levelname)s:%(name)s:%(message)s",
-        stream=sys.stdout)
-
-    # All logging starts with rogue prefix
-    ln = 'pyrogue'
-
-    # Next add the highest ranking base class
-    if cls is not None:
-        for k,v in baseClasses.items():
-            if isinstance(cls,k):
-                ln += f'.{v}'
-                break
-
-        # Next subclass name
-        ln += f'.{cls.__class__.__name__}'
-
-    # Add full path if passed
-    if path is not None:
-        ln += f'.{path}'
-
-    # Otherwise just add name if passed
-    elif name is not None:
-        ln += f'.{name}'
-
-    return logging.getLogger(ln)
-
-
-def _classLogName(cls: type[pr.Node]) -> str:
-    """Return the canonical Python logger name for a PyRogue Node class."""
-    baseClasses = odict({pr.BaseCommand: 'Command', pr.BaseVariable: 'Variable',
-                         pr.Root: 'Root', pr.Device: 'Device'})
-
-    ln = 'pyrogue'
-
-    for k, v in baseClasses.items():
-        if issubclass(cls, k):
-            ln += f'.{v}'
-            break
-
-    return f'{ln}.{cls.__name__}'
-
-
-def logName(target: Any) -> str:
-    """Return the normalized logger name for a logger, Node, class, or string."""
-    if isinstance(target, str):
-        return rogue.Logging.normalizeName(target)
-
-    if isinstance(target, logging.Logger):
-        return target.name
-
-    if inspect.isclass(target) and issubclass(target, pr.Node):
-        return _classLogName(target)
-
-    log = getattr(target, '_log', None)
-    if log is not None:
-        name = getattr(log, 'name', None)
-        if callable(name):
-            return name()
-        if isinstance(name, str):
-            return name
-
-    raise AttributeError(f'Object {target!r} does not expose a logger name')
-
-
-def setLogLevel(
-    target: Any,
-    level: int | str,
-    *,
-    includePython: bool = True,
-    includeRogue: bool = True,
-) -> str:
-    """Set Python and/or Rogue logging level for a logger target."""
-    if isinstance(level, str):
-        pyLevel = logging.getLevelName(level.upper())
-        if not isinstance(pyLevel, int):
-            raise ValueError(f'Unknown logging level: {level}')
-    else:
-        pyLevel = level
-
-    name = logName(target)
-
-    if includePython:
-        logging.getLogger(name).setLevel(pyLevel)
-
-    if includeRogue:
-        rogue.Logging.setFilter(name, pyLevel)
-
-    return name
 
 
 def expose(item: Any) -> Any:
@@ -241,7 +103,7 @@ class Node(object):
         self._anodes  = odict()
 
         # Setup logging
-        self._log = logInit(cls=self,name=name,path=None)
+        self._log = pr.logInit(cls=self,name=name,path=None)
 
         if groups is None:
             self._groups = []
@@ -260,7 +122,7 @@ class Node(object):
     @classmethod
     def classLogName(cls) -> str:
         """Return the canonical Python logger name for this Node class."""
-        return _classLogName(cls)
+        return pr.logName(cls)
 
     @classmethod
     def setClassLogLevel(
@@ -270,12 +132,12 @@ class Node(object):
         includePython: bool = True,
         includeRogue: bool = True,
     ) -> str:
-        """Set logging level for this Node class logger family."""
-        return setLogLevel(cls, level, includePython=includePython, includeRogue=includeRogue)
+        """Set the logging level for this Node class logger family."""
+        return pr.setLogLevel(cls, level, includePython=includePython, includeRogue=includeRogue)
 
     def logName(self) -> str:
-        """Return the logger name for this Node instance."""
-        return logName(self)
+        """Return the canonical logger name for this Node instance."""
+        return pr.logName(self)
 
     def setLogLevel(
         self,
@@ -284,8 +146,8 @@ class Node(object):
         includePython: bool = True,
         includeRogue: bool = True,
     ) -> str:
-        """Set logging level for this Node instance logger."""
-        return setLogLevel(self, level, includePython=includePython, includeRogue=includeRogue)
+        """Set the logging level for this Node instance logger."""
+        return pr.setLogLevel(self, level, includePython=includePython, includeRogue=includeRogue)
 
     @property
     def nodeCount(self) -> int:
@@ -827,7 +689,7 @@ class Node(object):
         self._parent = parent
         self._root   = root
         self._path   = parent.path + '.' + self.name
-        self._log    = logInit(cls=self,name=self._name,path=self._path)
+        self._log    = pr.logInit(cls=self,name=self._name,path=self._path)
 
         # Inherit groups from parent
         for grp in parent.groups:

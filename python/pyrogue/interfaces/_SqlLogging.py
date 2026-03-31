@@ -106,7 +106,9 @@ class SqlLogger(object):
         Parameters
         ----------
         entry : tuple
-            (path, value) for variables or (path, log_data) for syslog.
+            ``(path, value)`` from a root variable listener callback. Syslog
+            entries may arrive either as ``VariableValue`` wrappers or as raw
+            JSON strings when inserted directly by tests/helpers.
         conn : object
             SQLAlchemy connection for the transaction.
         """

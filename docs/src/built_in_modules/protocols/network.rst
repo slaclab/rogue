@@ -195,9 +195,9 @@ output, however, comes from the underlying Rogue C++ modules:
 - ``pyrogue.packetizer.Controller``
 
 - Unified Logging API:
-  ``logging.getLogger('pyrogue.udp').setLevel(logging.DEBUG)``,
-  ``logging.getLogger('pyrogue.rssi').setLevel(logging.DEBUG)``, and
-  ``logging.getLogger('pyrogue.packetizer').setLevel(logging.DEBUG)``
+  ``pyrogue.setLogLevel('pyrogue.udp', 'DEBUG')``,
+  ``pyrogue.setLogLevel('pyrogue.rssi', 'DEBUG')``, and
+  ``pyrogue.setLogLevel('pyrogue.packetizer', 'DEBUG')``
 - Legacy Logging API:
   ``rogue.Logging.setFilter('pyrogue.udp', rogue.Logging.Debug)``,
   ``rogue.Logging.setFilter('pyrogue.rssi', rogue.Logging.Debug)``, and

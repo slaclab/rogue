@@ -72,7 +72,7 @@ Logging
 
 - Default logger name: ``pyrogue.FileReader``
 - Logging API:
-  ``logging.getLogger('pyrogue.FileReader').setLevel(logging.DEBUG)``
+  ``pyrogue.setLogLevel('pyrogue.FileReader', 'DEBUG')``
 
 If you pass a custom ``log=...`` object into ``FileReader``, that logger is
 used instead of the default.

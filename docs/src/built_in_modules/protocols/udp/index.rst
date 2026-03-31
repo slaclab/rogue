@@ -146,7 +146,7 @@ Static logger names:
 - ``pyrogue.udp.Client``
 - ``pyrogue.udp.Server``
 - Unified Logging API:
-  ``logging.getLogger('pyrogue.udp').setLevel(logging.DEBUG)``
+  ``pyrogue.setLogLevel('pyrogue.udp', 'DEBUG')``
 - Legacy Logging API:
   ``rogue.Logging.setFilter('pyrogue.udp', rogue.Logging.Debug)``
 
