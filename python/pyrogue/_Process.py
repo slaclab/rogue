@@ -119,6 +119,11 @@ class Process(pr.Device):
         if self._retVar is not None and self._retVar not in self:
             self.add(self._retVar)
 
+    @staticmethod
+    def _clampedProgress(value: Any) -> float:
+        """Return ``value`` clamped into the valid progress range."""
+        return max(0.0, min(float(value), 1.0))
+
     def _clampProgressValue(
         self,
         *,
@@ -128,24 +133,18 @@ class Process(pr.Device):
     ) -> None:
         """Clamp direct Progress writes while preserving the variable metadata range."""
         if var is not None and hasattr(var, "_block"):
-            var._block._value = max(0.0, min(float(value), 1.0))
+            var._block._value = self._clampedProgress(value)
 
     def _updateProgress(self) -> None:
-        """Clamp progress to the valid 0.0-1.0 range.
-
-        The step counter may temporarily run ahead of the declared total, or
-        the total may still be zero while a process is being configured.
-        Keep Progress bounded so helper callers cannot trip the variable range
-        checks just by updating Step and TotalSteps in an unexpected order.
-        """
+        """Recompute progress from ``Step`` and ``TotalSteps``."""
         total = self.TotalSteps.value()
 
         if total <= 0:
             progress = 0.0
         else:
-            progress = max(0.0, min(self.Step.value() / total, 1.0))
+            progress = self.Step.value() / total
 
-        self.Progress.set(progress)
+        self.setProgress(progress)
 
     def setProgress(self, value: float) -> None:
         """Set fractional progress directly.
@@ -154,9 +153,9 @@ class Process(pr.Device):
         ----------
         value : float
             Fractional completion value. Values outside the valid ``0.0`` to
-            ``1.0`` range are clamped before updating ``Progress``.
+            ``1.0`` range are clamped before being stored in ``Progress``.
         """
-        self.Progress.set(max(0.0, min(float(value), 1.0)))
+        self.Progress.set(self._clampedProgress(value))
 
     def setTotalSteps(self, value: int) -> None:
         """Set the total number of steps used for step-based progress.
