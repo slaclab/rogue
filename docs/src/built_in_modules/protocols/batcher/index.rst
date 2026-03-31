@@ -116,6 +116,7 @@ splitter and inverter usage:
   ``pyrogue.setLogLevel('pyrogue.batcher.CoreV2', 'DEBUG')``
 - Legacy Logging API:
   ``rogue.Logging.setFilter('pyrogue.batcher.CoreV2', rogue.Logging.Debug)``
+
 You can enable the logger before or during processing. Enable it before frames
 start flowing only if you want the earliest parser messages as well:
 
