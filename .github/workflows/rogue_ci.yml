@@ -70,18 +70,18 @@ jobs:
       # Run Tests
       - name: Rogue Native C++ Tests
         run: |
-          source setup_rogue.sh
+          source build/setup_rogue.sh
           ctest --test-dir build --output-on-failure -L requires-python
 
       - name: Rogue Tests
         run: |
-          source setup_rogue.sh
+          source build/setup_rogue.sh
           python -m pytest -n auto --dist loadfile --cov -m "not perf"
 
       # Code Coverage
       - name: Code Coverage
         run: |
-          source setup_rogue.sh
+          source build/setup_rogue.sh
           codecov
           coverage report -m
 
@@ -89,7 +89,7 @@ jobs:
       - name: Generate Documentation
         if: startsWith(github.ref, 'refs/tags/')
         run: |
-          source setup_rogue.sh
+          source build/setup_rogue.sh
           cd docs
           make html
 
@@ -126,7 +126,7 @@ jobs:
 
       - name: Rogue Native C++ Tests
         run: |
-          source setup_rogue.sh
+          source build/setup_rogue.sh
           ctest --test-dir build --output-on-failure -L no-python
 
 
@@ -176,7 +176,7 @@ jobs:
       - name: Rogue Native C++ Tests
         shell: bash -el {0}
         run: |
-          source setup_rogue.sh
+          source build/setup_rogue.sh
           ctest --test-dir build --output-on-failure -L requires-python
 
       - name: Rogue Tests
@@ -217,7 +217,7 @@ jobs:
 
       - name: Run Perf Tests
         run: |
-          source setup_rogue.sh
+          source build/setup_rogue.sh
           mkdir -p perf-results
           export PERF_RESULTS_DIR="${PWD}/perf-results"
           python -m pytest tests/perf -q -s
