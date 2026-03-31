@@ -38,3 +38,8 @@ Common commands:
   - `pytest tests/integration -q`
 - Performance subset:
   - `pytest tests/perf -q`
+
+Planning / handoff docs:
+
+- `BRANCH_STATUS.md`: summary of the current branch state and major changes
+- `NEXT_STEPS.md`: likely follow-up work and wrap-up checklist
