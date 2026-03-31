@@ -84,7 +84,7 @@ void rpp::ControllerV2::transportRx(ris::FramePtr frame) {
     uint8_t* data;
 
     if (frame->isEmpty()) {
-        log_->warning("Bad incoming transportRx frame, size=0");
+        log_->warning("Empty frame received on transport input");
         return;
     }
 
@@ -263,7 +263,7 @@ void rpp::ControllerV2::applicationRx(ris::FramePtr frame, uint8_t tDest) {
     timeradd(&startTime, &timeout_, &endTime);
 
     if (frame->isEmpty()) {
-        log_->warning("Bad incoming applicationRx frame, size=0");
+        log_->warning("Empty frame received on application input");
         return;
     }
 

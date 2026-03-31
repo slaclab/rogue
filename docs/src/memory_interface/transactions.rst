@@ -91,9 +91,33 @@ Timeout And Expiration
 Timeout is attached when the ``Transaction`` is created. If the work does not
 complete in time, waiting logic marks the ``Transaction`` as a timeout error.
 
+Timer refresh logic can extend active transactions in multi-stage flows to
+reduce false expirations on slower links.
 Longer multi-stage flows can refresh timer state so an active but slow
 ``Transaction`` does not expire prematurely. That matters most for deeper hub
 graphs, protocol bridges, and slower transport links.
+
+Logging
+=======
+
+The transaction runtime uses a Rogue C++ logger:
+
+- Logger name: ``pyrogue.memory.Transaction``
+- Unified Logging API:
+  ``pyrogue.setLogLevel('pyrogue.memory.Transaction', 'DEBUG')``
+- Legacy Logging API:
+  ``rogue.Logging.setFilter('pyrogue.memory.Transaction', rogue.Logging.Debug)``
+
+This logger is created in quiet mode and is mainly an internal runtime aid for
+timeout/correlation behavior rather than a primary user-facing debug surface.
+
+In practice, transaction debugging is usually more effective through the
+surrounding module loggers:
+
+- ``pyrogue.memory.Master`` for request issue paths
+- ``pyrogue.memory.Hub`` for routing/splitting paths
+- ``pyrogue.memory.block.*`` for Variable/Block transaction flow
+- Protocol-specific loggers such as ``pyrogue.SrpV3``
 
 Subtransactions
 ===============

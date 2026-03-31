@@ -153,14 +153,8 @@ The logger name includes the board and address:
 
 - Pattern: ``pyrogue.GpibController.GPIB.<board>.<addr>``
 - Example: ``pyrogue.GpibController.GPIB.0.5``
-
-Configuration example:
-
-.. code-block:: python
-
-   import logging
-
-   logging.getLogger('pyrogue.GpibController').setLevel(logging.DEBUG)
+- Logging API:
+  ``pyrogue.setLogLevel('pyrogue.GpibController', 'DEBUG')``
 
 This logger is useful for command and response tracing because it emits
 messages such as:

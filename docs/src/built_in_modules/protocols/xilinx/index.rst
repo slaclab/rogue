@@ -203,7 +203,13 @@ Xilinx support uses Rogue C++ logging:
 - ``pyrogue.xilinx.xvc`` for TCP server and frame-bridge activity.
 - ``pyrogue.xilinx.jtag`` for protocol-level query and shift debugging.
 
-Enable the logger family before construction:
+- Unified Logging API:
+  ``pyrogue.setLogLevel('pyrogue.xilinx', 'DEBUG')``
+- Legacy Logging API:
+  ``rogue.Logging.setFilter('pyrogue.xilinx', rogue.Logging.Debug)``
+
+You can enable the logger family before or after construction. Enable it before
+construction only if you want constructor or initial server-startup messages:
 
 .. code-block:: python
 

@@ -25,3 +25,6 @@ bld-dir/*
 rogue.egg-info*
 .vscode/
 .cursor/
+.claude/
+.planning/
+CLAUDE.md

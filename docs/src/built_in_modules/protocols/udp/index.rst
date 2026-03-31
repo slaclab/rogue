@@ -145,14 +145,10 @@ Static logger names:
 
 - ``pyrogue.udp.Client``
 - ``pyrogue.udp.Server``
-
-Enable one side or the whole subsystem before constructing objects:
-
-.. code-block:: python
-
-   import rogue
-
-   rogue.Logging.setFilter('pyrogue.udp', rogue.Logging.Debug)
+- Unified Logging API:
+  ``pyrogue.setLogLevel('pyrogue.udp', 'DEBUG')``
+- Legacy Logging API:
+  ``rogue.Logging.setFilter('pyrogue.udp', rogue.Logging.Debug)``
 
 At debug level, UDP logs socket setup and transmit/receive path events. There
 is no additional runtime ``setDebug(...)`` helper on these classes.

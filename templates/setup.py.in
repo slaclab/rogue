@@ -16,6 +16,7 @@
 # ----------------------------------------------------------------------------
 
 from setuptools import setup, find_packages
+import re
 
 rawVersion = '${ROGUE_VERSION}'
 
@@ -27,23 +28,37 @@ def normalize_version(raw):
     #   vX.Y.Z-N-g<sha>-dirty
     core = raw[1:] if raw.startswith('v') else raw
     fields = core.split('-')
+    release_re = re.compile(r'^\d+(?:\.\d+)*$')
+
+    def clean_field(field):
+        return re.sub(r'[^A-Za-z0-9]+', '.', field).strip('.')
 
     if len(fields) == 1:
-        return fields[0]
+        return fields[0] if release_re.match(fields[0]) else f"0.dev0+{clean_field(fields[0])}"
 
-    base = fields[0]
-    if fields[1].isdigit():
-        dev = fields[1]
-        local_fields = fields[2:]
+    if release_re.match(fields[0]):
+        base = fields[0]
+        if fields[1].isdigit():
+            dev = fields[1]
+            local_fields = fields[2:]
+        else:
+            dev = "0"
+            local_fields = fields[1:]
     else:
-        dev = "0"
-        local_fields = fields[1:]
+        # Fallback for non-release tags or branch/helper describe strings.
+        base = "0"
+        if len(fields) >= 2 and fields[-2].isdigit():
+            dev = fields[-2]
+            local_fields = fields[:-2] + fields[-1:]
+        else:
+            dev = "0"
+            local_fields = fields
 
     version = f"{base}.dev{dev}"
 
     if local_fields:
         # PEP 440 local version labels allow [a-zA-Z0-9.] segments.
-        local = ".".join(local_fields).replace("_", ".").replace("-", ".")
+        local = ".".join(clean_field(field) for field in local_fields if clean_field(field))
         version = f"{version}+{local}"
 
     return version

@@ -57,9 +57,9 @@ class SqlLogger(object):
 
         try:
             engine = sqlalchemy.create_engine(self._url) #, isolation_level="AUTOCOMMIT")
-            self._log.info("Opened database connection to {}".format(self._url))
+            self._log.info("Opened database connection to %s", self._url)
         except Exception as e:
-            self._log.error("Failed to open database connection to {}: {}".format(self._url,e))
+            self._log.error("Failed to open database connection to %s: %s", self._url, e)
             return
 
         #self._metadata = sqlalchemy.MetaData(engine)
@@ -99,21 +99,21 @@ class SqlLogger(object):
         self._thread.join()
         print('Sql logger stopped')
 
-    def insert_from_q(self, entry: tuple[str, Any], conn: sqlalchemy.Connection) -> None:
+    def insert_from_q(self, entry: tuple[str, pr.VariableValue], conn: sqlalchemy.Connection) -> None:
         """
         Insert a single queue entry into the database.
 
         Parameters
         ----------
         entry : tuple
-            (path, value) for variables or (path, log_data) for syslog.
+            ``(path, var_value)`` from a root variable listener callback.
         conn : object
             SQLAlchemy connection for the transaction.
         """
 
         # Syslog
         if entry[0] == self._sysLogPath:
-            val = json.loads(entry[1])
+            val = json.loads(entry[1].value)
 
             ins = self._logTable.insert().values(
                 name=val['name'],
@@ -183,7 +183,7 @@ class SqlLogger(object):
             except Exception as e:
                 self._engine = None
                 pr.logException(self._log,e)
-                self._log.error("Lost database connection to {}".format(self._url))
+                self._log.error("Lost database connection to %s", self._url)
 
     def _varUpdate(self, path: str, value: Any) -> None:
         """Queue a variable update for the worker to write to the database."""
@@ -206,9 +206,9 @@ class SqlReader(object):
 
         try:
             engine = sqlalchemy.create_engine(self._url)
-            self._log.info("Opened database connection to {}".format(self._url))
+            self._log.info("Opened database connection to %s", self._url)
         except Exception as e:
-            self._log.error("Failed to open database connection to {}: {}".format(self._url,e))
+            self._log.error("Failed to open database connection to %s: %s", self._url, e)
             return
 
         self._metadata = sqlalchemy.MetaData(engine)

@@ -53,16 +53,19 @@ Threading And Locking
 Logging
 =======
 
-``SrpV3`` uses Rogue C++ logging, not Python ``logging``.
+``SrpV3`` uses Rogue C++ logging.
 
 - Logger name: ``pyrogue.SrpV3``
-- Configuration API:
+- Recommended unified one-liner:
+  ``pyrogue.setLogLevel('SrpV3', 'DEBUG')``
+- Legacy Logging API:
   ``rogue.Logging.setFilter('pyrogue.SrpV3', rogue.Logging.Debug)``
 - Typical messages: transmitted request headers, received response headers,
   undersized frames, bad headers, error tails, and transaction-ID mismatches
 
-Set the filter before constructing the ``SrpV3`` object. Rogue C++ loggers
-copy their level when the logger instance is created.
+You can set the filter before or after constructing the ``SrpV3`` object.
+Enable it before construction only if you want constructor or very early
+protocol-startup messages.
 
 Python Example
 ==============

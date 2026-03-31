@@ -80,6 +80,7 @@ class DataReceiver(pr.Device,ris.Slave):
 
         self.add(pr.LocalVariable(name='Data',
                                   typeStr=typeStr,
+                                  typeCheck=False,
                                   disp='',
                                   groups=['NoState','NoStream', 'NoConfig'],
                                   value=value,
