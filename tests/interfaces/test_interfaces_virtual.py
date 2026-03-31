@@ -9,6 +9,7 @@
 #-----------------------------------------------------------------------------
 
 import pickle
+import itertools
 
 import pyrogue as pr
 import pyrogue.interfaces._Virtual as virtual_mod
@@ -243,7 +244,9 @@ def test_virtual_client_cache_update_dispatch_and_monitor(monkeypatch):
     client._link = True
     client._ltime = 0.0
 
-    times = iter([20.0, 5.0, 5.0, 5.0])
+    # Link checks and warning-log records both consume time.time(), so use a
+    # stable tail value instead of assuming an exact call count.
+    times = itertools.chain([20.0, 5.0], itertools.repeat(5.0))
     sleeps = {"count": 0}
 
     def fake_time():
