@@ -130,13 +130,13 @@ def test_function_wrapper_filters_supported_arguments():
         return root, dev, arg
 
     wrapped = pr.functionWrapper(full, ["root", "dev", "cmd", "arg"])
-    assert wrapped(full, "r", "d", "ignored", 3) == ("r", "d", 3)
+    assert wrapped(function=full, root="r", dev="d", cmd="ignored", arg=3) == ("r", "d", 3)
 
     def no_args():
         return "done"
 
     wrapped_no_args = pr.functionWrapper(no_args, ["root", "dev"])
-    assert wrapped_no_args(no_args, "r", "d") == "done"
+    assert wrapped_no_args(function=no_args, root="r", dev="d") == "done"
 
     class CallableWithoutSignature:
         def __call__(self, *args, **kwargs):
@@ -156,11 +156,11 @@ def test_function_wrapper_filters_supported_arguments():
     try:
         wrapped_opaque = pr.functionWrapper(opaque, ["root", "dev"])
         with pytest.raises(AssertionError, match="opaque callables"):
-            wrapped_opaque(opaque, "r", "d")
+            wrapped_opaque(function=opaque, root="r", dev="d")
     finally:
         monkeypatch.undo()
 
-    assert pr.functionWrapper(None, ["root", "dev"])(None, "r", "d") is None
+    assert pr.functionWrapper(None, ["root", "dev"])(function=None, root="r", dev="d") is None
 
 
 def test_wait_cntrlc_handles_sigterm_and_keyboard_interrupt(monkeypatch, capsys):
