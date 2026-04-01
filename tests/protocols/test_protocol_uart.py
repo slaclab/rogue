@@ -9,6 +9,7 @@
 #-----------------------------------------------------------------------------
 
 import contextlib
+import queue
 
 import pyrogue.protocols._uart as uart_mod
 import rogue.interfaces.memory
@@ -69,6 +70,7 @@ class FakeTransaction:
         self._type = tx_type
         self._payload = bytearray(payload or bytes(size))
         self.error_msg = None
+        self.errors = []
         self.done_called = False
         self.readback = bytearray(size)
 
@@ -92,6 +94,7 @@ class FakeTransaction:
 
     def error(self, msg):
         self.error_msg = msg
+        self.errors.append(msg)
 
     def lock(self):
         return contextlib.nullcontext()
@@ -173,3 +176,49 @@ def test_uart_memory_error_paths_and_worker_dispatch(monkeypatch):
 
     assert seen == [("write", 0x50), ("read", 0x54)]
     assert "Unsupported transaction type" in bad_tx.error_msg
+
+
+def test_uart_worker_marks_task_done_when_write_transaction_raises():
+    uart = uart_mod.UartMemory.__new__(uart_mod.UartMemory)
+    uart._log = uart_mod.pyrogue.logInit(name="test-uart")
+    uart._workerQueue = queue.Queue()
+
+    def fail_transaction(transaction):
+        raise ValueError("boom")
+
+    uart._doWrite = fail_transaction
+    uart._doRead = lambda transaction: None
+
+    transaction = FakeTransaction(address=0x10, size=4, tx_type=rogue.interfaces.memory.Write)
+    uart._workerQueue.put(transaction)
+    uart._workerQueue.put(None)
+
+    uart._worker()
+
+    assert uart._workerQueue.unfinished_tasks == 0
+    assert not transaction.done_called
+    assert len(transaction.errors) == 1
+    assert "Unhandled UART worker exception: boom" in transaction.errors[0]
+
+
+def test_uart_worker_marks_task_done_when_verify_transaction_raises():
+    uart = uart_mod.UartMemory.__new__(uart_mod.UartMemory)
+    uart._log = uart_mod.pyrogue.logInit(name="test-uart")
+    uart._workerQueue = queue.Queue()
+
+    def fail_transaction(transaction):
+        raise ValueError("boom")
+
+    uart._doWrite = lambda transaction: None
+    uart._doRead = fail_transaction
+
+    transaction = FakeTransaction(address=0x10, size=4, tx_type=rogue.interfaces.memory.Verify)
+    uart._workerQueue.put(transaction)
+    uart._workerQueue.put(None)
+
+    uart._worker()
+
+    assert uart._workerQueue.unfinished_tasks == 0
+    assert not transaction.done_called
+    assert len(transaction.errors) == 1
+    assert "Unhandled UART worker exception: boom" in transaction.errors[0]
