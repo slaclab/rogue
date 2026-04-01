@@ -142,13 +142,6 @@ values, and command interfaces.
             hidden       = True,
         )
 
-This helper builds an indexed container of ``RemoteVariable`` entries such as
-``UserConstants[0]``, ``UserConstants[1]``, and so on. If the same call uses
-``pack=True``, PyRogue also adds ``UserConstants_All`` as a packed
-``LinkVariable`` whose value is the underscore-joined display form of the
-array entries in reverse index order.
-
-
         self.add(pr.RemoteVariable(
             name         = 'DeviceId',
             description  = 'Device Identification  (configured by generic)',
@@ -358,3 +351,10 @@ array entries in reverse index order.
 
     def countReset(self):
         print('AxiVersion count reset called')
+
+This example uses :py:meth:`~pyrogue.Device.addRemoteVariables` to build an
+indexed container of ``RemoteVariable`` entries such as
+``UserConstants[0]``, ``UserConstants[1]``, and so on. If the same call uses
+``pack=True``, PyRogue also adds ``UserConstants_All`` as a packed
+``LinkVariable`` whose value is the underscore-joined display form of the
+array entries in reverse index order.

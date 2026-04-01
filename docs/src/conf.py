@@ -63,6 +63,8 @@ autodoc_mock_imports = [
     'matplotlib',
     'pyqtgraph',
     'sip',
+    'softioc',
+    'softioc.asyncio_dispatcher',
 ]
 
 # Add any paths that contain templates here, relative to this directory.

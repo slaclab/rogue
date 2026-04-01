@@ -16,6 +16,7 @@ sphinx-autodoc-typehints
 breathe
 pyzmq
 p4p
+softioc
 sqlalchemy
 pyserial
 numpy
