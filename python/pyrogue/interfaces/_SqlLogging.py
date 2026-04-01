@@ -99,26 +99,21 @@ class SqlLogger(object):
         self._thread.join()
         print('Sql logger stopped')
 
-    def insert_from_q(self, entry: tuple[str, Any], conn: sqlalchemy.Connection) -> None:
+    def insert_from_q(self, entry: tuple[str, pr.VariableValue], conn: sqlalchemy.Connection) -> None:
         """
         Insert a single queue entry into the database.
 
         Parameters
         ----------
         entry : tuple
-            ``(path, value)`` from a root variable listener callback. Syslog
-            entries may arrive either as ``VariableValue`` wrappers or as raw
-            JSON strings when inserted directly by tests/helpers.
+            ``(path, var_value)`` from a root variable listener callback.
         conn : object
             SQLAlchemy connection for the transaction.
         """
 
         # Syslog
         if entry[0] == self._sysLogPath:
-            # Root listeners hand us VariableValue objects, so unwrap the JSON
-            # payload from .value() before decoding the system-log entry.
-            log_entry = entry[1].value if hasattr(entry[1], 'value') else entry[1]
-            val = json.loads(log_entry)
+            val = json.loads(entry[1].value)
 
             ins = self._logTable.insert().values(
                 name=val['name'],

@@ -372,11 +372,19 @@ class UdpRssiPack(pr.Device):
 
                     else:
                         self._log.warning(
-                            "host=%s, port=%d -> Failing to connect using jumbo frames! "
-                            "Be sure to check interface MTU settings with ifconfig -a",
+                            "host=%s, port=%d -> Failing to connect using jumbo frames. "
+                            "Check interface MTU settings with ifconfig -a",
                             self._host,
                             self._port,
                         )
+
+            self._log.info(
+                "host=%s, port=%d -> Link established. jumbo=%s, maxPayload=%s",
+                self._host,
+                self._port,
+                self._jumbo,
+                self._udp.maxPayload(),
+            )
 
 
         # On the client side, getOpen() only returns after negotiation is

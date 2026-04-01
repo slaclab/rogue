@@ -167,9 +167,10 @@ def test_sql_logger_syslog_insert_from_queue(tmp_path):
             "levelName": "INFO",
             "levelNumber": 20,
         })
+        syslog_value = type("SysLogValue", (), {"value": syslog_entry})()
 
         with logger._engine.begin() as conn:
-            logger.insert_from_q((root.SystemLogLast.path, syslog_entry), conn)
+            logger.insert_from_q((root.SystemLogLast.path, syslog_value), conn)
 
         logger._stop()
 
