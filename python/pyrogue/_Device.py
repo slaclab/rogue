@@ -344,7 +344,20 @@ class Device(pr.Node,rim.Hub):
         stride : int
             Byte stride between instances.
         pack : bool, optional (default = False)
-            If True, add a packed link variable for all entries.
+            If True, also add a ``LinkVariable`` named ``<name>_All`` which
+            combines all entries into one underscore-delimited display string.
+
+            The indexed ``RemoteVariable`` container remains available at the
+            original ``name``. The packed alias uses each element variable's
+            ``getDisp()`` and ``setDisp()`` behavior, so formatting follows the
+            underlying variable type. Values are joined in reverse index order:
+            for a variable array ``Field[0]``, ``Field[1]``, ``Field[2]``, the
+            packed value ``Field_All`` reads like
+            ``Field[2]_Field[1]_Field[0]`` and writing ``"1_2_3"`` updates
+            ``Field[2] = 1``, ``Field[1] = 2``, and ``Field[0] = 3``.
+
+            This is intended for orthogonal register fields that are convenient
+            to expose both as individual variables and as one combined value.
         **kwargs : Any
             Arguments forwarded to ``RemoteVariable``.
         """
