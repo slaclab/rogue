@@ -1,7 +1,7 @@
-# Test Suite Layout
+# Python Test Suite Layout
 
-The Python tests are organized by behavior and execution style rather than by
-history.
+This README documents the Python test layout in `tests/`. The branch changes
+here reorganize the Python pytest suite by behavior and execution style.
 
 Directories:
 
@@ -12,6 +12,11 @@ Directories:
 - `integration/`: real transport, socket, and environment-dependent tests
 - `perf/`: soak, throughput, and benchmark-style tests
 - `utilities/`: helper and exporter modules
+
+Other top-level files:
+
+- `conftest.py`: shared pytest fixtures and helpers
+- `test_config_out.yml`: generated/config fixture output used by tests
 
 Guidelines:
 
@@ -40,8 +45,3 @@ Common commands:
   - `pytest tests/perf -q`
 - Performance subset with result export:
   - `PERF_RESULTS_DIR=perf-results pytest tests/perf -q -s`
-
-Planning / handoff docs:
-
-- `BRANCH_STATUS.md`: summary of the current branch state and major changes
-- `NEXT_STEPS.md`: likely follow-up work and wrap-up checklist
