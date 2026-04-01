@@ -1,9 +1,30 @@
+/**
+ * ----------------------------------------------------------------------------
+ * Company    : SLAC National Accelerator Laboratory
+ * ----------------------------------------------------------------------------
+ * Description:
+ * Shared helper utilities for the native C++ Rogue tests, including stream
+ * pool/frame construction helpers, frame read/write convenience functions, and
+ * a small polling helper for asynchronous test assertions.
+ * ----------------------------------------------------------------------------
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+ *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
+ * contained in the LICENSE.txt file.
+ * ----------------------------------------------------------------------------
+ **/
 #ifndef ROGUE_TEST_CPP_SUPPORT_TEST_HELPERS_H
 #define ROGUE_TEST_CPP_SUPPORT_TEST_HELPERS_H
 
 #include <stdint.h>
 
+#include <chrono>
+#include <functional>
 #include <memory>
+#include <thread>
 #include <vector>
 
 #include "rogue/interfaces/stream/Frame.h"
@@ -38,6 +59,15 @@ inline std::shared_ptr<rogue::interfaces::stream::Frame> makeFrame(
     auto frame = pool->acceptReq(static_cast<uint32_t>(bytes.size()), false);
     writeFrame(frame, bytes);
     return frame;
+}
+
+inline bool waitUntil(const std::function<bool()>& predicate, uint32_t timeoutMs = 250) {
+    const auto deadline = std::chrono::steady_clock::now() + std::chrono::milliseconds(timeoutMs);
+    while (std::chrono::steady_clock::now() < deadline) {
+        if (predicate()) return true;
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    }
+    return predicate();
 }
 
 }  // namespace rogue_test

@@ -1,3 +1,21 @@
+/**
+ * ----------------------------------------------------------------------------
+ * Company    : SLAC National Accelerator Laboratory
+ * ----------------------------------------------------------------------------
+ * Description:
+ * Native C++ tests for stream frame iterator behavior, including traversal
+ * across buffer boundaries, distinction between readable payload and writable
+ * capacity, and iterator-driven copies between disjoint frames.
+ * ----------------------------------------------------------------------------
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+ *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
+ * contained in the LICENSE.txt file.
+ * ----------------------------------------------------------------------------
+ **/
 #include <vector>
 
 #include "doctest/doctest.h"
