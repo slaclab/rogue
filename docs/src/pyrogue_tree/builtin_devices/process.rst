@@ -83,13 +83,21 @@ out through the tree.
 
 There are two common ways to drive ``Progress``:
 
-* Set ``Progress`` directly when the procedure naturally reports fractional
+* Call ``setProgress(value)`` when the procedure naturally reports fractional
   completion on its own.
-* Use ``Step`` and ``TotalSteps`` together, then call ``_setSteps()`` or
-  ``_incrementSteps()`` so PyRogue updates ``Progress`` from the step count.
+* Use ``setTotalSteps()``, ``setStep()``, and ``incrementSteps()`` when the
+  procedure is naturally step-based and ``Progress`` should be derived from
+  ``Step`` and ``TotalSteps``.
 
 The second pattern is often clearer for iterative procedures, while the first
 fits algorithms whose completion metric is not naturally "step N out of M."
+
+Direct writes to ``Progress``, ``Step``, and ``TotalSteps`` are also supported
+for compatibility with existing code. ``Progress`` is clamped into the valid
+``0.0`` to ``1.0`` range, and step-based progress recomputes automatically
+when ``Step`` or ``TotalSteps`` changes. The older ``_setSteps()`` and
+``_incrementSteps()`` helpers remain available as compatibility wrappers, but
+new code should prefer the public methods above.
 
 Concrete Example
 ================
@@ -134,9 +142,9 @@ operator-facing settings and result storage, then updates ``Message``,
 
                # Initialize the built-in status Variables before starting work.
                self.Message.setDisp('Running capture')
-               self.TotalSteps.set(total)
-               self.Step.set(0)
-               self.Progress.set(0.0)
+               self.setTotalSteps(total)
+               self.setStep(0)
+               self.setProgress(0.0)
 
                for i in range(total):
                    # Respect the built-in Stop command.
@@ -148,8 +156,8 @@ operator-facing settings and result storage, then updates ``Message``,
                    time.sleep(0.01)
                    captured.append(i)
 
-                   # _setSteps() updates both Step and Progress together.
-                   self._setSteps(i + 1)
+                   # setStep() updates Step and recomputes Progress together.
+                   self.setStep(i + 1)
 
                # Publish the final result back into the tree.
                self.CaptureResult.set(captured)
@@ -174,8 +182,8 @@ Design Guidance
 Good ``Process`` implementations usually:
 
 * Update ``Message`` with short operator-facing status text
-* Keep ``Progress`` and ``Step`` / ``TotalSteps`` consistent when progress is
-  meaningful
+* Prefer ``setProgress()`` for fractional progress and ``setTotalSteps()``,
+  ``setStep()``, or ``incrementSteps()`` for step-based progress
 * Add explicit input or result Variables when the procedure needs operator
   parameters or produces structured output
 * Check the stop condition when the work can be interrupted cleanly
