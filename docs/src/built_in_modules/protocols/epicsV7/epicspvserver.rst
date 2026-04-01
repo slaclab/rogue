@@ -237,4 +237,4 @@ Related Topics
 API Reference
 =============
 
-See :doc:`/api/python/pyrogue/protocols/epicsv7/epicspvserver` for generated API details.
+- Generated API page: :doc:`/api/python/pyrogue/protocols/epicsv7/epicspvserver`

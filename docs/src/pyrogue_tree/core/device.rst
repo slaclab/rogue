@@ -97,6 +97,14 @@ That pattern is why the readability of the tree matters. A good Device layout
 is not only easier to maintain in code; it also produces clearer paths, clearer
 PyDM navigation, and better remote-client ergonomics.
 
+For repeated register layouts, :py:meth:`~pyrogue.Device.addRemoteVariables`
+can define an indexed set of ``RemoteVariable`` entries from one call. When
+used with ``pack=True``, PyRogue keeps the indexed array container at the base
+name and also adds a packed :py:class:`~pyrogue.LinkVariable` at
+``<name>_All``. That packed alias joins element display values with
+underscores in reverse index order, which is useful when several orthogonal
+fields also need to be exposed as one combined value.
+
 Managed Interfaces And Protocol Ownership
 =========================================
 
