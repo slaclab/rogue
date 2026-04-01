@@ -31,6 +31,7 @@ Subtopics
   traffic.
 - Use :doc:`xilinx/index` for XVC and related Xilinx JTAG-over-network support.
 - Use :doc:`epicsV4/index` for EPICS PV integration helpers.
+- Use :doc:`epicsV7/index` for softIocPVA-backed EPICS record integration.
 - Use :doc:`uart` for UART-backed memory access paths.
 - Use :doc:`gpib` for SCPI-style instrument control over GPIB.
 
@@ -48,6 +49,7 @@ construction and transaction flow are covered end to end.
    network
    batcher/index
    epicsV4/index
+   epicsV7/index
    srp/index
    xilinx/index
    uart

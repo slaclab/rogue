@@ -122,4 +122,4 @@ Related Topics
 API Reference
 =============
 
-See :doc:`/api/python/pyrogue/protocols/epicsv7/epicspvholder` for generated API details.
+- Generated API page: :doc:`/api/python/pyrogue/protocols/epicsv7/epicspvholder`
