@@ -138,6 +138,17 @@ def test_function_wrapper_filters_supported_arguments():
     wrapped_no_args = pr.functionWrapper(no_args, ["root", "dev"])
     assert wrapped_no_args(function=no_args, root="r", dev="d") == "done"
 
+    def var_kwargs(**kwargs):
+        return kwargs
+
+    wrapped_var_kwargs = pr.functionWrapper(var_kwargs, ["root", "dev", "cmd", "arg"])
+    assert wrapped_var_kwargs(function=var_kwargs, root="r", dev="d", cmd="c", arg=3) == {
+        "root": "r",
+        "dev": "d",
+        "cmd": "c",
+        "arg": 3,
+    }
+
     class CallableWithoutSignature:
         def __call__(self, *args, **kwargs):
             raise AssertionError("wrapper should not forward args for opaque callables")

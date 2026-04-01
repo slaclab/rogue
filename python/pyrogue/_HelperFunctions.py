@@ -447,11 +447,11 @@ def functionWrapper(
       forwarded to ``function``.
     """
 
+    wrapper_args = ", ".join(['function'] + list(callArgs))
+
     # Build a stable no-op wrapper for unset callbacks.
     if function is None:
-        def _none_wrapper(*, function: Callable[..., Any] | None = None, **kwargs: Any) -> None:
-            return None
-        return _none_wrapper
+        return eval(f"lambda {wrapper_args}: None")
 
     # Determine accepted callback keyword names once at wrapper construction.
     accepted_names: set[str] = set()
@@ -472,21 +472,21 @@ def functionWrapper(
         # example some C++ bindings): call with no forwarded callback args.
         introspection_failed = True
 
-    def _wrapper(*, function: Callable[..., Any], **kwargs: Any) -> Any:
-        if function is None:
-            return None
+    if introspection_failed:
+        return eval(f"lambda {wrapper_args}: None if function is None else function()")
 
-        if introspection_failed:
-            return function()
+    if accepts_var_kwargs:
+        forwarded_args = [f"{name}={name}" for name in callArgs]
+    else:
+        forwarded_args = [f"{name}={name}" for name in callArgs if name in accepted_names]
 
-        if accepts_var_kwargs:
-            forwarded = {k: kwargs[k] for k in callArgs if k in kwargs}
-        else:
-            forwarded = {k: kwargs[k] for k in accepted_names if k in kwargs}
-
-        return function(**forwarded)
-
-    return _wrapper
+    return eval(
+        "lambda "
+        + wrapper_args
+        + ": None if function is None else function("
+        + ", ".join(forwarded_args)
+        + ")"
+    )
 
 
 def genDocTableHeader(fields: Sequence[str], indent: int, width: int) -> str:
