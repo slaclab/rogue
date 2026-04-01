@@ -200,16 +200,23 @@ class UartMemory(rogue.interfaces.memory.Slave):
             transaction = self._workerQueue.get()
 
             if transaction is None:
+                self._workerQueue.task_done()
                 break
 
-            with transaction.lock():
+            try:
+                with transaction.lock():
 
-                # Write path
-                if transaction.type() == rogue.interfaces.memory.Write:
-                    self._doWrite(transaction)
+                    # Write path
+                    if transaction.type() == rogue.interfaces.memory.Write:
+                        self._doWrite(transaction)
 
-                elif (transaction.type() == rogue.interfaces.memory.Read or transaction.type() == rogue.interfaces.memory.Verify):
-                    self._doRead(transaction)
-                else:
-                    # Posted writes not supported (for now)
-                    transaction.error(f'Unsupported transaction type: {transaction.type()}')
+                    elif (transaction.type() == rogue.interfaces.memory.Read or transaction.type() == rogue.interfaces.memory.Verify):
+                        self._doRead(transaction)
+                    else:
+                        # Posted writes not supported (for now)
+                        transaction.error(f'Unsupported transaction type: {transaction.type()}')
+            except Exception as e:
+                pyrogue.logException(self._log, e)
+                transaction.error(f'Unhandled UART worker exception: {e}')
+            finally:
+                self._workerQueue.task_done()

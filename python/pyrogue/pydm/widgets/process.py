@@ -93,6 +93,12 @@ class Process(PyDMFrame):
         w.precisionFromPV       = True
         w.alarmSensitiveContent = False
         w.alarmSensitiveBorder  = False
+        # Process.Progress is stored as a fractional 0.0-1.0 value, but it
+        # no longer publishes channel min/max metadata. Pin the widget range
+        # explicitly so PyDM does not fall back to its default -5..5 scale.
+        w.limitsFromChannel     = False
+        w.userLowerLimit        = 0.0
+        w.userUpperLimit        = 1.0
         w.showValue             = False
         w.showLimits            = False
         w.showTicks             = False
