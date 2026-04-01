@@ -1,7 +1,7 @@
-# Test Suite Layout
+# Python Test Suite Layout
 
-The Python and native C++ tests are organized by behavior and execution style
-rather than by history.
+This README documents the test layout in `tests/`. The Python and native C++
+tests are organized by behavior and execution style rather than by history.
 
 Directories:
 
@@ -13,6 +13,11 @@ Directories:
 - `perf/`: soak, throughput, and benchmark-style tests
 - `utilities/`: helper and exporter modules
 - `cpp/`: native C++ unit and smoke tests driven by `ctest`
+
+Other top-level files:
+
+- `conftest.py`: shared pytest fixtures and helpers
+- `test_config_out.yml`: generated/config fixture output used by tests
 
 Guidelines:
 
