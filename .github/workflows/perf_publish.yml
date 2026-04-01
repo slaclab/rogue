@@ -1,5 +1,5 @@
 # ----------------------------------------------------------------------------
-# Title      : ROGUE Pre-release Documentation Workflow
+# Title      : ROGUE Performance Publish Workflow
 # ----------------------------------------------------------------------------
 # This file is part of the rogue software package. It is subject to
 # the license terms in the LICENSE.txt file found in the top-level directory
@@ -10,14 +10,17 @@
 # contained in the LICENSE.txt file.
 # ----------------------------------------------------------------------------
 
-name: Pre-release Documentation
+name: Performance Publish
 
 on:
-  push:
-    branches:
-      - pre-release
+  workflow_run:
+    workflows:
+      - Rogue Integration
+    types:
+      - completed
 
 permissions:
+  actions: read
   contents: write
 
 concurrency:
@@ -25,48 +28,42 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  publish_docs:
-    name: Publish Pre-release Docs
+  publish_perf:
+    name: Publish Performance Data
+    if: ${{ vars.ROGUE_ENABLE_PERF_PUBLISH == 'true' && github.event.workflow_run.head_branch != '' }}
     runs-on: ubuntu-24.04
     env:
       REPO_NAME: ${{ github.event.repository.name }}
-      ROGUE_DOCS_SITE_ROOT: /${{ github.event.repository.name }}
+      ROGUE_SITE_ROOT: /${{ github.event.repository.name }}
     steps:
       - name: Checkout source
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 1
+          ref: ${{ github.event.workflow_run.head_sha }}
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
+      - name: Download perf artifact
+        id: perf_artifact
+        continue-on-error: true
+        uses: actions/download-artifact@v4
         with:
-          python-version: "3.12"
-          cache: "pip"
-          cache-dependency-path: "pip_requirements.txt"
+          name: perf-results
+          path: perf-results
+          run-id: ${{ github.event.workflow_run.id }}
+          repository: ${{ github.repository }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Install dependencies
+      - name: Check artifact availability
+        id: artifact_check
         run: |
-          sudo apt-get update
-          sudo apt-get install -y doxygen doxygen-doc libzmq3-dev libboost-all-dev bzip2 libbz2-dev
-          pip install -r pip_requirements.txt
-
-      - name: Build Rogue
-        run: |
-          python -c "import numpy; print(numpy.get_include())"
-          mkdir build
-          cd build
-          cmake .. -DROGUE_INSTALL=local
-          make -j"$(nproc)" install
-
-      - name: Build documentation
-        env:
-          ROGUE_DOCS_SITE_ROOT: ${{ env.ROGUE_DOCS_SITE_ROOT }}
-        run: |
-          source setup_rogue.sh
-          cd docs
-          make html
+          if ls perf-results/*.json >/dev/null 2>&1; then
+            echo "available=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "available=false" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Prepare gh-pages worktree
+        if: steps.artifact_check.outputs.available == 'true'
         run: |
           rm -rf .tmp/gh-pages
           mkdir -p .tmp
@@ -81,15 +78,22 @@ jobs:
           fi
           touch .tmp/gh-pages/.nojekyll
 
-      - name: Update published docs tree
+      - name: Publish perf data
+        if: steps.artifact_check.outputs.available == 'true'
+        env:
+          PERF_RUN_URL: ${{ github.event.workflow_run.html_url }}
         run: |
-          python3 scripts/docs_publish.py \
-            --site-dir docs/build/html \
+          python3 scripts/perf_publish.py \
+            --results-dir perf-results \
             --output-root .tmp/gh-pages \
-            --site-root "${ROGUE_DOCS_SITE_ROOT}" \
-            --mode pre-release
+            --site-root "${ROGUE_SITE_ROOT}" \
+            --ref-name "${{ github.event.workflow_run.head_branch }}" \
+            --sha "${{ github.event.workflow_run.head_sha }}" \
+            --run-id "${{ github.event.workflow_run.id }}" \
+            --run-url "${PERF_RUN_URL}"
 
       - name: Commit and push
+        if: steps.artifact_check.outputs.available == 'true'
         run: |
           cd .tmp/gh-pages
           git add .
@@ -99,5 +103,5 @@ jobs:
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -m "Publish pre-release docs"
+          git commit -m "Publish perf data for ${{ github.event.workflow_run.head_branch }} @ ${{ github.event.workflow_run.head_sha }}"
           git push origin HEAD:gh-pages
