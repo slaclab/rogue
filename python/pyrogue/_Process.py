@@ -136,7 +136,13 @@ class Process(pr.Device):
             var._block._value = self._clampedProgress(value)
 
     def _updateProgress(self) -> None:
-        """Recompute progress from ``Step`` and ``TotalSteps``."""
+        """Recompute progress from ``Step`` and ``TotalSteps``.
+
+        The step counter may temporarily run ahead of the declared total, or
+        the total may still be zero while a process is being configured.
+        Keep ``Progress`` bounded so helper callers cannot trip the variable
+        range checks just by updating ``Step`` and ``TotalSteps`` out of order.
+        """
         total = self.TotalSteps.value()
 
         if total <= 0:

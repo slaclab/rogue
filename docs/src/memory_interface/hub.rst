@@ -248,6 +248,7 @@ The base Rogue memory ``Hub`` uses Rogue C++ logging with the logger name
   ``pyrogue.setLogLevel('pyrogue.memory.Hub', 'DEBUG')``
 - Legacy Logging API:
   ``rogue.Logging.setFilter('pyrogue.memory.Hub', rogue.Logging.Debug)``
+
 You can enable that logger before or after constructing the object. Enable it
 before construction only if you want constructor or early startup visibility
 into the base hub behavior:
