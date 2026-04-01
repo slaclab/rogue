@@ -98,7 +98,7 @@ Longer multi-stage flows can refresh timer state so an active but slow
 graphs, protocol bridges, and slower transport links.
 
 Logging
-========
+=======
 
 The transaction runtime uses a Rogue C++ logger:
 
