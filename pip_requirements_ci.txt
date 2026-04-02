@@ -1,0 +1,21 @@
+# These commands are used for GitHub CI build, test, coverage, and lint only
+# Documentation packages live in pip_requirements_docs.txt
+PyYAML
+parse
+click
+coverage
+codecov
+pytest>=3.6
+pytest-cov
+pytest-xdist
+softioc
+pyzmq
+p4p
+sqlalchemy
+pyserial
+numpy
+flake8
+cpplint
+pydm
+matplotlib
+hwcounter; platform_system == "Linux" and platform_machine == "x86_64"

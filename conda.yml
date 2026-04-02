@@ -30,4 +30,5 @@ dependencies:
   - matplotlib
   - pytest
   - pytest-cov
+  - pytest-xdist
   - pyqt>=5.15
