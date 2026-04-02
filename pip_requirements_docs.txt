@@ -1,0 +1,7 @@
+# These commands are used for documentation builds only
+sphinx
+sphinx_rtd_theme
+sphinxcontrib-napoleon
+sphinx-copybutton
+sphinx-autodoc-typehints
+breathe
