@@ -8,6 +8,7 @@ codecov
 pytest>=3.6
 pytest-cov
 pytest-xdist
+softioc
 pyzmq
 p4p
 sqlalchemy
