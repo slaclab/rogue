@@ -19,6 +19,7 @@
 #include <stdint.h>
 
 #include <algorithm>
+#include <memory>
 #include <vector>
 
 #include "doctest/doctest.h"
