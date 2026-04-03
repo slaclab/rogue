@@ -89,7 +89,7 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a89fa458e59d440d7aa6acbda2697100e" id="r_a89fa458e59d440d7aa6acbda2697100e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1Logging.html#a89fa458e59d440d7aa6acbda2697100e">Logging</a> (const std::string &amp;name, bool quiet=false)</td></tr>
+<tr class="memitem:a89fa458e59d440d7aa6acbda2697100e" id="r_a89fa458e59d440d7aa6acbda2697100e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1Logging.html#a89fa458e59d440d7aa6acbda2697100e">Logging</a> (const std::string &amp;<a class="el" href="classrogue_1_1Logging.html#ab318868b933fac2979f7ef1b815ad68a">name</a>, bool quiet=false)</td></tr>
 <tr class="memdesc:a89fa458e59d440d7aa6acbda2697100e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a logger.  <br /></td></tr>
 <tr class="separator:a89fa458e59d440d7aa6acbda2697100e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2a0ec08a9e0777ad573aee4b52e9ebbd" id="r_a2a0ec08a9e0777ad573aee4b52e9ebbd"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1Logging.html#a2a0ec08a9e0777ad573aee4b52e9ebbd">~Logging</a> ()</td></tr>
@@ -116,10 +116,13 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a7ccc389b1db9a20d4b5085533600350b" id="r_a7ccc389b1db9a20d4b5085533600350b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1Logging.html#a7ccc389b1db9a20d4b5085533600350b">logThreadId</a> ()</td></tr>
 <tr class="memdesc:a7ccc389b1db9a20d4b5085533600350b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Emits the current thread id through this logger.  <br /></td></tr>
 <tr class="separator:a7ccc389b1db9a20d4b5085533600350b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab318868b933fac2979f7ef1b815ad68a" id="r_ab318868b933fac2979f7ef1b815ad68a"><td class="memItemLeft" align="right" valign="top">const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1Logging.html#ab318868b933fac2979f7ef1b815ad68a">name</a> () const</td></tr>
+<tr class="memdesc:ab318868b933fac2979f7ef1b815ad68a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the fully-qualified emitted logger name.  <br /></td></tr>
+<tr class="separator:ab318868b933fac2979f7ef1b815ad68a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a8c34b36f657b697d85f9a6c60f85f07c" id="r_a8c34b36f657b697d85f9a6c60f85f07c"><td class="memItemLeft" align="right" valign="top">static std::shared_ptr&lt; <a class="el" href="classrogue_1_1Logging.html">rogue::Logging</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1Logging.html#a8c34b36f657b697d85f9a6c60f85f07c">create</a> (const std::string &amp;name, bool quiet=false)</td></tr>
+<tr class="memitem:a8c34b36f657b697d85f9a6c60f85f07c" id="r_a8c34b36f657b697d85f9a6c60f85f07c"><td class="memItemLeft" align="right" valign="top">static std::shared_ptr&lt; <a class="el" href="classrogue_1_1Logging.html">rogue::Logging</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1Logging.html#a8c34b36f657b697d85f9a6c60f85f07c">create</a> (const std::string &amp;<a class="el" href="classrogue_1_1Logging.html#ab318868b933fac2979f7ef1b815ad68a">name</a>, bool quiet=false)</td></tr>
 <tr class="memdesc:a8c34b36f657b697d85f9a6c60f85f07c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a logger instance.  <br /></td></tr>
 <tr class="separator:a8c34b36f657b697d85f9a6c60f85f07c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adedc0850da36c181ca2ecb5a937248a4" id="r_adedc0850da36c181ca2ecb5a937248a4"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1Logging.html#adedc0850da36c181ca2ecb5a937248a4">setLevel</a> (uint32_t level)</td></tr>
@@ -128,6 +131,21 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:aa37f0517cae148c532288c835f907aa3" id="r_aa37f0517cae148c532288c835f907aa3"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1Logging.html#aa37f0517cae148c532288c835f907aa3">setFilter</a> (const std::string &amp;filter, uint32_t level)</td></tr>
 <tr class="memdesc:aa37f0517cae148c532288c835f907aa3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets name-based filter level override.  <br /></td></tr>
 <tr class="separator:aa37f0517cae148c532288c835f907aa3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9a7f77b47c819f075ca8b78efd38e550" id="r_a9a7f77b47c819f075ca8b78efd38e550"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1Logging.html#a9a7f77b47c819f075ca8b78efd38e550">setForwardPython</a> (bool enable)</td></tr>
+<tr class="memdesc:a9a7f77b47c819f075ca8b78efd38e550"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enables or disables forwarding Rogue C++ logs into Python logging.  <br /></td></tr>
+<tr class="separator:a9a7f77b47c819f075ca8b78efd38e550"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6395189dae2cd37775677774fe7f7505" id="r_a6395189dae2cd37775677774fe7f7505"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1Logging.html#a6395189dae2cd37775677774fe7f7505">forwardPython</a> ()</td></tr>
+<tr class="memdesc:a6395189dae2cd37775677774fe7f7505"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns whether Rogue C++ logs are currently forwarded to Python logging.  <br /></td></tr>
+<tr class="separator:a6395189dae2cd37775677774fe7f7505"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5d1370bbd6cfb823d07756ef215b9c24" id="r_a5d1370bbd6cfb823d07756ef215b9c24"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1Logging.html#a5d1370bbd6cfb823d07756ef215b9c24">setEmitStdout</a> (bool enable)</td></tr>
+<tr class="memdesc:a5d1370bbd6cfb823d07756ef215b9c24"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enables or disables direct stdout emission of Rogue C++ logs.  <br /></td></tr>
+<tr class="separator:a5d1370bbd6cfb823d07756ef215b9c24"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa158dd8322331e5924a8169fbbe9ec07" id="r_aa158dd8322331e5924a8169fbbe9ec07"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1Logging.html#aa158dd8322331e5924a8169fbbe9ec07">emitStdout</a> ()</td></tr>
+<tr class="memdesc:aa158dd8322331e5924a8169fbbe9ec07"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns whether Rogue C++ logs are currently emitted to stdout.  <br /></td></tr>
+<tr class="separator:aa158dd8322331e5924a8169fbbe9ec07"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad91882feb419533f3dd209e9081205e3" id="r_ad91882feb419533f3dd209e9081205e3"><td class="memItemLeft" align="right" valign="top">static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1Logging.html#ad91882feb419533f3dd209e9081205e3">normalizeName</a> (const std::string &amp;<a class="el" href="classrogue_1_1Logging.html#ab318868b933fac2979f7ef1b815ad68a">name</a>)</td></tr>
+<tr class="memdesc:ad91882feb419533f3dd209e9081205e3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Normalizes logger names to the emitted Rogue namespace.  <br /></td></tr>
+<tr class="separator:ad91882feb419533f3dd209e9081205e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7e1dd24e4da3f4d842bd8829b4e035a3" id="r_a7e1dd24e4da3f4d842bd8829b4e035a3"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1Logging.html#a7e1dd24e4da3f4d842bd8829b4e035a3">setup_python</a> ()</td></tr>
 <tr class="memdesc:a7e1dd24e4da3f4d842bd8829b4e035a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Registers Python bindings for <code><a class="el" href="classrogue_1_1Logging.html" title="Structured Rogue logging helper.">Logging</a></code>.  <br /></td></tr>
 <tr class="separator:a7e1dd24e4da3f4d842bd8829b4e035a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -157,7 +175,7 @@ Static Public Attributes</h2></td></tr>
 <div class="textblock"><p>Structured Rogue logging helper. </p>
 <p>Provides leveled logging with global level control and optional name-based filters. Instances are typically created per class/module and reused. </p>
 
-<p class="definition">Definition at line <a class="el" href="Logging_8h_source.html#l00058">58</a> of file <a class="el" href="Logging_8h_source.html">Logging.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Logging_8h_source.html#l00059">59</a> of file <a class="el" href="Logging_8h_source.html">Logging.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a89fa458e59d440d7aa6acbda2697100e" name="a89fa458e59d440d7aa6acbda2697100e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a89fa458e59d440d7aa6acbda2697100e">&#9670;&#160;</a></span>Logging()</h2>
@@ -203,7 +221,7 @@ Static Public Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="Logging_8cpp_source.html#l00065">65</a> of file <a class="el" href="Logging_8cpp_source.html">Logging.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Logging_8cpp_source.html#l00106">106</a> of file <a class="el" href="Logging_8cpp_source.html">Logging.cpp</a>.</p>
 
 </div>
 </div>
@@ -224,7 +242,7 @@ Static Public Attributes</h2></td></tr>
 
 <p>Destroys the logger instance. </p>
 
-<p class="definition">Definition at line <a class="el" href="Logging_8cpp_source.html#l00084">84</a> of file <a class="el" href="Logging_8cpp_source.html">Logging.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Logging_8cpp_source.html#l00117">117</a> of file <a class="el" href="Logging_8cpp_source.html">Logging.cpp</a>.</p>
 
 </div>
 </div>
@@ -274,7 +292,7 @@ Static Public Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Shared logger instance. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Logging_8cpp_source.html#l00060">60</a> of file <a class="el" href="Logging_8cpp_source.html">Logging.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Logging_8cpp_source.html#l00095">95</a> of file <a class="el" href="Logging_8cpp_source.html">Logging.cpp</a>.</p>
 
 </div>
 </div>
@@ -306,7 +324,7 @@ Static Public Attributes</h2></td></tr>
 
 <p>Emits a formatted message at <code>Critical</code> level. </p>
 
-<p class="definition">Definition at line <a class="el" href="Logging_8cpp_source.html#l00123">123</a> of file <a class="el" href="Logging_8cpp_source.html">Logging.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Logging_8cpp_source.html#l00266">266</a> of file <a class="el" href="Logging_8cpp_source.html">Logging.cpp</a>.</p>
 
 </div>
 </div>
@@ -338,7 +356,36 @@ Static Public Attributes</h2></td></tr>
 
 <p>Emits a formatted message at <code>Debug</code> level. </p>
 
-<p class="definition">Definition at line <a class="el" href="Logging_8cpp_source.html#l00151">151</a> of file <a class="el" href="Logging_8cpp_source.html">Logging.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Logging_8cpp_source.html#l00294">294</a> of file <a class="el" href="Logging_8cpp_source.html">Logging.cpp</a>.</p>
+
+</div>
+</div>
+<a id="aa158dd8322331e5924a8169fbbe9ec07" name="aa158dd8322331e5924a8169fbbe9ec07"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa158dd8322331e5924a8169fbbe9ec07">&#9670;&#160;</a></span>emitStdout()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool rogue::Logging::emitStdout </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Returns whether Rogue C++ logs are currently emitted to stdout. </p>
+
+<p class="definition">Definition at line <a class="el" href="Logging_8cpp_source.html#l00186">186</a> of file <a class="el" href="Logging_8cpp_source.html">Logging.cpp</a>.</p>
 
 </div>
 </div>
@@ -370,7 +417,36 @@ Static Public Attributes</h2></td></tr>
 
 <p>Emits a formatted message at <code>Error</code> level. </p>
 
-<p class="definition">Definition at line <a class="el" href="Logging_8cpp_source.html#l00130">130</a> of file <a class="el" href="Logging_8cpp_source.html">Logging.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Logging_8cpp_source.html#l00273">273</a> of file <a class="el" href="Logging_8cpp_source.html">Logging.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a6395189dae2cd37775677774fe7f7505" name="a6395189dae2cd37775677774fe7f7505"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6395189dae2cd37775677774fe7f7505">&#9670;&#160;</a></span>forwardPython()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool rogue::Logging::forwardPython </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Returns whether Rogue C++ logs are currently forwarded to Python logging. </p>
+
+<p class="definition">Definition at line <a class="el" href="Logging_8cpp_source.html#l00172">172</a> of file <a class="el" href="Logging_8cpp_source.html">Logging.cpp</a>.</p>
 
 </div>
 </div>
@@ -402,7 +478,7 @@ Static Public Attributes</h2></td></tr>
 
 <p>Emits a formatted message at <code>Info</code> level. </p>
 
-<p class="definition">Definition at line <a class="el" href="Logging_8cpp_source.html#l00144">144</a> of file <a class="el" href="Logging_8cpp_source.html">Logging.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Logging_8cpp_source.html#l00287">287</a> of file <a class="el" href="Logging_8cpp_source.html">Logging.cpp</a>.</p>
 
 </div>
 </div>
@@ -447,7 +523,7 @@ Static Public Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="Logging_8cpp_source.html#l00116">116</a> of file <a class="el" href="Logging_8cpp_source.html">Logging.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Logging_8cpp_source.html#l00259">259</a> of file <a class="el" href="Logging_8cpp_source.html">Logging.cpp</a>.</p>
 
 </div>
 </div>
@@ -468,7 +544,101 @@ Static Public Attributes</h2></td></tr>
 
 <p>Emits the current thread id through this logger. </p>
 
-<p class="definition">Definition at line <a class="el" href="Logging_8cpp_source.html#l00158">158</a> of file <a class="el" href="Logging_8cpp_source.html">Logging.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Logging_8cpp_source.html#l00301">301</a> of file <a class="el" href="Logging_8cpp_source.html">Logging.cpp</a>.</p>
+
+</div>
+</div>
+<a id="ab318868b933fac2979f7ef1b815ad68a" name="ab318868b933fac2979f7ef1b815ad68a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab318868b933fac2979f7ef1b815ad68a">&#9670;&#160;</a></span>name()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::string &amp; rogue::Logging::name </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns the fully-qualified emitted logger name. </p>
+
+<p class="definition">Definition at line <a class="el" href="Logging_8cpp_source.html#l00306">306</a> of file <a class="el" href="Logging_8cpp_source.html">Logging.cpp</a>.</p>
+
+</div>
+</div>
+<a id="ad91882feb419533f3dd209e9081205e3" name="ad91882feb419533f3dd209e9081205e3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad91882feb419533f3dd209e9081205e3">&#9670;&#160;</a></span>normalizeName()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string rogue::Logging::normalizeName </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>name</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Normalizes logger names to the emitted Rogue namespace. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">name</td><td>Logger name or prefix. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Name prefixed with <code>pyrogue.</code> when required. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="Logging_8cpp_source.html#l00100">100</a> of file <a class="el" href="Logging_8cpp_source.html">Logging.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a5d1370bbd6cfb823d07756ef215b9c24" name="a5d1370bbd6cfb823d07756ef215b9c24"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5d1370bbd6cfb823d07756ef215b9c24">&#9670;&#160;</a></span>setEmitStdout()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void rogue::Logging::setEmitStdout </td>
+          <td>(</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>enable</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Enables or disables direct stdout emission of Rogue C++ logs. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">enable</td><td>When false, Rogue C++ logs are not printed directly by the native logger sink. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="Logging_8cpp_source.html#l00180">180</a> of file <a class="el" href="Logging_8cpp_source.html">Logging.cpp</a>.</p>
 
 </div>
 </div>
@@ -515,7 +685,43 @@ Static Public Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="Logging_8cpp_source.html#l00092">92</a> of file <a class="el" href="Logging_8cpp_source.html">Logging.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Logging_8cpp_source.html#l00152">152</a> of file <a class="el" href="Logging_8cpp_source.html">Logging.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a9a7f77b47c819f075ca8b78efd38e550" name="a9a7f77b47c819f075ca8b78efd38e550"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9a7f77b47c819f075ca8b78efd38e550">&#9670;&#160;</a></span>setForwardPython()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void rogue::Logging::setForwardPython </td>
+          <td>(</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>enable</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Enables or disables forwarding Rogue C++ logs into Python logging. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">enable</td><td>When true, emitted C++ log messages are also sent to the Python <code>logging</code> logger with the same fully-qualified name. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="Logging_8cpp_source.html#l00166">166</a> of file <a class="el" href="Logging_8cpp_source.html">Logging.cpp</a>.</p>
 
 </div>
 </div>
@@ -551,7 +757,7 @@ Static Public Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="Logging_8cpp_source.html#l00086">86</a> of file <a class="el" href="Logging_8cpp_source.html">Logging.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Logging_8cpp_source.html#l00143">143</a> of file <a class="el" href="Logging_8cpp_source.html">Logging.cpp</a>.</p>
 
 </div>
 </div>
@@ -580,7 +786,7 @@ Static Public Attributes</h2></td></tr>
 
 <p>Registers Python bindings for <code><a class="el" href="classrogue_1_1Logging.html" title="Structured Rogue logging helper.">Logging</a></code>. </p>
 
-<p class="definition">Definition at line <a class="el" href="Logging_8cpp_source.html#l00174">174</a> of file <a class="el" href="Logging_8cpp_source.html">Logging.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Logging_8cpp_source.html#l00310">310</a> of file <a class="el" href="Logging_8cpp_source.html">Logging.cpp</a>.</p>
 
 </div>
 </div>
@@ -612,7 +818,7 @@ Static Public Attributes</h2></td></tr>
 
 <p>Emits a formatted message at <code>Warning</code> level. </p>
 
-<p class="definition">Definition at line <a class="el" href="Logging_8cpp_source.html#l00137">137</a> of file <a class="el" href="Logging_8cpp_source.html">Logging.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Logging_8cpp_source.html#l00280">280</a> of file <a class="el" href="Logging_8cpp_source.html">Logging.cpp</a>.</p>
 
 </div>
 </div>
@@ -638,12 +844,8 @@ Static Public Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Critical severity level constant. </p>
-<hr  />
- <h2>Company : SLAC National Accelerator Laboratory </h2>
-<p>Description: </p><h2><a class="el" href="classrogue_1_1Logging.html" title="Structured Rogue logging helper.">Logging</a> interface for pyrogue </h2>
-<p>This file is part of the rogue software platform. It is subject to the license terms in the LICENSE.txt file found in the top-level directory of this distribution and at: <a href="https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html">https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html</a>. No part of the rogue software platform, including this file, may be copied, modified, propagated, or distributed except according to the terms </p><h2>contained in the LICENSE.txt file. </h2>
 
-<p class="definition">Definition at line <a class="el" href="Logging_8h_source.html#l00078">78</a> of file <a class="el" href="Logging_8h_source.html">Logging.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Logging_8h_source.html#l00090">90</a> of file <a class="el" href="Logging_8h_source.html">Logging.h</a>.</p>
 
 </div>
 </div>
@@ -669,7 +871,7 @@ Static Public Attributes</h2></td></tr>
 
 <p>Debug severity level constant. </p>
 
-<p class="definition">Definition at line <a class="el" href="Logging_8h_source.html#l00088">88</a> of file <a class="el" href="Logging_8h_source.html">Logging.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Logging_8h_source.html#l00100">100</a> of file <a class="el" href="Logging_8h_source.html">Logging.h</a>.</p>
 
 </div>
 </div>
@@ -695,7 +897,7 @@ Static Public Attributes</h2></td></tr>
 
 <p>Error severity level constant. </p>
 
-<p class="definition">Definition at line <a class="el" href="Logging_8h_source.html#l00080">80</a> of file <a class="el" href="Logging_8h_source.html">Logging.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Logging_8h_source.html#l00092">92</a> of file <a class="el" href="Logging_8h_source.html">Logging.h</a>.</p>
 
 </div>
 </div>
@@ -721,7 +923,7 @@ Static Public Attributes</h2></td></tr>
 
 <p>Informational severity level constant. </p>
 
-<p class="definition">Definition at line <a class="el" href="Logging_8h_source.html#l00086">86</a> of file <a class="el" href="Logging_8h_source.html">Logging.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Logging_8h_source.html#l00098">98</a> of file <a class="el" href="Logging_8h_source.html">Logging.h</a>.</p>
 
 </div>
 </div>
@@ -747,7 +949,7 @@ Static Public Attributes</h2></td></tr>
 
 <p>Thread-trace severity level constant. </p>
 
-<p class="definition">Definition at line <a class="el" href="Logging_8h_source.html#l00082">82</a> of file <a class="el" href="Logging_8h_source.html">Logging.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Logging_8h_source.html#l00094">94</a> of file <a class="el" href="Logging_8h_source.html">Logging.h</a>.</p>
 
 </div>
 </div>
@@ -773,7 +975,7 @@ Static Public Attributes</h2></td></tr>
 
 <p>Warning severity level constant. </p>
 
-<p class="definition">Definition at line <a class="el" href="Logging_8h_source.html#l00084">84</a> of file <a class="el" href="Logging_8h_source.html">Logging.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Logging_8h_source.html#l00096">96</a> of file <a class="el" href="Logging_8h_source.html">Logging.h</a>.</p>
 
 </div>
 </div>

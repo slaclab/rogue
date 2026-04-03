@@ -153,7 +153,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>    uint8_t* data;</div>
 <div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span> </div>
 <div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>    <span class="keywordflow">if</span> (frame-&gt;isEmpty()) {</div>
-<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>        log_-&gt;warning(<span class="stringliteral">&quot;Bad incoming transportRx frame, size=0&quot;</span>);</div>
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>        log_-&gt;warning(<span class="stringliteral">&quot;Empty frame received on transport input&quot;</span>);</div>
 <div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>        <span class="keywordflow">return</span>;</div>
 <div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>    }</div>
 <div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span> </div>
@@ -333,7 +333,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span>    timeradd(&amp;startTime, &amp;timeout_, &amp;endTime);</div>
 <div class="line"><a id="l00264" name="l00264"></a><span class="lineno">  264</span> </div>
 <div class="line"><a id="l00265" name="l00265"></a><span class="lineno">  265</span>    <span class="keywordflow">if</span> (frame-&gt;isEmpty()) {</div>
-<div class="line"><a id="l00266" name="l00266"></a><span class="lineno">  266</span>        log_-&gt;warning(<span class="stringliteral">&quot;Bad incoming applicationRx frame, size=0&quot;</span>);</div>
+<div class="line"><a id="l00266" name="l00266"></a><span class="lineno">  266</span>        log_-&gt;warning(<span class="stringliteral">&quot;Empty frame received on application input&quot;</span>);</div>
 <div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span>        <span class="keywordflow">return</span>;</div>
 <div class="line"><a id="l00268" name="l00268"></a><span class="lineno">  268</span>    }</div>
 <div class="line"><a id="l00269" name="l00269"></a><span class="lineno">  269</span> </div>

@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Memory Hub Patterns &mdash; Rogue v6.8.5 documentation</title>
+  <title>Memory Hub Patterns &mdash; Rogue v6.9.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=8960aef2"></script>
+      <script src="../_static/documentation_options.js?v=a0bc7a15"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -321,13 +321,16 @@ even if that costs some performance.</p>
 <h2>Logging<a class="headerlink" href="#logging" title="Link to this heading"></a></h2>
 <p>The base Rogue memory <code class="docutils literal notranslate"><span class="pre">Hub</span></code> uses Rogue C++ logging with the logger name
 <code class="docutils literal notranslate"><span class="pre">pyrogue.memory.Hub</span></code>.</p>
-<p>Enable that logger before constructing the object if you want visibility into
-the base hub behavior:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">rogue</span>
-
-<span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">setFilter</span><span class="p">(</span><span class="s1">&#39;pyrogue.memory.Hub&#39;</span><span class="p">,</span> <span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">Debug</span><span class="p">)</span>
-</pre></div>
-</div>
+<ul class="simple">
+<li><p>Logger name: <code class="docutils literal notranslate"><span class="pre">pyrogue.memory.Hub</span></code></p></li>
+<li><p>Unified Logging API:
+<code class="docutils literal notranslate"><span class="pre">pyrogue.setLogLevel('pyrogue.memory.Hub',</span> <span class="pre">'DEBUG')</span></code></p></li>
+<li><p>Legacy Logging API:
+<code class="docutils literal notranslate"><span class="pre">rogue.Logging.setFilter('pyrogue.memory.Hub',</span> <span class="pre">rogue.Logging.Debug)</span></code></p></li>
+</ul>
+<p>You can enable that logger before or after constructing the object. Enable it
+before construction only if you want constructor or early startup visibility
+into the base hub behavior:</p>
 <p>For custom <code class="docutils literal notranslate"><span class="pre">Hub</span></code> subclasses, it is often worth adding a second
 subclass-specific logger if the translation or split logic is non-trivial.</p>
 </section>

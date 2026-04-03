@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue.protocols.gpib &mdash; Rogue v6.8.5 documentation</title>
+  <title>pyrogue.protocols.gpib &mdash; Rogue v6.9.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -14,7 +14,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=8960aef2"></script>
+      <script src="../../../_static/documentation_options.js?v=a0bc7a15"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -199,17 +199,17 @@
                     <span class="n">transaction</span><span class="o">.</span><span class="n">getData</span><span class="p">(</span><span class="n">valBytes</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
                     <span class="n">val</span> <span class="o">=</span> <span class="n">var</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">fromBytes</span><span class="p">(</span><span class="n">valBytes</span><span class="p">)</span>
                     <span class="n">send</span> <span class="o">=</span> <span class="n">var</span><span class="o">.</span><span class="n">getExtraAttribute</span><span class="p">(</span><span class="s1">&#39;key&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">var</span><span class="o">.</span><span class="n">genDisp</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Write Sending </span><span class="si">{</span><span class="n">send</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Write sending </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">send</span><span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_gpib</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">send</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;UTF-8&#39;</span><span class="p">))</span>
                     <span class="n">transaction</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
 
                 <span class="c1"># Read Path</span>
                 <span class="k">elif</span> <span class="p">(</span><span class="n">transaction</span><span class="o">.</span><span class="n">type</span><span class="p">()</span> <span class="o">==</span> <span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">Read</span> <span class="ow">or</span> <span class="n">transaction</span><span class="o">.</span><span class="n">type</span><span class="p">()</span> <span class="o">==</span> <span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">Verify</span><span class="p">):</span>
                     <span class="n">send</span> <span class="o">=</span> <span class="n">var</span><span class="o">.</span><span class="n">getExtraAttribute</span><span class="p">(</span><span class="s1">&#39;key&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;?&quot;</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Read Sending </span><span class="si">{</span><span class="n">send</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Read sending </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">send</span><span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_gpib</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">send</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;UTF-8&#39;</span><span class="p">))</span>
                     <span class="n">valStr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gpib</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">readLen</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;UTF-8&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Read Got: </span><span class="si">{</span><span class="n">valStr</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Read got: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">valStr</span><span class="p">)</span>
                     <span class="n">val</span> <span class="o">=</span> <span class="n">var</span><span class="o">.</span><span class="n">parseDisp</span><span class="p">(</span><span class="n">valStr</span><span class="p">)</span>
                     <span class="n">valBytes</span> <span class="o">=</span> <span class="n">var</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">toBytes</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
                     <span class="n">transaction</span><span class="o">.</span><span class="n">setData</span><span class="p">(</span><span class="n">valBytes</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>

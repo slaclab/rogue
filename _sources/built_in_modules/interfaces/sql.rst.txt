@@ -118,12 +118,11 @@ Both SQL helpers use Python logging.
 
 - ``SqlLogger`` logger name: ``pyrogue.SqlLogger``
 - ``SqlReader`` logger name: ``pyrogue.SqlReader``
-- Configuration API:
-  ``logging.getLogger('pyrogue.SqlLogger').setLevel(logging.DEBUG)``
+- Logging API:
+  ``pyrogue.setLogLevel('pyrogue.SqlLogger', 'DEBUG')``
 
 ``SqlLogger`` logs database open failures, connection success, and worker-side
-database write failures. Because these are Python loggers, they also feed the
-normal PyRogue Python logging path rather than Rogue C++ ``rogue.Logging``.
+database write failures. 
 
 Related Topics
 ==============

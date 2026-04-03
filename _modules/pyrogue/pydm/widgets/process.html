@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue.pydm.widgets.process &mdash; Rogue v6.8.5 documentation</title>
+  <title>pyrogue.pydm.widgets.process &mdash; Rogue v6.9.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
@@ -14,7 +14,7 @@
   
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=8960aef2"></script>
+      <script src="../../../../_static/documentation_options.js?v=a0bc7a15"></script>
       <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -186,6 +186,12 @@
         <span class="n">w</span><span class="o">.</span><span class="n">precisionFromPV</span>       <span class="o">=</span> <span class="kc">True</span>
         <span class="n">w</span><span class="o">.</span><span class="n">alarmSensitiveContent</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="n">w</span><span class="o">.</span><span class="n">alarmSensitiveBorder</span>  <span class="o">=</span> <span class="kc">False</span>
+        <span class="c1"># Process.Progress is stored as a fractional 0.0-1.0 value, but it</span>
+        <span class="c1"># no longer publishes channel min/max metadata. Pin the widget range</span>
+        <span class="c1"># explicitly so PyDM does not fall back to its default -5..5 scale.</span>
+        <span class="n">w</span><span class="o">.</span><span class="n">limitsFromChannel</span>     <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">w</span><span class="o">.</span><span class="n">userLowerLimit</span>        <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="n">w</span><span class="o">.</span><span class="n">userUpperLimit</span>        <span class="o">=</span> <span class="mf">1.0</span>
         <span class="n">w</span><span class="o">.</span><span class="n">showValue</span>             <span class="o">=</span> <span class="kc">False</span>
         <span class="n">w</span><span class="o">.</span><span class="n">showLimits</span>            <span class="o">=</span> <span class="kc">False</span>
         <span class="n">w</span><span class="o">.</span><span class="n">showTicks</span>             <span class="o">=</span> <span class="kc">False</span>

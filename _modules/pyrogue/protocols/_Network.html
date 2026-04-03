@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue.protocols._Network &mdash; Rogue v6.8.5 documentation</title>
+  <title>pyrogue.protocols._Network &mdash; Rogue v6.9.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -14,7 +14,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=8960aef2"></script>
+      <script src="../../../_static/documentation_options.js?v=a0bc7a15"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -464,10 +464,23 @@
                         <span class="n">cnt</span> <span class="o">+=</span> <span class="mi">1</span>
 
                     <span class="k">if</span> <span class="n">cnt</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">:</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;host=</span><span class="si">%s</span><span class="s2">, port=</span><span class="si">%d</span><span class="s2"> -&gt; Establishing link ...&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_host</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_port</span><span class="p">))</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;host=</span><span class="si">%s</span><span class="s2">, port=</span><span class="si">%d</span><span class="s2"> -&gt; Establishing link ...&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_port</span><span class="p">)</span>
 
                     <span class="k">else</span><span class="p">:</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;host=</span><span class="si">%s</span><span class="s1">, port=</span><span class="si">%d</span><span class="s1"> -&gt; Failing to connect using jumbo frames! Be sure to check interface MTU settings with ifconig -a&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_host</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_port</span><span class="p">))</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                            <span class="s2">&quot;host=</span><span class="si">%s</span><span class="s2">, port=</span><span class="si">%d</span><span class="s2"> -&gt; Failing to connect using jumbo frames. &quot;</span>
+                            <span class="s2">&quot;Check interface MTU settings with ifconfig -a&quot;</span><span class="p">,</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_host</span><span class="p">,</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_port</span><span class="p">,</span>
+                        <span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="s2">&quot;host=</span><span class="si">%s</span><span class="s2">, port=</span><span class="si">%d</span><span class="s2"> -&gt; Link established. jumbo=</span><span class="si">%s</span><span class="s2">, maxPayload=</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_host</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_port</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_jumbo</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_udp</span><span class="o">.</span><span class="n">maxPayload</span><span class="p">(),</span>
+            <span class="p">)</span>
 
 
         <span class="c1"># On the client side, getOpen() only returns after negotiation is</span>
@@ -487,6 +500,12 @@
             <span class="k">return</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_udp</span><span class="o">.</span><span class="n">setRxBufferCount</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">curMaxBuffers</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="s2">&quot;host=</span><span class="si">%s</span><span class="s2">, port=</span><span class="si">%d</span><span class="s2"> -&gt; Configured UDP RX buffer count to </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_host</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_port</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_rssi</span><span class="o">.</span><span class="n">curMaxBuffers</span><span class="p">(),</span>
+        <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_rxBufferConfigured</span> <span class="o">=</span> <span class="kc">True</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_armServerRxBufferUpdate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>

@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>rogue.Logging &mdash; Rogue v6.8.5 documentation</title>
+  <title>rogue.Logging &mdash; Rogue v6.9.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=8960aef2"></script>
+      <script src="../../../_static/documentation_options.js?v=a0bc7a15"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -168,6 +168,66 @@
 </ul>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.Logging.setForwardPython">
+<span class="sig-name descname"><span class="pre">setForwardPython</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">enable</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#rogue.Logging.setForwardPython" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../cpp/logging.html#_CPPv4N5rogue7Logging16setForwardPythonEb" title="rogue::Logging::setForwardPython"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::Logging::setForwardPython()</span></code></a></p>
+<p>Enables or disables forwarding Rogue C++ logs into Python logging.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>enable</strong> – When true, emitted C++ log messages are also sent to the Python <code class="docutils literal notranslate"><span class="pre">logging</span></code> logger with the same fully-qualified name.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.Logging.forwardPython">
+<span class="sig-name descname"><span class="pre">forwardPython</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rogue.Logging.forwardPython" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../cpp/logging.html#_CPPv4N5rogue7Logging13forwardPythonEv" title="rogue::Logging::forwardPython"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::Logging::forwardPython()</span></code></a></p>
+<p>Returns whether Rogue C++ logs are currently forwarded to Python logging.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.Logging.setEmitStdout">
+<span class="sig-name descname"><span class="pre">setEmitStdout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">enable</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#rogue.Logging.setEmitStdout" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../cpp/logging.html#_CPPv4N5rogue7Logging13setEmitStdoutEb" title="rogue::Logging::setEmitStdout"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::Logging::setEmitStdout()</span></code></a></p>
+<p>Enables or disables direct stdout emission of Rogue C++ logs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>enable</strong> – When false, Rogue C++ logs are not printed directly by the native logger sink.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.Logging.emitStdout">
+<span class="sig-name descname"><span class="pre">emitStdout</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rogue.Logging.emitStdout" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../cpp/logging.html#_CPPv4N5rogue7Logging10emitStdoutEv" title="rogue::Logging::emitStdout"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::Logging::emitStdout()</span></code></a></p>
+<p>Returns whether Rogue C++ logs are currently emitted to stdout.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.Logging.normalizeName">
+<span class="sig-name descname"><span class="pre">normalizeName</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#rogue.Logging.normalizeName" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../cpp/logging.html#_CPPv4N5rogue7Logging13normalizeNameERKNSt6stringE" title="rogue::Logging::normalizeName"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::Logging::normalizeName()</span></code></a></p>
+<p>Normalizes logger names to the emitted Rogue namespace.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> – Logger name or prefix.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Name prefixed with <code class="docutils literal notranslate"><span class="pre">pyrogue.</span></code> when required.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.Logging.name">
+<span class="sig-name descname"><span class="pre">name</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rogue.Logging.name" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../cpp/logging.html#_CPPv4NK5rogue7Logging4nameEv" title="rogue::Logging::name"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::Logging::name()</span></code></a></p>
+<p>Returns the fully-qualified emitted logger name.</p>
 </dd></dl>
 
 </dd></dl>

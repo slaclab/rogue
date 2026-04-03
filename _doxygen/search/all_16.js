@@ -29,7 +29,7 @@ var searchData=
   ['verifymask_5f_26',['verifyMask_',['../classrogue_1_1interfaces_1_1memory_1_1Block.html#ad27860a9442d5d6585d1d9e19b377ee0',1,'rogue::interfaces::memory::Block']]],
   ['verifyreq_5f_27',['verifyReq_',['../classrogue_1_1interfaces_1_1memory_1_1Block.html#a7a163c7515c3e8b22377f145e8c2402c',1,'rogue::interfaces::memory::Block']]],
   ['verifysize_5f_28',['verifySize_',['../classrogue_1_1interfaces_1_1memory_1_1Block.html#a1eb26ee43a59717b6b72e94e055af451',1,'rogue::interfaces::memory::Block']]],
-  ['version_29',['version',['../classrogue_1_1Version.html#a63a062dff27ad5055f9794a7fccbb263',1,'rogue::Version::Version()'],['../classrogue_1_1protocols_1_1rssi_1_1Header.html#aa272a23979fac48cf39331134c70035f',1,'rogue::protocols::rssi::Header::version'],['../classrogue_1_1Version.html',1,'rogue::Version']]],
+  ['version_29',['version',['../classrogue_1_1protocols_1_1rssi_1_1Header.html#aa272a23979fac48cf39331134c70035f',1,'rogue::protocols::rssi::Header::version'],['../classrogue_1_1Version.html#a63a062dff27ad5055f9794a7fccbb263',1,'rogue::Version::Version()'],['../classrogue_1_1Version.html',1,'rogue::Version']]],
   ['version_2ecpp_30',['Version.cpp',['../Version_8cpp.html',1,'']]],
   ['version_2eh_31',['Version.h',['../Version_8h.html',1,'']]]
 ];

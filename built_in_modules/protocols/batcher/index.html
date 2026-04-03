@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Batcher Protocol &mdash; Rogue v6.8.5 documentation</title>
+  <title>Batcher Protocol &mdash; Rogue v6.9.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=8960aef2"></script>
+      <script src="../../../_static/documentation_options.js?v=a0bc7a15"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -69,6 +69,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../epicsV4/index.html">EPICS V4 Access</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../epicsV7/index.html">EPICS V7 Access</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../srp/index.html">SRP Protocol</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../xilinx/index.html">Xilinx Protocols</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../uart.html">UART Memory</a></li>
@@ -211,11 +212,15 @@ stream graph.</p>
 <p>Batcher logging is emitted by the shared parser cores, so it applies to both
 splitter and inverter usage:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">pyrogue.batcher.CoreV1</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">pyrogue.batcher.CoreV2</span></code></p></li>
+<li><p>v1 path: <code class="docutils literal notranslate"><span class="pre">pyrogue.batcher.CoreV1</span></code></p></li>
+<li><p>v2 path: <code class="docutils literal notranslate"><span class="pre">pyrogue.batcher.CoreV2</span></code></p></li>
+<li><p>Unified Logging API:
+<code class="docutils literal notranslate"><span class="pre">pyrogue.setLogLevel('pyrogue.batcher.CoreV2',</span> <span class="pre">'DEBUG')</span></code></p></li>
+<li><p>Legacy Logging API:
+<code class="docutils literal notranslate"><span class="pre">rogue.Logging.setFilter('pyrogue.batcher.CoreV2',</span> <span class="pre">rogue.Logging.Debug)</span></code></p></li>
 </ul>
-<p>Enable the logger for the batcher version you are debugging before processing
-frames:</p>
+<p>You can enable the logger before or during processing. Enable it before frames
+start flowing only if you want the earliest parser messages as well:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">rogue</span>
 
 <span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">setFilter</span><span class="p">(</span><span class="s1">&#39;pyrogue.batcher.CoreV2&#39;</span><span class="p">,</span> <span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">Debug</span><span class="p">)</span>

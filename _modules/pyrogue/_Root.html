@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue._Root &mdash; Rogue v6.8.5 documentation</title>
+  <title>pyrogue._Root &mdash; Rogue v6.9.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -14,7 +14,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=8960aef2"></script>
+      <script src="../../_static/documentation_options.js?v=a0bc7a15"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -181,6 +181,15 @@
         <span class="n">logging</span><span class="o">.</span><span class="n">Handler</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_root</span> <span class="o">=</span> <span class="n">root</span>
 
+    <span class="k">def</span><span class="w"> </span><span class="nf">_isSystemLogRecord</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">record</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">LogRecord</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return True when a record originated from SystemLog bookkeeping.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;SystemLog&#39;</span><span class="p">,</span> <span class="s1">&#39;SystemLogLast&#39;</span><span class="p">):</span>
+            <span class="n">var</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_root</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="n">log</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="s1">&#39;_log&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">log</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">record</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">log</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
     <span class="k">def</span><span class="w"> </span><span class="nf">emit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">record</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">LogRecord</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Parameters</span>
@@ -192,6 +201,9 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_root</span><span class="o">.</span><span class="n">running</span><span class="p">:</span>
             <span class="k">return</span>
 
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isSystemLogRecord</span><span class="p">(</span><span class="n">record</span><span class="p">):</span>
+            <span class="k">return</span>
+
         <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_root</span><span class="o">.</span><span class="n">updateGroup</span><span class="p">():</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">se</span> <span class="o">=</span> <span class="p">{</span> <span class="s1">&#39;created&#39;</span>     <span class="p">:</span> <span class="n">record</span><span class="o">.</span><span class="n">created</span><span class="p">,</span>
@@ -201,6 +213,19 @@
                        <span class="s1">&#39;traceBack&#39;</span>   <span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
                        <span class="s1">&#39;levelName&#39;</span>   <span class="p">:</span> <span class="n">record</span><span class="o">.</span><span class="n">levelname</span><span class="p">,</span>
                        <span class="s1">&#39;levelNumber&#39;</span> <span class="p">:</span> <span class="n">record</span><span class="o">.</span><span class="n">levelno</span> <span class="p">}</span>
+
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="s1">&#39;rogue_cpp&#39;</span><span class="p">):</span>
+                    <span class="n">se</span><span class="p">[</span><span class="s1">&#39;rogueCpp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">record</span><span class="o">.</span><span class="n">rogue_cpp</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="s1">&#39;rogue_tid&#39;</span><span class="p">):</span>
+                    <span class="n">se</span><span class="p">[</span><span class="s1">&#39;rogueTid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">record</span><span class="o">.</span><span class="n">rogue_tid</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="s1">&#39;rogue_pid&#39;</span><span class="p">):</span>
+                    <span class="n">se</span><span class="p">[</span><span class="s1">&#39;roguePid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">record</span><span class="o">.</span><span class="n">rogue_pid</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="s1">&#39;rogue_logger&#39;</span><span class="p">):</span>
+                    <span class="n">se</span><span class="p">[</span><span class="s1">&#39;rogueLogger&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">record</span><span class="o">.</span><span class="n">rogue_logger</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="s1">&#39;rogue_timestamp&#39;</span><span class="p">):</span>
+                    <span class="n">se</span><span class="p">[</span><span class="s1">&#39;rogueTimestamp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">record</span><span class="o">.</span><span class="n">rogue_timestamp</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="s1">&#39;rogue_component&#39;</span><span class="p">):</span>
+                    <span class="n">se</span><span class="p">[</span><span class="s1">&#39;rogueComponent&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">record</span><span class="o">.</span><span class="n">rogue_component</span>
 
                 <span class="k">if</span> <span class="n">record</span><span class="o">.</span><span class="n">exc_info</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">se</span><span class="p">[</span><span class="s1">&#39;exception&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">record</span><span class="o">.</span><span class="n">exc_info</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="vm">__name__</span>
@@ -255,6 +280,9 @@
 <span class="sd">        Enable polling on start.</span>
 <span class="sd">    maxLog : int, optional (default = 1000)</span>
 <span class="sd">        Maximum log entries to retain.</span>
+<span class="sd">    unifyLogs : bool, optional (default = False)</span>
+<span class="sd">        Forward Rogue C++ logs into Python logging and disable the native Rogue</span>
+<span class="sd">        stdout sink to avoid duplicate output in mixed PyRogue applications.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Root</span><span class="p">:</span>
@@ -274,7 +302,8 @@
                  <span class="n">initRead</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
                  <span class="n">initWrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
                  <span class="n">pollEn</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-                 <span class="n">maxLog</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+                 <span class="n">maxLog</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span>
+                 <span class="n">unifyLogs</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the root node, workers, and built-in variables/commands.&quot;&quot;&quot;</span>
         <span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">Master</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
@@ -284,7 +313,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_initWrite</span>       <span class="o">=</span> <span class="n">initWrite</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_pollEn</span>          <span class="o">=</span> <span class="n">pollEn</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_maxLog</span>          <span class="o">=</span> <span class="n">maxLog</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_unifyLogs</span>       <span class="o">=</span> <span class="n">unifyLogs</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_doHeartbeat</span>     <span class="o">=</span> <span class="kc">True</span> <span class="c1"># Backdoor flag</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unifyLogs</span><span class="p">:</span>
+            <span class="n">pr</span><span class="o">.</span><span class="n">setUnifiedLogging</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="c1"># Create log listener to add to SystemLog variable</span>
         <span class="n">formatter</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%(msg)s</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -454,6 +487,8 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_running</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">pr</span><span class="o">.</span><span class="n">NodeError</span><span class="p">(</span><span class="s2">&quot;Root is already started! Can&#39;t restart!&quot;</span><span class="p">)</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Starting root lifecycle&quot;</span><span class="p">)</span>
+
         <span class="c1"># Call special root level rootAttached</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_rootAttached</span><span class="p">()</span>
 
@@ -473,9 +508,14 @@
         <span class="c1"># Look for overlaps</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">tmpList</span><span class="p">)):</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Comparing </span><span class="si">{}</span><span class="s2"> with address=</span><span class="si">{:#x}</span><span class="s2"> to </span><span class="si">{}</span><span class="s2"> with address=</span><span class="si">{:#x}</span><span class="s2"> and size=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                            <span class="n">tmpList</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">path</span><span class="p">,</span>  <span class="n">tmpList</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">address</span><span class="p">,</span>
-                            <span class="n">tmpList</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">path</span><span class="p">,</span><span class="n">tmpList</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">address</span><span class="p">,</span> <span class="n">tmpList</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">size</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="s2">&quot;Comparing </span><span class="si">%s</span><span class="s2"> with address=</span><span class="si">%#x</span><span class="s2"> to </span><span class="si">%s</span><span class="s2"> with address=</span><span class="si">%#x</span><span class="s2"> and size=</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="n">tmpList</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">path</span><span class="p">,</span>
+                <span class="n">tmpList</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">address</span><span class="p">,</span>
+                <span class="n">tmpList</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">path</span><span class="p">,</span>
+                <span class="n">tmpList</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">address</span><span class="p">,</span>
+                <span class="n">tmpList</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">size</span><span class="p">,</span>
+            <span class="p">)</span>
 
             <span class="c1"># Detect overlaps</span>
             <span class="k">if</span> <span class="p">(</span><span class="n">tmpList</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">size</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">tmpList</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">_reqSlaveId</span><span class="p">()</span> <span class="o">==</span> <span class="n">tmpList</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">_reqSlaveId</span><span class="p">())</span> <span class="ow">and</span> \
@@ -492,7 +532,10 @@
 
         <span class="c1"># Detect large timeout</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_timeout</span> <span class="o">&gt;</span> <span class="mf">10.0</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Large timeout value of </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_timeout</span><span class="si">}</span><span class="s2"> seconds detected. This may cause unexpected system behavior.&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="s2">&quot;Large timeout value of </span><span class="si">%s</span><span class="s2"> seconds detected. This may cause unexpected system behavior.&quot;</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_timeout</span><span class="p">,</span>
+            <span class="p">)</span>
 
         <span class="c1"># Start update thread</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_running</span> <span class="o">=</span> <span class="kc">True</span>
@@ -518,7 +561,8 @@
 
         <span class="c1"># Start poller if enabled</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_pollQueue</span><span class="o">.</span><span class="n">_start</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">PollEn</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pollEn</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">PollEn</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pollEn</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Root lifecycle started&quot;</span><span class="p">)</span></div>
 
 
 
@@ -529,6 +573,7 @@
 <span class="sd">        Call Device._stop() to recursively stop all Devices in the tree.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Stopping root lifecycle&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_running</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_updateQueue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_updateThread</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
@@ -536,7 +581,8 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pollQueue</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_pollQueue</span><span class="o">.</span><span class="n">_stop</span><span class="p">()</span>
 
-        <span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="o">.</span><span class="n">_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+        <span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="o">.</span><span class="n">_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Root lifecycle stopped&quot;</span><span class="p">)</span></div>
 
 
     <span class="nd">@pr</span><span class="o">.</span><span class="n">expose</span>
@@ -855,12 +901,12 @@
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_write</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Write and verify all blocks.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Start root write&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Start root write (forceWrite=</span><span class="si">%s</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ForceWrite</span><span class="o">.</span><span class="n">value</span><span class="p">())</span>
         <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">pollBlock</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">updateGroup</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">writeBlocks</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ForceWrite</span><span class="o">.</span><span class="n">value</span><span class="p">(),</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Verify root read&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Verify root write with readback&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">verifyBlocks</span><span class="p">(</span><span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Check root read&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Check verified root write transactions&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">checkBlocks</span><span class="p">(</span><span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Done root write&quot;</span><span class="p">)</span>
@@ -871,7 +917,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Start root read&quot;</span><span class="p">)</span>
         <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">pollBlock</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">updateGroup</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">readBlocks</span><span class="p">(</span><span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Check root read&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Check root read transactions&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">checkBlocks</span><span class="p">(</span><span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Done root read&quot;</span><span class="p">)</span>
@@ -1004,6 +1050,7 @@
                         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;loadYaml: Invalid load file: </span><span class="si">{}</span><span class="s2">, must be a directory or end in .yml or .yaml&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">rl</span><span class="p">))</span>
 
                     <span class="k">else</span><span class="p">:</span>
+                        <span class="n">zip_yaml</span> <span class="o">=</span> <span class="p">[]</span>
 
                         <span class="c1"># Iterate through directory contents</span>
                         <span class="k">for</span> <span class="n">zfn</span> <span class="ow">in</span> <span class="n">myzip</span><span class="o">.</span><span class="n">namelist</span><span class="p">():</span>
@@ -1014,7 +1061,11 @@
 
                                 <span class="c1"># Entry ends in .yml or *.yml and is in current directory</span>
                                 <span class="k">if</span> <span class="s1">&#39;/&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">spt</span> <span class="ow">and</span> <span class="p">(</span><span class="n">spt</span><span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">:]</span> <span class="o">==</span> <span class="s1">&#39;.yml&#39;</span> <span class="ow">or</span> <span class="n">spt</span><span class="p">[</span><span class="o">-</span><span class="mi">5</span><span class="p">:]</span> <span class="o">==</span> <span class="s1">&#39;.yaml&#39;</span><span class="p">):</span>
-                                    <span class="n">lst</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">base</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">zfn</span><span class="p">)</span>
+                                    <span class="n">zip_yaml</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">base</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">zfn</span><span class="p">)</span>
+
+                        <span class="c1"># Keep zip-directory loads aligned with normal directory</span>
+                        <span class="c1"># loads by applying a lexicographic pathname sort.</span>
+                        <span class="n">lst</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">zip_yaml</span><span class="p">))</span>
 
             <span class="c1"># Entry is a directory</span>
             <span class="k">elif</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">rl</span><span class="p">):</span>
@@ -1026,16 +1077,28 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;loadYaml: Invalid load file: </span><span class="si">{}</span><span class="s2">, must be a directory or end in .yml or .yaml&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">rl</span><span class="p">))</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="s2">&quot;Loading YAML config from </span><span class="si">%s</span><span class="s2"> file(s), writeEach=</span><span class="si">%s</span><span class="s2">, modes=</span><span class="si">%s</span><span class="s2">, incGroups=</span><span class="si">%s</span><span class="s2">, excGroups=</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="nb">len</span><span class="p">(</span><span class="n">lst</span><span class="p">),</span>
+            <span class="n">writeEach</span><span class="p">,</span>
+            <span class="n">modes</span><span class="p">,</span>
+            <span class="n">incGroups</span><span class="p">,</span>
+            <span class="n">excGroups</span><span class="p">,</span>
+        <span class="p">)</span>
+
         <span class="c1"># Read each file</span>
         <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">pollBlock</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">updateGroup</span><span class="p">():</span>
             <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="n">lst</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Applying YAML config file </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">fn</span><span class="p">)</span>
                 <span class="n">d</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">yamlToData</span><span class="p">(</span><span class="n">fName</span><span class="o">=</span><span class="n">fn</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_setDictRoot</span><span class="p">(</span><span class="n">d</span><span class="o">=</span><span class="n">d</span><span class="p">,</span><span class="n">writeEach</span><span class="o">=</span><span class="n">writeEach</span><span class="p">,</span><span class="n">modes</span><span class="o">=</span><span class="n">modes</span><span class="p">,</span><span class="n">incGroups</span><span class="o">=</span><span class="n">incGroups</span><span class="p">,</span><span class="n">excGroups</span><span class="o">=</span><span class="n">excGroups</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="ow">not</span> <span class="n">writeEach</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Committing staged YAML config to hardware&quot;</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">InitAfterConfig</span><span class="o">.</span><span class="n">value</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Running initialize() after YAML config load&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">initialize</span><span class="p">()</span>
 
         <span class="k">return</span> <span class="kc">True</span></div>
@@ -1134,13 +1197,23 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">d</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">yamlToData</span><span class="p">(</span><span class="n">yml</span><span class="p">)</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="s2">&quot;Applying YAML text config, writeEach=</span><span class="si">%s</span><span class="s2">, modes=</span><span class="si">%s</span><span class="s2">, incGroups=</span><span class="si">%s</span><span class="s2">, excGroups=</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="n">writeEach</span><span class="p">,</span>
+            <span class="n">modes</span><span class="p">,</span>
+            <span class="n">incGroups</span><span class="p">,</span>
+            <span class="n">excGroups</span><span class="p">,</span>
+        <span class="p">)</span>
+
         <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">pollBlock</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">updateGroup</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_setDictRoot</span><span class="p">(</span><span class="n">d</span><span class="o">=</span><span class="n">d</span><span class="p">,</span><span class="n">writeEach</span><span class="o">=</span><span class="n">writeEach</span><span class="p">,</span><span class="n">modes</span><span class="o">=</span><span class="n">modes</span><span class="p">,</span><span class="n">incGroups</span><span class="o">=</span><span class="n">incGroups</span><span class="p">,</span><span class="n">excGroups</span><span class="o">=</span><span class="n">excGroups</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="ow">not</span> <span class="n">writeEach</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Committing staged YAML text config to hardware&quot;</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">InitAfterConfig</span><span class="o">.</span><span class="n">value</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Running initialize() after YAML text config&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">initialize</span><span class="p">()</span></div>
 
 
@@ -1217,13 +1290,17 @@
             <span class="k">if</span> <span class="n">node</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">node</span><span class="o">.</span><span class="n">_setDict</span><span class="p">(</span><span class="n">d</span><span class="o">=</span><span class="n">value</span><span class="p">,</span><span class="n">writeEach</span><span class="o">=</span><span class="n">writeEach</span><span class="p">,</span><span class="n">modes</span><span class="o">=</span><span class="n">modes</span><span class="p">,</span><span class="n">incGroups</span><span class="o">=</span><span class="n">incGroups</span><span class="p">,</span><span class="n">excGroups</span><span class="o">=</span><span class="n">excGroups</span><span class="p">,</span><span class="n">keys</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Entry </span><span class="si">{}</span><span class="s2"> not found&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Entry </span><span class="si">%s</span><span class="s2"> not found&quot;</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_clearLog</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Clear the system log.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">SystemLog</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">SystemLogInit</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">SystemLogLast</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_isSystemLogVar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return True when a queued variable is one of the system-log mirrors.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">var</span> <span class="ow">is</span> <span class="bp">self</span><span class="o">.</span><span class="n">SystemLog</span> <span class="ow">or</span> <span class="n">var</span> <span class="ow">is</span> <span class="bp">self</span><span class="o">.</span><span class="n">SystemLogLast</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_queueUpdates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1265,7 +1342,14 @@
 
             <span class="c1"># Process list</span>
             <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">uvars</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">F</span><span class="s1">&#39;Process update group. Length=</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">uvars</span><span class="p">)</span><span class="si">}</span><span class="s1">. Entry=</span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">uvars</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="n">syslogOnly</span> <span class="o">=</span> <span class="nb">all</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_isSystemLogVar</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">uvars</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">syslogOnly</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                        <span class="s2">&quot;Process update group. Length=</span><span class="si">%s</span><span class="s2">. Entry=</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                        <span class="nb">len</span><span class="p">(</span><span class="n">uvars</span><span class="p">),</span>
+                        <span class="nb">list</span><span class="p">(</span><span class="n">uvars</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">],</span>
+                    <span class="p">)</span>
 
                 <span class="c1"># Copy list and add listeners</span>
                 <span class="n">nvars</span> <span class="o">=</span> <span class="n">uvars</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
@@ -1302,7 +1386,12 @@
                             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                                 <span class="n">pr</span><span class="o">.</span><span class="n">logException</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">,</span><span class="n">e</span><span class="p">)</span>
 
-                <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">F</span><span class="s2">&quot;Done update group. Length=</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">uvars</span><span class="p">)</span><span class="si">}</span><span class="s2">. Entry=</span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">uvars</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">syslogOnly</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                        <span class="s2">&quot;Done update group. Length=</span><span class="si">%s</span><span class="s2">. Entry=</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                        <span class="nb">len</span><span class="p">(</span><span class="n">uvars</span><span class="p">),</span>
+                        <span class="nb">list</span><span class="p">(</span><span class="n">uvars</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">],</span>
+                    <span class="p">)</span>
 
             <span class="c1"># Set done</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_updateQueue</span><span class="o">.</span><span class="n">task_done</span><span class="p">()</span></div>

@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue._PollQueue &mdash; Rogue v6.8.5 documentation</title>
+  <title>pyrogue._PollQueue &mdash; Rogue v6.9.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -14,7 +14,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=8960aef2"></script>
+      <script src="../../_static/documentation_options.js?v=a0bc7a15"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -218,7 +218,7 @@
 <span class="sd">            Variable whose poll interval changed.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_condLock</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;updatePollInterval </span><span class="si">{</span><span class="n">var</span><span class="si">}</span><span class="s1"> - </span><span class="si">{</span><span class="n">var</span><span class="o">.</span><span class="n">_pollInterval</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;updatePollInterval </span><span class="si">%s</span><span class="s2"> - </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">var</span><span class="p">,</span> <span class="n">var</span><span class="o">.</span><span class="n">_pollInterval</span><span class="p">)</span>
             <span class="c1"># Special case: Variable has no block and just depends on other variables</span>
             <span class="c1"># Then do update on each dependency instead</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="s1">&#39;_block&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">var</span><span class="o">.</span><span class="n">_block</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -271,10 +271,10 @@
                 <span class="n">readTime</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">peek</span><span class="p">()</span><span class="o">.</span><span class="n">readTime</span>
                 <span class="n">waitTime</span> <span class="o">=</span> <span class="p">(</span><span class="n">readTime</span> <span class="o">-</span> <span class="n">now</span><span class="p">)</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span>
                 <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_condLock</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Poll thread sleeping for </span><span class="si">{</span><span class="n">waitTime</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Poll thread sleeping for </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">waitTime</span><span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_condLock</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="n">waitTime</span><span class="p">)</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Global reference count: </span><span class="si">{</span><span class="n">sys</span><span class="o">.</span><span class="n">getrefcount</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Global reference count: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">getrefcount</span><span class="p">(</span><span class="kc">None</span><span class="p">))</span>
 
             <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_condLock</span><span class="p">:</span>
                 <span class="c1"># Stop the thread if someone set run to False</span>
@@ -293,7 +293,7 @@
                     <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
                     <span class="n">blockEntries</span> <span class="o">=</span> <span class="p">[]</span>
                     <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_expiredEntries</span><span class="p">(</span><span class="n">now</span><span class="p">):</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Polling Block </span><span class="si">{</span><span class="n">entry</span><span class="o">.</span><span class="n">block</span><span class="o">.</span><span class="n">path</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Polling Block </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">entry</span><span class="o">.</span><span class="n">block</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
                         <span class="n">blockEntries</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">entry</span><span class="p">)</span>
                         <span class="k">try</span><span class="p">:</span>
                             <span class="n">pr</span><span class="o">.</span><span class="n">startTransaction</span><span class="p">(</span><span class="n">entry</span><span class="o">.</span><span class="n">block</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">Read</span><span class="p">)</span>

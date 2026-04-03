@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Python ZMQServer &mdash; Rogue v6.8.5 documentation</title>
+  <title>Python ZMQServer &mdash; Rogue v6.9.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=8960aef2"></script>
+      <script src="../../_static/documentation_options.js?v=a0bc7a15"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -184,21 +184,33 @@ which Variable updates are published.</p></li>
 <p>For transport logging, enable the Rogue C++ logger:</p>
 <ul class="simple">
 <li><p>Logger name: <code class="docutils literal notranslate"><span class="pre">pyrogue.ZmqServer</span></code></p></li>
-<li><p>Configuration API:
+<li><p>Unified Logging API:
+<code class="docutils literal notranslate"><span class="pre">pyrogue.setLogLevel('pyrogue.ZmqServer',</span> <span class="pre">'DEBUG')</span></code></p></li>
+<li><p>Legacy Logging API:
 <code class="docutils literal notranslate"><span class="pre">rogue.Logging.setFilter('pyrogue.ZmqServer',</span> <span class="pre">rogue.Logging.Debug)</span></code></p></li>
 </ul>
 <p>Example:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">rogue</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue.interfaces</span>
 
-<span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">setFilter</span><span class="p">(</span><span class="s1">&#39;pyrogue.ZmqServer&#39;</span><span class="p">,</span> <span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">Debug</span><span class="p">)</span>
+<span class="n">pyrogue</span><span class="o">.</span><span class="n">setUnifiedLogging</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">pyrogue</span><span class="o">.</span><span class="n">setLogLevel</span><span class="p">(</span><span class="s1">&#39;pyrogue.ZmqServer&#39;</span><span class="p">,</span> <span class="s1">&#39;DEBUG&#39;</span><span class="p">)</span>
 <span class="n">server</span> <span class="o">=</span> <span class="n">pyrogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">ZmqServer</span><span class="p">(</span><span class="n">root</span><span class="o">=</span><span class="n">root</span><span class="p">,</span> <span class="n">addr</span><span class="o">=</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">9099</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Set the filter before constructing the server object.</p>
-<p>Separately, <code class="docutils literal notranslate"><span class="pre">ZmqServer._start()</span></code> prints the selected ports and example client
-commands to stdout. Those startup messages are not controlled by the logging
-API.</p>
+<p>That enables the C++ transport logger. Separately, <code class="docutils literal notranslate"><span class="pre">ZmqServer._start()</span></code>
+prints the selected ports and example client commands to stdout. Those startup
+messages are not controlled by the logging API.</p>
+<p>Client-side request/retry logging comes from <code class="docutils literal notranslate"><span class="pre">pyrogue.ZmqClient</span></code> rather than
+<code class="docutils literal notranslate"><span class="pre">ZmqServer</span></code>. During long waits, that logging is intentionally throttled:</p>
+<ul class="simple">
+<li><p>one warning when the client first enters the retry loop</p></li>
+<li><p>periodic “still waiting” warnings at a lower cadence</p></li>
+<li><p>one recovery message when the response arrives</p></li>
+</ul>
+<p>This keeps long but valid transactions visible without generating a warning
+every socket-timeout interval.</p>
 </section>
 <section id="related-topics">
 <h2>Related Topics<a class="headerlink" href="#related-topics" title="Link to this heading"></a></h2>

@@ -127,14 +127,10 @@ Logging
 Packetizer logging is emitted by the shared controller logger:
 
 - ``pyrogue.packetizer.Controller``
-
-Enable it before constructing packetizer objects:
-
-.. code-block:: python
-
-   import rogue
-
-   rogue.Logging.setFilter('pyrogue.packetizer', rogue.Logging.Debug)
+- Unified Logging API:
+  ``pyrogue.setLogLevel('pyrogue.packetizer', 'DEBUG')``
+- Legacy Logging API:
+  ``rogue.Logging.setFilter('pyrogue.packetizer', rogue.Logging.Debug)``
 
 This logger is the main source for packet-drop, framing, and timeout messages.
 There is no separate per-instance debug helper on ``Core``.

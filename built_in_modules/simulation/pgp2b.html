@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pgp2bSim &mdash; Rogue v6.8.5 documentation</title>
+  <title>Pgp2bSim &mdash; Rogue v6.9.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=8960aef2"></script>
+      <script src="../../_static/documentation_options.js?v=a0bc7a15"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -251,17 +251,15 @@ logger of its own.</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">SideBandSim</span></code> uses Python logging with names of the form
 <code class="docutils literal notranslate"><span class="pre">pyrogue.SideBandSim.&lt;host&gt;.&lt;port&gt;</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SideBandSim</span></code> logging API:
+<code class="docutils literal notranslate"><span class="pre">pyrogue.setLogLevel('pyrogue.SideBandSim',</span> <span class="pre">'DEBUG')</span></code></p></li>
 <li><p>The underlying TCP stream endpoints can be debugged through the normal
 TCP bridge logger family documented in <a class="reference internal" href="../../stream_interface/tcp_bridge.html"><span class="doc">Stream TCP Bridge</span></a></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">TcpCore</span></code> unified logging API:
+<code class="docutils literal notranslate"><span class="pre">pyrogue.setLogLevel('pyrogue.stream.TcpCore',</span> <span class="pre">'DEBUG')</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">TcpCore</span></code> legacy logging API:
+<code class="docutils literal notranslate"><span class="pre">rogue.Logging.setFilter('pyrogue.stream.TcpCore',</span> <span class="pre">rogue.Logging.Debug)</span></code></p></li>
 </ul>
-<p>Example:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">rogue</span>
-
-<span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;pyrogue.SideBandSim&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
-<span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">setFilter</span><span class="p">(</span><span class="s1">&#39;pyrogue.stream.TcpCore&#39;</span><span class="p">,</span> <span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">Debug</span><span class="p">)</span>
-</pre></div>
-</div>
 </section>
 <section id="related-topics">
 <h2>Related Topics<a class="headerlink" href="#related-topics" title="Link to this heading"></a></h2>

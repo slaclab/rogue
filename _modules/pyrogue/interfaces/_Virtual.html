@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue.interfaces._Virtual &mdash; Rogue v6.8.5 documentation</title>
+  <title>pyrogue.interfaces._Virtual &mdash; Rogue v6.9.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -14,7 +14,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=8960aef2"></script>
+      <script src="../../../_static/documentation_options.js?v=a0bc7a15"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -101,6 +101,7 @@
 <span class="c1"># contained in the LICENSE.txt file.</span>
 <span class="c1">#-----------------------------------------------------------------------------</span>
 
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">rogue.interfaces</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pickle</span>
@@ -415,6 +416,18 @@
 <span class="sd">    port : int</span>
 <span class="sd">        host port</span>
 
+<span class="sd">    linkTimeout : float, optional</span>
+<span class="sd">        Idle timeout in seconds before the client marks the link down when no</span>
+<span class="sd">        publish updates or successful replies have been observed. This is the</span>
+<span class="sd">        primary operational timeout knob for both hardware and simulation</span>
+<span class="sd">        applications.</span>
+
+<span class="sd">    requestStallTimeout : float | None, optional</span>
+<span class="sd">        Optional policy timeout for how long a single in-flight request may</span>
+<span class="sd">        remain outstanding before the client declares the connection stalled.</span>
+<span class="sd">        This is disabled by default and is typically only useful when a</span>
+<span class="sd">        deployment has a well-defined upper bound for legitimate request time.</span>
+
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
 <span class="sd">    linked: bool</span>
@@ -426,8 +439,39 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ClientCache</span> <span class="o">=</span> <span class="p">{}</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="s2">&quot;VirtualClient&quot;</span><span class="p">],</span> <span class="n">addr</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;localhost&quot;</span><span class="p">,</span> <span class="n">port</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">9099</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;VirtualClient&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return cached client instances keyed by ``(addr, port)``.&quot;&quot;&quot;</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_defaultLinkTimeout</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the default idle link timeout in seconds.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;ROGUE_VIRTUAL_LINK_TIMEOUT&quot;</span><span class="p">,</span> <span class="s2">&quot;10.0&quot;</span><span class="p">))</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_defaultRequestStallTimeout</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the default request-stall timeout in seconds, if configured.&quot;&quot;&quot;</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;ROGUE_VIRTUAL_REQUEST_STALL_TIMEOUT&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">value</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">stall</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">stall</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">stall</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_defaultConnectTimeout</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the startup handshake timeout in seconds.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;ROGUE_VIRTUAL_CONNECT_TIMEOUT&quot;</span><span class="p">,</span> <span class="s2">&quot;5.0&quot;</span><span class="p">)))</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__new__</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="s2">&quot;VirtualClient&quot;</span><span class="p">],</span>
+        <span class="n">addr</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;localhost&quot;</span><span class="p">,</span>
+        <span class="n">port</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">9099</span><span class="p">,</span>
+        <span class="n">linkTimeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">requestStallTimeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;VirtualClient&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return cached client instances keyed by ``(addr, port)``.</span>
+
+<span class="sd">        Timeout arguments configure the cached instance for that server. If a</span>
+<span class="sd">        client already exists for the same ``(addr, port)``, new timeout values</span>
+<span class="sd">        are applied to the shared instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">newHash</span> <span class="o">=</span> <span class="nb">hash</span><span class="p">((</span><span class="n">addr</span><span class="p">,</span> <span class="n">port</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="n">newHash</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">ClientCache</span><span class="p">:</span>
@@ -435,18 +479,60 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">VirtualClient</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">addr</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">addr</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;localhost&quot;</span><span class="p">,</span> <span class="n">port</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">9099</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="nb">hash</span><span class="p">((</span><span class="n">addr</span><span class="p">,</span><span class="n">port</span><span class="p">))</span> <span class="ow">in</span> <span class="n">VirtualClient</span><span class="o">.</span><span class="n">ClientCache</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">addr</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;localhost&quot;</span><span class="p">,</span>
+        <span class="n">port</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">9099</span><span class="p">,</span>
+        <span class="n">linkTimeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">requestStallTimeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create or reconfigure a cached virtual client instance.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        addr : str, optional</span>
+<span class="sd">            Server host name or address.</span>
+<span class="sd">        port : int, optional</span>
+<span class="sd">            Base ZMQ server port.</span>
+<span class="sd">        linkTimeout : float | None, optional</span>
+<span class="sd">            Idle timeout in seconds before the link is considered down. If not</span>
+<span class="sd">            provided, the default is 10 seconds or the value from</span>
+<span class="sd">            ``ROGUE_VIRTUAL_LINK_TIMEOUT``.</span>
+<span class="sd">        requestStallTimeout : float | None, optional</span>
+<span class="sd">            Optional maximum age of an in-flight request before the client</span>
+<span class="sd">            treats it as stalled. ``None`` or non-positive values disable this</span>
+<span class="sd">            policy. In practice this is usually left disabled unless a system</span>
+<span class="sd">            has a known upper bound for valid request duration.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_vcInitialized&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">linkTimeout</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">requestStallTimeout</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">setTimeoutConfig</span><span class="p">(</span><span class="n">linkTimeout</span><span class="o">=</span><span class="n">linkTimeout</span><span class="p">,</span> <span class="n">requestStallTimeout</span><span class="o">=</span><span class="n">requestStallTimeout</span><span class="p">)</span>
             <span class="k">return</span>
 
-        <span class="n">VirtualClient</span><span class="o">.</span><span class="n">ClientCache</span><span class="p">[</span><span class="nb">hash</span><span class="p">((</span><span class="n">addr</span><span class="p">,</span> <span class="n">port</span><span class="p">))]</span> <span class="o">=</span> <span class="bp">self</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cacheKey</span> <span class="o">=</span> <span class="nb">hash</span><span class="p">((</span><span class="n">addr</span><span class="p">,</span> <span class="n">port</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_monEnable</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_monThread</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_vcInitialized</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">VirtualClient</span><span class="o">.</span><span class="n">ClientCache</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_cacheKey</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span>
 
-        <span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">ZmqClient</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">addr</span><span class="p">,</span><span class="n">port</span><span class="p">,</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">ZmqClient</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">addr</span><span class="p">,</span><span class="n">port</span><span class="p">,</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_removeFromCache</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_vcInitialized</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">raise</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_varListeners</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_monitors</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_root</span>  <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_link</span>  <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_ltime</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reqLock</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reqCount</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reqSince</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_linkTimeout</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_defaultLinkTimeout</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_requestStallTimeout</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_defaultRequestStallTimeout</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setTimeoutConfig</span><span class="p">(</span><span class="n">linkTimeout</span><span class="o">=</span><span class="n">linkTimeout</span><span class="p">,</span> <span class="n">requestStallTimeout</span><span class="o">=</span><span class="n">requestStallTimeout</span><span class="p">)</span>
 
         <span class="c1"># Setup logging</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_log</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">logInit</span><span class="p">(</span><span class="bp">cls</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;VirtualClient&quot;</span><span class="p">,</span><span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
@@ -456,8 +542,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">setTimeout</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span><span class="kc">False</span><span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_root</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_remoteAttr</span><span class="p">(</span><span class="s1">&#39;__ROOT__&#39;</span><span class="p">,</span><span class="kc">None</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_root</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_waitForRoot</span><span class="p">()</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cleanupFailedInit</span><span class="p">()</span>
             <span class="n">error_message</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">Failed to connect to </span><span class="si">{</span><span class="n">addr</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">port</span><span class="si">}</span><span class="s2">!</span><span class="se">\n\n</span><span class="s2">&quot;</span>
                 <span class="s2">&quot;Possible causes for the issue:</span><span class="se">\n</span><span class="s2">&quot;</span>
@@ -487,6 +574,37 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_monEnable</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_monThread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_monWorker</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_monThread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_removeFromCache</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove this client from the shared cache when it is no longer valid.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_cacheKey&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">in</span> <span class="n">VirtualClient</span><span class="o">.</span><span class="n">ClientCache</span> <span class="ow">and</span> <span class="n">VirtualClient</span><span class="o">.</span><span class="n">ClientCache</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_cacheKey</span><span class="p">]</span> <span class="ow">is</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="k">del</span> <span class="n">VirtualClient</span><span class="o">.</span><span class="n">ClientCache</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_cacheKey</span><span class="p">]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_cleanupFailedInit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Release transport resources after a failed bootstrap handshake.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_monEnable</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_removeFromCache</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_vcInitialized</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">ZmqClient</span><span class="o">.</span><span class="n">_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_waitForRoot</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;VirtualNode&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Retry the initial ``__ROOT__`` handshake for a bounded startup window.&quot;&quot;&quot;</span>
+        <span class="n">deadline</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_defaultConnectTimeout</span><span class="p">()</span>
+        <span class="n">last_error</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">while</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">deadline</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_remoteAttr</span><span class="p">(</span><span class="s1">&#39;__ROOT__&#39;</span><span class="p">,</span><span class="kc">None</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+                <span class="n">last_error</span> <span class="o">=</span> <span class="n">exc</span>
+
+        <span class="k">if</span> <span class="n">last_error</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">last_error</span>
+
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Timed out waiting for initial root handshake&quot;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="VirtualClient.addLinkMonitor">
 <a class="viewcode-back" href="../../../api/python/pyrogue/interfaces/virtualclient.html#pyrogue.interfaces.VirtualClient.addLinkMonitor">[docs]</a>
@@ -525,29 +643,122 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Whether the client is currently linked to the server.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_link</span>
 
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">linkTimeout</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Idle timeout in seconds before the link is considered down.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkTimeout</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">requestStallTimeout</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Optional maximum in-flight request age before it is treated as stalled.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_requestStallTimeout</span>
+
+<div class="viewcode-block" id="VirtualClient.setTimeoutConfig">
+<a class="viewcode-back" href="../../../api/python/pyrogue/interfaces/virtualclient.html#pyrogue.interfaces.VirtualClient.setTimeoutConfig">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setTimeoutConfig</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">linkTimeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">requestStallTimeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update link and request-stall timeout settings.</span>
+
+<span class="sd">        ``linkTimeout`` is the normal tuning knob for clients that need to</span>
+<span class="sd">        tolerate longer busy periods. ``requestStallTimeout`` is an optional</span>
+<span class="sd">        policy threshold and is most useful only when a deployment has a clear,</span>
+<span class="sd">        finite upper bound for legitimate request duration.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">linkTimeout</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_linkTimeout</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">linkTimeout</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">requestStallTimeout</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">stall</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">requestStallTimeout</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_requestStallTimeout</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">stall</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">stall</span></div>
+
+
     <span class="k">def</span><span class="w"> </span><span class="nf">_monWorker</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Monitor link heartbeat and emit link-state callbacks.&quot;&quot;&quot;</span>
         <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">_monEnable</span><span class="p">:</span>
             <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_checkLinkState</span><span class="p">()</span>
 
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_link</span> <span class="ow">and</span> <span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ltime</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">10.0</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_link</span> <span class="o">=</span> <span class="kc">False</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;I have not heard from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_root</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> in 10 seconds. It may be busy, continuing to wait...&quot;</span><span class="p">)</span>
-                <span class="k">for</span> <span class="n">mon</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_monitors</span><span class="p">:</span>
-                    <span class="n">mon</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_link</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_requestStart</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Record that a request/reply transaction is in flight.&quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqLock</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqCount</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_reqSince</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_reqCount</span> <span class="o">+=</span> <span class="mi">1</span>
 
-            <span class="k">elif</span> <span class="p">(</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_link</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ltime</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">10.0</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_requestDone</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">success</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Record request completion and treat successful replies as activity.&quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqLock</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_reqCount</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqCount</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqCount</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_reqSince</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="n">success</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ltime</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_link</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_link</span> <span class="o">=</span> <span class="kc">True</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;I have finally heard from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_root</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">. All is good!&quot;</span><span class="p">)</span>
                 <span class="k">for</span> <span class="n">mon</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_monitors</span><span class="p">:</span>
                     <span class="n">mon</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_link</span><span class="p">)</span>
 
+    <span class="k">def</span><span class="w"> </span><span class="nf">_requestPending</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Whether at least one request/reply transaction is in flight.&quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqLock</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqCount</span> <span class="o">&gt;</span> <span class="mi">0</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_requestAge</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the age of the oldest in-flight request, if any.&quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqLock</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqCount</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqSince</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">None</span>
+            <span class="k">return</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqSince</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_checkLinkState</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update link state from recent activity while tolerating busy requests.&quot;&quot;&quot;</span>
+        <span class="n">delta</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ltime</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_link</span> <span class="ow">and</span> <span class="n">delta</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkTimeout</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_requestPending</span><span class="p">():</span>
+                <span class="n">reqAge</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_requestAge</span><span class="p">()</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_requestStallTimeout</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">reqAge</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">reqAge</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_requestStallTimeout</span><span class="p">:</span>
+                    <span class="k">return</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">_link</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Request has been pending for </span><span class="si">{</span><span class="n">reqAge</span><span class="si">:</span><span class="s2">0.1f</span><span class="si">}</span><span class="s2"> seconds without updates. &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;Declaring link to </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_root</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> stalled.&quot;</span>
+                <span class="p">)</span>
+                <span class="k">for</span> <span class="n">mon</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_monitors</span><span class="p">:</span>
+                    <span class="n">mon</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_link</span><span class="p">)</span>
+                <span class="k">return</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_link</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;I have not heard from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_root</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_linkTimeout</span><span class="si">:</span><span class="s2">0.1f</span><span class="si">}</span><span class="s2"> seconds. &quot;</span>
+                <span class="s2">&quot;It may be busy, continuing to wait...&quot;</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">mon</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_monitors</span><span class="p">:</span>
+                <span class="n">mon</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_link</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="p">(</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_link</span><span class="p">)</span> <span class="ow">and</span> <span class="n">delta</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkTimeout</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_link</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;I have finally heard from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_root</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">. All is good!&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">mon</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_monitors</span><span class="p">:</span>
+                <span class="n">mon</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_link</span><span class="p">)</span>
+
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_remoteAttr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">attr</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Invoke a remote attribute on the server.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_requestStart</span><span class="p">()</span>
+
         <span class="k">try</span><span class="p">:</span>
             <span class="n">ret</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_send</span><span class="p">(</span><span class="n">pickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span> <span class="s1">&#39;path&#39;</span><span class="p">:</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;attr&#39;</span><span class="p">:</span><span class="n">attr</span><span class="p">,</span> <span class="s1">&#39;args&#39;</span><span class="p">:</span><span class="n">args</span><span class="p">,</span> <span class="s1">&#39;kwargs&#39;</span><span class="p">:</span><span class="n">kwargs</span> <span class="p">})))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_requestDone</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_requestDone</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ZMQ Interface Exception: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span><span class="ne">Exception</span><span class="p">):</span>

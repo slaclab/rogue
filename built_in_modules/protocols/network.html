@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Network Wrapper &mdash; Rogue v6.8.5 documentation</title>
+  <title>Network Wrapper &mdash; Rogue v6.9.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=8960aef2"></script>
+      <script src="../../_static/documentation_options.js?v=a0bc7a15"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -65,6 +65,7 @@
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Network Wrapper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="batcher/index.html">Batcher Protocol</a></li>
 <li class="toctree-l3"><a class="reference internal" href="epicsV4/index.html">EPICS V4 Access</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epicsV7/index.html">EPICS V7 Access</a></li>
 <li class="toctree-l3"><a class="reference internal" href="srp/index.html">SRP Protocol</a></li>
 <li class="toctree-l3"><a class="reference internal" href="xilinx/index.html">Xilinx Protocols</a></li>
 <li class="toctree-l3"><a class="reference internal" href="uart.html">UART Memory</a></li>
@@ -290,15 +291,15 @@ output, however, comes from the underlying Rogue C++ modules:</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">pyrogue.udp.Client</span></code> / <code class="docutils literal notranslate"><span class="pre">pyrogue.udp.Server</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">pyrogue.rssi.controller</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">pyrogue.packetizer.Controller</span></code></p></li>
+<li><p>Unified Logging API:
+<code class="docutils literal notranslate"><span class="pre">pyrogue.setLogLevel('pyrogue.udp',</span> <span class="pre">'DEBUG')</span></code>,
+<code class="docutils literal notranslate"><span class="pre">pyrogue.setLogLevel('pyrogue.rssi',</span> <span class="pre">'DEBUG')</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">pyrogue.setLogLevel('pyrogue.packetizer',</span> <span class="pre">'DEBUG')</span></code></p></li>
+<li><p>Legacy Logging API:
+<code class="docutils literal notranslate"><span class="pre">rogue.Logging.setFilter('pyrogue.udp',</span> <span class="pre">rogue.Logging.Debug)</span></code>,
+<code class="docutils literal notranslate"><span class="pre">rogue.Logging.setFilter('pyrogue.rssi',</span> <span class="pre">rogue.Logging.Debug)</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">rogue.Logging.setFilter('pyrogue.packetizer',</span> <span class="pre">rogue.Logging.Debug)</span></code></p></li>
 </ul>
-<p>Configuration example:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">rogue</span>
-
-<span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">setFilter</span><span class="p">(</span><span class="s1">&#39;pyrogue.udp&#39;</span><span class="p">,</span> <span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">Debug</span><span class="p">)</span>
-<span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">setFilter</span><span class="p">(</span><span class="s1">&#39;pyrogue.rssi&#39;</span><span class="p">,</span> <span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">Debug</span><span class="p">)</span>
-<span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">setFilter</span><span class="p">(</span><span class="s1">&#39;pyrogue.packetizer&#39;</span><span class="p">,</span> <span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">Debug</span><span class="p">)</span>
-</pre></div>
-</div>
 <p>In practice, enable the underlying protocol loggers rather than relying on any
 wrapper-level Python logging when debugging link behavior.</p>
 </section>

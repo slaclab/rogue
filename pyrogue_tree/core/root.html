@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Root &mdash; Rogue v6.8.5 documentation</title>
+  <title>Root &mdash; Rogue v6.9.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=8960aef2"></script>
+      <script src="../../_static/documentation_options.js?v=a0bc7a15"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -186,6 +186,39 @@ transactions.</p>
 <p>That composition pattern is the normal starting point for PyRogue systems:
 <code class="docutils literal notranslate"><span class="pre">Root</span></code> owns lifecycle and top-level interfaces, while <code class="docutils literal notranslate"><span class="pre">Device</span></code> instances
 carry the hardware and application structure below it.</p>
+<section id="unified-python-and-c-logging">
+<h3>Unified Python and C++ logging<a class="headerlink" href="#unified-python-and-c-logging" title="Link to this heading"></a></h3>
+<p>If a PyRogue application wants one logging path for both Python Nodes and Rogue
+C++ transport/protocol objects, call <code class="docutils literal notranslate"><span class="pre">pyrogue.setUnifiedLogging(True)</span></code> or
+construct the Root with <code class="docutils literal notranslate"><span class="pre">unifyLogs=True</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyRoot</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;MyRoot&#39;</span><span class="p">,</span> <span class="n">unifyLogs</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This enables Rogue C++ log forwarding into Python logging and disables the
+native Rogue stdout sink to avoid duplicate messages. The forwarded records can
+then appear in <code class="docutils literal notranslate"><span class="pre">Root.SystemLog</span></code> and any other Python logging handlers already
+attached under the <code class="docutils literal notranslate"><span class="pre">pyrogue</span></code> logger tree.</p>
+<p>Example forwarded <code class="docutils literal notranslate"><span class="pre">SystemLog</span></code> entry:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;created&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">1772812345.123456</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;pyrogue.rssi.controller&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Closing link. Server=0&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;levelName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;WARNING&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;levelNumber&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;rogueCpp&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;rogueTid&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">48123</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;roguePid&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">90210</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;rogueLogger&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;pyrogue.rssi.controller&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;rogueTimestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">1772812345.123456</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;rogueComponent&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;rssi&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
 </section>
 <section id="lifecycle-and-startup">
 <h2>Lifecycle And Startup<a class="headerlink" href="#lifecycle-and-startup" title="Link to this heading"></a></h2>

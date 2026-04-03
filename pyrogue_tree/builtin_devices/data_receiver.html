@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DataReceiver Device Class &mdash; Rogue v6.8.5 documentation</title>
+  <title>DataReceiver Device Class &mdash; Rogue v6.9.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=8960aef2"></script>
+      <script src="../../_static/documentation_options.js?v=a0bc7a15"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -137,6 +137,9 @@ arrive</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">value</span></code> for the initial payload container</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">enableOnStart</span></code> for whether <code class="docutils literal notranslate"><span class="pre">RxEnable</span></code> should come up enabled at start</p></li>
 </ul>
+<p>The built-in <code class="docutils literal notranslate"><span class="pre">Data</span></code> <code class="docutils literal notranslate"><span class="pre">LocalVariable</span></code> is created with <code class="docutils literal notranslate"><span class="pre">typeCheck=False</span></code> so
+subclasses can publish decoded objects without triggering <code class="docutils literal notranslate"><span class="pre">LocalVariable</span></code>
+type errors.</p>
 <p>In many practical subclasses, the main customization is not the constructor
 arguments but the <code class="docutils literal notranslate"><span class="pre">process(frame)</span></code> override.</p>
 </section>

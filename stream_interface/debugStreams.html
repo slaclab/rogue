@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Debugging Streams &mdash; Rogue v6.8.5 documentation</title>
+  <title>Debugging Streams &mdash; Rogue v6.9.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=8960aef2"></script>
+      <script src="../_static/documentation_options.js?v=a0bc7a15"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -183,7 +183,16 @@ observes traffic without disturbing the primary processing path.</p>
 <p><code class="docutils literal notranslate"><span class="pre">setDebug(maxBytes,</span> <span class="pre">name)</span></code> uses Rogue C++ logging, not Python <code class="docutils literal notranslate"><span class="pre">logging</span></code>.
 The emitted logger name is <code class="docutils literal notranslate"><span class="pre">pyrogue.&lt;name&gt;</span></code>.</p>
 <p>For example, <code class="docutils literal notranslate"><span class="pre">dbg.setDebug(100,</span> <span class="pre">'stream.debug')</span></code> emits through
-<code class="docutils literal notranslate"><span class="pre">pyrogue.stream.debug</span></code>. Enable that logger before using the debug <code class="docutils literal notranslate"><span class="pre">Slave</span></code>:</p>
+<code class="docutils literal notranslate"><span class="pre">pyrogue.stream.debug</span></code>. You can enable that logger before or after calling
+<code class="docutils literal notranslate"><span class="pre">setDebug(...)</span></code>. Enable it first only if you want the very first emitted
+debug messages:</p>
+<ul class="simple">
+<li><p>Dynamic logger pattern: <code class="docutils literal notranslate"><span class="pre">pyrogue.&lt;name&gt;</span></code></p></li>
+<li><p>Unified Logging API:
+<code class="docutils literal notranslate"><span class="pre">pyrogue.setLogLevel('pyrogue.stream.debug',</span> <span class="pre">'DEBUG')</span></code></p></li>
+<li><p>Legacy Logging API:
+<code class="docutils literal notranslate"><span class="pre">rogue.Logging.setFilter('pyrogue.stream.debug',</span> <span class="pre">rogue.Logging.Debug)</span></code></p></li>
+</ul>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">rogue</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">rogue.interfaces.stream</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ris</span>
 

@@ -243,14 +243,16 @@ Logging
 The base Rogue memory ``Hub`` uses Rogue C++ logging with the logger name
 ``pyrogue.memory.Hub``.
 
-Enable that logger before constructing the object if you want visibility into
-the base hub behavior:
+- Logger name: ``pyrogue.memory.Hub``
+- Unified Logging API:
+  ``pyrogue.setLogLevel('pyrogue.memory.Hub', 'DEBUG')``
+- Legacy Logging API:
+  ``rogue.Logging.setFilter('pyrogue.memory.Hub', rogue.Logging.Debug)``
 
-.. code-block:: python
+You can enable that logger before or after constructing the object. Enable it
+before construction only if you want constructor or early startup visibility
+into the base hub behavior:
 
-   import rogue
-
-   rogue.Logging.setFilter('pyrogue.memory.Hub', rogue.Logging.Debug)
 
 For custom ``Hub`` subclasses, it is often worth adding a second
 subclass-specific logger if the translation or split logic is non-trivial.

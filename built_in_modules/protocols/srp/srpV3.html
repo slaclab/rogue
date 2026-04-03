@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SRP Protocol Version 3 &mdash; Rogue v6.8.5 documentation</title>
+  <title>SRP Protocol Version 3 &mdash; Rogue v6.9.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=8960aef2"></script>
+      <script src="../../../_static/documentation_options.js?v=a0bc7a15"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -65,6 +65,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../network.html">Network Wrapper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../batcher/index.html">Batcher Protocol</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../epicsV4/index.html">EPICS V4 Access</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../epicsV7/index.html">EPICS V7 Access</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="index.html">SRP Protocol</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="srpV0.html">SRP Protocol Version 0</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">SRP Protocol Version 3</a></li>
@@ -166,16 +167,19 @@ runtime contexts.</p></li>
 </section>
 <section id="logging">
 <h2>Logging<a class="headerlink" href="#logging" title="Link to this heading"></a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">SrpV3</span></code> uses Rogue C++ logging, not Python <code class="docutils literal notranslate"><span class="pre">logging</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">SrpV3</span></code> uses Rogue C++ logging.</p>
 <ul class="simple">
 <li><p>Logger name: <code class="docutils literal notranslate"><span class="pre">pyrogue.SrpV3</span></code></p></li>
-<li><p>Configuration API:
+<li><p>Recommended unified one-liner:
+<code class="docutils literal notranslate"><span class="pre">pyrogue.setLogLevel('SrpV3',</span> <span class="pre">'DEBUG')</span></code></p></li>
+<li><p>Legacy Logging API:
 <code class="docutils literal notranslate"><span class="pre">rogue.Logging.setFilter('pyrogue.SrpV3',</span> <span class="pre">rogue.Logging.Debug)</span></code></p></li>
 <li><p>Typical messages: transmitted request headers, received response headers,
 undersized frames, bad headers, error tails, and transaction-ID mismatches</p></li>
 </ul>
-<p>Set the filter before constructing the <code class="docutils literal notranslate"><span class="pre">SrpV3</span></code> object. Rogue C++ loggers
-copy their level when the logger instance is created.</p>
+<p>You can set the filter before or after constructing the <code class="docutils literal notranslate"><span class="pre">SrpV3</span></code> object.
+Enable it before construction only if you want constructor or very early
+protocol-startup messages.</p>
 </section>
 <section id="python-example">
 <h2>Python Example<a class="headerlink" href="#python-example" title="Link to this heading"></a></h2>

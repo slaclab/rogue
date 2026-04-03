@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue._Device &mdash; Rogue v6.8.5 documentation</title>
+  <title>pyrogue._Device &mdash; Rogue v6.9.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -14,7 +14,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=8960aef2"></script>
+      <script src="../../_static/documentation_options.js?v=a0bc7a15"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -324,7 +324,7 @@
         <span class="c1"># Node.__init__ can&#39;t be called until after self._memBase is created</span>
         <span class="n">pr</span><span class="o">.</span><span class="n">Node</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">hidden</span><span class="o">=</span><span class="n">hidden</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="n">groups</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span> <span class="n">expand</span><span class="o">=</span><span class="n">expand</span><span class="p">,</span> <span class="n">guiGroup</span><span class="o">=</span><span class="n">guiGroup</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Making device </span><span class="si">{:s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Making device </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
 
         <span class="c1"># Convenience methods</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">addRemoteCommands</span> <span class="o">=</span> <span class="n">ft</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">addNodes</span><span class="p">,</span> <span class="n">pr</span><span class="o">.</span><span class="n">RemoteCommand</span><span class="p">)</span>
@@ -387,8 +387,11 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">interface</span> <span class="ow">in</span> <span class="n">interfaces</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">interface</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Iterable</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_ifAndProto</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">interface</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">interface</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Managing interface/protocol </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_ifAndProto</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Managing interface/protocol </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">interface</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_ifAndProto</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">interface</span><span class="p">)</span></div>
 
 
@@ -410,6 +413,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Called recursively from Root.start when starting &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">intf</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ifAndProto</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">intf</span><span class="p">,</span><span class="s2">&quot;_start&quot;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Starting managed interface/protocol </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">intf</span><span class="p">)</span>
                 <span class="n">intf</span><span class="o">.</span><span class="n">_start</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">devices</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
             <span class="n">d</span><span class="o">.</span><span class="n">_start</span><span class="p">()</span>
@@ -418,6 +422,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Called recursively from Root.stop when exiting&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">intf</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ifAndProto</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">intf</span><span class="p">,</span><span class="s2">&quot;_stop&quot;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Stopping managed interface/protocol </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">intf</span><span class="p">)</span>
                 <span class="n">intf</span><span class="o">.</span><span class="n">_stop</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">devices</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
             <span class="n">d</span><span class="o">.</span><span class="n">_stop</span><span class="p">()</span>
@@ -446,7 +451,20 @@
 <span class="sd">        stride : int</span>
 <span class="sd">            Byte stride between instances.</span>
 <span class="sd">        pack : bool, optional (default = False)</span>
-<span class="sd">            If True, add a packed link variable for all entries.</span>
+<span class="sd">            If True, also add a ``LinkVariable`` named ``&lt;name&gt;_All`` which</span>
+<span class="sd">            combines all entries into one underscore-delimited display string.</span>
+
+<span class="sd">            The indexed ``RemoteVariable`` container remains available at the</span>
+<span class="sd">            original ``name``. The packed alias uses each element variable&#39;s</span>
+<span class="sd">            ``getDisp()`` and ``setDisp()`` behavior, so formatting follows the</span>
+<span class="sd">            underlying variable type. Values are joined in reverse index order:</span>
+<span class="sd">            for a variable array ``Field[0]``, ``Field[1]``, ``Field[2]``, the</span>
+<span class="sd">            packed value ``Field_All`` reads like</span>
+<span class="sd">            ``Field[2]_Field[1]_Field[0]`` and writing ``&quot;1_2_3&quot;`` updates</span>
+<span class="sd">            ``Field[2] = 1``, ``Field[1] = 2``, and ``Field[0] = 3``.</span>
+
+<span class="sd">            This is intended for orthogonal register fields that are convenient</span>
+<span class="sd">            to expose both as individual variables and as one combined value.</span>
 <span class="sd">        **kwargs : Any</span>
 <span class="sd">            Arguments forwarded to ``RemoteVariable``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -461,13 +479,13 @@
         <span class="k">if</span> <span class="n">pack</span><span class="p">:</span>
             <span class="n">varList</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
 
-            <span class="k">def</span><span class="w"> </span><span class="nf">linkedSet</span><span class="p">(</span><span class="n">dev</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">var</span><span class="p">:</span> <span class="n">pr</span><span class="o">.</span><span class="n">LinkVariable</span><span class="p">,</span> <span class="n">val</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">write</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">linkedSet</span><span class="p">(</span><span class="n">dev</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">var</span><span class="p">:</span> <span class="n">pr</span><span class="o">.</span><span class="n">LinkVariable</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">write</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">                </span><span class="sd">&quot;&quot;&quot;Split a packed display string and write each element variable.&quot;&quot;&quot;</span>
-                <span class="k">if</span> <span class="n">val</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
                     <span class="k">return</span>
-                <span class="n">values</span> <span class="o">=</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">val</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">))</span>
-                <span class="k">for</span> <span class="n">variable</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">varList</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
-                    <span class="n">variable</span><span class="o">.</span><span class="n">setDisp</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">write</span><span class="o">=</span><span class="n">write</span><span class="p">)</span>
+                <span class="n">values</span> <span class="o">=</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">))</span>
+                <span class="k">for</span> <span class="n">variable</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">varList</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+                    <span class="n">variable</span><span class="o">.</span><span class="n">setDisp</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">write</span><span class="o">=</span><span class="n">write</span><span class="p">)</span>
 
             <span class="k">def</span><span class="w"> </span><span class="nf">linkedGet</span><span class="p">(</span><span class="n">dev</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">var</span><span class="p">:</span> <span class="n">pr</span><span class="o">.</span><span class="n">LinkVariable</span><span class="p">,</span> <span class="n">read</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">                </span><span class="sd">&quot;&quot;&quot;Join element display values into one packed underscore string.&quot;&quot;&quot;</span>
@@ -475,6 +493,9 @@
                 <span class="k">return</span> <span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="n">values</span><span class="p">))</span>
 
             <span class="n">name</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)</span>
+            <span class="c1"># Preserve the indexed array container at ``name`` and expose the</span>
+            <span class="c1"># packed LinkVariable using the historical ``&lt;name&gt;_All`` alias.</span>
+            <span class="n">name</span> <span class="o">+=</span> <span class="s1">&#39;_All&#39;</span>
             <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
             <span class="n">lv</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">LinkVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">dependencies</span><span class="o">=</span><span class="n">varList</span><span class="p">,</span> <span class="n">linkedGet</span><span class="o">=</span><span class="n">linkedGet</span><span class="p">,</span> <span class="n">linkedSet</span><span class="o">=</span><span class="n">linkedSet</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -794,12 +815,24 @@
 
             <span class="c1"># Align to min access, create list of remote variables</span>
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">)</span> <span class="ow">and</span> <span class="n">n</span><span class="o">.</span><span class="n">offset</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Before Shift variable </span><span class="si">{</span><span class="n">n</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> offset=</span><span class="si">{</span><span class="n">n</span><span class="o">.</span><span class="n">offset</span><span class="si">}</span><span class="s2"> bitSize=</span><span class="si">{</span><span class="n">n</span><span class="o">.</span><span class="n">bitSize</span><span class="si">}</span><span class="s2"> bytes=</span><span class="si">{</span><span class="n">n</span><span class="o">.</span><span class="n">varBytes</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                    <span class="s2">&quot;Before shift variable </span><span class="si">%s</span><span class="s2"> offset=</span><span class="si">%s</span><span class="s2"> bitSize=</span><span class="si">%s</span><span class="s2"> bytes=</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="n">n</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                    <span class="n">n</span><span class="o">.</span><span class="n">offset</span><span class="p">,</span>
+                    <span class="n">n</span><span class="o">.</span><span class="n">bitSize</span><span class="p">,</span>
+                    <span class="n">n</span><span class="o">.</span><span class="n">varBytes</span><span class="p">,</span>
+                <span class="p">)</span>
                 <span class="n">n</span><span class="o">.</span><span class="n">_updatePath</span><span class="p">(</span><span class="n">n</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
                 <span class="n">n</span><span class="o">.</span><span class="n">_shiftOffsetDown</span><span class="p">(</span><span class="n">n</span><span class="o">.</span><span class="n">offset</span> <span class="o">%</span> <span class="n">blkSize</span><span class="p">,</span> <span class="n">blkSize</span><span class="p">)</span>
                 <span class="n">remVars</span> <span class="o">+=</span> <span class="p">[</span><span class="n">n</span><span class="p">]</span>
 
-                <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Creating variable </span><span class="si">{</span><span class="n">n</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> offset=</span><span class="si">{</span><span class="n">n</span><span class="o">.</span><span class="n">offset</span><span class="si">}</span><span class="s2"> bitSize=</span><span class="si">{</span><span class="n">n</span><span class="o">.</span><span class="n">bitSize</span><span class="si">}</span><span class="s2"> bytes=</span><span class="si">{</span><span class="n">n</span><span class="o">.</span><span class="n">varBytes</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                    <span class="s2">&quot;Creating variable </span><span class="si">%s</span><span class="s2"> offset=</span><span class="si">%s</span><span class="s2"> bitSize=</span><span class="si">%s</span><span class="s2"> bytes=</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="n">n</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                    <span class="n">n</span><span class="o">.</span><span class="n">offset</span><span class="p">,</span>
+                    <span class="n">n</span><span class="o">.</span><span class="n">bitSize</span><span class="p">,</span>
+                    <span class="n">n</span><span class="o">.</span><span class="n">varBytes</span><span class="p">,</span>
+                <span class="p">)</span>
 
         <span class="c1"># Sort var list by offset, size</span>
         <span class="n">remVars</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">offset</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">varBytes</span><span class="p">))</span>
@@ -810,7 +843,12 @@
         <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">remVars</span><span class="p">:</span>
 
             <span class="k">if</span> <span class="n">blk</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="p">(</span> <span class="p">(</span><span class="n">blk</span><span class="p">[</span><span class="s1">&#39;offset&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">blk</span><span class="p">[</span><span class="s1">&#39;size&#39;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="n">n</span><span class="o">.</span><span class="n">offset</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Overlap detected var offset=</span><span class="si">{}</span><span class="s2"> block offset=</span><span class="si">{}</span><span class="s2"> block bytes=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n</span><span class="o">.</span><span class="n">offset</span><span class="p">,</span><span class="n">blk</span><span class="p">[</span><span class="s1">&#39;offset&#39;</span><span class="p">],</span><span class="n">blk</span><span class="p">[</span><span class="s1">&#39;size&#39;</span><span class="p">]))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                    <span class="s2">&quot;Overlap detected var offset=</span><span class="si">%s</span><span class="s2"> block offset=</span><span class="si">%s</span><span class="s2"> block bytes=</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="n">n</span><span class="o">.</span><span class="n">offset</span><span class="p">,</span>
+                    <span class="n">blk</span><span class="p">[</span><span class="s1">&#39;offset&#39;</span><span class="p">],</span>
+                    <span class="n">blk</span><span class="p">[</span><span class="s1">&#39;size&#39;</span><span class="p">],</span>
+                <span class="p">)</span>
                 <span class="n">n</span><span class="o">.</span><span class="n">_shiftOffsetDown</span><span class="p">(</span><span class="n">n</span><span class="o">.</span><span class="n">offset</span> <span class="o">-</span> <span class="n">blk</span><span class="p">[</span><span class="s1">&#39;offset&#39;</span><span class="p">],</span> <span class="n">blkSize</span><span class="p">)</span>
                 <span class="n">blk</span><span class="p">[</span><span class="s1">&#39;vars&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
 
@@ -848,7 +886,7 @@
             <span class="c1"># Create new block</span>
             <span class="k">if</span> <span class="n">b</span><span class="p">[</span><span class="s1">&#39;block&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">newBlock</span> <span class="o">=</span> <span class="n">rim</span><span class="o">.</span><span class="n">Block</span><span class="p">(</span><span class="n">b</span><span class="p">[</span><span class="s1">&#39;offset&#39;</span><span class="p">],</span> <span class="n">b</span><span class="p">[</span><span class="s1">&#39;size&#39;</span><span class="p">])</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Adding new block at offset </span><span class="si">{:#02x}</span><span class="s2">, size </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">b</span><span class="p">[</span><span class="s1">&#39;offset&#39;</span><span class="p">],</span> <span class="n">b</span><span class="p">[</span><span class="s1">&#39;size&#39;</span><span class="p">]))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Adding new block at offset </span><span class="si">%#02x</span><span class="s2">, size </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">b</span><span class="p">[</span><span class="s1">&#39;offset&#39;</span><span class="p">],</span> <span class="n">b</span><span class="p">[</span><span class="s1">&#39;size&#39;</span><span class="p">])</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">newBlock</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="s1">&#39;block&#39;</span><span class="p">]</span>
 

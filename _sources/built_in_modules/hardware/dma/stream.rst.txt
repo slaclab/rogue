@@ -265,9 +265,16 @@ Logging
 path.
 
 - Logger name: ``pyrogue.axi.AxiStreamDma``
+- Unified Logging API:
+  ``pyrogue.setLogLevel('pyrogue.axi.AxiStreamDma', 'DEBUG')``
+- Legacy Logging API:
+  ``rogue.Logging.setFilter('pyrogue.axi.AxiStreamDma', rogue.Logging.Debug)``
+- Typical Rogue messages: DMA channel creation, send/receive timeouts, and
+  errored-frame handling
 - Driver debug helper: ``setDriverDebug(level)``
 
-Enable Rogue logging before construction:
+You can enable Rogue logging before or after construction. Enable it before
+construction only if you want constructor or initial startup messages:
 
 .. code-block:: python
 

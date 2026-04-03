@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Memory Transactions and Lifecycle &mdash; Rogue v6.8.5 documentation</title>
+  <title>Memory Transactions and Lifecycle &mdash; Rogue v6.9.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=8960aef2"></script>
+      <script src="../_static/documentation_options.js?v=a0bc7a15"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -174,9 +174,32 @@ custom <code class="docutils literal notranslate"><span class="pre">Slave</span>
 <h2>Timeout And Expiration<a class="headerlink" href="#timeout-and-expiration" title="Link to this heading"></a></h2>
 <p>Timeout is attached when the <code class="docutils literal notranslate"><span class="pre">Transaction</span></code> is created. If the work does not
 complete in time, waiting logic marks the <code class="docutils literal notranslate"><span class="pre">Transaction</span></code> as a timeout error.</p>
-<p>Longer multi-stage flows can refresh timer state so an active but slow
+<p>Timer refresh logic can extend active transactions in multi-stage flows to
+reduce false expirations on slower links.
+Longer multi-stage flows can refresh timer state so an active but slow
 <code class="docutils literal notranslate"><span class="pre">Transaction</span></code> does not expire prematurely. That matters most for deeper hub
 graphs, protocol bridges, and slower transport links.</p>
+</section>
+<section id="logging">
+<h2>Logging<a class="headerlink" href="#logging" title="Link to this heading"></a></h2>
+<p>The transaction runtime uses a Rogue C++ logger:</p>
+<ul class="simple">
+<li><p>Logger name: <code class="docutils literal notranslate"><span class="pre">pyrogue.memory.Transaction</span></code></p></li>
+<li><p>Unified Logging API:
+<code class="docutils literal notranslate"><span class="pre">pyrogue.setLogLevel('pyrogue.memory.Transaction',</span> <span class="pre">'DEBUG')</span></code></p></li>
+<li><p>Legacy Logging API:
+<code class="docutils literal notranslate"><span class="pre">rogue.Logging.setFilter('pyrogue.memory.Transaction',</span> <span class="pre">rogue.Logging.Debug)</span></code></p></li>
+</ul>
+<p>This logger is created in quiet mode and is mainly an internal runtime aid for
+timeout/correlation behavior rather than a primary user-facing debug surface.</p>
+<p>In practice, transaction debugging is usually more effective through the
+surrounding module loggers:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pyrogue.memory.Master</span></code> for request issue paths</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pyrogue.memory.Hub</span></code> for routing/splitting paths</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pyrogue.memory.block.*</span></code> for Variable/Block transaction flow</p></li>
+<li><p>Protocol-specific loggers such as <code class="docutils literal notranslate"><span class="pre">pyrogue.SrpV3</span></code></p></li>
+</ul>
 </section>
 <section id="subtransactions">
 <h2>Subtransactions<a class="headerlink" href="#subtransactions" title="Link to this heading"></a></h2>

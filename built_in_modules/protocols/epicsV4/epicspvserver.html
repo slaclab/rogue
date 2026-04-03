@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Epics PV Server Protocol &mdash; Rogue v6.8.5 documentation</title>
+  <title>Epics PV Server Protocol &mdash; Rogue v6.9.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=8960aef2"></script>
+      <script src="../../../_static/documentation_options.js?v=a0bc7a15"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -69,6 +69,7 @@
 <li class="toctree-l4"><a class="reference internal" href="epicspvholder.html">Epics PV Holder Protocol</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../epicsV7/index.html">EPICS V7 Access</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../srp/index.html">SRP Protocol</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../xilinx/index.html">Xilinx Protocols</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../uart.html">UART Memory</a></li>
@@ -184,7 +185,70 @@ user-defined PV names.</p></li>
 <li><p>Construct <code class="docutils literal notranslate"><span class="pre">EpicsPvServer(base=...,</span> <span class="pre">root=...,</span> <span class="pre">pvMap=...)</span></code>.</p></li>
 <li><p>Register it with <code class="docutils literal notranslate"><span class="pre">root.addProtocol(...)</span></code>.</p></li>
 <li><p>Use a P4P client to put and get values and confirm round-trip behavior.</p></li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">ctxt.rpc()</span></code> to invoke PyRogue Commands through EPICS.</p></li>
 </ol>
+</section>
+<section id="rpc-for-commands">
+<h2>RPC for Commands<a class="headerlink" href="#rpc-for-commands" title="Link to this heading"></a></h2>
+<p>PyRogue Commands (<code class="docutils literal notranslate"><span class="pre">LocalCommand</span></code> and <code class="docutils literal notranslate"><span class="pre">RemoteCommand</span></code>) are automatically
+exposed through EPICS RPC when served by <code class="docutils literal notranslate"><span class="pre">EpicsPvServer</span></code>. The server-side
+<code class="docutils literal notranslate"><span class="pre">EpicsPvHandler.rpc()</span></code> method dispatches incoming RPC requests to the bound
+PyRogue Command.</p>
+<p>Commands appear in the PV namespace alongside variables and can be invoked from
+any P4P client using <code class="docutils literal notranslate"><span class="pre">ctxt.rpc()</span></code>.</p>
+<section id="invoking-a-command-without-arguments">
+<h3>Invoking a Command Without Arguments<a class="headerlink" href="#invoking-a-command-without-arguments" title="Link to this heading"></a></h3>
+<p>Use an <code class="docutils literal notranslate"><span class="pre">NTURI</span></code> with an empty query to call a no-argument command:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">p4p.client.thread</span><span class="w"> </span><span class="kn">import</span> <span class="n">Context</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">p4p.nt</span><span class="w"> </span><span class="kn">import</span> <span class="n">NTURI</span>
+
+<span class="n">ctxt</span> <span class="o">=</span> <span class="n">Context</span><span class="p">(</span><span class="s1">&#39;pva&#39;</span><span class="p">)</span>
+
+<span class="n">pv_name</span> <span class="o">=</span> <span class="s1">&#39;MyIoc:MyRoot:MyDevice:ResetCounter&#39;</span>
+<span class="n">uri</span> <span class="o">=</span> <span class="n">NTURI</span><span class="p">([])</span>
+<span class="n">ctxt</span><span class="o">.</span><span class="n">rpc</span><span class="p">(</span><span class="n">pv_name</span><span class="p">,</span> <span class="n">uri</span><span class="o">.</span><span class="n">wrap</span><span class="p">(</span><span class="n">pv_name</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>On the server side, the handler sees no <code class="docutils literal notranslate"><span class="pre">arg</span></code> field in the query and calls
+the command with no argument.</p>
+</section>
+<section id="invoking-a-command-with-an-argument">
+<h3>Invoking a Command With an Argument<a class="headerlink" href="#invoking-a-command-with-an-argument" title="Link to this heading"></a></h3>
+<p>To pass a value into a command, declare a query field named <code class="docutils literal notranslate"><span class="pre">arg</span></code> in the
+<code class="docutils literal notranslate"><span class="pre">NTURI</span></code>. The handler extracts <code class="docutils literal notranslate"><span class="pre">val.arg</span></code> from the query and forwards it
+to the PyRogue command:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">p4p.client.thread</span><span class="w"> </span><span class="kn">import</span> <span class="n">Context</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">p4p.nt</span><span class="w"> </span><span class="kn">import</span> <span class="n">NTURI</span>
+
+<span class="n">ctxt</span> <span class="o">=</span> <span class="n">Context</span><span class="p">(</span><span class="s1">&#39;pva&#39;</span><span class="p">)</span>
+
+<span class="n">pv_name</span> <span class="o">=</span> <span class="s1">&#39;MyIoc:MyRoot:MyDevice:SetThreshold&#39;</span>
+<span class="n">uri</span> <span class="o">=</span> <span class="n">NTURI</span><span class="p">([(</span><span class="s1">&#39;arg&#39;</span><span class="p">,</span> <span class="s1">&#39;i&#39;</span><span class="p">)])</span>   <span class="c1"># &#39;i&#39; = int32; use &#39;d&#39; for float64, &#39;s&#39; for string</span>
+<span class="n">ctxt</span><span class="o">.</span><span class="n">rpc</span><span class="p">(</span><span class="n">pv_name</span><span class="p">,</span> <span class="n">uri</span><span class="o">.</span><span class="n">wrap</span><span class="p">(</span><span class="n">pv_name</span><span class="p">,</span> <span class="n">kws</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;arg&#39;</span><span class="p">:</span> <span class="mi">42</span><span class="p">}))</span>
+</pre></div>
+</div>
+<p>The NTURI type code for the <code class="docutils literal notranslate"><span class="pre">arg</span></code> field should match the expected value type.
+Common type codes are <code class="docutils literal notranslate"><span class="pre">'i'</span></code> (int32), <code class="docutils literal notranslate"><span class="pre">'l'</span></code> (int64), <code class="docutils literal notranslate"><span class="pre">'d'</span></code> (float64), and
+<code class="docutils literal notranslate"><span class="pre">'s'</span></code> (string).</p>
+</section>
+<section id="p4p-context-behavior-after-rpc">
+<h3>P4P Context Behavior After RPC<a class="headerlink" href="#p4p-context-behavior-after-rpc" title="Link to this heading"></a></h3>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Calling <code class="docutils literal notranslate"><span class="pre">ctxt.rpc()</span></code> on a P4P <code class="docutils literal notranslate"><span class="pre">Context</span></code> may cause subsequent
+<code class="docutils literal notranslate"><span class="pre">ctxt.get()</span></code> calls to return raw <code class="docutils literal notranslate"><span class="pre">p4p.wrapper.Value</span></code> structs instead of
+auto-unwrapped scalars. If you need to continue using <code class="docutils literal notranslate"><span class="pre">ctxt.get()</span></code> after
+an RPC call, use a separate <code class="docutils literal notranslate"><span class="pre">Context</span></code> for the RPC operation:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">rpc_ctxt</span> <span class="o">=</span> <span class="n">Context</span><span class="p">(</span><span class="s1">&#39;pva&#39;</span><span class="p">)</span>
+<span class="n">rpc_ctxt</span><span class="o">.</span><span class="n">rpc</span><span class="p">(</span><span class="n">pv_name</span><span class="p">,</span> <span class="n">uri</span><span class="o">.</span><span class="n">wrap</span><span class="p">(</span><span class="n">pv_name</span><span class="p">))</span>
+<span class="n">rpc_ctxt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<span class="c1"># The original context continues to return unwrapped scalars.</span>
+<span class="n">value</span> <span class="o">=</span> <span class="n">ctxt</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">other_pv</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
 </section>
 <section id="when-to-use-it">
 <h2>When To Use It<a class="headerlink" href="#when-to-use-it" title="Link to this heading"></a></h2>
@@ -211,8 +275,8 @@ deployment depends on them.</p></li>
 <p><code class="docutils literal notranslate"><span class="pre">EpicsPvServer</span></code> uses Python logging.</p>
 <ul class="simple">
 <li><p>Logger name: <code class="docutils literal notranslate"><span class="pre">pyrogue.EpicsPvServer</span></code></p></li>
-<li><p>Configuration API:
-<code class="docutils literal notranslate"><span class="pre">logging.getLogger('pyrogue.EpicsPvServer').setLevel(logging.DEBUG)</span></code></p></li>
+<li><p>Logging API:
+<code class="docutils literal notranslate"><span class="pre">pyrogue.setLogLevel('pyrogue.EpicsPvServer',</span> <span class="pre">'DEBUG')</span></code></p></li>
 </ul>
 <p>This logger is used for PV mapping errors and other server-side operational
 messages emitted by the Python implementation.</p>

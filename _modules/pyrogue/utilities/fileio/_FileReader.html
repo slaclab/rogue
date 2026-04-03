@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue.utilities.fileio._FileReader &mdash; Rogue v6.8.5 documentation</title>
+  <title>pyrogue.utilities.fileio._FileReader &mdash; Rogue v6.9.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
@@ -14,7 +14,7 @@
   
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=8960aef2"></script>
+      <script src="../../../../_static/documentation_options.js?v=a0bc7a15"></script>
       <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -108,8 +108,9 @@
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy.typing</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">npt</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">yaml</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
 
 <span class="n">RogueHeaderSize</span>  <span class="o">=</span> <span class="mi">8</span>
 <span class="n">RogueHeaderPack</span>  <span class="o">=</span> <span class="s1">&#39;IHBB&#39;</span>
@@ -247,7 +248,7 @@
 
             <span class="c1"># Not enough data left in the file</span>
             <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fileSize</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_currFile</span><span class="o">.</span><span class="n">tell</span><span class="p">())</span> <span class="o">&lt;</span> <span class="n">RogueHeaderSize</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;File under run reading </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_currFName</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;File underrun reading </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_currFName</span><span class="p">)</span>
                 <span class="k">return</span> <span class="kc">False</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">_header</span> <span class="o">=</span> <span class="n">RogueHeader</span><span class="p">(</span><span class="o">*</span><span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="n">RogueHeaderPack</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_currFile</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">RogueHeaderSize</span><span class="p">)))</span>
@@ -258,12 +259,12 @@
 
             <span class="c1"># Sanity check</span>
             <span class="k">if</span> <span class="n">recEnd</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fileSize</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;File under run reading </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_currFName</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;File underrun reading </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_currFName</span><span class="p">)</span>
                 <span class="k">return</span> <span class="kc">False</span>
 
             <span class="c1"># Process meta data</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_configChan</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_header</span><span class="o">.</span><span class="n">channel</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_configChan</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_updateConfig</span><span class="p">(</span><span class="n">yaml</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_currFile</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_header</span><span class="o">.</span><span class="n">size</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_updateConfig</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">yamlToData</span><span class="p">(</span><span class="n">stream</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_currFile</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_header</span><span class="o">.</span><span class="n">size</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)))</span>
 
             <span class="c1"># This is a data channel</span>
             <span class="k">else</span><span class="p">:</span>
@@ -293,7 +294,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_currFName</span> <span class="o">=</span> <span class="n">fn</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_currCount</span> <span class="o">=</span> <span class="mi">0</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Processing data records from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_currFName</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Processing data records from </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_currFName</span><span class="p">)</span>
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span><span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_currFile</span> <span class="o">=</span> <span class="n">f</span>
 
@@ -346,9 +347,9 @@
 
                         <span class="k">yield</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_header</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Processed </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_currCount</span><span class="si">}</span><span class="s2"> data records from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_currFName</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Processed </span><span class="si">%s</span><span class="s2"> data records from </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_currCount</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_currFName</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Processed a total of </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_totCount</span><span class="si">}</span><span class="s2"> data records&quot;</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Processed a total of </span><span class="si">%s</span><span class="s2"> data records&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_totCount</span><span class="p">)</span></div>
 
 
     <span class="nd">@property</span>

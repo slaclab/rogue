@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Virtual Client Interface &mdash; Rogue v6.8.5 documentation</title>
+  <title>Virtual Client Interface &mdash; Rogue v6.9.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=8960aef2"></script>
+      <script src="../../_static/documentation_options.js?v=a0bc7a15"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -182,13 +182,48 @@ Variable conditions are satisfied.</p>
 </pre></div>
 </div>
 </section>
+<section id="timeout-tuning">
+<h2>Timeout Tuning<a class="headerlink" href="#timeout-tuning" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">VirtualClient</span></code> has two separate timeout concepts:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">linkTimeout</span></code>: how long the client may go without publish updates or a
+successful request reply before it marks the link down</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">requestStallTimeout</span></code>: an optional policy timeout for declaring a single
+in-flight request stalled</p></li>
+</ul>
+<p>In practice, <code class="docutils literal notranslate"><span class="pre">linkTimeout</span></code> is the normal tuning knob. It is useful when a
+system may legitimately spend a long time servicing a request, for example
+when a Rogue tree is backed by firmware co-simulation.</p>
+<p><code class="docutils literal notranslate"><span class="pre">requestStallTimeout</span></code> is disabled by default and is often best left that way.
+It is only useful when the deployment has a known upper bound for legitimate
+request duration and wants the client to declare a request hung after that
+threshold.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pyrogue.interfaces</span><span class="w"> </span><span class="kn">import</span> <span class="n">VirtualClient</span>
+
+<span class="k">with</span> <span class="n">VirtualClient</span><span class="p">(</span>
+    <span class="n">addr</span><span class="o">=</span><span class="s1">&#39;localhost&#39;</span><span class="p">,</span>
+    <span class="n">port</span><span class="o">=</span><span class="mi">9099</span><span class="p">,</span>
+    <span class="n">linkTimeout</span><span class="o">=</span><span class="mf">600.0</span><span class="p">,</span>
+    <span class="n">requestStallTimeout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+    <span class="n">root</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">root</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">RogueVersion</span><span class="o">.</span><span class="n">valueDisp</span><span class="p">())</span>
+</pre></div>
+</div>
+<p>If no explicit arguments are passed, the defaults can also be provided with
+environment variables:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ROGUE_VIRTUAL_LINK_TIMEOUT</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ROGUE_VIRTUAL_REQUEST_STALL_TIMEOUT</span></code></p></li>
+</ul>
+</section>
 <section id="logging">
 <h2>Logging<a class="headerlink" href="#logging" title="Link to this heading"></a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">VirtualClient</span></code> uses Python logging.</p>
 <ul class="simple">
 <li><p>Logger name: <code class="docutils literal notranslate"><span class="pre">pyrogue.VirtualClient</span></code></p></li>
-<li><p>Configuration API:
-<code class="docutils literal notranslate"><span class="pre">logging.getLogger('pyrogue.VirtualClient').setLevel(logging.DEBUG)</span></code></p></li>
+<li><p>Logging API:
+<code class="docutils literal notranslate"><span class="pre">pyrogue.setLogLevel('pyrogue.VirtualClient',</span> <span class="pre">'DEBUG')</span></code></p></li>
 </ul>
 <p>This logger is useful for client-side connection/setup issues and for
 understanding mirrored-tree behavior. It complements, rather than replaces,

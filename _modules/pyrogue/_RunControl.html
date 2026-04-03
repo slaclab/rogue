@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue._RunControl &mdash; Rogue v6.8.5 documentation</title>
+  <title>pyrogue._RunControl &mdash; Rogue v6.9.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -14,7 +14,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=8960aef2"></script>
+      <script src="../../_static/documentation_options.js?v=a0bc7a15"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -150,6 +150,7 @@
         <span class="n">value</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">states</span><span class="o">.</span><span class="n">items</span><span class="p">()][</span><span class="mi">0</span><span class="p">]</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_thread</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_threadLock</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cmd</span> <span class="o">=</span> <span class="n">cmd</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
@@ -185,15 +186,40 @@
 <span class="sd">        Sub-classes may override this method to integrate with</span>
 <span class="sd">        external run-control hardware or software.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">changed</span><span class="p">:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">runState</span><span class="o">.</span><span class="n">valueDisp</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;Running&#39;</span><span class="p">:</span>
-                <span class="c1">#print(&quot;Starting run&quot;)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_thread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_run</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
-            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_thread</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="c1">#print(&quot;Stopping run&quot;)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_thread</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_thread</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">changed</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">runState</span><span class="o">.</span><span class="n">valueDisp</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;Running&#39;</span><span class="p">:</span>
+            <span class="n">thread</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_threadLock</span><span class="p">:</span>
+                <span class="c1"># Only create a worker when there is no active run thread.</span>
+                <span class="c1"># This guards against repeated writes of &quot;Running&quot; and against</span>
+                <span class="c1"># a stop/start sequence issued from inside the worker itself</span>
+                <span class="c1"># before the old thread has actually exited.</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_thread</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_thread</span><span class="o">.</span><span class="n">is_alive</span><span class="p">():</span>
+                    <span class="n">thread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_run</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_thread</span> <span class="o">=</span> <span class="n">thread</span>
+
+            <span class="k">if</span> <span class="n">thread</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># Start outside the lock so thread startup does not block other</span>
+                <span class="c1"># state transitions. The stored self._thread reference remains</span>
+                <span class="c1"># the ownership marker until _run() reaches its cleanup block.</span>
+                <span class="n">thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_threadLock</span><span class="p">:</span>
+                <span class="n">thread</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_thread</span>
+
+            <span class="c1"># When a caller outside the worker requests &quot;Stopped&quot;, wait for the</span>
+            <span class="c1"># current run thread to exit before returning so the state change is</span>
+            <span class="c1"># complete from the caller&#39;s perspective.</span>
+            <span class="c1">#</span>
+            <span class="c1"># The current_thread() check is required because _cmd() may stop</span>
+            <span class="c1"># the run by writing runState from inside the worker itself. A</span>
+            <span class="c1"># thread cannot join itself, so in that case we just let _run()</span>
+            <span class="c1"># fall out of its loop and perform the final cleanup.</span>
+            <span class="k">if</span> <span class="n">thread</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">threading</span><span class="o">.</span><span class="n">current_thread</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">thread</span><span class="p">:</span>
+                <span class="n">thread</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_setRunRate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set run rate.</span>
@@ -207,15 +233,25 @@
         <span class="c1">#print(&quot;Thread start&quot;)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">runCount</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
-        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">updateGroup</span><span class="p">(</span><span class="n">period</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">updateGroup</span><span class="p">(</span><span class="n">period</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
 
-            <span class="k">while</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">runState</span><span class="o">.</span><span class="n">valueDisp</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;Running&#39;</span><span class="p">):</span>
-                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">runRate</span><span class="o">.</span><span class="n">value</span><span class="p">()))</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cmd</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_cmd</span><span class="p">()</span>
+                <span class="k">while</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">runState</span><span class="o">.</span><span class="n">valueDisp</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;Running&#39;</span><span class="p">):</span>
+                    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">runRate</span><span class="o">.</span><span class="n">value</span><span class="p">()))</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cmd</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_cmd</span><span class="p">()</span>
 
-                <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">runCount</span><span class="o">.</span><span class="n">lock</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">runCount</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">runCount</span><span class="o">.</span><span class="n">value</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span></div>
+                    <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">runCount</span><span class="o">.</span><span class="n">lock</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">runCount</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">runCount</span><span class="o">.</span><span class="n">value</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_threadLock</span><span class="p">:</span>
+                <span class="c1"># Only the worker that currently owns self._thread is allowed</span>
+                <span class="c1"># to clear it. This avoids a race where a stop issued from</span>
+                <span class="c1"># inside the worker would otherwise clear the reference too</span>
+                <span class="c1"># early and allow a second worker to start before this one has</span>
+                <span class="c1"># fully exited.</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_thread</span> <span class="ow">is</span> <span class="n">threading</span><span class="o">.</span><span class="n">current_thread</span><span class="p">():</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_thread</span> <span class="o">=</span> <span class="kc">None</span></div>
 
 </pre></div>
 

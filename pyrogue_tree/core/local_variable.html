@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LocalVariable &mdash; Rogue v6.8.5 documentation</title>
+  <title>LocalVariable &mdash; Rogue v6.9.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=8960aef2"></script>
+      <script src="../../_static/documentation_options.js?v=a0bc7a15"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -181,8 +181,10 @@ dtype and shape for <code class="docutils literal notranslate"><span class="pre"
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">LocalVariable</span></code> does not automatically coerce later writes to match the
 seed type.</p></li>
-<li><p>A type mismatch currently produces a warning during <code class="docutils literal notranslate"><span class="pre">set()</span></code>, not an
-exception.</p></li>
+<li><p>With the default <code class="docutils literal notranslate"><span class="pre">typeCheck=True</span></code>, a type mismatch during <code class="docutils literal notranslate"><span class="pre">set()</span></code> raises
+an exception.</p></li>
+<li><p>Set <code class="docutils literal notranslate"><span class="pre">typeCheck=False</span></code> when a <code class="docutils literal notranslate"><span class="pre">LocalVariable</span></code> intentionally needs to
+accept multiple Python value types over its lifetime.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">typeStr</span></code> is display metadata; it does not enforce conversion by itself.</p></li>
 </ul>
 <p>If you define a callback-only <code class="docutils literal notranslate"><span class="pre">LocalVariable</span></code> with <code class="docutils literal notranslate"><span class="pre">localGet</span></code> and no

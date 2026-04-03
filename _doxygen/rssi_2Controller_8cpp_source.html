@@ -449,12 +449,12 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00372" name="l00372"></a><span class="lineno">  372</span>    <a class="code hl_typedef" href="namespacerogue_1_1interfaces_1_1stream.html#ad282a6c7aa64c4607580c16125f88308">ris::FrameLockPtr</a> flock = frame-&gt;lock();</div>
 <div class="line"><a id="l00373" name="l00373"></a><span class="lineno">  373</span> </div>
 <div class="line"><a id="l00374" name="l00374"></a><span class="lineno">  374</span>    <span class="keywordflow">if</span> (frame-&gt;isEmpty()) {</div>
-<div class="line"><a id="l00375" name="l00375"></a><span class="lineno">  375</span>        log_-&gt;warning(<span class="stringliteral">&quot;Dumping empty application frame&quot;</span>);</div>
+<div class="line"><a id="l00375" name="l00375"></a><span class="lineno">  375</span>        log_-&gt;warning(<span class="stringliteral">&quot;Dropping empty application frame&quot;</span>);</div>
 <div class="line"><a id="l00376" name="l00376"></a><span class="lineno">  376</span>        <span class="keywordflow">return</span>;</div>
 <div class="line"><a id="l00377" name="l00377"></a><span class="lineno">  377</span>    }</div>
 <div class="line"><a id="l00378" name="l00378"></a><span class="lineno">  378</span> </div>
 <div class="line"><a id="l00379" name="l00379"></a><span class="lineno">  379</span>    <span class="keywordflow">if</span> (frame-&gt;getError()) {</div>
-<div class="line"><a id="l00380" name="l00380"></a><span class="lineno">  380</span>        log_-&gt;warning(<span class="stringliteral">&quot;Dumping errored frame&quot;</span>);</div>
+<div class="line"><a id="l00380" name="l00380"></a><span class="lineno">  380</span>        log_-&gt;warning(<span class="stringliteral">&quot;Dropping errored application frame&quot;</span>);</div>
 <div class="line"><a id="l00381" name="l00381"></a><span class="lineno">  381</span>        <span class="keywordflow">return</span>;</div>
 <div class="line"><a id="l00382" name="l00382"></a><span class="lineno">  382</span>    }</div>
 <div class="line"><a id="l00383" name="l00383"></a><span class="lineno">  383</span> </div>
@@ -907,7 +907,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00777" name="l00777"></a><span class="lineno">  777</span>        <span class="comment">// Reset</span></div>
 <div class="line"><a id="l00778" name="l00778"></a><span class="lineno">  778</span>        <span class="keywordflow">if</span> (head-&gt;rst) {</div>
 <div class="line"><a id="l00779" name="l00779"></a><span class="lineno">  779</span>            state_ = StClosed;</div>
-<div class="line"><a id="l00780" name="l00780"></a><span class="lineno">  780</span>            log_-&gt;warning(<span class="stringliteral">&quot;Closing link. Server=%&quot;</span> PRIu8, server_);</div>
+<div class="line"><a id="l00780" name="l00780"></a><span class="lineno">  780</span>            log_-&gt;warning(<span class="stringliteral">&quot;Closing link after reset request. Server=%&quot;</span> PRIu8, server_);</div>
 <div class="line"><a id="l00781" name="l00781"></a><span class="lineno">  781</span> </div>
 <div class="line"><a id="l00782" name="l00782"></a><span class="lineno">  782</span>            <span class="comment">// Syn ack</span></div>
 <div class="line"><a id="l00783" name="l00783"></a><span class="lineno">  783</span>        } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (head-&gt;syn &amp;&amp; (head-&gt;ack || server_)) {</div>
@@ -1000,7 +1000,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00871" name="l00871"></a><span class="lineno">  871</span>    transportTx(head, <span class="keyword">true</span>, <span class="keyword">true</span>);</div>
 <div class="line"><a id="l00872" name="l00872"></a><span class="lineno">  872</span> </div>
 <div class="line"><a id="l00873" name="l00873"></a><span class="lineno">  873</span>    <span class="comment">// Update state</span></div>
-<div class="line"><a id="l00874" name="l00874"></a><span class="lineno">  874</span>    log_-&gt;warning(<span class="stringliteral">&quot;State is open. Server=%&quot;</span> PRIu8, server_);</div>
+<div class="line"><a id="l00874" name="l00874"></a><span class="lineno">  874</span>    log_-&gt;info(<span class="stringliteral">&quot;Link state is open. Server=%&quot;</span> PRIu8, server_);</div>
 <div class="line"><a id="l00875" name="l00875"></a><span class="lineno">  875</span>    state_ = StOpen;</div>
 <div class="line"><a id="l00876" name="l00876"></a><span class="lineno">  876</span>    <span class="keywordflow">return</span> (cumAckToutD2_);</div>
 <div class="line"><a id="l00877" name="l00877"></a><span class="lineno">  877</span>}</div>
@@ -1020,7 +1020,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00892" name="l00892"></a><span class="lineno">  892</span> </div>
 <div class="line"><a id="l00893" name="l00893"></a><span class="lineno">  893</span>    <span class="comment">// Update state</span></div>
 <div class="line"><a id="l00894" name="l00894"></a><span class="lineno">  894</span>    state_ = StOpen;</div>
-<div class="line"><a id="l00895" name="l00895"></a><span class="lineno">  895</span>    log_-&gt;warning(<span class="stringliteral">&quot;State is open. Server=%&quot;</span> PRIu8, server_);</div>
+<div class="line"><a id="l00895" name="l00895"></a><span class="lineno">  895</span>    log_-&gt;info(<span class="stringliteral">&quot;Link state is open. Server=%&quot;</span> PRIu8, server_);</div>
 <div class="line"><a id="l00896" name="l00896"></a><span class="lineno">  896</span>    <span class="keywordflow">return</span> (cumAckToutD2_);</div>
 <div class="line"><a id="l00897" name="l00897"></a><span class="lineno">  897</span>}</div>
 <div class="line"><a id="l00898" name="l00898"></a><span class="lineno">  898</span> </div>
@@ -1090,7 +1090,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00964" name="l00964"></a><span class="lineno">  964</span>    transportTx(rst, <span class="keyword">true</span>, <span class="keyword">true</span>);</div>
 <div class="line"><a id="l00965" name="l00965"></a><span class="lineno">  965</span> </div>
 <div class="line"><a id="l00966" name="l00966"></a><span class="lineno">  966</span>    downCount_++;</div>
-<div class="line"><a id="l00967" name="l00967"></a><span class="lineno">  967</span>    log_-&gt;warning(<span class="stringliteral">&quot;Entering closed state. Server=%&quot;</span> PRIu8, server_);</div>
+<div class="line"><a id="l00967" name="l00967"></a><span class="lineno">  967</span>    log_-&gt;warning(<span class="stringliteral">&quot;Entering closed state after reset. Server=%&quot;</span> PRIu8, server_);</div>
 <div class="line"><a id="l00968" name="l00968"></a><span class="lineno">  968</span>    state_ = StClosed;</div>
 <div class="line"><a id="l00969" name="l00969"></a><span class="lineno">  969</span> </div>
 <div class="line"><a id="l00970" name="l00970"></a><span class="lineno">  970</span>    <span class="comment">// Reset queues</span></div>
@@ -1119,9 +1119,9 @@ $(document).ready(function() { init_codefold(0); });
 <div class="ttc" id="aLogging_8h_html"><div class="ttname"><a href="Logging_8h.html">Logging.h</a></div></div>
 <div class="ttc" id="aclassrogue_1_1GeneralError_html_ad37e9ca32b3afce0e38988b4a65c9e60"><div class="ttname"><a href="classrogue_1_1GeneralError.html#ad37e9ca32b3afce0e38988b4a65c9e60">rogue::GeneralError::create</a></div><div class="ttdeci">static GeneralError create(std::string src, const char *fmt,...)</div><div class="ttdoc">Creates a formatted error instance.</div><div class="ttdef"><b>Definition</b> <a href="GeneralError_8cpp_source.html#l00038">GeneralError.cpp:38</a></div></div>
 <div class="ttc" id="aclassrogue_1_1GilRelease_html"><div class="ttname"><a href="classrogue_1_1GilRelease.html">rogue::GilRelease</a></div><div class="ttdoc">RAII helper that releases the Python GIL for a scope.</div><div class="ttdef"><b>Definition</b> <a href="GilRelease_8h_source.html#l00036">GilRelease.h:36</a></div></div>
-<div class="ttc" id="aclassrogue_1_1Logging_html_a8c34b36f657b697d85f9a6c60f85f07c"><div class="ttname"><a href="classrogue_1_1Logging.html#a8c34b36f657b697d85f9a6c60f85f07c">rogue::Logging::create</a></div><div class="ttdeci">static std::shared_ptr&lt; rogue::Logging &gt; create(const std::string &amp;name, bool quiet=false)</div><div class="ttdoc">Creates a logger instance.</div><div class="ttdef"><b>Definition</b> <a href="Logging_8cpp_source.html#l00060">Logging.cpp:60</a></div></div>
-<div class="ttc" id="aclassrogue_1_1Logging_html_abb614c55e33efefc9c45f2aaefe4633f"><div class="ttname"><a href="classrogue_1_1Logging.html#abb614c55e33efefc9c45f2aaefe4633f">rogue::Logging::Debug</a></div><div class="ttdeci">static const uint32_t Debug</div><div class="ttdoc">Debug severity level constant.</div><div class="ttdef"><b>Definition</b> <a href="Logging_8h_source.html#l00088">Logging.h:88</a></div></div>
-<div class="ttc" id="aclassrogue_1_1Logging_html_adba5171ba919a7e011cdb080431f4df2"><div class="ttname"><a href="classrogue_1_1Logging.html#adba5171ba919a7e011cdb080431f4df2">rogue::Logging::Warning</a></div><div class="ttdeci">static const uint32_t Warning</div><div class="ttdoc">Warning severity level constant.</div><div class="ttdef"><b>Definition</b> <a href="Logging_8h_source.html#l00084">Logging.h:84</a></div></div>
+<div class="ttc" id="aclassrogue_1_1Logging_html_a8c34b36f657b697d85f9a6c60f85f07c"><div class="ttname"><a href="classrogue_1_1Logging.html#a8c34b36f657b697d85f9a6c60f85f07c">rogue::Logging::create</a></div><div class="ttdeci">static std::shared_ptr&lt; rogue::Logging &gt; create(const std::string &amp;name, bool quiet=false)</div><div class="ttdoc">Creates a logger instance.</div><div class="ttdef"><b>Definition</b> <a href="Logging_8cpp_source.html#l00095">Logging.cpp:95</a></div></div>
+<div class="ttc" id="aclassrogue_1_1Logging_html_abb614c55e33efefc9c45f2aaefe4633f"><div class="ttname"><a href="classrogue_1_1Logging.html#abb614c55e33efefc9c45f2aaefe4633f">rogue::Logging::Debug</a></div><div class="ttdeci">static const uint32_t Debug</div><div class="ttdoc">Debug severity level constant.</div><div class="ttdef"><b>Definition</b> <a href="Logging_8h_source.html#l00100">Logging.h:100</a></div></div>
+<div class="ttc" id="aclassrogue_1_1Logging_html_adba5171ba919a7e011cdb080431f4df2"><div class="ttname"><a href="classrogue_1_1Logging.html#adba5171ba919a7e011cdb080431f4df2">rogue::Logging::Warning</a></div><div class="ttdeci">static const uint32_t Warning</div><div class="ttdoc">Warning severity level constant.</div><div class="ttdef"><b>Definition</b> <a href="Logging_8h_source.html#l00096">Logging.h:96</a></div></div>
 <div class="ttc" id="anamespacerogue_1_1interfaces_1_1stream_html"><div class="ttname"><a href="namespacerogue_1_1interfaces_1_1stream.html">rogue::interfaces::stream</a></div><div class="ttdef"><b>Definition</b> <a href="Buffer_8h_source.html#l00029">Buffer.h:29</a></div></div>
 <div class="ttc" id="anamespacerogue_1_1interfaces_1_1stream_html_a824a61cf20fd9ff702587cafaeb7c15f"><div class="ttname"><a href="namespacerogue_1_1interfaces_1_1stream.html#a824a61cf20fd9ff702587cafaeb7c15f">rogue::interfaces::stream::BufferPtr</a></div><div class="ttdeci">std::shared_ptr&lt; rogue::interfaces::stream::Buffer &gt; BufferPtr</div><div class="ttdoc">Shared pointer alias for Buffer.</div><div class="ttdef"><b>Definition</b> <a href="Buffer_8h_source.html#l00270">Buffer.h:270</a></div></div>
 <div class="ttc" id="anamespacerogue_1_1interfaces_1_1stream_html_aabbfca1143d6d05a2bb0afc11e667778"><div class="ttname"><a href="namespacerogue_1_1interfaces_1_1stream.html#aabbfca1143d6d05a2bb0afc11e667778">rogue::interfaces::stream::FramePtr</a></div><div class="ttdeci">std::shared_ptr&lt; rogue::interfaces::stream::Frame &gt; FramePtr</div><div class="ttdoc">Shared pointer alias for Frame.</div><div class="ttdef"><b>Definition</b> <a href="Frame_8h_source.html#l00549">Frame.h:549</a></div></div>

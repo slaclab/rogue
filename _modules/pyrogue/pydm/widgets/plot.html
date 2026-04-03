@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue.pydm.widgets.plot &mdash; Rogue v6.8.5 documentation</title>
+  <title>pyrogue.pydm.widgets.plot &mdash; Rogue v6.9.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
@@ -14,7 +14,7 @@
   
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=8960aef2"></script>
+      <script src="../../../../_static/documentation_options.js?v=a0bc7a15"></script>
       <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -103,12 +103,14 @@
 <span class="c1"># copied, modified, propagated, or distributed except according to the terms</span>
 <span class="c1"># contained in the LICENSE.txt file.</span>
 <span class="c1">#-----------------------------------------------------------------------------</span>
-
 <span class="kn">from</span><span class="w"> </span><span class="nn">pydm.widgets.frame</span><span class="w"> </span><span class="kn">import</span> <span class="n">PyDMFrame</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pyrogue.pydm.data_plugins.rogue_plugin</span><span class="w"> </span><span class="kn">import</span> <span class="n">nodeFromAddress</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">qtpy.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QVBoxLayout</span><span class="p">,</span> <span class="n">QWidget</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qtpy.QtCore</span><span class="w"> </span><span class="kn">import</span> <span class="n">QCoreApplication</span><span class="p">,</span> <span class="n">QEvent</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib.backends.backend_qt5agg</span><span class="w"> </span><span class="kn">import</span> <span class="n">FigureCanvasQTAgg</span> <span class="k">as</span> <span class="n">FigureCanvas</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib.backends.backend_qt5agg</span><span class="w"> </span><span class="kn">import</span> <span class="n">NavigationToolbar2QT</span> <span class="k">as</span> <span class="n">NavigationToolbar</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib.figure</span><span class="w"> </span><span class="kn">import</span> <span class="n">Figure</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
 
 <div class="viewcode-block" id="Plotter">
 <a class="viewcode-back" href="../../../../api/python/pyrogue/pydm_widgets/plotter.html#pyrogue.pydm.widgets.Plotter">[docs]</a>
@@ -121,48 +123,131 @@
 <span class="sd">        Parent Qt widget.</span>
 <span class="sd">    init_channel : str | None, optional</span>
 <span class="sd">        Initial Rogue channel address.</span>
+<span class="sd">    show_toolbar : bool, optional</span>
+<span class="sd">        If ``True``, display the matplotlib navigation toolbar above the plot.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">:</span> <span class="n">QWidget</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">init_channel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">PyDMFrame</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">init_channel</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">parent</span><span class="p">:</span> <span class="n">QWidget</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">init_channel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">show_toolbar</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">init_channel</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_systemLog</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_node</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_vb</span><span class="p">:</span> <span class="n">QVBoxLayout</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_canvas</span><span class="p">:</span> <span class="n">FigureCanvas</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_nav</span><span class="p">:</span> <span class="n">NavigationToolbar</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fig</span><span class="p">:</span> <span class="n">Figure</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_show_toolbar</span> <span class="o">=</span> <span class="n">show_toolbar</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_ensure_layout</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build the widget layout before embedding the plot widgets.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vb</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_vb</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_vb</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_clear_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Release the current toolbar, canvas, and figure.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vb</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_canvas</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_nav</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_fig</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">return</span>
+
+        <span class="n">old_nav</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nav</span>
+        <span class="n">old_canvas</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_canvas</span>
+        <span class="n">old_fig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fig</span>
+
+        <span class="c1"># Drop our own references first.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_nav</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_canvas</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fig</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Remove toolbar first because it may hold references to the canvas.</span>
+        <span class="k">if</span> <span class="n">old_nav</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_vb</span><span class="o">.</span><span class="n">removeWidget</span><span class="p">(</span><span class="n">old_nav</span><span class="p">)</span>
+            <span class="n">old_nav</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+            <span class="n">old_nav</span><span class="o">.</span><span class="n">setParent</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+            <span class="n">old_nav</span><span class="o">.</span><span class="n">deleteLater</span><span class="p">()</span>
+
+        <span class="c1"># Then remove canvas.</span>
+        <span class="k">if</span> <span class="n">old_canvas</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_vb</span><span class="o">.</span><span class="n">removeWidget</span><span class="p">(</span><span class="n">old_canvas</span><span class="p">)</span>
+
+            <span class="c1"># Break the canvas -&gt; figure reference if possible.</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">old_canvas</span><span class="o">.</span><span class="n">figure</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="k">pass</span>
+
+            <span class="n">old_canvas</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+            <span class="n">old_canvas</span><span class="o">.</span><span class="n">setParent</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+            <span class="n">old_canvas</span><span class="o">.</span><span class="n">deleteLater</span><span class="p">()</span>
+
+        <span class="c1"># Finally release figure-side resources.</span>
+        <span class="k">if</span> <span class="n">old_fig</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">old_fig</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="k">pass</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">old_fig</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="k">pass</span>
+
+        <span class="c1"># Flush deferred deletes for the widgets we just scheduled, so old Qt</span>
+        <span class="c1"># objects do not pile up without impacting unrelated Qt objects.</span>
+        <span class="k">if</span> <span class="n">old_nav</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">QCoreApplication</span><span class="o">.</span><span class="n">sendPostedEvents</span><span class="p">(</span><span class="n">old_nav</span><span class="p">,</span> <span class="n">QEvent</span><span class="o">.</span><span class="n">DeferredDelete</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">old_canvas</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">QCoreApplication</span><span class="o">.</span><span class="n">sendPostedEvents</span><span class="p">(</span><span class="n">old_canvas</span><span class="p">,</span> <span class="n">QEvent</span><span class="o">.</span><span class="n">DeferredDelete</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Plotter.connection_changed">
 <a class="viewcode-back" href="../../../../api/python/pyrogue/pydm_widgets/plotter.html#pyrogue.pydm.widgets.Plotter.connection_changed">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">connection_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">connected</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Build the layout after the first successful channel connection.&quot;&quot;&quot;</span>
-        <span class="n">build</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_node</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_connected</span> <span class="o">!=</span> <span class="n">connected</span> <span class="ow">and</span> <span class="n">connected</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">)</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">Plotter</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">connection_changed</span><span class="p">(</span><span class="n">connected</span><span class="p">)</span>
+        <span class="n">build</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_vb</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_connected</span> <span class="o">!=</span> <span class="n">connected</span> <span class="ow">and</span> <span class="n">connected</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">connection_changed</span><span class="p">(</span><span class="n">connected</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">build</span><span class="p">:</span>
             <span class="k">return</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_node</span> <span class="o">=</span> <span class="n">nodeFromAddress</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">channel</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_vb</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_vb</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ensure_layout</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="Plotter.value_changed">
 <a class="viewcode-back" href="../../../../api/python/pyrogue/pydm_widgets/plotter.html#pyrogue.pydm.widgets.Plotter.value_changed">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">value_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_val</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Replace the displayed plot with the latest figure object.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_canvas</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_vb</span><span class="o">.</span><span class="n">removeWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_canvas</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_vb</span><span class="o">.</span><span class="n">removeWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nav</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_canvas</span><span class="o">.</span><span class="n">setParent</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_nav</span><span class="o">.</span><span class="n">setParent</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
-            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_canvas</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nav</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fig</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Replace the displayed plot with the latest incoming figure.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ensure_layout</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_clear_plot</span><span class="p">()</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_fig</span> <span class="o">=</span> <span class="n">new_val</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_canvas</span> <span class="o">=</span> <span class="n">FigureCanvas</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fig</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_nav</span> <span class="o">=</span> <span class="n">NavigationToolbar</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_canvas</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_vb</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nav</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_vb</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_canvas</span><span class="p">)</span></div>
+        <span class="n">fig</span> <span class="o">=</span> <span class="n">new_val</span>
+        <span class="n">canvas</span> <span class="o">=</span> <span class="n">FigureCanvas</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+        <span class="n">nav</span> <span class="o">=</span> <span class="n">NavigationToolbar</span><span class="p">(</span><span class="n">canvas</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_show_toolbar</span> <span class="k">else</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fig</span> <span class="o">=</span> <span class="n">fig</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_canvas</span> <span class="o">=</span> <span class="n">canvas</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_nav</span> <span class="o">=</span> <span class="n">nav</span>
+
+        <span class="k">if</span> <span class="n">nav</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_vb</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">nav</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_vb</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">canvas</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Plotter.closeEvent">
+<a class="viewcode-back" href="../../../../api/python/pyrogue/pydm_widgets/plotter.html#pyrogue.pydm.widgets.Plotter.closeEvent">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">closeEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Release embedded plot resources when the widget closes.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_clear_plot</span><span class="p">()</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">closeEvent</span><span class="p">(</span><span class="n">event</span><span class="p">)</span></div>
 </div>
 
 </pre></div>

@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Python File Reader &mdash; Rogue v6.8.5 documentation</title>
+  <title>Python File Reader &mdash; Rogue v6.9.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=8960aef2"></script>
+      <script src="../../../_static/documentation_options.js?v=a0bc7a15"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -173,8 +173,8 @@ of treating the payload as one opaque byte block.</p>
 <p><code class="docutils literal notranslate"><span class="pre">FileReader</span></code> uses Python logging, not Rogue C++ logging.</p>
 <ul class="simple">
 <li><p>Default logger name: <code class="docutils literal notranslate"><span class="pre">pyrogue.FileReader</span></code></p></li>
-<li><p>Configuration API:
-<code class="docutils literal notranslate"><span class="pre">logging.getLogger('pyrogue.FileReader').setLevel(logging.DEBUG)</span></code></p></li>
+<li><p>Logging API:
+<code class="docutils literal notranslate"><span class="pre">pyrogue.setLogLevel('pyrogue.FileReader',</span> <span class="pre">'DEBUG')</span></code></p></li>
 </ul>
 <p>If you pass a custom <code class="docutils literal notranslate"><span class="pre">log=...</span></code> object into <code class="docutils literal notranslate"><span class="pre">FileReader</span></code>, that logger is
 used instead of the default.</p>

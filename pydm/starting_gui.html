@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Starting The Rogue PyDM GUI &mdash; Rogue v6.8.5 documentation</title>
+  <title>Starting The Rogue PyDM GUI &mdash; Rogue v6.9.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=8960aef2"></script>
+      <script src="../_static/documentation_options.js?v=a0bc7a15"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -171,19 +171,37 @@ return <code class="docutils literal notranslate"><span class="pre">None</span><
         <span class="k">return</span> <span class="kc">None</span>
 </pre></div>
 </div>
-<p>To launch that display, pass the Python file path through <code class="docutils literal notranslate"><span class="pre">ui=</span></code>:</p>
+<p>Rogue now supports passing that top-level class directly to
+<a class="reference internal" href="../api/python/pyrogue/pydm_runpydm.html#pyrogue.pydm.runPyDM" title="pyrogue.pydm.runPyDM"><code class="xref py py-func docutils literal notranslate"><span class="pre">pyrogue.pydm.runPyDM()</span></code></a>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue.pydm</span>
 
 <span class="n">pyrogue</span><span class="o">.</span><span class="n">pydm</span><span class="o">.</span><span class="n">runPyDM</span><span class="p">(</span>
+    <span class="n">serverList</span><span class="o">=</span><span class="s1">&#39;localhost:9099&#39;</span><span class="p">,</span>
+    <span class="n">display</span><span class="o">=</span><span class="n">MyTop</span><span class="p">,</span>
+    <span class="n">title</span><span class="o">=</span><span class="s1">&#39;My System&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>If the display needs custom constructor behavior, pass a small factory
+instead:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pyrogue</span><span class="o">.</span><span class="n">pydm</span><span class="o">.</span><span class="n">runPyDM</span><span class="p">(</span>
+    <span class="n">serverList</span><span class="o">=</span><span class="s1">&#39;localhost:9099&#39;</span><span class="p">,</span>
+    <span class="n">display_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">MyTop</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;ops&#39;</span><span class="p">),</span>
+    <span class="n">title</span><span class="o">=</span><span class="s1">&#39;My System&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>The older file-based pattern still works:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pyrogue</span><span class="o">.</span><span class="n">pydm</span><span class="o">.</span><span class="n">runPyDM</span><span class="p">(</span>
     <span class="n">serverList</span><span class="o">=</span><span class="s1">&#39;localhost:9099&#39;</span><span class="p">,</span>
     <span class="n">ui</span><span class="o">=</span><span class="s1">&#39;path/to/my_top.py&#39;</span><span class="p">,</span>
     <span class="n">title</span><span class="o">=</span><span class="s1">&#39;My System&#39;</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
 </div>
-<p>This is slightly awkward, but it reflects how PyDM loads custom top-level
-displays today. Rogue is forwarding that loader mechanism rather than defining
-a separate display-construction API of its own.</p>
+<p>That <code class="docutils literal notranslate"><span class="pre">ui=</span></code> form is still useful for Qt Designer <code class="docutils literal notranslate"><span class="pre">.ui</span></code> files and remains
+supported for backward compatibility, but for Python-defined top-level displays
+the direct <code class="docutils literal notranslate"><span class="pre">display=</span></code> path is the cleaner Rogue-facing API.</p>
 </section>
 <section id="starting-from-python">
 <h2>Starting From Python<a class="headerlink" href="#starting-from-python" title="Link to this heading"></a></h2>
@@ -208,6 +226,8 @@ to <a class="reference internal" href="../api/python/pyrogue/pydm_runpydm.html#p
         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;My System&#39;</span><span class="p">,</span>
         <span class="n">sizeX</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
         <span class="n">sizeY</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
+        <span class="n">linkTimeout</span><span class="o">=</span><span class="mf">600.0</span><span class="p">,</span>
+        <span class="n">requestStallTimeout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span>
 </pre></div>
 </div>
@@ -222,16 +242,34 @@ and does not accept a <code class="docutils literal notranslate"><span class="pr
 <p>The main <a class="reference internal" href="../api/python/pyrogue/pydm_runpydm.html#pyrogue.pydm.runPyDM" title="pyrogue.pydm.runPyDM"><code class="xref py py-func docutils literal notranslate"><span class="pre">pyrogue.pydm.runPyDM()</span></code></a> options are:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">serverList</span></code>: Comma-separated list of <code class="docutils literal notranslate"><span class="pre">host:port</span></code> server addresses.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">ui</span></code>: Optional custom <code class="docutils literal notranslate"><span class="pre">.ui</span></code> file or Python file containing a
-<code class="xref py py-class docutils literal notranslate"><span class="pre">pydm.Display</span></code> top-level.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ui</span></code>: Optional custom <code class="docutils literal notranslate"><span class="pre">.ui</span></code> file or legacy file-based top-level path.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">display</span></code>: A <code class="xref py py-class docutils literal notranslate"><span class="pre">pydm.Display</span></code> subclass to instantiate directly.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">display_factory</span></code>: A callable that returns a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">pydm.Display</span></code> instance.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">title</span></code>: Window title.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">sizeX</span></code> and <code class="docutils literal notranslate"><span class="pre">sizeY</span></code>: Initial window size.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">maxListExpand</span></code> and <code class="docutils literal notranslate"><span class="pre">maxListSize</span></code>: Limits used by the debug-tree view.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">linkTimeout</span></code>: Idle timeout for the cached <code class="docutils literal notranslate"><span class="pre">VirtualClient</span></code> instances
+used by the GUI. This is the primary knob for tolerating long busy periods.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">requestStallTimeout</span></code>: Optional per-request stall policy for the cached
+<code class="docutils literal notranslate"><span class="pre">VirtualClient</span></code> instances. This is disabled by default and usually only
+makes sense when the application has a strict upper bound for valid request
+duration.</p></li>
 </ul>
 <p>The command-line launcher defaults to <code class="docutils literal notranslate"><span class="pre">localhost:9099</span></code>. The Python helper’s
 function signature currently defaults to <code class="docutils literal notranslate"><span class="pre">localhost:9090</span></code>, so in practice it
 is better to pass <code class="docutils literal notranslate"><span class="pre">serverList</span></code> explicitly rather than rely on the helper
 default.</p>
+<p>For simulation or co-simulation applications, the common pattern is to leave
+<code class="docutils literal notranslate"><span class="pre">requestStallTimeout</span></code> disabled and increase <code class="docutils literal notranslate"><span class="pre">linkTimeout</span></code> to match the
+expected busy period:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pyrogue</span><span class="o">.</span><span class="n">pydm</span><span class="o">.</span><span class="n">runPyDM</span><span class="p">(</span>
+    <span class="n">serverList</span><span class="o">=</span><span class="n">root</span><span class="o">.</span><span class="n">zmqServer</span><span class="o">.</span><span class="n">address</span><span class="p">,</span>
+    <span class="n">linkTimeout</span><span class="o">=</span><span class="mf">600.0</span><span class="p">,</span>
+    <span class="n">requestStallTimeout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
 </section>
 <section id="rogue-channel-prefix">
 <h2>Rogue Channel Prefix<a class="headerlink" href="#rogue-channel-prefix" title="Link to this heading"></a></h2>

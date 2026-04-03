@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Stream TCP Bridge &mdash; Rogue v6.8.5 documentation</title>
+  <title>Stream TCP Bridge &mdash; Rogue v6.9.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=8960aef2"></script>
+      <script src="../_static/documentation_options.js?v=a0bc7a15"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -255,10 +255,15 @@ name is constructed dynamically from the address, mode, and port:</p>
 <p>Examples:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">pyrogue.stream.TcpCore.127.0.0.1.Server.8000</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">pyrogue.stream.TcpCore.192.168.1.1.Client.8000</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pyrogue.stream.TcpCore.192.168.1.10.Client.8000</span></code></p></li>
+<li><p>Unified Logging API:
+<code class="docutils literal notranslate"><span class="pre">pyrogue.setLogLevel('pyrogue.stream.TcpCore',</span> <span class="pre">'DEBUG')</span></code></p></li>
+<li><p>Legacy Logging API:
+<code class="docutils literal notranslate"><span class="pre">rogue.Logging.setFilter('pyrogue.stream.TcpCore',</span> <span class="pre">rogue.Logging.Debug)</span></code></p></li>
 </ul>
-<p>Enable a broad filter before constructing the bridge if you want to see
-implementation messages:</p>
+<p>You can enable a broad filter before or after constructing the bridge. Enable
+it before construction only if you want constructor or initial connection
+startup messages in addition to later implementation messages:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">rogue</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">rogue.interfaces.stream</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ris</span>
 
@@ -268,6 +273,27 @@ implementation messages:</p>
 </div>
 <p>You can also target one specific bridge instance when the full dynamic logger
 name is known.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span>
+    <span class="s1">&#39;pyrogue.stream.TcpCore.127.0.0.1.Client.8000&#39;</span>
+<span class="p">)</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+</pre></div>
+</div>
+<section id="what-it-logs">
+<h3>What It Logs<a class="headerlink" href="#what-it-logs" title="Link to this heading"></a></h3>
+<p>At debug level, <code class="docutils literal notranslate"><span class="pre">TcpCore</span></code> logs bridge setup details and frame movement, such
+as:</p>
+<ul class="simple">
+<li><p>Client/server socket creation</p></li>
+<li><p>Bind/connect address selection</p></li>
+<li><p>Pushed frame sizes</p></li>
+<li><p>Pulled frame sizes</p></li>
+<li><p>Worker-thread identity</p></li>
+</ul>
+<p>There is no additional per-instance <code class="docutils literal notranslate"><span class="pre">setDebug(...)</span></code> helper on <code class="docutils literal notranslate"><span class="pre">TcpCore</span></code>.
+For byte-level frame inspection, add a separate debug <code class="docutils literal notranslate"><span class="pre">Slave</span></code> or use
+<code class="docutils literal notranslate"><span class="pre">setDebug(...)</span></code> on a plain <code class="docutils literal notranslate"><span class="pre">rogue.interfaces.stream.Slave</span></code> tap elsewhere in
+the stream graph.</p>
+</section>
 </section>
 <section id="operational-notes">
 <h2>Operational Notes<a class="headerlink" href="#operational-notes" title="Link to this heading"></a></h2>

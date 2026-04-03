@@ -317,122 +317,127 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00235" name="l00235"></a><span class="lineno">  235</span>            done_  = <span class="keyword">true</span>;</div>
 <div class="line"><a id="l00236" name="l00236"></a><span class="lineno">  236</span>            error_ = <span class="stringliteral">&quot;Timeout waiting for register transaction &quot;</span> + std::to_string(id_) + <span class="stringliteral">&quot; message response.&quot;</span>;</div>
 <div class="line"><a id="l00237" name="l00237"></a><span class="lineno">  237</span> </div>
-<div class="line"><a id="l00238" name="l00238"></a><span class="lineno">  238</span>            log_-&gt;debug(<span class="stringliteral">&quot;Transaction timeout. type=%&quot;</span> PRIu32 <span class="stringliteral">&quot; id=%&quot;</span> PRIu32 <span class="stringliteral">&quot;, address=0x%&quot;</span> PRIx64 <span class="stringliteral">&quot;, size=%&quot;</span> PRIu32,</div>
-<div class="line"><a id="l00239" name="l00239"></a><span class="lineno">  239</span>                        type_,</div>
-<div class="line"><a id="l00240" name="l00240"></a><span class="lineno">  240</span>                        id_,</div>
-<div class="line"><a id="l00241" name="l00241"></a><span class="lineno">  241</span>                        address_,</div>
-<div class="line"><a id="l00242" name="l00242"></a><span class="lineno">  242</span>                        size_);</div>
-<div class="line"><a id="l00243" name="l00243"></a><span class="lineno">  243</span>        } <span class="keywordflow">else</span> {</div>
-<div class="line"><a id="l00244" name="l00244"></a><span class="lineno">  244</span>            cond_.wait_for(lock, std::chrono::microseconds(1000));</div>
-<div class="line"><a id="l00245" name="l00245"></a><span class="lineno">  245</span>        }</div>
-<div class="line"><a id="l00246" name="l00246"></a><span class="lineno">  246</span>    }</div>
-<div class="line"><a id="l00247" name="l00247"></a><span class="lineno">  247</span> </div>
-<div class="line"><a id="l00248" name="l00248"></a><span class="lineno">  248</span>    <span class="comment">// Reset</span></div>
-<div class="line"><a id="l00249" name="l00249"></a><span class="lineno">  249</span>    <span class="keywordflow">if</span> (pyValid_) {</div>
-<div class="line"><a id="l00250" name="l00250"></a><span class="lineno">  250</span>        <a class="code hl_class" href="classrogue_1_1ScopedGil.html">rogue::ScopedGil</a> gil;</div>
-<div class="line"><a id="l00251" name="l00251"></a><span class="lineno">  251</span><span class="preprocessor">#ifndef NO_PYTHON</span></div>
-<div class="line"><a id="l00252" name="l00252"></a><span class="lineno">  252</span>        PyBuffer_Release(&amp;(pyBuf_));</div>
-<div class="line"><a id="l00253" name="l00253"></a><span class="lineno">  253</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00254" name="l00254"></a><span class="lineno">  254</span>    }</div>
-<div class="line"><a id="l00255" name="l00255"></a><span class="lineno">  255</span>    iter_    = NULL;</div>
-<div class="line"><a id="l00256" name="l00256"></a><span class="lineno">  256</span>    pyValid_ = <span class="keyword">false</span>;</div>
-<div class="line"><a id="l00257" name="l00257"></a><span class="lineno">  257</span> </div>
-<div class="line"><a id="l00258" name="l00258"></a><span class="lineno">  258</span>    <span class="keywordflow">return</span> (error_);</div>
-<div class="line"><a id="l00259" name="l00259"></a><span class="lineno">  259</span>}</div>
-</div>
+<div class="line"><a id="l00238" name="l00238"></a><span class="lineno">  238</span>            log_-&gt;debug(<span class="stringliteral">&quot;Transaction timeout. type=%&quot;</span> PRIu32 <span class="stringliteral">&quot; id=%&quot;</span> PRIu32</div>
+<div class="line"><a id="l00239" name="l00239"></a><span class="lineno">  239</span>                        <span class="stringliteral">&quot;, address=0x%&quot;</span> PRIx64 <span class="stringliteral">&quot;, size=%&quot;</span> PRIu32 <span class="stringliteral">&quot;, timeout=%&quot;</span> PRId64 <span class="stringliteral">&quot;.%06&quot;</span> PRId64 <span class="stringliteral">&quot;s&quot;</span>,</div>
+<div class="line"><a id="l00240" name="l00240"></a><span class="lineno">  240</span>                        type_,</div>
+<div class="line"><a id="l00241" name="l00241"></a><span class="lineno">  241</span>                        id_,</div>
+<div class="line"><a id="l00242" name="l00242"></a><span class="lineno">  242</span>                        address_,</div>
+<div class="line"><a id="l00243" name="l00243"></a><span class="lineno">  243</span>                        size_,</div>
+<div class="line"><a id="l00244" name="l00244"></a><span class="lineno">  244</span>                        <span class="keyword">static_cast&lt;</span>int64_t<span class="keyword">&gt;</span>(timeout_.tv_sec),</div>
+<div class="line"><a id="l00245" name="l00245"></a><span class="lineno">  245</span>                        <span class="keyword">static_cast&lt;</span>int64_t<span class="keyword">&gt;</span>(timeout_.tv_usec));</div>
+<div class="line"><a id="l00246" name="l00246"></a><span class="lineno">  246</span>        } <span class="keywordflow">else</span> {</div>
+<div class="line"><a id="l00247" name="l00247"></a><span class="lineno">  247</span>            cond_.wait_for(lock, std::chrono::microseconds(1000));</div>
+<div class="line"><a id="l00248" name="l00248"></a><span class="lineno">  248</span>        }</div>
+<div class="line"><a id="l00249" name="l00249"></a><span class="lineno">  249</span>    }</div>
+<div class="line"><a id="l00250" name="l00250"></a><span class="lineno">  250</span> </div>
+<div class="line"><a id="l00251" name="l00251"></a><span class="lineno">  251</span>    <span class="comment">// Reset</span></div>
+<div class="line"><a id="l00252" name="l00252"></a><span class="lineno">  252</span>    <span class="keywordflow">if</span> (pyValid_) {</div>
+<div class="line"><a id="l00253" name="l00253"></a><span class="lineno">  253</span>        <a class="code hl_class" href="classrogue_1_1ScopedGil.html">rogue::ScopedGil</a> gil;</div>
+<div class="line"><a id="l00254" name="l00254"></a><span class="lineno">  254</span><span class="preprocessor">#ifndef NO_PYTHON</span></div>
+<div class="line"><a id="l00255" name="l00255"></a><span class="lineno">  255</span>        PyBuffer_Release(&amp;(pyBuf_));</div>
+<div class="line"><a id="l00256" name="l00256"></a><span class="lineno">  256</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00257" name="l00257"></a><span class="lineno">  257</span>    }</div>
+<div class="line"><a id="l00258" name="l00258"></a><span class="lineno">  258</span>    iter_    = NULL;</div>
+<div class="line"><a id="l00259" name="l00259"></a><span class="lineno">  259</span>    pyValid_ = <span class="keyword">false</span>;</div>
 <div class="line"><a id="l00260" name="l00260"></a><span class="lineno">  260</span> </div>
-<div class="foldopen" id="foldopen00262" data-start="{" data-end="}">
-<div class="line"><a id="l00262" name="l00262"></a><span class="lineno"><a class="line" href="classrogue_1_1interfaces_1_1memory_1_1Transaction.html#a6c0d228b3631ba8c038a8491a6518022">  262</a></span><span class="keywordtype">void</span> rim::Transaction::refreshTimer(<a class="code hl_typedef" href="namespacerogue_1_1interfaces_1_1memory.html#a7c6250994b065d9570e27405efe61a13">rim::TransactionPtr</a> ref) {</div>
-<div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span>    <span class="keyword">struct </span>timeval currTime;</div>
-<div class="line"><a id="l00264" name="l00264"></a><span class="lineno">  264</span>    <span class="keyword">struct </span>timeval nextTime;</div>
-<div class="line"><a id="l00265" name="l00265"></a><span class="lineno">  265</span> </div>
-<div class="line"><a id="l00266" name="l00266"></a><span class="lineno">  266</span>    gettimeofday(&amp;currTime, NULL);</div>
-<div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span>    std::lock_guard&lt;std::mutex&gt; lock(lock_);</div>
+<div class="line"><a id="l00261" name="l00261"></a><span class="lineno">  261</span>    <span class="keywordflow">return</span> (error_);</div>
+<div class="line"><a id="l00262" name="l00262"></a><span class="lineno">  262</span>}</div>
+</div>
+<div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span> </div>
+<div class="foldopen" id="foldopen00265" data-start="{" data-end="}">
+<div class="line"><a id="l00265" name="l00265"></a><span class="lineno"><a class="line" href="classrogue_1_1interfaces_1_1memory_1_1Transaction.html#a6c0d228b3631ba8c038a8491a6518022">  265</a></span><span class="keywordtype">void</span> rim::Transaction::refreshTimer(<a class="code hl_typedef" href="namespacerogue_1_1interfaces_1_1memory.html#a7c6250994b065d9570e27405efe61a13">rim::TransactionPtr</a> ref) {</div>
+<div class="line"><a id="l00266" name="l00266"></a><span class="lineno">  266</span>    <span class="keyword">struct </span>timeval currTime;</div>
+<div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span>    <span class="keyword">struct </span>timeval nextTime;</div>
 <div class="line"><a id="l00268" name="l00268"></a><span class="lineno">  268</span> </div>
-<div class="line"><a id="l00269" name="l00269"></a><span class="lineno">  269</span>    <span class="comment">// Refresh if start time is later then the reference</span></div>
-<div class="line"><a id="l00270" name="l00270"></a><span class="lineno">  270</span>    <span class="keywordflow">if</span> (ref == NULL || timercmp(&amp;startTime_, &amp;(ref-&gt;startTime_), &gt;=)) {</div>
-<div class="line"><a id="l00271" name="l00271"></a><span class="lineno">  271</span>        timeradd(&amp;currTime, &amp;timeout_, &amp;endTime_);</div>
-<div class="line"><a id="l00272" name="l00272"></a><span class="lineno">  272</span> </div>
-<div class="line"><a id="l00273" name="l00273"></a><span class="lineno">  273</span>        <span class="keywordflow">if</span> (warnTime_.tv_sec == 0 &amp;&amp; warnTime_.tv_usec == 0) {</div>
-<div class="line"><a id="l00274" name="l00274"></a><span class="lineno">  274</span>            warnTime_ = endTime_;</div>
-<div class="line"><a id="l00275" name="l00275"></a><span class="lineno">  275</span>        } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (timercmp(&amp;warnTime_, &amp;currTime, &gt;=)) {</div>
-<div class="line"><a id="l00276" name="l00276"></a><span class="lineno">  276</span>            log_-&gt;warning(<span class="stringliteral">&quot;Transaction timer refresh! Possible slow link! type=%&quot;</span> PRIu32 <span class="stringliteral">&quot; id=%&quot;</span> PRIu32</div>
-<div class="line"><a id="l00277" name="l00277"></a><span class="lineno">  277</span>                          <span class="stringliteral">&quot;, address=0x%016&quot;</span> PRIx64 <span class="stringliteral">&quot;, size=%&quot;</span> PRIu32,</div>
-<div class="line"><a id="l00278" name="l00278"></a><span class="lineno">  278</span>                          type_,</div>
-<div class="line"><a id="l00279" name="l00279"></a><span class="lineno">  279</span>                          id_,</div>
-<div class="line"><a id="l00280" name="l00280"></a><span class="lineno">  280</span>                          address_,</div>
-<div class="line"><a id="l00281" name="l00281"></a><span class="lineno">  281</span>                          size_);</div>
-<div class="line"><a id="l00282" name="l00282"></a><span class="lineno">  282</span>            warnTime_ = endTime_;</div>
-<div class="line"><a id="l00283" name="l00283"></a><span class="lineno">  283</span>        }</div>
-<div class="line"><a id="l00284" name="l00284"></a><span class="lineno">  284</span>    }</div>
-<div class="line"><a id="l00285" name="l00285"></a><span class="lineno">  285</span>}</div>
+<div class="line"><a id="l00269" name="l00269"></a><span class="lineno">  269</span>    gettimeofday(&amp;currTime, NULL);</div>
+<div class="line"><a id="l00270" name="l00270"></a><span class="lineno">  270</span>    std::lock_guard&lt;std::mutex&gt; lock(lock_);</div>
+<div class="line"><a id="l00271" name="l00271"></a><span class="lineno">  271</span> </div>
+<div class="line"><a id="l00272" name="l00272"></a><span class="lineno">  272</span>    <span class="comment">// Refresh if start time is later then the reference</span></div>
+<div class="line"><a id="l00273" name="l00273"></a><span class="lineno">  273</span>    <span class="keywordflow">if</span> (ref == NULL || timercmp(&amp;startTime_, &amp;(ref-&gt;startTime_), &gt;=)) {</div>
+<div class="line"><a id="l00274" name="l00274"></a><span class="lineno">  274</span>        timeradd(&amp;currTime, &amp;timeout_, &amp;endTime_);</div>
+<div class="line"><a id="l00275" name="l00275"></a><span class="lineno">  275</span> </div>
+<div class="line"><a id="l00276" name="l00276"></a><span class="lineno">  276</span>        <span class="keywordflow">if</span> (warnTime_.tv_sec == 0 &amp;&amp; warnTime_.tv_usec == 0) {</div>
+<div class="line"><a id="l00277" name="l00277"></a><span class="lineno">  277</span>            warnTime_ = endTime_;</div>
+<div class="line"><a id="l00278" name="l00278"></a><span class="lineno">  278</span>        } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (timercmp(&amp;warnTime_, &amp;currTime, &gt;=)) {</div>
+<div class="line"><a id="l00279" name="l00279"></a><span class="lineno">  279</span>            log_-&gt;warning(<span class="stringliteral">&quot;Transaction timer refresh! Possible slow link! type=%&quot;</span> PRIu32 <span class="stringliteral">&quot; id=%&quot;</span> PRIu32</div>
+<div class="line"><a id="l00280" name="l00280"></a><span class="lineno">  280</span>                          <span class="stringliteral">&quot;, address=0x%016&quot;</span> PRIx64 <span class="stringliteral">&quot;, size=%&quot;</span> PRIu32 <span class="stringliteral">&quot;, timeout=%&quot;</span> PRId64 <span class="stringliteral">&quot;.%06&quot;</span> PRId64 <span class="stringliteral">&quot;s&quot;</span>,</div>
+<div class="line"><a id="l00281" name="l00281"></a><span class="lineno">  281</span>                          type_,</div>
+<div class="line"><a id="l00282" name="l00282"></a><span class="lineno">  282</span>                          id_,</div>
+<div class="line"><a id="l00283" name="l00283"></a><span class="lineno">  283</span>                          address_,</div>
+<div class="line"><a id="l00284" name="l00284"></a><span class="lineno">  284</span>                          size_,</div>
+<div class="line"><a id="l00285" name="l00285"></a><span class="lineno">  285</span>                          <span class="keyword">static_cast&lt;</span>int64_t<span class="keyword">&gt;</span>(timeout_.tv_sec),</div>
+<div class="line"><a id="l00286" name="l00286"></a><span class="lineno">  286</span>                          <span class="keyword">static_cast&lt;</span>int64_t<span class="keyword">&gt;</span>(timeout_.tv_usec));</div>
+<div class="line"><a id="l00287" name="l00287"></a><span class="lineno">  287</span>            warnTime_ = endTime_;</div>
+<div class="line"><a id="l00288" name="l00288"></a><span class="lineno">  288</span>        }</div>
+<div class="line"><a id="l00289" name="l00289"></a><span class="lineno">  289</span>    }</div>
+<div class="line"><a id="l00290" name="l00290"></a><span class="lineno">  290</span>}</div>
 </div>
-<div class="line"><a id="l00286" name="l00286"></a><span class="lineno">  286</span> </div>
-<div class="foldopen" id="foldopen00288" data-start="{" data-end="}">
-<div class="line"><a id="l00288" name="l00288"></a><span class="lineno"><a class="line" href="classrogue_1_1interfaces_1_1memory_1_1Transaction.html#a8be68eee096b8da5f95c1e338581a6c5">  288</a></span>rim::Transaction::iterator rim::Transaction::begin() {</div>
-<div class="line"><a id="l00289" name="l00289"></a><span class="lineno">  289</span>    <span class="keywordflow">if</span> (iter_ == NULL) <span class="keywordflow">throw</span>(<a class="code hl_class" href="classrogue_1_1GeneralError.html">rogue::GeneralError</a>(<span class="stringliteral">&quot;Transaction::begin&quot;</span>, <span class="stringliteral">&quot;Invalid data&quot;</span>));</div>
-<div class="line"><a id="l00290" name="l00290"></a><span class="lineno">  290</span>    <span class="keywordflow">return</span> iter_;</div>
-<div class="line"><a id="l00291" name="l00291"></a><span class="lineno">  291</span>}</div>
+<div class="line"><a id="l00291" name="l00291"></a><span class="lineno">  291</span> </div>
+<div class="foldopen" id="foldopen00293" data-start="{" data-end="}">
+<div class="line"><a id="l00293" name="l00293"></a><span class="lineno"><a class="line" href="classrogue_1_1interfaces_1_1memory_1_1Transaction.html#a8be68eee096b8da5f95c1e338581a6c5">  293</a></span>rim::Transaction::iterator rim::Transaction::begin() {</div>
+<div class="line"><a id="l00294" name="l00294"></a><span class="lineno">  294</span>    <span class="keywordflow">if</span> (iter_ == NULL) <span class="keywordflow">throw</span>(<a class="code hl_class" href="classrogue_1_1GeneralError.html">rogue::GeneralError</a>(<span class="stringliteral">&quot;Transaction::begin&quot;</span>, <span class="stringliteral">&quot;Invalid data&quot;</span>));</div>
+<div class="line"><a id="l00295" name="l00295"></a><span class="lineno">  295</span>    <span class="keywordflow">return</span> iter_;</div>
+<div class="line"><a id="l00296" name="l00296"></a><span class="lineno">  296</span>}</div>
 </div>
-<div class="line"><a id="l00292" name="l00292"></a><span class="lineno">  292</span> </div>
-<div class="foldopen" id="foldopen00294" data-start="{" data-end="}">
-<div class="line"><a id="l00294" name="l00294"></a><span class="lineno"><a class="line" href="classrogue_1_1interfaces_1_1memory_1_1Transaction.html#a0a43101d6523104c3a20658a22e42b76">  294</a></span>rim::Transaction::iterator rim::Transaction::end() {</div>
-<div class="line"><a id="l00295" name="l00295"></a><span class="lineno">  295</span>    <span class="keywordflow">if</span> (iter_ == NULL) <span class="keywordflow">throw</span>(<a class="code hl_class" href="classrogue_1_1GeneralError.html">rogue::GeneralError</a>(<span class="stringliteral">&quot;Transaction::end&quot;</span>, <span class="stringliteral">&quot;Invalid data&quot;</span>));</div>
-<div class="line"><a id="l00296" name="l00296"></a><span class="lineno">  296</span>    <span class="keywordflow">return</span> iter_ + size_;</div>
-<div class="line"><a id="l00297" name="l00297"></a><span class="lineno">  297</span>}</div>
+<div class="line"><a id="l00297" name="l00297"></a><span class="lineno">  297</span> </div>
+<div class="foldopen" id="foldopen00299" data-start="{" data-end="}">
+<div class="line"><a id="l00299" name="l00299"></a><span class="lineno"><a class="line" href="classrogue_1_1interfaces_1_1memory_1_1Transaction.html#a0a43101d6523104c3a20658a22e42b76">  299</a></span>rim::Transaction::iterator rim::Transaction::end() {</div>
+<div class="line"><a id="l00300" name="l00300"></a><span class="lineno">  300</span>    <span class="keywordflow">if</span> (iter_ == NULL) <span class="keywordflow">throw</span>(<a class="code hl_class" href="classrogue_1_1GeneralError.html">rogue::GeneralError</a>(<span class="stringliteral">&quot;Transaction::end&quot;</span>, <span class="stringliteral">&quot;Invalid data&quot;</span>));</div>
+<div class="line"><a id="l00301" name="l00301"></a><span class="lineno">  301</span>    <span class="keywordflow">return</span> iter_ + size_;</div>
+<div class="line"><a id="l00302" name="l00302"></a><span class="lineno">  302</span>}</div>
 </div>
-<div class="line"><a id="l00298" name="l00298"></a><span class="lineno">  298</span> </div>
-<div class="line"><a id="l00299" name="l00299"></a><span class="lineno">  299</span><span class="preprocessor">#ifndef NO_PYTHON</span></div>
-<div class="line"><a id="l00300" name="l00300"></a><span class="lineno">  300</span> </div>
-<div class="foldopen" id="foldopen00302" data-start="{" data-end="}">
-<div class="line"><a id="l00302" name="l00302"></a><span class="lineno"><a class="line" href="classrogue_1_1interfaces_1_1memory_1_1Transaction.html#aba98e4513c63a75e9146807361c6eb75">  302</a></span><span class="keywordtype">void</span> rim::Transaction::setData(boost::python::object p, uint32_t offset) {</div>
-<div class="line"><a id="l00303" name="l00303"></a><span class="lineno">  303</span>    Py_buffer pyBuf;</div>
-<div class="line"><a id="l00304" name="l00304"></a><span class="lineno">  304</span> </div>
-<div class="line"><a id="l00305" name="l00305"></a><span class="lineno">  305</span>    <span class="keywordflow">if</span> (PyObject_GetBuffer(p.ptr(), &amp;pyBuf, PyBUF_SIMPLE) &lt; 0)</div>
-<div class="line"><a id="l00306" name="l00306"></a><span class="lineno">  306</span>        <span class="keywordflow">throw</span>(<a class="code hl_class" href="classrogue_1_1GeneralError.html">rogue::GeneralError</a>(<span class="stringliteral">&quot;Transaction::setData&quot;</span>, <span class="stringliteral">&quot;Python Buffer Error In Frame&quot;</span>));</div>
-<div class="line"><a id="l00307" name="l00307"></a><span class="lineno">  307</span> </div>
-<div class="line"><a id="l00308" name="l00308"></a><span class="lineno">  308</span>    uint32_t count = pyBuf.len;</div>
+<div class="line"><a id="l00303" name="l00303"></a><span class="lineno">  303</span> </div>
+<div class="line"><a id="l00304" name="l00304"></a><span class="lineno">  304</span><span class="preprocessor">#ifndef NO_PYTHON</span></div>
+<div class="line"><a id="l00305" name="l00305"></a><span class="lineno">  305</span> </div>
+<div class="foldopen" id="foldopen00307" data-start="{" data-end="}">
+<div class="line"><a id="l00307" name="l00307"></a><span class="lineno"><a class="line" href="classrogue_1_1interfaces_1_1memory_1_1Transaction.html#aba98e4513c63a75e9146807361c6eb75">  307</a></span><span class="keywordtype">void</span> rim::Transaction::setData(boost::python::object p, uint32_t offset) {</div>
+<div class="line"><a id="l00308" name="l00308"></a><span class="lineno">  308</span>    Py_buffer pyBuf;</div>
 <div class="line"><a id="l00309" name="l00309"></a><span class="lineno">  309</span> </div>
-<div class="line"><a id="l00310" name="l00310"></a><span class="lineno">  310</span>    <span class="keywordflow">if</span> ((offset + count) &gt; size_) {</div>
-<div class="line"><a id="l00311" name="l00311"></a><span class="lineno">  311</span>        PyBuffer_Release(&amp;pyBuf);</div>
-<div class="line"><a id="l00312" name="l00312"></a><span class="lineno">  312</span>        <span class="keywordflow">throw</span>(<a class="code hl_function" href="classrogue_1_1GeneralError.html#ad37e9ca32b3afce0e38988b4a65c9e60">rogue::GeneralError::create</a>(<span class="stringliteral">&quot;Transaction::setData&quot;</span>,</div>
-<div class="line"><a id="l00313" name="l00313"></a><span class="lineno">  313</span>                                          <span class="stringliteral">&quot;Attempt to set %&quot;</span> PRIu32 <span class="stringliteral">&quot; bytes at offset %&quot;</span> PRIu32</div>
-<div class="line"><a id="l00314" name="l00314"></a><span class="lineno">  314</span>                                          <span class="stringliteral">&quot; to python buffer with size %&quot;</span> PRIu32,</div>
-<div class="line"><a id="l00315" name="l00315"></a><span class="lineno">  315</span>                                          count,</div>
-<div class="line"><a id="l00316" name="l00316"></a><span class="lineno">  316</span>                                          offset,</div>
-<div class="line"><a id="l00317" name="l00317"></a><span class="lineno">  317</span>                                          size_));</div>
-<div class="line"><a id="l00318" name="l00318"></a><span class="lineno">  318</span>    }</div>
-<div class="line"><a id="l00319" name="l00319"></a><span class="lineno">  319</span> </div>
-<div class="line"><a id="l00320" name="l00320"></a><span class="lineno">  320</span>    std::memcpy(begin() + offset, <span class="keyword">reinterpret_cast&lt;</span>uint8_t*<span class="keyword">&gt;</span>(pyBuf.buf), count);</div>
-<div class="line"><a id="l00321" name="l00321"></a><span class="lineno">  321</span>    PyBuffer_Release(&amp;pyBuf);</div>
-<div class="line"><a id="l00322" name="l00322"></a><span class="lineno">  322</span>}</div>
+<div class="line"><a id="l00310" name="l00310"></a><span class="lineno">  310</span>    <span class="keywordflow">if</span> (PyObject_GetBuffer(p.ptr(), &amp;pyBuf, PyBUF_SIMPLE) &lt; 0)</div>
+<div class="line"><a id="l00311" name="l00311"></a><span class="lineno">  311</span>        <span class="keywordflow">throw</span>(<a class="code hl_class" href="classrogue_1_1GeneralError.html">rogue::GeneralError</a>(<span class="stringliteral">&quot;Transaction::setData&quot;</span>, <span class="stringliteral">&quot;Python Buffer Error In Frame&quot;</span>));</div>
+<div class="line"><a id="l00312" name="l00312"></a><span class="lineno">  312</span> </div>
+<div class="line"><a id="l00313" name="l00313"></a><span class="lineno">  313</span>    uint32_t count = pyBuf.len;</div>
+<div class="line"><a id="l00314" name="l00314"></a><span class="lineno">  314</span> </div>
+<div class="line"><a id="l00315" name="l00315"></a><span class="lineno">  315</span>    <span class="keywordflow">if</span> ((offset + count) &gt; size_) {</div>
+<div class="line"><a id="l00316" name="l00316"></a><span class="lineno">  316</span>        PyBuffer_Release(&amp;pyBuf);</div>
+<div class="line"><a id="l00317" name="l00317"></a><span class="lineno">  317</span>        <span class="keywordflow">throw</span>(<a class="code hl_function" href="classrogue_1_1GeneralError.html#ad37e9ca32b3afce0e38988b4a65c9e60">rogue::GeneralError::create</a>(<span class="stringliteral">&quot;Transaction::setData&quot;</span>,</div>
+<div class="line"><a id="l00318" name="l00318"></a><span class="lineno">  318</span>                                          <span class="stringliteral">&quot;Attempt to set %&quot;</span> PRIu32 <span class="stringliteral">&quot; bytes at offset %&quot;</span> PRIu32</div>
+<div class="line"><a id="l00319" name="l00319"></a><span class="lineno">  319</span>                                          <span class="stringliteral">&quot; to python buffer with size %&quot;</span> PRIu32,</div>
+<div class="line"><a id="l00320" name="l00320"></a><span class="lineno">  320</span>                                          count,</div>
+<div class="line"><a id="l00321" name="l00321"></a><span class="lineno">  321</span>                                          offset,</div>
+<div class="line"><a id="l00322" name="l00322"></a><span class="lineno">  322</span>                                          size_));</div>
+<div class="line"><a id="l00323" name="l00323"></a><span class="lineno">  323</span>    }</div>
+<div class="line"><a id="l00324" name="l00324"></a><span class="lineno">  324</span> </div>
+<div class="line"><a id="l00325" name="l00325"></a><span class="lineno">  325</span>    std::memcpy(begin() + offset, <span class="keyword">reinterpret_cast&lt;</span>uint8_t*<span class="keyword">&gt;</span>(pyBuf.buf), count);</div>
+<div class="line"><a id="l00326" name="l00326"></a><span class="lineno">  326</span>    PyBuffer_Release(&amp;pyBuf);</div>
+<div class="line"><a id="l00327" name="l00327"></a><span class="lineno">  327</span>}</div>
 </div>
-<div class="line"><a id="l00323" name="l00323"></a><span class="lineno">  323</span> </div>
-<div class="foldopen" id="foldopen00325" data-start="{" data-end="}">
-<div class="line"><a id="l00325" name="l00325"></a><span class="lineno"><a class="line" href="classrogue_1_1interfaces_1_1memory_1_1Transaction.html#a07bd8bccdcba6384f5976d148ce362ff">  325</a></span><span class="keywordtype">void</span> rim::Transaction::getData(boost::python::object p, uint32_t offset) {</div>
-<div class="line"><a id="l00326" name="l00326"></a><span class="lineno">  326</span>    Py_buffer pyBuf;</div>
-<div class="line"><a id="l00327" name="l00327"></a><span class="lineno">  327</span> </div>
-<div class="line"><a id="l00328" name="l00328"></a><span class="lineno">  328</span>    <span class="keywordflow">if</span> (PyObject_GetBuffer(p.ptr(), &amp;pyBuf, PyBUF_CONTIG) &lt; 0)</div>
-<div class="line"><a id="l00329" name="l00329"></a><span class="lineno">  329</span>        <span class="keywordflow">throw</span>(<a class="code hl_class" href="classrogue_1_1GeneralError.html">rogue::GeneralError</a>(<span class="stringliteral">&quot;Transaction::getData&quot;</span>, <span class="stringliteral">&quot;Python Buffer Error In Frame&quot;</span>));</div>
-<div class="line"><a id="l00330" name="l00330"></a><span class="lineno">  330</span> </div>
-<div class="line"><a id="l00331" name="l00331"></a><span class="lineno">  331</span>    uint32_t count = pyBuf.len;</div>
+<div class="line"><a id="l00328" name="l00328"></a><span class="lineno">  328</span> </div>
+<div class="foldopen" id="foldopen00330" data-start="{" data-end="}">
+<div class="line"><a id="l00330" name="l00330"></a><span class="lineno"><a class="line" href="classrogue_1_1interfaces_1_1memory_1_1Transaction.html#a07bd8bccdcba6384f5976d148ce362ff">  330</a></span><span class="keywordtype">void</span> rim::Transaction::getData(boost::python::object p, uint32_t offset) {</div>
+<div class="line"><a id="l00331" name="l00331"></a><span class="lineno">  331</span>    Py_buffer pyBuf;</div>
 <div class="line"><a id="l00332" name="l00332"></a><span class="lineno">  332</span> </div>
-<div class="line"><a id="l00333" name="l00333"></a><span class="lineno">  333</span>    <span class="keywordflow">if</span> ((offset + count) &gt; size_) {</div>
-<div class="line"><a id="l00334" name="l00334"></a><span class="lineno">  334</span>        PyBuffer_Release(&amp;pyBuf);</div>
-<div class="line"><a id="l00335" name="l00335"></a><span class="lineno">  335</span>        <span class="keywordflow">throw</span>(<a class="code hl_function" href="classrogue_1_1GeneralError.html#ad37e9ca32b3afce0e38988b4a65c9e60">rogue::GeneralError::create</a>(<span class="stringliteral">&quot;Transaction::getData&quot;</span>,</div>
-<div class="line"><a id="l00336" name="l00336"></a><span class="lineno">  336</span>                                          <span class="stringliteral">&quot;Attempt to get %&quot;</span> PRIu32 <span class="stringliteral">&quot; bytes from offset %&quot;</span> PRIu32</div>
-<div class="line"><a id="l00337" name="l00337"></a><span class="lineno">  337</span>                                          <span class="stringliteral">&quot; to python buffer with size %&quot;</span> PRIu32,</div>
-<div class="line"><a id="l00338" name="l00338"></a><span class="lineno">  338</span>                                          count,</div>
-<div class="line"><a id="l00339" name="l00339"></a><span class="lineno">  339</span>                                          offset,</div>
-<div class="line"><a id="l00340" name="l00340"></a><span class="lineno">  340</span>                                          size_));</div>
-<div class="line"><a id="l00341" name="l00341"></a><span class="lineno">  341</span>    }</div>
-<div class="line"><a id="l00342" name="l00342"></a><span class="lineno">  342</span> </div>
-<div class="line"><a id="l00343" name="l00343"></a><span class="lineno">  343</span>    std::memcpy(<span class="keyword">reinterpret_cast&lt;</span>uint8_t*<span class="keyword">&gt;</span>(pyBuf.buf), begin() + offset, count);</div>
-<div class="line"><a id="l00344" name="l00344"></a><span class="lineno">  344</span>    PyBuffer_Release(&amp;pyBuf);</div>
-<div class="line"><a id="l00345" name="l00345"></a><span class="lineno">  345</span>}</div>
+<div class="line"><a id="l00333" name="l00333"></a><span class="lineno">  333</span>    <span class="keywordflow">if</span> (PyObject_GetBuffer(p.ptr(), &amp;pyBuf, PyBUF_CONTIG) &lt; 0)</div>
+<div class="line"><a id="l00334" name="l00334"></a><span class="lineno">  334</span>        <span class="keywordflow">throw</span>(<a class="code hl_class" href="classrogue_1_1GeneralError.html">rogue::GeneralError</a>(<span class="stringliteral">&quot;Transaction::getData&quot;</span>, <span class="stringliteral">&quot;Python Buffer Error In Frame&quot;</span>));</div>
+<div class="line"><a id="l00335" name="l00335"></a><span class="lineno">  335</span> </div>
+<div class="line"><a id="l00336" name="l00336"></a><span class="lineno">  336</span>    uint32_t count = pyBuf.len;</div>
+<div class="line"><a id="l00337" name="l00337"></a><span class="lineno">  337</span> </div>
+<div class="line"><a id="l00338" name="l00338"></a><span class="lineno">  338</span>    <span class="keywordflow">if</span> ((offset + count) &gt; size_) {</div>
+<div class="line"><a id="l00339" name="l00339"></a><span class="lineno">  339</span>        PyBuffer_Release(&amp;pyBuf);</div>
+<div class="line"><a id="l00340" name="l00340"></a><span class="lineno">  340</span>        <span class="keywordflow">throw</span>(<a class="code hl_function" href="classrogue_1_1GeneralError.html#ad37e9ca32b3afce0e38988b4a65c9e60">rogue::GeneralError::create</a>(<span class="stringliteral">&quot;Transaction::getData&quot;</span>,</div>
+<div class="line"><a id="l00341" name="l00341"></a><span class="lineno">  341</span>                                          <span class="stringliteral">&quot;Attempt to get %&quot;</span> PRIu32 <span class="stringliteral">&quot; bytes from offset %&quot;</span> PRIu32</div>
+<div class="line"><a id="l00342" name="l00342"></a><span class="lineno">  342</span>                                          <span class="stringliteral">&quot; to python buffer with size %&quot;</span> PRIu32,</div>
+<div class="line"><a id="l00343" name="l00343"></a><span class="lineno">  343</span>                                          count,</div>
+<div class="line"><a id="l00344" name="l00344"></a><span class="lineno">  344</span>                                          offset,</div>
+<div class="line"><a id="l00345" name="l00345"></a><span class="lineno">  345</span>                                          size_));</div>
+<div class="line"><a id="l00346" name="l00346"></a><span class="lineno">  346</span>    }</div>
+<div class="line"><a id="l00347" name="l00347"></a><span class="lineno">  347</span> </div>
+<div class="line"><a id="l00348" name="l00348"></a><span class="lineno">  348</span>    std::memcpy(<span class="keyword">reinterpret_cast&lt;</span>uint8_t*<span class="keyword">&gt;</span>(pyBuf.buf), begin() + offset, count);</div>
+<div class="line"><a id="l00349" name="l00349"></a><span class="lineno">  349</span>    PyBuffer_Release(&amp;pyBuf);</div>
+<div class="line"><a id="l00350" name="l00350"></a><span class="lineno">  350</span>}</div>
 </div>
-<div class="line"><a id="l00346" name="l00346"></a><span class="lineno">  346</span> </div>
-<div class="line"><a id="l00347" name="l00347"></a><span class="lineno">  347</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00351" name="l00351"></a><span class="lineno">  351</span> </div>
+<div class="line"><a id="l00352" name="l00352"></a><span class="lineno">  352</span><span class="preprocessor">#endif</span></div>
 <div class="ttc" id="aConstants_8h_html"><div class="ttname"><a href="Constants_8h.html">Constants.h</a></div></div>
 <div class="ttc" id="aDirectives_8h_html"><div class="ttname"><a href="Directives_8h.html">Directives.h</a></div></div>
 <div class="ttc" id="aGeneralError_8h_html"><div class="ttname"><a href="GeneralError_8h.html">GeneralError.h</a></div></div>
@@ -442,7 +447,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="ttc" id="aTransaction_8h_html"><div class="ttname"><a href="Transaction_8h.html">Transaction.h</a></div></div>
 <div class="ttc" id="aclassrogue_1_1GeneralError_html"><div class="ttname"><a href="classrogue_1_1GeneralError.html">rogue::GeneralError</a></div><div class="ttdoc">Generic Rogue exception type.</div><div class="ttdef"><b>Definition</b> <a href="GeneralError_8h_source.html#l00045">GeneralError.h:45</a></div></div>
 <div class="ttc" id="aclassrogue_1_1GeneralError_html_ad37e9ca32b3afce0e38988b4a65c9e60"><div class="ttname"><a href="classrogue_1_1GeneralError.html#ad37e9ca32b3afce0e38988b4a65c9e60">rogue::GeneralError::create</a></div><div class="ttdeci">static GeneralError create(std::string src, const char *fmt,...)</div><div class="ttdoc">Creates a formatted error instance.</div><div class="ttdef"><b>Definition</b> <a href="GeneralError_8cpp_source.html#l00038">GeneralError.cpp:38</a></div></div>
-<div class="ttc" id="aclassrogue_1_1Logging_html_a8c34b36f657b697d85f9a6c60f85f07c"><div class="ttname"><a href="classrogue_1_1Logging.html#a8c34b36f657b697d85f9a6c60f85f07c">rogue::Logging::create</a></div><div class="ttdeci">static std::shared_ptr&lt; rogue::Logging &gt; create(const std::string &amp;name, bool quiet=false)</div><div class="ttdoc">Creates a logger instance.</div><div class="ttdef"><b>Definition</b> <a href="Logging_8cpp_source.html#l00060">Logging.cpp:60</a></div></div>
+<div class="ttc" id="aclassrogue_1_1Logging_html_a8c34b36f657b697d85f9a6c60f85f07c"><div class="ttname"><a href="classrogue_1_1Logging.html#a8c34b36f657b697d85f9a6c60f85f07c">rogue::Logging::create</a></div><div class="ttdeci">static std::shared_ptr&lt; rogue::Logging &gt; create(const std::string &amp;name, bool quiet=false)</div><div class="ttdoc">Creates a logger instance.</div><div class="ttdef"><b>Definition</b> <a href="Logging_8cpp_source.html#l00095">Logging.cpp:95</a></div></div>
 <div class="ttc" id="aclassrogue_1_1ScopedGil_html"><div class="ttname"><a href="classrogue_1_1ScopedGil.html">rogue::ScopedGil</a></div><div class="ttdoc">RAII helper that acquires the Python GIL for a scope.</div><div class="ttdef"><b>Definition</b> <a href="ScopedGil_8h_source.html#l00035">ScopedGil.h:35</a></div></div>
 <div class="ttc" id="aclassrogue_1_1interfaces_1_1memory_1_1Transaction_html_a0deee61005984f9db783283fbf143ad5"><div class="ttname"><a href="classrogue_1_1interfaces_1_1memory_1_1Transaction.html#a0deee61005984f9db783283fbf143ad5">rogue::interfaces::memory::Transaction::warnTime_</a></div><div class="ttdeci">struct timeval warnTime_</div><div class="ttdef"><b>Definition</b> <a href="Transaction_8h_source.html#l00108">Transaction.h:108</a></div></div>
 <div class="ttc" id="aclassrogue_1_1interfaces_1_1memory_1_1Transaction_html_a1a3b302b8a1197e3280b1fe7c0581a09"><div class="ttname"><a href="classrogue_1_1interfaces_1_1memory_1_1Transaction.html#a1a3b302b8a1197e3280b1fe7c0581a09">rogue::interfaces::memory::Transaction::log_</a></div><div class="ttdeci">std::shared_ptr&lt; rogue::Logging &gt; log_</div><div class="ttdef"><b>Definition</b> <a href="Transaction_8h_source.html#l00152">Transaction.h:152</a></div></div>

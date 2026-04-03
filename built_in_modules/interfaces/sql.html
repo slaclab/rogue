@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SQL Logging &mdash; Rogue v6.8.5 documentation</title>
+  <title>SQL Logging &mdash; Rogue v6.9.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=8960aef2"></script>
+      <script src="../../_static/documentation_options.js?v=a0bc7a15"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -212,12 +212,11 @@ with standard SQLAlchemy or database tooling suited to the deployment.</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">SqlLogger</span></code> logger name: <code class="docutils literal notranslate"><span class="pre">pyrogue.SqlLogger</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">SqlReader</span></code> logger name: <code class="docutils literal notranslate"><span class="pre">pyrogue.SqlReader</span></code></p></li>
-<li><p>Configuration API:
-<code class="docutils literal notranslate"><span class="pre">logging.getLogger('pyrogue.SqlLogger').setLevel(logging.DEBUG)</span></code></p></li>
+<li><p>Logging API:
+<code class="docutils literal notranslate"><span class="pre">pyrogue.setLogLevel('pyrogue.SqlLogger',</span> <span class="pre">'DEBUG')</span></code></p></li>
 </ul>
 <p><code class="docutils literal notranslate"><span class="pre">SqlLogger</span></code> logs database open failures, connection success, and worker-side
-database write failures. Because these are Python loggers, they also feed the
-normal PyRogue Python logging path rather than Rogue C++ <code class="docutils literal notranslate"><span class="pre">rogue.Logging</span></code>.</p>
+database write failures.</p>
 </section>
 <section id="related-topics">
 <h2>Related Topics<a class="headerlink" href="#related-topics" title="Link to this heading"></a></h2>

@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>UdpRssiPack &mdash; Rogue v6.8.5 documentation</title>
+  <title>UdpRssiPack &mdash; Rogue v6.9.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
   
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=8960aef2"></script>
+      <script src="../../../../_static/documentation_options.js?v=a0bc7a15"></script>
       <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -101,6 +101,7 @@
 <li class="toctree-l5"><a class="reference internal" href="gpibcontroller.html">GpibController</a></li>
 <li class="toctree-l5"><a class="reference internal" href="gpibdevice.html">GpibDevice</a></li>
 <li class="toctree-l5"><a class="reference internal" href="epicsv4/index.html">pyrogue.protocols.epicsv4</a></li>
+<li class="toctree-l5"><a class="reference internal" href="epicsv7/index.html">pyrogue.protocols.epicsv7</a></li>
 </ul>
 </li>
 <li class="toctree-l4"><a class="reference internal" href="../utilities/index.html">pyrogue.utilities</a></li>
@@ -302,7 +303,19 @@ for communication over network links.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>number</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Number of variables to add.</p></li>
 <li><p><strong>stride</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Byte stride between instances.</p></li>
-<li><p><strong>pack</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>, default: <code class="docutils literal notranslate"><span class="pre">False</span></code>) – If True, add a packed link variable for all entries.</p></li>
+<li><p><strong>pack</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>, default: <code class="docutils literal notranslate"><span class="pre">False</span></code>) – <p>If True, also add a <code class="docutils literal notranslate"><span class="pre">LinkVariable</span></code> named <code class="docutils literal notranslate"><span class="pre">&lt;name&gt;_All</span></code> which
+combines all entries into one underscore-delimited display string.</p>
+<p>The indexed <code class="docutils literal notranslate"><span class="pre">RemoteVariable</span></code> container remains available at the
+original <code class="docutils literal notranslate"><span class="pre">name</span></code>. The packed alias uses each element variable’s
+<code class="docutils literal notranslate"><span class="pre">getDisp()</span></code> and <code class="docutils literal notranslate"><span class="pre">setDisp()</span></code> behavior, so formatting follows the
+underlying variable type. Values are joined in reverse index order:
+for a variable array <code class="docutils literal notranslate"><span class="pre">Field[0]</span></code>, <code class="docutils literal notranslate"><span class="pre">Field[1]</span></code>, <code class="docutils literal notranslate"><span class="pre">Field[2]</span></code>, the
+packed value <code class="docutils literal notranslate"><span class="pre">Field_All</span></code> reads like
+<code class="docutils literal notranslate"><span class="pre">Field[2]_Field[1]_Field[0]</span></code> and writing <code class="docutils literal notranslate"><span class="pre">&quot;1_2_3&quot;</span></code> updates
+<code class="docutils literal notranslate"><span class="pre">Field[2]</span> <span class="pre">=</span> <span class="pre">1</span></code>, <code class="docutils literal notranslate"><span class="pre">Field[1]</span> <span class="pre">=</span> <span class="pre">2</span></code>, and <code class="docutils literal notranslate"><span class="pre">Field[0]</span> <span class="pre">=</span> <span class="pre">3</span></code>.</p>
+<p>This is intended for orthogonal register fields that are convenient
+to expose both as individual variables and as one combined value.</p>
+</p></li>
 <li><p><strong>**kwargs</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a></span>) – Arguments forwarded to <code class="docutils literal notranslate"><span class="pre">RemoteVariable</span></code>.</p></li>
 </ul>
 </dd>
@@ -364,6 +377,17 @@ for communication over network links.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.protocols.UdpRssiPack.classLogName">
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">classLogName</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyrogue.protocols.UdpRssiPack.classLogName" title="Link to this definition"></a></dt>
+<dd><p>Return the canonical Python logger name for this Node class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
 </dd>
 </dl>
 </dd></dl>
@@ -691,6 +715,17 @@ The linked-get wrapper supplies keyword arguments <code class="docutils literal 
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.protocols.UdpRssiPack.logName">
+<span class="sig-name descname"><span class="pre">logName</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyrogue.protocols.UdpRssiPack.logName" title="Link to this definition"></a></dt>
+<dd><p>Return the canonical logger name for this Node instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="pyrogue.protocols.UdpRssiPack.makeRecursive">
 <span class="sig-name descname"><span class="pre">makeRecursive</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nodeTypes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyrogue.protocols.UdpRssiPack.makeRecursive" title="Link to this definition"></a></dt>
 <dd><p>Create a recursive wrapper for a named method.</p>
@@ -876,6 +911,42 @@ The linked-get wrapper supplies keyword arguments <code class="docutils literal 
 <dt class="sig sig-object py" id="pyrogue.protocols.UdpRssiPack.running">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">running</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><a class="headerlink" href="#pyrogue.protocols.UdpRssiPack.running" title="Link to this definition"></a></dt>
 <dd><p>Return True if the device is running.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.protocols.UdpRssiPack.setClassLogLevel">
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">setClassLogLevel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">level</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">includePython</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">includeRogue</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyrogue.protocols.UdpRssiPack.setClassLogLevel" title="Link to this definition"></a></dt>
+<dd><p>Set the logging level for this Node class logger family.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>level</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>)</p></li>
+<li><p><strong>includePython</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>)</p></li>
+<li><p><strong>includeRogue</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.protocols.UdpRssiPack.setLogLevel">
+<span class="sig-name descname"><span class="pre">setLogLevel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">level</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">includePython</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">includeRogue</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyrogue.protocols.UdpRssiPack.setLogLevel" title="Link to this definition"></a></dt>
+<dd><p>Set the logging level for this Node instance logger.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>level</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>)</p></li>
+<li><p><strong>includePython</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>)</p></li>
+<li><p><strong>includeRogue</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>)</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">

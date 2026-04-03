@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Epics PV Holder Protocol &mdash; Rogue v6.8.5 documentation</title>
+  <title>Epics PV Holder Protocol &mdash; Rogue v6.9.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=8960aef2"></script>
+      <script src="../../../_static/documentation_options.js?v=a0bc7a15"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -24,7 +24,7 @@
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="SRP Protocol" href="../srp/index.html" />
+    <link rel="next" title="EPICS V7 Access" href="../epicsV7/index.html" />
     <link rel="prev" title="Epics PV Server Protocol" href="epicspvserver.html" /> 
 </head>
 
@@ -69,6 +69,7 @@
 <li class="toctree-l4 current"><a class="current reference internal" href="#">Epics PV Holder Protocol</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../epicsV7/index.html">EPICS V7 Access</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../srp/index.html">SRP Protocol</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../xilinx/index.html">Xilinx Protocols</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../uart.html">UART Memory</a></li>
@@ -143,6 +144,16 @@ string-oriented EPICS representation.</p></li>
 PyRogue set and display paths. Commands are exposed through EPICS RPC behavior,
 with the holder forwarding the EPICS request payload into the bound PyRogue
 command and packaging the return value back into the EPICS response.</p>
+<section id="rpc-dispatch">
+<h3>RPC Dispatch<a class="headerlink" href="#rpc-dispatch" title="Link to this heading"></a></h3>
+<p>When an EPICS client calls <code class="docutils literal notranslate"><span class="pre">ctxt.rpc()</span></code> on a command-backed PV, the
+<code class="docutils literal notranslate"><span class="pre">EpicsPvHandler.rpc()</span></code> method extracts the query from the incoming request.
+If the query contains an <code class="docutils literal notranslate"><span class="pre">arg</span></code> field, the value is forwarded to the PyRogue
+command; otherwise the command is called with no argument. The return value is
+wrapped in a P4P <code class="docutils literal notranslate"><span class="pre">Value</span></code> and sent back to the client.</p>
+<p>For usage examples and client-side patterns, see
+<a class="reference internal" href="epicspvserver.html#protocols-epicsv4-epicspvserver"><span class="std std-ref">Epics PV Server Protocol</span></a>.</p>
+</section>
 </section>
 <section id="lifecycle-role-in-the-server">
 <h2>Lifecycle Role in the Server<a class="headerlink" href="#lifecycle-role-in-the-server" title="Link to this heading"></a></h2>
@@ -156,8 +167,8 @@ for the server lifetime.</p>
 server logger passed in from <code class="docutils literal notranslate"><span class="pre">EpicsPvServer</span></code>:</p>
 <ul class="simple">
 <li><p>Logger name: <code class="docutils literal notranslate"><span class="pre">pyrogue.EpicsPvServer</span></code></p></li>
-<li><p>Configuration API:
-<code class="docutils literal notranslate"><span class="pre">logging.getLogger('pyrogue.EpicsPvServer').setLevel(logging.DEBUG)</span></code></p></li>
+<li><p>Logging API:
+<code class="docutils literal notranslate"><span class="pre">pyrogue.setLogLevel('pyrogue.EpicsPvServer',</span> <span class="pre">'DEBUG')</span></code></p></li>
 </ul>
 <p>That means put/get/rpc handling errors reported by a holder appear under the
 server logger rather than a per-PV logger.</p>
@@ -186,7 +197,7 @@ server logger rather than a per-PV logger.</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="epicspvserver.html" class="btn btn-neutral float-left" title="Epics PV Server Protocol" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../srp/index.html" class="btn btn-neutral float-right" title="SRP Protocol" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../epicsV7/index.html" class="btn btn-neutral float-right" title="EPICS V7 Access" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

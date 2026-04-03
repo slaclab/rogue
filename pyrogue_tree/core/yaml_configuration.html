@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>YAML Configuration &mdash; Rogue v6.8.5 documentation</title>
+  <title>YAML Configuration &mdash; Rogue v6.9.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=8960aef2"></script>
+      <script src="../../_static/documentation_options.js?v=a0bc7a15"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -181,12 +181,24 @@ implementation, the input can be:</p>
 <li><p>A single <code class="docutils literal notranslate"><span class="pre">.yml</span></code> or <code class="docutils literal notranslate"><span class="pre">.yaml</span></code> file.</p></li>
 <li><p>A directory, in which case all <code class="docutils literal notranslate"><span class="pre">.yml</span></code> and <code class="docutils literal notranslate"><span class="pre">.yaml</span></code> files in that
 directory are loaded in sorted order.</p></li>
-<li><p>A zip-file subdirectory path.</p></li>
+<li><p>A zip-file subdirectory path, using the same sorted-order rule on the
+matching member names in that directory.</p></li>
 <li><p>A Python list of those entries.</p></li>
 <li><p>A comma-separated string of entries.</p></li>
 </ul>
 <p><code class="docutils literal notranslate"><span class="pre">Root.setYaml(...)</span></code> applies YAML text directly without going through the
 filesystem.</p>
+<p>YAML content is parsed through <code class="xref py py-func docutils literal notranslate"><span class="pre">pyrogue.yamlToData()</span></code>, so the same
+<code class="docutils literal notranslate"><span class="pre">!include</span></code> handling is available during <code class="docutils literal notranslate"><span class="pre">loadYaml(...)</span></code> as when parsing
+YAML directly. Relative includes are resolved relative to the file being read.</p>
+<p>For directory-like inputs, “sorted order” means an ascending lexicographic sort
+of the full path strings being loaded. For one directory, that is effectively
+lexicographic filename order. For example:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">00-defaults.yml</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">10-overrides.yml</span></code></p></li>
+</ul>
+<p>load in that order, so later files can intentionally override earlier values.</p>
 <p>For <code class="docutils literal notranslate"><span class="pre">loadYaml(...,</span> <span class="pre">writeEach=False)</span></code> and <code class="docutils literal notranslate"><span class="pre">setYaml(...,</span> <span class="pre">writeEach=False)</span></code>,
 the application workflow is:</p>
 <ol class="arabic simple">
@@ -201,12 +213,21 @@ configuration-commit path through <code class="docutils literal notranslate"><sp
 <li><p>If a Variable is assigned more than once while loading, the last assignment
 wins in shadow memory before commit</p></li>
 <li><p>Hardware is not touched until the bulk commit step</p></li>
+<li><p>For directory and zip-directory loads, “last assignment wins” follows the
+lexicographic file/member order described above</p></li>
+<li><p>For explicit Python lists or comma-separated file lists, it follows the
+order you passed to <code class="docutils literal notranslate"><span class="pre">loadYaml(...)</span></code></p></li>
 </ul>
 <p>If <code class="docutils literal notranslate"><span class="pre">writeEach=True</span></code>, each <code class="docutils literal notranslate"><span class="pre">setDisp</span></code> write is issued immediately while YAML
-is being traversed (no final consolidated <code class="docutils literal notranslate"><span class="pre">Root._write()</span></code> pass).</p>
+is being traversed (no final consolidated <code class="docutils literal notranslate"><span class="pre">Root._write()</span></code> pass). That means
+later YAML entries can still overwrite earlier values, but the intermediate
+hardware writes have already occurred.</p>
 <p>The load path is wrapped in both <code class="docutils literal notranslate"><span class="pre">Root.pollBlock()</span></code> and <code class="docutils literal notranslate"><span class="pre">Root.updateGroup()</span></code>
 so polling does not race with the configuration operation and listeners see a
 coalesced update batch.</p>
+<p>For zip-file subdirectory loads, only YAML files in the immediate requested
+directory are considered. Nested subdirectories are ignored, matching the
+normal directory behavior.</p>
 <p>The staged values are then committed using the normal tree transaction path.
 For the bulk write, verify, read, and check model behind that commit step, see
 <a class="reference internal" href="block_operations.html"><span class="doc">Device Block Operations</span></a>.</p>

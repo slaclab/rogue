@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EPICS V4 Access &mdash; Rogue v6.8.5 documentation</title>
+  <title>EPICS V4 Access &mdash; Rogue v6.9.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=8960aef2"></script>
+      <script src="../../../_static/documentation_options.js?v=a0bc7a15"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -69,6 +69,7 @@
 <li class="toctree-l4"><a class="reference internal" href="epicspvholder.html">Epics PV Holder Protocol</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../epicsV7/index.html">EPICS V7 Access</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../srp/index.html">SRP Protocol</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../xilinx/index.html">Xilinx Protocols</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../uart.html">UART Memory</a></li>
@@ -151,6 +152,16 @@ mapping with <code class="docutils literal notranslate"><span class="pre">list()
 only the intended EPICS PV surface.</p>
 <p>For group semantics and filtering behavior in the tree model, see
 <a class="reference internal" href="../../../pyrogue_tree/core/groups.html"><span class="doc">Groups</span></a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Neither softioc nor p4p exposes a Python callback that fires when a CA or
+PVA client issues a <code class="docutils literal notranslate"><span class="pre">caget</span></code> / <code class="docutils literal notranslate"><span class="pre">ctxt.get()</span></code>. Both EPICS V4 (p4p) and
+V7 (softioc) integrations serve the most recently pushed value from the
+EPICS record buffer. To ensure clients receive up-to-date hardware values,
+the Rogue server process must execute hardware reads itself — either via
+PyRogue auto-polling (<code class="docutils literal notranslate"><span class="pre">pollInterval</span></code> on variables or <code class="docutils literal notranslate"><span class="pre">pollEn=True</span></code> on
+the Root) or by calling device-level read commands explicitly.</p>
+</div>
 </section>
 <section id="subtopics">
 <h2>Subtopics<a class="headerlink" href="#subtopics" title="Link to this heading"></a></h2>

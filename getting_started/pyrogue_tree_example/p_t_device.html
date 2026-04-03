@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Create A Custom PyRogue Device &mdash; Rogue v6.8.5 documentation</title>
+  <title>Create A Custom PyRogue Device &mdash; Rogue v6.9.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=8960aef2"></script>
+      <script src="../../_static/documentation_options.js?v=a0bc7a15"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -238,7 +238,6 @@ values, and command interfaces.</p>
         <span class="n">hidden</span>       <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="p">)</span>
 
-
     <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
         <span class="n">name</span>         <span class="o">=</span> <span class="s1">&#39;DeviceId&#39;</span><span class="p">,</span>
         <span class="n">description</span>  <span class="o">=</span> <span class="s1">&#39;Device Identification  (configured by generic)&#39;</span><span class="p">,</span>
@@ -450,6 +449,12 @@ values, and command interfaces.</p>
     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;AxiVersion count reset called&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
+<p>This example uses <a class="reference internal" href="../../api/python/pyrogue/device.html#pyrogue.Device.addRemoteVariables" title="pyrogue.Device.addRemoteVariables"><code class="xref py py-meth docutils literal notranslate"><span class="pre">addRemoteVariables()</span></code></a> to build an
+indexed container of <code class="docutils literal notranslate"><span class="pre">RemoteVariable</span></code> entries such as
+<code class="docutils literal notranslate"><span class="pre">UserConstants[0]</span></code>, <code class="docutils literal notranslate"><span class="pre">UserConstants[1]</span></code>, and so on. If the same call uses
+<code class="docutils literal notranslate"><span class="pre">pack=True</span></code>, PyRogue also adds <code class="docutils literal notranslate"><span class="pre">UserConstants_All</span></code> as a packed
+<code class="docutils literal notranslate"><span class="pre">LinkVariable</span></code> whose value is the underscore-joined display form of the
+array entries in reverse index order.</p>
 </section>
 
 

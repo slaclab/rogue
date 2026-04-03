@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Rogue Widgets &mdash; Rogue v6.8.5 documentation</title>
+  <title>Rogue Widgets &mdash; Rogue v6.9.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=8960aef2"></script>
+      <script src="../_static/documentation_options.js?v=a0bc7a15"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -152,7 +152,9 @@ inspection. Use custom screens with Rogue widgets when you want:</p>
 </ul>
 <p>For code-constructed displays, the normal top-level object is a
 <code class="xref py py-class docutils literal notranslate"><span class="pre">pydm.Display</span></code> subclass. Rogue’s widgets are then added to that
-display just like any other Qt/PyDM widget tree. The launcher details for that
+display just like any other Qt/PyDM widget tree. Those displays can now be
+launched directly through <a class="reference internal" href="../api/python/pyrogue/pydm_runpydm.html#pyrogue.pydm.runPyDM" title="pyrogue.pydm.runPyDM"><code class="xref py py-func docutils literal notranslate"><span class="pre">pyrogue.pydm.runPyDM()</span></code></a> using the
+<code class="docutils literal notranslate"><span class="pre">display=</span></code> or <code class="docutils literal notranslate"><span class="pre">display_factory=</span></code> arguments. The launcher details for that
 pattern are covered in <a class="reference internal" href="starting_gui.html"><span class="doc">Starting The Rogue PyDM GUI</span></a>.</p>
 </section>
 <section id="what-to-explore-next">

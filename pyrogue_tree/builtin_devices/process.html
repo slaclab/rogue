@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Process Device Class &mdash; Rogue v6.8.5 documentation</title>
+  <title>Process Device Class &mdash; Rogue v6.9.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=8960aef2"></script>
+      <script src="../../_static/documentation_options.js?v=a0bc7a15"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -173,13 +173,20 @@ pass one tree-visible argument into the procedure and publish one result back
 out through the tree.</p>
 <p>There are two common ways to drive <code class="docutils literal notranslate"><span class="pre">Progress</span></code>:</p>
 <ul class="simple">
-<li><p>Set <code class="docutils literal notranslate"><span class="pre">Progress</span></code> directly when the procedure naturally reports fractional
+<li><p>Call <code class="docutils literal notranslate"><span class="pre">setProgress(value)</span></code> when the procedure naturally reports fractional
 completion on its own.</p></li>
-<li><p>Use <code class="docutils literal notranslate"><span class="pre">Step</span></code> and <code class="docutils literal notranslate"><span class="pre">TotalSteps</span></code> together, then call <code class="docutils literal notranslate"><span class="pre">_setSteps()</span></code> or
-<code class="docutils literal notranslate"><span class="pre">_incrementSteps()</span></code> so PyRogue updates <code class="docutils literal notranslate"><span class="pre">Progress</span></code> from the step count.</p></li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">setTotalSteps()</span></code>, <code class="docutils literal notranslate"><span class="pre">setStep()</span></code>, and <code class="docutils literal notranslate"><span class="pre">incrementSteps()</span></code> when the
+procedure is naturally step-based and <code class="docutils literal notranslate"><span class="pre">Progress</span></code> should be derived from
+<code class="docutils literal notranslate"><span class="pre">Step</span></code> and <code class="docutils literal notranslate"><span class="pre">TotalSteps</span></code>.</p></li>
 </ul>
 <p>The second pattern is often clearer for iterative procedures, while the first
 fits algorithms whose completion metric is not naturally “step N out of M.”</p>
+<p>Direct writes to <code class="docutils literal notranslate"><span class="pre">Progress</span></code>, <code class="docutils literal notranslate"><span class="pre">Step</span></code>, and <code class="docutils literal notranslate"><span class="pre">TotalSteps</span></code> are also supported
+for compatibility with existing code. <code class="docutils literal notranslate"><span class="pre">Progress</span></code> is clamped into the valid
+<code class="docutils literal notranslate"><span class="pre">0.0</span></code> to <code class="docutils literal notranslate"><span class="pre">1.0</span></code> range, and step-based progress recomputes automatically
+when <code class="docutils literal notranslate"><span class="pre">Step</span></code> or <code class="docutils literal notranslate"><span class="pre">TotalSteps</span></code> changes. The older <code class="docutils literal notranslate"><span class="pre">_setSteps()</span></code> and
+<code class="docutils literal notranslate"><span class="pre">_incrementSteps()</span></code> helpers remain available as compatibility wrappers, but
+new code should prefer the public methods above.</p>
 </section>
 <section id="concrete-example">
 <h2>Concrete Example<a class="headerlink" href="#concrete-example" title="Link to this heading"></a></h2>
@@ -220,9 +227,9 @@ operator-facing settings and result storage, then updates <code class="docutils 
 
             <span class="c1"># Initialize the built-in status Variables before starting work.</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">Message</span><span class="o">.</span><span class="n">setDisp</span><span class="p">(</span><span class="s1">&#39;Running capture&#39;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">TotalSteps</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">total</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">Step</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">Progress</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setTotalSteps</span><span class="p">(</span><span class="n">total</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setStep</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setProgress</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
 
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">total</span><span class="p">):</span>
                 <span class="c1"># Respect the built-in Stop command.</span>
@@ -234,8 +241,8 @@ operator-facing settings and result storage, then updates <code class="docutils 
                 <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.01</span><span class="p">)</span>
                 <span class="n">captured</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
 
-                <span class="c1"># _setSteps() updates both Step and Progress together.</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_setSteps</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="c1"># setStep() updates Step and recomputes Progress together.</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">setStep</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
 
             <span class="c1"># Publish the final result back into the tree.</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">CaptureResult</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">captured</span><span class="p">)</span>
@@ -260,8 +267,8 @@ written to that Variable before the background thread starts.</p>
 <p>Good <code class="docutils literal notranslate"><span class="pre">Process</span></code> implementations usually:</p>
 <ul class="simple">
 <li><p>Update <code class="docutils literal notranslate"><span class="pre">Message</span></code> with short operator-facing status text</p></li>
-<li><p>Keep <code class="docutils literal notranslate"><span class="pre">Progress</span></code> and <code class="docutils literal notranslate"><span class="pre">Step</span></code> / <code class="docutils literal notranslate"><span class="pre">TotalSteps</span></code> consistent when progress is
-meaningful</p></li>
+<li><p>Prefer <code class="docutils literal notranslate"><span class="pre">setProgress()</span></code> for fractional progress and <code class="docutils literal notranslate"><span class="pre">setTotalSteps()</span></code>,
+<code class="docutils literal notranslate"><span class="pre">setStep()</span></code>, or <code class="docutils literal notranslate"><span class="pre">incrementSteps()</span></code> for step-based progress</p></li>
 <li><p>Add explicit input or result Variables when the procedure needs operator
 parameters or produces structured output</p></li>
 <li><p>Check the stop condition when the work can be interrupted cleanly</p></li>

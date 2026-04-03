@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue.pydm &mdash; Rogue v6.8.5 documentation</title>
+  <title>pyrogue.pydm &mdash; Rogue v6.9.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -14,7 +14,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=8960aef2"></script>
+      <script src="../../_static/documentation_options.js?v=a0bc7a15"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -87,6 +87,9 @@
              
   <h1>Source code for pyrogue.pydm</h1><div class="highlight"><pre>
 <span></span><span class="c1">#-----------------------------------------------------------------------------</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="c1">#-----------------------------------------------------------------------------</span>
 <span class="c1"># Company    : SLAC National Accelerator Laboratory</span>
 <span class="c1">#-----------------------------------------------------------------------------</span>
 <span class="c1">#  Description:</span>
@@ -102,11 +105,49 @@
 <span class="c1">#-----------------------------------------------------------------------------</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">signal</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">inspect</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">types</span><span class="w"> </span><span class="kn">import</span> <span class="n">FrameType</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">pydm</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">pydm.data_plugins</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pyrogue.pydm.data_plugins.rogue_plugin</span><span class="w"> </span><span class="kn">import</span> <span class="n">RoguePlugin</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pyrogue.interfaces</span><span class="w"> </span><span class="kn">import</span> <span class="n">VirtualClient</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">pydm</span><span class="w"> </span><span class="kn">import</span> <span class="n">Display</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_constructDisplay</span><span class="p">(</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">display</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">Display</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">display_factory</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Display</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">args</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Display</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Construct a PyDM ``Display`` from a class or factory.&quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">pydm</span><span class="w"> </span><span class="kn">import</span> <span class="n">Display</span>
+
+    <span class="n">target</span> <span class="o">=</span> <span class="n">display_factory</span> <span class="k">if</span> <span class="n">display_factory</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">display</span>
+    <span class="k">if</span> <span class="n">target</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="n">display</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">display</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">,</span> <span class="n">macros</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+    <span class="n">sig</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
+    <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">sig</span><span class="o">.</span><span class="n">parameters</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;parent&#39;</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;args&#39;</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span>
+        <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;macros&#39;</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="n">disp</span> <span class="o">=</span> <span class="n">target</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">disp</span><span class="p">,</span> <span class="n">Display</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;display_factory must return a pydm.Display instance&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">disp</span>
 
 <span class="c1"># Define a signal handler to ensure the application quits gracefully</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">pydmSignalHandler</span><span class="p">(</span><span class="n">sig</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">frame</span><span class="p">:</span> <span class="n">FrameType</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -119,9 +160,37 @@
 <span class="sd">    frame : types.FrameType | None</span>
 <span class="sd">        Current stack frame provided by :mod:`signal`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">pydm</span>
+
     <span class="n">app</span> <span class="o">=</span> <span class="n">pydm</span><span class="o">.</span><span class="n">PyDMApplication</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">app</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">app</span><span class="o">.</span><span class="n">closeAllWindows</span><span class="p">()</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_configureVirtualClients</span><span class="p">(</span>
+    <span class="n">serverList</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">linkTimeout</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">requestStallTimeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Preconfigure cached VirtualClient instances for each GUI server.</span>
+
+<span class="sd">    The GUI shares one cached VirtualClient per ``host:port`` endpoint. This</span>
+<span class="sd">    helper applies timeout settings before PyDM widgets create channels so the</span>
+<span class="sd">    whole session uses consistent link-state behavior.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">server</span> <span class="ow">in</span> <span class="n">serverList</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">):</span>
+        <span class="n">server</span> <span class="o">=</span> <span class="n">server</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">server</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="n">host</span><span class="p">,</span> <span class="n">port</span> <span class="o">=</span> <span class="n">server</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">VirtualClient</span><span class="p">(</span>
+            <span class="n">addr</span><span class="o">=</span><span class="n">host</span><span class="p">,</span>
+            <span class="n">port</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">port</span><span class="p">),</span>
+            <span class="n">linkTimeout</span><span class="o">=</span><span class="n">linkTimeout</span><span class="p">,</span>
+            <span class="n">requestStallTimeout</span><span class="o">=</span><span class="n">requestStallTimeout</span><span class="p">,</span>
+        <span class="p">)</span>
 
 <span class="c1"># Function to run the PyDM application with specified parameters</span>
 <div class="viewcode-block" id="runPyDM">
@@ -129,11 +198,15 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">runPyDM</span><span class="p">(</span>
     <span class="n">serverList</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;localhost:9090&#39;</span><span class="p">,</span>
     <span class="n">ui</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">display</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">Display</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">display_factory</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Display</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">sizeX</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">800</span><span class="p">,</span>
     <span class="n">sizeY</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span>
     <span class="n">maxListExpand</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
     <span class="n">maxListSize</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
+    <span class="n">linkTimeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">10.0</span><span class="p">,</span>
+    <span class="n">requestStallTimeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Launch the default Rogue PyDM application.</span>
 
@@ -142,7 +215,12 @@
 <span class="sd">    serverList : str, optional</span>
 <span class="sd">        Comma-separated list of ``host:port`` Rogue servers.</span>
 <span class="sd">    ui : str | None, optional</span>
-<span class="sd">        Optional UI file path. Defaults to ``pydmTop.py`` in this package.</span>
+<span class="sd">        Optional UI file path. Defaults to ``pydmTop.py`` in this package if</span>
+<span class="sd">        neither ``display`` nor ``display_factory`` is supplied.</span>
+<span class="sd">    display : type[pydm.Display] | None, optional</span>
+<span class="sd">        Optional top-level ``pydm.Display`` subclass to instantiate directly.</span>
+<span class="sd">    display_factory : callable | None, optional</span>
+<span class="sd">        Optional factory that returns a ``pydm.Display`` instance.</span>
 <span class="sd">    title : str | None, optional</span>
 <span class="sd">        Optional window title. Defaults to ``&quot;Rogue Server: &lt;servers&gt;&quot;``.</span>
 <span class="sd">    sizeX : int, optional</span>
@@ -153,18 +231,42 @@
 <span class="sd">        Debug-tree auto-expand depth argument forwarded to the UI.</span>
 <span class="sd">    maxListSize : int, optional</span>
 <span class="sd">        Debug-tree list-size cap argument forwarded to the UI.</span>
+<span class="sd">    linkTimeout : float, optional</span>
+<span class="sd">        Idle timeout in seconds for VirtualClient link-state detection. This is</span>
+<span class="sd">        the normal tuning knob for long-running hardware or simulation</span>
+<span class="sd">        transactions and defaults to 10 seconds.</span>
+<span class="sd">    requestStallTimeout : float | None, optional</span>
+<span class="sd">        In-flight request age in seconds before the VirtualClient declares the</span>
+<span class="sd">        server stalled. ``None`` disables stalled-request detection, which is</span>
+<span class="sd">        usually the right default unless the application has a strict upper</span>
+<span class="sd">        bound for valid request duration.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    None</span>
 <span class="sd">        This function runs the Qt event loop until the application exits.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">pydm</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">pydm.data_plugins</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">pydm.utilities</span><span class="w"> </span><span class="kn">import</span> <span class="n">establish_widget_connections</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">pydm.widgets.rules</span><span class="w"> </span><span class="kn">import</span> <span class="n">register_widget_rules</span>
+
+    <span class="kn">from</span><span class="w"> </span><span class="nn">pyrogue.pydm.data_plugins.rogue_plugin</span><span class="w"> </span><span class="kn">import</span> <span class="n">RoguePlugin</span>
+
+    <span class="k">if</span> <span class="nb">sum</span><span class="p">(</span><span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="p">(</span><span class="n">ui</span><span class="p">,</span> <span class="n">display</span><span class="p">,</span> <span class="n">display_factory</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;ui, display, and display_factory are mutually exclusive&quot;</span><span class="p">)</span>
 
     <span class="c1"># Set the ROGUE_SERVERS environment variable</span>
     <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;ROGUE_SERVERS&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">serverList</span>
 
-    <span class="c1"># Set the UI file to a default value if not provided</span>
-    <span class="k">if</span> <span class="n">ui</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">ui</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+    <span class="n">_configureVirtualClients</span><span class="p">(</span>
+        <span class="n">serverList</span><span class="p">,</span>
+        <span class="n">linkTimeout</span><span class="o">=</span><span class="n">linkTimeout</span><span class="p">,</span>
+        <span class="n">requestStallTimeout</span><span class="o">=</span><span class="n">requestStallTimeout</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Set the UI file to a default value only for the file-based launch path</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">ui</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">ui</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">display</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">display_factory</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">ui</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span> <span class="o">+</span> <span class="s1">&#39;/pydmTop.py&#39;</span>
 
     <span class="c1"># Set the title to a default value if not provided</span>
@@ -191,6 +293,14 @@
                                <span class="n">hide_nav_bar</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                                <span class="n">hide_menu_bar</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                                <span class="n">hide_status_bar</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">custom_display</span> <span class="o">=</span> <span class="n">_constructDisplay</span><span class="p">(</span><span class="n">display</span><span class="o">=</span><span class="n">display</span><span class="p">,</span> <span class="n">display_factory</span><span class="o">=</span><span class="n">display_factory</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">custom_display</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">establish_widget_connections</span><span class="p">(</span><span class="n">custom_display</span><span class="p">)</span>
+        <span class="n">register_widget_rules</span><span class="p">(</span><span class="n">custom_display</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">app</span><span class="o">.</span><span class="n">main_window</span><span class="o">.</span><span class="n">home_widget</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">app</span><span class="o">.</span><span class="n">main_window</span><span class="o">.</span><span class="n">home_widget</span> <span class="o">=</span> <span class="n">custom_display</span>
+        <span class="n">app</span><span class="o">.</span><span class="n">main_window</span><span class="o">.</span><span class="n">set_display_widget</span><span class="p">(</span><span class="n">custom_display</span><span class="p">)</span>
 
     <span class="c1"># Setup signal handling for CTRL+C and SIGTERM for handling termination signal</span>
     <span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGINT</span><span class="p">,</span> <span class="n">pydmSignalHandler</span><span class="p">)</span>

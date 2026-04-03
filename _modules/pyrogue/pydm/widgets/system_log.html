@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue.pydm.widgets.system_log &mdash; Rogue v6.8.5 documentation</title>
+  <title>pyrogue.pydm.widgets.system_log &mdash; Rogue v6.9.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
@@ -14,7 +14,7 @@
   
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=8960aef2"></script>
+      <script src="../../../../_static/documentation_options.js?v=a0bc7a15"></script>
       <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -186,7 +186,15 @@
         <span class="c1"># Unclear if that is neccessary.</span>
         <span class="k">for</span> <span class="n">ent</span> <span class="ow">in</span> <span class="n">lst</span><span class="p">[</span><span class="o">-</span><span class="mi">20</span><span class="p">:]:</span>
             <span class="n">widget</span> <span class="o">=</span> <span class="n">QTreeWidgetItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_systemLog</span><span class="p">)</span>
-            <span class="n">widget</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S %Z&quot;</span><span class="p">,</span> <span class="n">time</span><span class="o">.</span><span class="n">localtime</span><span class="p">(</span><span class="n">ent</span><span class="p">[</span><span class="s1">&#39;created&#39;</span><span class="p">])))</span>
+            <span class="n">tags</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">if</span> <span class="n">ent</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;rogueCpp&#39;</span><span class="p">):</span>
+                <span class="n">tags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;C++&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">ent</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;rogueComponent&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">tags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ent</span><span class="p">[</span><span class="s1">&#39;rogueComponent&#39;</span><span class="p">])</span>
+            <span class="n">stamp</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S %Z&quot;</span><span class="p">,</span> <span class="n">time</span><span class="o">.</span><span class="n">localtime</span><span class="p">(</span><span class="n">ent</span><span class="p">[</span><span class="s1">&#39;created&#39;</span><span class="p">]))</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tags</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">stamp</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">stamp</span><span class="si">}</span><span class="s2"> [</span><span class="si">{</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tags</span><span class="p">)</span><span class="si">}</span><span class="s2">]&quot;</span>
+            <span class="n">widget</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">stamp</span><span class="p">)</span>
 
             <span class="n">widget</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">ent</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">])</span>
             <span class="n">widget</span><span class="o">.</span><span class="n">setExpanded</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
@@ -201,6 +209,36 @@
             <span class="n">temp</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="s1">&#39;Level&#39;</span><span class="p">)</span>
             <span class="n">temp</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> (</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ent</span><span class="p">[</span><span class="s1">&#39;levelName&#39;</span><span class="p">],</span><span class="n">ent</span><span class="p">[</span><span class="s1">&#39;levelNumber&#39;</span><span class="p">]))</span>
             <span class="n">temp</span><span class="o">.</span><span class="n">setTextAlignment</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignRight</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">ent</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;rogueCpp&#39;</span><span class="p">):</span>
+                <span class="n">temp</span> <span class="o">=</span> <span class="n">QTreeWidgetItem</span><span class="p">(</span><span class="n">widget</span><span class="p">)</span>
+                <span class="n">temp</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="s1">&#39;Source&#39;</span><span class="p">)</span>
+                <span class="n">temp</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="s1">&#39;Rogue C++&#39;</span><span class="p">)</span>
+                <span class="n">temp</span><span class="o">.</span><span class="n">setTextAlignment</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignRight</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">ent</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;rogueComponent&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">temp</span> <span class="o">=</span> <span class="n">QTreeWidgetItem</span><span class="p">(</span><span class="n">widget</span><span class="p">)</span>
+                <span class="n">temp</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="s1">&#39;Component&#39;</span><span class="p">)</span>
+                <span class="n">temp</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">ent</span><span class="p">[</span><span class="s1">&#39;rogueComponent&#39;</span><span class="p">]))</span>
+                <span class="n">temp</span><span class="o">.</span><span class="n">setTextAlignment</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignRight</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">ent</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;rogueLogger&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">temp</span> <span class="o">=</span> <span class="n">QTreeWidgetItem</span><span class="p">(</span><span class="n">widget</span><span class="p">)</span>
+                <span class="n">temp</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="s1">&#39;Rogue Logger&#39;</span><span class="p">)</span>
+                <span class="n">temp</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">ent</span><span class="p">[</span><span class="s1">&#39;rogueLogger&#39;</span><span class="p">]))</span>
+                <span class="n">temp</span><span class="o">.</span><span class="n">setTextAlignment</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignRight</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">ent</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;rogueTid&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">temp</span> <span class="o">=</span> <span class="n">QTreeWidgetItem</span><span class="p">(</span><span class="n">widget</span><span class="p">)</span>
+                <span class="n">temp</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="s1">&#39;Rogue TID&#39;</span><span class="p">)</span>
+                <span class="n">temp</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">ent</span><span class="p">[</span><span class="s1">&#39;rogueTid&#39;</span><span class="p">]))</span>
+                <span class="n">temp</span><span class="o">.</span><span class="n">setTextAlignment</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignRight</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">ent</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;roguePid&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">temp</span> <span class="o">=</span> <span class="n">QTreeWidgetItem</span><span class="p">(</span><span class="n">widget</span><span class="p">)</span>
+                <span class="n">temp</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="s1">&#39;Rogue PID&#39;</span><span class="p">)</span>
+                <span class="n">temp</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">ent</span><span class="p">[</span><span class="s1">&#39;roguePid&#39;</span><span class="p">]))</span>
+                <span class="n">temp</span><span class="o">.</span><span class="n">setTextAlignment</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignRight</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">ent</span><span class="p">[</span><span class="s1">&#39;exception&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">exc</span> <span class="o">=</span> <span class="n">QTreeWidgetItem</span><span class="p">(</span><span class="n">widget</span><span class="p">)</span>

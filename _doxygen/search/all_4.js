@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['data_0',['data',['../structDmaRegisterData.html#a4bb51c7f258e9e30b20a04ef04a9870a',1,'DmaRegisterData::data'],['../classrogue_1_1protocols_1_1batcher_1_1Data.html',1,'rogue::protocols::batcher::Data'],['../structDmaReadData.html#a6a16a00391e2c16f616d036f1827e216',1,'DmaReadData::data'],['../structDmaWriteData.html#a9f57e6a05e407ddf392ab4174c744e10',1,'DmaWriteData::data'],['../classrogue_1_1protocols_1_1batcher_1_1Data.html#ae67fe0d1e65def957879e661380bb2ba',1,'rogue::protocols::batcher::Data::Data()']]],
+  ['data_0',['data',['../classrogue_1_1protocols_1_1batcher_1_1Data.html#ae67fe0d1e65def957879e661380bb2ba',1,'rogue::protocols::batcher::Data::Data()'],['../classrogue_1_1protocols_1_1batcher_1_1Data.html',1,'rogue::protocols::batcher::Data'],['../structDmaRegisterData.html#a4bb51c7f258e9e30b20a04ef04a9870a',1,'DmaRegisterData::data'],['../structDmaReadData.html#a6a16a00391e2c16f616d036f1827e216',1,'DmaReadData::data'],['../structDmaWriteData.html#a9f57e6a05e407ddf392ab4174c744e10',1,'DmaWriteData::data']]],
   ['data_2ecpp_1',['Data.cpp',['../Data_8cpp.html',1,'']]],
   ['data_2eh_2',['Data.h',['../Data_8h.html',1,'']]],
   ['dataptr_3',['DataPtr',['../namespacerogue_1_1protocols_1_1batcher.html#af5d07c75e72b9c00310754bcca0bccc2',1,'rogue::protocols::batcher']]],

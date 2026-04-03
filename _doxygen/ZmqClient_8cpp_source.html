@@ -102,323 +102,361 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span><span class="keyword">namespace </span>bp = boost::python;</div>
 <div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span><span class="preprocessor">#endif</span></div>
 <div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span> </div>
-<div class="foldopen" id="foldopen00038" data-start="{" data-end="}">
-<div class="line"><a id="l00038" name="l00038"></a><span class="lineno"><a class="line" href="classrogue_1_1interfaces_1_1ZmqClient.html#a9ed6d9cc320214767ecb9237a30e7ff8">   38</a></span><a class="code hl_typedef" href="namespacerogue_1_1interfaces.html#a08261f006fb1aecad66483ba96c19c44">rogue::interfaces::ZmqClientPtr</a> <a class="code hl_function" href="classrogue_1_1interfaces_1_1ZmqClient.html#a9ed6d9cc320214767ecb9237a30e7ff8">rogue::interfaces::ZmqClient::create</a>(<span class="keyword">const</span> std::string&amp; addr, uint16_t port, <span class="keywordtype">bool</span> doString) {</div>
-<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>    <a class="code hl_typedef" href="namespacerogue_1_1interfaces.html#a08261f006fb1aecad66483ba96c19c44">rogue::interfaces::ZmqClientPtr</a> ret = std::make_shared&lt;rogue::interfaces::ZmqClient&gt;(addr, port, doString);</div>
-<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>    <span class="keywordflow">return</span> (ret);</div>
-<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>}</div>
-</div>
-<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span> </div>
-<div class="foldopen" id="foldopen00044" data-start="{" data-end="}">
-<div class="line"><a id="l00044" name="l00044"></a><span class="lineno"><a class="line" href="classrogue_1_1interfaces_1_1ZmqClient.html#a6797d078151cfd12871064ba0669db42">   44</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="classrogue_1_1interfaces_1_1ZmqClient.html#a6797d078151cfd12871064ba0669db42">rogue::interfaces::ZmqClient::setup_python</a>() {</div>
-<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span><span class="preprocessor">#ifndef NO_PYTHON</span></div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span><span class="keyword">namespace </span>{</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span> </div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span><span class="keyword">constexpr</span> uint32_t kRetryLogIntervalSeconds = 30;</div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span> </div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span><span class="keywordtype">void</span> logWaitRetry(<a class="code hl_typedef" href="namespacerogue.html#aad13cbcfd8a084e167b9e417ec56205b">rogue::LoggingPtr</a> log, <span class="keywordtype">double</span> seconds, uint32_t&amp; lastLoggedSeconds) {</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>    uint32_t elapsedSeconds = <span class="keyword">static_cast&lt;</span>uint32_t<span class="keyword">&gt;</span>(seconds);</div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span> </div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>    <span class="keywordflow">if</span> (elapsedSeconds == 0) <span class="keywordflow">return</span>;</div>
 <div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span> </div>
-<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>    bp::class_&lt;rogue::interfaces::ZmqClientWrap, rogue::interfaces::ZmqClientWrapPtr, boost::noncopyable&gt;(</div>
-<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>        <span class="stringliteral">&quot;ZmqClient&quot;</span>,</div>
-<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>        bp::init&lt;std::string, uint16_t, bool&gt;())</div>
-<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>        .def(<span class="stringliteral">&quot;_doUpdate&quot;</span>, &amp;<a class="code hl_function" href="classrogue_1_1interfaces_1_1ZmqClient.html#a42f1547fa999a1c181ca412023d10241">rogue::interfaces::ZmqClient::doUpdate</a>, &amp;<a class="code hl_function" href="classrogue_1_1interfaces_1_1ZmqClientWrap.html#a1ffb834918aa27958c9bd54b561ffad5">rogue::interfaces::ZmqClientWrap::defDoUpdate</a>)</div>
-<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>        .def(<span class="stringliteral">&quot;_send&quot;</span>, &amp;<a class="code hl_function" href="classrogue_1_1interfaces_1_1ZmqClient.html#a61e84cf5d8467fd1d9d3ec541e35ed29">rogue::interfaces::ZmqClient::send</a>)</div>
-<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>        .def(<span class="stringliteral">&quot;setTimeout&quot;</span>, &amp;<a class="code hl_function" href="classrogue_1_1interfaces_1_1ZmqClient.html#a9efc4a2996c63962af726236b79b5762">rogue::interfaces::ZmqClient::setTimeout</a>)</div>
-<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>        .def(<span class="stringliteral">&quot;getDisp&quot;</span>, &amp;<a class="code hl_function" href="classrogue_1_1interfaces_1_1ZmqClient.html#a2d4c9cfc78a41fb8fdea5551e71e6fef">rogue::interfaces::ZmqClient::getDisp</a>)</div>
-<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>        .def(<span class="stringliteral">&quot;setDisp&quot;</span>, &amp;<a class="code hl_function" href="classrogue_1_1interfaces_1_1ZmqClient.html#ac677ee7330c8afc1511855899e836085">rogue::interfaces::ZmqClient::setDisp</a>)</div>
-<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>        .def(<span class="stringliteral">&quot;exec&quot;</span>, &amp;<a class="code hl_function" href="classrogue_1_1interfaces_1_1ZmqClient.html#a5a4a9e108867af66adf57a9ee374b6f8">rogue::interfaces::ZmqClient::exec</a>)</div>
-<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>        .def(<span class="stringliteral">&quot;valueDisp&quot;</span>, &amp;<a class="code hl_function" href="classrogue_1_1interfaces_1_1ZmqClient.html#a8a5ddf77da7048654a8081d002c8826a">rogue::interfaces::ZmqClient::valueDisp</a>)</div>
-<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>        .def(<span class="stringliteral">&quot;_stop&quot;</span>, &amp;<a class="code hl_function" href="classrogue_1_1interfaces_1_1ZmqClient.html#a16e1362d6a5f3b8c1ed9c5fa219ff20f">rogue::interfaces::ZmqClient::stop</a>);</div>
-<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>    <span class="keywordflow">if</span> (lastLoggedSeconds == 0) {</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>        log-&gt;warning(</div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>            <span class="stringliteral">&quot;Timeout waiting for response after %&quot;</span> PRIu32 <span class="stringliteral">&quot; seconds, server may be busy. Continuing to wait...&quot;</span>,</div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>            elapsedSeconds);</div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>        lastLoggedSeconds = elapsedSeconds;</div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>        <span class="keywordflow">return</span>;</div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>    }</div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span> </div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>    <span class="keywordflow">if</span> (elapsedSeconds &gt;= (lastLoggedSeconds + kRetryLogIntervalSeconds)) {</div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>        log-&gt;warning(<span class="stringliteral">&quot;Still waiting for response after %&quot;</span> PRIu32 <span class="stringliteral">&quot; seconds, server may be busy...&quot;</span>, elapsedSeconds);</div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>        lastLoggedSeconds = elapsedSeconds;</div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>    }</div>
 <div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>}</div>
-</div>
 <div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span> </div>
-<div class="foldopen" id="foldopen00061" data-start="{" data-end="}">
-<div class="line"><a id="l00061" name="l00061"></a><span class="lineno"><a class="line" href="classrogue_1_1interfaces_1_1ZmqClient.html#ab0b39a1369dfaf14dbf40373b3dbaab2">   61</a></span><a class="code hl_function" href="classrogue_1_1interfaces_1_1ZmqClient.html#ab0b39a1369dfaf14dbf40373b3dbaab2">rogue::interfaces::ZmqClient::ZmqClient</a>(<span class="keyword">const</span> std::string&amp; addr, uint16_t port, <span class="keywordtype">bool</span> doString) {</div>
-<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>    std::string temp;</div>
-<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>    uint32_t val;</div>
-<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>    uint32_t reqPort;</div>
-<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span> </div>
-<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>    this-&gt;doString_ = doString;</div>
-<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>    this-&gt;zmqCtx_   = zmq_ctx_new();</div>
-<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>    this-&gt;zmqSub_   = zmq_socket(this-&gt;zmqCtx_, ZMQ_SUB);</div>
-<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>    this-&gt;zmqReq_   = zmq_socket(this-&gt;zmqCtx_, ZMQ_REQ);</div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span><span class="keywordtype">void</span> logWaitRecovered(<a class="code hl_typedef" href="namespacerogue.html#aad13cbcfd8a084e167b9e417ec56205b">rogue::LoggingPtr</a> log, <span class="keywordtype">double</span> seconds) {</div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>    uint32_t elapsedSeconds = <span class="keyword">static_cast&lt;</span>uint32_t<span class="keyword">&gt;</span>(seconds);</div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span> </div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>    <span class="keywordflow">if</span> (elapsedSeconds != 0) {</div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>        log-&gt;warning(<span class="stringliteral">&quot;Received response from server after %&quot;</span> PRIu32 <span class="stringliteral">&quot; seconds.&quot;</span>, elapsedSeconds);</div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>    }</div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>}</div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span> </div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>}  <span class="comment">// namespace</span></div>
 <div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span> </div>
-<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>    log_ = <a class="code hl_function" href="classrogue_1_1Logging.html#a8c34b36f657b697d85f9a6c60f85f07c">rogue::Logging::create</a>(<span class="stringliteral">&quot;ZmqClient&quot;</span>);</div>
-<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span> </div>
-<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>    <span class="keywordflow">if</span> (!doString_) {</div>
-<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>        <span class="comment">// Setup sub port</span></div>
-<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>        temp = <span class="stringliteral">&quot;tcp://&quot;</span>;</div>
-<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>        temp.append(addr);</div>
-<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>        temp.append(<span class="stringliteral">&quot;:&quot;</span>);</div>
-<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>        temp.append(std::to_string(<span class="keyword">static_cast&lt;</span>int64_t<span class="keyword">&gt;</span>(port)));</div>
+<div class="foldopen" id="foldopen00071" data-start="{" data-end="}">
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno"><a class="line" href="classrogue_1_1interfaces_1_1ZmqClient.html#a9ed6d9cc320214767ecb9237a30e7ff8">   71</a></span><a class="code hl_typedef" href="namespacerogue_1_1interfaces.html#a08261f006fb1aecad66483ba96c19c44">rogue::interfaces::ZmqClientPtr</a> <a class="code hl_function" href="classrogue_1_1interfaces_1_1ZmqClient.html#a9ed6d9cc320214767ecb9237a30e7ff8">rogue::interfaces::ZmqClient::create</a>(<span class="keyword">const</span> std::string&amp; addr, uint16_t port, <span class="keywordtype">bool</span> doString) {</div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>    <a class="code hl_typedef" href="namespacerogue_1_1interfaces.html#a08261f006fb1aecad66483ba96c19c44">rogue::interfaces::ZmqClientPtr</a> ret = std::make_shared&lt;rogue::interfaces::ZmqClient&gt;(addr, port, doString);</div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>    <span class="keywordflow">return</span> (ret);</div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>}</div>
+</div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span> </div>
+<div class="foldopen" id="foldopen00077" data-start="{" data-end="}">
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno"><a class="line" href="classrogue_1_1interfaces_1_1ZmqClient.html#a6797d078151cfd12871064ba0669db42">   77</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="classrogue_1_1interfaces_1_1ZmqClient.html#a6797d078151cfd12871064ba0669db42">rogue::interfaces::ZmqClient::setup_python</a>() {</div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span><span class="preprocessor">#ifndef NO_PYTHON</span></div>
 <div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span> </div>
-<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>        <span class="keywordflow">if</span> (zmq_setsockopt(this-&gt;zmqSub_, ZMQ_SUBSCRIBE, <span class="stringliteral">&quot;&quot;</span>, 0) != 0)</div>
-<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>            <span class="keywordflow">throw</span>(<a class="code hl_class" href="classrogue_1_1GeneralError.html">rogue::GeneralError</a>(<span class="stringliteral">&quot;ZmqClient::ZmqClient&quot;</span>, <span class="stringliteral">&quot;Failed to set socket subscribe&quot;</span>));</div>
-<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span> </div>
-<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>        val = 0;</div>
-<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>        <span class="keywordflow">if</span> (zmq_setsockopt(this-&gt;zmqSub_, ZMQ_LINGER, &amp;val, <span class="keyword">sizeof</span>(int32_t)) != 0)</div>
-<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>            <span class="keywordflow">throw</span>(<a class="code hl_class" href="classrogue_1_1GeneralError.html">rogue::GeneralError</a>(<span class="stringliteral">&quot;ZmqClient::ZmqClient&quot;</span>, <span class="stringliteral">&quot;Failed to set socket linger&quot;</span>));</div>
-<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span> </div>
-<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>        <span class="keywordflow">if</span> (zmq_connect(this-&gt;zmqSub_, temp.c_str()) &lt; 0)</div>
-<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>            <span class="keywordflow">throw</span>(<a class="code hl_function" href="classrogue_1_1GeneralError.html#ad37e9ca32b3afce0e38988b4a65c9e60">rogue::GeneralError::create</a>(<span class="stringliteral">&quot;ZmqClient::ZmqClient&quot;</span>,</div>
-<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>                                              <span class="stringliteral">&quot;Failed to connect to port %&quot;</span> PRIu16 <span class="stringliteral">&quot; at address %s&quot;</span>,</div>
-<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>                                              port,</div>
-<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>                                              addr.c_str()));</div>
-<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span> </div>
-<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span>        reqPort = port + 1;</div>
-<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>    } <span class="keywordflow">else</span> {</div>
-<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>        reqPort = port + 2;</div>
-<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>    }</div>
-<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span> </div>
-<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span>    <span class="comment">// Setup request port</span></div>
-<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span>    temp = <span class="stringliteral">&quot;tcp://&quot;</span>;</div>
-<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>    temp.append(addr);</div>
-<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>    temp.append(<span class="stringliteral">&quot;:&quot;</span>);</div>
-<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>    temp.append(std::to_string(<span class="keyword">static_cast&lt;</span>int64_t<span class="keyword">&gt;</span>(reqPort)));</div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>    bp::class_&lt;rogue::interfaces::ZmqClientWrap, rogue::interfaces::ZmqClientWrapPtr, boost::noncopyable&gt;(</div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>        <span class="stringliteral">&quot;ZmqClient&quot;</span>,</div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>        bp::init&lt;std::string, uint16_t, bool&gt;())</div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>        .def(<span class="stringliteral">&quot;_doUpdate&quot;</span>, &amp;<a class="code hl_function" href="classrogue_1_1interfaces_1_1ZmqClient.html#a42f1547fa999a1c181ca412023d10241">rogue::interfaces::ZmqClient::doUpdate</a>, &amp;<a class="code hl_function" href="classrogue_1_1interfaces_1_1ZmqClientWrap.html#a1ffb834918aa27958c9bd54b561ffad5">rogue::interfaces::ZmqClientWrap::defDoUpdate</a>)</div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>        .def(<span class="stringliteral">&quot;_send&quot;</span>, &amp;<a class="code hl_function" href="classrogue_1_1interfaces_1_1ZmqClient.html#a61e84cf5d8467fd1d9d3ec541e35ed29">rogue::interfaces::ZmqClient::send</a>)</div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>        .def(<span class="stringliteral">&quot;setTimeout&quot;</span>, &amp;<a class="code hl_function" href="classrogue_1_1interfaces_1_1ZmqClient.html#a9efc4a2996c63962af726236b79b5762">rogue::interfaces::ZmqClient::setTimeout</a>)</div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>        .def(<span class="stringliteral">&quot;getDisp&quot;</span>, &amp;<a class="code hl_function" href="classrogue_1_1interfaces_1_1ZmqClient.html#a2d4c9cfc78a41fb8fdea5551e71e6fef">rogue::interfaces::ZmqClient::getDisp</a>)</div>
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>        .def(<span class="stringliteral">&quot;setDisp&quot;</span>, &amp;<a class="code hl_function" href="classrogue_1_1interfaces_1_1ZmqClient.html#ac677ee7330c8afc1511855899e836085">rogue::interfaces::ZmqClient::setDisp</a>)</div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>        .def(<span class="stringliteral">&quot;exec&quot;</span>, &amp;<a class="code hl_function" href="classrogue_1_1interfaces_1_1ZmqClient.html#a5a4a9e108867af66adf57a9ee374b6f8">rogue::interfaces::ZmqClient::exec</a>)</div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>        .def(<span class="stringliteral">&quot;valueDisp&quot;</span>, &amp;<a class="code hl_function" href="classrogue_1_1interfaces_1_1ZmqClient.html#a8a5ddf77da7048654a8081d002c8826a">rogue::interfaces::ZmqClient::valueDisp</a>)</div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>        .def(<span class="stringliteral">&quot;_stop&quot;</span>, &amp;<a class="code hl_function" href="classrogue_1_1interfaces_1_1ZmqClient.html#a16e1362d6a5f3b8c1ed9c5fa219ff20f">rogue::interfaces::ZmqClient::stop</a>);</div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>}</div>
+</div>
+<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span> </div>
+<div class="foldopen" id="foldopen00094" data-start="{" data-end="}">
+<div class="line"><a id="l00094" name="l00094"></a><span class="lineno"><a class="line" href="classrogue_1_1interfaces_1_1ZmqClient.html#ab0b39a1369dfaf14dbf40373b3dbaab2">   94</a></span><a class="code hl_function" href="classrogue_1_1interfaces_1_1ZmqClient.html#ab0b39a1369dfaf14dbf40373b3dbaab2">rogue::interfaces::ZmqClient::ZmqClient</a>(<span class="keyword">const</span> std::string&amp; addr, uint16_t port, <span class="keywordtype">bool</span> doString) {</div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>    std::string temp;</div>
+<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>    uint32_t val;</div>
+<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>    uint32_t reqPort;</div>
+<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span> </div>
+<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span>    this-&gt;doString_ = doString;</div>
+<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>    this-&gt;zmqCtx_   = zmq_ctx_new();</div>
+<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>    this-&gt;zmqSub_   = zmq_socket(this-&gt;zmqCtx_, ZMQ_SUB);</div>
+<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>    this-&gt;zmqReq_   = zmq_socket(this-&gt;zmqCtx_, ZMQ_REQ);</div>
 <div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span> </div>
-<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span>    waitRetry_ = <span class="keyword">false</span>;  <span class="comment">// Don&#39;t keep waiting after timeout</span></div>
-<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span>    timeout_   = 1000;   <span class="comment">// 1 second</span></div>
-<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>    <span class="keywordflow">if</span> (zmq_setsockopt(this-&gt;zmqReq_, ZMQ_RCVTIMEO, &amp;timeout_, <span class="keyword">sizeof</span>(int32_t)) != 0)</div>
-<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span>        <span class="keywordflow">throw</span>(<a class="code hl_class" href="classrogue_1_1GeneralError.html">rogue::GeneralError</a>(<span class="stringliteral">&quot;ZmqClient::ZmqClient&quot;</span>, <span class="stringliteral">&quot;Failed to set socket timeout&quot;</span>));</div>
-<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span> </div>
-<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span>    val = 1;</div>
-<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span>    <span class="keywordflow">if</span> (zmq_setsockopt(this-&gt;zmqReq_, ZMQ_REQ_CORRELATE, &amp;val, <span class="keyword">sizeof</span>(int32_t)) != 0)</div>
-<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span>        <span class="keywordflow">throw</span>(<a class="code hl_class" href="classrogue_1_1GeneralError.html">rogue::GeneralError</a>(<span class="stringliteral">&quot;ZmqClient::ZmqClient&quot;</span>, <span class="stringliteral">&quot;Failed to set socket correlate&quot;</span>));</div>
+<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span>    log_ = <a class="code hl_function" href="classrogue_1_1Logging.html#a8c34b36f657b697d85f9a6c60f85f07c">rogue::Logging::create</a>(<span class="stringliteral">&quot;ZmqClient&quot;</span>);</div>
+<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span> </div>
+<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>    <span class="keywordflow">if</span> (!doString_) {</div>
+<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span>        <span class="comment">// Setup sub port</span></div>
+<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span>        temp = <span class="stringliteral">&quot;tcp://&quot;</span>;</div>
+<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span>        temp.append(addr);</div>
+<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span>        temp.append(<span class="stringliteral">&quot;:&quot;</span>);</div>
+<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span>        temp.append(std::to_string(<span class="keyword">static_cast&lt;</span>int64_t<span class="keyword">&gt;</span>(port)));</div>
 <div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span> </div>
-<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span>    <span class="keywordflow">if</span> (zmq_setsockopt(this-&gt;zmqReq_, ZMQ_REQ_RELAXED, &amp;val, <span class="keyword">sizeof</span>(int32_t)) != 0)</div>
-<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span>        <span class="keywordflow">throw</span>(<a class="code hl_class" href="classrogue_1_1GeneralError.html">rogue::GeneralError</a>(<span class="stringliteral">&quot;ZmqClient::ZmqClient&quot;</span>, <span class="stringliteral">&quot;Failed to set socket relaxed&quot;</span>));</div>
+<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span>        <span class="keywordflow">if</span> (zmq_setsockopt(this-&gt;zmqSub_, ZMQ_SUBSCRIBE, <span class="stringliteral">&quot;&quot;</span>, 0) != 0)</div>
+<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span>            <span class="keywordflow">throw</span>(<a class="code hl_class" href="classrogue_1_1GeneralError.html">rogue::GeneralError</a>(<span class="stringliteral">&quot;ZmqClient::ZmqClient&quot;</span>, <span class="stringliteral">&quot;Failed to set socket subscribe&quot;</span>));</div>
 <div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span> </div>
-<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span>    val = 0;</div>
-<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span>    <span class="keywordflow">if</span> (zmq_setsockopt(this-&gt;zmqReq_, ZMQ_LINGER, &amp;val, <span class="keyword">sizeof</span>(int32_t)) != 0)</div>
-<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span>        <span class="keywordflow">throw</span>(<a class="code hl_class" href="classrogue_1_1GeneralError.html">rogue::GeneralError</a>(<span class="stringliteral">&quot;ZmqClient::ZmqClient&quot;</span>, <span class="stringliteral">&quot;Failed to set socket linger&quot;</span>));</div>
+<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span>        val = 0;</div>
+<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span>        <span class="keywordflow">if</span> (zmq_setsockopt(this-&gt;zmqSub_, ZMQ_LINGER, &amp;val, <span class="keyword">sizeof</span>(int32_t)) != 0)</div>
+<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span>            <span class="keywordflow">throw</span>(<a class="code hl_class" href="classrogue_1_1GeneralError.html">rogue::GeneralError</a>(<span class="stringliteral">&quot;ZmqClient::ZmqClient&quot;</span>, <span class="stringliteral">&quot;Failed to set socket linger&quot;</span>));</div>
 <div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span> </div>
-<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span>    <span class="keywordflow">if</span> (zmq_connect(this-&gt;zmqReq_, temp.c_str()) &lt; 0)</div>
-<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span>        <span class="keywordflow">throw</span>(<a class="code hl_function" href="classrogue_1_1GeneralError.html#ad37e9ca32b3afce0e38988b4a65c9e60">rogue::GeneralError::create</a>(<span class="stringliteral">&quot;ZmqClient::ZmqClient&quot;</span>,</div>
-<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span>                                          <span class="stringliteral">&quot;Failed to connect to port %&quot;</span> PRIu32 <span class="stringliteral">&quot; at address %s&quot;</span>,</div>
-<div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span>                                          reqPort,</div>
-<div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span>                                          addr.c_str()));</div>
-<div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span> </div>
-<div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span>    <span class="keywordflow">if</span> (doString_) {</div>
-<div class="line"><a id="l00127" name="l00127"></a><span class="lineno">  127</span>        threadEn_ = <span class="keyword">false</span>;</div>
-<div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span>        log_-&gt;info(<span class="stringliteral">&quot;Connected to Rogue server at port %&quot;</span> PRIu32, reqPort);</div>
-<div class="line"><a id="l00129" name="l00129"></a><span class="lineno">  129</span>    } <span class="keywordflow">else</span> {</div>
-<div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span>        log_-&gt;info(<span class="stringliteral">&quot;Connected to Rogue server at ports %&quot;</span> PRIu16 <span class="stringliteral">&quot;:%&quot;</span> PRIu32, port, reqPort);</div>
-<div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span> </div>
-<div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span>        threadEn_ = <span class="keyword">true</span>;</div>
-<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span>        thread_   = <span class="keyword">new</span> std::thread(&amp;rogue::interfaces::ZmqClient::runThread, <span class="keyword">this</span>);</div>
-<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span>    }</div>
-<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span>    running_ = <span class="keyword">true</span>;</div>
-<div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span>}</div>
-</div>
-<div class="line"><a id="l00137" name="l00137"></a><span class="lineno">  137</span> </div>
-<div class="foldopen" id="foldopen00138" data-start="{" data-end="}">
-<div class="line"><a id="l00138" name="l00138"></a><span class="lineno"><a class="line" href="classrogue_1_1interfaces_1_1ZmqClient.html#ab29afe4fe41fea11137ab2a1060e78e7">  138</a></span><a class="code hl_function" href="classrogue_1_1interfaces_1_1ZmqClient.html#ab29afe4fe41fea11137ab2a1060e78e7">rogue::interfaces::ZmqClient::~ZmqClient</a>() {</div>
-<div class="line"><a id="l00139" name="l00139"></a><span class="lineno">  139</span>    this-&gt;stop();</div>
-<div class="line"><a id="l00140" name="l00140"></a><span class="lineno">  140</span>}</div>
-</div>
-<div class="line"><a id="l00141" name="l00141"></a><span class="lineno">  141</span> </div>
-<div class="foldopen" id="foldopen00142" data-start="{" data-end="}">
-<div class="line"><a id="l00142" name="l00142"></a><span class="lineno"><a class="line" href="classrogue_1_1interfaces_1_1ZmqClient.html#a16e1362d6a5f3b8c1ed9c5fa219ff20f">  142</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="classrogue_1_1interfaces_1_1ZmqClient.html#a16e1362d6a5f3b8c1ed9c5fa219ff20f">rogue::interfaces::ZmqClient::stop</a>() {</div>
-<div class="line"><a id="l00143" name="l00143"></a><span class="lineno">  143</span>    <span class="keywordflow">if</span> (running_) {</div>
-<div class="line"><a id="l00144" name="l00144"></a><span class="lineno">  144</span>        running_ = <span class="keyword">false</span>;</div>
-<div class="line"><a id="l00145" name="l00145"></a><span class="lineno">  145</span>        <span class="keywordflow">if</span> (threadEn_) {</div>
-<div class="line"><a id="l00146" name="l00146"></a><span class="lineno">  146</span>            <a class="code hl_class" href="classrogue_1_1GilRelease.html">rogue::GilRelease</a> noGil;</div>
-<div class="line"><a id="l00147" name="l00147"></a><span class="lineno">  147</span>            waitRetry_ = <span class="keyword">false</span>;</div>
-<div class="line"><a id="l00148" name="l00148"></a><span class="lineno">  148</span>            threadEn_  = <span class="keyword">false</span>;</div>
-<div class="line"><a id="l00149" name="l00149"></a><span class="lineno">  149</span>            thread_-&gt;join();</div>
-<div class="line"><a id="l00150" name="l00150"></a><span class="lineno">  150</span>        }</div>
-<div class="line"><a id="l00151" name="l00151"></a><span class="lineno">  151</span>        <span class="keywordflow">if</span> (!doString_) zmq_close(this-&gt;zmqSub_);</div>
-<div class="line"><a id="l00152" name="l00152"></a><span class="lineno">  152</span>        zmq_close(this-&gt;zmqReq_);</div>
-<div class="line"><a id="l00153" name="l00153"></a><span class="lineno">  153</span>        zmq_ctx_destroy(this-&gt;zmqCtx_);</div>
-<div class="line"><a id="l00154" name="l00154"></a><span class="lineno">  154</span>    }</div>
-<div class="line"><a id="l00155" name="l00155"></a><span class="lineno">  155</span>}</div>
-</div>
+<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span>        val = 100;</div>
+<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span>        <span class="keywordflow">if</span> (zmq_setsockopt(this-&gt;zmqSub_, ZMQ_RCVTIMEO, &amp;val, <span class="keyword">sizeof</span>(int32_t)) != 0)</div>
+<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span>            <span class="keywordflow">throw</span>(<a class="code hl_class" href="classrogue_1_1GeneralError.html">rogue::GeneralError</a>(<span class="stringliteral">&quot;ZmqClient::ZmqClient&quot;</span>, <span class="stringliteral">&quot;Failed to set socket timeout&quot;</span>));</div>
+<div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span> </div>
+<div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span>        <span class="keywordflow">if</span> (zmq_connect(this-&gt;zmqSub_, temp.c_str()) &lt; 0)</div>
+<div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span>            <span class="keywordflow">throw</span>(<a class="code hl_function" href="classrogue_1_1GeneralError.html#ad37e9ca32b3afce0e38988b4a65c9e60">rogue::GeneralError::create</a>(<span class="stringliteral">&quot;ZmqClient::ZmqClient&quot;</span>,</div>
+<div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span>                                              <span class="stringliteral">&quot;Failed to connect to port %&quot;</span> PRIu16 <span class="stringliteral">&quot; at address %s&quot;</span>,</div>
+<div class="line"><a id="l00127" name="l00127"></a><span class="lineno">  127</span>                                              port,</div>
+<div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span>                                              addr.c_str()));</div>
+<div class="line"><a id="l00129" name="l00129"></a><span class="lineno">  129</span> </div>
+<div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span>        reqPort = port + 1;</div>
+<div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span>    } <span class="keywordflow">else</span> {</div>
+<div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span>        reqPort = port + 2;</div>
+<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span>    }</div>
+<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span> </div>
+<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span>    <span class="comment">// Setup request port</span></div>
+<div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span>    temp = <span class="stringliteral">&quot;tcp://&quot;</span>;</div>
+<div class="line"><a id="l00137" name="l00137"></a><span class="lineno">  137</span>    temp.append(addr);</div>
+<div class="line"><a id="l00138" name="l00138"></a><span class="lineno">  138</span>    temp.append(<span class="stringliteral">&quot;:&quot;</span>);</div>
+<div class="line"><a id="l00139" name="l00139"></a><span class="lineno">  139</span>    temp.append(std::to_string(<span class="keyword">static_cast&lt;</span>int64_t<span class="keyword">&gt;</span>(reqPort)));</div>
+<div class="line"><a id="l00140" name="l00140"></a><span class="lineno">  140</span> </div>
+<div class="line"><a id="l00141" name="l00141"></a><span class="lineno">  141</span>    waitRetry_ = <span class="keyword">false</span>;  <span class="comment">// Don&#39;t keep waiting after timeout</span></div>
+<div class="line"><a id="l00142" name="l00142"></a><span class="lineno">  142</span>    timeout_   = 1000;   <span class="comment">// 1 second</span></div>
+<div class="line"><a id="l00143" name="l00143"></a><span class="lineno">  143</span>    <span class="keywordflow">if</span> (zmq_setsockopt(this-&gt;zmqReq_, ZMQ_RCVTIMEO, &amp;timeout_, <span class="keyword">sizeof</span>(int32_t)) != 0)</div>
+<div class="line"><a id="l00144" name="l00144"></a><span class="lineno">  144</span>        <span class="keywordflow">throw</span>(<a class="code hl_class" href="classrogue_1_1GeneralError.html">rogue::GeneralError</a>(<span class="stringliteral">&quot;ZmqClient::ZmqClient&quot;</span>, <span class="stringliteral">&quot;Failed to set socket timeout&quot;</span>));</div>
+<div class="line"><a id="l00145" name="l00145"></a><span class="lineno">  145</span> </div>
+<div class="line"><a id="l00146" name="l00146"></a><span class="lineno">  146</span>    val = 1;</div>
+<div class="line"><a id="l00147" name="l00147"></a><span class="lineno">  147</span>    <span class="keywordflow">if</span> (zmq_setsockopt(this-&gt;zmqReq_, ZMQ_REQ_CORRELATE, &amp;val, <span class="keyword">sizeof</span>(int32_t)) != 0)</div>
+<div class="line"><a id="l00148" name="l00148"></a><span class="lineno">  148</span>        <span class="keywordflow">throw</span>(<a class="code hl_class" href="classrogue_1_1GeneralError.html">rogue::GeneralError</a>(<span class="stringliteral">&quot;ZmqClient::ZmqClient&quot;</span>, <span class="stringliteral">&quot;Failed to set socket correlate&quot;</span>));</div>
+<div class="line"><a id="l00149" name="l00149"></a><span class="lineno">  149</span> </div>
+<div class="line"><a id="l00150" name="l00150"></a><span class="lineno">  150</span>    <span class="keywordflow">if</span> (zmq_setsockopt(this-&gt;zmqReq_, ZMQ_REQ_RELAXED, &amp;val, <span class="keyword">sizeof</span>(int32_t)) != 0)</div>
+<div class="line"><a id="l00151" name="l00151"></a><span class="lineno">  151</span>        <span class="keywordflow">throw</span>(<a class="code hl_class" href="classrogue_1_1GeneralError.html">rogue::GeneralError</a>(<span class="stringliteral">&quot;ZmqClient::ZmqClient&quot;</span>, <span class="stringliteral">&quot;Failed to set socket relaxed&quot;</span>));</div>
+<div class="line"><a id="l00152" name="l00152"></a><span class="lineno">  152</span> </div>
+<div class="line"><a id="l00153" name="l00153"></a><span class="lineno">  153</span>    val = 0;</div>
+<div class="line"><a id="l00154" name="l00154"></a><span class="lineno">  154</span>    <span class="keywordflow">if</span> (zmq_setsockopt(this-&gt;zmqReq_, ZMQ_LINGER, &amp;val, <span class="keyword">sizeof</span>(int32_t)) != 0)</div>
+<div class="line"><a id="l00155" name="l00155"></a><span class="lineno">  155</span>        <span class="keywordflow">throw</span>(<a class="code hl_class" href="classrogue_1_1GeneralError.html">rogue::GeneralError</a>(<span class="stringliteral">&quot;ZmqClient::ZmqClient&quot;</span>, <span class="stringliteral">&quot;Failed to set socket linger&quot;</span>));</div>
 <div class="line"><a id="l00156" name="l00156"></a><span class="lineno">  156</span> </div>
-<div class="foldopen" id="foldopen00157" data-start="{" data-end="}">
-<div class="line"><a id="l00157" name="l00157"></a><span class="lineno"><a class="line" href="classrogue_1_1interfaces_1_1ZmqClient.html#a9efc4a2996c63962af726236b79b5762">  157</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="classrogue_1_1interfaces_1_1ZmqClient.html#a9efc4a2996c63962af726236b79b5762">rogue::interfaces::ZmqClient::setTimeout</a>(uint32_t msecs, <span class="keywordtype">bool</span> waitRetry) {</div>
-<div class="line"><a id="l00158" name="l00158"></a><span class="lineno">  158</span>    waitRetry_ = waitRetry;</div>
-<div class="line"><a id="l00159" name="l00159"></a><span class="lineno">  159</span>    timeout_   = msecs;</div>
-<div class="line"><a id="l00160" name="l00160"></a><span class="lineno">  160</span> </div>
-<div class="line"><a id="l00161" name="l00161"></a><span class="lineno">  161</span>    printf(<span class="stringliteral">&quot;ZmqClient::setTimeout: Setting timeout to %&quot;</span> PRIu32 <span class="stringliteral">&quot; msecs, waitRetry = %&quot;</span> PRIu8 <span class="stringliteral">&quot;\n&quot;</span>,</div>
-<div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span>           timeout_,</div>
-<div class="line"><a id="l00163" name="l00163"></a><span class="lineno">  163</span>           waitRetry_);</div>
-<div class="line"><a id="l00164" name="l00164"></a><span class="lineno">  164</span> </div>
-<div class="line"><a id="l00165" name="l00165"></a><span class="lineno">  165</span>    <span class="keywordflow">if</span> (zmq_setsockopt(this-&gt;zmqReq_, ZMQ_RCVTIMEO, &amp;timeout_, <span class="keyword">sizeof</span>(int32_t)) != 0)</div>
-<div class="line"><a id="l00166" name="l00166"></a><span class="lineno">  166</span>        <span class="keywordflow">throw</span>(<a class="code hl_class" href="classrogue_1_1GeneralError.html">rogue::GeneralError</a>(<span class="stringliteral">&quot;ZmqClient::setTimeout&quot;</span>, <span class="stringliteral">&quot;Failed to set socket timeout&quot;</span>));</div>
-<div class="line"><a id="l00167" name="l00167"></a><span class="lineno">  167</span>}</div>
-</div>
+<div class="line"><a id="l00157" name="l00157"></a><span class="lineno">  157</span>    <span class="keywordflow">if</span> (zmq_connect(this-&gt;zmqReq_, temp.c_str()) &lt; 0)</div>
+<div class="line"><a id="l00158" name="l00158"></a><span class="lineno">  158</span>        <span class="keywordflow">throw</span>(<a class="code hl_function" href="classrogue_1_1GeneralError.html#ad37e9ca32b3afce0e38988b4a65c9e60">rogue::GeneralError::create</a>(<span class="stringliteral">&quot;ZmqClient::ZmqClient&quot;</span>,</div>
+<div class="line"><a id="l00159" name="l00159"></a><span class="lineno">  159</span>                                          <span class="stringliteral">&quot;Failed to connect to port %&quot;</span> PRIu32 <span class="stringliteral">&quot; at address %s&quot;</span>,</div>
+<div class="line"><a id="l00160" name="l00160"></a><span class="lineno">  160</span>                                          reqPort,</div>
+<div class="line"><a id="l00161" name="l00161"></a><span class="lineno">  161</span>                                          addr.c_str()));</div>
+<div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span> </div>
+<div class="line"><a id="l00163" name="l00163"></a><span class="lineno">  163</span>    <span class="keywordflow">if</span> (doString_) {</div>
+<div class="line"><a id="l00164" name="l00164"></a><span class="lineno">  164</span>        threadEn_ = <span class="keyword">false</span>;</div>
+<div class="line"><a id="l00165" name="l00165"></a><span class="lineno">  165</span>        log_-&gt;info(<span class="stringliteral">&quot;Connected to Rogue server at port %&quot;</span> PRIu32, reqPort);</div>
+<div class="line"><a id="l00166" name="l00166"></a><span class="lineno">  166</span>    } <span class="keywordflow">else</span> {</div>
+<div class="line"><a id="l00167" name="l00167"></a><span class="lineno">  167</span>        log_-&gt;info(<span class="stringliteral">&quot;Connected to Rogue server at ports %&quot;</span> PRIu16 <span class="stringliteral">&quot;:%&quot;</span> PRIu32, port, reqPort);</div>
 <div class="line"><a id="l00168" name="l00168"></a><span class="lineno">  168</span> </div>
-<div class="foldopen" id="foldopen00169" data-start="{" data-end="}">
-<div class="line"><a id="l00169" name="l00169"></a><span class="lineno"><a class="line" href="classrogue_1_1interfaces_1_1ZmqClient.html#a0a76bdc0aff07df5aa822504b880bdf2">  169</a></span>std::string <a class="code hl_function" href="classrogue_1_1interfaces_1_1ZmqClient.html#a0a76bdc0aff07df5aa822504b880bdf2">rogue::interfaces::ZmqClient::sendString</a>(<span class="keyword">const</span> std::string&amp; path, <span class="keyword">const</span> std::string&amp; attr, <span class="keyword">const</span> std::string&amp; arg) {</div>
-<div class="line"><a id="l00170" name="l00170"></a><span class="lineno">  170</span>    std::string snd;</div>
-<div class="line"><a id="l00171" name="l00171"></a><span class="lineno">  171</span>    std::string ret;</div>
-<div class="line"><a id="l00172" name="l00172"></a><span class="lineno">  172</span>    zmq_msg_t msg;</div>
-<div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span>    std::string data;</div>
-<div class="line"><a id="l00174" name="l00174"></a><span class="lineno">  174</span>    <span class="keywordtype">double</span> seconds = 0;</div>
-<div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span> </div>
-<div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span>    <span class="keywordflow">if</span> (!doString_) <span class="keywordflow">throw</span> <a class="code hl_function" href="classrogue_1_1GeneralError.html#ad37e9ca32b3afce0e38988b4a65c9e60">rogue::GeneralError::create</a>(<span class="stringliteral">&quot;ZmqClient::sendString&quot;</span>, <span class="stringliteral">&quot;Invalid send call in standard mode&quot;</span>);</div>
-<div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span> </div>
-<div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span>    snd = <span class="stringliteral">&quot;{\&quot;attr\&quot;: \&quot;&quot;</span> + attr + <span class="stringliteral">&quot;\&quot;,&quot;</span>;</div>
-<div class="line"><a id="l00179" name="l00179"></a><span class="lineno">  179</span>    snd += <span class="stringliteral">&quot;\&quot;path\&quot;: \&quot;&quot;</span> + path + <span class="stringliteral">&quot;\&quot;&quot;</span>;</div>
-<div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span> </div>
-<div class="line"><a id="l00181" name="l00181"></a><span class="lineno">  181</span>    <span class="keywordflow">if</span> (arg != <span class="stringliteral">&quot;&quot;</span>) snd += <span class="stringliteral">&quot;,\&quot;args\&quot;: [\&quot;&quot;</span> + arg + <span class="stringliteral">&quot;\&quot;]&quot;</span>;</div>
-<div class="line"><a id="l00182" name="l00182"></a><span class="lineno">  182</span> </div>
-<div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span>    snd += <span class="stringliteral">&quot;}&quot;</span>;</div>
-<div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span> </div>
-<div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span>    <a class="code hl_class" href="classrogue_1_1GilRelease.html">rogue::GilRelease</a> noGil;</div>
-<div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span>    zmq_send(this-&gt;zmqReq_, snd.c_str(), snd.size(), 0);</div>
-<div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span> </div>
-<div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span>    <span class="keywordflow">while</span> (1) {</div>
-<div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span>        zmq_msg_init(&amp;msg);</div>
-<div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span>        <span class="keywordflow">if</span> (zmq_recvmsg(this-&gt;zmqReq_, &amp;msg, 0) &lt;= 0) {</div>
-<div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span>            seconds += <span class="keyword">static_cast&lt;</span><span class="keywordtype">double</span><span class="keyword">&gt;</span>(timeout_) / 1000.0;</div>
-<div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span>            <span class="keywordflow">if</span> (waitRetry_) {</div>
-<div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span>                log_-&gt;error(<span class="stringliteral">&quot;Timeout waiting for response after %d Seconds, server may be busy! Waiting...&quot;</span>, <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(seconds));</div>
-<div class="line"><a id="l00194" name="l00194"></a><span class="lineno">  194</span>                zmq_msg_close(&amp;msg);</div>
-<div class="line"><a id="l00195" name="l00195"></a><span class="lineno">  195</span>            } <span class="keywordflow">else</span> {</div>
-<div class="line"><a id="l00196" name="l00196"></a><span class="lineno">  196</span>                <span class="keywordflow">throw</span> <a class="code hl_function" href="classrogue_1_1GeneralError.html#ad37e9ca32b3afce0e38988b4a65c9e60">rogue::GeneralError::create</a>(<span class="stringliteral">&quot;ZmqClient::sendString&quot;</span>,</div>
-<div class="line"><a id="l00197" name="l00197"></a><span class="lineno">  197</span>                                                  <span class="stringliteral">&quot;Timeout waiting for response after %d Seconds.&quot;</span>,</div>
-<div class="line"><a id="l00198" name="l00198"></a><span class="lineno">  198</span>                                                  <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(seconds));</div>
-<div class="line"><a id="l00199" name="l00199"></a><span class="lineno">  199</span>            }</div>
-<div class="line"><a id="l00200" name="l00200"></a><span class="lineno">  200</span>        } <span class="keywordflow">else</span> {</div>
-<div class="line"><a id="l00201" name="l00201"></a><span class="lineno">  201</span>            <span class="keywordflow">break</span>;</div>
-<div class="line"><a id="l00202" name="l00202"></a><span class="lineno">  202</span>        }</div>
-<div class="line"><a id="l00203" name="l00203"></a><span class="lineno">  203</span>    }</div>
-<div class="line"><a id="l00204" name="l00204"></a><span class="lineno">  204</span> </div>
-<div class="line"><a id="l00205" name="l00205"></a><span class="lineno">  205</span>    <span class="keywordflow">if</span> (seconds != 0) log_-&gt;error(<span class="stringliteral">&quot;Finally got response from server after %d seconds!&quot;</span>, <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(seconds));</div>
-<div class="line"><a id="l00206" name="l00206"></a><span class="lineno">  206</span> </div>
-<div class="line"><a id="l00207" name="l00207"></a><span class="lineno">  207</span>    data = std::string((<span class="keyword">const</span> <span class="keywordtype">char</span>*)zmq_msg_data(&amp;msg), zmq_msg_size(&amp;msg));</div>
-<div class="line"><a id="l00208" name="l00208"></a><span class="lineno">  208</span>    zmq_msg_close(&amp;msg);</div>
-<div class="line"><a id="l00209" name="l00209"></a><span class="lineno">  209</span>    <span class="keywordflow">return</span> data;</div>
-<div class="line"><a id="l00210" name="l00210"></a><span class="lineno">  210</span>}</div>
+<div class="line"><a id="l00169" name="l00169"></a><span class="lineno">  169</span>        threadEn_ = <span class="keyword">true</span>;</div>
+<div class="line"><a id="l00170" name="l00170"></a><span class="lineno">  170</span>        thread_   = <span class="keyword">new</span> std::thread(&amp;rogue::interfaces::ZmqClient::runThread, <span class="keyword">this</span>);</div>
+<div class="line"><a id="l00171" name="l00171"></a><span class="lineno">  171</span>    }</div>
+<div class="line"><a id="l00172" name="l00172"></a><span class="lineno">  172</span>    running_ = <span class="keyword">true</span>;</div>
+<div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span>}</div>
 </div>
+<div class="line"><a id="l00174" name="l00174"></a><span class="lineno">  174</span> </div>
+<div class="foldopen" id="foldopen00175" data-start="{" data-end="}">
+<div class="line"><a id="l00175" name="l00175"></a><span class="lineno"><a class="line" href="classrogue_1_1interfaces_1_1ZmqClient.html#ab29afe4fe41fea11137ab2a1060e78e7">  175</a></span><a class="code hl_function" href="classrogue_1_1interfaces_1_1ZmqClient.html#ab29afe4fe41fea11137ab2a1060e78e7">rogue::interfaces::ZmqClient::~ZmqClient</a>() {</div>
+<div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span>    this-&gt;stop();</div>
+<div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span>}</div>
+</div>
+<div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span> </div>
+<div class="foldopen" id="foldopen00179" data-start="{" data-end="}">
+<div class="line"><a id="l00179" name="l00179"></a><span class="lineno"><a class="line" href="classrogue_1_1interfaces_1_1ZmqClient.html#a16e1362d6a5f3b8c1ed9c5fa219ff20f">  179</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="classrogue_1_1interfaces_1_1ZmqClient.html#a16e1362d6a5f3b8c1ed9c5fa219ff20f">rogue::interfaces::ZmqClient::stop</a>() {</div>
+<div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span>    <span class="keywordflow">if</span> (running_) {</div>
+<div class="line"><a id="l00181" name="l00181"></a><span class="lineno">  181</span>        running_ = <span class="keyword">false</span>;</div>
+<div class="line"><a id="l00182" name="l00182"></a><span class="lineno">  182</span>        <span class="keywordflow">if</span> (threadEn_) {</div>
+<div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span>            <a class="code hl_class" href="classrogue_1_1GilRelease.html">rogue::GilRelease</a> noGil;</div>
+<div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span>            waitRetry_ = <span class="keyword">false</span>;</div>
+<div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span>            threadEn_  = <span class="keyword">false</span>;</div>
+<div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span>            thread_-&gt;join();</div>
+<div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span>        }</div>
+<div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span>        <span class="keywordflow">if</span> (!doString_) zmq_close(this-&gt;zmqSub_);</div>
+<div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span>        zmq_close(this-&gt;zmqReq_);</div>
+<div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span>        zmq_ctx_destroy(this-&gt;zmqCtx_);</div>
+<div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span>    }</div>
+<div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span>}</div>
+</div>
+<div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span> </div>
+<div class="foldopen" id="foldopen00194" data-start="{" data-end="}">
+<div class="line"><a id="l00194" name="l00194"></a><span class="lineno"><a class="line" href="classrogue_1_1interfaces_1_1ZmqClient.html#a9efc4a2996c63962af726236b79b5762">  194</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="classrogue_1_1interfaces_1_1ZmqClient.html#a9efc4a2996c63962af726236b79b5762">rogue::interfaces::ZmqClient::setTimeout</a>(uint32_t msecs, <span class="keywordtype">bool</span> waitRetry) {</div>
+<div class="line"><a id="l00195" name="l00195"></a><span class="lineno">  195</span>    waitRetry_ = waitRetry;</div>
+<div class="line"><a id="l00196" name="l00196"></a><span class="lineno">  196</span>    timeout_   = msecs;</div>
+<div class="line"><a id="l00197" name="l00197"></a><span class="lineno">  197</span> </div>
+<div class="line"><a id="l00198" name="l00198"></a><span class="lineno">  198</span>    log_-&gt;debug(<span class="stringliteral">&quot;Setting timeout to %&quot;</span> PRIu32 <span class="stringliteral">&quot; msecs, waitRetry = %&quot;</span> PRIu8, timeout_, waitRetry_);</div>
+<div class="line"><a id="l00199" name="l00199"></a><span class="lineno">  199</span> </div>
+<div class="line"><a id="l00200" name="l00200"></a><span class="lineno">  200</span>    <span class="keywordflow">if</span> (zmq_setsockopt(this-&gt;zmqReq_, ZMQ_RCVTIMEO, &amp;timeout_, <span class="keyword">sizeof</span>(int32_t)) != 0)</div>
+<div class="line"><a id="l00201" name="l00201"></a><span class="lineno">  201</span>        <span class="keywordflow">throw</span>(<a class="code hl_class" href="classrogue_1_1GeneralError.html">rogue::GeneralError</a>(<span class="stringliteral">&quot;ZmqClient::setTimeout&quot;</span>, <span class="stringliteral">&quot;Failed to set socket timeout&quot;</span>));</div>
+<div class="line"><a id="l00202" name="l00202"></a><span class="lineno">  202</span>}</div>
+</div>
+<div class="line"><a id="l00203" name="l00203"></a><span class="lineno">  203</span> </div>
+<div class="foldopen" id="foldopen00204" data-start="{" data-end="}">
+<div class="line"><a id="l00204" name="l00204"></a><span class="lineno"><a class="line" href="classrogue_1_1interfaces_1_1ZmqClient.html#a0a76bdc0aff07df5aa822504b880bdf2">  204</a></span>std::string <a class="code hl_function" href="classrogue_1_1interfaces_1_1ZmqClient.html#a0a76bdc0aff07df5aa822504b880bdf2">rogue::interfaces::ZmqClient::sendString</a>(<span class="keyword">const</span> std::string&amp; path, <span class="keyword">const</span> std::string&amp; attr, <span class="keyword">const</span> std::string&amp; arg) {</div>
+<div class="line"><a id="l00205" name="l00205"></a><span class="lineno">  205</span>    std::string snd;</div>
+<div class="line"><a id="l00206" name="l00206"></a><span class="lineno">  206</span>    std::string ret;</div>
+<div class="line"><a id="l00207" name="l00207"></a><span class="lineno">  207</span>    zmq_msg_t msg;</div>
+<div class="line"><a id="l00208" name="l00208"></a><span class="lineno">  208</span>    std::string data;</div>
+<div class="line"><a id="l00209" name="l00209"></a><span class="lineno">  209</span>    <span class="keywordtype">double</span> seconds = 0;</div>
+<div class="line"><a id="l00210" name="l00210"></a><span class="lineno">  210</span>    uint32_t lastLoggedSeconds = 0;</div>
 <div class="line"><a id="l00211" name="l00211"></a><span class="lineno">  211</span> </div>
-<div class="foldopen" id="foldopen00212" data-start="{" data-end="}">
-<div class="line"><a id="l00212" name="l00212"></a><span class="lineno"><a class="line" href="classrogue_1_1interfaces_1_1ZmqClient.html#a2d4c9cfc78a41fb8fdea5551e71e6fef">  212</a></span>std::string <a class="code hl_function" href="classrogue_1_1interfaces_1_1ZmqClient.html#a2d4c9cfc78a41fb8fdea5551e71e6fef">rogue::interfaces::ZmqClient::getDisp</a>(<span class="keyword">const</span> std::string&amp; path) {</div>
-<div class="line"><a id="l00213" name="l00213"></a><span class="lineno">  213</span>    <span class="keywordflow">return</span> sendString(path, <span class="stringliteral">&quot;getDisp&quot;</span>, <span class="stringliteral">&quot;&quot;</span>);</div>
-<div class="line"><a id="l00214" name="l00214"></a><span class="lineno">  214</span>}</div>
-</div>
-<div class="line"><a id="l00215" name="l00215"></a><span class="lineno">  215</span> </div>
-<div class="foldopen" id="foldopen00216" data-start="{" data-end="}">
-<div class="line"><a id="l00216" name="l00216"></a><span class="lineno"><a class="line" href="classrogue_1_1interfaces_1_1ZmqClient.html#ac677ee7330c8afc1511855899e836085">  216</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="classrogue_1_1interfaces_1_1ZmqClient.html#ac677ee7330c8afc1511855899e836085">rogue::interfaces::ZmqClient::setDisp</a>(<span class="keyword">const</span> std::string&amp; path, <span class="keyword">const</span> std::string&amp; value) {</div>
-<div class="line"><a id="l00217" name="l00217"></a><span class="lineno">  217</span>    sendString(path, <span class="stringliteral">&quot;setDisp&quot;</span>, value);</div>
-<div class="line"><a id="l00218" name="l00218"></a><span class="lineno">  218</span>}</div>
-</div>
-<div class="line"><a id="l00219" name="l00219"></a><span class="lineno">  219</span> </div>
-<div class="foldopen" id="foldopen00220" data-start="{" data-end="}">
-<div class="line"><a id="l00220" name="l00220"></a><span class="lineno"><a class="line" href="classrogue_1_1interfaces_1_1ZmqClient.html#a5a4a9e108867af66adf57a9ee374b6f8">  220</a></span>std::string <a class="code hl_function" href="classrogue_1_1interfaces_1_1ZmqClient.html#a5a4a9e108867af66adf57a9ee374b6f8">rogue::interfaces::ZmqClient::exec</a>(<span class="keyword">const</span> std::string&amp; path, <span class="keyword">const</span> std::string&amp; arg) {</div>
-<div class="line"><a id="l00221" name="l00221"></a><span class="lineno">  221</span>    <span class="keywordflow">return</span> sendString(path, <span class="stringliteral">&quot;__call__&quot;</span>, arg);</div>
-<div class="line"><a id="l00222" name="l00222"></a><span class="lineno">  222</span>}</div>
-</div>
+<div class="line"><a id="l00212" name="l00212"></a><span class="lineno">  212</span>    <span class="keywordflow">if</span> (!doString_) <span class="keywordflow">throw</span> <a class="code hl_function" href="classrogue_1_1GeneralError.html#ad37e9ca32b3afce0e38988b4a65c9e60">rogue::GeneralError::create</a>(<span class="stringliteral">&quot;ZmqClient::sendString&quot;</span>, <span class="stringliteral">&quot;Invalid send call in standard mode&quot;</span>);</div>
+<div class="line"><a id="l00213" name="l00213"></a><span class="lineno">  213</span> </div>
+<div class="line"><a id="l00214" name="l00214"></a><span class="lineno">  214</span>    snd = <span class="stringliteral">&quot;{\&quot;attr\&quot;: \&quot;&quot;</span> + attr + <span class="stringliteral">&quot;\&quot;,&quot;</span>;</div>
+<div class="line"><a id="l00215" name="l00215"></a><span class="lineno">  215</span>    snd += <span class="stringliteral">&quot;\&quot;path\&quot;: \&quot;&quot;</span> + path + <span class="stringliteral">&quot;\&quot;&quot;</span>;</div>
+<div class="line"><a id="l00216" name="l00216"></a><span class="lineno">  216</span> </div>
+<div class="line"><a id="l00217" name="l00217"></a><span class="lineno">  217</span>    <span class="keywordflow">if</span> (arg != <span class="stringliteral">&quot;&quot;</span>) snd += <span class="stringliteral">&quot;,\&quot;args\&quot;: [\&quot;&quot;</span> + arg + <span class="stringliteral">&quot;\&quot;]&quot;</span>;</div>
+<div class="line"><a id="l00218" name="l00218"></a><span class="lineno">  218</span> </div>
+<div class="line"><a id="l00219" name="l00219"></a><span class="lineno">  219</span>    snd += <span class="stringliteral">&quot;}&quot;</span>;</div>
+<div class="line"><a id="l00220" name="l00220"></a><span class="lineno">  220</span> </div>
+<div class="line"><a id="l00221" name="l00221"></a><span class="lineno">  221</span>    <a class="code hl_class" href="classrogue_1_1GilRelease.html">rogue::GilRelease</a> noGil;</div>
+<div class="line"><a id="l00222" name="l00222"></a><span class="lineno">  222</span>    zmq_send(this-&gt;zmqReq_, snd.c_str(), snd.size(), 0);</div>
 <div class="line"><a id="l00223" name="l00223"></a><span class="lineno">  223</span> </div>
-<div class="foldopen" id="foldopen00224" data-start="{" data-end="}">
-<div class="line"><a id="l00224" name="l00224"></a><span class="lineno"><a class="line" href="classrogue_1_1interfaces_1_1ZmqClient.html#a8a5ddf77da7048654a8081d002c8826a">  224</a></span>std::string <a class="code hl_function" href="classrogue_1_1interfaces_1_1ZmqClient.html#a8a5ddf77da7048654a8081d002c8826a">rogue::interfaces::ZmqClient::valueDisp</a>(<span class="keyword">const</span> std::string&amp; path) {</div>
-<div class="line"><a id="l00225" name="l00225"></a><span class="lineno">  225</span>    <span class="keywordflow">return</span> sendString(path, <span class="stringliteral">&quot;valueDisp&quot;</span>, <span class="stringliteral">&quot;&quot;</span>);</div>
-<div class="line"><a id="l00226" name="l00226"></a><span class="lineno">  226</span>}</div>
+<div class="line"><a id="l00224" name="l00224"></a><span class="lineno">  224</span>    <span class="keywordflow">while</span> (1) {</div>
+<div class="line"><a id="l00225" name="l00225"></a><span class="lineno">  225</span>        zmq_msg_init(&amp;msg);</div>
+<div class="line"><a id="l00226" name="l00226"></a><span class="lineno">  226</span>        <span class="keywordflow">if</span> (zmq_recvmsg(this-&gt;zmqReq_, &amp;msg, 0) &lt;= 0) {</div>
+<div class="line"><a id="l00227" name="l00227"></a><span class="lineno">  227</span>            seconds += <span class="keyword">static_cast&lt;</span><span class="keywordtype">double</span><span class="keyword">&gt;</span>(timeout_) / 1000.0;</div>
+<div class="line"><a id="l00228" name="l00228"></a><span class="lineno">  228</span>            <span class="keywordflow">if</span> (waitRetry_) {</div>
+<div class="line"><a id="l00229" name="l00229"></a><span class="lineno">  229</span>                logWaitRetry(log_, seconds, lastLoggedSeconds);</div>
+<div class="line"><a id="l00230" name="l00230"></a><span class="lineno">  230</span>                zmq_msg_close(&amp;msg);</div>
+<div class="line"><a id="l00231" name="l00231"></a><span class="lineno">  231</span>            } <span class="keywordflow">else</span> {</div>
+<div class="line"><a id="l00232" name="l00232"></a><span class="lineno">  232</span>                <span class="keywordflow">throw</span> <a class="code hl_function" href="classrogue_1_1GeneralError.html#ad37e9ca32b3afce0e38988b4a65c9e60">rogue::GeneralError::create</a>(<span class="stringliteral">&quot;ZmqClient::sendString&quot;</span>,</div>
+<div class="line"><a id="l00233" name="l00233"></a><span class="lineno">  233</span>                                                  <span class="stringliteral">&quot;Timeout waiting for response after %d Seconds.&quot;</span>,</div>
+<div class="line"><a id="l00234" name="l00234"></a><span class="lineno">  234</span>                                                  <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(seconds));</div>
+<div class="line"><a id="l00235" name="l00235"></a><span class="lineno">  235</span>            }</div>
+<div class="line"><a id="l00236" name="l00236"></a><span class="lineno">  236</span>        } <span class="keywordflow">else</span> {</div>
+<div class="line"><a id="l00237" name="l00237"></a><span class="lineno">  237</span>            <span class="keywordflow">break</span>;</div>
+<div class="line"><a id="l00238" name="l00238"></a><span class="lineno">  238</span>        }</div>
+<div class="line"><a id="l00239" name="l00239"></a><span class="lineno">  239</span>    }</div>
+<div class="line"><a id="l00240" name="l00240"></a><span class="lineno">  240</span> </div>
+<div class="line"><a id="l00241" name="l00241"></a><span class="lineno">  241</span>    logWaitRecovered(log_, seconds);</div>
+<div class="line"><a id="l00242" name="l00242"></a><span class="lineno">  242</span> </div>
+<div class="line"><a id="l00243" name="l00243"></a><span class="lineno">  243</span>    data = std::string((<span class="keyword">const</span> <span class="keywordtype">char</span>*)zmq_msg_data(&amp;msg), zmq_msg_size(&amp;msg));</div>
+<div class="line"><a id="l00244" name="l00244"></a><span class="lineno">  244</span>    zmq_msg_close(&amp;msg);</div>
+<div class="line"><a id="l00245" name="l00245"></a><span class="lineno">  245</span>    <span class="keywordflow">return</span> data;</div>
+<div class="line"><a id="l00246" name="l00246"></a><span class="lineno">  246</span>}</div>
 </div>
-<div class="line"><a id="l00227" name="l00227"></a><span class="lineno">  227</span> </div>
-<div class="line"><a id="l00228" name="l00228"></a><span class="lineno">  228</span><span class="preprocessor">#ifndef NO_PYTHON</span></div>
-<div class="line"><a id="l00229" name="l00229"></a><span class="lineno">  229</span> </div>
-<div class="foldopen" id="foldopen00230" data-start="{" data-end="}">
-<div class="line"><a id="l00230" name="l00230"></a><span class="lineno"><a class="line" href="classrogue_1_1interfaces_1_1ZmqClient.html#a61e84cf5d8467fd1d9d3ec541e35ed29">  230</a></span>bp::object <a class="code hl_function" href="classrogue_1_1interfaces_1_1ZmqClient.html#a61e84cf5d8467fd1d9d3ec541e35ed29">rogue::interfaces::ZmqClient::send</a>(bp::object value) {</div>
-<div class="line"><a id="l00231" name="l00231"></a><span class="lineno">  231</span>    zmq_msg_t txMsg;</div>
-<div class="line"><a id="l00232" name="l00232"></a><span class="lineno">  232</span>    zmq_msg_t rxMsg;</div>
-<div class="line"><a id="l00233" name="l00233"></a><span class="lineno">  233</span>    Py_buffer valueBuf;</div>
-<div class="line"><a id="l00234" name="l00234"></a><span class="lineno">  234</span>    bp::object ret;</div>
-<div class="line"><a id="l00235" name="l00235"></a><span class="lineno">  235</span>    <span class="keywordtype">double</span> seconds = 0;</div>
-<div class="line"><a id="l00236" name="l00236"></a><span class="lineno">  236</span> </div>
-<div class="line"><a id="l00237" name="l00237"></a><span class="lineno">  237</span>    <span class="keywordflow">if</span> (doString_) <span class="keywordflow">throw</span> <a class="code hl_function" href="classrogue_1_1GeneralError.html#ad37e9ca32b3afce0e38988b4a65c9e60">rogue::GeneralError::create</a>(<span class="stringliteral">&quot;ZmqClient::send&quot;</span>, <span class="stringliteral">&quot;Invalid send call in string mode&quot;</span>);</div>
-<div class="line"><a id="l00238" name="l00238"></a><span class="lineno">  238</span> </div>
-<div class="line"><a id="l00239" name="l00239"></a><span class="lineno">  239</span>    <span class="keywordflow">if</span> (PyObject_GetBuffer(value.ptr(), &amp;(valueBuf), PyBUF_SIMPLE) &lt; 0)</div>
-<div class="line"><a id="l00240" name="l00240"></a><span class="lineno">  240</span>        <span class="keywordflow">throw</span>(<a class="code hl_function" href="classrogue_1_1GeneralError.html#ad37e9ca32b3afce0e38988b4a65c9e60">rogue::GeneralError::create</a>(<span class="stringliteral">&quot;ZmqClient::send&quot;</span>, <span class="stringliteral">&quot;Failed to extract object data&quot;</span>));</div>
-<div class="line"><a id="l00241" name="l00241"></a><span class="lineno">  241</span> </div>
-<div class="line"><a id="l00242" name="l00242"></a><span class="lineno">  242</span>    zmq_msg_init_size(&amp;txMsg, valueBuf.len);</div>
-<div class="line"><a id="l00243" name="l00243"></a><span class="lineno">  243</span>    memcpy(zmq_msg_data(&amp;txMsg), valueBuf.buf, valueBuf.len);</div>
-<div class="line"><a id="l00244" name="l00244"></a><span class="lineno">  244</span>    PyBuffer_Release(&amp;valueBuf);</div>
-<div class="line"><a id="l00245" name="l00245"></a><span class="lineno">  245</span> </div>
-<div class="line"><a id="l00246" name="l00246"></a><span class="lineno">  246</span>    {</div>
-<div class="line"><a id="l00247" name="l00247"></a><span class="lineno">  247</span>        <a class="code hl_class" href="classrogue_1_1GilRelease.html">rogue::GilRelease</a> noGil;</div>
-<div class="line"><a id="l00248" name="l00248"></a><span class="lineno">  248</span>        zmq_sendmsg(this-&gt;zmqReq_, &amp;txMsg, 0);</div>
-<div class="line"><a id="l00249" name="l00249"></a><span class="lineno">  249</span> </div>
-<div class="line"><a id="l00250" name="l00250"></a><span class="lineno">  250</span>        <span class="keywordflow">while</span> (1) {</div>
-<div class="line"><a id="l00251" name="l00251"></a><span class="lineno">  251</span>            zmq_msg_init(&amp;rxMsg);</div>
-<div class="line"><a id="l00252" name="l00252"></a><span class="lineno">  252</span>            <span class="keywordflow">if</span> (zmq_recvmsg(this-&gt;zmqReq_, &amp;rxMsg, 0) &lt;= 0) {</div>
-<div class="line"><a id="l00253" name="l00253"></a><span class="lineno">  253</span>                seconds += <span class="keyword">static_cast&lt;</span><span class="keywordtype">double</span><span class="keyword">&gt;</span>(timeout_) / 1000.0;</div>
-<div class="line"><a id="l00254" name="l00254"></a><span class="lineno">  254</span>                <span class="keywordflow">if</span> (waitRetry_) {</div>
-<div class="line"><a id="l00255" name="l00255"></a><span class="lineno">  255</span>                    log_-&gt;error(<span class="stringliteral">&quot;Timeout waiting for response after %d Seconds, server may be busy! Waiting...&quot;</span>,</div>
-<div class="line"><a id="l00256" name="l00256"></a><span class="lineno">  256</span>                                <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(seconds));</div>
-<div class="line"><a id="l00257" name="l00257"></a><span class="lineno">  257</span>                    zmq_msg_close(&amp;rxMsg);</div>
-<div class="line"><a id="l00258" name="l00258"></a><span class="lineno">  258</span>                } <span class="keywordflow">else</span> {</div>
-<div class="line"><a id="l00259" name="l00259"></a><span class="lineno">  259</span>                    <span class="keywordflow">throw</span> <a class="code hl_function" href="classrogue_1_1GeneralError.html#ad37e9ca32b3afce0e38988b4a65c9e60">rogue::GeneralError::create</a>(</div>
-<div class="line"><a id="l00260" name="l00260"></a><span class="lineno">  260</span>                        <span class="stringliteral">&quot;ZmqClient::send&quot;</span>,</div>
-<div class="line"><a id="l00261" name="l00261"></a><span class="lineno">  261</span>                        <span class="stringliteral">&quot;Timeout waiting for response after %d Seconds, server may be busy!&quot;</span>,</div>
-<div class="line"><a id="l00262" name="l00262"></a><span class="lineno">  262</span>                        <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(seconds));</div>
-<div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span>                }</div>
-<div class="line"><a id="l00264" name="l00264"></a><span class="lineno">  264</span>            } <span class="keywordflow">else</span> {</div>
-<div class="line"><a id="l00265" name="l00265"></a><span class="lineno">  265</span>                <span class="keywordflow">break</span>;</div>
-<div class="line"><a id="l00266" name="l00266"></a><span class="lineno">  266</span>            }</div>
-<div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span>        }</div>
-<div class="line"><a id="l00268" name="l00268"></a><span class="lineno">  268</span>    }</div>
-<div class="line"><a id="l00269" name="l00269"></a><span class="lineno">  269</span> </div>
-<div class="line"><a id="l00270" name="l00270"></a><span class="lineno">  270</span>    <span class="keywordflow">if</span> (seconds != 0) log_-&gt;error(<span class="stringliteral">&quot;Finally got response from server after %d seconds!&quot;</span>, <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(seconds));</div>
-<div class="line"><a id="l00271" name="l00271"></a><span class="lineno">  271</span> </div>
-<div class="line"><a id="l00272" name="l00272"></a><span class="lineno">  272</span>    PyObject* val = Py_BuildValue(<span class="stringliteral">&quot;y#&quot;</span>, zmq_msg_data(&amp;rxMsg), zmq_msg_size(&amp;rxMsg));</div>
+<div class="line"><a id="l00247" name="l00247"></a><span class="lineno">  247</span> </div>
+<div class="foldopen" id="foldopen00248" data-start="{" data-end="}">
+<div class="line"><a id="l00248" name="l00248"></a><span class="lineno"><a class="line" href="classrogue_1_1interfaces_1_1ZmqClient.html#a2d4c9cfc78a41fb8fdea5551e71e6fef">  248</a></span>std::string <a class="code hl_function" href="classrogue_1_1interfaces_1_1ZmqClient.html#a2d4c9cfc78a41fb8fdea5551e71e6fef">rogue::interfaces::ZmqClient::getDisp</a>(<span class="keyword">const</span> std::string&amp; path) {</div>
+<div class="line"><a id="l00249" name="l00249"></a><span class="lineno">  249</span>    <span class="keywordflow">return</span> sendString(path, <span class="stringliteral">&quot;getDisp&quot;</span>, <span class="stringliteral">&quot;&quot;</span>);</div>
+<div class="line"><a id="l00250" name="l00250"></a><span class="lineno">  250</span>}</div>
+</div>
+<div class="line"><a id="l00251" name="l00251"></a><span class="lineno">  251</span> </div>
+<div class="foldopen" id="foldopen00252" data-start="{" data-end="}">
+<div class="line"><a id="l00252" name="l00252"></a><span class="lineno"><a class="line" href="classrogue_1_1interfaces_1_1ZmqClient.html#ac677ee7330c8afc1511855899e836085">  252</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="classrogue_1_1interfaces_1_1ZmqClient.html#ac677ee7330c8afc1511855899e836085">rogue::interfaces::ZmqClient::setDisp</a>(<span class="keyword">const</span> std::string&amp; path, <span class="keyword">const</span> std::string&amp; value) {</div>
+<div class="line"><a id="l00253" name="l00253"></a><span class="lineno">  253</span>    sendString(path, <span class="stringliteral">&quot;setDisp&quot;</span>, value);</div>
+<div class="line"><a id="l00254" name="l00254"></a><span class="lineno">  254</span>}</div>
+</div>
+<div class="line"><a id="l00255" name="l00255"></a><span class="lineno">  255</span> </div>
+<div class="foldopen" id="foldopen00256" data-start="{" data-end="}">
+<div class="line"><a id="l00256" name="l00256"></a><span class="lineno"><a class="line" href="classrogue_1_1interfaces_1_1ZmqClient.html#a5a4a9e108867af66adf57a9ee374b6f8">  256</a></span>std::string <a class="code hl_function" href="classrogue_1_1interfaces_1_1ZmqClient.html#a5a4a9e108867af66adf57a9ee374b6f8">rogue::interfaces::ZmqClient::exec</a>(<span class="keyword">const</span> std::string&amp; path, <span class="keyword">const</span> std::string&amp; arg) {</div>
+<div class="line"><a id="l00257" name="l00257"></a><span class="lineno">  257</span>    <span class="keywordflow">return</span> sendString(path, <span class="stringliteral">&quot;__call__&quot;</span>, arg);</div>
+<div class="line"><a id="l00258" name="l00258"></a><span class="lineno">  258</span>}</div>
+</div>
+<div class="line"><a id="l00259" name="l00259"></a><span class="lineno">  259</span> </div>
+<div class="foldopen" id="foldopen00260" data-start="{" data-end="}">
+<div class="line"><a id="l00260" name="l00260"></a><span class="lineno"><a class="line" href="classrogue_1_1interfaces_1_1ZmqClient.html#a8a5ddf77da7048654a8081d002c8826a">  260</a></span>std::string <a class="code hl_function" href="classrogue_1_1interfaces_1_1ZmqClient.html#a8a5ddf77da7048654a8081d002c8826a">rogue::interfaces::ZmqClient::valueDisp</a>(<span class="keyword">const</span> std::string&amp; path) {</div>
+<div class="line"><a id="l00261" name="l00261"></a><span class="lineno">  261</span>    <span class="keywordflow">return</span> sendString(path, <span class="stringliteral">&quot;valueDisp&quot;</span>, <span class="stringliteral">&quot;&quot;</span>);</div>
+<div class="line"><a id="l00262" name="l00262"></a><span class="lineno">  262</span>}</div>
+</div>
+<div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span> </div>
+<div class="line"><a id="l00264" name="l00264"></a><span class="lineno">  264</span><span class="preprocessor">#ifndef NO_PYTHON</span></div>
+<div class="line"><a id="l00265" name="l00265"></a><span class="lineno">  265</span> </div>
+<div class="foldopen" id="foldopen00266" data-start="{" data-end="}">
+<div class="line"><a id="l00266" name="l00266"></a><span class="lineno"><a class="line" href="classrogue_1_1interfaces_1_1ZmqClient.html#a61e84cf5d8467fd1d9d3ec541e35ed29">  266</a></span>bp::object <a class="code hl_function" href="classrogue_1_1interfaces_1_1ZmqClient.html#a61e84cf5d8467fd1d9d3ec541e35ed29">rogue::interfaces::ZmqClient::send</a>(bp::object value) {</div>
+<div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span>    zmq_msg_t txMsg;</div>
+<div class="line"><a id="l00268" name="l00268"></a><span class="lineno">  268</span>    zmq_msg_t rxMsg;</div>
+<div class="line"><a id="l00269" name="l00269"></a><span class="lineno">  269</span>    Py_buffer valueBuf;</div>
+<div class="line"><a id="l00270" name="l00270"></a><span class="lineno">  270</span>    bp::object ret;</div>
+<div class="line"><a id="l00271" name="l00271"></a><span class="lineno">  271</span>    <span class="keywordtype">double</span> seconds = 0;</div>
+<div class="line"><a id="l00272" name="l00272"></a><span class="lineno">  272</span>    uint32_t lastLoggedSeconds = 0;</div>
 <div class="line"><a id="l00273" name="l00273"></a><span class="lineno">  273</span> </div>
-<div class="line"><a id="l00274" name="l00274"></a><span class="lineno">  274</span>    <span class="keywordflow">if</span> (val == NULL) <span class="keywordflow">throw</span>(<a class="code hl_function" href="classrogue_1_1GeneralError.html#ad37e9ca32b3afce0e38988b4a65c9e60">rogue::GeneralError::create</a>(<span class="stringliteral">&quot;ZmqClient::send&quot;</span>, <span class="stringliteral">&quot;Failed to generate bytearray&quot;</span>));</div>
+<div class="line"><a id="l00274" name="l00274"></a><span class="lineno">  274</span>    <span class="keywordflow">if</span> (doString_) <span class="keywordflow">throw</span> <a class="code hl_function" href="classrogue_1_1GeneralError.html#ad37e9ca32b3afce0e38988b4a65c9e60">rogue::GeneralError::create</a>(<span class="stringliteral">&quot;ZmqClient::send&quot;</span>, <span class="stringliteral">&quot;Invalid send call in string mode&quot;</span>);</div>
 <div class="line"><a id="l00275" name="l00275"></a><span class="lineno">  275</span> </div>
-<div class="line"><a id="l00276" name="l00276"></a><span class="lineno">  276</span>    zmq_msg_close(&amp;rxMsg);</div>
-<div class="line"><a id="l00277" name="l00277"></a><span class="lineno">  277</span> </div>
-<div class="line"><a id="l00278" name="l00278"></a><span class="lineno">  278</span>    bp::handle&lt;&gt; handle(val);</div>
-<div class="line"><a id="l00279" name="l00279"></a><span class="lineno">  279</span>    ret = bp::object(handle);</div>
-<div class="line"><a id="l00280" name="l00280"></a><span class="lineno">  280</span>    <span class="keywordflow">return</span> ret;</div>
-<div class="line"><a id="l00281" name="l00281"></a><span class="lineno">  281</span>}</div>
-</div>
+<div class="line"><a id="l00276" name="l00276"></a><span class="lineno">  276</span>    <span class="keywordflow">if</span> (PyObject_GetBuffer(value.ptr(), &amp;(valueBuf), PyBUF_SIMPLE) &lt; 0)</div>
+<div class="line"><a id="l00277" name="l00277"></a><span class="lineno">  277</span>        <span class="keywordflow">throw</span>(<a class="code hl_function" href="classrogue_1_1GeneralError.html#ad37e9ca32b3afce0e38988b4a65c9e60">rogue::GeneralError::create</a>(<span class="stringliteral">&quot;ZmqClient::send&quot;</span>, <span class="stringliteral">&quot;Failed to extract object data&quot;</span>));</div>
+<div class="line"><a id="l00278" name="l00278"></a><span class="lineno">  278</span> </div>
+<div class="line"><a id="l00279" name="l00279"></a><span class="lineno">  279</span>    zmq_msg_init_size(&amp;txMsg, valueBuf.len);</div>
+<div class="line"><a id="l00280" name="l00280"></a><span class="lineno">  280</span>    memcpy(zmq_msg_data(&amp;txMsg), valueBuf.buf, valueBuf.len);</div>
+<div class="line"><a id="l00281" name="l00281"></a><span class="lineno">  281</span>    PyBuffer_Release(&amp;valueBuf);</div>
 <div class="line"><a id="l00282" name="l00282"></a><span class="lineno">  282</span> </div>
-<div class="line"><a id="l00283" name="l00283"></a><span class="lineno"><a class="line" href="classrogue_1_1interfaces_1_1ZmqClient.html#a42f1547fa999a1c181ca412023d10241">  283</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="classrogue_1_1interfaces_1_1ZmqClient.html#a42f1547fa999a1c181ca412023d10241">rogue::interfaces::ZmqClient::doUpdate</a>(bp::object data) {}</div>
-<div class="line"><a id="l00284" name="l00284"></a><span class="lineno">  284</span> </div>
-<div class="foldopen" id="foldopen00285" data-start="{" data-end="}">
-<div class="line"><a id="l00285" name="l00285"></a><span class="lineno"><a class="line" href="classrogue_1_1interfaces_1_1ZmqClientWrap.html#a741ef84228d87781556ff56b34a4954b">  285</a></span><a class="code hl_function" href="classrogue_1_1interfaces_1_1ZmqClientWrap.html#a741ef84228d87781556ff56b34a4954b">rogue::interfaces::ZmqClientWrap::ZmqClientWrap</a>(<span class="keyword">const</span> std::string&amp; addr, uint16_t port, <span class="keywordtype">bool</span> doString)</div>
-<div class="line"><a id="l00286" name="l00286"></a><span class="lineno">  286</span>    : <a class="code hl_namespace" href="namespacerogue.html">rogue</a>::interfaces::<a class="code hl_class" href="classrogue_1_1interfaces_1_1ZmqClient.html">ZmqClient</a>(addr, port, doString) {}</div>
-</div>
-<div class="line"><a id="l00287" name="l00287"></a><span class="lineno">  287</span> </div>
-<div class="foldopen" id="foldopen00288" data-start="{" data-end="}">
-<div class="line"><a id="l00288" name="l00288"></a><span class="lineno"><a class="line" href="classrogue_1_1interfaces_1_1ZmqClientWrap.html#a588a20c532278a4740debba9c5bddd7f">  288</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="classrogue_1_1interfaces_1_1ZmqClientWrap.html#a588a20c532278a4740debba9c5bddd7f">rogue::interfaces::ZmqClientWrap::doUpdate</a>(bp::object data) {</div>
-<div class="line"><a id="l00289" name="l00289"></a><span class="lineno">  289</span>    <span class="keywordflow">if</span> (bp::override f = this-&gt;get_override(<span class="stringliteral">&quot;_doUpdate&quot;</span>)) {</div>
-<div class="line"><a id="l00290" name="l00290"></a><span class="lineno">  290</span>        <span class="keywordflow">try</span> {</div>
-<div class="line"><a id="l00291" name="l00291"></a><span class="lineno">  291</span>            f(data);</div>
-<div class="line"><a id="l00292" name="l00292"></a><span class="lineno">  292</span>        } <span class="keywordflow">catch</span> (...) {</div>
-<div class="line"><a id="l00293" name="l00293"></a><span class="lineno">  293</span>            PyErr_Print();</div>
-<div class="line"><a id="l00294" name="l00294"></a><span class="lineno">  294</span>        }</div>
-<div class="line"><a id="l00295" name="l00295"></a><span class="lineno">  295</span>    }</div>
-<div class="line"><a id="l00296" name="l00296"></a><span class="lineno">  296</span>    <a class="code hl_function" href="classrogue_1_1interfaces_1_1ZmqClient.html#a42f1547fa999a1c181ca412023d10241">rogue::interfaces::ZmqClient::doUpdate</a>(data);</div>
-<div class="line"><a id="l00297" name="l00297"></a><span class="lineno">  297</span>}</div>
-</div>
-<div class="line"><a id="l00298" name="l00298"></a><span class="lineno">  298</span> </div>
-<div class="foldopen" id="foldopen00299" data-start="{" data-end="}">
-<div class="line"><a id="l00299" name="l00299"></a><span class="lineno"><a class="line" href="classrogue_1_1interfaces_1_1ZmqClientWrap.html#a1ffb834918aa27958c9bd54b561ffad5">  299</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="classrogue_1_1interfaces_1_1ZmqClientWrap.html#a1ffb834918aa27958c9bd54b561ffad5">rogue::interfaces::ZmqClientWrap::defDoUpdate</a>(bp::object data) {</div>
-<div class="line"><a id="l00300" name="l00300"></a><span class="lineno">  300</span>    <a class="code hl_function" href="classrogue_1_1interfaces_1_1ZmqClient.html#a42f1547fa999a1c181ca412023d10241">rogue::interfaces::ZmqClient::doUpdate</a>(data);</div>
-<div class="line"><a id="l00301" name="l00301"></a><span class="lineno">  301</span>}</div>
-</div>
-<div class="line"><a id="l00302" name="l00302"></a><span class="lineno">  302</span> </div>
-<div class="line"><a id="l00303" name="l00303"></a><span class="lineno">  303</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00304" name="l00304"></a><span class="lineno">  304</span> </div>
-<div class="line"><a id="l00305" name="l00305"></a><span class="lineno">  305</span><span class="keywordtype">void</span> rogue::interfaces::ZmqClient::runThread() {</div>
-<div class="line"><a id="l00306" name="l00306"></a><span class="lineno">  306</span>    zmq_msg_t msg;</div>
+<div class="line"><a id="l00283" name="l00283"></a><span class="lineno">  283</span>    {</div>
+<div class="line"><a id="l00284" name="l00284"></a><span class="lineno">  284</span>        <a class="code hl_class" href="classrogue_1_1GilRelease.html">rogue::GilRelease</a> noGil;</div>
+<div class="line"><a id="l00285" name="l00285"></a><span class="lineno">  285</span>        zmq_sendmsg(this-&gt;zmqReq_, &amp;txMsg, 0);</div>
+<div class="line"><a id="l00286" name="l00286"></a><span class="lineno">  286</span> </div>
+<div class="line"><a id="l00287" name="l00287"></a><span class="lineno">  287</span>        <span class="keywordflow">while</span> (1) {</div>
+<div class="line"><a id="l00288" name="l00288"></a><span class="lineno">  288</span>            zmq_msg_init(&amp;rxMsg);</div>
+<div class="line"><a id="l00289" name="l00289"></a><span class="lineno">  289</span>            <span class="keywordflow">if</span> (zmq_recvmsg(this-&gt;zmqReq_, &amp;rxMsg, 0) &lt;= 0) {</div>
+<div class="line"><a id="l00290" name="l00290"></a><span class="lineno">  290</span>                seconds += <span class="keyword">static_cast&lt;</span><span class="keywordtype">double</span><span class="keyword">&gt;</span>(timeout_) / 1000.0;</div>
+<div class="line"><a id="l00291" name="l00291"></a><span class="lineno">  291</span>                <span class="keywordflow">if</span> (waitRetry_) {</div>
+<div class="line"><a id="l00292" name="l00292"></a><span class="lineno">  292</span>                    logWaitRetry(log_, seconds, lastLoggedSeconds);</div>
+<div class="line"><a id="l00293" name="l00293"></a><span class="lineno">  293</span>                    zmq_msg_close(&amp;rxMsg);</div>
+<div class="line"><a id="l00294" name="l00294"></a><span class="lineno">  294</span>                } <span class="keywordflow">else</span> {</div>
+<div class="line"><a id="l00295" name="l00295"></a><span class="lineno">  295</span>                    <span class="keywordflow">throw</span> <a class="code hl_function" href="classrogue_1_1GeneralError.html#ad37e9ca32b3afce0e38988b4a65c9e60">rogue::GeneralError::create</a>(</div>
+<div class="line"><a id="l00296" name="l00296"></a><span class="lineno">  296</span>                        <span class="stringliteral">&quot;ZmqClient::send&quot;</span>,</div>
+<div class="line"><a id="l00297" name="l00297"></a><span class="lineno">  297</span>                        <span class="stringliteral">&quot;Timeout waiting for response after %d Seconds, server may be busy!&quot;</span>,</div>
+<div class="line"><a id="l00298" name="l00298"></a><span class="lineno">  298</span>                        <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(seconds));</div>
+<div class="line"><a id="l00299" name="l00299"></a><span class="lineno">  299</span>                }</div>
+<div class="line"><a id="l00300" name="l00300"></a><span class="lineno">  300</span>            } <span class="keywordflow">else</span> {</div>
+<div class="line"><a id="l00301" name="l00301"></a><span class="lineno">  301</span>                <span class="keywordflow">break</span>;</div>
+<div class="line"><a id="l00302" name="l00302"></a><span class="lineno">  302</span>            }</div>
+<div class="line"><a id="l00303" name="l00303"></a><span class="lineno">  303</span>        }</div>
+<div class="line"><a id="l00304" name="l00304"></a><span class="lineno">  304</span>    }</div>
+<div class="line"><a id="l00305" name="l00305"></a><span class="lineno">  305</span> </div>
+<div class="line"><a id="l00306" name="l00306"></a><span class="lineno">  306</span>    logWaitRecovered(log_, seconds);</div>
 <div class="line"><a id="l00307" name="l00307"></a><span class="lineno">  307</span> </div>
-<div class="line"><a id="l00308" name="l00308"></a><span class="lineno">  308</span>    log_-&gt;logThreadId();</div>
+<div class="line"><a id="l00308" name="l00308"></a><span class="lineno">  308</span>    PyObject* val = Py_BuildValue(<span class="stringliteral">&quot;y#&quot;</span>, zmq_msg_data(&amp;rxMsg), zmq_msg_size(&amp;rxMsg));</div>
 <div class="line"><a id="l00309" name="l00309"></a><span class="lineno">  309</span> </div>
-<div class="line"><a id="l00310" name="l00310"></a><span class="lineno">  310</span>    <span class="keywordflow">while</span> (threadEn_) {</div>
-<div class="line"><a id="l00311" name="l00311"></a><span class="lineno">  311</span>        zmq_msg_init(&amp;msg);</div>
-<div class="line"><a id="l00312" name="l00312"></a><span class="lineno">  312</span> </div>
-<div class="line"><a id="l00313" name="l00313"></a><span class="lineno">  313</span>        <span class="comment">// Get the message</span></div>
-<div class="line"><a id="l00314" name="l00314"></a><span class="lineno">  314</span>        <span class="keywordflow">if</span> (zmq_recvmsg(this-&gt;zmqSub_, &amp;msg, 0) &gt; 0) {</div>
-<div class="line"><a id="l00315" name="l00315"></a><span class="lineno">  315</span><span class="preprocessor">#ifndef NO_PYTHON</span></div>
-<div class="line"><a id="l00316" name="l00316"></a><span class="lineno">  316</span>            <a class="code hl_class" href="classrogue_1_1ScopedGil.html">rogue::ScopedGil</a> gil;</div>
-<div class="line"><a id="l00317" name="l00317"></a><span class="lineno">  317</span>            PyObject* val = Py_BuildValue(<span class="stringliteral">&quot;y#&quot;</span>, zmq_msg_data(&amp;msg), zmq_msg_size(&amp;msg));</div>
-<div class="line"><a id="l00318" name="l00318"></a><span class="lineno">  318</span>            bp::handle&lt;&gt; handle(val);</div>
-<div class="line"><a id="l00319" name="l00319"></a><span class="lineno">  319</span>            bp::object dat = bp::object(handle);</div>
-<div class="line"><a id="l00320" name="l00320"></a><span class="lineno">  320</span>            this-&gt;doUpdate(dat);</div>
-<div class="line"><a id="l00321" name="l00321"></a><span class="lineno">  321</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00322" name="l00322"></a><span class="lineno">  322</span>            zmq_msg_close(&amp;msg);</div>
-<div class="line"><a id="l00323" name="l00323"></a><span class="lineno">  323</span>        }</div>
-<div class="line"><a id="l00324" name="l00324"></a><span class="lineno">  324</span>    }</div>
-<div class="line"><a id="l00325" name="l00325"></a><span class="lineno">  325</span>}</div>
+<div class="line"><a id="l00310" name="l00310"></a><span class="lineno">  310</span>    <span class="keywordflow">if</span> (val == NULL) <span class="keywordflow">throw</span>(<a class="code hl_function" href="classrogue_1_1GeneralError.html#ad37e9ca32b3afce0e38988b4a65c9e60">rogue::GeneralError::create</a>(<span class="stringliteral">&quot;ZmqClient::send&quot;</span>, <span class="stringliteral">&quot;Failed to generate bytearray&quot;</span>));</div>
+<div class="line"><a id="l00311" name="l00311"></a><span class="lineno">  311</span> </div>
+<div class="line"><a id="l00312" name="l00312"></a><span class="lineno">  312</span>    zmq_msg_close(&amp;rxMsg);</div>
+<div class="line"><a id="l00313" name="l00313"></a><span class="lineno">  313</span> </div>
+<div class="line"><a id="l00314" name="l00314"></a><span class="lineno">  314</span>    bp::handle&lt;&gt; handle(val);</div>
+<div class="line"><a id="l00315" name="l00315"></a><span class="lineno">  315</span>    ret = bp::object(handle);</div>
+<div class="line"><a id="l00316" name="l00316"></a><span class="lineno">  316</span>    <span class="keywordflow">return</span> ret;</div>
+<div class="line"><a id="l00317" name="l00317"></a><span class="lineno">  317</span>}</div>
+</div>
+<div class="line"><a id="l00318" name="l00318"></a><span class="lineno">  318</span> </div>
+<div class="line"><a id="l00319" name="l00319"></a><span class="lineno"><a class="line" href="classrogue_1_1interfaces_1_1ZmqClient.html#a42f1547fa999a1c181ca412023d10241">  319</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="classrogue_1_1interfaces_1_1ZmqClient.html#a42f1547fa999a1c181ca412023d10241">rogue::interfaces::ZmqClient::doUpdate</a>(bp::object data) {}</div>
+<div class="line"><a id="l00320" name="l00320"></a><span class="lineno">  320</span> </div>
+<div class="foldopen" id="foldopen00321" data-start="{" data-end="}">
+<div class="line"><a id="l00321" name="l00321"></a><span class="lineno"><a class="line" href="classrogue_1_1interfaces_1_1ZmqClientWrap.html#a741ef84228d87781556ff56b34a4954b">  321</a></span><a class="code hl_function" href="classrogue_1_1interfaces_1_1ZmqClientWrap.html#a741ef84228d87781556ff56b34a4954b">rogue::interfaces::ZmqClientWrap::ZmqClientWrap</a>(<span class="keyword">const</span> std::string&amp; addr, uint16_t port, <span class="keywordtype">bool</span> doString)</div>
+<div class="line"><a id="l00322" name="l00322"></a><span class="lineno">  322</span>    : <a class="code hl_namespace" href="namespacerogue.html">rogue</a>::interfaces::<a class="code hl_class" href="classrogue_1_1interfaces_1_1ZmqClient.html">ZmqClient</a>(addr, port, doString) {}</div>
+</div>
+<div class="line"><a id="l00323" name="l00323"></a><span class="lineno">  323</span> </div>
+<div class="foldopen" id="foldopen00324" data-start="{" data-end="}">
+<div class="line"><a id="l00324" name="l00324"></a><span class="lineno"><a class="line" href="classrogue_1_1interfaces_1_1ZmqClientWrap.html#a588a20c532278a4740debba9c5bddd7f">  324</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="classrogue_1_1interfaces_1_1ZmqClientWrap.html#a588a20c532278a4740debba9c5bddd7f">rogue::interfaces::ZmqClientWrap::doUpdate</a>(bp::object data) {</div>
+<div class="line"><a id="l00325" name="l00325"></a><span class="lineno">  325</span>    <span class="keywordflow">if</span> (bp::override f = this-&gt;get_override(<span class="stringliteral">&quot;_doUpdate&quot;</span>)) {</div>
+<div class="line"><a id="l00326" name="l00326"></a><span class="lineno">  326</span>        <span class="keywordflow">try</span> {</div>
+<div class="line"><a id="l00327" name="l00327"></a><span class="lineno">  327</span>            f(data);</div>
+<div class="line"><a id="l00328" name="l00328"></a><span class="lineno">  328</span>        } <span class="keywordflow">catch</span> (...) {</div>
+<div class="line"><a id="l00329" name="l00329"></a><span class="lineno">  329</span>            PyErr_Print();</div>
+<div class="line"><a id="l00330" name="l00330"></a><span class="lineno">  330</span>        }</div>
+<div class="line"><a id="l00331" name="l00331"></a><span class="lineno">  331</span>    }</div>
+<div class="line"><a id="l00332" name="l00332"></a><span class="lineno">  332</span>    <a class="code hl_function" href="classrogue_1_1interfaces_1_1ZmqClient.html#a42f1547fa999a1c181ca412023d10241">rogue::interfaces::ZmqClient::doUpdate</a>(data);</div>
+<div class="line"><a id="l00333" name="l00333"></a><span class="lineno">  333</span>}</div>
+</div>
+<div class="line"><a id="l00334" name="l00334"></a><span class="lineno">  334</span> </div>
+<div class="foldopen" id="foldopen00335" data-start="{" data-end="}">
+<div class="line"><a id="l00335" name="l00335"></a><span class="lineno"><a class="line" href="classrogue_1_1interfaces_1_1ZmqClientWrap.html#a1ffb834918aa27958c9bd54b561ffad5">  335</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="classrogue_1_1interfaces_1_1ZmqClientWrap.html#a1ffb834918aa27958c9bd54b561ffad5">rogue::interfaces::ZmqClientWrap::defDoUpdate</a>(bp::object data) {</div>
+<div class="line"><a id="l00336" name="l00336"></a><span class="lineno">  336</span>    <a class="code hl_function" href="classrogue_1_1interfaces_1_1ZmqClient.html#a42f1547fa999a1c181ca412023d10241">rogue::interfaces::ZmqClient::doUpdate</a>(data);</div>
+<div class="line"><a id="l00337" name="l00337"></a><span class="lineno">  337</span>}</div>
+</div>
+<div class="line"><a id="l00338" name="l00338"></a><span class="lineno">  338</span> </div>
+<div class="line"><a id="l00339" name="l00339"></a><span class="lineno">  339</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00340" name="l00340"></a><span class="lineno">  340</span> </div>
+<div class="line"><a id="l00341" name="l00341"></a><span class="lineno">  341</span><span class="keywordtype">void</span> rogue::interfaces::ZmqClient::runThread() {</div>
+<div class="line"><a id="l00342" name="l00342"></a><span class="lineno">  342</span>    zmq_msg_t msg;</div>
+<div class="line"><a id="l00343" name="l00343"></a><span class="lineno">  343</span> </div>
+<div class="line"><a id="l00344" name="l00344"></a><span class="lineno">  344</span>    log_-&gt;logThreadId();</div>
+<div class="line"><a id="l00345" name="l00345"></a><span class="lineno">  345</span> </div>
+<div class="line"><a id="l00346" name="l00346"></a><span class="lineno">  346</span>    <span class="keywordflow">while</span> (threadEn_) {</div>
+<div class="line"><a id="l00347" name="l00347"></a><span class="lineno">  347</span>        zmq_msg_init(&amp;msg);</div>
+<div class="line"><a id="l00348" name="l00348"></a><span class="lineno">  348</span> </div>
+<div class="line"><a id="l00349" name="l00349"></a><span class="lineno">  349</span>        <span class="comment">// Get the message</span></div>
+<div class="line"><a id="l00350" name="l00350"></a><span class="lineno">  350</span>        <span class="keywordflow">if</span> (zmq_recvmsg(this-&gt;zmqSub_, &amp;msg, 0) &gt; 0) {</div>
+<div class="line"><a id="l00351" name="l00351"></a><span class="lineno">  351</span><span class="preprocessor">#ifndef NO_PYTHON</span></div>
+<div class="line"><a id="l00352" name="l00352"></a><span class="lineno">  352</span>            <a class="code hl_class" href="classrogue_1_1ScopedGil.html">rogue::ScopedGil</a> gil;</div>
+<div class="line"><a id="l00353" name="l00353"></a><span class="lineno">  353</span>            PyObject* val = Py_BuildValue(<span class="stringliteral">&quot;y#&quot;</span>, zmq_msg_data(&amp;msg), zmq_msg_size(&amp;msg));</div>
+<div class="line"><a id="l00354" name="l00354"></a><span class="lineno">  354</span>            bp::handle&lt;&gt; handle(val);</div>
+<div class="line"><a id="l00355" name="l00355"></a><span class="lineno">  355</span>            bp::object dat = bp::object(handle);</div>
+<div class="line"><a id="l00356" name="l00356"></a><span class="lineno">  356</span>            this-&gt;doUpdate(dat);</div>
+<div class="line"><a id="l00357" name="l00357"></a><span class="lineno">  357</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00358" name="l00358"></a><span class="lineno">  358</span>            zmq_msg_close(&amp;msg);</div>
+<div class="line"><a id="l00359" name="l00359"></a><span class="lineno">  359</span>        } <span class="keywordflow">else</span> {</div>
+<div class="line"><a id="l00360" name="l00360"></a><span class="lineno">  360</span>            zmq_msg_close(&amp;msg);</div>
+<div class="line"><a id="l00361" name="l00361"></a><span class="lineno">  361</span>        }</div>
+<div class="line"><a id="l00362" name="l00362"></a><span class="lineno">  362</span>    }</div>
+<div class="line"><a id="l00363" name="l00363"></a><span class="lineno">  363</span>}</div>
 <div class="ttc" id="aDirectives_8h_html"><div class="ttname"><a href="Directives_8h.html">Directives.h</a></div></div>
 <div class="ttc" id="aGeneralError_8h_html"><div class="ttname"><a href="GeneralError_8h.html">GeneralError.h</a></div></div>
 <div class="ttc" id="aGilRelease_8h_html"><div class="ttname"><a href="GilRelease_8h.html">GilRelease.h</a></div></div>
@@ -427,27 +465,28 @@ $(document).ready(function() { init_codefold(0); });
 <div class="ttc" id="aclassrogue_1_1GeneralError_html"><div class="ttname"><a href="classrogue_1_1GeneralError.html">rogue::GeneralError</a></div><div class="ttdoc">Generic Rogue exception type.</div><div class="ttdef"><b>Definition</b> <a href="GeneralError_8h_source.html#l00045">GeneralError.h:45</a></div></div>
 <div class="ttc" id="aclassrogue_1_1GeneralError_html_ad37e9ca32b3afce0e38988b4a65c9e60"><div class="ttname"><a href="classrogue_1_1GeneralError.html#ad37e9ca32b3afce0e38988b4a65c9e60">rogue::GeneralError::create</a></div><div class="ttdeci">static GeneralError create(std::string src, const char *fmt,...)</div><div class="ttdoc">Creates a formatted error instance.</div><div class="ttdef"><b>Definition</b> <a href="GeneralError_8cpp_source.html#l00038">GeneralError.cpp:38</a></div></div>
 <div class="ttc" id="aclassrogue_1_1GilRelease_html"><div class="ttname"><a href="classrogue_1_1GilRelease.html">rogue::GilRelease</a></div><div class="ttdoc">RAII helper that releases the Python GIL for a scope.</div><div class="ttdef"><b>Definition</b> <a href="GilRelease_8h_source.html#l00036">GilRelease.h:36</a></div></div>
-<div class="ttc" id="aclassrogue_1_1Logging_html_a8c34b36f657b697d85f9a6c60f85f07c"><div class="ttname"><a href="classrogue_1_1Logging.html#a8c34b36f657b697d85f9a6c60f85f07c">rogue::Logging::create</a></div><div class="ttdeci">static std::shared_ptr&lt; rogue::Logging &gt; create(const std::string &amp;name, bool quiet=false)</div><div class="ttdoc">Creates a logger instance.</div><div class="ttdef"><b>Definition</b> <a href="Logging_8cpp_source.html#l00060">Logging.cpp:60</a></div></div>
+<div class="ttc" id="aclassrogue_1_1Logging_html_a8c34b36f657b697d85f9a6c60f85f07c"><div class="ttname"><a href="classrogue_1_1Logging.html#a8c34b36f657b697d85f9a6c60f85f07c">rogue::Logging::create</a></div><div class="ttdeci">static std::shared_ptr&lt; rogue::Logging &gt; create(const std::string &amp;name, bool quiet=false)</div><div class="ttdoc">Creates a logger instance.</div><div class="ttdef"><b>Definition</b> <a href="Logging_8cpp_source.html#l00095">Logging.cpp:95</a></div></div>
 <div class="ttc" id="aclassrogue_1_1ScopedGil_html"><div class="ttname"><a href="classrogue_1_1ScopedGil.html">rogue::ScopedGil</a></div><div class="ttdoc">RAII helper that acquires the Python GIL for a scope.</div><div class="ttdef"><b>Definition</b> <a href="ScopedGil_8h_source.html#l00035">ScopedGil.h:35</a></div></div>
-<div class="ttc" id="aclassrogue_1_1interfaces_1_1ZmqClientWrap_html_a1ffb834918aa27958c9bd54b561ffad5"><div class="ttname"><a href="classrogue_1_1interfaces_1_1ZmqClientWrap.html#a1ffb834918aa27958c9bd54b561ffad5">rogue::interfaces::ZmqClientWrap::defDoUpdate</a></div><div class="ttdeci">void defDoUpdate(boost::python::object data)</div><div class="ttdoc">Calls base-class doUpdate() implementation.</div><div class="ttdef"><b>Definition</b> <a href="ZmqClient_8cpp_source.html#l00299">ZmqClient.cpp:299</a></div></div>
-<div class="ttc" id="aclassrogue_1_1interfaces_1_1ZmqClientWrap_html_a588a20c532278a4740debba9c5bddd7f"><div class="ttname"><a href="classrogue_1_1interfaces_1_1ZmqClientWrap.html#a588a20c532278a4740debba9c5bddd7f">rogue::interfaces::ZmqClientWrap::doUpdate</a></div><div class="ttdeci">void doUpdate(boost::python::object data)</div><div class="ttdoc">Handles an update message from the subscription path.</div><div class="ttdef"><b>Definition</b> <a href="ZmqClient_8cpp_source.html#l00288">ZmqClient.cpp:288</a></div></div>
-<div class="ttc" id="aclassrogue_1_1interfaces_1_1ZmqClientWrap_html_a741ef84228d87781556ff56b34a4954b"><div class="ttname"><a href="classrogue_1_1interfaces_1_1ZmqClientWrap.html#a741ef84228d87781556ff56b34a4954b">rogue::interfaces::ZmqClientWrap::ZmqClientWrap</a></div><div class="ttdeci">ZmqClientWrap(const std::string &amp;addr, uint16_t port, bool doString)</div><div class="ttdoc">Constructs wrapper client.</div><div class="ttdef"><b>Definition</b> <a href="ZmqClient_8cpp_source.html#l00285">ZmqClient.cpp:285</a></div></div>
+<div class="ttc" id="aclassrogue_1_1interfaces_1_1ZmqClientWrap_html_a1ffb834918aa27958c9bd54b561ffad5"><div class="ttname"><a href="classrogue_1_1interfaces_1_1ZmqClientWrap.html#a1ffb834918aa27958c9bd54b561ffad5">rogue::interfaces::ZmqClientWrap::defDoUpdate</a></div><div class="ttdeci">void defDoUpdate(boost::python::object data)</div><div class="ttdoc">Calls base-class doUpdate() implementation.</div><div class="ttdef"><b>Definition</b> <a href="ZmqClient_8cpp_source.html#l00335">ZmqClient.cpp:335</a></div></div>
+<div class="ttc" id="aclassrogue_1_1interfaces_1_1ZmqClientWrap_html_a588a20c532278a4740debba9c5bddd7f"><div class="ttname"><a href="classrogue_1_1interfaces_1_1ZmqClientWrap.html#a588a20c532278a4740debba9c5bddd7f">rogue::interfaces::ZmqClientWrap::doUpdate</a></div><div class="ttdeci">void doUpdate(boost::python::object data)</div><div class="ttdoc">Handles an update message from the subscription path.</div><div class="ttdef"><b>Definition</b> <a href="ZmqClient_8cpp_source.html#l00324">ZmqClient.cpp:324</a></div></div>
+<div class="ttc" id="aclassrogue_1_1interfaces_1_1ZmqClientWrap_html_a741ef84228d87781556ff56b34a4954b"><div class="ttname"><a href="classrogue_1_1interfaces_1_1ZmqClientWrap.html#a741ef84228d87781556ff56b34a4954b">rogue::interfaces::ZmqClientWrap::ZmqClientWrap</a></div><div class="ttdeci">ZmqClientWrap(const std::string &amp;addr, uint16_t port, bool doString)</div><div class="ttdoc">Constructs wrapper client.</div><div class="ttdef"><b>Definition</b> <a href="ZmqClient_8cpp_source.html#l00321">ZmqClient.cpp:321</a></div></div>
 <div class="ttc" id="aclassrogue_1_1interfaces_1_1ZmqClient_html"><div class="ttname"><a href="classrogue_1_1interfaces_1_1ZmqClient.html">rogue::interfaces::ZmqClient</a></div><div class="ttdoc">ZeroMQ client for Rogue control and update messaging.</div><div class="ttdef"><b>Definition</b> <a href="ZmqClient_8h_source.html#l00048">ZmqClient.h:48</a></div></div>
-<div class="ttc" id="aclassrogue_1_1interfaces_1_1ZmqClient_html_a0a76bdc0aff07df5aa822504b880bdf2"><div class="ttname"><a href="classrogue_1_1interfaces_1_1ZmqClient.html#a0a76bdc0aff07df5aa822504b880bdf2">rogue::interfaces::ZmqClient::sendString</a></div><div class="ttdeci">std::string sendString(const std::string &amp;path, const std::string &amp;attr, const std::string &amp;arg)</div><div class="ttdoc">Sends a string-mode request.</div><div class="ttdef"><b>Definition</b> <a href="ZmqClient_8cpp_source.html#l00169">ZmqClient.cpp:169</a></div></div>
-<div class="ttc" id="aclassrogue_1_1interfaces_1_1ZmqClient_html_a16e1362d6a5f3b8c1ed9c5fa219ff20f"><div class="ttname"><a href="classrogue_1_1interfaces_1_1ZmqClient.html#a16e1362d6a5f3b8c1ed9c5fa219ff20f">rogue::interfaces::ZmqClient::stop</a></div><div class="ttdeci">void stop()</div><div class="ttdoc">Stops client sockets and background thread.</div><div class="ttdef"><b>Definition</b> <a href="ZmqClient_8cpp_source.html#l00142">ZmqClient.cpp:142</a></div></div>
-<div class="ttc" id="aclassrogue_1_1interfaces_1_1ZmqClient_html_a2d4c9cfc78a41fb8fdea5551e71e6fef"><div class="ttname"><a href="classrogue_1_1interfaces_1_1ZmqClient.html#a2d4c9cfc78a41fb8fdea5551e71e6fef">rogue::interfaces::ZmqClient::getDisp</a></div><div class="ttdeci">std::string getDisp(const std::string &amp;path)</div><div class="ttdoc">Reads display-formatted value at a path (string mode).</div><div class="ttdef"><b>Definition</b> <a href="ZmqClient_8cpp_source.html#l00212">ZmqClient.cpp:212</a></div></div>
-<div class="ttc" id="aclassrogue_1_1interfaces_1_1ZmqClient_html_a42f1547fa999a1c181ca412023d10241"><div class="ttname"><a href="classrogue_1_1interfaces_1_1ZmqClient.html#a42f1547fa999a1c181ca412023d10241">rogue::interfaces::ZmqClient::doUpdate</a></div><div class="ttdeci">virtual void doUpdate(boost::python::object data)</div><div class="ttdoc">Handles async update payloads received on subscriber socket.</div><div class="ttdef"><b>Definition</b> <a href="ZmqClient_8cpp_source.html#l00283">ZmqClient.cpp:283</a></div></div>
-<div class="ttc" id="aclassrogue_1_1interfaces_1_1ZmqClient_html_a5a4a9e108867af66adf57a9ee374b6f8"><div class="ttname"><a href="classrogue_1_1interfaces_1_1ZmqClient.html#a5a4a9e108867af66adf57a9ee374b6f8">rogue::interfaces::ZmqClient::exec</a></div><div class="ttdeci">std::string exec(const std::string &amp;path, const std::string &amp;arg=&quot;&quot;)</div><div class="ttdoc">Executes callable node at path (string mode).</div><div class="ttdef"><b>Definition</b> <a href="ZmqClient_8cpp_source.html#l00220">ZmqClient.cpp:220</a></div></div>
-<div class="ttc" id="aclassrogue_1_1interfaces_1_1ZmqClient_html_a61e84cf5d8467fd1d9d3ec541e35ed29"><div class="ttname"><a href="classrogue_1_1interfaces_1_1ZmqClient.html#a61e84cf5d8467fd1d9d3ec541e35ed29">rogue::interfaces::ZmqClient::send</a></div><div class="ttdeci">boost::python::object send(boost::python::object data)</div><div class="ttdoc">Sends binary request payload and receives binary response.</div><div class="ttdef"><b>Definition</b> <a href="ZmqClient_8cpp_source.html#l00230">ZmqClient.cpp:230</a></div></div>
-<div class="ttc" id="aclassrogue_1_1interfaces_1_1ZmqClient_html_a6797d078151cfd12871064ba0669db42"><div class="ttname"><a href="classrogue_1_1interfaces_1_1ZmqClient.html#a6797d078151cfd12871064ba0669db42">rogue::interfaces::ZmqClient::setup_python</a></div><div class="ttdeci">static void setup_python()</div><div class="ttdoc">Registers Python bindings for this class.</div><div class="ttdef"><b>Definition</b> <a href="ZmqClient_8cpp_source.html#l00044">ZmqClient.cpp:44</a></div></div>
-<div class="ttc" id="aclassrogue_1_1interfaces_1_1ZmqClient_html_a8a5ddf77da7048654a8081d002c8826a"><div class="ttname"><a href="classrogue_1_1interfaces_1_1ZmqClient.html#a8a5ddf77da7048654a8081d002c8826a">rogue::interfaces::ZmqClient::valueDisp</a></div><div class="ttdeci">std::string valueDisp(const std::string &amp;path)</div><div class="ttdoc">Reads compact value display at a path (string mode).</div><div class="ttdef"><b>Definition</b> <a href="ZmqClient_8cpp_source.html#l00224">ZmqClient.cpp:224</a></div></div>
-<div class="ttc" id="aclassrogue_1_1interfaces_1_1ZmqClient_html_a9ed6d9cc320214767ecb9237a30e7ff8"><div class="ttname"><a href="classrogue_1_1interfaces_1_1ZmqClient.html#a9ed6d9cc320214767ecb9237a30e7ff8">rogue::interfaces::ZmqClient::create</a></div><div class="ttdeci">static std::shared_ptr&lt; rogue::interfaces::ZmqClient &gt; create(const std::string &amp;addr, uint16_t port, bool doString)</div><div class="ttdoc">Creates a ZeroMQ client.</div><div class="ttdef"><b>Definition</b> <a href="ZmqClient_8cpp_source.html#l00038">ZmqClient.cpp:38</a></div></div>
-<div class="ttc" id="aclassrogue_1_1interfaces_1_1ZmqClient_html_a9efc4a2996c63962af726236b79b5762"><div class="ttname"><a href="classrogue_1_1interfaces_1_1ZmqClient.html#a9efc4a2996c63962af726236b79b5762">rogue::interfaces::ZmqClient::setTimeout</a></div><div class="ttdeci">void setTimeout(uint32_t msecs, bool waitRetry)</div><div class="ttdoc">Sets request timeout behavior.</div><div class="ttdef"><b>Definition</b> <a href="ZmqClient_8cpp_source.html#l00157">ZmqClient.cpp:157</a></div></div>
-<div class="ttc" id="aclassrogue_1_1interfaces_1_1ZmqClient_html_ab0b39a1369dfaf14dbf40373b3dbaab2"><div class="ttname"><a href="classrogue_1_1interfaces_1_1ZmqClient.html#ab0b39a1369dfaf14dbf40373b3dbaab2">rogue::interfaces::ZmqClient::ZmqClient</a></div><div class="ttdeci">ZmqClient(const std::string &amp;addr, uint16_t port, bool doString)</div><div class="ttdoc">Constructs a ZeroMQ client and connects sockets.</div><div class="ttdef"><b>Definition</b> <a href="ZmqClient_8cpp_source.html#l00061">ZmqClient.cpp:61</a></div></div>
-<div class="ttc" id="aclassrogue_1_1interfaces_1_1ZmqClient_html_ab29afe4fe41fea11137ab2a1060e78e7"><div class="ttname"><a href="classrogue_1_1interfaces_1_1ZmqClient.html#ab29afe4fe41fea11137ab2a1060e78e7">rogue::interfaces::ZmqClient::~ZmqClient</a></div><div class="ttdeci">virtual ~ZmqClient()</div><div class="ttdoc">Destroys client and stops background activity.</div><div class="ttdef"><b>Definition</b> <a href="ZmqClient_8cpp_source.html#l00138">ZmqClient.cpp:138</a></div></div>
-<div class="ttc" id="aclassrogue_1_1interfaces_1_1ZmqClient_html_ac677ee7330c8afc1511855899e836085"><div class="ttname"><a href="classrogue_1_1interfaces_1_1ZmqClient.html#ac677ee7330c8afc1511855899e836085">rogue::interfaces::ZmqClient::setDisp</a></div><div class="ttdeci">void setDisp(const std::string &amp;path, const std::string &amp;value)</div><div class="ttdoc">Writes display-formatted value at a path (string mode).</div><div class="ttdef"><b>Definition</b> <a href="ZmqClient_8cpp_source.html#l00216">ZmqClient.cpp:216</a></div></div>
+<div class="ttc" id="aclassrogue_1_1interfaces_1_1ZmqClient_html_a0a76bdc0aff07df5aa822504b880bdf2"><div class="ttname"><a href="classrogue_1_1interfaces_1_1ZmqClient.html#a0a76bdc0aff07df5aa822504b880bdf2">rogue::interfaces::ZmqClient::sendString</a></div><div class="ttdeci">std::string sendString(const std::string &amp;path, const std::string &amp;attr, const std::string &amp;arg)</div><div class="ttdoc">Sends a string-mode request.</div><div class="ttdef"><b>Definition</b> <a href="ZmqClient_8cpp_source.html#l00204">ZmqClient.cpp:204</a></div></div>
+<div class="ttc" id="aclassrogue_1_1interfaces_1_1ZmqClient_html_a16e1362d6a5f3b8c1ed9c5fa219ff20f"><div class="ttname"><a href="classrogue_1_1interfaces_1_1ZmqClient.html#a16e1362d6a5f3b8c1ed9c5fa219ff20f">rogue::interfaces::ZmqClient::stop</a></div><div class="ttdeci">void stop()</div><div class="ttdoc">Stops client sockets and background thread.</div><div class="ttdef"><b>Definition</b> <a href="ZmqClient_8cpp_source.html#l00179">ZmqClient.cpp:179</a></div></div>
+<div class="ttc" id="aclassrogue_1_1interfaces_1_1ZmqClient_html_a2d4c9cfc78a41fb8fdea5551e71e6fef"><div class="ttname"><a href="classrogue_1_1interfaces_1_1ZmqClient.html#a2d4c9cfc78a41fb8fdea5551e71e6fef">rogue::interfaces::ZmqClient::getDisp</a></div><div class="ttdeci">std::string getDisp(const std::string &amp;path)</div><div class="ttdoc">Reads display-formatted value at a path (string mode).</div><div class="ttdef"><b>Definition</b> <a href="ZmqClient_8cpp_source.html#l00248">ZmqClient.cpp:248</a></div></div>
+<div class="ttc" id="aclassrogue_1_1interfaces_1_1ZmqClient_html_a42f1547fa999a1c181ca412023d10241"><div class="ttname"><a href="classrogue_1_1interfaces_1_1ZmqClient.html#a42f1547fa999a1c181ca412023d10241">rogue::interfaces::ZmqClient::doUpdate</a></div><div class="ttdeci">virtual void doUpdate(boost::python::object data)</div><div class="ttdoc">Handles async update payloads received on subscriber socket.</div><div class="ttdef"><b>Definition</b> <a href="ZmqClient_8cpp_source.html#l00319">ZmqClient.cpp:319</a></div></div>
+<div class="ttc" id="aclassrogue_1_1interfaces_1_1ZmqClient_html_a5a4a9e108867af66adf57a9ee374b6f8"><div class="ttname"><a href="classrogue_1_1interfaces_1_1ZmqClient.html#a5a4a9e108867af66adf57a9ee374b6f8">rogue::interfaces::ZmqClient::exec</a></div><div class="ttdeci">std::string exec(const std::string &amp;path, const std::string &amp;arg=&quot;&quot;)</div><div class="ttdoc">Executes callable node at path (string mode).</div><div class="ttdef"><b>Definition</b> <a href="ZmqClient_8cpp_source.html#l00256">ZmqClient.cpp:256</a></div></div>
+<div class="ttc" id="aclassrogue_1_1interfaces_1_1ZmqClient_html_a61e84cf5d8467fd1d9d3ec541e35ed29"><div class="ttname"><a href="classrogue_1_1interfaces_1_1ZmqClient.html#a61e84cf5d8467fd1d9d3ec541e35ed29">rogue::interfaces::ZmqClient::send</a></div><div class="ttdeci">boost::python::object send(boost::python::object data)</div><div class="ttdoc">Sends binary request payload and receives binary response.</div><div class="ttdef"><b>Definition</b> <a href="ZmqClient_8cpp_source.html#l00266">ZmqClient.cpp:266</a></div></div>
+<div class="ttc" id="aclassrogue_1_1interfaces_1_1ZmqClient_html_a6797d078151cfd12871064ba0669db42"><div class="ttname"><a href="classrogue_1_1interfaces_1_1ZmqClient.html#a6797d078151cfd12871064ba0669db42">rogue::interfaces::ZmqClient::setup_python</a></div><div class="ttdeci">static void setup_python()</div><div class="ttdoc">Registers Python bindings for this class.</div><div class="ttdef"><b>Definition</b> <a href="ZmqClient_8cpp_source.html#l00077">ZmqClient.cpp:77</a></div></div>
+<div class="ttc" id="aclassrogue_1_1interfaces_1_1ZmqClient_html_a8a5ddf77da7048654a8081d002c8826a"><div class="ttname"><a href="classrogue_1_1interfaces_1_1ZmqClient.html#a8a5ddf77da7048654a8081d002c8826a">rogue::interfaces::ZmqClient::valueDisp</a></div><div class="ttdeci">std::string valueDisp(const std::string &amp;path)</div><div class="ttdoc">Reads compact value display at a path (string mode).</div><div class="ttdef"><b>Definition</b> <a href="ZmqClient_8cpp_source.html#l00260">ZmqClient.cpp:260</a></div></div>
+<div class="ttc" id="aclassrogue_1_1interfaces_1_1ZmqClient_html_a9ed6d9cc320214767ecb9237a30e7ff8"><div class="ttname"><a href="classrogue_1_1interfaces_1_1ZmqClient.html#a9ed6d9cc320214767ecb9237a30e7ff8">rogue::interfaces::ZmqClient::create</a></div><div class="ttdeci">static std::shared_ptr&lt; rogue::interfaces::ZmqClient &gt; create(const std::string &amp;addr, uint16_t port, bool doString)</div><div class="ttdoc">Creates a ZeroMQ client.</div><div class="ttdef"><b>Definition</b> <a href="ZmqClient_8cpp_source.html#l00071">ZmqClient.cpp:71</a></div></div>
+<div class="ttc" id="aclassrogue_1_1interfaces_1_1ZmqClient_html_a9efc4a2996c63962af726236b79b5762"><div class="ttname"><a href="classrogue_1_1interfaces_1_1ZmqClient.html#a9efc4a2996c63962af726236b79b5762">rogue::interfaces::ZmqClient::setTimeout</a></div><div class="ttdeci">void setTimeout(uint32_t msecs, bool waitRetry)</div><div class="ttdoc">Sets request timeout behavior.</div><div class="ttdef"><b>Definition</b> <a href="ZmqClient_8cpp_source.html#l00194">ZmqClient.cpp:194</a></div></div>
+<div class="ttc" id="aclassrogue_1_1interfaces_1_1ZmqClient_html_ab0b39a1369dfaf14dbf40373b3dbaab2"><div class="ttname"><a href="classrogue_1_1interfaces_1_1ZmqClient.html#ab0b39a1369dfaf14dbf40373b3dbaab2">rogue::interfaces::ZmqClient::ZmqClient</a></div><div class="ttdeci">ZmqClient(const std::string &amp;addr, uint16_t port, bool doString)</div><div class="ttdoc">Constructs a ZeroMQ client and connects sockets.</div><div class="ttdef"><b>Definition</b> <a href="ZmqClient_8cpp_source.html#l00094">ZmqClient.cpp:94</a></div></div>
+<div class="ttc" id="aclassrogue_1_1interfaces_1_1ZmqClient_html_ab29afe4fe41fea11137ab2a1060e78e7"><div class="ttname"><a href="classrogue_1_1interfaces_1_1ZmqClient.html#ab29afe4fe41fea11137ab2a1060e78e7">rogue::interfaces::ZmqClient::~ZmqClient</a></div><div class="ttdeci">virtual ~ZmqClient()</div><div class="ttdoc">Destroys client and stops background activity.</div><div class="ttdef"><b>Definition</b> <a href="ZmqClient_8cpp_source.html#l00175">ZmqClient.cpp:175</a></div></div>
+<div class="ttc" id="aclassrogue_1_1interfaces_1_1ZmqClient_html_ac677ee7330c8afc1511855899e836085"><div class="ttname"><a href="classrogue_1_1interfaces_1_1ZmqClient.html#ac677ee7330c8afc1511855899e836085">rogue::interfaces::ZmqClient::setDisp</a></div><div class="ttdeci">void setDisp(const std::string &amp;path, const std::string &amp;value)</div><div class="ttdoc">Writes display-formatted value at a path (string mode).</div><div class="ttdef"><b>Definition</b> <a href="ZmqClient_8cpp_source.html#l00252">ZmqClient.cpp:252</a></div></div>
 <div class="ttc" id="anamespacerogue_1_1interfaces_html_a08261f006fb1aecad66483ba96c19c44"><div class="ttname"><a href="namespacerogue_1_1interfaces.html#a08261f006fb1aecad66483ba96c19c44">rogue::interfaces::ZmqClientPtr</a></div><div class="ttdeci">std::shared_ptr&lt; rogue::interfaces::ZmqClient &gt; ZmqClientPtr</div><div class="ttdef"><b>Definition</b> <a href="ZmqClient_8h_source.html#l00177">ZmqClient.h:177</a></div></div>
 <div class="ttc" id="anamespacerogue_html"><div class="ttname"><a href="namespacerogue.html">rogue</a></div><div class="ttdef"><b>Definition</b> <a href="EnableSharedFromThis_8h_source.html#l00025">EnableSharedFromThis.h:25</a></div></div>
+<div class="ttc" id="anamespacerogue_html_aad13cbcfd8a084e167b9e417ec56205b"><div class="ttname"><a href="namespacerogue.html#aad13cbcfd8a084e167b9e417ec56205b">rogue::LoggingPtr</a></div><div class="ttdeci">std::shared_ptr&lt; rogue::Logging &gt; LoggingPtr</div><div class="ttdoc">Shared pointer alias for Logging.</div><div class="ttdef"><b>Definition</b> <a href="Logging_8h_source.html#l00205">Logging.h:205</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

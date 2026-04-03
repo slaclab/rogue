@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Device &mdash; Rogue v6.8.5 documentation</title>
+  <title>Device &mdash; Rogue v6.9.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=8960aef2"></script>
+      <script src="../../_static/documentation_options.js?v=a0bc7a15"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -194,6 +194,13 @@ right operational boundary.</p></li>
 <p>That pattern is why the readability of the tree matters. A good Device layout
 is not only easier to maintain in code; it also produces clearer paths, clearer
 PyDM navigation, and better remote-client ergonomics.</p>
+<p>For repeated register layouts, <a class="reference internal" href="../../api/python/pyrogue/device.html#pyrogue.Device.addRemoteVariables" title="pyrogue.Device.addRemoteVariables"><code class="xref py py-meth docutils literal notranslate"><span class="pre">addRemoteVariables()</span></code></a>
+can define an indexed set of <code class="docutils literal notranslate"><span class="pre">RemoteVariable</span></code> entries from one call. When
+used with <code class="docutils literal notranslate"><span class="pre">pack=True</span></code>, PyRogue keeps the indexed array container at the base
+name and also adds a packed <a class="reference internal" href="../../api/python/pyrogue/linkvariable.html#pyrogue.LinkVariable" title="pyrogue.LinkVariable"><code class="xref py py-class docutils literal notranslate"><span class="pre">LinkVariable</span></code></a> at
+<code class="docutils literal notranslate"><span class="pre">&lt;name&gt;_All</span></code>. That packed alias joins element display values with
+underscores in reverse index order, which is useful when several orthogonal
+fields also need to be exposed as one combined value.</p>
 </section>
 <section id="managed-interfaces-and-protocol-ownership">
 <h2>Managed Interfaces And Protocol Ownership<a class="headerlink" href="#managed-interfaces-and-protocol-ownership" title="Link to this heading"></a></h2>

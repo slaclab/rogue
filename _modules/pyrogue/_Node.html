@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue._Node &mdash; Rogue v6.8.5 documentation</title>
+  <title>pyrogue._Node &mdash; Rogue v6.9.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -14,7 +14,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=8960aef2"></script>
+      <script src="../../_static/documentation_options.js?v=a0bc7a15"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -104,85 +104,11 @@
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">collections</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">inspect</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">OrderedDict</span> <span class="k">as</span> <span class="n">odict</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">OrderedDict</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">logException</span><span class="p">(</span><span class="n">log</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span> <span class="ne">Exception</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Log a memory error or a generic exception.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    log : logging.Logger</span>
-<span class="sd">        Logger used to record the exception.</span>
-<span class="sd">    e : Exception</span>
-<span class="sd">        Exception instance to log.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span><span class="n">pr</span><span class="o">.</span><span class="n">MemoryError</span><span class="p">):</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">logInit</span><span class="p">(</span>
-    <span class="bp">cls</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">pr</span><span class="o">.</span><span class="n">Node</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Initialize a logger with a consistent PyRogue name.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    cls : object, optional</span>
-<span class="sd">        Instance used to derive the base-class tag.</span>
-<span class="sd">    name : str, optional</span>
-<span class="sd">        Node name to include in the logger.</span>
-<span class="sd">    path : str, optional</span>
-<span class="sd">        Full node path to include in the logger.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    logging.Logger</span>
-<span class="sd">        Configured logger instance.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="c1"># Support base class in order of precedence</span>
-    <span class="n">baseClasses</span> <span class="o">=</span> <span class="n">odict</span><span class="p">({</span><span class="n">pr</span><span class="o">.</span><span class="n">BaseCommand</span> <span class="p">:</span> <span class="s1">&#39;Command&#39;</span><span class="p">,</span> <span class="n">pr</span><span class="o">.</span><span class="n">BaseVariable</span> <span class="p">:</span> <span class="s1">&#39;Variable&#39;</span><span class="p">,</span>
-                         <span class="n">pr</span><span class="o">.</span><span class="n">Root</span> <span class="p">:</span> <span class="s1">&#39;Root&#39;</span><span class="p">,</span> <span class="n">pr</span><span class="o">.</span><span class="n">Device</span> <span class="p">:</span> <span class="s1">&#39;Device&#39;</span><span class="p">})</span>
-
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Init a logging object. Set global options.&quot;&quot;&quot;</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span>
-        <span class="c1">#level=logging.NOTSET,</span>
-        <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">%(levelname)s</span><span class="s2">:</span><span class="si">%(name)s</span><span class="s2">:</span><span class="si">%(message)s</span><span class="s2">&quot;</span><span class="p">,</span>
-        <span class="n">stream</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">)</span>
-
-    <span class="c1"># All logging starts with rogue prefix</span>
-    <span class="n">ln</span> <span class="o">=</span> <span class="s1">&#39;pyrogue&#39;</span>
-
-    <span class="c1"># Next add the highest ranking base class</span>
-    <span class="k">if</span> <span class="bp">cls</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">baseClasses</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span><span class="n">k</span><span class="p">):</span>
-                <span class="n">ln</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;.</span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s1">&#39;</span>
-                <span class="k">break</span>
-
-        <span class="c1"># Next subclass name</span>
-        <span class="n">ln</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;.</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">&#39;</span>
-
-    <span class="c1"># Add full path if passed</span>
-    <span class="k">if</span> <span class="n">path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">ln</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;.</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s1">&#39;</span>
-
-    <span class="c1"># Otherwise just add name if passed</span>
-    <span class="k">elif</span> <span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">ln</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;.</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span>
-
-    <span class="k">return</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">ln</span><span class="p">)</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">expose</span><span class="p">(</span><span class="n">item</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
@@ -267,7 +193,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_anodes</span>  <span class="o">=</span> <span class="n">odict</span><span class="p">()</span>
 
         <span class="c1"># Setup logging</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span> <span class="o">=</span> <span class="n">logInit</span><span class="p">(</span><span class="bp">cls</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span><span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">logInit</span><span class="p">(</span><span class="bp">cls</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span><span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">groups</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_groups</span> <span class="o">=</span> <span class="p">[]</span>
@@ -282,6 +208,48 @@
     <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a concise class/path representation.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="si">}</span><span class="s1"> - </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="si">}</span><span class="s1">&#39;</span>
+
+<div class="viewcode-block" id="Node.classLogName">
+<a class="viewcode-back" href="../../api/python/pyrogue/node.html#pyrogue.Node.classLogName">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">classLogName</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the canonical Python logger name for this Node class.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">pr</span><span class="o">.</span><span class="n">logName</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Node.setClassLogLevel">
+<a class="viewcode-back" href="../../api/python/pyrogue/node.html#pyrogue.Node.setClassLogLevel">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setClassLogLevel</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">level</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">includePython</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">includeRogue</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the logging level for this Node class logger family.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">pr</span><span class="o">.</span><span class="n">setLogLevel</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">includePython</span><span class="o">=</span><span class="n">includePython</span><span class="p">,</span> <span class="n">includeRogue</span><span class="o">=</span><span class="n">includeRogue</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Node.logName">
+<a class="viewcode-back" href="../../api/python/pyrogue/node.html#pyrogue.Node.logName">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">logName</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the canonical logger name for this Node instance.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">pr</span><span class="o">.</span><span class="n">logName</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Node.setLogLevel">
+<a class="viewcode-back" href="../../api/python/pyrogue/node.html#pyrogue.Node.setLogLevel">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setLogLevel</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">level</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">includePython</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">includeRogue</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the logging level for this Node instance logger.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">pr</span><span class="o">.</span><span class="n">setLogLevel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">includePython</span><span class="o">=</span><span class="n">includePython</span><span class="p">,</span> <span class="n">includeRogue</span><span class="o">=</span><span class="n">includeRogue</span><span class="p">)</span></div>
+
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">nodeCount</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
@@ -493,7 +461,10 @@
 
         <span class="c1"># Add some checking for characters which will make lookups problematic</span>
         <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s1">&#39;^[</span><span class="se">\\</span><span class="s1">w_</span><span class="se">\\</span><span class="s1">[</span><span class="se">\\</span><span class="s1">]]+$&#39;</span><span class="p">,</span><span class="n">node</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Node </span><span class="si">{}</span><span class="s1"> with one or more special characters will cause lookup errors.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="s2">&quot;Node </span><span class="si">%s</span><span class="s2"> with one or more special characters will cause lookup errors.&quot;</span><span class="p">,</span>
+                <span class="n">node</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="p">)</span>
 
         <span class="c1"># Detect and add array nodes</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_addArrayNode</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
@@ -515,7 +486,7 @@
         <span class="n">keys</span>  <span class="o">=</span> <span class="n">fields</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">([</span><span class="n">key</span><span class="o">.</span><span class="n">isdigit</span><span class="p">()</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">]):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Array node </span><span class="si">{}</span><span class="s1"> with non numeric key will cause lookup errors.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Array node </span><span class="si">%s</span><span class="s2"> with non numeric key will cause lookup errors.&quot;</span><span class="p">,</span> <span class="n">node</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
             <span class="k">return</span>
 
         <span class="c1"># Detect collisions</span>
@@ -868,7 +839,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span> <span class="o">=</span> <span class="n">parent</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_root</span>   <span class="o">=</span> <span class="n">root</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_path</span>   <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">path</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span>    <span class="o">=</span> <span class="n">logInit</span><span class="p">(</span><span class="bp">cls</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span><span class="n">path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span>    <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">logInit</span><span class="p">(</span><span class="bp">cls</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span><span class="n">path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">)</span>
 
         <span class="c1"># Inherit groups from parent</span>
         <span class="k">for</span> <span class="n">grp</span> <span class="ow">in</span> <span class="n">parent</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
@@ -1033,13 +1004,13 @@
         <span class="c1"># If keys is not none, someone tried to access this node with array</span>
         <span class="c1"># attributes incorrectly. This should only happen in the variable class.</span>
         <span class="k">if</span> <span class="n">keys</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Entry </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> with key </span><span class="si">{</span><span class="n">keys</span><span class="si">}</span><span class="s2"> not found&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Entry </span><span class="si">%s</span><span class="s2"> with key </span><span class="si">%s</span><span class="s2"> not found&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">keys</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="n">nodes</span><span class="p">,</span><span class="n">keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodeMatch</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
 
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">nodes</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Entry </span><span class="si">{}</span><span class="s2"> not found&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Entry </span><span class="si">%s</span><span class="s2"> not found&quot;</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">:</span>
                         <span class="k">if</span> <span class="n">n</span><span class="o">.</span><span class="n">filterByGroup</span><span class="p">(</span><span class="n">incGroups</span><span class="p">,</span><span class="n">excGroups</span><span class="p">):</span>
