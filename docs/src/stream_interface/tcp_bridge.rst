@@ -163,10 +163,15 @@ name is constructed dynamically from the address, mode, and port:
 Examples:
 
 - ``pyrogue.stream.TcpCore.127.0.0.1.Server.8000``
-- ``pyrogue.stream.TcpCore.192.168.1.1.Client.8000``
+- ``pyrogue.stream.TcpCore.192.168.1.10.Client.8000``
+- Unified Logging API:
+  ``pyrogue.setLogLevel('pyrogue.stream.TcpCore', 'DEBUG')``
+- Legacy Logging API:
+  ``rogue.Logging.setFilter('pyrogue.stream.TcpCore', rogue.Logging.Debug)``
 
-Enable a broad filter before constructing the bridge if you want to see
-implementation messages:
+You can enable a broad filter before or after constructing the bridge. Enable
+it before construction only if you want constructor or initial connection
+startup messages in addition to later implementation messages:
 
 .. code-block:: python
 
@@ -178,6 +183,29 @@ implementation messages:
 
 You can also target one specific bridge instance when the full dynamic logger
 name is known.
+
+.. code-block:: python
+
+   logging.getLogger(
+       'pyrogue.stream.TcpCore.127.0.0.1.Client.8000'
+   ).setLevel(logging.DEBUG)
+
+What It Logs
+------------
+
+At debug level, ``TcpCore`` logs bridge setup details and frame movement, such
+as:
+
+- Client/server socket creation
+- Bind/connect address selection
+- Pushed frame sizes
+- Pulled frame sizes
+- Worker-thread identity
+
+There is no additional per-instance ``setDebug(...)`` helper on ``TcpCore``.
+For byte-level frame inspection, add a separate debug ``Slave`` or use
+``setDebug(...)`` on a plain ``rogue.interfaces.stream.Slave`` tap elsewhere in
+the stream graph.
 
 Operational Notes
 =================

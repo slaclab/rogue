@@ -93,14 +93,52 @@ Link-State Monitoring
        print(client.linked)
        client.remLinkMonitor(link_monitor)
 
+Timeout Tuning
+==============
+
+``VirtualClient`` has two separate timeout concepts:
+
+- ``linkTimeout``: how long the client may go without publish updates or a
+  successful request reply before it marks the link down
+- ``requestStallTimeout``: an optional policy timeout for declaring a single
+  in-flight request stalled
+
+In practice, ``linkTimeout`` is the normal tuning knob. It is useful when a
+system may legitimately spend a long time servicing a request, for example
+when a Rogue tree is backed by firmware co-simulation.
+
+``requestStallTimeout`` is disabled by default and is often best left that way.
+It is only useful when the deployment has a known upper bound for legitimate
+request duration and wants the client to declare a request hung after that
+threshold.
+
+.. code-block:: python
+
+   from pyrogue.interfaces import VirtualClient
+
+   with VirtualClient(
+       addr='localhost',
+       port=9099,
+       linkTimeout=600.0,
+       requestStallTimeout=None,
+   ) as client:
+       root = client.root
+       print(root.RogueVersion.valueDisp())
+
+If no explicit arguments are passed, the defaults can also be provided with
+environment variables:
+
+- ``ROGUE_VIRTUAL_LINK_TIMEOUT``
+- ``ROGUE_VIRTUAL_REQUEST_STALL_TIMEOUT``
+
 Logging
 =======
 
 ``VirtualClient`` uses Python logging.
 
 - Logger name: ``pyrogue.VirtualClient``
-- Configuration API:
-  ``logging.getLogger('pyrogue.VirtualClient').setLevel(logging.DEBUG)``
+- Logging API:
+  ``pyrogue.setLogLevel('pyrogue.VirtualClient', 'DEBUG')``
 
 This logger is useful for client-side connection/setup issues and for
 understanding mirrored-tree behavior. It complements, rather than replaces,

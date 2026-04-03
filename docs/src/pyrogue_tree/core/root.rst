@@ -87,6 +87,44 @@ That composition pattern is the normal starting point for PyRogue systems:
 ``Root`` owns lifecycle and top-level interfaces, while ``Device`` instances
 carry the hardware and application structure below it.
 
+Unified Python and C++ logging
+------------------------------
+
+If a PyRogue application wants one logging path for both Python Nodes and Rogue
+C++ transport/protocol objects, call ``pyrogue.setUnifiedLogging(True)`` or
+construct the Root with ``unifyLogs=True``:
+
+.. code-block:: python
+
+   import pyrogue as pr
+
+   class MyRoot(pr.Root):
+       def __init__(self, **kwargs):
+           super().__init__(name='MyRoot', unifyLogs=True, **kwargs)
+
+This enables Rogue C++ log forwarding into Python logging and disables the
+native Rogue stdout sink to avoid duplicate messages. The forwarded records can
+then appear in ``Root.SystemLog`` and any other Python logging handlers already
+attached under the ``pyrogue`` logger tree.
+
+Example forwarded ``SystemLog`` entry:
+
+.. code-block:: json
+
+   {
+     "created": 1772812345.123456,
+     "name": "pyrogue.rssi.controller",
+     "message": "Closing link. Server=0",
+     "levelName": "WARNING",
+     "levelNumber": 30,
+     "rogueCpp": true,
+     "rogueTid": 48123,
+     "roguePid": 90210,
+     "rogueLogger": "pyrogue.rssi.controller",
+     "rogueTimestamp": 1772812345.123456,
+     "rogueComponent": "rssi"
+   }
+
 Lifecycle And Startup
 =====================
 

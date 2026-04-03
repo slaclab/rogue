@@ -16,85 +16,11 @@ from __future__ import annotations
 
 import collections
 import inspect
-import logging
 import re
-import sys
 from collections import OrderedDict as odict
 from typing import Any, Callable, Iterable, OrderedDict
 
 import pyrogue as pr
-
-
-def logException(log: logging.Logger, e: Exception) -> None:
-    """Log a memory error or a generic exception.
-
-    Parameters
-    ----------
-    log : logging.Logger
-        Logger used to record the exception.
-    e : Exception
-        Exception instance to log.
-    """
-    if isinstance(e,pr.MemoryError):
-        log.error(e)
-    else:
-        log.exception(e)
-
-
-def logInit(
-    cls: type[pr.Node] | None = None,
-    name: str | None = None,
-    path: str | None = None,
-) -> logging.Logger:
-    """Initialize a logger with a consistent PyRogue name.
-
-    Parameters
-    ----------
-    cls : object, optional
-        Instance used to derive the base-class tag.
-    name : str, optional
-        Node name to include in the logger.
-    path : str, optional
-        Full node path to include in the logger.
-
-    Returns
-    -------
-    logging.Logger
-        Configured logger instance.
-    """
-
-    # Support base class in order of precedence
-    baseClasses = odict({pr.BaseCommand : 'Command', pr.BaseVariable : 'Variable',
-                         pr.Root : 'Root', pr.Device : 'Device'})
-
-    """Init a logging object. Set global options."""
-    logging.basicConfig(
-        #level=logging.NOTSET,
-        format="%(levelname)s:%(name)s:%(message)s",
-        stream=sys.stdout)
-
-    # All logging starts with rogue prefix
-    ln = 'pyrogue'
-
-    # Next add the highest ranking base class
-    if cls is not None:
-        for k,v in baseClasses.items():
-            if isinstance(cls,k):
-                ln += f'.{v}'
-                break
-
-        # Next subclass name
-        ln += f'.{cls.__class__.__name__}'
-
-    # Add full path if passed
-    if path is not None:
-        ln += f'.{path}'
-
-    # Otherwise just add name if passed
-    elif name is not None:
-        ln += f'.{name}'
-
-    return logging.getLogger(ln)
 
 
 def expose(item: Any) -> Any:
@@ -177,7 +103,7 @@ class Node(object):
         self._anodes  = odict()
 
         # Setup logging
-        self._log = logInit(cls=self,name=name,path=None)
+        self._log = pr.logInit(cls=self,name=name,path=None)
 
         if groups is None:
             self._groups = []
@@ -192,6 +118,36 @@ class Node(object):
     def __repr__(self) -> str:
         """Return a concise class/path representation."""
         return f'{self.__class__} - {self.path}'
+
+    @classmethod
+    def classLogName(cls) -> str:
+        """Return the canonical Python logger name for this Node class."""
+        return pr.logName(cls)
+
+    @classmethod
+    def setClassLogLevel(
+        cls,
+        level: int | str,
+        *,
+        includePython: bool = True,
+        includeRogue: bool = True,
+    ) -> str:
+        """Set the logging level for this Node class logger family."""
+        return pr.setLogLevel(cls, level, includePython=includePython, includeRogue=includeRogue)
+
+    def logName(self) -> str:
+        """Return the canonical logger name for this Node instance."""
+        return pr.logName(self)
+
+    def setLogLevel(
+        self,
+        level: int | str,
+        *,
+        includePython: bool = True,
+        includeRogue: bool = True,
+    ) -> str:
+        """Set the logging level for this Node instance logger."""
+        return pr.setLogLevel(self, level, includePython=includePython, includeRogue=includeRogue)
 
     @property
     def nodeCount(self) -> int:
@@ -389,7 +345,10 @@ class Node(object):
 
         # Add some checking for characters which will make lookups problematic
         if re.match('^[\\w_\\[\\]]+$',node.name) is None:
-            self._log.warning('Node {} with one or more special characters will cause lookup errors.'.format(node.name))
+            self._log.warning(
+                "Node %s with one or more special characters will cause lookup errors.",
+                node.name,
+            )
 
         # Detect and add array nodes
         self._addArrayNode(node)
@@ -410,7 +369,7 @@ class Node(object):
         keys  = fields[1:-1]
 
         if not all([key.isdigit() for key in keys]):
-            self._log.warning('Array node {} with non numeric key will cause lookup errors.'.format(node.name))
+            self._log.warning("Array node %s with non numeric key will cause lookup errors.", node.name)
             return
 
         # Detect collisions
@@ -730,7 +689,7 @@ class Node(object):
         self._parent = parent
         self._root   = root
         self._path   = parent.path + '.' + self.name
-        self._log    = logInit(cls=self,name=self._name,path=self._path)
+        self._log    = pr.logInit(cls=self,name=self._name,path=self._path)
 
         # Inherit groups from parent
         for grp in parent.groups:
@@ -889,13 +848,13 @@ class Node(object):
         # If keys is not none, someone tried to access this node with array
         # attributes incorrectly. This should only happen in the variable class.
         if keys is not None:
-            self._log.error(f"Entry {self.name} with key {keys} not found")
+            self._log.error("Entry %s with key %s not found", self.name, keys)
         else:
             for key, value in d.items():
                 nodes,keys = self.nodeMatch(key)
 
                 if len(nodes) == 0:
-                    self._log.error("Entry {} not found".format(key))
+                    self._log.error("Entry %s not found", key)
                 else:
                     for n in nodes:
                         if n.filterByGroup(incGroups,excGroups):

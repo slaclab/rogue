@@ -113,7 +113,7 @@ class UartMemory(rogue.interfaces.memory.Slave):
         # Need to issue a UART command for each 32 bit word
         for i, (addr, data) in enumerate(zip(range(address, address+len(dataBa), 4), dataWords)):
             sendString = f'w {addr:08x} {data:08x} \n'.encode('ASCII')
-            # self._log.debug(f'Sending write transaction part {i}: {repr(sendString)}')
+            self._log.debug("Sending write transaction part %s: %r", i, sendString)
             self.serialPort.write(sendString)
             response = self.readline() #self.serialPort.readline().decode('ASCII')
 
@@ -129,8 +129,8 @@ class UartMemory(rogue.interfaces.memory.Slave):
             if (len(parts) != 4 or parts[0].lower() != 'w' or int(parts[1], 16) != addr or int(parts[2],16) != data):
                 transaction.error(f'Malformed response for part {i}: {repr(response)} to transaction: {repr(sendString)}')
                 return
-            # else:
-                # self._log.debug(f'Transaction part {i}: {repr(sendString)} completed successfully')
+            else:
+                self._log.debug("Write transaction part %s completed successfully", i)
 
             # Check response code
             resp = int(parts[3],16)
@@ -139,6 +139,11 @@ class UartMemory(rogue.interfaces.memory.Slave):
                 transaction.error(f"Non zero status message returned on axi bus in hardware: {resp:#x}")
                 return
 
+        self._log.debug(
+            "Completed UART write transaction: address=%#x, size=%s",
+            address,
+            len(dataBa),
+        )
         transaction.done()
 
 
@@ -150,7 +155,7 @@ class UartMemory(rogue.interfaces.memory.Slave):
 
         for i, addr in enumerate(range(address, address+size, 4)):
             sendString = f'r {addr:08x} \n'.encode('ASCII')
-            # self._log.debug(f'Sending read transaction part {i}: {repr(sendString)}')
+            self._log.debug("Sending read transaction part %s: %r", i, sendString)
             self.serialPort.write(sendString)
             response = self.readline() #self.serialPort.readline().decode('ASCII')
 
@@ -168,7 +173,11 @@ class UartMemory(rogue.interfaces.memory.Slave):
                 dataInt = int(parts[2], 16)
                 rdData = bytearray(dataInt.to_bytes(4, 'little', signed=False))
                 transaction.setData(rdData, i*4)
-                # self._log.debug(f'Transaction part {i}: {repr(sendString)} with response data: {dataInt:#08x} completed successfully')
+                self._log.debug(
+                    "Read transaction part %s completed successfully with data=%#08x",
+                    i,
+                    dataInt,
+                )
 
             # Check response code
             resp = int(parts[3],16)
@@ -177,6 +186,11 @@ class UartMemory(rogue.interfaces.memory.Slave):
                 transaction.error(f"Non zero status message returned on axi bus in hardware: {resp:#x}")
                 return
 
+        self._log.debug(
+            "Completed UART read transaction: address=%#x, size=%s",
+            address,
+            size,
+        )
         transaction.done()
 
 
@@ -186,16 +200,23 @@ class UartMemory(rogue.interfaces.memory.Slave):
             transaction = self._workerQueue.get()
 
             if transaction is None:
+                self._workerQueue.task_done()
                 break
 
-            with transaction.lock():
+            try:
+                with transaction.lock():
 
-                # Write path
-                if transaction.type() == rogue.interfaces.memory.Write:
-                    self._doWrite(transaction)
+                    # Write path
+                    if transaction.type() == rogue.interfaces.memory.Write:
+                        self._doWrite(transaction)
 
-                elif (transaction.type() == rogue.interfaces.memory.Read or transaction.type() == rogue.interfaces.memory.Verify):
-                    self._doRead(transaction)
-                else:
-                    # Posted writes not supported (for now)
-                    transaction.error(f'Unsupported transaction type: {transaction.type()}')
+                    elif (transaction.type() == rogue.interfaces.memory.Read or transaction.type() == rogue.interfaces.memory.Verify):
+                        self._doRead(transaction)
+                    else:
+                        # Posted writes not supported (for now)
+                        transaction.error(f'Unsupported transaction type: {transaction.type()}')
+            except Exception as e:
+                pyrogue.logException(self._log, e)
+                transaction.error(f'Unhandled UART worker exception: {e}')
+            finally:
+                self._workerQueue.task_done()

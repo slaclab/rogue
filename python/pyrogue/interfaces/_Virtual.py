@@ -13,6 +13,7 @@
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 
+import os
 import pyrogue as pr
 import rogue.interfaces
 import pickle
@@ -325,6 +326,18 @@ class VirtualClient(rogue.interfaces.ZmqClient):
     port : int
         host port
 
+    linkTimeout : float, optional
+        Idle timeout in seconds before the client marks the link down when no
+        publish updates or successful replies have been observed. This is the
+        primary operational timeout knob for both hardware and simulation
+        applications.
+
+    requestStallTimeout : float | None, optional
+        Optional policy timeout for how long a single in-flight request may
+        remain outstanding before the client declares the connection stalled.
+        This is disabled by default and is typically only useful when a
+        deployment has a well-defined upper bound for legitimate request time.
+
     Attributes
     ----------
     linked: bool
@@ -336,8 +349,39 @@ class VirtualClient(rogue.interfaces.ZmqClient):
     """
     ClientCache = {}
 
-    def __new__(cls: type["VirtualClient"], addr: str = "localhost", port: int = 9099) -> "VirtualClient":
-        """Return cached client instances keyed by ``(addr, port)``."""
+    @staticmethod
+    def _defaultLinkTimeout() -> float:
+        """Return the default idle link timeout in seconds."""
+        return float(os.getenv("ROGUE_VIRTUAL_LINK_TIMEOUT", "10.0"))
+
+    @staticmethod
+    def _defaultRequestStallTimeout() -> float | None:
+        """Return the default request-stall timeout in seconds, if configured."""
+        value = os.getenv("ROGUE_VIRTUAL_REQUEST_STALL_TIMEOUT")
+        if value is None or value == "":
+            return None
+
+        stall = float(value)
+        return None if stall <= 0 else stall
+
+    @staticmethod
+    def _defaultConnectTimeout() -> float:
+        """Return the startup handshake timeout in seconds."""
+        return max(0.1, float(os.getenv("ROGUE_VIRTUAL_CONNECT_TIMEOUT", "5.0")))
+
+    def __new__(
+        cls: type["VirtualClient"],
+        addr: str = "localhost",
+        port: int = 9099,
+        linkTimeout: float | None = None,
+        requestStallTimeout: float | None = None,
+    ) -> "VirtualClient":
+        """Return cached client instances keyed by ``(addr, port)``.
+
+        Timeout arguments configure the cached instance for that server. If a
+        client already exists for the same ``(addr, port)``, new timeout values
+        are applied to the shared instance.
+        """
         newHash = hash((addr, port))
 
         if newHash in cls.ClientCache:
@@ -345,18 +389,60 @@ class VirtualClient(rogue.interfaces.ZmqClient):
         else:
             return super(VirtualClient, cls).__new__(cls, addr, port)
 
-    def __init__(self, addr: str = "localhost", port: int = 9099) -> None:
-        if hash((addr,port)) in VirtualClient.ClientCache:
+    def __init__(
+        self,
+        addr: str = "localhost",
+        port: int = 9099,
+        linkTimeout: float | None = None,
+        requestStallTimeout: float | None = None,
+    ) -> None:
+        """Create or reconfigure a cached virtual client instance.
+
+        Parameters
+        ----------
+        addr : str, optional
+            Server host name or address.
+        port : int, optional
+            Base ZMQ server port.
+        linkTimeout : float | None, optional
+            Idle timeout in seconds before the link is considered down. If not
+            provided, the default is 10 seconds or the value from
+            ``ROGUE_VIRTUAL_LINK_TIMEOUT``.
+        requestStallTimeout : float | None, optional
+            Optional maximum age of an in-flight request before the client
+            treats it as stalled. ``None`` or non-positive values disable this
+            policy. In practice this is usually left disabled unless a system
+            has a known upper bound for valid request duration.
+        """
+        if getattr(self, "_vcInitialized", False):
+            if linkTimeout is not None or requestStallTimeout is not None:
+                self.setTimeoutConfig(linkTimeout=linkTimeout, requestStallTimeout=requestStallTimeout)
             return
 
-        VirtualClient.ClientCache[hash((addr, port))] = self
+        self._cacheKey = hash((addr, port))
+        self._monEnable = False
+        self._monThread = None
+        self._vcInitialized = True
+        VirtualClient.ClientCache[self._cacheKey] = self
 
-        rogue.interfaces.ZmqClient.__init__(self,addr,port,False)
+        try:
+            rogue.interfaces.ZmqClient.__init__(self,addr,port,False)
+        except Exception:
+            self._removeFromCache()
+            self._vcInitialized = False
+            raise
         self._varListeners = []
         self._monitors = []
         self._root  = None
         self._link  = False
         self._ltime = time.time()
+        self._reqLock = threading.Lock()
+        self._reqCount = 0
+        self._reqSince = None
+        self._linkTimeout = self._defaultLinkTimeout()
+        self._requestStallTimeout = self._defaultRequestStallTimeout()
+
+        self.setTimeoutConfig(linkTimeout=linkTimeout, requestStallTimeout=requestStallTimeout)
 
         # Setup logging
         self._log = pr.logInit(cls=self,name="VirtualClient",path=None)
@@ -366,8 +452,9 @@ class VirtualClient(rogue.interfaces.ZmqClient):
         self.setTimeout(1000,False)
 
         try:
-            self._root = self._remoteAttr('__ROOT__',None)
+            self._root = self._waitForRoot()
         except Exception:
+            self._cleanupFailedInit()
             error_message = (
                 f"\n\nFailed to connect to {addr}:{port}!\n\n"
                 "Possible causes for the issue:\n"
@@ -397,6 +484,37 @@ class VirtualClient(rogue.interfaces.ZmqClient):
         self._monEnable = True
         self._monThread = threading.Thread(target=self._monWorker)
         self._monThread.start()
+
+    def _removeFromCache(self) -> None:
+        """Remove this client from the shared cache when it is no longer valid."""
+        if getattr(self, "_cacheKey", None) in VirtualClient.ClientCache and VirtualClient.ClientCache[self._cacheKey] is self:
+            del VirtualClient.ClientCache[self._cacheKey]
+
+    def _cleanupFailedInit(self) -> None:
+        """Release transport resources after a failed bootstrap handshake."""
+        self._monEnable = False
+        self._removeFromCache()
+        self._vcInitialized = False
+        try:
+            rogue.interfaces.ZmqClient._stop(self)
+        except Exception:
+            pass
+
+    def _waitForRoot(self) -> "VirtualNode":
+        """Retry the initial ``__ROOT__`` handshake for a bounded startup window."""
+        deadline = time.monotonic() + self._defaultConnectTimeout()
+        last_error = None
+
+        while time.monotonic() < deadline:
+            try:
+                return self._remoteAttr('__ROOT__',None)
+            except Exception as exc:
+                last_error = exc
+
+        if last_error is not None:
+            raise last_error
+
+        raise Exception("Timed out waiting for initial root handshake")
 
     def addLinkMonitor(self, function: Callable[[bool], None]) -> None:
         """
@@ -429,29 +547,119 @@ class VirtualClient(rogue.interfaces.ZmqClient):
         """Whether the client is currently linked to the server."""
         return self._link
 
+    @property
+    def linkTimeout(self) -> float:
+        """Idle timeout in seconds before the link is considered down."""
+        return self._linkTimeout
+
+    @property
+    def requestStallTimeout(self) -> float | None:
+        """Optional maximum in-flight request age before it is treated as stalled."""
+        return self._requestStallTimeout
+
+    def setTimeoutConfig(
+        self,
+        *,
+        linkTimeout: float | None = None,
+        requestStallTimeout: float | None = None,
+    ) -> None:
+        """Update link and request-stall timeout settings.
+
+        ``linkTimeout`` is the normal tuning knob for clients that need to
+        tolerate longer busy periods. ``requestStallTimeout`` is an optional
+        policy threshold and is most useful only when a deployment has a clear,
+        finite upper bound for legitimate request duration.
+        """
+        if linkTimeout is not None:
+            self._linkTimeout = float(linkTimeout)
+
+        if requestStallTimeout is not None:
+            stall = float(requestStallTimeout)
+            self._requestStallTimeout = None if stall <= 0 else stall
+
     def _monWorker(self) -> None:
         """Monitor link heartbeat and emit link-state callbacks."""
         while self._monEnable:
             time.sleep(1)
+            self._checkLinkState()
 
-            if self._link and (time.time() - self._ltime) > 10.0:
-                self._link = False
-                self._log.warning(f"I have not heard from {self._root.name} in 10 seconds. It may be busy, continuing to wait...")
-                for mon in self._monitors:
-                    mon(self._link)
+    def _requestStart(self) -> None:
+        """Record that a request/reply transaction is in flight."""
+        with self._reqLock:
+            if self._reqCount == 0:
+                self._reqSince = time.time()
+            self._reqCount += 1
 
-            elif (not self._link) and (time.time() - self._ltime) < 10.0:
+    def _requestDone(self, success: bool) -> None:
+        """Record request completion and treat successful replies as activity."""
+        with self._reqLock:
+            self._reqCount = max(0, self._reqCount - 1)
+            if self._reqCount == 0:
+                self._reqSince = None
+
+        if success:
+            self._ltime = time.time()
+            if not self._link:
                 self._link = True
                 self._log.warning(f"I have finally heard from {self._root.name}. All is good!")
                 for mon in self._monitors:
                     mon(self._link)
 
+    def _requestPending(self) -> bool:
+        """Whether at least one request/reply transaction is in flight."""
+        with self._reqLock:
+            return self._reqCount > 0
+
+    def _requestAge(self) -> float | None:
+        """Return the age of the oldest in-flight request, if any."""
+        with self._reqLock:
+            if self._reqCount == 0 or self._reqSince is None:
+                return None
+            return time.time() - self._reqSince
+
+    def _checkLinkState(self) -> None:
+        """Update link state from recent activity while tolerating busy requests."""
+        delta = time.time() - self._ltime
+
+        if self._link and delta > self._linkTimeout:
+            if self._requestPending():
+                reqAge = self._requestAge()
+                if self._requestStallTimeout is None or reqAge is None or reqAge <= self._requestStallTimeout:
+                    return
+
+                self._link = False
+                self._log.warning(
+                    f"Request has been pending for {reqAge:0.1f} seconds without updates. "
+                    f"Declaring link to {self._root.name} stalled."
+                )
+                for mon in self._monitors:
+                    mon(self._link)
+                return
+
+            self._link = False
+            self._log.warning(
+                f"I have not heard from {self._root.name} in {self._linkTimeout:0.1f} seconds. "
+                "It may be busy, continuing to wait..."
+            )
+            for mon in self._monitors:
+                mon(self._link)
+
+        elif (not self._link) and delta < self._linkTimeout:
+            self._link = True
+            self._log.warning(f"I have finally heard from {self._root.name}. All is good!")
+            for mon in self._monitors:
+                mon(self._link)
+
 
     def _remoteAttr(self, path: str, attr: str, *args: Any, **kwargs: Any) -> Any:
         """Invoke a remote attribute on the server."""
+        self._requestStart()
+
         try:
             ret = pickle.loads(self._send(pickle.dumps({ 'path':path, 'attr':attr, 'args':args, 'kwargs':kwargs })))
+            self._requestDone(True)
         except Exception as e:
+            self._requestDone(False)
             raise Exception(f"ZMQ Interface Exception: {e}")
 
         if isinstance(ret,Exception):

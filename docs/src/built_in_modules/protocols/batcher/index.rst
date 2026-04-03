@@ -110,11 +110,15 @@ Logging
 Batcher logging is emitted by the shared parser cores, so it applies to both
 splitter and inverter usage:
 
-- ``pyrogue.batcher.CoreV1``
-- ``pyrogue.batcher.CoreV2``
+- v1 path: ``pyrogue.batcher.CoreV1``
+- v2 path: ``pyrogue.batcher.CoreV2``
+- Unified Logging API:
+  ``pyrogue.setLogLevel('pyrogue.batcher.CoreV2', 'DEBUG')``
+- Legacy Logging API:
+  ``rogue.Logging.setFilter('pyrogue.batcher.CoreV2', rogue.Logging.Debug)``
 
-Enable the logger for the batcher version you are debugging before processing
-frames:
+You can enable the logger before or during processing. Enable it before frames
+start flowing only if you want the earliest parser messages as well:
 
 .. code-block:: python
 

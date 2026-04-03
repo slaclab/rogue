@@ -234,7 +234,7 @@ class Device(pr.Node,rim.Hub):
         # Node.__init__ can't be called until after self._memBase is created
         pr.Node.__init__(self, name=name, hidden=hidden, groups=groups, description=description, expand=expand, guiGroup=guiGroup)
 
-        self._log.info("Making device {:s}".format(name))
+        self._log.info("Making device %s", name)
 
         # Convenience methods
         self.addRemoteCommands = ft.partial(self.addNodes, pr.RemoteCommand)
@@ -289,8 +289,11 @@ class Device(pr.Node,rim.Hub):
         """
         for interface in interfaces:
             if isinstance(interface, collections.abc.Iterable):
-                self._ifAndProto.extend(interface)
+                for item in interface:
+                    self._log.debug("Managing interface/protocol %s", item)
+                    self._ifAndProto.append(item)
             else:
+                self._log.debug("Managing interface/protocol %s", interface)
                 self._ifAndProto.append(interface)
 
     def addProtocol(self, *protocols: Any) -> None:
@@ -305,6 +308,7 @@ class Device(pr.Node,rim.Hub):
         """ Called recursively from Root.start when starting """
         for intf in self._ifAndProto:
             if hasattr(intf,"_start"):
+                self._log.debug("Starting managed interface/protocol %s", intf)
                 intf._start()
         for d in self.devices.values():
             d._start()
@@ -313,6 +317,7 @@ class Device(pr.Node,rim.Hub):
         """Called recursively from Root.stop when exiting"""
         for intf in self._ifAndProto:
             if hasattr(intf,"_stop"):
+                self._log.debug("Stopping managed interface/protocol %s", intf)
                 intf._stop()
         for d in self.devices.values():
             d._stop()
@@ -339,7 +344,20 @@ class Device(pr.Node,rim.Hub):
         stride : int
             Byte stride between instances.
         pack : bool, optional (default = False)
-            If True, add a packed link variable for all entries.
+            If True, also add a ``LinkVariable`` named ``<name>_All`` which
+            combines all entries into one underscore-delimited display string.
+
+            The indexed ``RemoteVariable`` container remains available at the
+            original ``name``. The packed alias uses each element variable's
+            ``getDisp()`` and ``setDisp()`` behavior, so formatting follows the
+            underlying variable type. Values are joined in reverse index order:
+            for a variable array ``Field[0]``, ``Field[1]``, ``Field[2]``, the
+            packed value ``Field_All`` reads like
+            ``Field[2]_Field[1]_Field[0]`` and writing ``"1_2_3"`` updates
+            ``Field[2] = 1``, ``Field[1] = 2``, and ``Field[0] = 3``.
+
+            This is intended for orthogonal register fields that are convenient
+            to expose both as individual variables and as one combined value.
         **kwargs : Any
             Arguments forwarded to ``RemoteVariable``.
         """
@@ -354,13 +372,13 @@ class Device(pr.Node,rim.Hub):
         if pack:
             varList = getattr(self, kwargs['name']).values()
 
-            def linkedSet(dev: Any, var: pr.LinkVariable, val: str, write: bool) -> None:
+            def linkedSet(dev: Any, var: pr.LinkVariable, value: str, write: bool) -> None:
                 """Split a packed display string and write each element variable."""
-                if val == '':
+                if value == '':
                     return
-                values = reversed(val.split('_'))
-                for variable, value in zip(varList, values):
-                    variable.setDisp(value, write=write)
+                values = reversed(value.split('_'))
+                for variable, item in zip(varList, values):
+                    variable.setDisp(item, write=write)
 
             def linkedGet(dev: Any, var: pr.LinkVariable, read: bool) -> str:
                 """Join element display values into one packed underscore string."""
@@ -368,6 +386,9 @@ class Device(pr.Node,rim.Hub):
                 return '_'.join(reversed(values))
 
             name = kwargs.pop('name')
+            # Preserve the indexed array container at ``name`` and expose the
+            # packed LinkVariable using the historical ``<name>_All`` alias.
+            name += '_All'
             kwargs.pop('value', None)
 
             lv = pr.LinkVariable(name=name, value='', dependencies=varList, linkedGet=linkedGet, linkedSet=linkedSet, **kwargs)
@@ -650,12 +671,24 @@ class Device(pr.Node,rim.Hub):
 
             # Align to min access, create list of remote variables
             elif isinstance(n,pr.RemoteVariable) and n.offset is not None:
-                self._log.info(f"Before Shift variable {n.name} offset={n.offset} bitSize={n.bitSize} bytes={n.varBytes}")
+                self._log.info(
+                    "Before shift variable %s offset=%s bitSize=%s bytes=%s",
+                    n.name,
+                    n.offset,
+                    n.bitSize,
+                    n.varBytes,
+                )
                 n._updatePath(n.path)
                 n._shiftOffsetDown(n.offset % blkSize, blkSize)
                 remVars += [n]
 
-                self._log.info(f"Creating variable {n.name} offset={n.offset} bitSize={n.bitSize} bytes={n.varBytes}")
+                self._log.info(
+                    "Creating variable %s offset=%s bitSize=%s bytes=%s",
+                    n.name,
+                    n.offset,
+                    n.bitSize,
+                    n.varBytes,
+                )
 
         # Sort var list by offset, size
         remVars.sort(key=lambda x: (x.offset, x.varBytes))
@@ -666,7 +699,12 @@ class Device(pr.Node,rim.Hub):
         for n in remVars:
 
             if blk is not None and ( (blk['offset'] + blk['size']) > n.offset):
-                self._log.info("Overlap detected var offset={} block offset={} block bytes={}".format(n.offset,blk['offset'],blk['size']))
+                self._log.info(
+                    "Overlap detected var offset=%s block offset=%s block bytes=%s",
+                    n.offset,
+                    blk['offset'],
+                    blk['size'],
+                )
                 n._shiftOffsetDown(n.offset - blk['offset'], blkSize)
                 blk['vars'].append(n)
 
@@ -704,7 +742,7 @@ class Device(pr.Node,rim.Hub):
             # Create new block
             if b['block'] is None:
                 newBlock = rim.Block(b['offset'], b['size'])
-                self._log.debug("Adding new block at offset {:#02x}, size {}".format(b['offset'], b['size']))
+                self._log.debug("Adding new block at offset %#02x, size %s", b['offset'], b['size'])
             else:
                 newBlock = b['block']
 

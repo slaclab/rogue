@@ -37,6 +37,18 @@ PyRogue set and display paths. Commands are exposed through EPICS RPC behavior,
 with the holder forwarding the EPICS request payload into the bound PyRogue
 command and packaging the return value back into the EPICS response.
 
+RPC Dispatch
+------------
+
+When an EPICS client calls ``ctxt.rpc()`` on a command-backed PV, the
+``EpicsPvHandler.rpc()`` method extracts the query from the incoming request.
+If the query contains an ``arg`` field, the value is forwarded to the PyRogue
+command; otherwise the command is called with no argument. The return value is
+wrapped in a P4P ``Value`` and sent back to the client.
+
+For usage examples and client-side patterns, see
+:ref:`protocols_epicsv4_epicspvserver`.
+
 Lifecycle Role in the Server
 ============================
 
@@ -51,8 +63,8 @@ Logging
 server logger passed in from ``EpicsPvServer``:
 
 - Logger name: ``pyrogue.EpicsPvServer``
-- Configuration API:
-  ``logging.getLogger('pyrogue.EpicsPvServer').setLevel(logging.DEBUG)``
+- Logging API:
+  ``pyrogue.setLogLevel('pyrogue.EpicsPvServer', 'DEBUG')``
 
 That means put/get/rpc handling errors reported by a holder appear under the
 server logger rather than a per-PV logger.
