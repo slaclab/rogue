@@ -32,8 +32,7 @@ from qtpy.QtWidgets import (
 
 from pyqtgraph import ViewBox
 
-from PyQt5.QtWidgets import QSplitter
-from PyQt5.QtCore import Qt
+from qtpy.QtWidgets import QSplitter
 
 import random
 
@@ -571,7 +570,7 @@ class TimePlotter(PyDMFrame):
         selection_box = QGroupBox()
         selection_box.setLayout(selection_layout)
 
-        selection_splitter = QSplitter(Qt.Vertical)
+        selection_splitter = QSplitter(QtCore.Qt.Vertical)
         selection_splitter.addWidget(self.selection_tree)
         selection_splitter.addWidget(self.scroll_area)
 
@@ -581,7 +580,7 @@ class TimePlotter(PyDMFrame):
         graphs_box = QGroupBox()
         graphs_box.setLayout(graphs_layout)
 
-        main_splitter = QSplitter(Qt.Horizontal)
+        main_splitter = QSplitter(QtCore.Qt.Horizontal)
 
         main_splitter.addWidget(selection_splitter)
         main_splitter.addWidget(graphs_box)
