@@ -157,6 +157,9 @@ bool rpb::CoreV2::processFrame(ris::FramePtr frame) {
     // Reset old data
     reset();
 
+    // Store frame reference so header/tail iterators remain valid
+    frame_ = frame;
+
     ris::FrameIterator beg;
     ris::FrameIterator mark;
     ris::FrameIterator tail;
