@@ -254,7 +254,7 @@ class DebugHolder(QTreeWidgetItem):
         w.alarmSensitiveBorder  = True
 
         fm = QFontMetrics(w.font())
-        width = int(fm.width(self._path.split('.')[-1]) * 1.1)
+        width = int(fm.horizontalAdvance(self._path.split('.')[-1]) * 1.1)
 
         rightEdge = width + (self._top._tree.indentation() * self._depth)
 
@@ -301,7 +301,7 @@ class DebugHolder(QTreeWidgetItem):
 
 
         self._top._tree.setItemWidget(self,2,w)
-        width = fm.width('0xAAAAAAAA    ')
+        width = fm.horizontalAdvance('0xAAAAAAAA    ')
 
         if width > self._top._colWidths[1]:
             self._top._colWidths[1] = width
