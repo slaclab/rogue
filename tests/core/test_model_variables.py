@@ -157,3 +157,57 @@ def test_remote_variable_metadata_exposes_model_constraints():
         assert root.Dev.FixedVar._base.signed is True
         assert root.Dev.UFixedVar._base.binPoint == 4
         assert root.Dev.UFixedVar._base.signed is False
+
+        # Fixed-point models expose representable min/max
+        assert root.Dev.FixedVar.minimum == -2048.0
+        assert root.Dev.FixedVar.maximum == 2047.9375
+        assert root.Dev.UFixedVar.minimum == 0.0
+        assert root.Dev.UFixedVar.maximum == 4095.9375
+
+
+def test_fixed_point_overflow_raises_error():
+    with ModelVariableRoot() as root:
+        # In-range values should round-trip correctly
+        root.Dev.FixedVar.set(1.5)
+        assert math.isclose(root.Dev.FixedVar.get(), 1.5, abs_tol=1e-6)
+
+        root.Dev.UFixedVar.set(2.25)
+        assert math.isclose(root.Dev.UFixedVar.get(), 2.25, abs_tol=1e-6)
+
+        # Fixed(16, 4) range: -2048.0 to 2047.9375
+        # Overflow must raise, not silently clip
+        try:
+            root.Dev.FixedVar.set(2048.0)
+            got = root.Dev.FixedVar.get()
+            assert False, f"Expected error for overflow, got {got}"
+        except Exception:
+            pass  # Expected
+
+        try:
+            root.Dev.FixedVar.set(-2049.0)
+            got = root.Dev.FixedVar.get()
+            assert False, f"Expected error for underflow, got {got}"
+        except Exception:
+            pass  # Expected
+
+        # UFixed(16, 4) range: 0.0 to 4095.9375
+        try:
+            root.Dev.UFixedVar.set(4096.0)
+            got = root.Dev.UFixedVar.get()
+            assert False, f"Expected error for overflow, got {got}"
+        except Exception:
+            pass  # Expected
+
+        try:
+            root.Dev.UFixedVar.set(-1.0)
+            got = root.Dev.UFixedVar.get()
+            assert False, f"Expected error for negative unsigned, got {got}"
+        except Exception:
+            pass  # Expected
+
+        # Boundary values should work
+        root.Dev.FixedVar.set(2047.9375)
+        assert math.isclose(root.Dev.FixedVar.get(), 2047.9375, abs_tol=1e-6)
+
+        root.Dev.FixedVar.set(-2048.0)
+        assert math.isclose(root.Dev.FixedVar.get(), -2048.0, abs_tol=1e-6)

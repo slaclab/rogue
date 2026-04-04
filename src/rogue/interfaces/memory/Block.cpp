@@ -2011,11 +2011,20 @@ void rim::Block::setFixed(const double& val, rim::Variable* var, int32_t index) 
 
     // Convert
     int64_t fPoint = static_cast<int64_t>(round(val * pow(2, var->binPoint_)));
-    // Check for positive edge case
-    uint64_t mask = 1 << (var->valueBits_ - 1);
-    if (val > 0 && ((fPoint & mask) != 0)) {
-        fPoint -= 1;
-    }
+
+    // Compute representable range in integer domain
+    int64_t maxInt = (1LL << (var->valueBits_ - 1)) - 1;
+    int64_t minInt = -(1LL << (var->valueBits_ - 1));
+
+    // Check for overflow (rounding may push value beyond representable range)
+    if (fPoint > maxInt || fPoint < minInt)
+        throw(rogue::GeneralError::create("Block::setFixed",
+                                          "Fixed point overflow for %s. Value=%f, Min=%f, Max=%f",
+                                          var->name_.c_str(),
+                                          val,
+                                          static_cast<double>(minInt) / pow(2, var->binPoint_),
+                                          static_cast<double>(maxInt) / pow(2, var->binPoint_)));
+
     setBytes(reinterpret_cast<uint8_t*>(&fPoint), var, index);
 }
 
