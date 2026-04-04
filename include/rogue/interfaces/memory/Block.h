@@ -137,6 +137,9 @@ class Block : public Master {
     // Verify Block
     uint8_t* verifyBlock_;
 
+    // Expected data snapshot for verify comparison (captured at write time)
+    uint8_t* expectedData_;
+
     // Block size
     uint32_t size_;
 
