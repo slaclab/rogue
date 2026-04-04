@@ -91,7 +91,7 @@ class CombinerV1 : public rogue::interfaces::stream::Master, public rogue::inter
      * @brief Constructs a `CombinerV1` instance.
      * @param width AXI stream width encoding (0-5).
      */
-    CombinerV1(uint8_t width);
+    explicit CombinerV1(uint8_t width);
 
     /** @brief Destroys the combiner. */
     ~CombinerV1();

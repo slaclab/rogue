@@ -42,6 +42,8 @@
 
 #include <inttypes.h>
 #include <stdint.h>
+
+#include <vector>
 #include <string.h>
 
 #include <memory>
