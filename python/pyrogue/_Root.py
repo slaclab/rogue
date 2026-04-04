@@ -783,11 +783,15 @@ class Root(pr.Device):
         """Write and verify all blocks."""
         self._log.info("Start root write (forceWrite=%s)", self.ForceWrite.value())
         with self.pollBlock(), self.updateGroup():
-            self.writeBlocks(force=self.ForceWrite.value(), recurse=True)
-            self._log.info("Verify root write with readback")
-            self.verifyBlocks(recurse=True)
-            self._log.info("Check verified root write transactions")
-            self.checkBlocks(recurse=True)
+            try:
+                self.writeBlocks(force=self.ForceWrite.value(), recurse=True)
+                self._log.info("Verify root write with readback")
+                self.verifyBlocks(recurse=True)
+                self._log.info("Check verified root write transactions")
+                self.checkBlocks(recurse=True)
+            except Exception as e:
+                pr.logException(self._log, e)
+                return False
 
         self._log.info("Done root write")
         return True
@@ -796,9 +800,13 @@ class Root(pr.Device):
         """Read and check all blocks."""
         self._log.info("Start root read")
         with self.pollBlock(), self.updateGroup():
-            self.readBlocks(recurse=True)
-            self._log.info("Check root read transactions")
-            self.checkBlocks(recurse=True)
+            try:
+                self.readBlocks(recurse=True)
+                self._log.info("Check root read transactions")
+                self.checkBlocks(recurse=True)
+            except Exception as e:
+                pr.logException(self._log, e)
+                return False
 
         self._log.info("Done root read")
         return True
