@@ -372,6 +372,38 @@ def test_memory():
 
 
 
+def test_numpy_integer_index_types():
+    """Regression test for ESROGUE-724.
+
+    Variable.set() and Variable.get() must accept numpy integer types
+    (e.g. np.int32, np.int64, np.uint32) as the index argument without
+    raising a Boost.Python type-mismatch error.
+    """
+    with RemoteListRoot() as root:
+        var = root.RemoteListDevice.UInt32List
+
+        # Write full array first
+        values = np.arange(32, dtype=np.uint32) * 10
+        var.set(values.tolist())
+
+        # Test set/get with various numpy integer index types
+        for np_int_type in [np.int32, np.int64, np.uint32, np.uint64, np.intp]:
+            idx = np_int_type(5)
+            var.set(999, index=idx)
+            result = var.get(index=idx)
+            assert result == 999, (
+                f"set/get with index type {np_int_type.__name__} failed: got {result}"
+            )
+            # Restore original value
+            var.set(50, index=idx)
+
+        # Test post() with numpy integer index
+        idx = np.int32(3)
+        var.post(777, index=idx)
+        result = var.get(index=idx)
+        assert result == 777, f"post with np.int32 index failed: got {result}"
+
+
 def run_gui():
     import pyrogue.pydm
 

@@ -548,6 +548,8 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
         """
         self._log.debug("%s.set(%r)", self, value)
         try:
+            index = int(index)
+
             self._set(value,index)
 
             if write:
@@ -574,6 +576,8 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
             Retrieved value.
         """
         try:
+            index = int(index)
+
             if read:
                 pr.startTransaction(self._block, type=rogue.interfaces.memory.Read, forceWr=False, checkEach=True, variable=self, index=index)
 

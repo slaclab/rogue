@@ -1480,6 +1480,8 @@ class RemoteVariable(BaseVariable,rim.Variable):
         try:
 
             # Set value to block
+            index = int(index)
+
             self._set(value,index)
 
             if write:
@@ -1520,6 +1522,8 @@ class RemoteVariable(BaseVariable,rim.Variable):
         """
         try:
 
+            index = int(index)
+
             # Set value to block
             self._set(value,index)
 
@@ -1553,6 +1557,8 @@ class RemoteVariable(BaseVariable,rim.Variable):
             If True, check transaction completion.
         """
         try:
+            index = int(index)
+
             if read:
                 self._parent.readBlocks(recurse=False, variable=self, index=index)
                 if check:
