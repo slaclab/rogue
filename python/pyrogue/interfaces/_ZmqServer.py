@@ -89,7 +89,10 @@ class ZmqServer(rogue.interfaces.ZmqServer):
         try:
             return pickle.dumps(self._doOperation(pickle.loads(data)))
         except Exception as msg:
-            return pickle.dumps(msg)
+            try:
+                return pickle.dumps(msg)
+            except Exception:
+                return pickle.dumps(Exception(f"{type(msg).__module__}.{type(msg).__name__}: {msg}"))
 
     def _doString(self, data: str) -> str:
         """Handle a JSON-serialized request and return string response."""
