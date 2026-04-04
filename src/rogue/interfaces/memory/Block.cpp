@@ -1723,6 +1723,216 @@ float rim::Block::getFloat(rim::Variable* var, int32_t index) {
     return tmp;
 }
 
+// IEEE 754 half-precision conversion helpers
+namespace {
+
+uint16_t floatToHalf(float value) {
+    uint32_t f;
+    std::memcpy(&f, &value, sizeof(f));
+
+    uint16_t sign     = (f >> 16) & 0x8000;
+    int32_t  exponent = ((f >> 23) & 0xFF) - 127 + 15;
+    uint32_t mantissa = f & 0x7FFFFF;
+
+    if (exponent <= 0) {
+        if (exponent < -10) return sign;
+        mantissa |= 0x800000;
+        uint32_t shift = 14 - exponent;
+        mantissa >>= shift;
+        return sign | (mantissa >> 13);
+    } else if (exponent == 0xFF - 127 + 15) {
+        if (mantissa) return sign | 0x7C00 | (mantissa >> 13);
+        return sign | 0x7C00;
+    } else if (exponent > 30) {
+        return sign | 0x7C00;
+    }
+    return sign | (exponent << 10) | (mantissa >> 13);
+}
+
+float halfToFloat(uint16_t h) {
+    uint32_t sign     = (h & 0x8000) << 16;
+    uint32_t exponent = (h >> 10) & 0x1F;
+    uint32_t mantissa = h & 0x3FF;
+
+    uint32_t f;
+    if (exponent == 0) {
+        if (mantissa == 0) {
+            f = sign;
+        } else {
+            exponent = 1;
+            while (!(mantissa & 0x400)) {
+                mantissa <<= 1;
+                exponent--;
+            }
+            mantissa &= 0x3FF;
+            f = sign | ((exponent + 127 - 15) << 23) | (mantissa << 13);
+        }
+    } else if (exponent == 31) {
+        f = sign | 0x7F800000 | (mantissa << 13);
+    } else {
+        f = sign | ((exponent + 127 - 15) << 23) | (mantissa << 13);
+    }
+
+    float result;
+    std::memcpy(&result, &f, sizeof(result));
+    return result;
+}
+
+}  // anonymous namespace
+
+//////////////////////////////////////////
+// Float16 (half-precision)
+//////////////////////////////////////////
+
+#ifndef NO_PYTHON
+
+// Set data using float16
+void rim::Block::setFloat16Py(bp::object& value, rim::Variable* var, int32_t index) {
+    uint32_t x;
+
+    if (index == -1) index = 0;
+
+    // Passed value is a numpy value
+    if (PyArray_Check(value.ptr())) {
+        // Cast to an array object and check that the numpy array
+        PyArrayObject* arr = reinterpret_cast<decltype(arr)>(value.ptr());
+        npy_intp ndims     = PyArray_NDIM(arr);
+        npy_intp* dims     = PyArray_SHAPE(arr);
+        npy_intp* strides  = PyArray_STRIDES(arr);
+
+        if (ndims != 1)
+            throw(rogue::GeneralError::create("Block::setFloat16Py",
+                                              "Invalid number of dimensions (%" PRIu32 ") for passed ndarray for %s",
+                                              ndims,
+                                              var->name_.c_str()));
+
+        if ((index + dims[0]) > var->numValues_)
+            throw(rogue::GeneralError::create("Block::setFloat16Py",
+                                              "Overflow error for passed array with length %" PRIu32
+                                              " at index %" PRIi32 ". Variable length = %" PRIu32 " for %s",
+                                              dims[0],
+                                              index,
+                                              var->numValues_,
+                                              var->name_.c_str()));
+
+        if (PyArray_TYPE(arr) == NPY_HALF) {
+            npy_half* src   = reinterpret_cast<npy_half*>(PyArray_DATA(arr));
+            npy_intp stride = strides[0] / sizeof(npy_half);
+            for (x = 0; x < dims[0]; x++) {
+                float val = halfToFloat(src[x * stride]);
+                setFloat16(val, var, index + x);
+            }
+        } else {
+            throw(rogue::GeneralError::create("Block::setFloat16Py",
+                                              "Passed nparray is not of type (float16) for %s",
+                                              var->name_.c_str()));
+        }
+
+        // Is passed value a list
+    } else if (PyList_Check(value.ptr())) {
+        bp::list vl   = bp::extract<bp::list>(value);
+        uint32_t vlen = len(vl);
+
+        if ((index + vlen) > var->numValues_)
+            throw(rogue::GeneralError::create("Block::setFloat16Py",
+                                              "Overflow error for passed array with length %" PRIu32
+                                              " at index %" PRIi32 ". Variable length = %" PRIu32 " for %s",
+                                              vlen,
+                                              index,
+                                              var->numValues_,
+                                              var->name_.c_str()));
+
+        for (x = 0; x < vlen; x++) {
+            bp::extract<float> tmp(vl[x]);
+
+            if (!tmp.check())
+                throw(rogue::GeneralError::create("Block::setFloat16Py",
+                                                  "Failed to extract value for %s.",
+                                                  var->name_.c_str()));
+
+            setFloat16(tmp, var, index + x);
+        }
+
+        // Passed scalar numpy value
+    } else if (PyArray_CheckScalar(value.ptr())) {
+        if (PyArray_DescrFromScalar(value.ptr())->type_num == NPY_HALF) {
+            npy_half val;
+            PyArray_ScalarAsCtype(value.ptr(), &val);
+            float fval = halfToFloat(val);
+            setFloat16(fval, var, index);
+        } else {
+            throw(rogue::GeneralError::create("Block::setFloat16Py",
+                                              "Failed to extract value for %s.",
+                                              var->name_.c_str()));
+        }
+    } else {
+        bp::extract<float> tmp(value);
+
+        if (!tmp.check())
+            throw(rogue::GeneralError::create("Block::setFloat16Py",
+                                              "Failed to extract value for %s.",
+                                              var->name_.c_str()));
+
+        setFloat16(tmp, var, index);
+    }
+}
+
+// Get data using float16
+bp::object rim::Block::getFloat16Py(rim::Variable* var, int32_t index) {
+    bp::object ret;
+    uint32_t x;
+
+    // Unindexed with a list variable
+    if (index < 0 && var->numValues_ > 0) {
+        // Create a numpy array to receive it and locate the destination data buffer
+        npy_intp dims[1]   = {var->numValues_};
+        PyObject* obj      = PyArray_SimpleNew(1, dims, NPY_HALF);
+        PyArrayObject* arr = reinterpret_cast<PyArrayObject*>(obj);
+        npy_half* dst      = reinterpret_cast<npy_half*>(PyArray_DATA(arr));
+
+        for (x = 0; x < var->numValues_; x++) dst[x] = floatToHalf(getFloat16(var, x));
+
+        boost::python::handle<> handle(obj);
+        ret = bp::object(handle);
+
+    } else {
+        PyObject* val = Py_BuildValue("f", getFloat16(var, index));
+
+        if (val == NULL) throw(rogue::GeneralError::create("Block::getFloat16Py", "Failed to generate Float16"));
+
+        bp::handle<> handle(val);
+        ret = bp::object(handle);
+    }
+    return ret;
+}
+
+#endif
+
+// Set data using float16
+void rim::Block::setFloat16(const float& val, rim::Variable* var, int32_t index) {
+    // Check range
+    if ((var->minValue_ != 0 || var->maxValue_ != 0) && (val > var->maxValue_ || val < var->minValue_))
+        throw(rogue::GeneralError::create("Block::setFloat16",
+                                          "Value range error for %s. Value=%f, Min=%f, Max=%f",
+                                          var->name_.c_str(),
+                                          val,
+                                          var->minValue_,
+                                          var->maxValue_));
+
+    // Convert float to half-precision and store as 2 bytes
+    uint16_t half = floatToHalf(val);
+    setBytes(reinterpret_cast<uint8_t*>(&half), var, index);
+}
+
+// Get data using float16
+float rim::Block::getFloat16(rim::Variable* var, int32_t index) {
+    uint16_t tmp = 0;
+
+    getBytes(reinterpret_cast<uint8_t*>(&tmp), var, index);
+
+    return halfToFloat(tmp);
+}
+
 //////////////////////////////////////////
 // Double
 //////////////////////////////////////////

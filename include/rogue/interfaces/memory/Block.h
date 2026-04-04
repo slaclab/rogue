@@ -810,6 +810,50 @@ class Block : public Master {
     float getFloat(rogue::interfaces::memory::Variable* var, int32_t index);
 
     //////////////////////////////////////////
+    // Float16 (half-precision)
+    //////////////////////////////////////////
+
+#ifndef NO_PYTHON
+
+    /**
+     * @brief Sets half-precision float variable data from Python input.
+     *
+     * @param value Python source value.
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     */
+    void setFloat16Py(boost::python::object& value, rogue::interfaces::memory::Variable* var, int32_t index);
+
+    /**
+     * @brief Gets half-precision float variable data as Python output.
+     *
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     * @return Python object containing float value.
+     */
+    boost::python::object getFloat16Py(rogue::interfaces::memory::Variable* var, int32_t index);
+
+#endif
+
+    /**
+     * @brief Sets half-precision float variable data from C++ input.
+     *
+     * @param value Source float value (converted to half-precision for storage).
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     */
+    void setFloat16(const float& value, rogue::interfaces::memory::Variable* var, int32_t index);
+
+    /**
+     * @brief Gets half-precision float variable data as C++ output.
+     *
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     * @return Float value converted from half-precision.
+     */
+    float getFloat16(rogue::interfaces::memory::Variable* var, int32_t index);
+
+    //////////////////////////////////////////
     // Double
     //////////////////////////////////////////
 

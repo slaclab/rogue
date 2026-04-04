@@ -60,6 +60,7 @@ Models
    bool
    string
    float
+   float16
    double
    fixed
    ufixed

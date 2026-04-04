@@ -20,6 +20,7 @@ Primary API reference pages:
 - :doc:`/api/python/pyrogue/bool`
 - :doc:`/api/python/pyrogue/string`
 - :doc:`/api/python/pyrogue/float`
+- :doc:`/api/python/pyrogue/float16`
 - :doc:`/api/python/pyrogue/double`
 - :doc:`/api/python/pyrogue/fixed`
 - :doc:`/api/python/pyrogue/ufixed`
@@ -91,6 +92,20 @@ FloatBE
 -------
 
 See :doc:`/api/python/pyrogue/float`.
+
+.. _interfaces_memory_model_float16:
+
+Float16
+-------
+
+See :doc:`/api/python/pyrogue/float16`.
+
+.. _interfaces_memory_model_float16be:
+
+Float16BE
+---------
+
+See :doc:`/api/python/pyrogue/float16`.
 
 .. _interfaces_memory_model_double:
 

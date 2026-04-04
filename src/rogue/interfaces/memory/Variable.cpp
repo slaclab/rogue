@@ -278,6 +278,10 @@ rim::Variable::Variable(std::string name,
             setFloat_ = &rim::Block::setFloat;
             break;
 
+        case rim::Float16:
+            setFloat16_ = &rim::Block::setFloat16;
+            break;
+
         case rim::Double:
             setDouble_ = &rim::Block::setDouble;
             break;
@@ -323,6 +327,10 @@ rim::Variable::Variable(std::string name,
 
         case rim::Float:
             getFloat_ = &rim::Block::getFloat;
+            break;
+
+        case rim::Float16:
+            getFloat16_ = &rim::Block::getFloat16;
             break;
 
         case rim::Double:
@@ -375,6 +383,10 @@ rim::Variable::Variable(std::string name,
             setFuncPy_ = &rim::Block::setFloatPy;
             break;
 
+        case rim::Float16:
+            setFuncPy_ = &rim::Block::setFloat16Py;
+            break;
+
         case rim::Double:
             setFuncPy_ = &rim::Block::setDoublePy;
             break;
@@ -422,6 +434,10 @@ rim::Variable::Variable(std::string name,
 
         case rim::Float:
             getFuncPy_ = &rim::Block::getFloatPy;
+            break;
+
+        case rim::Float16:
+            getFuncPy_ = &rim::Block::getFloat16Py;
             break;
 
         case rim::Double:
@@ -896,6 +912,26 @@ float rim::Variable::getFloat(int32_t index) {
 
     block_->read(this, index);
     return (block_->*getFloat_)(this, index);
+}
+
+/////////////////////////////////
+// C++ Float16 (half-precision)
+/////////////////////////////////
+
+void rim::Variable::setFloat16(float& value, int32_t index) {
+    if (setFloat16_ == NULL)
+        throw(rogue::GeneralError::create("Variable::setFloat16", "Wrong set type for variable %s", path_.c_str()));
+
+    (block_->*setFloat16_)(value, this, index);
+    block_->write(this, index);
+}
+
+float rim::Variable::getFloat16(int32_t index) {
+    if (getFloat16_ == NULL)
+        throw(rogue::GeneralError::create("Variable::getFloat16", "Wrong get type for variable %s", path_.c_str()));
+
+    block_->read(this, index);
+    return (block_->*getFloat16_)(this, index);
 }
 
 /////////////////////////////////

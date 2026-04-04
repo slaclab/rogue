@@ -66,6 +66,14 @@ class ModelVariableDevice(pr.Device):
             mode="RW",
         ))
 
+        self.add(pr.RemoteVariable(
+            name="Float16Var",
+            offset=0x28,
+            bitSize=16,
+            base=pr.Float16,
+            mode="RW",
+        ))
+
         # Keep the fixed-point cases on real RemoteVariables so the tests hit
         # the block/model conversion path that application code actually uses.
         self.add(pr.RemoteVariable(
@@ -123,6 +131,7 @@ def test_remote_variables_round_trip_model_backed_values():
         root.Dev.StringVar.set("abc")
         root.Dev.FloatVar.set(1.25)
         root.Dev.DoubleVar.set(2.5)
+        root.Dev.Float16Var.set(1.25)
         root.Dev.FixedVar.set(1.5)
         root.Dev.UFixedVar.set(2.25)
 
@@ -138,6 +147,8 @@ def test_remote_variables_round_trip_model_backed_values():
         assert root.Dev.FloatVar.typeStr == "Float32"
         assert math.isclose(root.Dev.DoubleVar.get(), 2.5, rel_tol=0.0, abs_tol=1e-12)
         assert root.Dev.DoubleVar.typeStr == "Double64"
+        assert math.isclose(root.Dev.Float16Var.get(), 1.25, rel_tol=0.0, abs_tol=1e-3)
+        assert root.Dev.Float16Var.typeStr == "Float16"
         assert math.isclose(root.Dev.FixedVar.get(), 1.5, rel_tol=0.0, abs_tol=1e-6)
         assert root.Dev.FixedVar.typeStr == "Fixed_16_4"
         assert math.isclose(root.Dev.UFixedVar.get(), 2.25, rel_tol=0.0, abs_tol=1e-6)
@@ -157,3 +168,23 @@ def test_remote_variable_metadata_exposes_model_constraints():
         assert root.Dev.FixedVar._base.signed is True
         assert root.Dev.UFixedVar._base.binPoint == 4
         assert root.Dev.UFixedVar._base.signed is False
+
+
+def test_float16_remote_variable_boundary_values():
+    with ModelVariableRoot() as root:
+        # Zero
+        root.Dev.Float16Var.set(0.0)
+        assert root.Dev.Float16Var.get() == 0.0
+
+        # Max representable half-precision value
+        root.Dev.Float16Var.set(65504.0)
+        assert math.isclose(root.Dev.Float16Var.get(), 65504.0, rel_tol=0.0, abs_tol=1.0)
+
+        # Negative max
+        root.Dev.Float16Var.set(-65504.0)
+        assert math.isclose(root.Dev.Float16Var.get(), -65504.0, rel_tol=0.0, abs_tol=1.0)
+
+        # Small value (tests subnormal handling through the C++ path)
+        root.Dev.Float16Var.set(0.0001)
+        result = root.Dev.Float16Var.get()
+        assert math.isclose(result, 0.0001, rel_tol=0.1)

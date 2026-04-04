@@ -781,6 +781,93 @@ class DoubleBE(Double):
     fstring = '!d'
 
 
+class Float16(Model):
+    """Model class for 16-bit half-precision floating point numbers.
+
+    Parameters
+    ----------
+    bitSize : int
+        Number of bits being represented. Must be 16.
+    """
+
+    defaultdisp = '{:f}'
+    pytype      = float
+    fstring     = 'e'
+    modelId     = rim.Float16
+
+    def __init__(self, bitSize: int) -> None:
+        """Initialize 16-bit float model metadata."""
+        assert bitSize == 16, f"The bitSize param of Model {self.__class__.__name__} must be 16"
+        super().__init__(bitSize)
+        self.name = 'Float16'
+        self.ndType = np.dtype(np.float16)
+
+    def toBytes(self, value: float) -> bytearray:
+        """
+        Convert a python float value to a byte array.
+
+        Parameters
+        ----------
+        value : float
+            Python float value to convert.
+
+        Returns
+        -------
+        bytearray
+            Byte array representation of the value.
+
+        """
+        return bytearray(struct.pack(self.fstring, value))
+
+    def fromBytes(self, ba: bytes) -> float:
+        """
+        Convert a byte array to a python float value.
+
+        Parameters
+        ----------
+        ba : bytes
+            Byte array to extract value from.
+
+        Returns
+        -------
+        float
+            Python value.
+
+        """
+        return struct.unpack(self.fstring, ba)[0]
+
+    def fromString(self, string: str) -> float:
+        """
+        Convert a string to a python float value.
+
+        Parameters
+        ----------
+        string : str
+            String representation of the value.
+
+        Returns
+        -------
+        float
+            Python value.
+        """
+        return float(string)
+
+    def minValue(self) -> float:
+        """Return the minimum 16-bit float (-65504). """
+        return -65504.0
+
+    def maxValue(self) -> float:
+        """Return the maximum 16-bit float (65504). """
+        return 65504.0
+
+
+class Float16BE(Float16):
+    """Model class for 16-bit floats stored as big endian"""
+
+    endianness = 'big'
+    fstring = '!e'
+
+
 class Fixed(Model):
     """
     Model class for fixed point signed integers

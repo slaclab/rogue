@@ -247,6 +247,16 @@ class Variable {
     double (rogue::interfaces::memory::Block::*getDouble_)(rogue::interfaces::memory::Variable*, int32_t index);
 
     /////////////////////////////////
+    // C++ Float16 (half-precision)
+    /////////////////////////////////
+
+    void (rogue::interfaces::memory::Block::*setFloat16_)(const float&,
+                                                          rogue::interfaces::memory::Variable*,
+                                                          int32_t index);
+
+    float (rogue::interfaces::memory::Block::*getFloat16_)(rogue::interfaces::memory::Variable*, int32_t index);
+
+    /////////////////////////////////
     // C++ filed point
     /////////////////////////////////
 
@@ -781,6 +791,35 @@ class Variable {
     void getValue(float& valueRet, int32_t index = -1) {
         valueRet = getFloat(index);
     }
+
+    /////////////////////////////////
+    // C++ Float16 (half-precision)
+    /////////////////////////////////
+
+    /**
+     * @brief Sets half-precision float value.
+     *
+     * @details
+     * Valid when this variable is configured for half-precision conversion.
+     * Converts float to 16-bit half-precision, stages bytes and issues a
+     * write/verify transaction through the parent block.
+     *
+     * @param value Input value (converted to half-precision).
+     * @param index Value index, or `-1` for the full variable.
+     */
+    void setFloat16(float& value, int32_t index = -1);
+
+    /**
+     * @brief Gets half-precision float value.
+     *
+     * @details
+     * Issues a read transaction through the parent block, then converts staged
+     * 16-bit half-precision bytes to `float`.
+     *
+     * @param index Value index, or `-1` for the full variable.
+     * @return Float value converted from half-precision.
+     */
+    float getFloat16(int32_t index = -1);
 
     /////////////////////////////////
     // C++ double
