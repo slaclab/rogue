@@ -1898,28 +1898,20 @@ float float6ToFloat(uint8_t f6) {
     // Mask to 6 bits (upper 2 bits of byte are unused)
     f6 &= 0x3F;
 
-    uint32_t sign     = (static_cast<uint32_t>(f6) & 0x20) << 26;  // bit 5 -> bit 31
+    float sign = (f6 & 0x20) ? -1.0f : 1.0f;
     uint32_t exponent = (f6 >> 2) & 0x07;
     uint32_t mantissa = f6 & 0x03;
 
-    uint32_t f;
     if (exponent == 0) {
         if (mantissa == 0) {
-            f = sign;  // zero
-        } else {
-            // Subnormal: normalize
-            exponent = 1;
-            while (!(mantissa & 0x02)) { mantissa <<= 1; exponent--; }
-            mantissa &= 0x01;
-            f = sign | (static_cast<uint32_t>(exponent + 127 - 3) << 23) | (mantissa << 21);
+            return sign * 0.0f;  // +/- zero
         }
-    } else {
-        f = sign | (static_cast<uint32_t>(exponent + 127 - 3) << 23) | (mantissa << 21);
+        // Subnormal: value = sign * mantissa/4 * 2^(1-3) = sign * mantissa * 2^(-4)
+        return sign * static_cast<float>(mantissa) * 0.0625f;  // 0.0625 = 2^(-4)
     }
-
-    float result;
-    std::memcpy(&result, &f, sizeof(result));
-    return result;
+    // Normal: value = sign * (1 + mantissa/4) * 2^(exponent-3)
+    float frac = 1.0f + static_cast<float>(mantissa) / 4.0f;
+    return sign * std::ldexp(frac, static_cast<int>(exponent) - 3);
 }
 
 }  // anonymous namespace
