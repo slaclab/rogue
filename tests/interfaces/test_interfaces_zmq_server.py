@@ -91,6 +91,7 @@ def test_zmq_server_operation_request_and_string_paths(monkeypatch, capsys):
     result = pickle.loads(server._doRequest(unpicklable_request))
     assert type(result) is Exception
     assert "Boost.Python.ArgumentError" in str(result)
+    assert "bad argument" in str(result)
 
     assert server._doString(json.dumps({"path": "root.Node", "attr": "value"})) == "node-value"
     assert server._doString(json.dumps({"path": "root.Node", "attr": "multiply", "args": [2], "kwargs": {"rhs": 4}})) == "8"
