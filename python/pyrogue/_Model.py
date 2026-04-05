@@ -1196,6 +1196,109 @@ class Float6BE(Float6):
     endianness = 'big'
 
 
+class Float4(Model):
+    """Model class for 4-bit E2M1 floating point numbers (NVIDIA Blackwell FP4).
+
+    Parameters
+    ----------
+    bitSize : int
+        Number of bits being represented. Must be 8 (stored in 1-byte word).
+
+    Notes
+    -----
+    Format: 1 sign bit, 2 exponent bits, 1 mantissa bit (E2M1).
+    Bias = 1. No infinity representation. No NaN representation.
+    All 16 bit patterns are finite values or zero.
+    Only 8 distinct magnitudes: 0, 0.5, 1.0, 1.5, 2.0, 3.0, 4.0, 6.0.
+    Maximum representable value is 6.0.
+    Stored in lower 4 bits of a uint8_t byte.
+    Supported by NVIDIA Blackwell GPUs.
+    """
+
+    defaultdisp = '{:f}'
+    pytype      = float
+    modelId     = rim.Float4
+
+    def __init__(self, bitSize: int) -> None:
+        """Initialize 4-bit E2M1 float model metadata."""
+        assert bitSize == 8, f"The bitSize param of Model {self.__class__.__name__} must be 8"
+        super().__init__(bitSize)
+        self.name = 'Float4'
+        self.ndType = np.dtype(np.float32)
+
+    def toBytes(self, value: float) -> bytearray:
+        """Convert float to 1-byte E2M1 encoding (4 active bits in uint8).
+
+        NaN and infinity inputs are clamped to max finite value (+/-6.0)
+        since E2M1 has no NaN or infinity encodings.
+        """
+        import math
+        v = float(value)
+        if math.isnan(v) or math.isinf(v):
+            # E2M1 has no NaN/Inf -- clamp to max finite
+            sign = 0x08 if (math.isinf(v) and v < 0) else 0x00
+            if math.isnan(v):
+                sign = 0x00  # positive max for NaN
+            return bytearray([sign | 0x07])
+        # Get float32 bit pattern
+        bits = struct.unpack('I', struct.pack('f', v))[0]
+        sign = (bits >> 28) & 0x08
+        exp32 = (bits >> 23) & 0xFF
+        mant32 = bits & 0x7FFFFF
+        # Rebias exponent: float32 bias=127, E2M1 bias=1
+        exp4 = exp32 - 127 + 1
+        if exp32 == 0xFF:
+            # float32 special values -- clamp to max finite
+            return bytearray([sign | 0x07])
+        if exp4 > 3:
+            # Overflow -- clamp to max finite
+            return bytearray([sign | 0x07])
+        if exp4 <= 0:
+            # Subnormal or underflow
+            if exp4 < -1:
+                return bytearray([sign])  # flush to zero
+            mant32 |= 0x800000
+            shift = 1 - exp4
+            mant32 >>= shift
+            return bytearray([sign | ((mant32 >> 22) & 0x01)])
+        return bytearray([sign | (exp4 << 1) | ((mant32 >> 22) & 0x01)])
+
+    def fromBytes(self, ba: bytes) -> float:
+        """Decode 1-byte E2M1 encoding to float.
+
+        All 16 bit patterns decode to finite values or zero (no NaN/Inf).
+        """
+        f4 = ba[0] & 0x0F  # mask to 4 bits
+        sign = -1.0 if (f4 & 0x08) else 1.0
+        exponent = (f4 >> 1) & 0x03
+        mantissa = f4 & 0x01
+        if exponent == 0:
+            if mantissa == 0:
+                return 0.0 if sign > 0 else -0.0
+            # Subnormal: value = sign * mantissa * 0.5 (only one subnormal: +/-0.5)
+            return sign * mantissa * 0.5
+        # Normal: value = sign * (1 + mantissa/2) * 2^(exponent-1)
+        return sign * (1.0 + mantissa / 2.0) * (2.0 ** (exponent - 1))
+
+    def fromString(self, string: str) -> float:
+        """Parse a string into a float value."""
+        return float(string)
+
+    def minValue(self) -> float:
+        """Return the minimum representable value (-6.0)."""
+        return -6.0
+
+    def maxValue(self) -> float:
+        """Return the maximum representable value (6.0)."""
+        return 6.0
+
+
+class Float4BE(Float4):
+    """Model class for 4-bit E2M1 floats stored as big endian."""
+
+    endianness = 'big'
+
+
 class Fixed(Model):
     """
     Model class for fixed point signed integers
