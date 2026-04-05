@@ -90,6 +90,14 @@ class ModelVariableDevice(pr.Device):
             mode="RW",
         ))
 
+        self.add(pr.RemoteVariable(
+            name="TF32Var",
+            offset=0x34,
+            bitSize=32,
+            base=pr.TensorFloat32,
+            mode="RW",
+        ))
+
         # Keep the fixed-point cases on real RemoteVariables so the tests hit
         # the block/model conversion path that application code actually uses.
         self.add(pr.RemoteVariable(
@@ -150,6 +158,7 @@ def test_remote_variables_round_trip_model_backed_values():
         root.Dev.Float16Var.set(1.25)
         root.Dev.Float8Var.set(1.0)
         root.Dev.BFloat16Var.set(1.0)
+        root.Dev.TF32Var.set(1.25)
         root.Dev.FixedVar.set(1.5)
         root.Dev.UFixedVar.set(2.25)
 
@@ -171,6 +180,8 @@ def test_remote_variables_round_trip_model_backed_values():
         assert root.Dev.Float8Var.typeStr == "Float8"
         assert math.isclose(root.Dev.BFloat16Var.get(), 1.0, rel_tol=0.0, abs_tol=0.01)
         assert root.Dev.BFloat16Var.typeStr == "BFloat16"
+        assert math.isclose(root.Dev.TF32Var.get(), 1.25, rel_tol=0.0, abs_tol=0.01)
+        assert root.Dev.TF32Var.typeStr == "TensorFloat32"
         assert math.isclose(root.Dev.FixedVar.get(), 1.5, rel_tol=0.0, abs_tol=1e-6)
         assert root.Dev.FixedVar.typeStr == "Fixed_16_4"
         assert math.isclose(root.Dev.UFixedVar.get(), 2.25, rel_tol=0.0, abs_tol=1e-6)
