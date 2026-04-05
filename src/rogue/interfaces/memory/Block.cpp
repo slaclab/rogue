@@ -2014,7 +2014,7 @@ void rim::Block::setFixed(const double& val, rim::Variable* var, int32_t index) 
 
     // Compute representable range in integer domain (use 1ULL to avoid UB for 64-bit widths)
     int64_t maxInt = static_cast<int64_t>((1ULL << (var->valueBits_ - 1)) - 1);
-    int64_t minInt = -static_cast<int64_t>(1ULL << (var->valueBits_ - 1));
+    int64_t minInt = -maxInt - 1;
 
     // Check for overflow (rounding may push value beyond representable range)
     if (fPoint > maxInt || fPoint < minInt)
