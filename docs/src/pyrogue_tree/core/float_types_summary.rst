@@ -34,7 +34,7 @@ Format Details
 .. note::
 
    Each type also has a big-endian variant (e.g., ``Float4BE``, ``Float6BE``,
-   ``Float8BE``, ``FloatBE``, ``BFloat16BE``, ``TensorFloat32BE``) for
+   ``Float8BE``, ``Float16BE``, ``FloatBE``, ``BFloat16BE``, ``TensorFloat32BE``) for
    registers with big-endian byte order.
 
 Special Value Handling

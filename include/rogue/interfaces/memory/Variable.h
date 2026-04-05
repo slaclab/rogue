@@ -307,7 +307,7 @@ class Variable {
     float (rogue::interfaces::memory::Block::*getFloat4_)(rogue::interfaces::memory::Variable*, int32_t index);
 
     /////////////////////////////////
-    // C++ filed point
+    // C++ fixed point
     /////////////////////////////////
 
     void (rogue::interfaces::memory::Block::*setFixed_)(const double&,
