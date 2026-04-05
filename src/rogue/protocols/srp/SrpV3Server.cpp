@@ -24,6 +24,7 @@
 #include <cstring>
 #include <memory>
 #include <utility>
+#include <vector>
 
 #include "rogue/GilRelease.h"
 #include "rogue/Logging.h"
@@ -151,13 +152,19 @@ void rps::SrpV3Server::writeMemory(uint64_t address, const uint8_t* data, uint32
 
         if (size4k > size) size4k = size;
 
-        if (memMap_.find(addr4k) == memMap_.end()) {
-            memMap_.insert(std::make_pair(addr4k, reinterpret_cast<uint8_t*>(calloc(1, 0x1000))));
+        auto it = memMap_.find(addr4k);
+        if (it == memMap_.end()) {
+            uint8_t* page = reinterpret_cast<uint8_t*>(calloc(1, 0x1000));
+            if (page == nullptr) {
+                log_->error("Failed to allocate page at 0x%" PRIx64, addr4k);
+                return;
+            }
+            it = memMap_.insert(std::make_pair(addr4k, page)).first;
             totAlloc_++;
             log_->debug("Allocating page at 0x%" PRIx64 ". Total pages %" PRIu32, addr4k, totAlloc_);
         }
 
-        memcpy(memMap_[addr4k] + off4k, data, size4k);
+        memcpy(it->second + off4k, data, size4k);
 
         size -= size4k;
         address += size4k;
@@ -242,12 +249,11 @@ void rps::SrpV3Server::processFrame(ris::FramePtr frame) {
             // Re-lock and read write data from frame
             frLock = frame->lock();
             fIter  = frame->begin() + HeadLen;
-            uint8_t* wrData = new uint8_t[reqSize];
-            ris::fromFrame(fIter, reqSize, wrData);
+            std::vector<uint8_t> wrData(reqSize);
+            ris::fromFrame(fIter, reqSize, wrData.data());
             frLock.reset();
 
-            writeMemory(address, wrData, reqSize);
-            delete[] wrData;
+            writeMemory(address, wrData.data(), reqSize);
 
             log_->debug("Write complete id=%" PRIu32 ", addr=0x%" PRIx64 ", size=%" PRIu32, id, address, reqSize);
         }
@@ -265,10 +271,9 @@ void rps::SrpV3Server::processFrame(ris::FramePtr frame) {
         ris::toFrame(rIter, HeadLen, header);
 
         // Write data payload (read from internal memory)
-        uint8_t* rdData = new uint8_t[reqSize];
-        readMemory(address, rdData, reqSize);
-        ris::toFrame(rIter, reqSize, rdData);
-        delete[] rdData;
+        std::vector<uint8_t> rdData(reqSize);
+        readMemory(address, rdData.data(), reqSize);
+        ris::toFrame(rIter, reqSize, rdData.data());
 
         // Write tail (status = 0 = success)
         tail[0] = 0;
