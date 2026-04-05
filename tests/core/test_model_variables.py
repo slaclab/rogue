@@ -239,7 +239,15 @@ def test_float16_remote_variable_boundary_values():
         root.Dev.Float16Var.set(-65504.0)
         assert math.isclose(root.Dev.Float16Var.get(), -65504.0, rel_tol=0.0, abs_tol=1.0)
 
-        # Small value (tests subnormal handling through the C++ path)
+        # Small normal value near the half-precision minimum normal range
         root.Dev.Float16Var.set(0.0001)
         result = root.Dev.Float16Var.get()
         assert math.isclose(result, 0.0001, rel_tol=0.1)
+
+        # Smallest positive half-precision subnormal (2**-24) exercises the
+        # floatToHalf/halfToFloat denormal conversion path in the C++ Block code.
+        subnormal = 2 ** -24
+        root.Dev.Float16Var.set(subnormal)
+        result = root.Dev.Float16Var.get()
+        assert result > 0.0
+        assert math.isclose(result, subnormal, rel_tol=0.0, abs_tol=subnormal)

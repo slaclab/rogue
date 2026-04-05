@@ -1737,11 +1737,15 @@ uint16_t floatToHalf(float value) {
     if (exponent <= 0) {
         if (exponent < -10) return sign;
         mantissa |= 0x800000;
-        uint32_t shift = 14 - exponent;
-        mantissa >>= shift;
-        return sign | (mantissa >> 13);
+        uint32_t shift    = 14 - exponent;
+        uint32_t halfMant = mantissa >> shift;
+        return sign | static_cast<uint16_t>(halfMant);
     } else if (exponent == 0xFF - 127 + 15) {
-        if (mantissa) return sign | 0x7C00 | (mantissa >> 13);
+        if (mantissa) {
+            uint16_t halfMantissa = static_cast<uint16_t>(mantissa >> 13);
+            if (halfMantissa == 0) halfMantissa = 0x0001;
+            return sign | 0x7C00 | halfMantissa;
+        }
         return sign | 0x7C00;
     } else if (exponent > 30) {
         return sign | 0x7C00;
@@ -1759,13 +1763,13 @@ float halfToFloat(uint16_t h) {
         if (mantissa == 0) {
             f = sign;
         } else {
-            exponent = 1;
+            int32_t exponentWork = 1;
             while (!(mantissa & 0x400)) {
                 mantissa <<= 1;
-                exponent--;
+                exponentWork--;
             }
             mantissa &= 0x3FF;
-            f = sign | ((exponent + 127 - 15) << 23) | (mantissa << 13);
+            f = sign | (static_cast<uint32_t>(exponentWork + 127 - 15) << 23) | (mantissa << 13);
         }
     } else if (exponent == 31) {
         f = sign | 0x7F800000 | (mantissa << 13);

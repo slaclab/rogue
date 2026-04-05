@@ -238,6 +238,10 @@ rim::Variable::Variable(std::string name,
     getString_    = NULL;
     setFloat_     = NULL;
     getFloat_     = NULL;
+    setFloat16_   = NULL;
+    getFloat16_   = NULL;
+    setFloat8_    = NULL;
+    getFloat8_    = NULL;
     setDouble_    = NULL;
     getDouble_    = NULL;
     setFixed_     = NULL;
