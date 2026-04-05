@@ -10,7 +10,6 @@
 #-----------------------------------------------------------------------------
 
 import pyrogue as pr
-import rogue.interfaces.memory
 import rogue.protocols.srp
 import pytest
 

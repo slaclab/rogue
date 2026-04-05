@@ -1,8 +1,8 @@
 .. _protocols_srp_srpV3Server:
 
-============================
+=============================
 SRP Protocol Version 3 Server
-============================
+=============================
 
 For CI regression testing of the SRPv3 protocol path, Rogue provides
 ``rogue.protocols.srp.SrpV3Server``. ``SrpV3Server`` emulates a hardware
