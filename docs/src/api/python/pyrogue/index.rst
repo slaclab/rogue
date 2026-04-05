@@ -62,6 +62,7 @@ Models
    float
    float16
    float8
+   bfloat16
    double
    fixed
    ufixed
