@@ -141,6 +141,13 @@ static const uint8_t Fixed = 0x08;
 static const uint8_t Float16 = 0x09;
 
 /**
+ * @brief Block access type for 8-bit E4M3 floating-point data.
+ *
+ * @details Exposed to Python as `rogue.interfaces.memory.Float8`.
+ */
+static const uint8_t Float8 = 0x0A;
+
+/**
  * @brief Block access type for custom handlers.
  *
  * @details Exposed to Python as `rogue.interfaces.memory.Custom`.
