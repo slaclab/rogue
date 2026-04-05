@@ -1825,11 +1825,12 @@ float float8ToFloat(uint8_t f8) {
         if (mantissa == 0) {
             f = sign;  // zero
         } else {
-            // Subnormal: normalize
-            exponent = 1;
-            while (!(mantissa & 0x04)) { mantissa <<= 1; exponent--; }
-            mantissa &= 0x03;
-            f = sign | (static_cast<uint32_t>(exponent + 127 - 7) << 23) | (mantissa << 20);
+            // Subnormal: shift left until the implicit leading 1 reaches bit 3,
+            // then strip it. Use int32_t so exponentWork can go negative safely.
+            int32_t exponentWork = 1;
+            while (!(mantissa & 0x08)) { mantissa <<= 1; exponentWork--; }
+            mantissa &= 0x07;
+            f = sign | (static_cast<uint32_t>(exponentWork + 127 - 7) << 23) | (mantissa << 20);
         }
     } else {
         f = sign | (static_cast<uint32_t>(exponent + 127 - 7) << 23) | (mantissa << 20);

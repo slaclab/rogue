@@ -142,7 +142,15 @@ def test_float8_remote_variable_boundary_values():
         root.Dev.Float8Var.set(-448.0)
         assert math.isclose(root.Dev.Float8Var.get(), -448.0, rel_tol=0.0, abs_tol=1.0)
 
-        # Small value (tests subnormal handling through C++ path)
+        # Smallest normal value 2^(-6)
         root.Dev.Float8Var.set(0.015625)
         result = root.Dev.Float8Var.get()
         assert math.isclose(result, 0.015625, rel_tol=0.1)
+
+        # Smallest positive Float8 subnormal (mantissa=1, exponent=0) = 2^(-9)
+        # exercises the float8ToFloat denormal conversion path in the C++ Block code.
+        subnormal = 2 ** -9
+        root.Dev.Float8Var.set(subnormal)
+        result = root.Dev.Float8Var.get()
+        assert result > 0.0
+        assert math.isclose(result, subnormal, rel_tol=0.0, abs_tol=subnormal)
