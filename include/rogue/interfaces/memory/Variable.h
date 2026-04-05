@@ -287,6 +287,16 @@ class Variable {
     float (rogue::interfaces::memory::Block::*getTensorFloat32_)(rogue::interfaces::memory::Variable*, int32_t index);
 
     /////////////////////////////////
+    // C++ Float6 (E3M2)
+    /////////////////////////////////
+
+    void (rogue::interfaces::memory::Block::*setFloat6_)(const float&,
+                                                         rogue::interfaces::memory::Variable*,
+                                                         int32_t index);
+
+    float (rogue::interfaces::memory::Block::*getFloat6_)(rogue::interfaces::memory::Variable*, int32_t index);
+
+    /////////////////////////////////
     // C++ filed point
     /////////////////////////////////
 
@@ -937,6 +947,35 @@ class Variable {
      * @return Float value converted from TensorFloat32.
      */
     float getTensorFloat32(int32_t index = -1);
+
+    /////////////////////////////////
+    // C++ Float6 (E3M2)
+    /////////////////////////////////
+
+    /**
+     * @brief Sets 6-bit E3M2 float value.
+     *
+     * @details
+     * Valid when this variable is configured for E3M2 conversion.
+     * Converts float to 6-bit E3M2, stages bytes and issues a
+     * write/verify transaction through the parent block.
+     *
+     * @param value Input value (converted to E3M2).
+     * @param index Value index, or `-1` for the full variable.
+     */
+    void setFloat6(float& value, int32_t index = -1);
+
+    /**
+     * @brief Gets 6-bit E3M2 float value.
+     *
+     * @details
+     * Issues a read transaction through the parent block, then converts staged
+     * 6-bit E3M2 bytes to `float`.
+     *
+     * @param index Value index, or `-1` for the full variable.
+     * @return Float value converted from E3M2.
+     */
+    float getFloat6(int32_t index = -1);
 
     /////////////////////////////////
     // C++ double
