@@ -1851,6 +1851,21 @@ float bfloat16ToFloat(uint16_t bf16) {
     return result;
 }
 
+// TensorFloat32: 1s / 8e / 10m, bias=127, same exponent as float32
+// Stored in 4 bytes; lower 13 mantissa bits are zeroed.
+
+uint32_t floatToTensorFloat32(float value) {
+    uint32_t f;
+    std::memcpy(&f, &value, sizeof(f));
+    return f & 0xFFFFE000U;
+}
+
+float tensorFloat32ToFloat(uint32_t tf32) {
+    float result;
+    std::memcpy(&result, &tf32, sizeof(result));
+    return result;
+}
+
 }  // anonymous namespace
 
 //////////////////////////////////////////
@@ -2284,6 +2299,146 @@ float rim::Block::getBFloat16(rim::Variable* var, int32_t index) {
     getBytes(reinterpret_cast<uint8_t*>(&tmp), var, index);
 
     return bfloat16ToFloat(tmp);
+}
+
+//////////////////////////////////////////
+// TensorFloat32 (NVIDIA TF32)
+//////////////////////////////////////////
+
+#ifndef NO_PYTHON
+
+// Set data using TensorFloat32
+void rim::Block::setTensorFloat32Py(bp::object& value, rim::Variable* var, int32_t index) {
+    uint32_t x;
+
+    if (index == -1) index = 0;
+
+    // Passed value is a numpy value
+    if (PyArray_Check(value.ptr())) {
+        // Cast to an array object and check that the numpy array
+        PyArrayObject* arr = reinterpret_cast<decltype(arr)>(value.ptr());
+        npy_intp ndims     = PyArray_NDIM(arr);
+        npy_intp* dims     = PyArray_SHAPE(arr);
+        npy_intp* strides  = PyArray_STRIDES(arr);
+
+        if (ndims != 1)
+            throw(rogue::GeneralError::create("Block::setTensorFloat32Py",
+                                              "Invalid number of dimensions (%" PRIu32 ") for passed ndarray for %s",
+                                              ndims,
+                                              var->name_.c_str()));
+
+        if ((index + dims[0]) > var->numValues_)
+            throw(rogue::GeneralError::create("Block::setTensorFloat32Py",
+                                              "Overflow error for passed array with length %" PRIu32
+                                              " at index %" PRIi32 ". Variable length = %" PRIu32 " for %s",
+                                              dims[0],
+                                              index,
+                                              var->numValues_,
+                                              var->name_.c_str()));
+
+        if (PyArray_TYPE(arr) == NPY_FLOAT) {
+            float* src          = reinterpret_cast<float*>(PyArray_DATA(arr));
+            npy_intp stride     = strides[0] / sizeof(float);
+            for (x = 0; x < dims[0]; x++) {
+                float val = src[x * stride];
+                setTensorFloat32(val, var, index + x);
+            }
+        } else {
+            throw(rogue::GeneralError::create("Block::setTensorFloat32Py",
+                                              "Passed nparray is not of type (float32) for %s",
+                                              var->name_.c_str()));
+        }
+
+        // Is passed value a list
+    } else if (PyList_Check(value.ptr())) {
+        bp::list vl   = bp::extract<bp::list>(value);
+        uint32_t vlen = len(vl);
+
+        if ((index + vlen) > var->numValues_)
+            throw(rogue::GeneralError::create("Block::setTensorFloat32Py",
+                                              "Overflow error for passed array with length %" PRIu32
+                                              " at index %" PRIi32 ". Variable length = %" PRIu32 " for %s",
+                                              vlen,
+                                              index,
+                                              var->numValues_,
+                                              var->name_.c_str()));
+
+        for (x = 0; x < vlen; x++) {
+            bp::extract<float> tmp(vl[x]);
+
+            if (!tmp.check())
+                throw(rogue::GeneralError::create("Block::setTensorFloat32Py",
+                                                  "Failed to extract value for %s.",
+                                                  var->name_.c_str()));
+
+            setTensorFloat32(tmp, var, index + x);
+        }
+
+    } else {
+        bp::extract<float> tmp(value);
+
+        if (!tmp.check())
+            throw(rogue::GeneralError::create("Block::setTensorFloat32Py",
+                                              "Failed to extract value for %s.",
+                                              var->name_.c_str()));
+
+        setTensorFloat32(tmp, var, index);
+    }
+}
+
+// Get data using TensorFloat32
+bp::object rim::Block::getTensorFloat32Py(rim::Variable* var, int32_t index) {
+    bp::object ret;
+    uint32_t x;
+
+    // Unindexed with a list variable
+    if (index < 0 && var->numValues_ > 0) {
+        npy_intp dims[1]   = {var->numValues_};
+        PyObject* obj      = PyArray_SimpleNew(1, dims, NPY_FLOAT);
+        PyArrayObject* arr = reinterpret_cast<PyArrayObject*>(obj);
+        float* dst         = reinterpret_cast<float*>(PyArray_DATA(arr));
+
+        for (x = 0; x < var->numValues_; x++) dst[x] = getTensorFloat32(var, x);
+
+        boost::python::handle<> handle(obj);
+        ret = bp::object(handle);
+
+    } else {
+        PyObject* val = Py_BuildValue("f", getTensorFloat32(var, index));
+
+        if (val == NULL) throw(rogue::GeneralError::create("Block::getTensorFloat32Py", "Failed to generate TensorFloat32"));
+
+        bp::handle<> handle(val);
+        ret = bp::object(handle);
+    }
+    return ret;
+}
+
+#endif
+
+// Set data using TensorFloat32
+void rim::Block::setTensorFloat32(const float& val, rim::Variable* var, int32_t index) {
+    // Check range
+    if ((var->minValue_ != 0 || var->maxValue_ != 0) && (val > var->maxValue_ || val < var->minValue_))
+        throw(rogue::GeneralError::create("Block::setTensorFloat32",
+                                          "Value range error for %s. Value=%f, Min=%f, Max=%f",
+                                          var->name_.c_str(),
+                                          val,
+                                          var->minValue_,
+                                          var->maxValue_));
+
+    // Convert float to TensorFloat32 and store as 4 bytes
+    uint32_t tf32 = floatToTensorFloat32(val);
+    setBytes(reinterpret_cast<uint8_t*>(&tf32), var, index);
+}
+
+// Get data using TensorFloat32
+float rim::Block::getTensorFloat32(rim::Variable* var, int32_t index) {
+    uint32_t tmp = 0;
+
+    getBytes(reinterpret_cast<uint8_t*>(&tmp), var, index);
+
+    return tensorFloat32ToFloat(tmp);
 }
 
 //////////////////////////////////////////

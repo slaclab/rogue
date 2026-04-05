@@ -943,6 +943,51 @@ class Block : public Master {
     float getBFloat16(rogue::interfaces::memory::Variable* var, int32_t index);
 
     //////////////////////////////////////////
+    // TensorFloat32 (NVIDIA TF32)
+    //////////////////////////////////////////
+
+#ifndef NO_PYTHON
+
+    /**
+     * @brief Sets TensorFloat32 variable data from Python input.
+     *
+     * @param value Python source value.
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     */
+    void setTensorFloat32Py(boost::python::object& value,
+                            rogue::interfaces::memory::Variable* var, int32_t index);
+
+    /**
+     * @brief Gets TensorFloat32 variable data as Python output.
+     *
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     * @return Python object containing float value.
+     */
+    boost::python::object getTensorFloat32Py(rogue::interfaces::memory::Variable* var, int32_t index);
+
+#endif
+
+    /**
+     * @brief Sets TensorFloat32 variable data from C++ input.
+     *
+     * @param value Source float value (converted to TF32 for storage).
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     */
+    void setTensorFloat32(const float& value, rogue::interfaces::memory::Variable* var, int32_t index);
+
+    /**
+     * @brief Gets TensorFloat32 variable data as C++ output.
+     *
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     * @return Float value converted from TensorFloat32.
+     */
+    float getTensorFloat32(rogue::interfaces::memory::Variable* var, int32_t index);
+
+    //////////////////////////////////////////
     // Double
     //////////////////////////////////////////
 

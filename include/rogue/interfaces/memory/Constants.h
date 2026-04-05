@@ -155,6 +155,13 @@ static const uint8_t Float8 = 0x0A;
 static const uint8_t BFloat16 = 0x0B;
 
 /**
+ * @brief Block access type for TensorFloat32 (NVIDIA TF32) data.
+ *
+ * @details Exposed to Python as `rogue.interfaces.memory.TensorFloat32`.
+ */
+static const uint8_t TensorFloat32 = 0x0C;
+
+/**
  * @brief Block access type for custom handlers.
  *
  * @details Exposed to Python as `rogue.interfaces.memory.Custom`.
