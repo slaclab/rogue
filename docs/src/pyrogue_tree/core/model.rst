@@ -81,7 +81,7 @@ Common built-in Models include:
 * Integer: ``UInt``, ``UIntBE``, ``UIntReversed``, ``Int``, ``IntBE``
 * Boolean: ``Bool``
 * Text: ``String``
-* Floating point: ``Float``, ``FloatBE``, ``Double``, ``DoubleBE``
+* Floating point: ``Float``, ``FloatBE``, ``Float8``, ``Float8BE``, ``Double``, ``DoubleBE``
 * Fixed point: ``Fixed``, ``UFixed``
 * Custom Python conversion path: Models that use ``modelId = rim.PyFunc``
 
@@ -112,6 +112,10 @@ Built-In Model Types
 | :ref:`interfaces_memory_model_double`       | 64-bit float          | float             | 64-bits        |                                                |
 +---------------------------------------------+-----------------------+-------------------+----------------+------------------------------------------------+
 | :ref:`interfaces_memory_model_doublebe`     | 64-bit float          | float             | 64-bits        | Big endian                                     |
++---------------------------------------------+-----------------------+-------------------+----------------+------------------------------------------------+
+| Float8                                      | 8-bit E4M3 float      | float             | 8-bits         | NVIDIA FP8 (Hopper, Blackwell). No infinity.   |
++---------------------------------------------+-----------------------+-------------------+----------------+------------------------------------------------+
+| Float8BE                                    | 8-bit E4M3 float      | float             | 8-bits         | Big endian                                     |
 +---------------------------------------------+-----------------------+-------------------+----------------+------------------------------------------------+
 | :ref:`interfaces_memory_model_fixed`        | fixed point           | float             | unconstrained  | Fixed-point conversion                         |
 +---------------------------------------------+-----------------------+-------------------+----------------+------------------------------------------------+

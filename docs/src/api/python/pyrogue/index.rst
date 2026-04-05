@@ -61,6 +61,7 @@ Models
    string
    float
    float16
+   float8
    double
    fixed
    ufixed
