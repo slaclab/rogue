@@ -1027,6 +1027,73 @@ class BFloat16BE(BFloat16):
     endianness = 'big'
 
 
+class TensorFloat32(Model):
+    """Model class for 32-bit TensorFloat32 (NVIDIA TF32) numbers.
+
+    Parameters
+    ----------
+    bitSize : int
+        Number of bits being represented. Must be 32.
+
+    Notes
+    -----
+    Format: 1 sign bit, 8 exponent bits, 10 mantissa bits (1s/8e/10m).
+    Bias = 127. Same exponent range as float32. Stored in a 4-byte word
+    with the lower 13 mantissa bits zeroed. Supports infinity and NaN.
+    Maximum representable finite value is approximately 3.40e38.
+    Supported by NVIDIA Ampere (A100), Hopper (H100), and Blackwell GPUs.
+    """
+
+    defaultdisp = '{:f}'
+    pytype      = float
+    modelId     = rim.TensorFloat32
+
+    def __init__(self, bitSize: int) -> None:
+        """Initialize 32-bit TensorFloat32 model metadata."""
+        assert bitSize == 32, f"The bitSize param of Model {self.__class__.__name__} must be 32"
+        super().__init__(bitSize)
+        self.name = 'TensorFloat32'
+        self.ndType = np.dtype(np.float32)
+
+    def toBytes(self, value: float) -> bytearray:
+        """Convert float to 4-byte TensorFloat32 encoding.
+
+        TF32 zeros the lower 13 mantissa bits of the float32 bit pattern.
+        All special values (NaN, infinity, zero, subnormals) are preserved.
+        """
+        v = float(value)
+        bits = struct.unpack('I', struct.pack('f', v))[0]
+        tf32 = bits & 0xFFFFE000
+        return bytearray(struct.pack('<I', tf32))
+
+    def fromBytes(self, ba: bytes) -> float:
+        """Decode 4-byte TensorFloat32 encoding to float.
+
+        TF32 bit pattern is a valid float32 with lower 13 mantissa bits
+        zeroed. Direct reinterpretation as float32 is sufficient.
+        """
+        tf32 = struct.unpack('<I', ba[:4])[0]
+        return struct.unpack('f', struct.pack('I', tf32))[0]
+
+    def fromString(self, string: str) -> float:
+        """Parse a string into a float value."""
+        return float(string)
+
+    def minValue(self) -> float:
+        """Return the minimum representable finite TF32 value (~-3.40e38)."""
+        return -3.4011621342146535e+38
+
+    def maxValue(self) -> float:
+        """Return the maximum representable finite TF32 value (~3.40e38)."""
+        return 3.4011621342146535e+38
+
+
+class TensorFloat32BE(TensorFloat32):
+    """Model class for TensorFloat32 floats stored as big endian."""
+
+    endianness = 'big'
+
+
 class Fixed(Model):
     """
     Model class for fixed point signed integers
