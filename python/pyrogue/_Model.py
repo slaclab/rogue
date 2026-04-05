@@ -1094,6 +1094,108 @@ class TensorFloat32BE(TensorFloat32):
     endianness = 'big'
 
 
+class Float6(Model):
+    """Model class for 6-bit E3M2 floating point numbers (NVIDIA Blackwell FP6).
+
+    Parameters
+    ----------
+    bitSize : int
+        Number of bits being represented. Must be 8 (stored in 1-byte word).
+
+    Notes
+    -----
+    Format: 1 sign bit, 3 exponent bits, 2 mantissa bits (E3M2).
+    Bias = 3. No infinity representation. No NaN representation.
+    All 64 bit patterns are finite values or zero.
+    Maximum representable value is 28.0.
+    Stored in lower 6 bits of a uint8_t byte.
+    Supported by NVIDIA Blackwell GPUs.
+    """
+
+    defaultdisp = '{:f}'
+    pytype      = float
+    modelId     = rim.Float6
+
+    def __init__(self, bitSize: int) -> None:
+        """Initialize 6-bit E3M2 float model metadata."""
+        assert bitSize == 8, f"The bitSize param of Model {self.__class__.__name__} must be 8"
+        super().__init__(bitSize)
+        self.name = 'Float6'
+        self.ndType = np.dtype(np.float32)
+
+    def toBytes(self, value: float) -> bytearray:
+        """Convert float to 1-byte E3M2 encoding (6 active bits in uint8).
+
+        NaN and infinity inputs are clamped to max finite value (+/-28.0)
+        since E3M2 has no NaN or infinity encodings.
+        """
+        import math
+        v = float(value)
+        if math.isnan(v) or math.isinf(v):
+            # E3M2 has no NaN/Inf -- clamp to max finite
+            sign = 0x20 if (math.isinf(v) and v < 0) else 0x00
+            if math.isnan(v):
+                sign = 0x00  # positive max for NaN
+            return bytearray([sign | 0x1F])
+        # Get float32 bit pattern
+        bits = struct.unpack('I', struct.pack('f', v))[0]
+        sign = (bits >> 26) & 0x20
+        exp32 = (bits >> 23) & 0xFF
+        mant32 = bits & 0x7FFFFF
+        # Rebias exponent: float32 bias=127, E3M2 bias=3
+        exp6 = exp32 - 127 + 3
+        if exp32 == 0xFF:
+            # float32 special values -- clamp to max finite
+            return bytearray([sign | 0x1F])
+        if exp6 > 7:
+            # Overflow -- clamp to max finite
+            return bytearray([sign | 0x1F])
+        if exp6 <= 0:
+            # Subnormal or underflow
+            if exp6 < -2:
+                return bytearray([sign])  # flush to zero
+            mant32 |= 0x800000
+            shift = 1 - exp6
+            mant32 >>= shift
+            return bytearray([sign | ((mant32 >> 21) & 0x03)])
+        return bytearray([sign | (exp6 << 2) | ((mant32 >> 21) & 0x03)])
+
+    def fromBytes(self, ba: bytes) -> float:
+        """Decode 1-byte E3M2 encoding to float.
+
+        All 64 bit patterns decode to finite values or zero (no NaN/Inf).
+        """
+        f6 = ba[0] & 0x3F  # mask to 6 bits
+        sign = -1.0 if (f6 & 0x20) else 1.0
+        exponent = (f6 >> 2) & 0x07
+        mantissa = f6 & 0x03
+        if exponent == 0:
+            if mantissa == 0:
+                return 0.0 if sign > 0 else -0.0
+            # Subnormal: value = sign * mantissa/4 * 2^(1-3) = sign * mantissa * 2^(-4)
+            return sign * mantissa * (2.0 ** -4)
+        # Normal: value = sign * (1 + mantissa/4) * 2^(exponent-3)
+        return sign * (1.0 + mantissa / 4.0) * (2.0 ** (exponent - 3))
+
+    def fromString(self, string: str) -> float:
+        """Parse a string into a float value."""
+        return float(string)
+
+    def minValue(self) -> float:
+        """Return the minimum representable value (-28.0)."""
+        return -28.0
+
+    def maxValue(self) -> float:
+        """Return the maximum representable value (28.0)."""
+        return 28.0
+
+
+class Float6BE(Float6):
+    """Model class for 6-bit E3M2 floats stored as big endian."""
+
+    endianness = 'big'
+
+
 class Fixed(Model):
     """
     Model class for fixed point signed integers
