@@ -162,6 +162,13 @@ static const uint8_t BFloat16 = 0x0B;
 static const uint8_t TensorFloat32 = 0x0C;
 
 /**
+ * @brief Block access type for 6-bit E3M2 floating-point data.
+ *
+ * @details Exposed to Python as `rogue.interfaces.memory.Float6`.
+ */
+static const uint8_t Float6 = 0x0D;
+
+/**
  * @brief Block access type for custom handlers.
  *
  * @details Exposed to Python as `rogue.interfaces.memory.Custom`.
