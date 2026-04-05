@@ -87,3 +87,16 @@ def test_sub_device_inherits_membase():
     root.add(parent)
     with root:
         pass  # No error means child inherited memBase from parent
+
+
+class CustomRoot(pr.Root):
+    """Root subclass to verify _validateMemBase handles Root subclasses."""
+    pass
+
+
+def test_root_subclass_no_membase_raises():
+    """TEST-05: Device with RemoteVariable under a Root subclass without memBase raises DeviceError."""
+    root = CustomRoot(name='root', pollEn=False)
+    root.add(RemoteVarDevice(name='BadDev'))
+    with pytest.raises(pr.DeviceError, match='has RemoteVariables or RemoteCommands but no memBase'):
+        root.__enter__()

@@ -656,7 +656,7 @@ class Device(pr.Node,rim.Hub):
             value._updateBlockEnable()
 
     def _validateMemBase(self, remVars: list) -> None:
-        """Raise DeviceError if this device has remote variables but no memBase in its ancestor chain.
+        """Raise DeviceError if this device has remote variables/commands but no memBase in its ancestor chain.
 
         A device added directly to Root without an explicit memBase will have Root
         as its memory slave (via _setSlave), but Root has no upstream memory path.
@@ -665,19 +665,19 @@ class Device(pr.Node,rim.Hub):
         Parameters
         ----------
         remVars : list
-            List of RemoteVariable nodes already collected in _buildBlocks.
+            List of RemoteVariable/RemoteCommand nodes already collected in _buildBlocks.
         """
         if not remVars:
             return
 
         # Walk up the parent chain looking for an ancestor with an explicit memBase.
         # If we reach Root without finding one, the device has no memory path.
+        # Root sets self._parent = self, so detect that self-cycle to avoid infinite loops.
         node = self
         while node is not None:
             if node._memBase is not None:
                 return  # Found a memBase — memory path is valid
-            # Detect Root by class name to avoid a circular import (_Root imports _Device)
-            if type(node).__name__ == 'Root':
+            if node._parent is node:
                 raise DeviceError(
                     f"Device '{self.path}' has RemoteVariables or RemoteCommands but no memBase. "
                     f"Pass memBase= when creating this device or when adding it to the tree."
