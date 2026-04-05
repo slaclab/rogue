@@ -64,6 +64,7 @@ Models
    float8
    bfloat16
    tensorfloat32
+   float6
    double
    fixed
    ufixed

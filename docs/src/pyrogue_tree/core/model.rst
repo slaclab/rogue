@@ -81,7 +81,7 @@ Common built-in Models include:
 * Integer: ``UInt``, ``UIntBE``, ``UIntReversed``, ``Int``, ``IntBE``
 * Boolean: ``Bool``
 * Text: ``String``
-* Floating point: ``Float``, ``FloatBE``, ``Float8``, ``Float8BE``, ``BFloat16``, ``BFloat16BE``, ``TensorFloat32``, ``TensorFloat32BE``, ``Double``, ``DoubleBE``
+* Floating point: ``Float``, ``FloatBE``, ``Float6``, ``Float6BE``, ``Float8``, ``Float8BE``, ``BFloat16``, ``BFloat16BE``, ``TensorFloat32``, ``TensorFloat32BE``, ``Double``, ``DoubleBE``
 * Fixed point: ``Fixed``, ``UFixed``
 * Custom Python conversion path: Models that use ``modelId = rim.PyFunc``
 
@@ -124,6 +124,10 @@ Built-In Model Types
 | TensorFloat32                               | NVIDIA TF32           | float             | 32-bits        | 1s/8e/10m, 19 bits in 4 bytes. NVIDIA Ampere/Hopper/Blackwell |
 +---------------------------------------------+-----------------------+-------------------+----------------+------------------------------------------------+
 | TensorFloat32BE                             | NVIDIA TF32           | float             | 32-bits        | Big-endian TensorFloat32                       |
++---------------------------------------------+-----------------------+-------------------+----------------+------------------------------------------------+
+| Float6                                      | 6-bit E3M2 float      | float             | 8-bits         | 1s/3e/2m, no NaN/Inf, max 28.0. NVIDIA Blackwell |
++---------------------------------------------+-----------------------+-------------------+----------------+------------------------------------------------+
+| Float6BE                                    | 6-bit E3M2 float      | float             | 8-bits         | Big-endian Float6                              |
 +---------------------------------------------+-----------------------+-------------------+----------------+------------------------------------------------+
 | :ref:`interfaces_memory_model_fixed`        | fixed point           | float             | unconstrained  | Fixed-point conversion                         |
 +---------------------------------------------+-----------------------+-------------------+----------------+------------------------------------------------+
