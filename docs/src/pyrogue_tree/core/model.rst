@@ -81,7 +81,8 @@ Common built-in Models include:
 * Integer: ``UInt``, ``UIntBE``, ``UIntReversed``, ``Int``, ``IntBE``
 * Boolean: ``Bool``
 * Text: ``String``
-* Floating point: ``Float``, ``FloatBE``, ``Float4``, ``Float4BE``, ``Float6``, ``Float6BE``, ``Float8``, ``Float8BE``, ``BFloat16``, ``BFloat16BE``, ``TensorFloat32``, ``TensorFloat32BE``, ``Double``, ``DoubleBE``
+* Floating point: ``Float``, ``FloatBE``, ``Float4``, ``Float4BE``, ``Float6``, ``Float6BE``, ``Float8``, ``Float8BE``, ``BFloat16``, ``BFloat16BE``, ``TensorFloat32``, ``TensorFloat32BE``, ``Double``, ``DoubleBE``.
+  See :doc:`/pyrogue_tree/core/float_types_summary` for a consolidated format reference.
 * Fixed point: ``Fixed``, ``UFixed``
 * Custom Python conversion path: Models that use ``modelId = rim.PyFunc``
 
@@ -263,6 +264,7 @@ What To Explore Next
 * Variable type and access behavior: :doc:`/pyrogue_tree/core/variable`
 * Block packing and transaction flow: :doc:`/pyrogue_tree/core/block`
 * Fixed-point usage details: :doc:`/pyrogue_tree/core/fixed_point_models`
+* Floating point types quick reference: :doc:`/pyrogue_tree/core/float_types_summary`
 
 API Reference
 =============
