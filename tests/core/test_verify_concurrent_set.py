@@ -123,8 +123,9 @@ def test_verify_survives_interleaved_set():
     Reproduces the race by manually interleaving:
       1. Set both vars (marks both stale)
       2. writeBlocks (writes both to hardware, snapshots expected data)
-      3. Modify one var's blockData_ via set(write=False)
-      4. verifyBlocks + checkBlocks (should compare against snapshot)
+      3. verifyBlocks (starts verify read; block is not stale so verify runs)
+      4. Modify one var's blockData_ via set(write=False)
+      5. checkBlocks (compares against expectedData_ snapshot, not blockData_)
     """
     with VerifyRoot() as root:
         dev = root.Dev
@@ -136,14 +137,18 @@ def test_verify_survives_interleaved_set():
         # Step 2: write all stale vars to hardware
         dev.writeBlocks(force=True)
 
-        # Step 3: modify VarHigh's blockData_ without writing to hardware.
+        # Step 3: start the verify read while block is still clean.
+        # verifyBlocks skips when stale=True, so we must start the
+        # verify transaction before the mutation that re-dirties the block.
+        dev.verifyBlocks()
+
+        # Step 4: modify VarHigh's blockData_ without writing to hardware.
         # This simulates a concurrent thread calling _set() between
-        # the write and verify steps.
+        # the verify read and the comparison in checkBlocks.
         dev.VarHigh.set(0xAAAA, write=False)
 
-        # Step 4: verify and check. Without the fix this would raise
+        # Step 5: check the verify result. Without the fix this would raise
         # a GeneralError because blockData_ (0xAAAA) != hardware (0x5678).
-        dev.verifyBlocks()
         dev.checkBlocks()  # Should NOT raise
 
         # Write the pending VarHigh change so the block is no longer stale,
@@ -152,11 +157,11 @@ def test_verify_survives_interleaved_set():
         assert dev.VarLow.get() == 0x1234
 
 
-def test_verify_catches_real_mismatch():
-    """Verify still detects genuine write failures.
+def test_verify_write_read_roundtrip():
+    """Basic write-verify-read roundtrip works correctly.
 
-    Uses a basic write-verify flow where the written value should
-    match the hardware read-back.
+    Confirms that values written with verify enabled can be read back
+    without error, validating the normal (non-concurrent) path.
     """
     with VerifyRoot() as root:
         dev = root.Dev
@@ -216,6 +221,7 @@ def test_verify_threaded_concurrent_set():
                     val = (val + 1) & 0xFFFF
                 except Exception:
                     pass  # Ignore errors in the background setter
+                stop.wait(0.001)
 
         bg = threading.Thread(target=writer_thread, daemon=True)
         bg.start()
