@@ -257,6 +257,16 @@ class Variable {
     float (rogue::interfaces::memory::Block::*getFloat16_)(rogue::interfaces::memory::Variable*, int32_t index);
 
     /////////////////////////////////
+    // C++ Float8 (E4M3)
+    /////////////////////////////////
+
+    void (rogue::interfaces::memory::Block::*setFloat8_)(const float&,
+                                                         rogue::interfaces::memory::Variable*,
+                                                         int32_t index);
+
+    float (rogue::interfaces::memory::Block::*getFloat8_)(rogue::interfaces::memory::Variable*, int32_t index);
+
+    /////////////////////////////////
     // C++ filed point
     /////////////////////////////////
 
@@ -820,6 +830,35 @@ class Variable {
      * @return Float value converted from half-precision.
      */
     float getFloat16(int32_t index = -1);
+
+    /////////////////////////////////
+    // C++ Float8 (E4M3)
+    /////////////////////////////////
+
+    /**
+     * @brief Sets 8-bit E4M3 float value.
+     *
+     * @details
+     * Valid when this variable is configured for E4M3 conversion.
+     * Converts float to 8-bit E4M3, stages bytes and issues a
+     * write/verify transaction through the parent block.
+     *
+     * @param value Input value (converted to E4M3).
+     * @param index Value index, or `-1` for the full variable.
+     */
+    void setFloat8(float& value, int32_t index = -1);
+
+    /**
+     * @brief Gets 8-bit E4M3 float value.
+     *
+     * @details
+     * Issues a read transaction through the parent block, then converts staged
+     * 8-bit E4M3 bytes to `float`.
+     *
+     * @param index Value index, or `-1` for the full variable.
+     * @return Float value converted from E4M3.
+     */
+    float getFloat8(int32_t index = -1);
 
     /////////////////////////////////
     // C++ double
