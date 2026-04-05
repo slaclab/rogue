@@ -242,6 +242,8 @@ rim::Variable::Variable(std::string name,
     getDouble_    = NULL;
     setFixed_     = NULL;
     getFixed_     = NULL;
+    setBFloat16_  = NULL;
+    getBFloat16_  = NULL;
 
     // Define set function
     switch (modelId_) {
@@ -284,6 +286,10 @@ rim::Variable::Variable(std::string name,
 
         case rim::Float8:
             setFloat8_ = &rim::Block::setFloat8;
+            break;
+
+        case rim::BFloat16:
+            setBFloat16_ = &rim::Block::setBFloat16;
             break;
 
         case rim::Double:
@@ -339,6 +345,10 @@ rim::Variable::Variable(std::string name,
 
         case rim::Float8:
             getFloat8_ = &rim::Block::getFloat8;
+            break;
+
+        case rim::BFloat16:
+            getBFloat16_ = &rim::Block::getBFloat16;
             break;
 
         case rim::Double:
@@ -399,6 +409,10 @@ rim::Variable::Variable(std::string name,
             setFuncPy_ = &rim::Block::setFloat8Py;
             break;
 
+        case rim::BFloat16:
+            setFuncPy_ = &rim::Block::setBFloat16Py;
+            break;
+
         case rim::Double:
             setFuncPy_ = &rim::Block::setDoublePy;
             break;
@@ -454,6 +468,10 @@ rim::Variable::Variable(std::string name,
 
         case rim::Float8:
             getFuncPy_ = &rim::Block::getFloat8Py;
+            break;
+
+        case rim::BFloat16:
+            getFuncPy_ = &rim::Block::getBFloat16Py;
             break;
 
         case rim::Double:
@@ -968,6 +986,26 @@ float rim::Variable::getFloat8(int32_t index) {
 
     block_->read(this, index);
     return (block_->*getFloat8_)(this, index);
+}
+
+/////////////////////////////////
+// C++ BFloat16 (Brain Float 16)
+/////////////////////////////////
+
+void rim::Variable::setBFloat16(float& value, int32_t index) {
+    if (setBFloat16_ == NULL)
+        throw(rogue::GeneralError::create("Variable::setBFloat16", "Wrong set type for variable %s", path_.c_str()));
+
+    (block_->*setBFloat16_)(value, this, index);
+    block_->write(this, index);
+}
+
+float rim::Variable::getBFloat16(int32_t index) {
+    if (getBFloat16_ == NULL)
+        throw(rogue::GeneralError::create("Variable::getBFloat16", "Wrong get type for variable %s", path_.c_str()));
+
+    block_->read(this, index);
+    return (block_->*getBFloat16_)(this, index);
 }
 
 /////////////////////////////////

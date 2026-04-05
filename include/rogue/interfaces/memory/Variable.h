@@ -267,6 +267,16 @@ class Variable {
     float (rogue::interfaces::memory::Block::*getFloat8_)(rogue::interfaces::memory::Variable*, int32_t index);
 
     /////////////////////////////////
+    // C++ BFloat16 (Brain Float 16)
+    /////////////////////////////////
+
+    void (rogue::interfaces::memory::Block::*setBFloat16_)(const float&,
+                                                            rogue::interfaces::memory::Variable*,
+                                                            int32_t index);
+
+    float (rogue::interfaces::memory::Block::*getBFloat16_)(rogue::interfaces::memory::Variable*, int32_t index);
+
+    /////////////////////////////////
     // C++ filed point
     /////////////////////////////////
 
@@ -859,6 +869,35 @@ class Variable {
      * @return Float value converted from E4M3.
      */
     float getFloat8(int32_t index = -1);
+
+    /////////////////////////////////
+    // C++ BFloat16 (Brain Float 16)
+    /////////////////////////////////
+
+    /**
+     * @brief Sets BFloat16 value.
+     *
+     * @details
+     * Valid when this variable is configured for BFloat16 conversion.
+     * Converts float to 16-bit BFloat16 (upper 16 bits of float32), stages bytes
+     * and issues a write/verify transaction through the parent block.
+     *
+     * @param value Input value (converted to BFloat16).
+     * @param index Value index, or `-1` for the full variable.
+     */
+    void setBFloat16(float& value, int32_t index = -1);
+
+    /**
+     * @brief Gets BFloat16 value.
+     *
+     * @details
+     * Issues a read transaction through the parent block, then converts staged
+     * 16-bit BFloat16 bytes to `float`.
+     *
+     * @param index Value index, or `-1` for the full variable.
+     * @return Float value converted from BFloat16.
+     */
+    float getBFloat16(int32_t index = -1);
 
     /////////////////////////////////
     // C++ double
