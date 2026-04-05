@@ -1032,6 +1032,50 @@ class Block : public Master {
     float getFloat6(rogue::interfaces::memory::Variable* var, int32_t index);
 
     //////////////////////////////////////////
+    // Float4 (E2M1)
+    //////////////////////////////////////////
+
+#ifndef NO_PYTHON
+
+    /**
+     * @brief Sets 4-bit E2M1 float variable data from Python input.
+     *
+     * @param value Python source value.
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     */
+    void setFloat4Py(boost::python::object& value, rogue::interfaces::memory::Variable* var, int32_t index);
+
+    /**
+     * @brief Gets 4-bit E2M1 float variable data as Python output.
+     *
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     * @return Python object containing float value.
+     */
+    boost::python::object getFloat4Py(rogue::interfaces::memory::Variable* var, int32_t index);
+
+#endif
+
+    /**
+     * @brief Sets 4-bit E2M1 float variable data from C++ input.
+     *
+     * @param value Source float value (converted to E2M1 for storage).
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     */
+    void setFloat4(const float& value, rogue::interfaces::memory::Variable* var, int32_t index);
+
+    /**
+     * @brief Gets 4-bit E2M1 float variable data as C++ output.
+     *
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     * @return Float value converted from E2M1.
+     */
+    float getFloat4(rogue::interfaces::memory::Variable* var, int32_t index);
+
+    //////////////////////////////////////////
     // Double
     //////////////////////////////////////////
 
