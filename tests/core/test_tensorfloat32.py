@@ -103,6 +103,10 @@ def test_tensorfloat32_be_endianness():
     """TensorFloat32BE stores bytes in big-endian order."""
     model = pr.TensorFloat32BE(32)
     assert model.endianness == 'big'
+    # 1.0 -> float32 0x3F800000, lower 13 bits already zero, big-endian: [0x3F, 0x80, 0x00, 0x00]
+    expected = bytearray([0x3F, 0x80, 0x00, 0x00])
+    assert model.toBytes(1.0) == expected
+    assert model.fromBytes(expected) == 1.0
 
 
 class TensorFloat32VariableDevice(pr.Device):

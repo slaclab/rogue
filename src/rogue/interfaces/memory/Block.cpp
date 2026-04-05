@@ -1849,7 +1849,14 @@ uint16_t floatToBFloat16(float value) {
     std::memcpy(&f, &value, sizeof(f));
     // BFloat16 is simply the upper 16 bits of the float32 bit pattern.
     // All special values (NaN, infinity, zero, subnormals) are preserved.
-    return static_cast<uint16_t>(f >> 16);
+    uint16_t bf16 = static_cast<uint16_t>(f >> 16);
+    // Preserve NaN: truncation can clear payload bits, turning NaN into Inf.
+    uint32_t exponent = (f >> 23) & 0xFF;
+    uint32_t mantissa = f & 0x7FFFFF;
+    if (exponent == 0xFF && mantissa != 0 && (bf16 & 0x007F) == 0) {
+        bf16 |= 0x0001;
+    }
+    return bf16;
 }
 
 float bfloat16ToFloat(uint16_t bf16) {
@@ -1865,7 +1872,13 @@ float bfloat16ToFloat(uint16_t bf16) {
 uint32_t floatToTensorFloat32(float value) {
     uint32_t f;
     std::memcpy(&f, &value, sizeof(f));
-    return f & 0xFFFFE000U;
+    uint32_t tf32 = f & 0xFFFFE000U;
+    // Preserve NaN: masking can clear payload bits, turning NaN into Inf.
+    if ((f & 0x7F800000U) == 0x7F800000U && (f & 0x007FFFFFU) != 0 &&
+            (tf32 & 0x007FFFFFU) == 0) {
+        tf32 |= 0x00002000U;
+    }
+    return tf32;
 }
 
 float tensorFloat32ToFloat(uint32_t tf32) {

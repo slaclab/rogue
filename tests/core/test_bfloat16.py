@@ -103,6 +103,17 @@ def test_bfloat16_be_endianness():
     """BFloat16BE stores bytes in big-endian order."""
     model = pr.BFloat16BE(16)
     assert model.endianness == 'big'
+    # 1.0 -> 0x3F80 (big-endian: [0x3F, 0x80])
+    assert model.toBytes(1.0) == bytearray([0x3F, 0x80])
+    assert model.fromBytes(bytearray([0x3F, 0x80])) == 1.0
+    # +Inf -> 0x7F80 (big-endian: [0x7F, 0x80])
+    assert model.toBytes(float('inf')) == bytearray([0x7F, 0x80])
+    result = model.fromBytes(bytearray([0x7F, 0x80]))
+    assert math.isinf(result) and result > 0
+    # -Inf -> 0xFF80 (big-endian: [0xFF, 0x80])
+    assert model.toBytes(float('-inf')) == bytearray([0xFF, 0x80])
+    result = model.fromBytes(bytearray([0xFF, 0x80]))
+    assert math.isinf(result) and result < 0
 
 
 class BFloat16VariableDevice(pr.Device):

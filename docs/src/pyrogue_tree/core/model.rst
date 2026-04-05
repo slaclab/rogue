@@ -81,7 +81,7 @@ Common built-in Models include:
 * Integer: ``UInt``, ``UIntBE``, ``UIntReversed``, ``Int``, ``IntBE``
 * Boolean: ``Bool``
 * Text: ``String``
-* Floating point: ``Float``, ``FloatBE``, ``Float4``, ``Float4BE``, ``Float6``, ``Float6BE``, ``Float8``, ``Float8BE``, ``BFloat16``, ``BFloat16BE``, ``TensorFloat32``, ``TensorFloat32BE``, ``Double``, ``DoubleBE``.
+* Floating point: ``Float``, ``FloatBE``, ``Float4``, ``Float4BE``, ``Float6``, ``Float6BE``, ``Float8``, ``Float8BE``, ``Float16``, ``Float16BE``, ``BFloat16``, ``BFloat16BE``, ``TensorFloat32``, ``TensorFloat32BE``, ``Double``, ``DoubleBE``.
   See :doc:`/pyrogue_tree/core/float_types_summary` for a consolidated format reference.
 * Fixed point: ``Fixed``, ``UFixed``
 * Custom Python conversion path: Models that use ``modelId = rim.PyFunc``

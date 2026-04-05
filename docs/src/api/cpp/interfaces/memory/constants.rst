@@ -40,5 +40,10 @@ The following block processing types are defined:
 .. doxygenvariable:: rogue::interfaces::memory::Float
 .. doxygenvariable:: rogue::interfaces::memory::Double
 .. doxygenvariable:: rogue::interfaces::memory::Float16
+.. doxygenvariable:: rogue::interfaces::memory::Float8
+.. doxygenvariable:: rogue::interfaces::memory::BFloat16
+.. doxygenvariable:: rogue::interfaces::memory::TensorFloat32
+.. doxygenvariable:: rogue::interfaces::memory::Float6
+.. doxygenvariable:: rogue::interfaces::memory::Float4
 .. doxygenvariable:: rogue::interfaces::memory::Fixed
 .. doxygenvariable:: rogue::interfaces::memory::Custom

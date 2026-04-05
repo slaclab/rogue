@@ -996,15 +996,22 @@ class BFloat16(Model):
         v = float(value)
         # Get float32 bit pattern as uint32, take upper 16 bits
         bits = struct.unpack('I', struct.pack('f', v))[0]
+        exp = (bits >> 23) & 0xFF
+        mant = bits & 0x7FFFFF
         bf16 = bits >> 16
-        return bytearray(struct.pack('<H', bf16))
+        # Preserve NaN: truncation can clear payload bits, turning NaN into Inf.
+        if exp == 0xFF and mant != 0 and (bf16 & 0x007F) == 0:
+            bf16 |= 0x0001
+        endian = '>' if self.endianness == 'big' else '<'
+        return bytearray(struct.pack(f'{endian}H', bf16))
 
     def fromBytes(self, ba: bytes) -> float:
         """Decode 2-byte BFloat16 encoding to float.
 
         Reconstructs float32 by shifting the 16-bit pattern left by 16.
         """
-        bf16 = struct.unpack('<H', ba[:2])[0]
+        endian = '>' if self.endianness == 'big' else '<'
+        bf16 = struct.unpack(f'{endian}H', ba[:2])[0]
         bits = bf16 << 16
         return struct.unpack('f', struct.pack('I', bits))[0]
 
@@ -1064,7 +1071,12 @@ class TensorFloat32(Model):
         v = float(value)
         bits = struct.unpack('I', struct.pack('f', v))[0]
         tf32 = bits & 0xFFFFE000
-        return bytearray(struct.pack('<I', tf32))
+        # Preserve NaN: masking can clear payload bits, turning NaN into Inf.
+        if (bits & 0x7F800000) == 0x7F800000 and (bits & 0x007FFFFF) != 0 and \
+                (tf32 & 0x007FFFFF) == 0:
+            tf32 |= 0x00002000
+        endian = '>' if self.endianness == 'big' else '<'
+        return bytearray(struct.pack(f'{endian}I', tf32))
 
     def fromBytes(self, ba: bytes) -> float:
         """Decode 4-byte TensorFloat32 encoding to float.
@@ -1072,7 +1084,8 @@ class TensorFloat32(Model):
         TF32 bit pattern is a valid float32 with lower 13 mantissa bits
         zeroed. Direct reinterpretation as float32 is sufficient.
         """
-        tf32 = struct.unpack('<I', ba[:4])[0]
+        endian = '>' if self.endianness == 'big' else '<'
+        tf32 = struct.unpack(f'{endian}I', ba[:4])[0]
         return struct.unpack('f', struct.pack('I', tf32))[0]
 
     def fromString(self, string: str) -> float:
