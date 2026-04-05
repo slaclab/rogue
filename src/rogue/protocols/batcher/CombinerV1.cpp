@@ -28,7 +28,7 @@
  *       bits  7:0  = Destination
  *       bits 15:8  = First user
  *       bits 23:16 = Last user
- *       bits 31:24 = 0 (valid bytes in last field, unused in SW)
+ *       bits 31:24 = Width (bits 3:0 = width encoding, bits 7:4 = 0)
  *
  *-----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to
@@ -180,15 +180,15 @@ void rpb::CombinerV1::sendBatch() {
         // Word 0: size (4 bytes)
         ris::toFrame(it, 4, &payloadSize);
 
-        // Word 1: dest, fUser, lUser, 0
-        uint8_t dest  = f->getChannel();
-        uint8_t fUser = f->getFirstUser();
-        uint8_t lUser = f->getLastUser();
-        uint8_t rsvd  = 0;
+        // Word 1: dest, fUser, lUser, width
+        uint8_t dest      = f->getChannel();
+        uint8_t fUser     = f->getFirstUser();
+        uint8_t lUser     = f->getLastUser();
+        uint8_t widthByte = width_;  // FW writes WIDTH_C at tData(59 downto 56)
         ris::toFrame(it, 1, &dest);
         ris::toFrame(it, 1, &fUser);
         ris::toFrame(it, 1, &lUser);
-        ris::toFrame(it, 1, &rsvd);
+        ris::toFrame(it, 1, &widthByte);
 
         // Pad rest of tail with zeros (tailSize_ - 8 bytes already written)
         if (tailSize_ > 8) {
