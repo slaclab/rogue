@@ -224,6 +224,12 @@ void rps::SrpV3Server::processFrame(ris::FramePtr frame) {
     address = (static_cast<uint64_t>(header[3]) << 32) | header[2];
     reqSize = header[4] + 1;
 
+    // Validate opCode: 0=read, 1=write, 2=posted write
+    if (opCode == 0x3) {
+        log_->warning("Got invalid SRPv3 opcode 0x3 for id=%" PRIu32, id);
+        return;
+    }
+
     doWrite = (opCode == 0x1);  // Write
     isPost  = (opCode == 0x2);  // Posted write
 
