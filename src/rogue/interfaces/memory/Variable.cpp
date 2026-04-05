@@ -244,6 +244,8 @@ rim::Variable::Variable(std::string name,
     getFixed_     = NULL;
     setBFloat16_  = NULL;
     getBFloat16_  = NULL;
+    setTensorFloat32_ = NULL;
+    getTensorFloat32_ = NULL;
 
     // Define set function
     switch (modelId_) {
@@ -290,6 +292,10 @@ rim::Variable::Variable(std::string name,
 
         case rim::BFloat16:
             setBFloat16_ = &rim::Block::setBFloat16;
+            break;
+
+        case rim::TensorFloat32:
+            setTensorFloat32_ = &rim::Block::setTensorFloat32;
             break;
 
         case rim::Double:
@@ -349,6 +355,10 @@ rim::Variable::Variable(std::string name,
 
         case rim::BFloat16:
             getBFloat16_ = &rim::Block::getBFloat16;
+            break;
+
+        case rim::TensorFloat32:
+            getTensorFloat32_ = &rim::Block::getTensorFloat32;
             break;
 
         case rim::Double:
@@ -413,6 +423,10 @@ rim::Variable::Variable(std::string name,
             setFuncPy_ = &rim::Block::setBFloat16Py;
             break;
 
+        case rim::TensorFloat32:
+            setFuncPy_ = &rim::Block::setTensorFloat32Py;
+            break;
+
         case rim::Double:
             setFuncPy_ = &rim::Block::setDoublePy;
             break;
@@ -472,6 +486,10 @@ rim::Variable::Variable(std::string name,
 
         case rim::BFloat16:
             getFuncPy_ = &rim::Block::getBFloat16Py;
+            break;
+
+        case rim::TensorFloat32:
+            getFuncPy_ = &rim::Block::getTensorFloat32Py;
             break;
 
         case rim::Double:
@@ -1006,6 +1024,26 @@ float rim::Variable::getBFloat16(int32_t index) {
 
     block_->read(this, index);
     return (block_->*getBFloat16_)(this, index);
+}
+
+/////////////////////////////////
+// C++ TensorFloat32 (NVIDIA TF32)
+/////////////////////////////////
+
+void rim::Variable::setTensorFloat32(float& value, int32_t index) {
+    if (setTensorFloat32_ == NULL)
+        throw(rogue::GeneralError::create("Variable::setTensorFloat32", "Wrong set type for variable %s", path_.c_str()));
+
+    (block_->*setTensorFloat32_)(value, this, index);
+    block_->write(this, index);
+}
+
+float rim::Variable::getTensorFloat32(int32_t index) {
+    if (getTensorFloat32_ == NULL)
+        throw(rogue::GeneralError::create("Variable::getTensorFloat32", "Wrong get type for variable %s", path_.c_str()));
+
+    block_->read(this, index);
+    return (block_->*getTensorFloat32_)(this, index);
 }
 
 /////////////////////////////////

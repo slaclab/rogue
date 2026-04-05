@@ -277,6 +277,16 @@ class Variable {
     float (rogue::interfaces::memory::Block::*getBFloat16_)(rogue::interfaces::memory::Variable*, int32_t index);
 
     /////////////////////////////////
+    // C++ TensorFloat32 (NVIDIA TF32)
+    /////////////////////////////////
+
+    void (rogue::interfaces::memory::Block::*setTensorFloat32_)(const float&,
+                                                                  rogue::interfaces::memory::Variable*,
+                                                                  int32_t index);
+
+    float (rogue::interfaces::memory::Block::*getTensorFloat32_)(rogue::interfaces::memory::Variable*, int32_t index);
+
+    /////////////////////////////////
     // C++ filed point
     /////////////////////////////////
 
@@ -898,6 +908,35 @@ class Variable {
      * @return Float value converted from BFloat16.
      */
     float getBFloat16(int32_t index = -1);
+
+    /////////////////////////////////
+    // C++ TensorFloat32 (NVIDIA TF32)
+    /////////////////////////////////
+
+    /**
+     * @brief Sets TensorFloat32 value.
+     *
+     * @details
+     * Valid when this variable is configured for TensorFloat32 conversion.
+     * Converts float to 32-bit TF32 (lower 13 mantissa bits zeroed), stages bytes
+     * and issues a write/verify transaction through the parent block.
+     *
+     * @param value Input value (converted to TensorFloat32).
+     * @param index Value index, or `-1` for the full variable.
+     */
+    void setTensorFloat32(float& value, int32_t index = -1);
+
+    /**
+     * @brief Gets TensorFloat32 value.
+     *
+     * @details
+     * Issues a read transaction through the parent block, then converts staged
+     * 32-bit TensorFloat32 bytes to `float`.
+     *
+     * @param index Value index, or `-1` for the full variable.
+     * @return Float value converted from TensorFloat32.
+     */
+    float getTensorFloat32(int32_t index = -1);
 
     /////////////////////////////////
     // C++ double
