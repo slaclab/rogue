@@ -327,7 +327,6 @@ def test_inverter_v1_processes_combiner_output():
 
     # Inverter emits one reframed super-frame
     assert len(sink.frames) == 1
-    # The output should be smaller than the input by one tail (16 bytes)
     assert len(sink.frames[0]) > 0
 
 
@@ -357,7 +356,6 @@ def test_inverter_v2_processes_combiner_output():
 
     # Inverter emits one reframed super-frame
     assert len(sink.frames) == 1
-    # The output should be smaller than the input by headerSize (2 bytes)
     assert len(sink.frames[0]) > 0
 
 
@@ -417,8 +415,10 @@ def test_rebatch_v2_produces_identical_superframe():
 
     assert len(raw_sink1.frames) == 1
     assert len(raw_sink2.frames) == 1
-    # The re-batched super-frame should be byte-identical
-    # (sequence number will differ, so compare from byte 2 onward)
+    # The re-batched super-frame should be byte-identical except for
+    # the sequence number in header byte 1. Header byte 0 (version)
+    # must still match.
+    assert raw_sink1.frames[0][0] == raw_sink2.frames[0][0]
     assert raw_sink1.frames[0][2:] == raw_sink2.frames[0][2:]
 
 

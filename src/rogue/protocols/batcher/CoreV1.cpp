@@ -161,9 +161,6 @@ bool rpb::CoreV1::processFrame(ris::FramePtr frame) {
     // Reset old data
     reset();
 
-    // Store frame reference so header/tail iterators remain valid
-    frame_ = frame;
-
     ris::FrameIterator beg;
     ris::FrameIterator mark;
     ris::FrameIterator tail;
@@ -244,6 +241,9 @@ bool rpb::CoreV1::processFrame(ris::FramePtr frame) {
         reset();
         return false;
     }
+
+    // Store frame reference now that validation has passed
+    frame_ = frame;
 
     // Skip the rest of the header, compute remaining frame size
     beg += (headerSize_ - 2);  // Already read 2 bytes from frame
