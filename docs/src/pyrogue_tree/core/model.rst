@@ -81,7 +81,7 @@ Common built-in Models include:
 * Integer: ``UInt``, ``UIntBE``, ``UIntReversed``, ``Int``, ``IntBE``
 * Boolean: ``Bool``
 * Text: ``String``
-* Floating point: ``Float``, ``FloatBE``, ``Float8``, ``Float8BE``, ``BFloat16``, ``BFloat16BE``, ``Double``, ``DoubleBE``
+* Floating point: ``Float``, ``FloatBE``, ``Float8``, ``Float8BE``, ``BFloat16``, ``BFloat16BE``, ``TensorFloat32``, ``TensorFloat32BE``, ``Double``, ``DoubleBE``
 * Fixed point: ``Fixed``, ``UFixed``
 * Custom Python conversion path: Models that use ``modelId = rim.PyFunc``
 
@@ -120,6 +120,10 @@ Built-In Model Types
 | BFloat16                                    | Brain Float 16        | float             | 16-bits        | 1s/8e/7m, float32 exponent range (~3.39e38). NVIDIA Ampere/Hopper/Blackwell |
 +---------------------------------------------+-----------------------+-------------------+----------------+------------------------------------------------+
 | BFloat16BE                                  | Brain Float 16        | float             | 16-bits        | Big-endian BFloat16                            |
++---------------------------------------------+-----------------------+-------------------+----------------+------------------------------------------------+
+| TensorFloat32                               | NVIDIA TF32           | float             | 32-bits        | 1s/8e/10m, 19 bits in 4 bytes. NVIDIA Ampere/Hopper/Blackwell |
++---------------------------------------------+-----------------------+-------------------+----------------+------------------------------------------------+
+| TensorFloat32BE                             | NVIDIA TF32           | float             | 32-bits        | Big-endian TensorFloat32                       |
 +---------------------------------------------+-----------------------+-------------------+----------------+------------------------------------------------+
 | :ref:`interfaces_memory_model_fixed`        | fixed point           | float             | unconstrained  | Fixed-point conversion                         |
 +---------------------------------------------+-----------------------+-------------------+----------------+------------------------------------------------+
