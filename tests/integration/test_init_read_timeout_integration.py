@@ -83,7 +83,7 @@ def test_init_read_timeout_does_not_crash():
     # Should NOT raise — the timeout is caught and logged internally.
     with root:
         # Root started successfully despite the timeout.
-        assert root._running is True
+        assert root.running is True
 
 
 def test_init_read_returns_false_on_timeout():
@@ -118,7 +118,7 @@ def test_init_read_succeeds_without_timeout():
     """Sanity check: init read succeeds normally when nothing times out."""
     root = TimeoutRoot(dropCount=0)
     with root:
-        assert root._running is True
+        assert root.running is True
         assert root.Dev.Reg0.get() == 0
 
 
@@ -131,11 +131,17 @@ def test_concurrent_root_start_with_timeouts():
     errors = []
 
     def start_root(idx, drop):
+        r = None
         try:
             r = TimeoutRoot(dropCount=drop)
             r.start()
             roots.append(r)
         except Exception as e:
+            if r is not None:
+                try:
+                    r.stop()
+                except Exception:
+                    pass
             errors.append((idx, e))
 
     threads = []
@@ -148,6 +154,9 @@ def test_concurrent_root_start_with_timeouts():
 
     for t in threads:
         t.join(timeout=30)
+
+    for t in threads:
+        assert not t.is_alive(), f"Thread {t.name} did not finish within 30 s"
 
     try:
         assert len(errors) == 0, f"Root start failures: {errors}"
