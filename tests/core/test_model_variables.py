@@ -82,6 +82,14 @@ class ModelVariableDevice(pr.Device):
             mode="RW",
         ))
 
+        self.add(pr.RemoteVariable(
+            name="BFloat16Var",
+            offset=0x32,
+            bitSize=16,
+            base=pr.BFloat16,
+            mode="RW",
+        ))
+
         # Keep the fixed-point cases on real RemoteVariables so the tests hit
         # the block/model conversion path that application code actually uses.
         self.add(pr.RemoteVariable(
@@ -141,6 +149,7 @@ def test_remote_variables_round_trip_model_backed_values():
         root.Dev.DoubleVar.set(2.5)
         root.Dev.Float16Var.set(1.25)
         root.Dev.Float8Var.set(1.0)
+        root.Dev.BFloat16Var.set(1.0)
         root.Dev.FixedVar.set(1.5)
         root.Dev.UFixedVar.set(2.25)
 
@@ -160,6 +169,8 @@ def test_remote_variables_round_trip_model_backed_values():
         assert root.Dev.Float16Var.typeStr == "Float16"
         assert math.isclose(root.Dev.Float8Var.get(), 1.0, rel_tol=0.0, abs_tol=0.1)
         assert root.Dev.Float8Var.typeStr == "Float8"
+        assert math.isclose(root.Dev.BFloat16Var.get(), 1.0, rel_tol=0.0, abs_tol=0.01)
+        assert root.Dev.BFloat16Var.typeStr == "BFloat16"
         assert math.isclose(root.Dev.FixedVar.get(), 1.5, rel_tol=0.0, abs_tol=1e-6)
         assert root.Dev.FixedVar.typeStr == "Fixed_16_4"
         assert math.isclose(root.Dev.UFixedVar.get(), 2.25, rel_tol=0.0, abs_tol=1e-6)
