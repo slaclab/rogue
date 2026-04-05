@@ -403,6 +403,14 @@ def test_numpy_integer_index_types():
         result = var.get(index=idx)
         assert result == 777, f"post with np.int32 index failed: got {result}"
 
+        # Float indices must still be rejected (operator.index enforces this)
+        with pytest.raises(TypeError):
+            var.set(0, index=3.7)
+        with pytest.raises(TypeError):
+            var.get(index=3.7)
+        with pytest.raises(TypeError):
+            var.post(0, index=3.7)
+
 
 def run_gui():
     import pyrogue.pydm
