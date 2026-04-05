@@ -1899,7 +1899,12 @@ uint8_t floatToFloat6(float value) {
     uint32_t mantissa = f & 0x7FFFFF;
 
     // NaN or Infinity input -> clamp to max finite (no NaN/Inf in E3M2)
-    if (((f >> 23) & 0xFF) == 0xFF) return sign | 0x1F;
+    if (((f >> 23) & 0xFF) == 0xFF) {
+        // NaN has no meaningful sign: always clamp to positive max.
+        // Infinity preserves sign.
+        uint8_t nan_sign = (f & 0x7FFFFF) ? 0x00 : static_cast<uint8_t>(sign);
+        return nan_sign | 0x1F;
+    }
 
     // Overflow -> clamp to max finite
     if (exponent > 7) return sign | 0x1F;
@@ -1946,7 +1951,12 @@ uint8_t floatToFloat4(float value) {
     uint32_t mantissa = f & 0x7FFFFF;
 
     // NaN or Infinity input -> clamp to max finite (no NaN/Inf in E2M1)
-    if (((f >> 23) & 0xFF) == 0xFF) return sign | 0x07;
+    if (((f >> 23) & 0xFF) == 0xFF) {
+        // NaN has no meaningful sign: always clamp to positive max.
+        // Infinity preserves sign.
+        uint8_t nan_sign = (f & 0x7FFFFF) ? 0x00 : static_cast<uint8_t>(sign);
+        return nan_sign | 0x07;
+    }
 
     // Overflow -> clamp to max finite
     if (exponent > 3) return sign | 0x07;

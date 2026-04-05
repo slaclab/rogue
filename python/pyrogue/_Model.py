@@ -816,6 +816,11 @@ class Float16(Model):
         bytearray
             Byte array representation of the value.
 
+        Notes
+        -----
+        Uses ``struct.pack`` with IEEE 754 round-to-nearest-even. The C++ Block
+        path (``floatToHalf``) uses truncation instead, so values that fall on
+        a rounding boundary may differ by 1 ULP between the two paths.
         """
         return bytearray(struct.pack(self.fstring, value))
 

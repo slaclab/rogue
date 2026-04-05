@@ -162,3 +162,7 @@ def test_float6_remote_variable_boundary_values():
         root.Dev.Float6Var.set(0.0625)
         result = root.Dev.Float6Var.get()
         assert math.isclose(result, 0.0625, rel_tol=0.01)
+
+        # NaN clamps to positive max (sign-independent) through C++ path.
+        root.Dev.Float6Var.set(float('nan'))
+        assert root.Dev.Float6Var.get() == 28.0

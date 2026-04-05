@@ -190,3 +190,7 @@ def test_float4_remote_variable_boundary_values():
         # Subnormal
         root.Dev.Float4Var.set(0.5)
         assert root.Dev.Float4Var.get() == 0.5
+
+        # NaN clamps to positive max (sign-independent) through C++ path.
+        root.Dev.Float4Var.set(float('nan'))
+        assert root.Dev.Float4Var.get() == 6.0
