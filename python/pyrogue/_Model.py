@@ -868,6 +868,98 @@ class Float16BE(Float16):
     fstring = '!e'
 
 
+class Float8(Model):
+    """Model class for 8-bit E4M3 floating point numbers (NVIDIA FP8).
+
+    Parameters
+    ----------
+    bitSize : int
+        Number of bits being represented. Must be 8.
+
+    Notes
+    -----
+    Format: 1 sign bit, 4 exponent bits, 3 mantissa bits (E4M3).
+    Bias = 7. No infinity representation. NaN encoded as 0x7F.
+    Maximum representable value is 448.0.
+    Supported by NVIDIA Hopper (H100) and Blackwell GPUs.
+    """
+
+    defaultdisp = '{:f}'
+    pytype      = float
+    modelId     = rim.Float8
+
+    def __init__(self, bitSize: int) -> None:
+        """Initialize 8-bit E4M3 float model metadata."""
+        assert bitSize == 8, f"The bitSize param of Model {self.__class__.__name__} must be 8"
+        super().__init__(bitSize)
+        self.name = 'Float8'
+        self.ndType = np.dtype(np.float32)
+
+    def toBytes(self, value: float) -> bytearray:
+        """Convert float to 1-byte E4M3 encoding."""
+        import math
+        v = float(value)
+        if math.isnan(v):
+            return bytearray([0x7F])
+        # Get float32 bit pattern
+        bits = struct.unpack('I', struct.pack('f', v))[0]
+        sign = (bits >> 24) & 0x80
+        exp32 = (bits >> 23) & 0xFF
+        mant32 = bits & 0x7FFFFF
+        # Rebias exponent: float32 bias=127, E4M3 bias=7
+        exp8 = exp32 - 127 + 7
+        if exp32 == 0xFF:
+            # float32 infinity -> clamp to max finite
+            return bytearray([sign | 0x7E])
+        if exp8 > 15:
+            # Overflow -> clamp to max finite
+            return bytearray([sign | 0x7E])
+        if exp8 <= 0:
+            # Subnormal or underflow
+            if exp8 < -3:
+                return bytearray([sign])  # flush to zero
+            mant32 |= 0x800000
+            shift = 1 - exp8
+            mant32 >>= shift
+            return bytearray([sign | ((mant32 >> 20) & 0x07)])
+        return bytearray([sign | (exp8 << 3) | ((mant32 >> 20) & 0x07)])
+
+    def fromBytes(self, ba: bytes) -> float:
+        """Decode 1-byte E4M3 encoding to float."""
+        f8 = ba[0]
+        # Both 0x7F and 0xFF are NaN
+        if (f8 & 0x7F) == 0x7F:
+            return float('nan')
+        sign = -1.0 if (f8 & 0x80) else 1.0
+        exponent = (f8 >> 3) & 0x0F
+        mantissa = f8 & 0x07
+        if exponent == 0:
+            if mantissa == 0:
+                return 0.0 if sign > 0 else -0.0
+            # Subnormal: value = sign * mantissa/8 * 2^(1-7) = sign * mantissa * 2^(-9)
+            return sign * mantissa * (2.0 ** -9)
+        # Normal: value = sign * (1 + mantissa/8) * 2^(exponent-7)
+        return sign * (1.0 + mantissa / 8.0) * (2.0 ** (exponent - 7))
+
+    def fromString(self, string: str) -> float:
+        """Parse a string into a float value."""
+        return float(string)
+
+    def minValue(self) -> float:
+        """Return the minimum representable value (-448.0)."""
+        return -448.0
+
+    def maxValue(self) -> float:
+        """Return the maximum representable value (448.0)."""
+        return 448.0
+
+
+class Float8BE(Float8):
+    """Model class for 8-bit E4M3 floats stored as big endian."""
+
+    endianness = 'big'
+
+
 class Fixed(Model):
     """
     Model class for fixed point signed integers
