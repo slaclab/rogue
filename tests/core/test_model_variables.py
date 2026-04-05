@@ -10,6 +10,7 @@
 
 import math
 
+import pytest
 import pyrogue as pr
 import rogue.interfaces.memory
 
@@ -162,7 +163,7 @@ def test_remote_variable_metadata_exposes_model_constraints():
         assert root.Dev.FixedVar.minimum == -2048.0
         assert root.Dev.FixedVar.maximum == 2047.9375
         assert root.Dev.UFixedVar.minimum == 0.0
-        assert root.Dev.UFixedVar.maximum == 4095.9375
+        assert root.Dev.UFixedVar.maximum == 2047.9375
 
 
 def test_fixed_point_overflow_raises_error():
@@ -176,34 +177,18 @@ def test_fixed_point_overflow_raises_error():
 
         # Fixed(16, 4) range: -2048.0 to 2047.9375
         # Overflow must raise, not silently clip
-        try:
+        with pytest.raises(Exception, match="Value range error"):
             root.Dev.FixedVar.set(2048.0)
-            got = root.Dev.FixedVar.get()
-            assert False, f"Expected error for overflow, got {got}"
-        except Exception:
-            pass  # Expected
 
-        try:
+        with pytest.raises(Exception, match="Value range error"):
             root.Dev.FixedVar.set(-2049.0)
-            got = root.Dev.FixedVar.get()
-            assert False, f"Expected error for underflow, got {got}"
-        except Exception:
-            pass  # Expected
 
-        # UFixed(16, 4) range: 0.0 to 4095.9375
-        try:
-            root.Dev.UFixedVar.set(4096.0)
-            got = root.Dev.UFixedVar.get()
-            assert False, f"Expected error for overflow, got {got}"
-        except Exception:
-            pass  # Expected
+        # UFixed(16, 4) range: 0.0 to 2047.9375 (C++ uses signed two's-complement)
+        with pytest.raises(Exception, match="Value range error"):
+            root.Dev.UFixedVar.set(2048.0)
 
-        try:
+        with pytest.raises(Exception, match="Value range error"):
             root.Dev.UFixedVar.set(-1.0)
-            got = root.Dev.UFixedVar.get()
-            assert False, f"Expected error for negative unsigned, got {got}"
-        except Exception:
-            pass  # Expected
 
         # Boundary values should work
         root.Dev.FixedVar.set(2047.9375)

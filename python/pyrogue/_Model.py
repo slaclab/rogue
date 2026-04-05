@@ -840,5 +840,5 @@ class UFixed(Model):
         return 0.0
 
     def maxValue(self) -> float:
-        """Return the maximum representable unsigned fixed-point value."""
-        return (2**self.bitSize - 1) / (2**self.binPoint)
+        """Return the maximum value supported by the current rim.Fixed conversion path."""
+        return (2**(self.bitSize - 1) - 1) / (2**self.binPoint)

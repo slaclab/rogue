@@ -2012,9 +2012,9 @@ void rim::Block::setFixed(const double& val, rim::Variable* var, int32_t index) 
     // Convert
     int64_t fPoint = static_cast<int64_t>(round(val * pow(2, var->binPoint_)));
 
-    // Compute representable range in integer domain
-    int64_t maxInt = (1LL << (var->valueBits_ - 1)) - 1;
-    int64_t minInt = -(1LL << (var->valueBits_ - 1));
+    // Compute representable range in integer domain (use 1ULL to avoid UB for 64-bit widths)
+    int64_t maxInt = static_cast<int64_t>((1ULL << (var->valueBits_ - 1)) - 1);
+    int64_t minInt = -static_cast<int64_t>(1ULL << (var->valueBits_ - 1));
 
     // Check for overflow (rounding may push value beyond representable range)
     if (fPoint > maxInt || fPoint < minInt)
