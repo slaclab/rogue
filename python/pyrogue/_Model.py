@@ -960,6 +960,73 @@ class Float8BE(Float8):
     endianness = 'big'
 
 
+class BFloat16(Model):
+    """Model class for 16-bit Brain Float (BFloat16) numbers.
+
+    Parameters
+    ----------
+    bitSize : int
+        Number of bits being represented. Must be 16.
+
+    Notes
+    -----
+    Format: 1 sign bit, 8 exponent bits, 7 mantissa bits (same exponent as float32).
+    Bias = 127. Supports infinity and NaN. Maximum representable finite value
+    is approximately 3.39e38 (same range as float32).
+    Supported by NVIDIA Ampere (A100), Hopper (H100), and Blackwell GPUs.
+    """
+
+    defaultdisp = '{:f}'
+    pytype      = float
+    modelId     = rim.BFloat16
+
+    def __init__(self, bitSize: int) -> None:
+        """Initialize 16-bit BFloat16 model metadata."""
+        assert bitSize == 16, f"The bitSize param of Model {self.__class__.__name__} must be 16"
+        super().__init__(bitSize)
+        self.name = 'BFloat16'
+        self.ndType = np.dtype(np.float32)
+
+    def toBytes(self, value: float) -> bytearray:
+        """Convert float to 2-byte BFloat16 encoding.
+
+        BFloat16 is the upper 16 bits of the float32 bit pattern.
+        All special values (NaN, infinity, zero, subnormals) are preserved.
+        """
+        v = float(value)
+        # Get float32 bit pattern as uint32, take upper 16 bits
+        bits = struct.unpack('I', struct.pack('f', v))[0]
+        bf16 = bits >> 16
+        return bytearray(struct.pack('<H', bf16))
+
+    def fromBytes(self, ba: bytes) -> float:
+        """Decode 2-byte BFloat16 encoding to float.
+
+        Reconstructs float32 by shifting the 16-bit pattern left by 16.
+        """
+        bf16 = struct.unpack('<H', ba[:2])[0]
+        bits = bf16 << 16
+        return struct.unpack('f', struct.pack('I', bits))[0]
+
+    def fromString(self, string: str) -> float:
+        """Parse a string into a float value."""
+        return float(string)
+
+    def minValue(self) -> float:
+        """Return the minimum representable finite BFloat16 value (~-3.39e38)."""
+        return -3.3895313892515355e+38
+
+    def maxValue(self) -> float:
+        """Return the maximum representable finite BFloat16 value (~3.39e38)."""
+        return 3.3895313892515355e+38
+
+
+class BFloat16BE(BFloat16):
+    """Model class for BFloat16 floats stored as big endian."""
+
+    endianness = 'big'
+
+
 class Fixed(Model):
     """
     Model class for fixed point signed integers
