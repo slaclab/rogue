@@ -45,7 +45,7 @@ namespace batcher {
  *
  * Threading model:
  * - No internal worker thread is created.
- * - `push()` queues frames; `sendBatch()` builds and emits the super-frame.
+ * - `acceptFrame()` queues frames; `sendBatch()` builds and emits the super-frame.
  */
 class CombinerV2 : public rogue::interfaces::stream::Master, public rogue::interfaces::stream::Slave {
     std::shared_ptr<rogue::Logging> log_;

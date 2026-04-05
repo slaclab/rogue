@@ -36,14 +36,14 @@ class FrameSink(rogue.interfaces.stream.Slave):
         self.frames = []
 
     def _acceptFrame(self, frame):
-        frame.lock()
-        ba = frame.getBa()
-        self.frames.append({
-            'data': bytes(ba),
-            'channel': frame.getChannel(),
-            'fUser': frame.getFirstUser(),
-            'lUser': frame.getLastUser(),
-        })
+        with frame.lock():
+            ba = frame.getBa()
+            self.frames.append({
+                'data': bytes(ba),
+                'channel': frame.getChannel(),
+                'fUser': frame.getFirstUser(),
+                'lUser': frame.getLastUser(),
+            })
 
 
 class RawFrameSink(rogue.interfaces.stream.Slave):
@@ -53,9 +53,9 @@ class RawFrameSink(rogue.interfaces.stream.Slave):
         self.frames = []
 
     def _acceptFrame(self, frame):
-        frame.lock()
-        ba = frame.getBa()
-        self.frames.append(bytes(ba))
+        with frame.lock():
+            ba = frame.getBa()
+            self.frames.append(bytes(ba))
 
 
 class FrameSource(rogue.interfaces.stream.Master):

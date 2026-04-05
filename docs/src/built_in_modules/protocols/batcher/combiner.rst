@@ -71,10 +71,14 @@ V1
    splitter = rogue.protocols.batcher.SplitterV1()
    dst = MyRecordSink()
 
+   # Connect a stream source to the combiner, then to the splitter/sink.
+   src = MyFrameSource()
    src >> combiner
    combiner >> splitter >> dst
 
-   # Queue frames, then batch and send.
+   # src sends frames into the combiner via the stream interface,
+   # which queues them internally. Then sendBatch() builds and emits
+   # the super-frame downstream.
    combiner.sendBatch()
 
 V2
@@ -92,10 +96,14 @@ V2
    splitter = rogue.protocols.batcher.SplitterV2()
    dst = MyRecordSink()
 
+   # Connect a stream source to the combiner, then to the splitter/sink.
+   src = MyFrameSource()
    src >> combiner
    combiner >> splitter >> dst
 
-   # Queue frames, then batch and send.
+   # src sends frames into the combiner via the stream interface,
+   # which queues them internally. Then sendBatch() builds and emits
+   # the super-frame downstream.
    combiner.sendBatch()
 
 C++ Example

@@ -53,7 +53,7 @@ namespace batcher {
  *
  * Threading model:
  * - No internal worker thread is created.
- * - `push()` queues frames; `sendBatch()` builds and emits the super-frame.
+ * - `acceptFrame()` queues frames; `sendBatch()` builds and emits the super-frame.
  */
 class CombinerV1 : public rogue::interfaces::stream::Master, public rogue::interfaces::stream::Slave {
     std::shared_ptr<rogue::Logging> log_;
@@ -82,7 +82,7 @@ class CombinerV1 : public rogue::interfaces::stream::Master, public rogue::inter
 
     /**
      * @brief Creates a `CombinerV1` instance.
-     * @param width AXI stream width encoding (0-5). Default 2 (64-bit).
+     * @param width AXI stream width encoding (0-5).
      * @return Shared pointer to the created combiner.
      */
     static std::shared_ptr<rogue::protocols::batcher::CombinerV1> create(uint8_t width);
