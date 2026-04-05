@@ -898,6 +898,51 @@ class Block : public Master {
     float getFloat8(rogue::interfaces::memory::Variable* var, int32_t index);
 
     //////////////////////////////////////////
+    // BFloat16 (Brain Float 16)
+    //////////////////////////////////////////
+
+#ifndef NO_PYTHON
+
+    /**
+     * @brief Sets BFloat16 variable data from Python input.
+     *
+     * @param value Python source value.
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     */
+    void setBFloat16Py(boost::python::object& value,
+                       rogue::interfaces::memory::Variable* var, int32_t index);
+
+    /**
+     * @brief Gets BFloat16 variable data as Python output.
+     *
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     * @return Python object containing float value.
+     */
+    boost::python::object getBFloat16Py(rogue::interfaces::memory::Variable* var, int32_t index);
+
+#endif
+
+    /**
+     * @brief Sets BFloat16 variable data from C++ input.
+     *
+     * @param value Source float value (converted to BFloat16 for storage).
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     */
+    void setBFloat16(const float& value, rogue::interfaces::memory::Variable* var, int32_t index);
+
+    /**
+     * @brief Gets BFloat16 variable data as C++ output.
+     *
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     * @return Float value converted from BFloat16.
+     */
+    float getBFloat16(rogue::interfaces::memory::Variable* var, int32_t index);
+
+    //////////////////////////////////////////
     // Double
     //////////////////////////////////////////
 

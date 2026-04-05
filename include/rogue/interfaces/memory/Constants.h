@@ -148,6 +148,13 @@ static const uint8_t Float16 = 0x09;
 static const uint8_t Float8 = 0x0A;
 
 /**
+ * @brief Block access type for BFloat16 (Brain Float 16) data.
+ *
+ * @details Exposed to Python as `rogue.interfaces.memory.BFloat16`.
+ */
+static const uint8_t BFloat16 = 0x0B;
+
+/**
  * @brief Block access type for custom handlers.
  *
  * @details Exposed to Python as `rogue.interfaces.memory.Custom`.
