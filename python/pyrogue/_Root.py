@@ -789,7 +789,7 @@ class Root(pr.Device):
                 self.verifyBlocks(recurse=True)
                 self._log.info("Check verified root write transactions")
                 self.checkBlocks(recurse=True)
-            except Exception as e:
+            except rogue.GeneralError as e:
                 pr.logException(self._log, e)
                 return False
 
@@ -804,7 +804,7 @@ class Root(pr.Device):
                 self.readBlocks(recurse=True)
                 self._log.info("Check root read transactions")
                 self.checkBlocks(recurse=True)
-            except Exception as e:
+            except rogue.GeneralError as e:
                 pr.logException(self._log, e)
                 return False
 
