@@ -297,6 +297,16 @@ class Variable {
     float (rogue::interfaces::memory::Block::*getFloat6_)(rogue::interfaces::memory::Variable*, int32_t index);
 
     /////////////////////////////////
+    // C++ Float4 (E2M1)
+    /////////////////////////////////
+
+    void (rogue::interfaces::memory::Block::*setFloat4_)(const float&,
+                                                         rogue::interfaces::memory::Variable*,
+                                                         int32_t index);
+
+    float (rogue::interfaces::memory::Block::*getFloat4_)(rogue::interfaces::memory::Variable*, int32_t index);
+
+    /////////////////////////////////
     // C++ filed point
     /////////////////////////////////
 
@@ -976,6 +986,26 @@ class Variable {
      * @return Float value converted from E3M2.
      */
     float getFloat6(int32_t index = -1);
+
+    /////////////////////////////////
+    // C++ Float4 (E2M1)
+    /////////////////////////////////
+
+    /**
+     * @brief Set a C++ float value into the variable using Float4 (E2M1) conversion.
+     *
+     * @param value Source float value.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     */
+    void setFloat4(float& value, int32_t index = -1);
+
+    /**
+     * @brief Get the variable's value as a C++ float using Float4 (E2M1) conversion.
+     *
+     * @param index Variable index for list variables, or `-1` for full variable.
+     * @return float Decoded float value.
+     */
+    float getFloat4(int32_t index = -1);
 
     /////////////////////////////////
     // C++ double

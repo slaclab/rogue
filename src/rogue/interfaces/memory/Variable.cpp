@@ -248,6 +248,8 @@ rim::Variable::Variable(std::string name,
     getTensorFloat32_ = NULL;
     setFloat6_ = NULL;
     getFloat6_ = NULL;
+    setFloat4_ = NULL;
+    getFloat4_ = NULL;
 
     // Define set function
     switch (modelId_) {
@@ -302,6 +304,10 @@ rim::Variable::Variable(std::string name,
 
         case rim::Float6:
             setFloat6_ = &rim::Block::setFloat6;
+            break;
+
+        case rim::Float4:
+            setFloat4_ = &rim::Block::setFloat4;
             break;
 
         case rim::Double:
@@ -369,6 +375,10 @@ rim::Variable::Variable(std::string name,
 
         case rim::Float6:
             getFloat6_ = &rim::Block::getFloat6;
+            break;
+
+        case rim::Float4:
+            getFloat4_ = &rim::Block::getFloat4;
             break;
 
         case rim::Double:
@@ -441,6 +451,10 @@ rim::Variable::Variable(std::string name,
             setFuncPy_ = &rim::Block::setFloat6Py;
             break;
 
+        case rim::Float4:
+            setFuncPy_ = &rim::Block::setFloat4Py;
+            break;
+
         case rim::Double:
             setFuncPy_ = &rim::Block::setDoublePy;
             break;
@@ -508,6 +522,10 @@ rim::Variable::Variable(std::string name,
 
         case rim::Float6:
             getFuncPy_ = &rim::Block::getFloat6Py;
+            break;
+
+        case rim::Float4:
+            getFuncPy_ = &rim::Block::getFloat4Py;
             break;
 
         case rim::Double:
@@ -1082,6 +1100,26 @@ float rim::Variable::getFloat6(int32_t index) {
 
     block_->read(this, index);
     return (block_->*getFloat6_)(this, index);
+}
+
+/////////////////////////////////
+// C++ Float4 (E2M1)
+/////////////////////////////////
+
+void rim::Variable::setFloat4(float& value, int32_t index) {
+    if (setFloat4_ == NULL)
+        throw(rogue::GeneralError::create("Variable::setFloat4", "Wrong set type for variable %s", path_.c_str()));
+
+    (block_->*setFloat4_)(value, this, index);
+    block_->write(this, index);
+}
+
+float rim::Variable::getFloat4(int32_t index) {
+    if (getFloat4_ == NULL)
+        throw(rogue::GeneralError::create("Variable::getFloat4", "Wrong get type for variable %s", path_.c_str()));
+
+    block_->read(this, index);
+    return (block_->*getFloat4_)(this, index);
 }
 
 /////////////////////////////////
