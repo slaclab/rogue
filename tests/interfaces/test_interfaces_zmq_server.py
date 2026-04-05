@@ -78,8 +78,9 @@ def test_zmq_server_operation_request_and_string_paths(monkeypatch, capsys):
     # Verify that unpicklable exceptions are converted to a standard Exception
     # instead of crashing the server (ESROGUE-723).
     class _UnpicklableError(Exception):
-        """An exception whose module cannot be resolved by pickle."""
-        pass
+        """An exception that is deterministically unpicklable."""
+        def __reduce__(self):
+            raise pickle.PicklingError("cannot pickle _UnpicklableError")
     _UnpicklableError.__module__ = "Boost.Python"
     _UnpicklableError.__qualname__ = "ArgumentError"
 
