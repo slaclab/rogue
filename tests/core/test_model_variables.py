@@ -163,7 +163,7 @@ def test_remote_variable_metadata_exposes_model_constraints():
         assert root.Dev.FixedVar.minimum == -2048.0
         assert root.Dev.FixedVar.maximum == 2047.9375
         assert root.Dev.UFixedVar.minimum == 0.0
-        assert root.Dev.UFixedVar.maximum == 2047.9375
+        assert root.Dev.UFixedVar.maximum == 4095.9375
 
 
 def test_fixed_point_overflow_raises_error():
@@ -183,9 +183,9 @@ def test_fixed_point_overflow_raises_error():
         with pytest.raises(Exception, match="Value range error"):
             root.Dev.FixedVar.set(-2049.0)
 
-        # UFixed(16, 4) range: 0.0 to 2047.9375 (C++ uses signed two's-complement)
+        # UFixed(16, 4) range: 0.0 to 4095.9375 (full unsigned range)
         with pytest.raises(Exception, match="Value range error"):
-            root.Dev.UFixedVar.set(2048.0)
+            root.Dev.UFixedVar.set(4096.0)
 
         with pytest.raises(Exception, match="Value range error"):
             root.Dev.UFixedVar.set(-1.0)
@@ -196,3 +196,14 @@ def test_fixed_point_overflow_raises_error():
 
         root.Dev.FixedVar.set(-2048.0)
         assert math.isclose(root.Dev.FixedVar.get(), -2048.0, abs_tol=1e-6)
+
+        # UFixed must accept the full unsigned range (including values above
+        # the signed-max boundary, which previously misbehaved)
+        root.Dev.UFixedVar.set(0.0)
+        assert math.isclose(root.Dev.UFixedVar.get(), 0.0, abs_tol=1e-6)
+
+        root.Dev.UFixedVar.set(4095.9375)
+        assert math.isclose(root.Dev.UFixedVar.get(), 4095.9375, abs_tol=1e-6)
+
+        root.Dev.UFixedVar.set(3000.5)
+        assert math.isclose(root.Dev.UFixedVar.get(), 3000.5, abs_tol=1e-6)

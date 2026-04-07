@@ -134,6 +134,13 @@ static const uint8_t Double = 0x07;
 static const uint8_t Fixed = 0x08;
 
 /**
+ * @brief Block access type for unsigned fixed-point numeric data.
+ *
+ * @details Exposed to Python as `rogue.interfaces.memory.UFixed`.
+ */
+static const uint8_t UFixed = 0x09;
+
+/**
  * @brief Block access type for custom handlers.
  *
  * @details Exposed to Python as `rogue.interfaces.memory.Custom`.
