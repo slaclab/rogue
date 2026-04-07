@@ -75,6 +75,25 @@ def test_zmq_server_operation_request_and_string_paths(monkeypatch, capsys):
     bad_request = pickle.dumps({"path": "root.Node", "attr": "multiply", "args": (), "kwargs": {"rhs": 5}})
     assert isinstance(pickle.loads(server._doRequest(bad_request)), Exception)
 
+    # Verify that unpicklable exceptions are converted to a standard Exception
+    # instead of crashing the server (ESROGUE-723).
+    class _UnpicklableError(Exception):
+        """An exception that is deterministically unpicklable."""
+        def __reduce__(self):
+            raise pickle.PicklingError("cannot pickle _UnpicklableError")
+    _UnpicklableError.__module__ = "Boost.Python"
+    _UnpicklableError.__qualname__ = "ArgumentError"
+
+    def _raise_unpicklable(*args, **kwargs):
+        raise _UnpicklableError("bad argument")
+    node.trigger_unpicklable = _raise_unpicklable
+
+    unpicklable_request = pickle.dumps({"path": "root.Node", "attr": "trigger_unpicklable"})
+    result = pickle.loads(server._doRequest(unpicklable_request))
+    assert type(result) is Exception
+    assert "Boost.Python.ArgumentError" in str(result)
+    assert "bad argument" in str(result)
+
     assert server._doString(json.dumps({"path": "root.Node", "attr": "value"})) == "node-value"
     assert server._doString(json.dumps({"path": "root.Node", "attr": "multiply", "args": [2], "kwargs": {"rhs": 4}})) == "8"
     assert server._doString("{bad json") == "EXCEPTION: Expecting property name enclosed in double quotes: line 1 column 2 (char 1)"
