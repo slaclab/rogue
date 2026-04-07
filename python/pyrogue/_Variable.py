@@ -15,6 +15,7 @@
 from __future__ import annotations
 
 import ast
+import operator
 import re
 import shlex
 import sys
@@ -1480,6 +1481,8 @@ class RemoteVariable(BaseVariable,rim.Variable):
         try:
 
             # Set value to block
+            index = operator.index(index)
+
             self._set(value,index)
 
             if write:
@@ -1520,6 +1523,8 @@ class RemoteVariable(BaseVariable,rim.Variable):
         """
         try:
 
+            index = operator.index(index)
+
             # Set value to block
             self._set(value,index)
 
@@ -1553,6 +1558,8 @@ class RemoteVariable(BaseVariable,rim.Variable):
             If True, check transaction completion.
         """
         try:
+            index = operator.index(index)
+
             if read:
                 self._parent.readBlocks(recurse=False, variable=self, index=index)
                 if check:
