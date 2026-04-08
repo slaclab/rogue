@@ -32,3 +32,5 @@ dependencies:
   - pytest-cov
   - pytest-xdist
   - pyqt>=5.15
+  - qtpy>=2.0
+  - pyqtgraph>=0.13

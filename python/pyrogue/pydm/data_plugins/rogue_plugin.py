@@ -18,8 +18,8 @@ import os
 # import time
 
 from pydm.data_plugins.plugin import PyDMPlugin, PyDMConnection
-from PyQt5.QtCore import pyqtSlot, Qt
-from PyQt5.QtWidgets import QApplication
+from qtpy.QtCore import Slot, Qt
+from qtpy.QtWidgets import QApplication
 from pydm import utilities
 from pydm.widgets.channel import PyDMChannel
 
@@ -207,10 +207,10 @@ class RogueConnection(PyDMConnection):
         self.new_severity_signal.emit(AlarmToInt[varValue.severity])
 
 
-    @pyqtSlot(int)
-    @pyqtSlot(float)
-    @pyqtSlot(str)
-    @pyqtSlot(np.ndarray)
+    @Slot(int)
+    @Slot(float)
+    @Slot(str)
+    @Slot(np.ndarray)
     def put_value(self, new_value: int | float | str | np.ndarray | None) -> None:
         """Handle write requests from PyDM widgets.
 
