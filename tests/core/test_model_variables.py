@@ -85,6 +85,34 @@ class ModelVariableDevice(pr.Device):
             mode="RW",
         ))
 
+        # Wide fixed-point variables exercise the sign-extension path in
+        # Block::getFixed for valueBits_ >= 32. A plain `1 << valueBits_` in
+        # that path is undefined behavior, so without correct 64-bit shifts
+        # negative-value round-trips on these will fail.
+        self.add(pr.RemoteVariable(
+            name="Fixed32Var",
+            offset=0x28,
+            bitSize=32,
+            base=pr.Fixed(32, 0),
+            mode="RW",
+        ))
+
+        self.add(pr.RemoteVariable(
+            name="Fixed40Var",
+            offset=0x30,
+            bitSize=40,
+            base=pr.Fixed(40, 8),
+            mode="RW",
+        ))
+
+        self.add(pr.RemoteVariable(
+            name="Fixed64Var",
+            offset=0x38,
+            bitSize=64,
+            base=pr.Fixed(64, 0),
+            mode="RW",
+        ))
+
         self.add(pr.LocalVariable(name="LocalInt", value=3))
         self.add(pr.LocalVariable(name="LocalBool", value=False))
         self.add(pr.LocalVariable(name="LocalString", value="start"))
@@ -207,3 +235,33 @@ def test_fixed_point_overflow_raises_error():
 
         root.Dev.UFixedVar.set(3000.5)
         assert math.isclose(root.Dev.UFixedVar.get(), 3000.5, abs_tol=1e-6)
+
+
+def test_wide_fixed_point_sign_extension_round_trip():
+    # Regression test for Block::getFixed sign-extension on wide variables.
+    # Historically the read path computed `1 << valueBits_` on a plain int,
+    # which is undefined behavior for valueBits_ >= 31 and silently broke
+    # negative-value round-trips for Fixed variables wider than 31 bits.
+    with ModelVariableRoot() as root:
+        # Fixed(32, 0): int32 range round-trips
+        for v in (0.0, 1.0, -1.0, 2147483647.0, -2147483648.0):
+            root.Dev.Fixed32Var.set(v)
+            assert math.isclose(root.Dev.Fixed32Var.get(), v, abs_tol=0.0), (
+                f"Fixed32Var round-trip failed for {v}"
+            )
+
+        # Fixed(40, 8): non-byte-aligned wide width with a fractional part
+        for v in (0.0, 0.5, -0.5, 1023.75, -1024.0):
+            root.Dev.Fixed40Var.set(v)
+            assert math.isclose(
+                root.Dev.Fixed40Var.get(), v, abs_tol=1.0 / (2**8)
+            ), f"Fixed40Var round-trip failed for {v}"
+
+        # Fixed(64, 0): values exactly representable as double. Avoid 2**63
+        # boundaries because doubles cannot represent INT64_MIN/INT64_MAX
+        # exactly — the stored integer would round.
+        for v in (0.0, 1.0, -1.0, float(2**50), float(-(2**50))):
+            root.Dev.Fixed64Var.set(v)
+            assert math.isclose(root.Dev.Fixed64Var.get(), v, abs_tol=0.0), (
+                f"Fixed64Var round-trip failed for {v}"
+            )

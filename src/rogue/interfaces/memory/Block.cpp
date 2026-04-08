@@ -2047,9 +2047,13 @@ double rim::Block::getFixed(rim::Variable* var, int32_t index) {
     double tmp;
 
     getBytes(reinterpret_cast<uint8_t*>(&fPoint), var, index);
-    // Do two-complement if negative
-    if ((fPoint & (1 << (var->valueBits_ - 1))) != 0) {
-        fPoint = fPoint - (1 << var->valueBits_);
+    // Sign-extend from valueBits_ to 64 bits. Use 1LL to avoid shifting a
+    // plain int by >= 32 (UB) and guard the valueBits_ == 64 case, where
+    // fPoint already holds the signed two's-complement value directly.
+    if (var->valueBits_ < 64) {
+        const int64_t signBit = 1LL << (var->valueBits_ - 1);
+        const int64_t modulus = 1LL << var->valueBits_;
+        if ((fPoint & signBit) != 0) fPoint -= modulus;
     }
 
     // Convert to float
