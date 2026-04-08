@@ -765,8 +765,11 @@ std::string rim::Variable::getDumpValue(bool read) {
                 break;
 
             case rim::Fixed:
+                ret << block_->getFixed(this, index);
+                break;
+
             case rim::UFixed:
-                ret << (block_->*getFixed_)(this, index);
+                ret << block_->getUFixed(this, index);
                 break;
 
             default:
