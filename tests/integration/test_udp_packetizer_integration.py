@@ -137,6 +137,21 @@ def run_udp_packetizer_path(version, jumbo):
     prbs_rx = rogue.utilities.Prbs()
     out_of_order = RssiOutOfOrder(period=0)
 
+    # out_of_order sits on the RSSI transport path, so its counter advances
+    # once per RSSI segment — not once per PRBS application frame. A 2048-byte
+    # frame fits in a single jumbo segment but is split into multiple segments
+    # on a standard-MTU link, so we compute the exact expected segment count
+    # from the UDP max payload and the per-packet packetizer overhead. Without
+    # this, `out_of_order.cnt >= FRAME_COUNT` can become true in the non-jumbo
+    # case long before all generated frames have actually been observed,
+    # reintroducing the reorder-drain race the wait is meant to close.
+    rssi_hdr_size = 8
+    pack_hdr_size = 8
+    pack_tail_size = 8 if version == 2 else 1
+    segment_payload = client.maxPayload() - rssi_hdr_size - pack_hdr_size - pack_tail_size
+    segments_per_frame = max(1, (FRAME_SIZE + segment_payload - 1) // segment_payload)
+    expected_segments = FRAME_COUNT * segments_per_frame
+
     prbs_tx >> client_pack.application(0)
     client_rssi.application() == client_pack.transport()
     client_rssi.transport() >> out_of_order >> client >> client_rssi.transport()
@@ -168,12 +183,14 @@ def run_udp_packetizer_path(version, jumbo):
         for _ in range(FRAME_COUNT):
             prbs_tx.genFrame(FRAME_SIZE)
 
-        # Wait until the reordering stage has actually observed every frame
-        # before flushing its cache. Otherwise a frame that lands in the cache
-        # after the flush ran gets stuck there and starves the drain loop.
+        # Wait until the reordering stage has actually observed every segment
+        # for every generated frame before flushing its cache. Otherwise a
+        # frame that lands in the cache after the flush ran gets stuck there
+        # and starves the drain loop. The target is in RSSI segments — see
+        # the `expected_segments` derivation above.
         wait_for_progress(
             lambda: out_of_order.cnt,
-            FRAME_COUNT,
+            expected_segments,
             label=f"reorder settle Ver={version} Jumbo={jumbo}",
         )
 
