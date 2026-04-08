@@ -322,6 +322,10 @@ rim::Variable::Variable(std::string name,
             setFixed_ = &rim::Block::setFixed;
             break;
 
+        case rim::UFixed:
+            setFixed_ = &rim::Block::setUFixed;
+            break;
+
         default:
             break;
     }
@@ -391,6 +395,10 @@ rim::Variable::Variable(std::string name,
 
         case rim::Fixed:
             getFixed_ = &rim::Block::getFixed;
+            break;
+
+        case rim::UFixed:
+            getFixed_ = &rim::Block::getUFixed;
             break;
 
         default:
@@ -464,6 +472,7 @@ rim::Variable::Variable(std::string name,
             break;
 
         case rim::Fixed:
+        case rim::UFixed:
             setFuncPy_ = &rim::Block::setFixedPy;
             break;
 
@@ -537,6 +546,7 @@ rim::Variable::Variable(std::string name,
             break;
 
         case rim::Fixed:
+        case rim::UFixed:
             getFuncPy_ = &rim::Block::getFixedPy;
             break;
 
@@ -863,7 +873,11 @@ std::string rim::Variable::getDumpValue(bool read) {
                 break;
 
             case rim::Fixed:
-                ret << (block_->*getFixed_)(this, index);
+                ret << block_->getFixed(this, index);
+                break;
+
+            case rim::UFixed:
+                ret << block_->getUFixed(this, index);
                 break;
 
             default:

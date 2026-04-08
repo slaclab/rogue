@@ -1340,6 +1340,14 @@ class Fixed(Model):
         self.name = f'Fixed_{self.bitSize}_{self.binPoint}'
         self.ndType = np.dtype(np.float64)
 
+    def minValue(self) -> float:
+        """Return the minimum representable signed fixed-point value."""
+        return -1.0 * (2**(self.bitSize - 1)) / (2**self.binPoint)
+
+    def maxValue(self) -> float:
+        """Return the maximum representable signed fixed-point value."""
+        return (2**(self.bitSize - 1) - 1) / (2**self.binPoint)
+
 class UFixed(Model):
     """
     Model class for fixed point unsigned integers
@@ -1355,10 +1363,18 @@ class UFixed(Model):
 
     pytype  = float
     signed  = False
-    modelId = rim.Fixed
+    modelId = rim.UFixed
 
     def __init__(self, bitSize: int, binPoint: int) -> None:
         """Initialize unsigned fixed-point model metadata."""
         super().__init__(bitSize,binPoint)
         self.name = f'UFixed_{self.bitSize}_{self.binPoint}'
         self.ndType = np.dtype(np.float64)
+
+    def minValue(self) -> float:
+        """Return the minimum representable unsigned fixed-point value (0)."""
+        return 0.0
+
+    def maxValue(self) -> float:
+        """Return the maximum representable unsigned fixed-point value."""
+        return (2**self.bitSize - 1) / (2**self.binPoint)

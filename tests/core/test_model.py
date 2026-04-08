@@ -146,7 +146,7 @@ def test_fixed_models_handle_multiple_sizes_and_corner_cases(factory, bit_size, 
     assert model.signed is signed
     assert model.pytype is float
     assert model.ndType == np.dtype(np.float64)
-    assert model.modelId == rim.Fixed
+    assert model.modelId == (rim.Fixed if signed else rim.UFixed)
 
 
 def test_fixed_model_cache_keys_include_bit_size_and_bin_point():
