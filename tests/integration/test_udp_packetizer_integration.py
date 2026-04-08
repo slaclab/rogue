@@ -49,15 +49,15 @@ def wait_for_progress(get_value, target, label):
     stops advancing for STALL_WINDOW seconds.
     """
     last_value = get_value()
-    last_change = time.time()
+    last_change = time.monotonic()
     while True:
         current = get_value()
         if current >= target:
             return current
         if current != last_value:
             last_value = current
-            last_change = time.time()
-        elif (time.time() - last_change) > STALL_WINDOW:
+            last_change = time.monotonic()
+        elif (time.monotonic() - last_change) > STALL_WINDOW:
             raise AssertionError(
                 f"{label} stalled at {current}/{target} "
                 f"after {STALL_WINDOW:.1f}s with no progress"
@@ -158,9 +158,9 @@ def run_udp_packetizer_path(version, jumbo):
 
         # RSSI handshake is binary (open / not open) with no incremental
         # progress, so a plain bound is appropriate here.
-        open_deadline = time.time() + CONNECTION_TIMEOUT
+        open_deadline = time.monotonic() + CONNECTION_TIMEOUT
         while not client_rssi.getOpen():
-            if time.time() > open_deadline:
+            if time.monotonic() > open_deadline:
                 raise AssertionError(f"RSSI timeout error. Ver={version} Jumbo={jumbo}")
             time.sleep(0.1)
 
