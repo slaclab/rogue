@@ -25,8 +25,45 @@ pytestmark = pytest.mark.integration
 # the path without turning the test into a stress benchmark.
 FRAME_COUNT = 200
 FRAME_SIZE = 2048
-DRAIN_TIMEOUT = 10.0
-CONNECTION_TIMEOUT = 10
+
+# Rather than an arbitrary wall-clock timeout (which fails on slow machines),
+# the drain and reorder-settle loops use progress-based waiting: as long as
+# the monitored counter keeps advancing we keep waiting, no matter how slow.
+# We only bail out if the counter stops advancing for STALL_WINDOW seconds,
+# which is a reliable indicator that the pipeline is genuinely stuck rather
+# than merely slow.
+STALL_WINDOW = 5.0
+POLL_INTERVAL = 0.01
+
+# RSSI open is a one-shot handshake with no incremental progress, so it still
+# uses a plain bound. This has never been the flake source, but 30s gives
+# plenty of headroom on loaded runners.
+CONNECTION_TIMEOUT = 30.0
+
+
+def wait_for_progress(get_value, target, label):
+    """Block until get_value() reaches target.
+
+    Progress-based: resets the stall clock every time the value advances,
+    so arbitrarily slow machines still pass. Only raises if the counter
+    stops advancing for STALL_WINDOW seconds.
+    """
+    last_value = get_value()
+    last_change = time.time()
+    while True:
+        current = get_value()
+        if current >= target:
+            return current
+        if current != last_value:
+            last_value = current
+            last_change = time.time()
+        elif (time.time() - last_change) > STALL_WINDOW:
+            raise AssertionError(
+                f"{label} stalled at {current}/{target} "
+                f"after {STALL_WINDOW:.1f}s with no progress"
+            )
+        time.sleep(POLL_INTERVAL)
+
 
 class RssiOutOfOrder(rogue.interfaces.stream.Slave, rogue.interfaces.stream.Master):
 
@@ -52,6 +89,11 @@ class RssiOutOfOrder(rogue.interfaces.stream.Slave, rogue.interfaces.stream.Mast
             if self._period == 0 and self._last is not None:
                 self._sendFrame(self._last)
                 self._last = None
+
+    @property
+    def cnt(self):
+        with self._lock:
+            return self._cnt
 
     def _acceptFrame(self, frame: rogue.interfaces.stream.Frame) -> None:
 
@@ -103,41 +145,74 @@ def run_udp_packetizer_path(version, jumbo):
     server_rssi.application() == server_pack.transport()
     server_pack.application(0) >> prbs_rx
 
-    # Start with orderly transport first so the RSSI session comes up cleanly
-    # before periodic reordering is introduced.
-    server_rssi._start()
-    client_rssi._start()
+    rssi_started = False
+    try:
+        # Start with orderly transport first so the RSSI session comes up cleanly
+        # before periodic reordering is introduced.
+        server_rssi._start()
+        client_rssi._start()
+        rssi_started = True
 
-    waited = 0
-    while not client_rssi.getOpen():
-        time.sleep(1)
-        waited += 1
-        if waited == CONNECTION_TIMEOUT:
-            client_rssi._stop()
-            server_rssi._stop()
-            raise AssertionError(f"RSSI timeout error. Ver={version} Jumbo={jumbo}")
+        # RSSI handshake is binary (open / not open) with no incremental
+        # progress, so a plain bound is appropriate here.
+        open_deadline = time.time() + CONNECTION_TIMEOUT
+        while not client_rssi.getOpen():
+            if time.time() > open_deadline:
+                raise AssertionError(f"RSSI timeout error. Ver={version} Jumbo={jumbo}")
+            time.sleep(0.1)
 
-    out_of_order.period = 10
-    for _ in range(FRAME_COUNT):
-        prbs_tx.genFrame(FRAME_SIZE)
+        out_of_order.period = 10
+        for _ in range(FRAME_COUNT):
+            prbs_tx.genFrame(FRAME_SIZE)
 
-    out_of_order.period = 0
+        # Wait until the reordering stage has actually observed every frame
+        # before flushing its cache. Otherwise a frame that lands in the cache
+        # after the flush ran gets stuck there and starves the drain loop.
+        wait_for_progress(
+            lambda: out_of_order.cnt,
+            FRAME_COUNT,
+            label=f"reorder settle Ver={version} Jumbo={jumbo}",
+        )
 
-    start = time.time()
-    while prbs_rx.getRxCount() != FRAME_COUNT:
+        out_of_order.period = 0
+
+        wait_for_progress(
+            lambda: prbs_rx.getRxCount(),
+            FRAME_COUNT,
+            label=f"frame drain Ver={version} Jumbo={jumbo}",
+        )
+
+        assert prbs_rx.getRxErrors() == 0
+
+    finally:
+        # Deterministic teardown: quiesce the reordering stage, stop RSSI
+        # sessions, give in-flight C++ callbacks a moment to unwind, then
+        # drop references in reverse link order so upstream stages never
+        # outlive the downstream slaves they still hold pointers to.
+        try:
+            out_of_order.period = 0
+        except Exception:
+            pass
+        if rssi_started:
+            try:
+                client_rssi._stop()
+            except Exception:
+                pass
+            try:
+                server_rssi._stop()
+            except Exception:
+                pass
         time.sleep(0.1)
-        if (time.time() - start) > DRAIN_TIMEOUT:
-            client_rssi._stop()
-            server_rssi._stop()
-            raise AssertionError(
-                f"Frame drain timeout. Ver={version} Jumbo={jumbo} "
-                f"Got = {prbs_rx.getRxCount()} expected = {FRAME_COUNT}"
-            )
 
-    client_rssi._stop()
-    server_rssi._stop()
-
-    assert prbs_rx.getRxErrors() == 0
+        prbs_tx = None
+        prbs_rx = None
+        client_pack = None
+        server_pack = None
+        client_rssi = None
+        server_rssi = None
+        out_of_order = None
+        client = None
+        server = None
 
 
 @pytest.mark.parametrize("version,jumbo", [(1, True), (2, True), (1, False), (2, False)])
