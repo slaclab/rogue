@@ -139,7 +139,7 @@ class ModelVariableDevice(pr.Device):
         # negative-value round-trips on these will fail.
         self.add(pr.RemoteVariable(
             name="Fixed32Var",
-            offset=0x28,
+            offset=0x68,
             bitSize=32,
             base=pr.Fixed(32, 0),
             mode="RW",
@@ -147,7 +147,7 @@ class ModelVariableDevice(pr.Device):
 
         self.add(pr.RemoteVariable(
             name="Fixed40Var",
-            offset=0x30,
+            offset=0x70,
             bitSize=40,
             base=pr.Fixed(40, 8),
             mode="RW",
@@ -155,7 +155,7 @@ class ModelVariableDevice(pr.Device):
 
         self.add(pr.RemoteVariable(
             name="Fixed64Var",
-            offset=0x38,
+            offset=0x78,
             bitSize=64,
             base=pr.Fixed(64, 0),
             mode="RW",
