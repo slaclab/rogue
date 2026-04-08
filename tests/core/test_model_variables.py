@@ -113,6 +113,58 @@ class ModelVariableDevice(pr.Device):
             mode="RW",
         ))
 
+        # Wide unsigned fixed-point variables exercise Block::setUFixed /
+        # Block::getUFixed at valueBits_ >= 32, including the
+        # `valueBits_ >= 64 ? UINT64_MAX` branch used to cap the max-range
+        # computation at 64 bits.
+        self.add(pr.RemoteVariable(
+            name="UFixed32Var",
+            offset=0x40,
+            bitSize=32,
+            base=pr.UFixed(32, 0),
+            mode="RW",
+        ))
+
+        self.add(pr.RemoteVariable(
+            name="UFixed40Var",
+            offset=0x48,
+            bitSize=40,
+            base=pr.UFixed(40, 8),
+            mode="RW",
+        ))
+
+        self.add(pr.RemoteVariable(
+            name="UFixed64Var",
+            offset=0x50,
+            bitSize=64,
+            base=pr.UFixed(64, 0),
+            mode="RW",
+        ))
+
+        # List (numValues > 1) fixed-point variables exercise the numpy /
+        # per-element paths in Block::setFixedPy / Block::getFixedPy, which
+        # dispatch to the signed or unsigned scalar setter/getter via a
+        # modelId check. Without list coverage, that dispatch is untested.
+        self.add(pr.RemoteVariable(
+            name="FixedListVar",
+            offset=0x58,
+            numValues=4,
+            valueBits=16,
+            valueStride=16,
+            base=pr.Fixed(16, 4),
+            mode="RW",
+        ))
+
+        self.add(pr.RemoteVariable(
+            name="UFixedListVar",
+            offset=0x60,
+            numValues=4,
+            valueBits=16,
+            valueStride=16,
+            base=pr.UFixed(16, 4),
+            mode="RW",
+        ))
+
         self.add(pr.LocalVariable(name="LocalInt", value=3))
         self.add(pr.LocalVariable(name="LocalBool", value=False))
         self.add(pr.LocalVariable(name="LocalString", value="start"))
@@ -265,3 +317,69 @@ def test_wide_fixed_point_sign_extension_round_trip():
             assert math.isclose(root.Dev.Fixed64Var.get(), v, abs_tol=0.0), (
                 f"Fixed64Var round-trip failed for {v}"
             )
+
+
+def test_wide_ufixed_point_round_trip():
+    # Regression test for Block::setUFixed / Block::getUFixed at wide widths.
+    # Covers the `valueBits_ >= 64 ? UINT64_MAX : ((1ULL << valueBits_) - 1)`
+    # branch in setUFixed's max-range computation and confirms reads do not
+    # sign-extend (values above 2^(bitSize-1) must round-trip cleanly).
+    with ModelVariableRoot() as root:
+        # UFixed(32, 0): full unsigned 32-bit range, including values above
+        # the signed-max boundary which previously misbehaved.
+        for v in (0.0, 1.0, float(2**31), float(2**32 - 1)):
+            root.Dev.UFixed32Var.set(v)
+            assert math.isclose(root.Dev.UFixed32Var.get(), v, abs_tol=0.0), (
+                f"UFixed32Var round-trip failed for {v}"
+            )
+
+        # UFixed(40, 8): non-byte-aligned wide width with fractional bits.
+        for v in (0.0, 0.5, 1023.75, float(2**32) / (2**8)):
+            root.Dev.UFixed40Var.set(v)
+            assert math.isclose(
+                root.Dev.UFixed40Var.get(), v, abs_tol=1.0 / (2**8)
+            ), f"UFixed40Var round-trip failed for {v}"
+
+        # UFixed(64, 0): exercises the UINT64_MAX cap branch. Use values that
+        # are exactly representable as double (avoid 2**64 - 1 which rounds).
+        for v in (0.0, 1.0, float(2**50), float(2**53)):
+            root.Dev.UFixed64Var.set(v)
+            assert math.isclose(root.Dev.UFixed64Var.get(), v, abs_tol=0.0), (
+                f"UFixed64Var round-trip failed for {v}"
+            )
+
+        # Negative writes must still be rejected even at wide widths
+        with pytest.raises(Exception):
+            root.Dev.UFixed32Var.set(-1.0)
+        with pytest.raises(Exception):
+            root.Dev.UFixed64Var.set(-1.0)
+
+
+def test_fixed_point_list_variables_round_trip():
+    # Regression test for the list-variable (numValues > 1) path in
+    # Block::setFixedPy / Block::getFixedPy, which dispatches to the signed
+    # or unsigned scalar setter/getter via a modelId check. Covers both the
+    # numpy-array write path and the per-element list write path.
+    with ModelVariableRoot() as root:
+        # Signed Fixed list: write a Python list, read back, check each element.
+        fixed_values = [-128.0, -0.5, 0.0, 127.9375]
+        root.Dev.FixedListVar.set(fixed_values)
+        for i, v in enumerate(fixed_values):
+            got = root.Dev.FixedListVar.get(index=i)
+            assert math.isclose(got, v, abs_tol=1e-6), (
+                f"FixedListVar[{i}] round-trip failed: expected {v}, got {got}"
+            )
+
+        # Unsigned UFixed list: must handle values above the signed-max
+        # boundary (>= 2**(valueBits-1)) without sign-extending on read.
+        ufixed_values = [0.0, 0.25, 2048.0, 4095.9375]
+        root.Dev.UFixedListVar.set(ufixed_values)
+        for i, v in enumerate(ufixed_values):
+            got = root.Dev.UFixedListVar.get(index=i)
+            assert math.isclose(got, v, abs_tol=1e-6), (
+                f"UFixedListVar[{i}] round-trip failed: expected {v}, got {got}"
+            )
+
+        # Negative writes into the unsigned list must still be rejected.
+        with pytest.raises(Exception):
+            root.Dev.UFixedListVar.set([-1.0, 0.0, 0.0, 0.0])
