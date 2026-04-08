@@ -896,6 +896,24 @@ class Block : public Master {
      * @return Fixed-point value.
      */
     double getFixed(rogue::interfaces::memory::Variable* var, int32_t index);
+
+    /**
+     * @brief Sets unsigned fixed-point variable data from C++ input.
+     *
+     * @param value Source fixed-point value (must be non-negative and within unsigned range).
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     */
+    void setUFixed(const double& value, rogue::interfaces::memory::Variable* var, int32_t index);
+
+    /**
+     * @brief Gets unsigned fixed-point variable data as C++ output.
+     *
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     * @return Unsigned fixed-point value.
+     */
+    double getUFixed(rogue::interfaces::memory::Variable* var, int32_t index);
 };
 
 /** @brief Shared pointer alias for `Block`. */
