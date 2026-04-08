@@ -145,13 +145,16 @@ def run_udp_packetizer_path(version, jumbo):
     server_rssi.application() == server_pack.transport()
     server_pack.application(0) >> prbs_rx
 
-    rssi_started = False
+    server_started = False
+    client_started = False
     try:
         # Start with orderly transport first so the RSSI session comes up cleanly
-        # before periodic reordering is introduced.
+        # before periodic reordering is introduced. Track each endpoint
+        # separately so a failure mid-start still gets cleaned up in finally.
         server_rssi._start()
+        server_started = True
         client_rssi._start()
-        rssi_started = True
+        client_started = True
 
         # RSSI handshake is binary (open / not open) with no incremental
         # progress, so a plain bound is appropriate here.
@@ -182,6 +185,9 @@ def run_udp_packetizer_path(version, jumbo):
             label=f"frame drain Ver={version} Jumbo={jumbo}",
         )
 
+        # Enforce exact equality — wait_for_progress returns on >=, so this
+        # catches any duplicated or replayed frames that would otherwise pass.
+        assert prbs_rx.getRxCount() == FRAME_COUNT
         assert prbs_rx.getRxErrors() == 0
 
     finally:
@@ -193,11 +199,12 @@ def run_udp_packetizer_path(version, jumbo):
             out_of_order.period = 0
         except Exception:
             pass
-        if rssi_started:
+        if client_started:
             try:
                 client_rssi._stop()
             except Exception:
                 pass
+        if server_started:
             try:
                 server_rssi._stop()
             except Exception:
