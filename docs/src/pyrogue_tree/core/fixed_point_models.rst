@@ -44,9 +44,12 @@ How Conversion Works
 ====================
 
 In the current implementation, fixed-point conversion is handled by the lower
-level Rogue memory path using ``modelId = rim.Fixed`` together with the
-Model's ``bitSize``, ``binPoint``, and signedness. The Python ``Fixed`` and
-``UFixed`` classes mainly supply that metadata.
+level Rogue memory path. Signed ``Fixed`` uses ``modelId = rim.Fixed`` and
+dispatches to ``Block::setFixed`` / ``Block::getFixed``; unsigned ``UFixed``
+uses ``modelId = rim.UFixed`` and dispatches to ``Block::setUFixed`` /
+``Block::getUFixed``. The Python ``Fixed`` and ``UFixed`` classes mainly
+supply ``bitSize`` and ``binPoint`` metadata; the choice of signed vs. unsigned
+conversion follows the ``modelId``.
 
 The conversion rule is:
 

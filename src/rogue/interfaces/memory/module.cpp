@@ -62,6 +62,7 @@ void rim::setup_module() {
     bp::scope().attr("Float")  = rim::Float;
     bp::scope().attr("Double") = rim::Double;
     bp::scope().attr("Fixed")  = rim::Fixed;
+    bp::scope().attr("UFixed") = rim::UFixed;
     bp::scope().attr("Custom") = rim::Custom;
 
     rim::Master::setup_python();
