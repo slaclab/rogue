@@ -16,7 +16,7 @@ import pyrogue as pr
 
 class AxiStreamDmaMonRx(pr.Device):
     def __init__(self, axiStreamDma, pollInterval=1, **kwargs):
-        super(self.__class__, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
         # Create a pointer to the AXI Stream DMA object
         self._dma = axiStreamDma
@@ -24,7 +24,7 @@ class AxiStreamDmaMonRx(pr.Device):
         # Add variables
         self.add(pr.LocalVariable(
             name        = 'BuffCount',
-            description = 'Get the number of RX buffers',
+            description = 'Total number of RX buffers allocated by driver (static configuration, does not change at runtime)',
             mode        = 'RO',
             value       = 0,
             typeStr     = 'UInt32',
@@ -83,7 +83,7 @@ class AxiStreamDmaMonRx(pr.Device):
 
 class AxiStreamDmaMonTx(pr.Device):
     def __init__(self, axiStreamDma, pollInterval=1, **kwargs):
-        super(self.__class__, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
         # Create a pointer to the AXI Stream DMA object
         self._dma = axiStreamDma
@@ -91,7 +91,7 @@ class AxiStreamDmaMonTx(pr.Device):
         # Add variables
         self.add(pr.LocalVariable(
             name        = 'BuffCount',
-            description = 'Get the number of TX buffers',
+            description = 'Total number of TX buffers allocated by driver (static configuration, does not change at runtime)',
             mode        = 'RO',
             value       = 0,
             typeStr     = 'UInt32',
@@ -150,7 +150,7 @@ class AxiStreamDmaMonTx(pr.Device):
 
 class AxiStreamDmaMon(pr.Device):
     def __init__(self, axiStreamDma, pollInterval=1, **kwargs):
-        super(self.__class__, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
         # Create a pointer to the AXI Stream DMA object
         self._dma = axiStreamDma
