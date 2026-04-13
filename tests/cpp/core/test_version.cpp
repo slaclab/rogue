@@ -44,7 +44,7 @@ TEST_CASE("Version helpers stay internally consistent") {
     const std::string normalized = normalizedCurrentVersion();
 
     REQUIRE_FALSE(current.empty());
-    CHECK(current[0] == 'v' || current[0] == 'V');
+    CHECK((current[0] == 'v' || current[0] == 'V'));
 
     CHECK_EQ(rogue::Version::getMajor() + 0U, rogue::Version::getMajor());
     CHECK_EQ(rogue::Version::getMinor() + 0U, rogue::Version::getMinor());
