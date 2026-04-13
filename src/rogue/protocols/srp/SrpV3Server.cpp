@@ -248,6 +248,13 @@ void rps::SrpV3Server::processFrame(ris::FramePtr frame) {
         return;
     }
 
+    // Match the public SrpV3 client contract: request size is encoded as N-1
+    // and only valid for aligned sizes in the inclusive range [4, 4096].
+    if (reqSize < 4 || reqSize > 4096 || (reqSize & 0x3) != 0) {
+        log_->warning("Got invalid SRPv3 request size=%" PRIu32 " for id=%" PRIu32, reqSize, id);
+        return;
+    }
+
     doWrite = (opCode == 0x1);  // Write
     isPost  = (opCode == 0x2);  // Posted write
 

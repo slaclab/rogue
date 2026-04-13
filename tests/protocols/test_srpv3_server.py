@@ -11,7 +11,20 @@
 
 import pyrogue as pr
 import rogue.protocols.srp
+import rogue.interfaces.stream
 import pytest
+import time
+
+
+class FrameCapture(rogue.interfaces.stream.Slave):
+    """Collect response frames emitted by the server."""
+
+    def __init__(self):
+        super().__init__()
+        self.frames = []
+
+    def _acceptFrame(self, frame):
+        self.frames.append(bytes(frame.getBa()))
 
 
 class SrpV3TestDevice(pr.Device):
@@ -174,6 +187,34 @@ def test_srpv3_server_zero_write():
 
         root.Dev.ScratchPad.set(0x00000000)
         assert root.Dev.ScratchPad.get() == 0x00000000
+
+
+def test_srpv3_server_rejects_invalid_request_size():
+    """Malformed raw SRPv3 requests with impossible sizes are dropped."""
+    server = rogue.protocols.srp.SrpV3Server()
+    capture = FrameCapture()
+    inject = rogue.interfaces.stream.Master()
+
+    server >> capture
+    inject >> server
+
+    # Version=3, opcode=read, timeout=0, id=1, addr=0x0, size field = 1
+    # which decodes to reqSize=2 and violates the public SrpV3 contract.
+    request = (
+        (0x00000003).to_bytes(4, "little") +
+        (1).to_bytes(4, "little") +
+        (0).to_bytes(4, "little") +
+        (0).to_bytes(4, "little") +
+        (1).to_bytes(4, "little")
+    )
+
+    frame = inject._reqFrame(len(request), True)
+    frame.write(request)
+    inject._sendFrame(frame)
+
+    time.sleep(0.1)
+
+    assert capture.frames == []
 
 
 if __name__ == "__main__":
