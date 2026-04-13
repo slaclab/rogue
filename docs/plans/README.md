@@ -8,6 +8,8 @@ Current plans:
 
 - `perf-publishing-dashboard.md`: durable perf baseline publishing, branch
   history retention, and GitHub Pages dashboard plan.
+- `perf-publishing-progress.md`: implementation status, rollout gate, local
+  verification, and next validation steps for perf publishing work.
 - `versioned-docs-implementation.md`: target architecture for release-retained
   docs, `latest`, and `pre-release`.
 - `versioned-docs-rollout.md`: staged rollout and validation plan intended to
