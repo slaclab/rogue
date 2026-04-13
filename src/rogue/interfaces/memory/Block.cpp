@@ -1882,6 +1882,14 @@ double rim::Block::getDouble(rim::Variable* var, int32_t index) {
 void rim::Block::setFixedPy(bp::object& value, rim::Variable* var, int32_t index) {
     uint32_t x;
 
+    // Dispatch to the signed or unsigned fixed-point scalar setter based on modelId
+    auto setScalar = [this, var](const double& v, int32_t idx) {
+        if (var->modelId_ == rim::UFixed)
+            setUFixed(v, var, idx);
+        else
+            setFixed(v, var, idx);
+    };
+
     if (index == -1) index = 0;
 
     // Passed value is a numpy value
@@ -1911,7 +1919,7 @@ void rim::Block::setFixedPy(bp::object& value, rim::Variable* var, int32_t index
             double* src     = reinterpret_cast<double*>(PyArray_DATA(arr));
             npy_intp stride = strides[0] / sizeof(double);
             for (x = 0; x < dims[0]; x++) {
-                setFixed(src[x * stride], var, index + x);
+                setScalar(src[x * stride], index + x);
             }
         } else {
             throw(rogue::GeneralError::create("Block::setFixedPy",
@@ -1941,7 +1949,7 @@ void rim::Block::setFixedPy(bp::object& value, rim::Variable* var, int32_t index
                                                   "Failed to extract value for %s.",
                                                   var->name_.c_str()));
 
-            setFixed(tmp, var, index + x);
+            setScalar(tmp, index + x);
         }
 
         // Passed scalar numpy value
@@ -1949,7 +1957,7 @@ void rim::Block::setFixedPy(bp::object& value, rim::Variable* var, int32_t index
         if (PyArray_DescrFromScalar(value.ptr())->type_num == NPY_FLOAT64) {
             double val;
             PyArray_ScalarAsCtype(value.ptr(), &val);
-            setFixed(val, var, index);
+            setScalar(val, index);
         } else {
             throw(rogue::GeneralError::create("Block::setFixedPy",
                                               "Failed to extract value for %s.",
@@ -1963,7 +1971,7 @@ void rim::Block::setFixedPy(bp::object& value, rim::Variable* var, int32_t index
                                               "Failed to extract value for %s.",
                                               var->name_.c_str()));
 
-        setFixed(tmp, var, index);
+        setScalar(tmp, index);
     }
 }
 
@@ -1971,6 +1979,11 @@ void rim::Block::setFixedPy(bp::object& value, rim::Variable* var, int32_t index
 bp::object rim::Block::getFixedPy(rim::Variable* var, int32_t index) {
     bp::object ret;
     uint32_t x;
+
+    // Dispatch to the signed or unsigned fixed-point scalar getter based on modelId
+    auto getScalar = [this, var](int32_t idx) -> double {
+        return (var->modelId_ == rim::UFixed) ? getUFixed(var, idx) : getFixed(var, idx);
+    };
 
     // Unindexed with a list variable
     if (index < 0 && var->numValues_ > 0) {
@@ -1980,13 +1993,13 @@ bp::object rim::Block::getFixedPy(rim::Variable* var, int32_t index) {
         PyArrayObject* arr = reinterpret_cast<PyArrayObject*>(obj);
         double* dst        = reinterpret_cast<double*>(PyArray_DATA(arr));
 
-        for (x = 0; x < var->numValues_; x++) dst[x] = getFixed(var, x);
+        for (x = 0; x < var->numValues_; x++) dst[x] = getScalar(x);
 
         boost::python::handle<> handle(obj);
         ret = bp::object(handle);
 
     } else {
-        PyObject* val = Py_BuildValue("d", getFixed(var, index));
+        PyObject* val = Py_BuildValue("d", getScalar(index));
 
         if (val == NULL) throw(rogue::GeneralError::create("Block::getFixedPy", "Failed to generate Fixed"));
 
@@ -2011,11 +2024,20 @@ void rim::Block::setFixed(const double& val, rim::Variable* var, int32_t index) 
 
     // Convert
     int64_t fPoint = static_cast<int64_t>(round(val * pow(2, var->binPoint_)));
-    // Check for positive edge case
-    uint64_t mask = 1 << (var->valueBits_ - 1);
-    if (val > 0 && ((fPoint & mask) != 0)) {
-        fPoint -= 1;
-    }
+
+    // Compute representable range in integer domain (use 1ULL to avoid UB for 64-bit widths)
+    int64_t maxInt = static_cast<int64_t>((1ULL << (var->valueBits_ - 1)) - 1);
+    int64_t minInt = -maxInt - 1;
+
+    // Check for overflow (rounding may push value beyond representable range)
+    if (fPoint > maxInt || fPoint < minInt)
+        throw(rogue::GeneralError::create("Block::setFixed",
+                                          "Fixed point overflow for %s. Value=%f, Min=%f, Max=%f",
+                                          var->name_.c_str(),
+                                          val,
+                                          static_cast<double>(minInt) / pow(2, var->binPoint_),
+                                          static_cast<double>(maxInt) / pow(2, var->binPoint_)));
+
     setBytes(reinterpret_cast<uint8_t*>(&fPoint), var, index);
 }
 
@@ -2025,15 +2047,63 @@ double rim::Block::getFixed(rim::Variable* var, int32_t index) {
     double tmp;
 
     getBytes(reinterpret_cast<uint8_t*>(&fPoint), var, index);
-    // Do two-complement if negative
-    if ((fPoint & (1 << (var->valueBits_ - 1))) != 0) {
-        fPoint = fPoint - (1 << var->valueBits_);
+    // Sign-extend from valueBits_ to 64 bits. Use 1LL to avoid shifting a
+    // plain int by >= 32 (UB) and guard the valueBits_ == 64 case, where
+    // fPoint already holds the signed two's-complement value directly.
+    if (var->valueBits_ < 64) {
+        const int64_t signBit = 1LL << (var->valueBits_ - 1);
+        const int64_t modulus = 1LL << var->valueBits_;
+        if ((fPoint & signBit) != 0) fPoint -= modulus;
     }
 
     // Convert to float
     tmp = static_cast<double>(fPoint);
     tmp = tmp / pow(2, var->binPoint_);
     return tmp;
+}
+
+// Set data using unsigned fixed point
+void rim::Block::setUFixed(const double& val, rim::Variable* var, int32_t index) {
+    // Check range
+    if ((var->minValue_ != 0 || var->maxValue_ != 0) && (val > var->maxValue_ || val < var->minValue_))
+        throw(rogue::GeneralError::create("Block::setUFixed",
+                                          "Value range error for %s. Value=%f, Min=%f, Max=%f",
+                                          var->name_.c_str(),
+                                          val,
+                                          var->minValue_,
+                                          var->maxValue_));
+
+    // Convert (unsigned; reject negatives explicitly before the cast)
+    if (val < 0)
+        throw(rogue::GeneralError::create("Block::setUFixed",
+                                          "Unsigned fixed-point underflow for %s. Value=%f",
+                                          var->name_.c_str(),
+                                          val));
+
+    uint64_t fPoint = static_cast<uint64_t>(round(val * pow(2, var->binPoint_)));
+
+    // Compute representable unsigned range (cap at 64 bits to avoid UB)
+    uint64_t maxUInt =
+        (var->valueBits_ >= 64) ? UINT64_MAX : ((1ULL << var->valueBits_) - 1ULL);
+
+    // Check for overflow (rounding may push value beyond representable range)
+    if (fPoint > maxUInt)
+        throw(rogue::GeneralError::create("Block::setUFixed",
+                                          "Unsigned fixed-point overflow for %s. Value=%f, Min=0, Max=%f",
+                                          var->name_.c_str(),
+                                          val,
+                                          static_cast<double>(maxUInt) / pow(2, var->binPoint_)));
+
+    setBytes(reinterpret_cast<uint8_t*>(&fPoint), var, index);
+}
+
+// Get data using unsigned fixed point
+double rim::Block::getUFixed(rim::Variable* var, int32_t index) {
+    uint64_t fPoint = 0;
+
+    getBytes(reinterpret_cast<uint8_t*>(&fPoint), var, index);
+    // No sign extension — treat stored bits as unsigned
+    return static_cast<double>(fPoint) / pow(2, var->binPoint_);
 }
 
 //////////////////////////////////////////
