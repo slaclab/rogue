@@ -10,16 +10,20 @@ used when batching is done in firmware to reduce transport and driver overhead
 from sending many small frames individually.
 
 In practice, the firmware side often batches records before they reach
-software. Rogue then handles one of two software-side tasks:
+software. Rogue then handles one of three software-side tasks:
 
 - Split one super-frame into one Rogue frame per logical record.
 - Rewrite the framing in place so a downstream consumer sees the layout it
   expects without producing one output frame per record.
+- Combine individual frames into a batcher super-frame in software, for
+  firmware emulation or CI regression testing of the unbatcher classes.
 
-That makes batcher support most useful in two moments of a workflow:
+That makes batcher support most useful in three moments of a workflow:
 
 - Inline while receiving live stream data from firmware.
 - Later, while replaying or analyzing previously recorded batched files.
+- During testing, to generate controlled batcher super-frames for validating
+  splitter and inverter behavior.
 
 Rogue supports both wire formats:
 
@@ -32,6 +36,8 @@ How The Classes Fit Together
 The classes in ``rogue.protocols.batcher`` are composable rather than
 monolithic:
 
+- ``CombinerV1`` and ``CombinerV2`` build batcher super-frames from individual
+  frames in software (the inverse of splitting).
 - ``CoreV1`` and ``CoreV2`` parse one incoming super-frame and expose parsed
   record metadata.
 - ``Data`` represents one parsed record payload plus its routing and user-field
@@ -47,6 +53,9 @@ mix v1 and v2 parsing or transform stages in the same path.
 Subtopics
 =========
 
+- :doc:`combiner`
+  Use this path to build batcher super-frames in software for emulation or
+  testing.
 - :doc:`splitter`
   Use this path when downstream software needs one frame per logical record.
 - :doc:`inverter`
@@ -141,6 +150,8 @@ API Reference
 =============
 
 - Python:
+  :doc:`/api/python/rogue/protocols/batcher/combinerv1`
+  :doc:`/api/python/rogue/protocols/batcher/combinerv2`
   :doc:`/api/python/rogue/protocols/batcher/splitterv1`
   :doc:`/api/python/rogue/protocols/batcher/splitterv2`
   :doc:`/api/python/rogue/protocols/batcher/inverterv1`
@@ -151,5 +162,6 @@ API Reference
    :maxdepth: 1
    :caption: Batcher Protocol
 
+   combiner
    inverter
    splitter

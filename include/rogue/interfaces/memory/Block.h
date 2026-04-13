@@ -137,6 +137,9 @@ class Block : public Master {
     // Verify Block
     uint8_t* verifyBlock_;
 
+    // Expected data snapshot for verify comparison (captured at write time)
+    uint8_t* expectedData_;
+
     // Block size
     uint32_t size_;
 
@@ -810,6 +813,272 @@ class Block : public Master {
     float getFloat(rogue::interfaces::memory::Variable* var, int32_t index);
 
     //////////////////////////////////////////
+    // Float16 (half-precision)
+    //////////////////////////////////////////
+
+#ifndef NO_PYTHON
+
+    /**
+     * @brief Sets half-precision float variable data from Python input.
+     *
+     * @param value Python source value.
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     */
+    void setFloat16Py(boost::python::object& value, rogue::interfaces::memory::Variable* var, int32_t index);
+
+    /**
+     * @brief Gets half-precision float variable data as Python output.
+     *
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     * @return Python object containing float value.
+     */
+    boost::python::object getFloat16Py(rogue::interfaces::memory::Variable* var, int32_t index);
+
+#endif
+
+    /**
+     * @brief Sets half-precision float variable data from C++ input.
+     *
+     * @param value Source float value (converted to half-precision for storage).
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     */
+    void setFloat16(const float& value, rogue::interfaces::memory::Variable* var, int32_t index);
+
+    /**
+     * @brief Gets half-precision float variable data as C++ output.
+     *
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     * @return Float value converted from half-precision.
+     */
+    float getFloat16(rogue::interfaces::memory::Variable* var, int32_t index);
+
+    //////////////////////////////////////////
+    // Float8 (E4M3)
+    //////////////////////////////////////////
+
+#ifndef NO_PYTHON
+
+    /**
+     * @brief Sets 8-bit E4M3 float variable data from Python input.
+     *
+     * @param value Python source value.
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     */
+    void setFloat8Py(boost::python::object& value, rogue::interfaces::memory::Variable* var, int32_t index);
+
+    /**
+     * @brief Gets 8-bit E4M3 float variable data as Python output.
+     *
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     * @return Python object containing float value.
+     */
+    boost::python::object getFloat8Py(rogue::interfaces::memory::Variable* var, int32_t index);
+
+#endif
+
+    /**
+     * @brief Sets 8-bit E4M3 float variable data from C++ input.
+     *
+     * @param value Source float value (converted to E4M3 for storage).
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     */
+    void setFloat8(const float& value, rogue::interfaces::memory::Variable* var, int32_t index);
+
+    /**
+     * @brief Gets 8-bit E4M3 float variable data as C++ output.
+     *
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     * @return Float value converted from E4M3.
+     */
+    float getFloat8(rogue::interfaces::memory::Variable* var, int32_t index);
+
+    //////////////////////////////////////////
+    // BFloat16 (Brain Float 16)
+    //////////////////////////////////////////
+
+#ifndef NO_PYTHON
+
+    /**
+     * @brief Sets BFloat16 variable data from Python input.
+     *
+     * @param value Python source value.
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     */
+    void setBFloat16Py(boost::python::object& value,
+                       rogue::interfaces::memory::Variable* var, int32_t index);
+
+    /**
+     * @brief Gets BFloat16 variable data as Python output.
+     *
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     * @return Python object containing float value.
+     */
+    boost::python::object getBFloat16Py(rogue::interfaces::memory::Variable* var, int32_t index);
+
+#endif
+
+    /**
+     * @brief Sets BFloat16 variable data from C++ input.
+     *
+     * @param value Source float value (converted to BFloat16 for storage).
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     */
+    void setBFloat16(const float& value, rogue::interfaces::memory::Variable* var, int32_t index);
+
+    /**
+     * @brief Gets BFloat16 variable data as C++ output.
+     *
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     * @return Float value converted from BFloat16.
+     */
+    float getBFloat16(rogue::interfaces::memory::Variable* var, int32_t index);
+
+    //////////////////////////////////////////
+    // TensorFloat32 (NVIDIA TF32)
+    //////////////////////////////////////////
+
+#ifndef NO_PYTHON
+
+    /**
+     * @brief Sets TensorFloat32 variable data from Python input.
+     *
+     * @param value Python source value.
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     */
+    void setTensorFloat32Py(boost::python::object& value,
+                            rogue::interfaces::memory::Variable* var, int32_t index);
+
+    /**
+     * @brief Gets TensorFloat32 variable data as Python output.
+     *
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     * @return Python object containing float value.
+     */
+    boost::python::object getTensorFloat32Py(rogue::interfaces::memory::Variable* var, int32_t index);
+
+#endif
+
+    /**
+     * @brief Sets TensorFloat32 variable data from C++ input.
+     *
+     * @param value Source float value (converted to TF32 for storage).
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     */
+    void setTensorFloat32(const float& value, rogue::interfaces::memory::Variable* var, int32_t index);
+
+    /**
+     * @brief Gets TensorFloat32 variable data as C++ output.
+     *
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     * @return Float value converted from TensorFloat32.
+     */
+    float getTensorFloat32(rogue::interfaces::memory::Variable* var, int32_t index);
+
+    //////////////////////////////////////////
+    // Float6 (E3M2)
+    //////////////////////////////////////////
+
+#ifndef NO_PYTHON
+
+    /**
+     * @brief Sets 6-bit E3M2 float variable data from Python input.
+     *
+     * @param value Python source value.
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     */
+    void setFloat6Py(boost::python::object& value, rogue::interfaces::memory::Variable* var, int32_t index);
+
+    /**
+     * @brief Gets 6-bit E3M2 float variable data as Python output.
+     *
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     * @return Python object containing float value.
+     */
+    boost::python::object getFloat6Py(rogue::interfaces::memory::Variable* var, int32_t index);
+
+#endif
+
+    /**
+     * @brief Sets 6-bit E3M2 float variable data from C++ input.
+     *
+     * @param value Source float value (converted to E3M2 for storage).
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     */
+    void setFloat6(const float& value, rogue::interfaces::memory::Variable* var, int32_t index);
+
+    /**
+     * @brief Gets 6-bit E3M2 float variable data as C++ output.
+     *
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     * @return Float value converted from E3M2.
+     */
+    float getFloat6(rogue::interfaces::memory::Variable* var, int32_t index);
+
+    //////////////////////////////////////////
+    // Float4 (E2M1)
+    //////////////////////////////////////////
+
+#ifndef NO_PYTHON
+
+    /**
+     * @brief Sets 4-bit E2M1 float variable data from Python input.
+     *
+     * @param value Python source value.
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     */
+    void setFloat4Py(boost::python::object& value, rogue::interfaces::memory::Variable* var, int32_t index);
+
+    /**
+     * @brief Gets 4-bit E2M1 float variable data as Python output.
+     *
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     * @return Python object containing float value.
+     */
+    boost::python::object getFloat4Py(rogue::interfaces::memory::Variable* var, int32_t index);
+
+#endif
+
+    /**
+     * @brief Sets 4-bit E2M1 float variable data from C++ input.
+     *
+     * @param value Source float value (converted to E2M1 for storage).
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     */
+    void setFloat4(const float& value, rogue::interfaces::memory::Variable* var, int32_t index);
+
+    /**
+     * @brief Gets 4-bit E2M1 float variable data as C++ output.
+     *
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     * @return Float value converted from E2M1.
+     */
+    float getFloat4(rogue::interfaces::memory::Variable* var, int32_t index);
+
+    //////////////////////////////////////////
     // Double
     //////////////////////////////////////////
 
@@ -896,6 +1165,24 @@ class Block : public Master {
      * @return Fixed-point value.
      */
     double getFixed(rogue::interfaces::memory::Variable* var, int32_t index);
+
+    /**
+     * @brief Sets unsigned fixed-point variable data from C++ input.
+     *
+     * @param value Source fixed-point value (must be non-negative and within unsigned range).
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     */
+    void setUFixed(const double& value, rogue::interfaces::memory::Variable* var, int32_t index);
+
+    /**
+     * @brief Gets unsigned fixed-point variable data as C++ output.
+     *
+     * @param var Variable associated with the transaction.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     * @return Unsigned fixed-point value.
+     */
+    double getUFixed(rogue::interfaces::memory::Variable* var, int32_t index);
 };
 
 /** @brief Shared pointer alias for `Block`. */

@@ -34,13 +34,13 @@ jobs:
       - name: Check for trailing whitespace and tabs
         run: |
           # Check for trailing whitespace
-          if grep -rnI '[[:blank:]]$' --include=\*.{cpp,h,py} .; then
+          if grep -rnI '[[:blank:]]$' --include=\*.{cpp,h,py} --exclude=doctest.h .; then
             echo "Error: Trailing whitespace found in the repository!"
             exit 1
           fi
 
           # Check for tab characters instead of spaces
-          if grep -rnI $'\t' --include=\*.{cpp,h,py} .; then
+          if grep -rnI $'\t' --include=\*.{cpp,h,py} --exclude=doctest.h .; then
             echo "Error: Tab characters found in the repository! Please use spaces for indentation."
             exit 1
           fi
@@ -69,38 +69,29 @@ jobs:
       - name: Build Rogue
         run: |
           python -c "import numpy; print(numpy.get_include())"
-          mkdir build; cd build
-          cmake .. -DROGUE_INSTALL=local
-          make -j$(nproc) install
+          cmake -S . -B build -DROGUE_INSTALL=local -DROGUE_BUILD_TESTS=ON
+          cmake --build build -j$(nproc)
+          cmake --build build --target install
 
       # Run Tests
+      # Full Linux build runs the complete native C++ suite in a
+      # Python-enabled configuration.
+      - name: Rogue Native C++ Tests
+        run: |
+          source build/setup_rogue.sh
+          ctest --test-dir build --output-on-failure -L cpp
+
       - name: Rogue Tests
         run: |
-          source setup_rogue.sh
+          source build/setup_rogue.sh
           python -m pytest -n auto --dist loadfile --cov -m "not perf"
-
-      # Compile API Test
-      - name: Compile API Test
-        run: |
-          source setup_rogue.sh
-          cd tests/api_test
-          mkdir build; cd build
-          cmake ..
-          make
-
-      # Run API Test
-      - name: Run API Test
-        run: |
-          source setup_rogue.sh
-          tests/api_test/bin/api_test
 
       # Code Coverage
       - name: Code Coverage
         run: |
-          source setup_rogue.sh
+          source build/setup_rogue.sh
           codecov
           coverage report -m
-
 # ----------------------------------------------------------------------------
 
   small_build_test:
@@ -121,9 +112,16 @@ jobs:
       # Rogue
       - name: Build Rogue
         run: |
-          mkdir build; cd build
-          cmake .. -DROGUE_INSTALL=local -DNO_PYTHON=1 -DSTATIC_LIB=1
-          make -j$(nproc) install
+          cmake -S . -B build -DROGUE_INSTALL=local -DROGUE_BUILD_TESTS=ON -DNO_PYTHON=1 -DSTATIC_LIB=1
+          cmake --build build -j$(nproc)
+          cmake --build build --target install
+
+      # Small Linux build validates the deterministic native subset in a true
+      # -DNO_PYTHON=1 configuration.
+      - name: Rogue Native C++ Tests
+        run: |
+          source build/setup_rogue.sh
+          ctest --test-dir build --output-on-failure -L no-python
 
 
 # ----------------------------------------------------------------------------
@@ -175,16 +173,22 @@ jobs:
       - name: Build Rogue
         run: |
           python -c "import numpy; print(numpy.get_include())"
-          mkdir build; cd build
-          cmake .. -DROGUE_INSTALL=conda
-          cmake --build . -j$(sysctl -n hw.ncpu)
-          make install
+          cmake -S . -B build -DROGUE_INSTALL=conda -DROGUE_BUILD_TESTS=ON
+          cmake --build build -j$(sysctl -n hw.ncpu)
+          cmake --build build --target install
 
       - name: Rogue Import Smoke Test
         run: |
           python -c "import rogue, pyrogue; print('rogue import ok')"
 
-      # Run Python tests (exclude separate C++ api_test job on macOS)
+      # macOS mirrors the full-build native coverage on Apple silicon using the
+      # Python-enabled build configuration.
+      - name: Rogue Native C++ Tests
+        shell: bash -el {0}
+        run: |
+          source build/setup_rogue.sh
+          ctest --test-dir build --output-on-failure -L cpp
+
       - name: Rogue Tests
         run: |
           python -m pytest -n auto --dist loadfile -m "not perf"
@@ -216,13 +220,13 @@ jobs:
       - name: Build Rogue
         run: |
           python -c "import numpy; print(numpy.get_include())"
-          mkdir build; cd build
-          cmake .. -DROGUE_INSTALL=local
-          make -j$(nproc) install
+          cmake -S . -B build -DROGUE_INSTALL=local
+          cmake --build build -j$(nproc)
+          cmake --build build --target install
 
       - name: Run Perf Tests
         run: |
-          source setup_rogue.sh
+          source build/setup_rogue.sh
           mkdir -p perf-results
           export PERF_RESULTS_DIR="${PWD}/perf-results"
           python -m pytest tests/perf -q -s

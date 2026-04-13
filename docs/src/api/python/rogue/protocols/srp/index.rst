@@ -12,6 +12,7 @@ Python-visible SRP protocol classes exported from Rogue C++.
 
    srpv0
    srpv3
+   srpv3emulation
    cmd
 
 
