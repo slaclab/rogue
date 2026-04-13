@@ -52,6 +52,7 @@ jobs:
         with:
           fetch-depth: 0
           ref: ${{ inputs.target_ref || github.ref }}
+          token: ${{ secrets.GH_TOKEN }}
 
       - name: Validate workflow inputs
         if: github.event_name == 'workflow_dispatch'
