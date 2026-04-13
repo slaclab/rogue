@@ -39,6 +39,8 @@ Common commands:
 - Standard build tree:
   - Configure/build into the repo-local `build/` directory with
     `cmake -S . -B build ...`
+  - If you will source `build/setup_rogue.sh`, install the built artifacts into
+    the repo-local runtime tree with `cmake --build build --target install`
   - Run both Python and Python-enabled native C++ tests from that same
     `build/` tree after sourcing `build/setup_rogue.sh`
   - Add `-DROGUE_BUILD_TESTS=ON` when you want the native C++ suite built in
@@ -57,6 +59,7 @@ Common commands:
 - Performance subset with result export:
   - `PERF_RESULTS_DIR=perf-results pytest tests/perf -q -s`
 - Python-enabled native C++ smoke subset:
+  - After `cmake --build build --target install`:
   - `source build/setup_rogue.sh`
   - `ctest --test-dir build --output-on-failure -L requires-python`
 - Deterministic native C++ subset in a dedicated `-DNO_PYTHON=1` build:
