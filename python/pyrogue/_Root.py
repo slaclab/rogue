@@ -460,12 +460,18 @@ class Root(pr.Device):
 
         # Read current state
         if self._initRead:
-            self._read()
+            try:
+                self._read()
+            except rogue.GeneralError as e:
+                pr.logException(self._log, e)
 
         # Commit default values
         # Read did not override defaults because set values are cached
         if self._initWrite:
-            self._write()
+            try:
+                self._write()
+            except rogue.GeneralError as e:
+                pr.logException(self._log, e)
 
         # Start poller if enabled
         self._pollQueue._start()

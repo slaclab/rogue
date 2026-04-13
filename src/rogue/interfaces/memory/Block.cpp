@@ -112,6 +112,9 @@ rim::Block::Block(uint64_t offset, uint32_t size) {
 
     verifyBlock_ = reinterpret_cast<uint8_t*>(malloc(size_));
     memset(verifyBlock_, 0, size_);
+
+    expectedData_ = reinterpret_cast<uint8_t*>(malloc(size_));
+    memset(expectedData_, 0, size_);
 }
 
 // Destroy the Hub
@@ -123,6 +126,7 @@ rim::Block::~Block() {
     free(verifyData_);
     free(verifyMask_);
     free(verifyBlock_);
+    free(expectedData_);
 }
 
 // Return the path of the block
@@ -257,6 +261,10 @@ void rim::Block::intStartTransaction(uint32_t type, bool forceWr, bool check, ri
                 verifyBase_ = tOff;
                 verifySize_ = tSize;
                 verifyReq_  = verifyEn_;
+
+                // Snapshot expected data at write time so that concurrent
+                // modifications to blockData_ do not cause false verify failures
+                memcpy(expectedData_ + tOff, blockData_ + tOff, tSize);
             }
         }
         doUpdate_ = updateEn_;
@@ -385,7 +393,7 @@ bool rim::Block::checkTransaction() {
             verifyInp_ = false;
 
             for (x = verifyBase_; x < verifyBase_ + verifySize_; x++) {
-                if ((verifyData_[x] & verifyMask_[x]) != (blockData_[x] & verifyMask_[x])) {
+                if ((verifyData_[x] & verifyMask_[x]) != (expectedData_[x] & verifyMask_[x])) {
                     throw(rogue::GeneralError::create("Block::checkTransaction",
                                                       "Verify error for block %s with address 0x%.8" PRIx64
                                                       ". Byte: %" PRIu32 ". Got: 0x%.2" PRIx8 ", Exp: 0x%.2" PRIx8
@@ -394,7 +402,7 @@ bool rim::Block::checkTransaction() {
                                                       address(),
                                                       x,
                                                       verifyData_[x],
-                                                      blockData_[x],
+                                                      expectedData_[x],
                                                       verifyMask_[x]));
                 }
             }
@@ -1723,6 +1731,1130 @@ float rim::Block::getFloat(rim::Variable* var, int32_t index) {
     return tmp;
 }
 
+// IEEE 754 half-precision conversion helpers
+namespace {
+
+uint16_t floatToHalf(float value) {
+    uint32_t f;
+    std::memcpy(&f, &value, sizeof(f));
+
+    uint16_t sign     = (f >> 16) & 0x8000;
+    int32_t  exponent = ((f >> 23) & 0xFF) - 127 + 15;
+    uint32_t mantissa = f & 0x7FFFFF;
+
+    if (exponent <= 0) {
+        if (exponent < -10) return sign;
+        mantissa |= 0x800000;
+        uint32_t shift    = 14 - exponent;
+        uint32_t halfMant = mantissa >> shift;
+        return sign | static_cast<uint16_t>(halfMant);
+    } else if (exponent == 0xFF - 127 + 15) {
+        if (mantissa) {
+            uint16_t halfMantissa = static_cast<uint16_t>(mantissa >> 13);
+            if (halfMantissa == 0) halfMantissa = 0x0001;
+            return sign | 0x7C00 | halfMantissa;
+        }
+        return sign | 0x7C00;
+    } else if (exponent > 30) {
+        return sign | 0x7C00;
+    }
+    return sign | (exponent << 10) | (mantissa >> 13);
+}
+
+float halfToFloat(uint16_t h) {
+    uint32_t sign     = (h & 0x8000) << 16;
+    uint32_t exponent = (h >> 10) & 0x1F;
+    uint32_t mantissa = h & 0x3FF;
+
+    uint32_t f;
+    if (exponent == 0) {
+        if (mantissa == 0) {
+            f = sign;
+        } else {
+            int32_t exponentWork = 1;
+            while (!(mantissa & 0x400)) {
+                mantissa <<= 1;
+                exponentWork--;
+            }
+            mantissa &= 0x3FF;
+            f = sign | (static_cast<uint32_t>(exponentWork + 127 - 15) << 23) | (mantissa << 13);
+        }
+    } else if (exponent == 31) {
+        f = sign | 0x7F800000 | (mantissa << 13);
+    } else {
+        f = sign | ((exponent + 127 - 15) << 23) | (mantissa << 13);
+    }
+
+    float result;
+    std::memcpy(&result, &f, sizeof(result));
+    return result;
+}
+
+uint8_t floatToFloat8(float value) {
+    uint32_t f;
+    std::memcpy(&f, &value, sizeof(f));
+
+    uint8_t  sign     = (f >> 24) & 0x80;
+    int32_t  exponent = ((f >> 23) & 0xFF) - 127 + 7;  // rebias float32 to E4M3 bias=7
+    uint32_t mantissa = f & 0x7FFFFF;
+
+    // NaN input -> NaN output (0x7F)
+    if (((f >> 23) & 0xFF) == 0xFF && mantissa != 0) return 0x7F;
+
+    // Infinity or overflow -> max finite (0x7E positive, 0xFE negative)
+    if (((f >> 23) & 0xFF) == 0xFF || exponent > 15) return sign | 0x7E;
+
+    if (exponent <= 0) {
+        // Subnormal path
+        if (exponent < -3) return sign;  // too small, flush to zero
+        mantissa |= 0x800000;
+        uint32_t shift = 1 - exponent;
+        mantissa >>= shift;
+        return sign | ((mantissa >> 20) & 0x07);
+    }
+    return sign | (exponent << 3) | ((mantissa >> 20) & 0x07);
+}
+
+float float8ToFloat(uint8_t f8) {
+    // Both 0x7F and 0xFF are NaN (sign bit can be 0 or 1, exp=1111, mant=111)
+    if ((f8 & 0x7F) == 0x7F) {
+        uint32_t nan = 0x7FC00000;
+        float result;
+        std::memcpy(&result, &nan, sizeof(result));
+        return result;
+    }
+
+    uint32_t sign     = (static_cast<uint32_t>(f8) & 0x80) << 24;
+    uint32_t exponent = (f8 >> 3) & 0x0F;
+    uint32_t mantissa = f8 & 0x07;
+
+    uint32_t f;
+    if (exponent == 0) {
+        if (mantissa == 0) {
+            f = sign;  // zero
+        } else {
+            // Subnormal: shift left until the implicit leading 1 reaches bit 3,
+            // then strip it. Use int32_t so exponentWork can go negative safely.
+            int32_t exponentWork = 1;
+            while (!(mantissa & 0x08)) {
+                mantissa <<= 1;
+                exponentWork--;
+            }
+            mantissa &= 0x07;
+            f = sign | (static_cast<uint32_t>(exponentWork + 127 - 7) << 23) | (mantissa << 20);
+        }
+    } else {
+        f = sign | (static_cast<uint32_t>(exponent + 127 - 7) << 23) | (mantissa << 20);
+    }
+
+    float result;
+    std::memcpy(&result, &f, sizeof(result));
+    return result;
+}
+
+uint16_t floatToBFloat16(float value) {
+    uint32_t f;
+    std::memcpy(&f, &value, sizeof(f));
+    // BFloat16 is simply the upper 16 bits of the float32 bit pattern.
+    // All special values (NaN, infinity, zero, subnormals) are preserved.
+    uint16_t bf16 = static_cast<uint16_t>(f >> 16);
+    // Preserve NaN: truncation can clear payload bits, turning NaN into Inf.
+    uint32_t exponent = (f >> 23) & 0xFF;
+    uint32_t mantissa = f & 0x7FFFFF;
+    if (exponent == 0xFF && mantissa != 0 && (bf16 & 0x007F) == 0) {
+        bf16 |= 0x0001;
+    }
+    return bf16;
+}
+
+float bfloat16ToFloat(uint16_t bf16) {
+    uint32_t f = static_cast<uint32_t>(bf16) << 16;
+    float result;
+    std::memcpy(&result, &f, sizeof(result));
+    return result;
+}
+
+// TensorFloat32: 1s / 8e / 10m, bias=127, same exponent as float32
+// Stored in 4 bytes; lower 13 mantissa bits are zeroed.
+
+uint32_t floatToTensorFloat32(float value) {
+    uint32_t f;
+    std::memcpy(&f, &value, sizeof(f));
+    uint32_t tf32 = f & 0xFFFFE000U;
+    // Preserve NaN: masking can clear payload bits, turning NaN into Inf.
+    if ((f & 0x7F800000U) == 0x7F800000U && (f & 0x007FFFFFU) != 0 &&
+            (tf32 & 0x007FFFFFU) == 0) {
+        tf32 |= 0x00002000U;
+    }
+    return tf32;
+}
+
+float tensorFloat32ToFloat(uint32_t tf32) {
+    float result;
+    std::memcpy(&result, &tf32, sizeof(result));
+    return result;
+}
+
+// Float6 E3M2: 1s / 3e / 2m, bias=3, no Inf/NaN
+// Stored in lower 6 bits of uint8_t
+
+uint8_t floatToFloat6(float value) {
+    uint32_t f;
+    std::memcpy(&f, &value, sizeof(f));
+
+    uint8_t  sign     = (f >> 26) & 0x20;  // sign bit -> bit 5 of result
+    int32_t  exponent = ((f >> 23) & 0xFF) - 127 + 3;  // rebias to E3M2 bias=3
+    uint32_t mantissa = f & 0x7FFFFF;
+
+    // NaN or Infinity input -> clamp to max finite (no NaN/Inf in E3M2)
+    if (((f >> 23) & 0xFF) == 0xFF) {
+        // NaN has no meaningful sign: always clamp to positive max.
+        // Infinity preserves sign.
+        uint8_t nan_sign = (f & 0x7FFFFF) ? 0x00 : static_cast<uint8_t>(sign);
+        return nan_sign | 0x1F;
+    }
+
+    // Overflow -> clamp to max finite
+    if (exponent > 7) return sign | 0x1F;
+
+    if (exponent <= 0) {
+        // Subnormal path
+        if (exponent < -2) return sign;  // too small, flush to zero
+        mantissa |= 0x800000;
+        uint32_t shift = 1 - exponent;
+        mantissa >>= shift;
+        return sign | ((mantissa >> 21) & 0x03);
+    }
+    return sign | (exponent << 2) | ((mantissa >> 21) & 0x03);
+}
+
+float float6ToFloat(uint8_t f6) {
+    // Mask to 6 bits (upper 2 bits of byte are unused)
+    f6 &= 0x3F;
+
+    float sign = (f6 & 0x20) ? -1.0f : 1.0f;
+    uint32_t exponent = (f6 >> 2) & 0x07;
+    uint32_t mantissa = f6 & 0x03;
+
+    if (exponent == 0) {
+        if (mantissa == 0) {
+            return sign * 0.0f;  // +/- zero
+        }
+        // Subnormal: value = sign * mantissa/4 * 2^(1-3) = sign * mantissa * 2^(-4)
+        return sign * static_cast<float>(mantissa) * 0.0625f;  // 0.0625 = 2^(-4)
+    }
+    // Normal: value = sign * (1 + mantissa/4) * 2^(exponent-3)
+    float frac = 1.0f + static_cast<float>(mantissa) / 4.0f;
+    return sign * std::ldexp(frac, static_cast<int>(exponent) - 3);
+}
+
+// Float4 E2M1: 1s / 2e / 1m, bias=1, no Inf/NaN
+// Stored in lower 4 bits of uint8_t
+uint8_t floatToFloat4(float value) {
+    uint32_t f;
+    std::memcpy(&f, &value, sizeof(f));
+
+    uint8_t  sign     = (f >> 28) & 0x08;  // sign bit -> bit 3 of result
+    int32_t  exponent = ((f >> 23) & 0xFF) - 127 + 1;  // rebias to E2M1 bias=1
+    uint32_t mantissa = f & 0x7FFFFF;
+
+    // NaN or Infinity input -> clamp to max finite (no NaN/Inf in E2M1)
+    if (((f >> 23) & 0xFF) == 0xFF) {
+        // NaN has no meaningful sign: always clamp to positive max.
+        // Infinity preserves sign.
+        uint8_t nan_sign = (f & 0x7FFFFF) ? 0x00 : static_cast<uint8_t>(sign);
+        return nan_sign | 0x07;
+    }
+
+    // Overflow -> clamp to max finite
+    if (exponent > 3) return sign | 0x07;
+
+    if (exponent <= 0) {
+        // Subnormal path
+        if (exponent < -1) return sign;  // too small, flush to zero
+        mantissa |= 0x800000;
+        uint32_t shift = 1 - exponent;
+        mantissa >>= shift;
+        return sign | ((mantissa >> 22) & 0x01);
+    }
+    return sign | (exponent << 1) | ((mantissa >> 22) & 0x01);
+}
+
+float float4ToFloat(uint8_t f4) {
+    // Mask to 4 bits (upper 4 bits of byte are unused)
+    f4 &= 0x0F;
+
+    float sign = (f4 & 0x08) ? -1.0f : 1.0f;
+    uint32_t exponent = (f4 >> 1) & 0x03;
+    uint32_t mantissa = f4 & 0x01;
+
+    if (exponent == 0) {
+        if (mantissa == 0) {
+            return sign * 0.0f;  // +/- zero
+        }
+        // Subnormal: value = sign * mantissa * 0.5 (only one subnormal: +/-0.5)
+        return sign * static_cast<float>(mantissa) * 0.5f;
+    }
+    // Normal: value = sign * (1 + mantissa/2) * 2^(exponent-1)
+    float frac = 1.0f + static_cast<float>(mantissa) / 2.0f;
+    return sign * std::ldexp(frac, static_cast<int>(exponent) - 1);
+}
+
+}  // anonymous namespace
+
+//////////////////////////////////////////
+// Float16 (half-precision)
+//////////////////////////////////////////
+
+#ifndef NO_PYTHON
+
+// Set data using float16
+void rim::Block::setFloat16Py(bp::object& value, rim::Variable* var, int32_t index) {
+    uint32_t x;
+
+    if (index == -1) index = 0;
+
+    // Passed value is a numpy value
+    if (PyArray_Check(value.ptr())) {
+        // Cast to an array object and check that the numpy array
+        PyArrayObject* arr = reinterpret_cast<decltype(arr)>(value.ptr());
+        npy_intp ndims     = PyArray_NDIM(arr);
+        npy_intp* dims     = PyArray_SHAPE(arr);
+        npy_intp* strides  = PyArray_STRIDES(arr);
+
+        if (ndims != 1)
+            throw(rogue::GeneralError::create("Block::setFloat16Py",
+                                              "Invalid number of dimensions (%" PRIu32 ") for passed ndarray for %s",
+                                              ndims,
+                                              var->name_.c_str()));
+
+        if ((index + dims[0]) > var->numValues_)
+            throw(rogue::GeneralError::create("Block::setFloat16Py",
+                                              "Overflow error for passed array with length %" PRIu32
+                                              " at index %" PRIi32 ". Variable length = %" PRIu32 " for %s",
+                                              dims[0],
+                                              index,
+                                              var->numValues_,
+                                              var->name_.c_str()));
+
+        if (PyArray_TYPE(arr) == NPY_HALF) {
+            npy_half* src   = reinterpret_cast<npy_half*>(PyArray_DATA(arr));
+            npy_intp stride = strides[0] / sizeof(npy_half);
+            for (x = 0; x < dims[0]; x++) {
+                float val = halfToFloat(src[x * stride]);
+                setFloat16(val, var, index + x);
+            }
+        } else {
+            throw(rogue::GeneralError::create("Block::setFloat16Py",
+                                              "Passed nparray is not of type (float16) for %s",
+                                              var->name_.c_str()));
+        }
+
+        // Is passed value a list
+    } else if (PyList_Check(value.ptr())) {
+        bp::list vl   = bp::extract<bp::list>(value);
+        uint32_t vlen = len(vl);
+
+        if ((index + vlen) > var->numValues_)
+            throw(rogue::GeneralError::create("Block::setFloat16Py",
+                                              "Overflow error for passed array with length %" PRIu32
+                                              " at index %" PRIi32 ". Variable length = %" PRIu32 " for %s",
+                                              vlen,
+                                              index,
+                                              var->numValues_,
+                                              var->name_.c_str()));
+
+        for (x = 0; x < vlen; x++) {
+            bp::extract<float> tmp(vl[x]);
+
+            if (!tmp.check())
+                throw(rogue::GeneralError::create("Block::setFloat16Py",
+                                                  "Failed to extract value for %s.",
+                                                  var->name_.c_str()));
+
+            setFloat16(tmp, var, index + x);
+        }
+
+        // Passed scalar numpy value
+    } else if (PyArray_CheckScalar(value.ptr())) {
+        if (PyArray_DescrFromScalar(value.ptr())->type_num == NPY_HALF) {
+            npy_half val;
+            PyArray_ScalarAsCtype(value.ptr(), &val);
+            float fval = halfToFloat(val);
+            setFloat16(fval, var, index);
+        } else {
+            throw(rogue::GeneralError::create("Block::setFloat16Py",
+                                              "Failed to extract value for %s.",
+                                              var->name_.c_str()));
+        }
+    } else {
+        bp::extract<float> tmp(value);
+
+        if (!tmp.check())
+            throw(rogue::GeneralError::create("Block::setFloat16Py",
+                                              "Failed to extract value for %s.",
+                                              var->name_.c_str()));
+
+        setFloat16(tmp, var, index);
+    }
+}
+
+// Get data using float16
+bp::object rim::Block::getFloat16Py(rim::Variable* var, int32_t index) {
+    bp::object ret;
+    uint32_t x;
+
+    // Unindexed with a list variable
+    if (index < 0 && var->numValues_ > 0) {
+        // Create a numpy array to receive it and locate the destination data buffer
+        npy_intp dims[1]   = {var->numValues_};
+        PyObject* obj      = PyArray_SimpleNew(1, dims, NPY_HALF);
+        PyArrayObject* arr = reinterpret_cast<PyArrayObject*>(obj);
+        npy_half* dst      = reinterpret_cast<npy_half*>(PyArray_DATA(arr));
+
+        for (x = 0; x < var->numValues_; x++) dst[x] = floatToHalf(getFloat16(var, x));
+
+        boost::python::handle<> handle(obj);
+        ret = bp::object(handle);
+
+    } else {
+        PyObject* val = Py_BuildValue("f", getFloat16(var, index));
+
+        if (val == NULL) throw(rogue::GeneralError::create("Block::getFloat16Py", "Failed to generate Float16"));
+
+        bp::handle<> handle(val);
+        ret = bp::object(handle);
+    }
+    return ret;
+}
+
+#endif
+
+// Set data using float16
+void rim::Block::setFloat16(const float& val, rim::Variable* var, int32_t index) {
+    // Check range
+    if ((var->minValue_ != 0 || var->maxValue_ != 0) && (val > var->maxValue_ || val < var->minValue_))
+        throw(rogue::GeneralError::create("Block::setFloat16",
+                                          "Value range error for %s. Value=%f, Min=%f, Max=%f",
+                                          var->name_.c_str(),
+                                          val,
+                                          var->minValue_,
+                                          var->maxValue_));
+
+    // Convert float to half-precision and store as 2 bytes
+    uint16_t half = floatToHalf(val);
+    setBytes(reinterpret_cast<uint8_t*>(&half), var, index);
+}
+
+// Get data using float16
+float rim::Block::getFloat16(rim::Variable* var, int32_t index) {
+    uint16_t tmp = 0;
+
+    getBytes(reinterpret_cast<uint8_t*>(&tmp), var, index);
+
+    return halfToFloat(tmp);
+}
+
+//////////////////////////////////////////
+// Float8 (E4M3)
+//////////////////////////////////////////
+
+#ifndef NO_PYTHON
+
+// Set data using float8
+void rim::Block::setFloat8Py(bp::object& value, rim::Variable* var, int32_t index) {
+    uint32_t x;
+
+    if (index == -1) index = 0;
+
+    // Passed value is a numpy value
+    if (PyArray_Check(value.ptr())) {
+        // Cast to an array object and check that the numpy array
+        PyArrayObject* arr = reinterpret_cast<decltype(arr)>(value.ptr());
+        npy_intp ndims     = PyArray_NDIM(arr);
+        npy_intp* dims     = PyArray_SHAPE(arr);
+        npy_intp* strides  = PyArray_STRIDES(arr);
+
+        if (ndims != 1)
+            throw(rogue::GeneralError::create("Block::setFloat8Py",
+                                              "Invalid number of dimensions (%" PRIu32 ") for passed ndarray for %s",
+                                              ndims,
+                                              var->name_.c_str()));
+
+        if ((index + dims[0]) > var->numValues_)
+            throw(rogue::GeneralError::create("Block::setFloat8Py",
+                                              "Overflow error for passed array with length %" PRIu32
+                                              " at index %" PRIi32 ". Variable length = %" PRIu32 " for %s",
+                                              dims[0],
+                                              index,
+                                              var->numValues_,
+                                              var->name_.c_str()));
+
+        if (PyArray_TYPE(arr) == NPY_FLOAT) {
+            float* src          = reinterpret_cast<float*>(PyArray_DATA(arr));
+            npy_intp stride     = strides[0] / sizeof(float);
+            for (x = 0; x < dims[0]; x++) {
+                float val = src[x * stride];
+                setFloat8(val, var, index + x);
+            }
+        } else {
+            throw(rogue::GeneralError::create("Block::setFloat8Py",
+                                              "Passed nparray is not of type (float32) for %s",
+                                              var->name_.c_str()));
+        }
+
+        // Is passed value a list
+    } else if (PyList_Check(value.ptr())) {
+        bp::list vl   = bp::extract<bp::list>(value);
+        uint32_t vlen = len(vl);
+
+        if ((index + vlen) > var->numValues_)
+            throw(rogue::GeneralError::create("Block::setFloat8Py",
+                                              "Overflow error for passed array with length %" PRIu32
+                                              " at index %" PRIi32 ". Variable length = %" PRIu32 " for %s",
+                                              vlen,
+                                              index,
+                                              var->numValues_,
+                                              var->name_.c_str()));
+
+        for (x = 0; x < vlen; x++) {
+            bp::extract<float> tmp(vl[x]);
+
+            if (!tmp.check())
+                throw(rogue::GeneralError::create("Block::setFloat8Py",
+                                                  "Failed to extract value for %s.",
+                                                  var->name_.c_str()));
+
+            setFloat8(tmp, var, index + x);
+        }
+
+    } else {
+        bp::extract<float> tmp(value);
+
+        if (!tmp.check())
+            throw(rogue::GeneralError::create("Block::setFloat8Py",
+                                              "Failed to extract value for %s.",
+                                              var->name_.c_str()));
+
+        setFloat8(tmp, var, index);
+    }
+}
+
+// Get data using float8
+bp::object rim::Block::getFloat8Py(rim::Variable* var, int32_t index) {
+    bp::object ret;
+    uint32_t x;
+
+    // Unindexed with a list variable
+    if (index < 0 && var->numValues_ > 0) {
+        npy_intp dims[1]   = {var->numValues_};
+        PyObject* obj      = PyArray_SimpleNew(1, dims, NPY_FLOAT);
+        PyArrayObject* arr = reinterpret_cast<PyArrayObject*>(obj);
+        float* dst         = reinterpret_cast<float*>(PyArray_DATA(arr));
+
+        for (x = 0; x < var->numValues_; x++) dst[x] = getFloat8(var, x);
+
+        boost::python::handle<> handle(obj);
+        ret = bp::object(handle);
+
+    } else {
+        PyObject* val = Py_BuildValue("f", getFloat8(var, index));
+
+        if (val == NULL) throw(rogue::GeneralError::create("Block::getFloat8Py", "Failed to generate Float8"));
+
+        bp::handle<> handle(val);
+        ret = bp::object(handle);
+    }
+    return ret;
+}
+
+#endif
+
+// Set data using float8
+void rim::Block::setFloat8(const float& val, rim::Variable* var, int32_t index) {
+    // Check range
+    if ((var->minValue_ != 0 || var->maxValue_ != 0) && (val > var->maxValue_ || val < var->minValue_))
+        throw(rogue::GeneralError::create("Block::setFloat8",
+                                          "Value range error for %s. Value=%f, Min=%f, Max=%f",
+                                          var->name_.c_str(),
+                                          val,
+                                          var->minValue_,
+                                          var->maxValue_));
+
+    // Convert float to E4M3 and store as 1 byte
+    uint8_t f8 = floatToFloat8(val);
+    setBytes(reinterpret_cast<uint8_t*>(&f8), var, index);
+}
+
+// Get data using float8
+float rim::Block::getFloat8(rim::Variable* var, int32_t index) {
+    uint8_t tmp = 0;
+
+    getBytes(reinterpret_cast<uint8_t*>(&tmp), var, index);
+
+    return float8ToFloat(tmp);
+}
+
+//////////////////////////////////////////
+// BFloat16 (Brain Float 16)
+//////////////////////////////////////////
+
+#ifndef NO_PYTHON
+
+// Set data using bfloat16
+void rim::Block::setBFloat16Py(bp::object& value, rim::Variable* var, int32_t index) {
+    uint32_t x;
+
+    if (index == -1) index = 0;
+
+    // Passed value is a numpy value
+    if (PyArray_Check(value.ptr())) {
+        // Cast to an array object and check that the numpy array
+        PyArrayObject* arr = reinterpret_cast<decltype(arr)>(value.ptr());
+        npy_intp ndims     = PyArray_NDIM(arr);
+        npy_intp* dims     = PyArray_SHAPE(arr);
+        npy_intp* strides  = PyArray_STRIDES(arr);
+
+        if (ndims != 1)
+            throw(rogue::GeneralError::create("Block::setBFloat16Py",
+                                              "Invalid number of dimensions (%" PRIu32 ") for passed ndarray for %s",
+                                              ndims,
+                                              var->name_.c_str()));
+
+        if ((index + dims[0]) > var->numValues_)
+            throw(rogue::GeneralError::create("Block::setBFloat16Py",
+                                              "Overflow error for passed array with length %" PRIu32
+                                              " at index %" PRIi32 ". Variable length = %" PRIu32 " for %s",
+                                              dims[0],
+                                              index,
+                                              var->numValues_,
+                                              var->name_.c_str()));
+
+        if (PyArray_TYPE(arr) == NPY_FLOAT) {
+            float* src          = reinterpret_cast<float*>(PyArray_DATA(arr));
+            npy_intp stride     = strides[0] / sizeof(float);
+            for (x = 0; x < dims[0]; x++) {
+                float val = src[x * stride];
+                setBFloat16(val, var, index + x);
+            }
+        } else {
+            throw(rogue::GeneralError::create("Block::setBFloat16Py",
+                                              "Passed nparray is not of type (float32) for %s",
+                                              var->name_.c_str()));
+        }
+
+        // Is passed value a list
+    } else if (PyList_Check(value.ptr())) {
+        bp::list vl   = bp::extract<bp::list>(value);
+        uint32_t vlen = len(vl);
+
+        if ((index + vlen) > var->numValues_)
+            throw(rogue::GeneralError::create("Block::setBFloat16Py",
+                                              "Overflow error for passed array with length %" PRIu32
+                                              " at index %" PRIi32 ". Variable length = %" PRIu32 " for %s",
+                                              vlen,
+                                              index,
+                                              var->numValues_,
+                                              var->name_.c_str()));
+
+        for (x = 0; x < vlen; x++) {
+            bp::extract<float> tmp(vl[x]);
+
+            if (!tmp.check())
+                throw(rogue::GeneralError::create("Block::setBFloat16Py",
+                                                  "Failed to extract value for %s.",
+                                                  var->name_.c_str()));
+
+            setBFloat16(tmp, var, index + x);
+        }
+
+    } else {
+        bp::extract<float> tmp(value);
+
+        if (!tmp.check())
+            throw(rogue::GeneralError::create("Block::setBFloat16Py",
+                                              "Failed to extract value for %s.",
+                                              var->name_.c_str()));
+
+        setBFloat16(tmp, var, index);
+    }
+}
+
+// Get data using bfloat16
+bp::object rim::Block::getBFloat16Py(rim::Variable* var, int32_t index) {
+    bp::object ret;
+    uint32_t x;
+
+    // Unindexed with a list variable
+    if (index < 0 && var->numValues_ > 0) {
+        npy_intp dims[1]   = {var->numValues_};
+        PyObject* obj      = PyArray_SimpleNew(1, dims, NPY_FLOAT);
+        PyArrayObject* arr = reinterpret_cast<PyArrayObject*>(obj);
+        float* dst         = reinterpret_cast<float*>(PyArray_DATA(arr));
+
+        for (x = 0; x < var->numValues_; x++) dst[x] = getBFloat16(var, x);
+
+        boost::python::handle<> handle(obj);
+        ret = bp::object(handle);
+
+    } else {
+        PyObject* val = Py_BuildValue("f", getBFloat16(var, index));
+
+        if (val == NULL) throw(rogue::GeneralError::create("Block::getBFloat16Py", "Failed to generate BFloat16"));
+
+        bp::handle<> handle(val);
+        ret = bp::object(handle);
+    }
+    return ret;
+}
+
+#endif
+
+// Set data using bfloat16
+void rim::Block::setBFloat16(const float& val, rim::Variable* var, int32_t index) {
+    // Check range
+    if ((var->minValue_ != 0 || var->maxValue_ != 0) && (val > var->maxValue_ || val < var->minValue_))
+        throw(rogue::GeneralError::create("Block::setBFloat16",
+                                          "Value range error for %s. Value=%f, Min=%f, Max=%f",
+                                          var->name_.c_str(),
+                                          val,
+                                          var->minValue_,
+                                          var->maxValue_));
+
+    // Convert float to BFloat16 and store as 2 bytes
+    uint16_t bf16 = floatToBFloat16(val);
+    setBytes(reinterpret_cast<uint8_t*>(&bf16), var, index);
+}
+
+// Get data using bfloat16
+float rim::Block::getBFloat16(rim::Variable* var, int32_t index) {
+    uint16_t tmp = 0;
+
+    getBytes(reinterpret_cast<uint8_t*>(&tmp), var, index);
+
+    return bfloat16ToFloat(tmp);
+}
+
+//////////////////////////////////////////
+// TensorFloat32 (NVIDIA TF32)
+//////////////////////////////////////////
+
+#ifndef NO_PYTHON
+
+// Set data using TensorFloat32
+void rim::Block::setTensorFloat32Py(bp::object& value, rim::Variable* var, int32_t index) {
+    uint32_t x;
+
+    if (index == -1) index = 0;
+
+    // Passed value is a numpy value
+    if (PyArray_Check(value.ptr())) {
+        // Cast to an array object and check that the numpy array
+        PyArrayObject* arr = reinterpret_cast<decltype(arr)>(value.ptr());
+        npy_intp ndims     = PyArray_NDIM(arr);
+        npy_intp* dims     = PyArray_SHAPE(arr);
+        npy_intp* strides  = PyArray_STRIDES(arr);
+
+        if (ndims != 1)
+            throw(rogue::GeneralError::create("Block::setTensorFloat32Py",
+                                              "Invalid number of dimensions (%" PRIu32 ") for passed ndarray for %s",
+                                              ndims,
+                                              var->name_.c_str()));
+
+        if ((index + dims[0]) > var->numValues_)
+            throw(rogue::GeneralError::create("Block::setTensorFloat32Py",
+                                              "Overflow error for passed array with length %" PRIu32
+                                              " at index %" PRIi32 ". Variable length = %" PRIu32 " for %s",
+                                              dims[0],
+                                              index,
+                                              var->numValues_,
+                                              var->name_.c_str()));
+
+        if (PyArray_TYPE(arr) == NPY_FLOAT) {
+            float* src          = reinterpret_cast<float*>(PyArray_DATA(arr));
+            npy_intp stride     = strides[0] / sizeof(float);
+            for (x = 0; x < dims[0]; x++) {
+                float val = src[x * stride];
+                setTensorFloat32(val, var, index + x);
+            }
+        } else {
+            throw(rogue::GeneralError::create("Block::setTensorFloat32Py",
+                                              "Passed nparray is not of type (float32) for %s",
+                                              var->name_.c_str()));
+        }
+
+        // Is passed value a list
+    } else if (PyList_Check(value.ptr())) {
+        bp::list vl   = bp::extract<bp::list>(value);
+        uint32_t vlen = len(vl);
+
+        if ((index + vlen) > var->numValues_)
+            throw(rogue::GeneralError::create("Block::setTensorFloat32Py",
+                                              "Overflow error for passed array with length %" PRIu32
+                                              " at index %" PRIi32 ". Variable length = %" PRIu32 " for %s",
+                                              vlen,
+                                              index,
+                                              var->numValues_,
+                                              var->name_.c_str()));
+
+        for (x = 0; x < vlen; x++) {
+            bp::extract<float> tmp(vl[x]);
+
+            if (!tmp.check())
+                throw(rogue::GeneralError::create("Block::setTensorFloat32Py",
+                                                  "Failed to extract value for %s.",
+                                                  var->name_.c_str()));
+
+            setTensorFloat32(tmp, var, index + x);
+        }
+
+    } else {
+        bp::extract<float> tmp(value);
+
+        if (!tmp.check())
+            throw(rogue::GeneralError::create("Block::setTensorFloat32Py",
+                                              "Failed to extract value for %s.",
+                                              var->name_.c_str()));
+
+        setTensorFloat32(tmp, var, index);
+    }
+}
+
+// Get data using TensorFloat32
+bp::object rim::Block::getTensorFloat32Py(rim::Variable* var, int32_t index) {
+    bp::object ret;
+    uint32_t x;
+
+    // Unindexed with a list variable
+    if (index < 0 && var->numValues_ > 0) {
+        npy_intp dims[1]   = {var->numValues_};
+        PyObject* obj      = PyArray_SimpleNew(1, dims, NPY_FLOAT);
+        PyArrayObject* arr = reinterpret_cast<PyArrayObject*>(obj);
+        float* dst         = reinterpret_cast<float*>(PyArray_DATA(arr));
+
+        for (x = 0; x < var->numValues_; x++) dst[x] = getTensorFloat32(var, x);
+
+        boost::python::handle<> handle(obj);
+        ret = bp::object(handle);
+
+    } else {
+        PyObject* val = Py_BuildValue("f", getTensorFloat32(var, index));
+
+        if (val == NULL) throw(rogue::GeneralError::create("Block::getTensorFloat32Py", "Failed to generate TensorFloat32"));
+
+        bp::handle<> handle(val);
+        ret = bp::object(handle);
+    }
+    return ret;
+}
+
+#endif
+
+// Set data using TensorFloat32
+void rim::Block::setTensorFloat32(const float& val, rim::Variable* var, int32_t index) {
+    // Check range
+    if ((var->minValue_ != 0 || var->maxValue_ != 0) && (val > var->maxValue_ || val < var->minValue_))
+        throw(rogue::GeneralError::create("Block::setTensorFloat32",
+                                          "Value range error for %s. Value=%f, Min=%f, Max=%f",
+                                          var->name_.c_str(),
+                                          val,
+                                          var->minValue_,
+                                          var->maxValue_));
+
+    // Convert float to TensorFloat32 and store as 4 bytes
+    uint32_t tf32 = floatToTensorFloat32(val);
+    setBytes(reinterpret_cast<uint8_t*>(&tf32), var, index);
+}
+
+// Get data using TensorFloat32
+float rim::Block::getTensorFloat32(rim::Variable* var, int32_t index) {
+    uint32_t tmp = 0;
+
+    getBytes(reinterpret_cast<uint8_t*>(&tmp), var, index);
+
+    return tensorFloat32ToFloat(tmp);
+}
+
+//////////////////////////////////////////
+// Float6 (E3M2)
+//////////////////////////////////////////
+
+#ifndef NO_PYTHON
+
+// Set data using float6
+void rim::Block::setFloat6Py(bp::object& value, rim::Variable* var, int32_t index) {
+    uint32_t x;
+
+    if (index == -1) index = 0;
+
+    // Passed value is a numpy value
+    if (PyArray_Check(value.ptr())) {
+        // Cast to an array object and check that the numpy array
+        PyArrayObject* arr = reinterpret_cast<decltype(arr)>(value.ptr());
+        npy_intp ndims     = PyArray_NDIM(arr);
+        npy_intp* dims     = PyArray_SHAPE(arr);
+        npy_intp* strides  = PyArray_STRIDES(arr);
+
+        if (ndims != 1)
+            throw(rogue::GeneralError::create("Block::setFloat6Py",
+                                              "Invalid number of dimensions (%" PRIu32 ") for passed ndarray for %s",
+                                              ndims,
+                                              var->name_.c_str()));
+
+        if ((index + dims[0]) > var->numValues_)
+            throw(rogue::GeneralError::create("Block::setFloat6Py",
+                                              "Overflow error for passed array with length %" PRIu32
+                                              " at index %" PRIi32 ". Variable length = %" PRIu32 " for %s",
+                                              dims[0],
+                                              index,
+                                              var->numValues_,
+                                              var->name_.c_str()));
+
+        if (PyArray_TYPE(arr) == NPY_FLOAT) {
+            float* src          = reinterpret_cast<float*>(PyArray_DATA(arr));
+            npy_intp stride     = strides[0] / sizeof(float);
+            for (x = 0; x < dims[0]; x++) {
+                float val = src[x * stride];
+                setFloat6(val, var, index + x);
+            }
+        } else {
+            throw(rogue::GeneralError::create("Block::setFloat6Py",
+                                              "Passed nparray is not of type (float32) for %s",
+                                              var->name_.c_str()));
+        }
+
+        // Is passed value a list
+    } else if (PyList_Check(value.ptr())) {
+        bp::list vl   = bp::extract<bp::list>(value);
+        uint32_t vlen = len(vl);
+
+        if ((index + vlen) > var->numValues_)
+            throw(rogue::GeneralError::create("Block::setFloat6Py",
+                                              "Overflow error for passed array with length %" PRIu32
+                                              " at index %" PRIi32 ". Variable length = %" PRIu32 " for %s",
+                                              vlen,
+                                              index,
+                                              var->numValues_,
+                                              var->name_.c_str()));
+
+        for (x = 0; x < vlen; x++) {
+            bp::extract<float> tmp(vl[x]);
+
+            if (!tmp.check())
+                throw(rogue::GeneralError::create("Block::setFloat6Py",
+                                                  "Failed to extract value for %s.",
+                                                  var->name_.c_str()));
+
+            setFloat6(tmp, var, index + x);
+        }
+
+    } else {
+        bp::extract<float> tmp(value);
+
+        if (!tmp.check())
+            throw(rogue::GeneralError::create("Block::setFloat6Py",
+                                              "Failed to extract value for %s.",
+                                              var->name_.c_str()));
+
+        setFloat6(tmp, var, index);
+    }
+}
+
+// Get data using float6
+bp::object rim::Block::getFloat6Py(rim::Variable* var, int32_t index) {
+    bp::object ret;
+    uint32_t x;
+
+    // Unindexed with a list variable
+    if (index < 0 && var->numValues_ > 0) {
+        npy_intp dims[1]   = {var->numValues_};
+        PyObject* obj      = PyArray_SimpleNew(1, dims, NPY_FLOAT);
+        PyArrayObject* arr = reinterpret_cast<PyArrayObject*>(obj);
+        float* dst         = reinterpret_cast<float*>(PyArray_DATA(arr));
+
+        for (x = 0; x < var->numValues_; x++) dst[x] = getFloat6(var, x);
+
+        boost::python::handle<> handle(obj);
+        ret = bp::object(handle);
+
+    } else {
+        PyObject* val = Py_BuildValue("f", getFloat6(var, index));
+
+        if (val == NULL) throw(rogue::GeneralError::create("Block::getFloat6Py", "Failed to generate Float6"));
+
+        bp::handle<> handle(val);
+        ret = bp::object(handle);
+    }
+    return ret;
+}
+
+#endif
+
+// Set data using float6
+void rim::Block::setFloat6(const float& val, rim::Variable* var, int32_t index) {
+    // Check range
+    if ((var->minValue_ != 0 || var->maxValue_ != 0) && (val > var->maxValue_ || val < var->minValue_))
+        throw(rogue::GeneralError::create("Block::setFloat6",
+                                          "Value range error for %s. Value=%f, Min=%f, Max=%f",
+                                          var->name_.c_str(),
+                                          val,
+                                          var->minValue_,
+                                          var->maxValue_));
+
+    // Convert float to E3M2 and store as 1 byte
+    uint8_t f6 = floatToFloat6(val);
+    setBytes(reinterpret_cast<uint8_t*>(&f6), var, index);
+}
+
+// Get data using float6
+float rim::Block::getFloat6(rim::Variable* var, int32_t index) {
+    uint8_t tmp = 0;
+
+    getBytes(reinterpret_cast<uint8_t*>(&tmp), var, index);
+
+    return float6ToFloat(tmp);
+}
+
+//////////////////////////////////////////
+// Float4 (E2M1)
+//////////////////////////////////////////
+
+#ifndef NO_PYTHON
+
+// Set data using float4
+void rim::Block::setFloat4Py(bp::object& value, rim::Variable* var, int32_t index) {
+    uint32_t x;
+
+    if (index == -1) index = 0;
+
+    // Passed value is a numpy value
+    if (PyArray_Check(value.ptr())) {
+        // Cast to an array object and check that the numpy array
+        PyArrayObject* arr = reinterpret_cast<decltype(arr)>(value.ptr());
+        npy_intp ndims     = PyArray_NDIM(arr);
+        npy_intp* dims     = PyArray_SHAPE(arr);
+        npy_intp* strides  = PyArray_STRIDES(arr);
+
+        if (ndims != 1)
+            throw(rogue::GeneralError::create("Block::setFloat4Py",
+                                              "Invalid number of dimensions (%" PRIu32 ") for passed ndarray for %s",
+                                              ndims,
+                                              var->name_.c_str()));
+
+        if ((index + dims[0]) > var->numValues_)
+            throw(rogue::GeneralError::create("Block::setFloat4Py",
+                                              "Overflow error for passed array with length %" PRIu32
+                                              " at index %" PRIi32 ". Variable length = %" PRIu32 " for %s",
+                                              dims[0],
+                                              index,
+                                              var->numValues_,
+                                              var->name_.c_str()));
+
+        if (PyArray_TYPE(arr) == NPY_FLOAT) {
+            float* src          = reinterpret_cast<float*>(PyArray_DATA(arr));
+            npy_intp stride     = strides[0] / sizeof(float);
+            for (x = 0; x < dims[0]; x++) {
+                float val = src[x * stride];
+                setFloat4(val, var, index + x);
+            }
+        } else {
+            throw(rogue::GeneralError::create("Block::setFloat4Py",
+                                              "Passed nparray is not of type (float32) for %s",
+                                              var->name_.c_str()));
+        }
+
+        // Is passed value a list
+    } else if (PyList_Check(value.ptr())) {
+        bp::list vl   = bp::extract<bp::list>(value);
+        uint32_t vlen = len(vl);
+
+        if ((index + vlen) > var->numValues_)
+            throw(rogue::GeneralError::create("Block::setFloat4Py",
+                                              "Overflow error for passed array with length %" PRIu32
+                                              " at index %" PRIi32 ". Variable length = %" PRIu32 " for %s",
+                                              vlen,
+                                              index,
+                                              var->numValues_,
+                                              var->name_.c_str()));
+
+        for (x = 0; x < vlen; x++) {
+            bp::extract<float> tmp(vl[x]);
+
+            if (!tmp.check())
+                throw(rogue::GeneralError::create("Block::setFloat4Py",
+                                                  "Failed to extract value for %s.",
+                                                  var->name_.c_str()));
+
+            setFloat4(tmp, var, index + x);
+        }
+
+    } else {
+        bp::extract<float> tmp(value);
+
+        if (!tmp.check())
+            throw(rogue::GeneralError::create("Block::setFloat4Py",
+                                              "Failed to extract value for %s.",
+                                              var->name_.c_str()));
+
+        setFloat4(tmp, var, index);
+    }
+}
+
+// Get data using float4
+bp::object rim::Block::getFloat4Py(rim::Variable* var, int32_t index) {
+    bp::object ret;
+    uint32_t x;
+
+    // Unindexed with a list variable
+    if (index < 0 && var->numValues_ > 0) {
+        npy_intp dims[1]   = {var->numValues_};
+        PyObject* obj      = PyArray_SimpleNew(1, dims, NPY_FLOAT);
+        PyArrayObject* arr = reinterpret_cast<PyArrayObject*>(obj);
+        float* dst         = reinterpret_cast<float*>(PyArray_DATA(arr));
+
+        for (x = 0; x < var->numValues_; x++) dst[x] = getFloat4(var, x);
+
+        boost::python::handle<> handle(obj);
+        ret = bp::object(handle);
+
+    } else {
+        PyObject* val = Py_BuildValue("f", getFloat4(var, index));
+
+        if (val == NULL) throw(rogue::GeneralError::create("Block::getFloat4Py", "Failed to generate Float4"));
+
+        bp::handle<> handle(val);
+        ret = bp::object(handle);
+    }
+    return ret;
+}
+
+#endif
+
+// Set data using float4
+void rim::Block::setFloat4(const float& val, rim::Variable* var, int32_t index) {
+    // Check range
+    if ((var->minValue_ != 0 || var->maxValue_ != 0) && (val > var->maxValue_ || val < var->minValue_))
+        throw(rogue::GeneralError::create("Block::setFloat4",
+                                          "Value range error for %s. Value=%f, Min=%f, Max=%f",
+                                          var->name_.c_str(),
+                                          val,
+                                          var->minValue_,
+                                          var->maxValue_));
+
+    // Convert float to E2M1 and store as 1 byte
+    uint8_t f4 = floatToFloat4(val);
+    setBytes(reinterpret_cast<uint8_t*>(&f4), var, index);
+}
+
+// Get data using float4
+float rim::Block::getFloat4(rim::Variable* var, int32_t index) {
+    uint8_t tmp = 0;
+
+    getBytes(reinterpret_cast<uint8_t*>(&tmp), var, index);
+
+    return float4ToFloat(tmp);
+}
+
 //////////////////////////////////////////
 // Double
 //////////////////////////////////////////
@@ -1882,6 +3014,14 @@ double rim::Block::getDouble(rim::Variable* var, int32_t index) {
 void rim::Block::setFixedPy(bp::object& value, rim::Variable* var, int32_t index) {
     uint32_t x;
 
+    // Dispatch to the signed or unsigned fixed-point scalar setter based on modelId
+    auto setScalar = [this, var](const double& v, int32_t idx) {
+        if (var->modelId_ == rim::UFixed)
+            setUFixed(v, var, idx);
+        else
+            setFixed(v, var, idx);
+    };
+
     if (index == -1) index = 0;
 
     // Passed value is a numpy value
@@ -1911,7 +3051,7 @@ void rim::Block::setFixedPy(bp::object& value, rim::Variable* var, int32_t index
             double* src     = reinterpret_cast<double*>(PyArray_DATA(arr));
             npy_intp stride = strides[0] / sizeof(double);
             for (x = 0; x < dims[0]; x++) {
-                setFixed(src[x * stride], var, index + x);
+                setScalar(src[x * stride], index + x);
             }
         } else {
             throw(rogue::GeneralError::create("Block::setFixedPy",
@@ -1941,7 +3081,7 @@ void rim::Block::setFixedPy(bp::object& value, rim::Variable* var, int32_t index
                                                   "Failed to extract value for %s.",
                                                   var->name_.c_str()));
 
-            setFixed(tmp, var, index + x);
+            setScalar(tmp, index + x);
         }
 
         // Passed scalar numpy value
@@ -1949,7 +3089,7 @@ void rim::Block::setFixedPy(bp::object& value, rim::Variable* var, int32_t index
         if (PyArray_DescrFromScalar(value.ptr())->type_num == NPY_FLOAT64) {
             double val;
             PyArray_ScalarAsCtype(value.ptr(), &val);
-            setFixed(val, var, index);
+            setScalar(val, index);
         } else {
             throw(rogue::GeneralError::create("Block::setFixedPy",
                                               "Failed to extract value for %s.",
@@ -1963,7 +3103,7 @@ void rim::Block::setFixedPy(bp::object& value, rim::Variable* var, int32_t index
                                               "Failed to extract value for %s.",
                                               var->name_.c_str()));
 
-        setFixed(tmp, var, index);
+        setScalar(tmp, index);
     }
 }
 
@@ -1971,6 +3111,11 @@ void rim::Block::setFixedPy(bp::object& value, rim::Variable* var, int32_t index
 bp::object rim::Block::getFixedPy(rim::Variable* var, int32_t index) {
     bp::object ret;
     uint32_t x;
+
+    // Dispatch to the signed or unsigned fixed-point scalar getter based on modelId
+    auto getScalar = [this, var](int32_t idx) -> double {
+        return (var->modelId_ == rim::UFixed) ? getUFixed(var, idx) : getFixed(var, idx);
+    };
 
     // Unindexed with a list variable
     if (index < 0 && var->numValues_ > 0) {
@@ -1980,13 +3125,13 @@ bp::object rim::Block::getFixedPy(rim::Variable* var, int32_t index) {
         PyArrayObject* arr = reinterpret_cast<PyArrayObject*>(obj);
         double* dst        = reinterpret_cast<double*>(PyArray_DATA(arr));
 
-        for (x = 0; x < var->numValues_; x++) dst[x] = getFixed(var, x);
+        for (x = 0; x < var->numValues_; x++) dst[x] = getScalar(x);
 
         boost::python::handle<> handle(obj);
         ret = bp::object(handle);
 
     } else {
-        PyObject* val = Py_BuildValue("d", getFixed(var, index));
+        PyObject* val = Py_BuildValue("d", getScalar(index));
 
         if (val == NULL) throw(rogue::GeneralError::create("Block::getFixedPy", "Failed to generate Fixed"));
 
@@ -2011,11 +3156,20 @@ void rim::Block::setFixed(const double& val, rim::Variable* var, int32_t index) 
 
     // Convert
     int64_t fPoint = static_cast<int64_t>(round(val * pow(2, var->binPoint_)));
-    // Check for positive edge case
-    uint64_t mask = 1 << (var->valueBits_ - 1);
-    if (val > 0 && ((fPoint & mask) != 0)) {
-        fPoint -= 1;
-    }
+
+    // Compute representable range in integer domain (use 1ULL to avoid UB for 64-bit widths)
+    int64_t maxInt = static_cast<int64_t>((1ULL << (var->valueBits_ - 1)) - 1);
+    int64_t minInt = -maxInt - 1;
+
+    // Check for overflow (rounding may push value beyond representable range)
+    if (fPoint > maxInt || fPoint < minInt)
+        throw(rogue::GeneralError::create("Block::setFixed",
+                                          "Fixed point overflow for %s. Value=%f, Min=%f, Max=%f",
+                                          var->name_.c_str(),
+                                          val,
+                                          static_cast<double>(minInt) / pow(2, var->binPoint_),
+                                          static_cast<double>(maxInt) / pow(2, var->binPoint_)));
+
     setBytes(reinterpret_cast<uint8_t*>(&fPoint), var, index);
 }
 
@@ -2025,15 +3179,63 @@ double rim::Block::getFixed(rim::Variable* var, int32_t index) {
     double tmp;
 
     getBytes(reinterpret_cast<uint8_t*>(&fPoint), var, index);
-    // Do two-complement if negative
-    if ((fPoint & (1 << (var->valueBits_ - 1))) != 0) {
-        fPoint = fPoint - (1 << var->valueBits_);
+    // Sign-extend from valueBits_ to 64 bits. Use 1LL to avoid shifting a
+    // plain int by >= 32 (UB) and guard the valueBits_ == 64 case, where
+    // fPoint already holds the signed two's-complement value directly.
+    if (var->valueBits_ < 64) {
+        const int64_t signBit = 1LL << (var->valueBits_ - 1);
+        const int64_t modulus = 1LL << var->valueBits_;
+        if ((fPoint & signBit) != 0) fPoint -= modulus;
     }
 
     // Convert to float
     tmp = static_cast<double>(fPoint);
     tmp = tmp / pow(2, var->binPoint_);
     return tmp;
+}
+
+// Set data using unsigned fixed point
+void rim::Block::setUFixed(const double& val, rim::Variable* var, int32_t index) {
+    // Check range
+    if ((var->minValue_ != 0 || var->maxValue_ != 0) && (val > var->maxValue_ || val < var->minValue_))
+        throw(rogue::GeneralError::create("Block::setUFixed",
+                                          "Value range error for %s. Value=%f, Min=%f, Max=%f",
+                                          var->name_.c_str(),
+                                          val,
+                                          var->minValue_,
+                                          var->maxValue_));
+
+    // Convert (unsigned; reject negatives explicitly before the cast)
+    if (val < 0)
+        throw(rogue::GeneralError::create("Block::setUFixed",
+                                          "Unsigned fixed-point underflow for %s. Value=%f",
+                                          var->name_.c_str(),
+                                          val));
+
+    uint64_t fPoint = static_cast<uint64_t>(round(val * pow(2, var->binPoint_)));
+
+    // Compute representable unsigned range (cap at 64 bits to avoid UB)
+    uint64_t maxUInt =
+        (var->valueBits_ >= 64) ? UINT64_MAX : ((1ULL << var->valueBits_) - 1ULL);
+
+    // Check for overflow (rounding may push value beyond representable range)
+    if (fPoint > maxUInt)
+        throw(rogue::GeneralError::create("Block::setUFixed",
+                                          "Unsigned fixed-point overflow for %s. Value=%f, Min=0, Max=%f",
+                                          var->name_.c_str(),
+                                          val,
+                                          static_cast<double>(maxUInt) / pow(2, var->binPoint_)));
+
+    setBytes(reinterpret_cast<uint8_t*>(&fPoint), var, index);
+}
+
+// Get data using unsigned fixed point
+double rim::Block::getUFixed(rim::Variable* var, int32_t index) {
+    uint64_t fPoint = 0;
+
+    getBytes(reinterpret_cast<uint8_t*>(&fPoint), var, index);
+    // No sign extension — treat stored bits as unsigned
+    return static_cast<double>(fPoint) / pow(2, var->binPoint_);
 }
 
 //////////////////////////////////////////

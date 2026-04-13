@@ -25,5 +25,6 @@ cpplint
 gitpython
 pygithub
 pydm
+qtpy
 matplotlib
 hwcounter; platform_system == "Linux" and platform_machine == "x86_64"

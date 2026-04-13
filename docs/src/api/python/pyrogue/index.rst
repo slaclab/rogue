@@ -60,6 +60,12 @@ Models
    bool
    string
    float
+   float16
+   float8
+   bfloat16
+   tensorfloat32
+   float6
+   float4
    double
    fixed
    ufixed

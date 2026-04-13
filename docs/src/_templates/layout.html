@@ -1,7 +1,21 @@
 {% extends "!layout.html" %}
 
+{%- block extrahead %}
+  {{ super() }}
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: {{ rogue_docs_site_root | default('', true) | tojson }}
+    };
+  </script>
+{%- endblock %}
+
 {%- block navigation %}
 <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="{{ _('Navigation menu') }}">
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
   {%- block menu %}
     {%- set nav_depth = -1 if pagename.startswith('api/') else 4 %}
     {%- set toctree = toctree(maxdepth=nav_depth,

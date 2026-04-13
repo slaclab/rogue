@@ -17,6 +17,7 @@ though it is a separate lightweight command protocol.
 
    srpV0
    srpV3
+   srpV3Emulation
    cmd
 
 

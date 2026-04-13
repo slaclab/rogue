@@ -20,6 +20,12 @@ Primary API reference pages:
 - :doc:`/api/python/pyrogue/bool`
 - :doc:`/api/python/pyrogue/string`
 - :doc:`/api/python/pyrogue/float`
+- :doc:`/api/python/pyrogue/float16`
+- :doc:`/api/python/pyrogue/float8`
+- :doc:`/api/python/pyrogue/bfloat16`
+- :doc:`/api/python/pyrogue/tensorfloat32`
+- :doc:`/api/python/pyrogue/float6`
+- :doc:`/api/python/pyrogue/float4`
 - :doc:`/api/python/pyrogue/double`
 - :doc:`/api/python/pyrogue/fixed`
 - :doc:`/api/python/pyrogue/ufixed`
@@ -91,6 +97,90 @@ FloatBE
 -------
 
 See :doc:`/api/python/pyrogue/float`.
+
+.. _interfaces_memory_model_float16:
+
+Float16
+-------
+
+See :doc:`/api/python/pyrogue/float16`.
+
+.. _interfaces_memory_model_float16be:
+
+Float16BE
+---------
+
+See :doc:`/api/python/pyrogue/float16`.
+
+.. _interfaces_memory_model_float8:
+
+Float8
+------
+
+See :doc:`/api/python/pyrogue/float8`.
+
+.. _interfaces_memory_model_float8be:
+
+Float8BE
+--------
+
+See :doc:`/api/python/pyrogue/float8`.
+
+.. _interfaces_memory_model_bfloat16:
+
+BFloat16
+--------
+
+See :doc:`/api/python/pyrogue/bfloat16`.
+
+.. _interfaces_memory_model_bfloat16be:
+
+BFloat16BE
+----------
+
+See :doc:`/api/python/pyrogue/bfloat16`.
+
+.. _interfaces_memory_model_tensorfloat32:
+
+TensorFloat32
+-------------
+
+See :doc:`/api/python/pyrogue/tensorfloat32`.
+
+.. _interfaces_memory_model_tensorfloat32be:
+
+TensorFloat32BE
+---------------
+
+See :doc:`/api/python/pyrogue/tensorfloat32`.
+
+.. _interfaces_memory_model_float6:
+
+Float6
+------
+
+See :doc:`/api/python/pyrogue/float6`.
+
+.. _interfaces_memory_model_float6be:
+
+Float6BE
+--------
+
+See :doc:`/api/python/pyrogue/float6`.
+
+.. _interfaces_memory_model_float4:
+
+Float4
+------
+
+See :doc:`/api/python/pyrogue/float4`.
+
+.. _interfaces_memory_model_float4be:
+
+Float4BE
+--------
+
+See :doc:`/api/python/pyrogue/float4`.
 
 .. _interfaces_memory_model_double:
 

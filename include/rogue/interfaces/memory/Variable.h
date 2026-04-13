@@ -247,7 +247,67 @@ class Variable {
     double (rogue::interfaces::memory::Block::*getDouble_)(rogue::interfaces::memory::Variable*, int32_t index);
 
     /////////////////////////////////
-    // C++ filed point
+    // C++ Float16 (half-precision)
+    /////////////////////////////////
+
+    void (rogue::interfaces::memory::Block::*setFloat16_)(const float&,
+                                                          rogue::interfaces::memory::Variable*,
+                                                          int32_t index);
+
+    float (rogue::interfaces::memory::Block::*getFloat16_)(rogue::interfaces::memory::Variable*, int32_t index);
+
+    /////////////////////////////////
+    // C++ Float8 (E4M3)
+    /////////////////////////////////
+
+    void (rogue::interfaces::memory::Block::*setFloat8_)(const float&,
+                                                         rogue::interfaces::memory::Variable*,
+                                                         int32_t index);
+
+    float (rogue::interfaces::memory::Block::*getFloat8_)(rogue::interfaces::memory::Variable*, int32_t index);
+
+    /////////////////////////////////
+    // C++ BFloat16 (Brain Float 16)
+    /////////////////////////////////
+
+    void (rogue::interfaces::memory::Block::*setBFloat16_)(const float&,
+                                                            rogue::interfaces::memory::Variable*,
+                                                            int32_t index);
+
+    float (rogue::interfaces::memory::Block::*getBFloat16_)(rogue::interfaces::memory::Variable*, int32_t index);
+
+    /////////////////////////////////
+    // C++ TensorFloat32 (NVIDIA TF32)
+    /////////////////////////////////
+
+    void (rogue::interfaces::memory::Block::*setTensorFloat32_)(const float&,
+                                                                  rogue::interfaces::memory::Variable*,
+                                                                  int32_t index);
+
+    float (rogue::interfaces::memory::Block::*getTensorFloat32_)(rogue::interfaces::memory::Variable*, int32_t index);
+
+    /////////////////////////////////
+    // C++ Float6 (E3M2)
+    /////////////////////////////////
+
+    void (rogue::interfaces::memory::Block::*setFloat6_)(const float&,
+                                                         rogue::interfaces::memory::Variable*,
+                                                         int32_t index);
+
+    float (rogue::interfaces::memory::Block::*getFloat6_)(rogue::interfaces::memory::Variable*, int32_t index);
+
+    /////////////////////////////////
+    // C++ Float4 (E2M1)
+    /////////////////////////////////
+
+    void (rogue::interfaces::memory::Block::*setFloat4_)(const float&,
+                                                         rogue::interfaces::memory::Variable*,
+                                                         int32_t index);
+
+    float (rogue::interfaces::memory::Block::*getFloat4_)(rogue::interfaces::memory::Variable*, int32_t index);
+
+    /////////////////////////////////
+    // C++ fixed point
     /////////////////////////////////
 
     void (rogue::interfaces::memory::Block::*setFixed_)(const double&,
@@ -781,6 +841,171 @@ class Variable {
     void getValue(float& valueRet, int32_t index = -1) {
         valueRet = getFloat(index);
     }
+
+    /////////////////////////////////
+    // C++ Float16 (half-precision)
+    /////////////////////////////////
+
+    /**
+     * @brief Sets half-precision float value.
+     *
+     * @details
+     * Valid when this variable is configured for half-precision conversion.
+     * Converts float to 16-bit half-precision, stages bytes and issues a
+     * write/verify transaction through the parent block.
+     *
+     * @param value Input value (converted to half-precision).
+     * @param index Value index, or `-1` for the full variable.
+     */
+    void setFloat16(float& value, int32_t index = -1);
+
+    /**
+     * @brief Gets half-precision float value.
+     *
+     * @details
+     * Issues a read transaction through the parent block, then converts staged
+     * 16-bit half-precision bytes to `float`.
+     *
+     * @param index Value index, or `-1` for the full variable.
+     * @return Float value converted from half-precision.
+     */
+    float getFloat16(int32_t index = -1);
+
+    /////////////////////////////////
+    // C++ Float8 (E4M3)
+    /////////////////////////////////
+
+    /**
+     * @brief Sets 8-bit E4M3 float value.
+     *
+     * @details
+     * Valid when this variable is configured for E4M3 conversion.
+     * Converts float to 8-bit E4M3, stages bytes and issues a
+     * write/verify transaction through the parent block.
+     *
+     * @param value Input value (converted to E4M3).
+     * @param index Value index, or `-1` for the full variable.
+     */
+    void setFloat8(float& value, int32_t index = -1);
+
+    /**
+     * @brief Gets 8-bit E4M3 float value.
+     *
+     * @details
+     * Issues a read transaction through the parent block, then converts staged
+     * 8-bit E4M3 bytes to `float`.
+     *
+     * @param index Value index, or `-1` for the full variable.
+     * @return Float value converted from E4M3.
+     */
+    float getFloat8(int32_t index = -1);
+
+    /////////////////////////////////
+    // C++ BFloat16 (Brain Float 16)
+    /////////////////////////////////
+
+    /**
+     * @brief Sets BFloat16 value.
+     *
+     * @details
+     * Valid when this variable is configured for BFloat16 conversion.
+     * Converts float to 16-bit BFloat16 (upper 16 bits of float32), stages bytes
+     * and issues a write/verify transaction through the parent block.
+     *
+     * @param value Input value (converted to BFloat16).
+     * @param index Value index, or `-1` for the full variable.
+     */
+    void setBFloat16(float& value, int32_t index = -1);
+
+    /**
+     * @brief Gets BFloat16 value.
+     *
+     * @details
+     * Issues a read transaction through the parent block, then converts staged
+     * 16-bit BFloat16 bytes to `float`.
+     *
+     * @param index Value index, or `-1` for the full variable.
+     * @return Float value converted from BFloat16.
+     */
+    float getBFloat16(int32_t index = -1);
+
+    /////////////////////////////////
+    // C++ TensorFloat32 (NVIDIA TF32)
+    /////////////////////////////////
+
+    /**
+     * @brief Sets TensorFloat32 value.
+     *
+     * @details
+     * Valid when this variable is configured for TensorFloat32 conversion.
+     * Converts float to 32-bit TF32 (lower 13 mantissa bits zeroed), stages bytes
+     * and issues a write/verify transaction through the parent block.
+     *
+     * @param value Input value (converted to TensorFloat32).
+     * @param index Value index, or `-1` for the full variable.
+     */
+    void setTensorFloat32(float& value, int32_t index = -1);
+
+    /**
+     * @brief Gets TensorFloat32 value.
+     *
+     * @details
+     * Issues a read transaction through the parent block, then converts staged
+     * 32-bit TensorFloat32 bytes to `float`.
+     *
+     * @param index Value index, or `-1` for the full variable.
+     * @return Float value converted from TensorFloat32.
+     */
+    float getTensorFloat32(int32_t index = -1);
+
+    /////////////////////////////////
+    // C++ Float6 (E3M2)
+    /////////////////////////////////
+
+    /**
+     * @brief Sets 6-bit E3M2 float value.
+     *
+     * @details
+     * Valid when this variable is configured for E3M2 conversion.
+     * Converts float to 6-bit E3M2, stages bytes and issues a
+     * write/verify transaction through the parent block.
+     *
+     * @param value Input value (converted to E3M2).
+     * @param index Value index, or `-1` for the full variable.
+     */
+    void setFloat6(float& value, int32_t index = -1);
+
+    /**
+     * @brief Gets 6-bit E3M2 float value.
+     *
+     * @details
+     * Issues a read transaction through the parent block, then converts staged
+     * 6-bit E3M2 bytes to `float`.
+     *
+     * @param index Value index, or `-1` for the full variable.
+     * @return Float value converted from E3M2.
+     */
+    float getFloat6(int32_t index = -1);
+
+    /////////////////////////////////
+    // C++ Float4 (E2M1)
+    /////////////////////////////////
+
+    /**
+     * @brief Set a C++ float value into the variable using Float4 (E2M1) conversion.
+     *
+     * @param value Source float value.
+     * @param index Variable index for list variables, or `-1` for full variable.
+     */
+    void setFloat4(float& value, int32_t index = -1);
+
+    /**
+     * @brief Get the variable's value as a C++ float using Float4 (E2M1) conversion.
+     *
+     * @param index Variable index for list variables, or `-1` for full variable.
+     * @return float Decoded float value.
+     */
+    float getFloat4(int32_t index = -1);
 
     /////////////////////////////////
     // C++ double
