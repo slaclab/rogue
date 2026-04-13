@@ -4,8 +4,8 @@
  * ----------------------------------------------------------------------------
  * Description:
  * Native C++ test runner entry point for the in-tree Rogue suite, providing
- * the shared doctest-compatible main and the optional Python/NumPy bootstrap
- * used by Python-enabled smoke tests.
+ * the shared doctest runner main and the optional Python/NumPy bootstrap used
+ * by Python-enabled smoke tests.
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to
  * the license terms in the LICENSE.txt file found in the top-level directory
@@ -18,6 +18,7 @@
  **/
 #include "rogue/Directives.h"
 
+#define DOCTEST_CONFIG_IMPLEMENT
 #include "doctest/doctest.h"
 
 #ifndef NO_PYTHON
