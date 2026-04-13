@@ -140,6 +140,48 @@ static const uint8_t Fixed = 0x08;
  */
 static const uint8_t UFixed = 0x09;
 
+  /**
+ * @brief Block access type for half-precision floating-point data.
+ *
+ * @details Exposed to Python as `rogue.interfaces.memory.Float16`.
+ */
+static const uint8_t Float16 = 0x0A;
+
+/**
+ * @brief Block access type for 8-bit E4M3 floating-point data.
+ *
+ * @details Exposed to Python as `rogue.interfaces.memory.Float8`.
+ */
+static const uint8_t Float8 = 0x0B;
+
+/**
+ * @brief Block access type for BFloat16 (Brain Float 16) data.
+ *
+ * @details Exposed to Python as `rogue.interfaces.memory.BFloat16`.
+ */
+static const uint8_t BFloat16 = 0x0C;
+
+/**
+ * @brief Block access type for TensorFloat32 (NVIDIA TF32) data.
+ *
+ * @details Exposed to Python as `rogue.interfaces.memory.TensorFloat32`.
+ */
+static const uint8_t TensorFloat32 = 0x0D;
+
+/**
+ * @brief Block access type for 6-bit E3M2 floating-point data.
+ *
+ * @details Exposed to Python as `rogue.interfaces.memory.Float6`.
+ */
+static const uint8_t Float6 = 0x0E;
+
+/**
+ * @brief Block access type for 4-bit E2M1 floating-point data.
+ *
+ * @details Exposed to Python as `rogue.interfaces.memory.Float4`.
+ */
+static const uint8_t Float4 = 0x0F;
+
 /**
  * @brief Block access type for custom handlers.
  *

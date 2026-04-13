@@ -94,6 +94,24 @@ def test_float_double_and_fixed_models_report_metadata():
     assert double_model.toBytes(1.5) == bytearray(struct.pack("!d", 1.5))
     assert double_model.fromBytes(struct.pack("!d", 1.5)) == 1.5
 
+    float16_model = pr.Float16(16)
+    assert float16_model.name == "Float16"
+    assert float16_model.ndType == np.dtype(np.float16)
+    assert float16_model.toBytes(1.25) == bytearray(struct.pack("e", 1.25))
+    assert float16_model.fromBytes(struct.pack("e", 1.25)) == 1.25
+    assert float16_model.fromString("2.5") == 2.5
+    assert float16_model.minValue() == -65504.0
+    assert float16_model.maxValue() == 65504.0
+
+    float16be_model = pr.Float16BE(16)
+    assert float16be_model.isBigEndian is True
+    assert float16be_model.toBytes(1.5) == bytearray(struct.pack("!e", 1.5))
+    assert float16be_model.fromBytes(struct.pack("!e", 1.5)) == 1.5
+
+    # Float16 must reject non-16-bit sizes.
+    with pytest.raises(AssertionError):
+        pr.Float16(32)
+
     fixed = pr.Fixed(16, 4)
     ufixed = pr.UFixed(16, 4)
     assert fixed.name == "Fixed_16_4"
@@ -139,3 +157,41 @@ def test_fixed_model_cache_keys_include_bit_size_and_bin_point():
     assert pr.Fixed(16, 4) is not pr.Fixed(24, 4)
     assert pr.UFixed(16, 4) is pr.UFixed(16, 4)
     assert pr.UFixed(16, 4) is not pr.UFixed(16, 5)
+
+
+def test_float16_model_cache_returns_same_instance():
+    assert pr.Float16(16) is pr.Float16(16)
+    assert pr.Float16BE(16) is pr.Float16BE(16)
+    assert pr.Float16(16) is not pr.Float16BE(16)
+
+
+@pytest.mark.parametrize(
+    ("value", "description"),
+    [
+        (0.0, "positive zero"),
+        (-0.0, "negative zero"),
+        (65504.0, "max representable"),
+        (-65504.0, "min representable"),
+        (6.0e-8, "smallest subnormal (approx)"),
+        (float("inf"), "positive infinity"),
+        (float("-inf"), "negative infinity"),
+    ],
+)
+def test_float16_model_boundary_values_round_trip(value, description):
+    model = pr.Float16(16)
+    ba = model.toBytes(value)
+    result = model.fromBytes(ba)
+    if value == 0.0:
+        assert result == 0.0
+    elif np.isinf(value):
+        assert np.isinf(result)
+        assert np.sign(result) == np.sign(value)
+    else:
+        assert np.isclose(result, value, rtol=1e-3), f"Failed for {description}"
+
+
+def test_float16_model_nan_round_trip():
+    model = pr.Float16(16)
+    ba = model.toBytes(float("nan"))
+    result = model.fromBytes(ba)
+    assert np.isnan(result)

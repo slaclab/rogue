@@ -125,6 +125,8 @@ starting point:
 * ``Model`` is about typed byte conversion and custom encodings.
 * ``Fixed-Point Models`` is a focused companion page for ``Fixed`` and
   ``UFixed`` usage.
+* ``Floating Point Types Summary`` is a quick-reference table for GPU-oriented
+  float formats and NVIDIA architecture support.
 * ``Poll Queue`` is about background scheduling behavior.
 * ``YAML Configuration`` is about YAML save/load workflows, matching rules,
   and configuration file structure.
@@ -173,6 +175,7 @@ API Reference
    block_operations
    model
    fixed_point_models
+   float_types_summary
    poll_queue
    yaml_configuration
    memory_variable_stream

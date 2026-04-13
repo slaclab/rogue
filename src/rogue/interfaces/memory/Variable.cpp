@@ -238,10 +238,22 @@ rim::Variable::Variable(std::string name,
     getString_    = NULL;
     setFloat_     = NULL;
     getFloat_     = NULL;
+    setFloat16_   = NULL;
+    getFloat16_   = NULL;
+    setFloat8_    = NULL;
+    getFloat8_    = NULL;
     setDouble_    = NULL;
     getDouble_    = NULL;
     setFixed_     = NULL;
     getFixed_     = NULL;
+    setBFloat16_  = NULL;
+    getBFloat16_  = NULL;
+    setTensorFloat32_ = NULL;
+    getTensorFloat32_ = NULL;
+    setFloat6_ = NULL;
+    getFloat6_ = NULL;
+    setFloat4_ = NULL;
+    getFloat4_ = NULL;
 
     // Define set function
     switch (modelId_) {
@@ -276,6 +288,30 @@ rim::Variable::Variable(std::string name,
 
         case rim::Float:
             setFloat_ = &rim::Block::setFloat;
+            break;
+
+        case rim::Float16:
+            setFloat16_ = &rim::Block::setFloat16;
+            break;
+
+        case rim::Float8:
+            setFloat8_ = &rim::Block::setFloat8;
+            break;
+
+        case rim::BFloat16:
+            setBFloat16_ = &rim::Block::setBFloat16;
+            break;
+
+        case rim::TensorFloat32:
+            setTensorFloat32_ = &rim::Block::setTensorFloat32;
+            break;
+
+        case rim::Float6:
+            setFloat6_ = &rim::Block::setFloat6;
+            break;
+
+        case rim::Float4:
+            setFloat4_ = &rim::Block::setFloat4;
             break;
 
         case rim::Double:
@@ -327,6 +363,30 @@ rim::Variable::Variable(std::string name,
 
         case rim::Float:
             getFloat_ = &rim::Block::getFloat;
+            break;
+
+        case rim::Float16:
+            getFloat16_ = &rim::Block::getFloat16;
+            break;
+
+        case rim::Float8:
+            getFloat8_ = &rim::Block::getFloat8;
+            break;
+
+        case rim::BFloat16:
+            getBFloat16_ = &rim::Block::getBFloat16;
+            break;
+
+        case rim::TensorFloat32:
+            getTensorFloat32_ = &rim::Block::getTensorFloat32;
+            break;
+
+        case rim::Float6:
+            getFloat6_ = &rim::Block::getFloat6;
+            break;
+
+        case rim::Float4:
+            getFloat4_ = &rim::Block::getFloat4;
             break;
 
         case rim::Double:
@@ -383,6 +443,30 @@ rim::Variable::Variable(std::string name,
             setFuncPy_ = &rim::Block::setFloatPy;
             break;
 
+        case rim::Float16:
+            setFuncPy_ = &rim::Block::setFloat16Py;
+            break;
+
+        case rim::Float8:
+            setFuncPy_ = &rim::Block::setFloat8Py;
+            break;
+
+        case rim::BFloat16:
+            setFuncPy_ = &rim::Block::setBFloat16Py;
+            break;
+
+        case rim::TensorFloat32:
+            setFuncPy_ = &rim::Block::setTensorFloat32Py;
+            break;
+
+        case rim::Float6:
+            setFuncPy_ = &rim::Block::setFloat6Py;
+            break;
+
+        case rim::Float4:
+            setFuncPy_ = &rim::Block::setFloat4Py;
+            break;
+
         case rim::Double:
             setFuncPy_ = &rim::Block::setDoublePy;
             break;
@@ -431,6 +515,30 @@ rim::Variable::Variable(std::string name,
 
         case rim::Float:
             getFuncPy_ = &rim::Block::getFloatPy;
+            break;
+
+        case rim::Float16:
+            getFuncPy_ = &rim::Block::getFloat16Py;
+            break;
+
+        case rim::Float8:
+            getFuncPy_ = &rim::Block::getFloat8Py;
+            break;
+
+        case rim::BFloat16:
+            getFuncPy_ = &rim::Block::getBFloat16Py;
+            break;
+
+        case rim::TensorFloat32:
+            getFuncPy_ = &rim::Block::getTensorFloat32Py;
+            break;
+
+        case rim::Float6:
+            getFuncPy_ = &rim::Block::getFloat6Py;
+            break;
+
+        case rim::Float4:
+            getFuncPy_ = &rim::Block::getFloat4Py;
             break;
 
         case rim::Double:
@@ -910,6 +1018,126 @@ float rim::Variable::getFloat(int32_t index) {
 
     block_->read(this, index);
     return (block_->*getFloat_)(this, index);
+}
+
+/////////////////////////////////
+// C++ Float16 (half-precision)
+/////////////////////////////////
+
+void rim::Variable::setFloat16(float& value, int32_t index) {
+    if (setFloat16_ == NULL)
+        throw(rogue::GeneralError::create("Variable::setFloat16", "Wrong set type for variable %s", path_.c_str()));
+
+    (block_->*setFloat16_)(value, this, index);
+    block_->write(this, index);
+}
+
+float rim::Variable::getFloat16(int32_t index) {
+    if (getFloat16_ == NULL)
+        throw(rogue::GeneralError::create("Variable::getFloat16", "Wrong get type for variable %s", path_.c_str()));
+
+    block_->read(this, index);
+    return (block_->*getFloat16_)(this, index);
+}
+
+/////////////////////////////////
+// C++ Float8 (E4M3)
+/////////////////////////////////
+
+void rim::Variable::setFloat8(float& value, int32_t index) {
+    if (setFloat8_ == NULL)
+        throw(rogue::GeneralError::create("Variable::setFloat8", "Wrong set type for variable %s", path_.c_str()));
+
+    (block_->*setFloat8_)(value, this, index);
+    block_->write(this, index);
+}
+
+float rim::Variable::getFloat8(int32_t index) {
+    if (getFloat8_ == NULL)
+        throw(rogue::GeneralError::create("Variable::getFloat8", "Wrong get type for variable %s", path_.c_str()));
+
+    block_->read(this, index);
+    return (block_->*getFloat8_)(this, index);
+}
+
+/////////////////////////////////
+// C++ BFloat16 (Brain Float 16)
+/////////////////////////////////
+
+void rim::Variable::setBFloat16(float& value, int32_t index) {
+    if (setBFloat16_ == NULL)
+        throw(rogue::GeneralError::create("Variable::setBFloat16", "Wrong set type for variable %s", path_.c_str()));
+
+    (block_->*setBFloat16_)(value, this, index);
+    block_->write(this, index);
+}
+
+float rim::Variable::getBFloat16(int32_t index) {
+    if (getBFloat16_ == NULL)
+        throw(rogue::GeneralError::create("Variable::getBFloat16", "Wrong get type for variable %s", path_.c_str()));
+
+    block_->read(this, index);
+    return (block_->*getBFloat16_)(this, index);
+}
+
+/////////////////////////////////
+// C++ TensorFloat32 (NVIDIA TF32)
+/////////////////////////////////
+
+void rim::Variable::setTensorFloat32(float& value, int32_t index) {
+    if (setTensorFloat32_ == NULL)
+        throw(rogue::GeneralError::create("Variable::setTensorFloat32", "Wrong set type for variable %s", path_.c_str()));
+
+    (block_->*setTensorFloat32_)(value, this, index);
+    block_->write(this, index);
+}
+
+float rim::Variable::getTensorFloat32(int32_t index) {
+    if (getTensorFloat32_ == NULL)
+        throw(rogue::GeneralError::create("Variable::getTensorFloat32", "Wrong get type for variable %s", path_.c_str()));
+
+    block_->read(this, index);
+    return (block_->*getTensorFloat32_)(this, index);
+}
+
+/////////////////////////////////
+// C++ Float6 (E3M2)
+/////////////////////////////////
+
+void rim::Variable::setFloat6(float& value, int32_t index) {
+    if (setFloat6_ == NULL)
+        throw(rogue::GeneralError::create("Variable::setFloat6", "Wrong set type for variable %s", path_.c_str()));
+
+    (block_->*setFloat6_)(value, this, index);
+    block_->write(this, index);
+}
+
+float rim::Variable::getFloat6(int32_t index) {
+    if (getFloat6_ == NULL)
+        throw(rogue::GeneralError::create("Variable::getFloat6", "Wrong get type for variable %s", path_.c_str()));
+
+    block_->read(this, index);
+    return (block_->*getFloat6_)(this, index);
+}
+
+/////////////////////////////////
+// C++ Float4 (E2M1)
+/////////////////////////////////
+
+void rim::Variable::setFloat4(float& value, int32_t index) {
+    if (setFloat4_ == NULL)
+        throw(rogue::GeneralError::create("Variable::setFloat4", "Wrong set type for variable %s", path_.c_str()));
+
+    (block_->*setFloat4_)(value, this, index);
+    block_->write(this, index);
+}
+
+float rim::Variable::getFloat4(int32_t index) {
+    if (getFloat4_ == NULL)
+        throw(rogue::GeneralError::create("Variable::getFloat4", "Wrong get type for variable %s", path_.c_str()));
+
+    block_->read(this, index);
+    return (block_->*getFloat4_)(this, index);
 }
 
 /////////////////////////////////

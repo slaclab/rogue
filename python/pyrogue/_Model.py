@@ -781,6 +781,542 @@ class DoubleBE(Double):
     fstring = '!d'
 
 
+class Float16(Model):
+    """Model class for 16-bit half-precision floating point numbers.
+
+    Parameters
+    ----------
+    bitSize : int
+        Number of bits being represented. Must be 16.
+    """
+
+    defaultdisp = '{:f}'
+    pytype      = float
+    fstring     = 'e'
+    modelId     = rim.Float16
+
+    def __init__(self, bitSize: int) -> None:
+        """Initialize 16-bit float model metadata."""
+        assert bitSize == 16, f"The bitSize param of Model {self.__class__.__name__} must be 16"
+        super().__init__(bitSize)
+        self.name = 'Float16'
+        self.ndType = np.dtype(np.float16)
+
+    def toBytes(self, value: float) -> bytearray:
+        """
+        Convert a python float value to a byte array.
+
+        Parameters
+        ----------
+        value : float
+            Python float value to convert.
+
+        Returns
+        -------
+        bytearray
+            Byte array representation of the value.
+
+        Notes
+        -----
+        Uses ``struct.pack`` with IEEE 754 round-to-nearest-even. The C++ Block
+        path (``floatToHalf``) uses truncation instead, so values that fall on
+        a rounding boundary may differ by 1 ULP between the two paths.
+        """
+        return bytearray(struct.pack(self.fstring, value))
+
+    def fromBytes(self, ba: bytes) -> float:
+        """
+        Convert a byte array to a python float value.
+
+        Parameters
+        ----------
+        ba : bytes
+            Byte array to extract value from.
+
+        Returns
+        -------
+        float
+            Python value.
+
+        """
+        return struct.unpack(self.fstring, ba)[0]
+
+    def fromString(self, string: str) -> float:
+        """
+        Convert a string to a python float value.
+
+        Parameters
+        ----------
+        string : str
+            String representation of the value.
+
+        Returns
+        -------
+        float
+            Python value.
+        """
+        return float(string)
+
+    def minValue(self) -> float:
+        """Return the minimum 16-bit float (-65504). """
+        return -65504.0
+
+    def maxValue(self) -> float:
+        """Return the maximum 16-bit float (65504). """
+        return 65504.0
+
+
+class Float16BE(Float16):
+    """Model class for 16-bit floats stored as big endian"""
+
+    endianness = 'big'
+    fstring = '!e'
+
+
+class Float8(Model):
+    """Model class for 8-bit E4M3 floating point numbers (NVIDIA FP8).
+
+    Parameters
+    ----------
+    bitSize : int
+        Number of bits being represented. Must be 8.
+
+    Notes
+    -----
+    Format: 1 sign bit, 4 exponent bits, 3 mantissa bits (E4M3).
+    Bias = 7. No infinity representation. NaN encoded as 0x7F.
+    Maximum representable value is 448.0.
+    Supported by NVIDIA Hopper (H100) and Blackwell GPUs.
+    """
+
+    defaultdisp = '{:f}'
+    pytype      = float
+    modelId     = rim.Float8
+
+    def __init__(self, bitSize: int) -> None:
+        """Initialize 8-bit E4M3 float model metadata."""
+        assert bitSize == 8, f"The bitSize param of Model {self.__class__.__name__} must be 8"
+        super().__init__(bitSize)
+        self.name = 'Float8'
+        self.ndType = np.dtype(np.float32)
+
+    def toBytes(self, value: float) -> bytearray:
+        """Convert float to 1-byte E4M3 encoding."""
+        import math
+        v = float(value)
+        if math.isnan(v):
+            return bytearray([0x7F])
+        # Get float32 bit pattern
+        bits = struct.unpack('I', struct.pack('f', v))[0]
+        sign = (bits >> 24) & 0x80
+        exp32 = (bits >> 23) & 0xFF
+        mant32 = bits & 0x7FFFFF
+        # Rebias exponent: float32 bias=127, E4M3 bias=7
+        exp8 = exp32 - 127 + 7
+        if exp32 == 0xFF:
+            # float32 infinity -> clamp to max finite
+            return bytearray([sign | 0x7E])
+        if exp8 > 15:
+            # Overflow -> clamp to max finite
+            return bytearray([sign | 0x7E])
+        if exp8 <= 0:
+            # Subnormal or underflow
+            if exp8 < -3:
+                return bytearray([sign])  # flush to zero
+            mant32 |= 0x800000
+            shift = 1 - exp8
+            mant32 >>= shift
+            return bytearray([sign | ((mant32 >> 20) & 0x07)])
+        return bytearray([sign | (exp8 << 3) | ((mant32 >> 20) & 0x07)])
+
+    def fromBytes(self, ba: bytes) -> float:
+        """Decode 1-byte E4M3 encoding to float."""
+        f8 = ba[0]
+        # Both 0x7F and 0xFF are NaN
+        if (f8 & 0x7F) == 0x7F:
+            return float('nan')
+        sign = -1.0 if (f8 & 0x80) else 1.0
+        exponent = (f8 >> 3) & 0x0F
+        mantissa = f8 & 0x07
+        if exponent == 0:
+            if mantissa == 0:
+                return 0.0 if sign > 0 else -0.0
+            # Subnormal: value = sign * mantissa/8 * 2^(1-7) = sign * mantissa * 2^(-9)
+            return sign * mantissa * (2.0 ** -9)
+        # Normal: value = sign * (1 + mantissa/8) * 2^(exponent-7)
+        return sign * (1.0 + mantissa / 8.0) * (2.0 ** (exponent - 7))
+
+    def fromString(self, string: str) -> float:
+        """Parse a string into a float value."""
+        return float(string)
+
+    def minValue(self) -> float:
+        """Return the minimum representable value (-448.0)."""
+        return -448.0
+
+    def maxValue(self) -> float:
+        """Return the maximum representable value (448.0)."""
+        return 448.0
+
+
+class Float8BE(Float8):
+    """Model class for 8-bit E4M3 floats stored as big endian."""
+
+    endianness = 'big'
+
+
+class BFloat16(Model):
+    """Model class for 16-bit Brain Float (BFloat16) numbers.
+
+    Parameters
+    ----------
+    bitSize : int
+        Number of bits being represented. Must be 16.
+
+    Notes
+    -----
+    Format: 1 sign bit, 8 exponent bits, 7 mantissa bits (same exponent as float32).
+    Bias = 127. Supports infinity and NaN. Maximum representable finite value
+    is approximately 3.39e38 (same range as float32).
+    Supported by NVIDIA Ampere (A100), Hopper (H100), and Blackwell GPUs.
+    """
+
+    defaultdisp = '{:f}'
+    pytype      = float
+    modelId     = rim.BFloat16
+
+    def __init__(self, bitSize: int) -> None:
+        """Initialize 16-bit BFloat16 model metadata."""
+        assert bitSize == 16, f"The bitSize param of Model {self.__class__.__name__} must be 16"
+        super().__init__(bitSize)
+        self.name = 'BFloat16'
+        self.ndType = np.dtype(np.float32)
+
+    def toBytes(self, value: float) -> bytearray:
+        """Convert float to 2-byte BFloat16 encoding.
+
+        BFloat16 is the upper 16 bits of the float32 bit pattern.
+        All special values (NaN, infinity, zero, subnormals) are preserved.
+        """
+        v = float(value)
+        # Get float32 bit pattern as uint32, take upper 16 bits
+        bits = struct.unpack('I', struct.pack('f', v))[0]
+        exp = (bits >> 23) & 0xFF
+        mant = bits & 0x7FFFFF
+        bf16 = bits >> 16
+        # Preserve NaN: truncation can clear payload bits, turning NaN into Inf.
+        if exp == 0xFF and mant != 0 and (bf16 & 0x007F) == 0:
+            bf16 |= 0x0001
+        endian = '>' if self.endianness == 'big' else '<'
+        return bytearray(struct.pack(f'{endian}H', bf16))
+
+    def fromBytes(self, ba: bytes) -> float:
+        """Decode 2-byte BFloat16 encoding to float.
+
+        Reconstructs float32 by shifting the 16-bit pattern left by 16.
+        """
+        endian = '>' if self.endianness == 'big' else '<'
+        bf16 = struct.unpack(f'{endian}H', ba[:2])[0]
+        bits = bf16 << 16
+        return struct.unpack('f', struct.pack('I', bits))[0]
+
+    def fromString(self, string: str) -> float:
+        """Parse a string into a float value."""
+        return float(string)
+
+    def minValue(self) -> float:
+        """Return the minimum representable finite BFloat16 value (~-3.39e38)."""
+        return -3.3895313892515355e+38
+
+    def maxValue(self) -> float:
+        """Return the maximum representable finite BFloat16 value (~3.39e38)."""
+        return 3.3895313892515355e+38
+
+
+class BFloat16BE(BFloat16):
+    """Model class for BFloat16 floats stored as big endian."""
+
+    endianness = 'big'
+
+
+class TensorFloat32(Model):
+    """Model class for 32-bit TensorFloat32 (NVIDIA TF32) numbers.
+
+    Parameters
+    ----------
+    bitSize : int
+        Number of bits being represented. Must be 32.
+
+    Notes
+    -----
+    Format: 1 sign bit, 8 exponent bits, 10 mantissa bits (1s/8e/10m).
+    Bias = 127. Same exponent range as float32. Stored in a 4-byte word
+    with the lower 13 mantissa bits zeroed. Supports infinity and NaN.
+    Maximum representable finite value is approximately 3.40e38.
+    Supported by NVIDIA Ampere (A100), Hopper (H100), and Blackwell GPUs.
+    """
+
+    defaultdisp = '{:f}'
+    pytype      = float
+    modelId     = rim.TensorFloat32
+
+    def __init__(self, bitSize: int) -> None:
+        """Initialize 32-bit TensorFloat32 model metadata."""
+        assert bitSize == 32, f"The bitSize param of Model {self.__class__.__name__} must be 32"
+        super().__init__(bitSize)
+        self.name = 'TensorFloat32'
+        self.ndType = np.dtype(np.float32)
+
+    def toBytes(self, value: float) -> bytearray:
+        """Convert float to 4-byte TensorFloat32 encoding.
+
+        TF32 zeros the lower 13 mantissa bits of the float32 bit pattern.
+        All special values (NaN, infinity, zero, subnormals) are preserved.
+        """
+        v = float(value)
+        bits = struct.unpack('I', struct.pack('f', v))[0]
+        tf32 = bits & 0xFFFFE000
+        # Preserve NaN: masking can clear payload bits, turning NaN into Inf.
+        if (bits & 0x7F800000) == 0x7F800000 and (bits & 0x007FFFFF) != 0 and \
+                (tf32 & 0x007FFFFF) == 0:
+            tf32 |= 0x00002000
+        endian = '>' if self.endianness == 'big' else '<'
+        return bytearray(struct.pack(f'{endian}I', tf32))
+
+    def fromBytes(self, ba: bytes) -> float:
+        """Decode 4-byte TensorFloat32 encoding to float.
+
+        TF32 bit pattern is a valid float32 with lower 13 mantissa bits
+        zeroed. Direct reinterpretation as float32 is sufficient.
+        """
+        endian = '>' if self.endianness == 'big' else '<'
+        tf32 = struct.unpack(f'{endian}I', ba[:4])[0]
+        return struct.unpack('f', struct.pack('I', tf32))[0]
+
+    def fromString(self, string: str) -> float:
+        """Parse a string into a float value."""
+        return float(string)
+
+    def minValue(self) -> float:
+        """Return the minimum representable finite TF32 value (~-3.40e38)."""
+        return -3.4011621342146535e+38
+
+    def maxValue(self) -> float:
+        """Return the maximum representable finite TF32 value (~3.40e38)."""
+        return 3.4011621342146535e+38
+
+
+class TensorFloat32BE(TensorFloat32):
+    """Model class for TensorFloat32 floats stored as big endian."""
+
+    endianness = 'big'
+
+
+class Float6(Model):
+    """Model class for 6-bit E3M2 floating point numbers (NVIDIA Blackwell FP6).
+
+    Parameters
+    ----------
+    bitSize : int
+        Number of bits being represented. Must be 8 (stored in 1-byte word).
+
+    Notes
+    -----
+    Format: 1 sign bit, 3 exponent bits, 2 mantissa bits (E3M2).
+    Bias = 3. No infinity representation. No NaN representation.
+    All 64 bit patterns are finite values or zero.
+    Maximum representable value is 28.0.
+    Stored in lower 6 bits of a uint8_t byte.
+    Supported by NVIDIA Blackwell GPUs.
+    """
+
+    defaultdisp = '{:f}'
+    pytype      = float
+    modelId     = rim.Float6
+
+    def __init__(self, bitSize: int) -> None:
+        """Initialize 6-bit E3M2 float model metadata."""
+        assert bitSize == 8, f"The bitSize param of Model {self.__class__.__name__} must be 8"
+        super().__init__(bitSize)
+        self.name = 'Float6'
+        self.ndType = np.dtype(np.float32)
+
+    def toBytes(self, value: float) -> bytearray:
+        """Convert float to 1-byte E3M2 encoding (6 active bits in uint8).
+
+        NaN and infinity inputs are clamped to max finite value (+/-28.0)
+        since E3M2 has no NaN or infinity encodings.
+        """
+        import math
+        v = float(value)
+        if math.isnan(v) or math.isinf(v):
+            # E3M2 has no NaN/Inf -- clamp to max finite
+            sign = 0x20 if (math.isinf(v) and v < 0) else 0x00
+            if math.isnan(v):
+                sign = 0x00  # positive max for NaN
+            return bytearray([sign | 0x1F])
+        # Get float32 bit pattern
+        bits = struct.unpack('I', struct.pack('f', v))[0]
+        sign = (bits >> 26) & 0x20
+        exp32 = (bits >> 23) & 0xFF
+        mant32 = bits & 0x7FFFFF
+        # Rebias exponent: float32 bias=127, E3M2 bias=3
+        exp6 = exp32 - 127 + 3
+        if exp32 == 0xFF:
+            # float32 special values -- clamp to max finite
+            return bytearray([sign | 0x1F])
+        if exp6 > 7:
+            # Overflow -- clamp to max finite
+            return bytearray([sign | 0x1F])
+        if exp6 <= 0:
+            # Subnormal or underflow
+            if exp6 < -2:
+                return bytearray([sign])  # flush to zero
+            mant32 |= 0x800000
+            shift = 1 - exp6
+            mant32 >>= shift
+            return bytearray([sign | ((mant32 >> 21) & 0x03)])
+        return bytearray([sign | (exp6 << 2) | ((mant32 >> 21) & 0x03)])
+
+    def fromBytes(self, ba: bytes) -> float:
+        """Decode 1-byte E3M2 encoding to float.
+
+        All 64 bit patterns decode to finite values or zero (no NaN/Inf).
+        """
+        f6 = ba[0] & 0x3F  # mask to 6 bits
+        sign = -1.0 if (f6 & 0x20) else 1.0
+        exponent = (f6 >> 2) & 0x07
+        mantissa = f6 & 0x03
+        if exponent == 0:
+            if mantissa == 0:
+                return 0.0 if sign > 0 else -0.0
+            # Subnormal: value = sign * mantissa/4 * 2^(1-3) = sign * mantissa * 2^(-4)
+            return sign * mantissa * (2.0 ** -4)
+        # Normal: value = sign * (1 + mantissa/4) * 2^(exponent-3)
+        return sign * (1.0 + mantissa / 4.0) * (2.0 ** (exponent - 3))
+
+    def fromString(self, string: str) -> float:
+        """Parse a string into a float value."""
+        return float(string)
+
+    def minValue(self) -> float:
+        """Return the minimum representable value (-28.0)."""
+        return -28.0
+
+    def maxValue(self) -> float:
+        """Return the maximum representable value (28.0)."""
+        return 28.0
+
+
+class Float6BE(Float6):
+    """Model class for 6-bit E3M2 floats stored as big endian."""
+
+    endianness = 'big'
+
+
+class Float4(Model):
+    """Model class for 4-bit E2M1 floating point numbers (NVIDIA Blackwell FP4).
+
+    Parameters
+    ----------
+    bitSize : int
+        Number of bits being represented. Must be 8 (stored in 1-byte word).
+
+    Notes
+    -----
+    Format: 1 sign bit, 2 exponent bits, 1 mantissa bit (E2M1).
+    Bias = 1. No infinity representation. No NaN representation.
+    All 16 bit patterns are finite values or zero.
+    Only 8 distinct magnitudes: 0, 0.5, 1.0, 1.5, 2.0, 3.0, 4.0, 6.0.
+    Maximum representable value is 6.0.
+    Stored in lower 4 bits of a uint8_t byte.
+    Supported by NVIDIA Blackwell GPUs.
+    """
+
+    defaultdisp = '{:f}'
+    pytype      = float
+    modelId     = rim.Float4
+
+    def __init__(self, bitSize: int) -> None:
+        """Initialize 4-bit E2M1 float model metadata."""
+        assert bitSize == 8, f"The bitSize param of Model {self.__class__.__name__} must be 8"
+        super().__init__(bitSize)
+        self.name = 'Float4'
+        self.ndType = np.dtype(np.float32)
+
+    def toBytes(self, value: float) -> bytearray:
+        """Convert float to 1-byte E2M1 encoding (4 active bits in uint8).
+
+        NaN and infinity inputs are clamped to max finite value (+/-6.0)
+        since E2M1 has no NaN or infinity encodings.
+        """
+        import math
+        v = float(value)
+        if math.isnan(v) or math.isinf(v):
+            # E2M1 has no NaN/Inf -- clamp to max finite
+            sign = 0x08 if (math.isinf(v) and v < 0) else 0x00
+            if math.isnan(v):
+                sign = 0x00  # positive max for NaN
+            return bytearray([sign | 0x07])
+        # Get float32 bit pattern
+        bits = struct.unpack('I', struct.pack('f', v))[0]
+        sign = (bits >> 28) & 0x08
+        exp32 = (bits >> 23) & 0xFF
+        mant32 = bits & 0x7FFFFF
+        # Rebias exponent: float32 bias=127, E2M1 bias=1
+        exp4 = exp32 - 127 + 1
+        if exp32 == 0xFF:
+            # float32 special values -- clamp to max finite
+            return bytearray([sign | 0x07])
+        if exp4 > 3:
+            # Overflow -- clamp to max finite
+            return bytearray([sign | 0x07])
+        if exp4 <= 0:
+            # Subnormal or underflow
+            if exp4 < -1:
+                return bytearray([sign])  # flush to zero
+            mant32 |= 0x800000
+            shift = 1 - exp4
+            mant32 >>= shift
+            return bytearray([sign | ((mant32 >> 22) & 0x01)])
+        return bytearray([sign | (exp4 << 1) | ((mant32 >> 22) & 0x01)])
+
+    def fromBytes(self, ba: bytes) -> float:
+        """Decode 1-byte E2M1 encoding to float.
+
+        All 16 bit patterns decode to finite values or zero (no NaN/Inf).
+        """
+        f4 = ba[0] & 0x0F  # mask to 4 bits
+        sign = -1.0 if (f4 & 0x08) else 1.0
+        exponent = (f4 >> 1) & 0x03
+        mantissa = f4 & 0x01
+        if exponent == 0:
+            if mantissa == 0:
+                return 0.0 if sign > 0 else -0.0
+            # Subnormal: value = sign * mantissa * 0.5 (only one subnormal: +/-0.5)
+            return sign * mantissa * 0.5
+        # Normal: value = sign * (1 + mantissa/2) * 2^(exponent-1)
+        return sign * (1.0 + mantissa / 2.0) * (2.0 ** (exponent - 1))
+
+    def fromString(self, string: str) -> float:
+        """Parse a string into a float value."""
+        return float(string)
+
+    def minValue(self) -> float:
+        """Return the minimum representable value (-6.0)."""
+        return -6.0
+
+    def maxValue(self) -> float:
+        """Return the maximum representable value (6.0)."""
+        return 6.0
+
+
+class Float4BE(Float4):
+    """Model class for 4-bit E2M1 floats stored as big endian."""
+
+    endianness = 'big'
+
+
 class Fixed(Model):
     """
     Model class for fixed point signed integers

@@ -67,6 +67,54 @@ class ModelVariableDevice(pr.Device):
             mode="RW",
         ))
 
+        self.add(pr.RemoteVariable(
+            name="Float16Var",
+            offset=0x28,
+            bitSize=16,
+            base=pr.Float16,
+            mode="RW",
+        ))
+
+        self.add(pr.RemoteVariable(
+            name="Float8Var",
+            offset=0x30,
+            bitSize=8,
+            base=pr.Float8,
+            mode="RW",
+        ))
+
+        self.add(pr.RemoteVariable(
+            name="BFloat16Var",
+            offset=0x32,
+            bitSize=16,
+            base=pr.BFloat16,
+            mode="RW",
+        ))
+
+        self.add(pr.RemoteVariable(
+            name="TF32Var",
+            offset=0x34,
+            bitSize=32,
+            base=pr.TensorFloat32,
+            mode="RW",
+        ))
+
+        self.add(pr.RemoteVariable(
+            name="Float6Var",
+            offset=0x38,
+            bitSize=8,
+            base=pr.Float6,
+            mode="RW",
+        ))
+
+        self.add(pr.RemoteVariable(
+            name="Float4Var",
+            offset=0x39,
+            bitSize=8,
+            base=pr.Float4,
+            mode="RW",
+        ))
+
         # Keep the fixed-point cases on real RemoteVariables so the tests hit
         # the block/model conversion path that application code actually uses.
         self.add(pr.RemoteVariable(
@@ -91,7 +139,7 @@ class ModelVariableDevice(pr.Device):
         # negative-value round-trips on these will fail.
         self.add(pr.RemoteVariable(
             name="Fixed32Var",
-            offset=0x28,
+            offset=0x68,
             bitSize=32,
             base=pr.Fixed(32, 0),
             mode="RW",
@@ -99,7 +147,7 @@ class ModelVariableDevice(pr.Device):
 
         self.add(pr.RemoteVariable(
             name="Fixed40Var",
-            offset=0x30,
+            offset=0x70,
             bitSize=40,
             base=pr.Fixed(40, 8),
             mode="RW",
@@ -107,7 +155,7 @@ class ModelVariableDevice(pr.Device):
 
         self.add(pr.RemoteVariable(
             name="Fixed64Var",
-            offset=0x38,
+            offset=0x78,
             bitSize=64,
             base=pr.Fixed(64, 0),
             mode="RW",
@@ -204,6 +252,12 @@ def test_remote_variables_round_trip_model_backed_values():
         root.Dev.StringVar.set("abc")
         root.Dev.FloatVar.set(1.25)
         root.Dev.DoubleVar.set(2.5)
+        root.Dev.Float16Var.set(1.25)
+        root.Dev.Float8Var.set(1.0)
+        root.Dev.BFloat16Var.set(1.0)
+        root.Dev.TF32Var.set(1.25)
+        root.Dev.Float6Var.set(1.0)
+        root.Dev.Float4Var.set(1.0)
         root.Dev.FixedVar.set(1.5)
         root.Dev.UFixedVar.set(2.25)
 
@@ -219,6 +273,18 @@ def test_remote_variables_round_trip_model_backed_values():
         assert root.Dev.FloatVar.typeStr == "Float32"
         assert math.isclose(root.Dev.DoubleVar.get(), 2.5, rel_tol=0.0, abs_tol=1e-12)
         assert root.Dev.DoubleVar.typeStr == "Double64"
+        assert math.isclose(root.Dev.Float16Var.get(), 1.25, rel_tol=0.0, abs_tol=1e-3)
+        assert root.Dev.Float16Var.typeStr == "Float16"
+        assert math.isclose(root.Dev.Float8Var.get(), 1.0, rel_tol=0.0, abs_tol=0.1)
+        assert root.Dev.Float8Var.typeStr == "Float8"
+        assert math.isclose(root.Dev.BFloat16Var.get(), 1.0, rel_tol=0.0, abs_tol=0.01)
+        assert root.Dev.BFloat16Var.typeStr == "BFloat16"
+        assert math.isclose(root.Dev.TF32Var.get(), 1.25, rel_tol=0.0, abs_tol=0.01)
+        assert root.Dev.TF32Var.typeStr == "TensorFloat32"
+        assert math.isclose(root.Dev.Float6Var.get(), 1.0, rel_tol=0.0, abs_tol=0.1)
+        assert root.Dev.Float6Var.typeStr == "Float6"
+        assert root.Dev.Float4Var.get() == 1.0
+        assert root.Dev.Float4Var.typeStr == "Float4"
         assert math.isclose(root.Dev.FixedVar.get(), 1.5, rel_tol=0.0, abs_tol=1e-6)
         assert root.Dev.FixedVar.typeStr == "Fixed_16_4"
         assert math.isclose(root.Dev.UFixedVar.get(), 2.25, rel_tol=0.0, abs_tol=1e-6)
@@ -383,3 +449,30 @@ def test_fixed_point_list_variables_round_trip():
         # Negative writes into the unsigned list must still be rejected.
         with pytest.raises(Exception):
             root.Dev.UFixedListVar.set([-1.0, 0.0, 0.0, 0.0])
+
+def test_float16_remote_variable_boundary_values():
+    with ModelVariableRoot() as root:
+        # Zero
+        root.Dev.Float16Var.set(0.0)
+        assert root.Dev.Float16Var.get() == 0.0
+
+        # Max representable half-precision value
+        root.Dev.Float16Var.set(65504.0)
+        assert math.isclose(root.Dev.Float16Var.get(), 65504.0, rel_tol=0.0, abs_tol=1.0)
+
+        # Negative max
+        root.Dev.Float16Var.set(-65504.0)
+        assert math.isclose(root.Dev.Float16Var.get(), -65504.0, rel_tol=0.0, abs_tol=1.0)
+
+        # Small normal value near the half-precision minimum normal range
+        root.Dev.Float16Var.set(0.0001)
+        result = root.Dev.Float16Var.get()
+        assert math.isclose(result, 0.0001, rel_tol=0.1)
+
+        # Smallest positive half-precision subnormal (2**-24) exercises the
+        # floatToHalf/halfToFloat denormal conversion path in the C++ Block code.
+        subnormal = 2 ** -24
+        root.Dev.Float16Var.set(subnormal)
+        result = root.Dev.Float16Var.get()
+        assert result > 0.0
+        assert math.isclose(result, subnormal, rel_tol=0.0, abs_tol=subnormal)
