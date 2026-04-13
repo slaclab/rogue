@@ -81,7 +81,11 @@ inline std::string stringify(const char* value) {
     return value == nullptr ? "nullptr" : "\"" + std::string(value) + "\"";
 }
 
-inline void failCheck(const char* file, int line, const std::string& expression, bool fatal) {
+inline void failCheck(const char* file,
+                      int line,
+                      const std::string& expression,
+                      bool fatal,
+                      const std::string& message = std::string()) {
     TestRunState* state = activeState();
     if (state != nullptr) {
         state->assertions += 1;
@@ -90,6 +94,7 @@ inline void failCheck(const char* file, int line, const std::string& expression,
 
     std::ostringstream oss;
     oss << makeLocation(file, line) << ": assertion failed: " << expression;
+    if (!message.empty()) oss << " - " << message;
     if (fatal) throw AssertionFailure(oss.str());
     std::cerr << oss.str() << std::endl;
 }
@@ -189,6 +194,12 @@ class Context {
 
 #define DOCTEST_DETAIL_CAT_IMPL(lhs, rhs) lhs##rhs
 #define DOCTEST_DETAIL_CAT(lhs, rhs) DOCTEST_DETAIL_CAT_IMPL(lhs, rhs)
+#define DOCTEST_DETAIL_MAKE_MESSAGE(msg)                                                           \
+    ([&]() {                                                                                        \
+        std::ostringstream doctest_oss;                                                            \
+        doctest_oss << msg;                                                                        \
+        return doctest_oss.str();                                                                  \
+    }())
 
 #define TEST_CASE(name)                                                                            \
     static void DOCTEST_DETAIL_CAT(doctest_case_, __LINE__)();                                     \
@@ -206,6 +217,23 @@ class Context {
     do {                                                                                            \
         if (!(expr)) ::doctest::failCheck(__FILE__, __LINE__, #expr, true);                        \
         else if (::doctest::activeState() != nullptr) ::doctest::activeState()->assertions += 1;   \
+    } while (0)
+
+#define CHECK_MESSAGE(expr, msg)                                                                   \
+    do {                                                                                            \
+        if (!(expr)) ::doctest::failCheck(__FILE__, __LINE__, #expr, false, DOCTEST_DETAIL_MAKE_MESSAGE(msg)); \
+        else if (::doctest::activeState() != nullptr) ::doctest::activeState()->assertions += 1;   \
+    } while (0)
+
+#define REQUIRE_MESSAGE(expr, msg)                                                                 \
+    do {                                                                                            \
+        if (!(expr)) ::doctest::failCheck(__FILE__, __LINE__, #expr, true, DOCTEST_DETAIL_MAKE_MESSAGE(msg));  \
+        else if (::doctest::activeState() != nullptr) ::doctest::activeState()->assertions += 1;   \
+    } while (0)
+
+#define FAIL(msg)                                                                                  \
+    do {                                                                                            \
+        ::doctest::failCheck(__FILE__, __LINE__, "FAIL", true, DOCTEST_DETAIL_MAKE_MESSAGE(msg));  \
     } while (0)
 
 #define CHECK_FALSE(expr) CHECK(!(expr))
