@@ -112,6 +112,9 @@ rim::Block::Block(uint64_t offset, uint32_t size) {
 
     verifyBlock_ = reinterpret_cast<uint8_t*>(malloc(size_));
     memset(verifyBlock_, 0, size_);
+
+    expectedData_ = reinterpret_cast<uint8_t*>(malloc(size_));
+    memset(expectedData_, 0, size_);
 }
 
 // Destroy the Hub
@@ -123,6 +126,7 @@ rim::Block::~Block() {
     free(verifyData_);
     free(verifyMask_);
     free(verifyBlock_);
+    free(expectedData_);
 }
 
 // Return the path of the block
@@ -257,6 +261,10 @@ void rim::Block::intStartTransaction(uint32_t type, bool forceWr, bool check, ri
                 verifyBase_ = tOff;
                 verifySize_ = tSize;
                 verifyReq_  = verifyEn_;
+
+                // Snapshot expected data at write time so that concurrent
+                // modifications to blockData_ do not cause false verify failures
+                memcpy(expectedData_ + tOff, blockData_ + tOff, tSize);
             }
         }
         doUpdate_ = updateEn_;
@@ -385,7 +393,7 @@ bool rim::Block::checkTransaction() {
             verifyInp_ = false;
 
             for (x = verifyBase_; x < verifyBase_ + verifySize_; x++) {
-                if ((verifyData_[x] & verifyMask_[x]) != (blockData_[x] & verifyMask_[x])) {
+                if ((verifyData_[x] & verifyMask_[x]) != (expectedData_[x] & verifyMask_[x])) {
                     throw(rogue::GeneralError::create("Block::checkTransaction",
                                                       "Verify error for block %s with address 0x%.8" PRIx64
                                                       ". Byte: %" PRIu32 ". Got: 0x%.2" PRIx8 ", Exp: 0x%.2" PRIx8
@@ -394,7 +402,7 @@ bool rim::Block::checkTransaction() {
                                                       address(),
                                                       x,
                                                       verifyData_[x],
-                                                      blockData_[x],
+                                                      expectedData_[x],
                                                       verifyMask_[x]));
                 }
             }
