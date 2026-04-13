@@ -23,6 +23,7 @@
 
 #include <cstring>
 #include <memory>
+#include <random>
 #include <utility>
 #include <vector>
 
@@ -113,6 +114,25 @@ void rps::SrpV3Server::runThread() {
     log_->debug("Worker thread stopped");
 }
 
+//! Allocate a new 4K page filled with random data
+uint8_t* rps::SrpV3Server::allocatePage(uint64_t addr4k) {
+    uint8_t* page = reinterpret_cast<uint8_t*>(malloc(0x1000));
+    if (page == nullptr) {
+        log_->error("Failed to allocate page at 0x%" PRIx64, addr4k);
+        return nullptr;
+    }
+
+    // Fill with random data to emulate uninitialized hardware memory
+    std::mt19937 gen(std::random_device{}());
+    uint32_t* p32 = reinterpret_cast<uint32_t*>(page);
+    for (size_t i = 0; i < 0x1000 / 4; i++) p32[i] = gen();
+
+    memMap_.insert(std::make_pair(addr4k, page));
+    totAlloc_++;
+    log_->debug("Allocating page at 0x%" PRIx64 ". Total pages %" PRIu32, addr4k, totAlloc_);
+    return page;
+}
+
 //! Read from internal memory
 void rps::SrpV3Server::readMemory(uint64_t address, uint8_t* data, uint32_t size) {
     uint64_t addr4k;
@@ -126,11 +146,14 @@ void rps::SrpV3Server::readMemory(uint64_t address, uint8_t* data, uint32_t size
 
         if (size4k > size) size4k = size;
 
-        if (memMap_.find(addr4k) == memMap_.end()) {
-            // Uninitialized memory reads as zero
-            memset(data, 0, size4k);
+        auto it = memMap_.find(addr4k);
+        if (it == memMap_.end()) {
+            // Allocate page with random data on first read (like uninitialized SRAM)
+            uint8_t* page = allocatePage(addr4k);
+            if (page == nullptr) return;
+            memcpy(data, page + off4k, size4k);
         } else {
-            memcpy(data, memMap_[addr4k] + off4k, size4k);
+            memcpy(data, it->second + off4k, size4k);
         }
 
         size -= size4k;
@@ -154,14 +177,9 @@ void rps::SrpV3Server::writeMemory(uint64_t address, const uint8_t* data, uint32
 
         auto it = memMap_.find(addr4k);
         if (it == memMap_.end()) {
-            uint8_t* page = reinterpret_cast<uint8_t*>(calloc(1, 0x1000));
-            if (page == nullptr) {
-                log_->error("Failed to allocate page at 0x%" PRIx64, addr4k);
-                return;
-            }
-            it = memMap_.insert(std::make_pair(addr4k, page)).first;
-            totAlloc_++;
-            log_->debug("Allocating page at 0x%" PRIx64 ". Total pages %" PRIu32, addr4k, totAlloc_);
+            uint8_t* page = allocatePage(addr4k);
+            if (page == nullptr) return;
+            it = memMap_.find(addr4k);
         }
 
         memcpy(it->second + off4k, data, size4k);

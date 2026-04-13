@@ -160,6 +160,14 @@ class SrpV3Server : public rogue::interfaces::stream::Master,
 
   private:
     /**
+     * @brief Allocates a new 4K page filled with random data.
+     *
+     * @param addr4k 4K-aligned base address for the page.
+     * @return Pointer to the allocated page, or nullptr on failure.
+     */
+    uint8_t* allocatePage(uint64_t addr4k);
+
+    /**
      * @brief Reads bytes from the internal memory map.
      *
      * @param address Start address.

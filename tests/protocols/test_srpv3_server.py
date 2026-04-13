@@ -145,10 +145,11 @@ def test_srpv3_server_wide_register():
 
 
 def test_srpv3_server_uninitialized_read():
-    """Test that reading uninitialized memory returns zero."""
+    """Test that reading uninitialized memory returns consistent random data."""
     with SrpV3TestRoot() as root:
-        val = root.Dev.ScratchPad.get()
-        assert val == 0
+        val1 = root.Dev.ScratchPad.get()
+        val2 = root.Dev.ScratchPad.get()
+        assert val1 == val2
 
 
 def test_srpv3_server_multi_device():
