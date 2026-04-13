@@ -183,7 +183,7 @@ def collect_versions(output_root: Path, site_root: str) -> dict[str, object]:
     return {"default": choose_default_slug(versions), "versions": versions}
 
 
-def render_versions_page(metadata: dict[str, object], site_root: str) -> str:
+def render_versions_page(metadata: dict[str, object]) -> str:
     versions = metadata["versions"]
     default_slug = metadata["default"]
     latest = next((entry for entry in versions if entry["slug"] == "latest"), None)
@@ -329,7 +329,7 @@ def main() -> int:
 
     metadata = collect_versions(output_root, site_root)
     write_text(output_root / "versions.json", json.dumps(metadata, indent=2, sort_keys=False) + "\n")
-    write_text(output_root / "versions" / "index.html", render_versions_page(metadata, site_root))
+    write_text(output_root / "versions" / "index.html", render_versions_page(metadata))
 
     if args.write_root_redirect:
         write_text(output_root / "index.html", render_redirect("latest/"))
