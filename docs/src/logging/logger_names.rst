@@ -37,6 +37,9 @@ Protocols
    * - Batcher
      - ``pyrogue.batcher.CoreV1``, ``pyrogue.batcher.CoreV2``
      - Super-header processing and record framing
+   * - Batcher Combiner
+     - ``pyrogue.batcher.CombinerV1``, ``pyrogue.batcher.CombinerV2``
+     - SW batcher frame construction
    * - SRP
      - ``pyrogue.SrpV0``, ``pyrogue.SrpV3``
      - Request/response header processing

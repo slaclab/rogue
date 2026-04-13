@@ -32,8 +32,7 @@ from qtpy.QtWidgets import (
 
 from pyqtgraph import ViewBox
 
-from PyQt5.QtWidgets import QSplitter
-from PyQt5.QtCore import Qt
+from qtpy.QtWidgets import QSplitter
 
 import random
 
@@ -255,7 +254,7 @@ class DebugHolder(QTreeWidgetItem):
         w.alarmSensitiveBorder  = True
 
         fm = QFontMetrics(w.font())
-        width = int(fm.width(self._path.split('.')[-1]) * 1.1)
+        width = int(fm.horizontalAdvance(self._path.split('.')[-1]) * 1.1)
 
         rightEdge = width + (self._top._tree.indentation() * self._depth)
 
@@ -302,7 +301,7 @@ class DebugHolder(QTreeWidgetItem):
 
 
         self._top._tree.setItemWidget(self,2,w)
-        width = fm.width('0xAAAAAAAA    ')
+        width = fm.horizontalAdvance('0xAAAAAAAA    ')
 
         if width > self._top._colWidths[1]:
             self._top._colWidths[1] = width
@@ -571,7 +570,7 @@ class TimePlotter(PyDMFrame):
         selection_box = QGroupBox()
         selection_box.setLayout(selection_layout)
 
-        selection_splitter = QSplitter(Qt.Vertical)
+        selection_splitter = QSplitter(QtCore.Qt.Vertical)
         selection_splitter.addWidget(self.selection_tree)
         selection_splitter.addWidget(self.scroll_area)
 
@@ -581,7 +580,7 @@ class TimePlotter(PyDMFrame):
         graphs_box = QGroupBox()
         graphs_box.setLayout(graphs_layout)
 
-        main_splitter = QSplitter(Qt.Horizontal)
+        main_splitter = QSplitter(QtCore.Qt.Horizontal)
 
         main_splitter.addWidget(selection_splitter)
         main_splitter.addWidget(graphs_box)
