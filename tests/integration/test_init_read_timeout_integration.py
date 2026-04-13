@@ -86,15 +86,17 @@ def test_init_read_timeout_does_not_crash():
         assert root.running is True
 
 
-def test_init_read_returns_false_on_timeout():
-    """Root._read() must return False when a transaction times out."""
+def test_read_raises_on_timeout():
+    """Root._read() must raise GeneralError when a transaction times out,
+    so that callers (e.g. scripts calling Read()) see the exception."""
+    import rogue
 
     class AlwaysDropRoot(pr.Root):
-        """Root whose memory slave always drops, ensuring _read returns False."""
+        """Root whose memory slave always drops, ensuring _read raises."""
         def __init__(self):
             super().__init__(
                 name='alwaysDropRoot',
-                description='Root for return-value test',
+                description='Root for exception-propagation test',
                 timeout=0.01,
                 initRead=False,  # We call _read manually
                 pollEn=False,
@@ -108,8 +110,8 @@ def test_init_read_returns_false_on_timeout():
     root = AlwaysDropRoot()
     root.start()
     try:
-        result = root._read()
-        assert result is False
+        with pytest.raises(rogue.GeneralError):
+            root._read()
     finally:
         root.stop()
 
@@ -168,7 +170,7 @@ def test_concurrent_root_start_with_timeouts():
 
 if __name__ == "__main__":
     test_init_read_timeout_does_not_crash()
-    test_init_read_returns_false_on_timeout()
+    test_read_raises_on_timeout()
     test_init_read_succeeds_without_timeout()
     test_concurrent_root_start_with_timeouts()
     print("All tests passed.")

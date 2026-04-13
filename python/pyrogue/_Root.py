@@ -460,12 +460,18 @@ class Root(pr.Device):
 
         # Read current state
         if self._initRead:
-            self._read()
+            try:
+                self._read()
+            except rogue.GeneralError as e:
+                pr.logException(self._log, e)
 
         # Commit default values
         # Read did not override defaults because set values are cached
         if self._initWrite:
-            self._write()
+            try:
+                self._write()
+            except rogue.GeneralError as e:
+                pr.logException(self._log, e)
 
         # Start poller if enabled
         self._pollQueue._start()
@@ -783,15 +789,11 @@ class Root(pr.Device):
         """Write and verify all blocks."""
         self._log.info("Start root write (forceWrite=%s)", self.ForceWrite.value())
         with self.pollBlock(), self.updateGroup():
-            try:
-                self.writeBlocks(force=self.ForceWrite.value(), recurse=True)
-                self._log.info("Verify root write with readback")
-                self.verifyBlocks(recurse=True)
-                self._log.info("Check verified root write transactions")
-                self.checkBlocks(recurse=True)
-            except rogue.GeneralError as e:
-                pr.logException(self._log, e)
-                return False
+            self.writeBlocks(force=self.ForceWrite.value(), recurse=True)
+            self._log.info("Verify root write with readback")
+            self.verifyBlocks(recurse=True)
+            self._log.info("Check verified root write transactions")
+            self.checkBlocks(recurse=True)
 
         self._log.info("Done root write")
         return True
@@ -800,13 +802,9 @@ class Root(pr.Device):
         """Read and check all blocks."""
         self._log.info("Start root read")
         with self.pollBlock(), self.updateGroup():
-            try:
-                self.readBlocks(recurse=True)
-                self._log.info("Check root read transactions")
-                self.checkBlocks(recurse=True)
-            except rogue.GeneralError as e:
-                pr.logException(self._log, e)
-                return False
+            self.readBlocks(recurse=True)
+            self._log.info("Check root read transactions")
+            self.checkBlocks(recurse=True)
 
         self._log.info("Done root read")
         return True
