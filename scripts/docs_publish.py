@@ -22,6 +22,7 @@ from pathlib import Path
 
 
 RELEASE_DIR_RE = re.compile(r"^v(\d+)\.(\d+)\.(\d+)$")
+SAFE_SLUG_RE = re.compile(r"^[A-Za-z0-9](?:[A-Za-z0-9._-]*[A-Za-z0-9])?$")
 
 
 def parse_args() -> argparse.Namespace:
@@ -86,6 +87,33 @@ def release_sort_key(slug: str) -> tuple[int, int, int]:
     return tuple(int(part) for part in match.groups())
 
 
+def validate_safe_slug(value: str, field_name: str) -> str:
+    slug = value.strip()
+    if not slug:
+        raise ValueError(f"{field_name} cannot be empty")
+    if slug in {".", ".."}:
+        raise ValueError(f"{field_name} must be a single safe path segment")
+    if "/" in slug or "\\" in slug:
+        raise ValueError(f"{field_name} must not contain path separators")
+    if not SAFE_SLUG_RE.match(slug):
+        raise ValueError(
+            f"{field_name} must match {SAFE_SLUG_RE.pattern} and stay within a single path segment"
+        )
+    return slug
+
+
+def choose_default_slug(versions: list[dict[str, str]]) -> str | None:
+    for preferred_slug in ("latest", "pre-release"):
+        if any(entry["slug"] == preferred_slug for entry in versions):
+            return preferred_slug
+
+    newest_release = next((entry for entry in versions if entry["kind"] == "release"), None)
+    if newest_release is not None:
+        return newest_release["slug"]
+
+    return versions[0]["slug"] if versions else None
+
+
 def collect_versions(output_root: Path, site_root: str) -> dict[str, object]:
     versions: list[dict[str, str]] = []
 
@@ -129,14 +157,16 @@ def collect_versions(output_root: Path, site_root: str) -> dict[str, object]:
             }
         )
 
-    return {"default": "latest", "versions": versions}
+    return {"default": choose_default_slug(versions), "versions": versions}
 
 
 def render_versions_page(metadata: dict[str, object], site_root: str) -> str:
     versions = metadata["versions"]
+    default_slug = metadata["default"]
     latest = next((entry for entry in versions if entry["slug"] == "latest"), None)
     pre_release = next((entry for entry in versions if entry["slug"] == "pre-release"), None)
     releases = [entry for entry in versions if entry["kind"] == "release"]
+    default_entry = next((entry for entry in versions if entry["slug"] == default_slug), None)
 
     def render_entry(entry: dict[str, str]) -> str:
         return f'<li><a href="{entry["url"]}">{entry["title"]}</a></li>'
@@ -144,6 +174,11 @@ def render_versions_page(metadata: dict[str, object], site_root: str) -> str:
     latest_html = render_entry(latest) if latest else "<li>Not published yet.</li>"
     pre_release_html = render_entry(pre_release) if pre_release else "<li>Not published yet.</li>"
     release_html = "\n".join(render_entry(entry) for entry in releases) or "<li>No releases published yet.</li>"
+    default_link_html = (
+        f'<a class="home-link" href="{default_entry["url"]}">Open default docs</a>'
+        if default_entry
+        else "<p class=\"home-link\">No published documentation is available yet.</p>"
+    )
 
     return f"""<!DOCTYPE html>
 <html lang="en">
@@ -225,7 +260,7 @@ def render_versions_page(metadata: dict[str, object], site_root: str) -> str:
         {release_html}
       </ul>
     </section>
-    <a class="home-link" href="{url_join(site_root, metadata['default'])}">Open default docs</a>
+    {default_link_html}
   </main>
 </body>
 </html>
@@ -263,7 +298,8 @@ def main() -> int:
     if args.mode == "release":
         if not args.version:
             raise ValueError("--version is required in release mode")
-        sync_tree(site_dir, output_root / args.version)
+        version_slug = validate_safe_slug(args.version, "--version")
+        sync_tree(site_dir, output_root / version_slug)
         sync_tree(site_dir, output_root / "latest")
     else:
         sync_tree(site_dir, output_root / "pre-release")

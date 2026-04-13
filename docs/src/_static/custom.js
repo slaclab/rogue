@@ -85,6 +85,26 @@ function joinUrl(siteRoot, ...parts) {
   return `/${segments.join('/')}/`;
 }
 
+function joinPageUrl(siteRoot, ...parts) {
+  const normalizedRoot = normalizeSiteRoot(siteRoot);
+  const segments = [];
+
+  if (normalizedRoot) {
+    segments.push(normalizedRoot.replace(/^\/+/, ''));
+  }
+
+  for (const part of parts) {
+    if (!part) {
+      continue;
+    }
+    segments.push(part.replace(/^\/+|\/+$/g, ''));
+  }
+
+  const url = `/${segments.join('/')}`;
+  const lastSegment = segments[segments.length - 1] || '';
+  return lastSegment.includes('.') ? url : `${url}/`;
+}
+
 function getVersionsUrl(siteRoot) {
   return siteRoot ? `${siteRoot}/versions.json` : '/versions.json';
 }
@@ -116,6 +136,10 @@ function entryForSlug(metadata, slug) {
   return metadata.versions.find((entry) => entry.slug === slug) || null;
 }
 
+function latestReleaseEntry(metadata) {
+  return entryForSlug(metadata, 'latest') || metadata.versions.find((entry) => entry.kind === 'release') || null;
+}
+
 function createBanner(text, href, linkText) {
   const container = document.querySelector('.wy-nav-content');
   if (!container || container.querySelector('.rogue-docs-banner')) {
@@ -142,11 +166,16 @@ function renderBanner(metadata, currentVersion, siteRoot) {
   }
 
   if (currentVersion === 'pre-release') {
-    createBanner(
-      'You are viewing unreleased documentation from pre-release.',
-      entryForSlug(metadata, metadata.default)?.url || joinUrl(siteRoot, metadata.default),
-      'Open latest release.',
-    );
+    const latestEntry = latestReleaseEntry(metadata);
+    if (latestEntry) {
+      createBanner(
+        'You are viewing unreleased documentation from pre-release.',
+        latestEntry.url,
+        'Open latest release.',
+      );
+    } else {
+      createBanner('You are viewing unreleased documentation from pre-release. No release docs have been published yet.');
+    }
     return;
   }
 
@@ -160,10 +189,11 @@ function renderBanner(metadata, currentVersion, siteRoot) {
     return;
   }
 
+  const latestEntry = latestReleaseEntry(metadata);
   createBanner(
     `You are viewing archived documentation for ${currentVersion}.`,
-    entryForSlug(metadata, metadata.default)?.url || joinUrl(siteRoot, metadata.default),
-    'Open latest release.',
+    latestEntry?.url || joinUrl(siteRoot, currentVersion),
+    latestEntry ? 'Open latest release.' : null,
   );
 }
 
@@ -223,7 +253,7 @@ async function handleVersionChange(event, metadata, currentVersion, siteRoot) {
   let targetUrl = targetEntry.url;
 
   if (relativePath) {
-    const pageUrl = joinUrl(siteRoot, targetVersion, relativePath);
+    const pageUrl = joinPageUrl(siteRoot, targetVersion, relativePath);
     if (await urlExists(pageUrl)) {
       targetUrl = pageUrl;
     }
