@@ -118,14 +118,14 @@ TEST_CASE("Stream FIFO trims copied frames and drops when the queue is full") {
     auto third  = rogue_test::makeFrame(pool, {10, 11, 12, 13});
 
     fifo->acceptFrame(first);
-    REQUIRE(rogue_test::waitUntil([&]() { return sink->enteredCount() == 1U; }));
+    REQUIRE(rogue_test::waitUntil([&]() { return sink->enteredCount() == 1U; }, 2000));
 
     fifo->acceptFrame(second);
     fifo->acceptFrame(third);
     CHECK_EQ(fifo->dropCnt(), 1U);
 
     sink->releaseAll();
-    REQUIRE(rogue_test::waitUntil([&]() { return sink->frameCount() == 2U; }));
+    REQUIRE(rogue_test::waitUntil([&]() { return sink->frameCount() == 2U; }, 2000));
 
     CHECK_NE(sink->frameAt(0).get(), first.get());
     CHECK_EQ(sink->frameAt(0)->getPayload(), 3U);
@@ -156,7 +156,7 @@ TEST_CASE("Stream filter forwards only the configured channel and can drop error
     filter->acceptFrame(allowed);
     filter->acceptFrame(errored);
 
-    REQUIRE(rogue_test::waitUntil([&]() { return sink->frameCount() == 1U; }));
+    REQUIRE(rogue_test::waitUntil([&]() { return sink->frameCount() == 1U; }, 1000));
     CHECK_EQ(sink->frameAt(0)->getChannel(), 3U);
     CHECK_EQ(sink->frameAt(0)->getError(), 0U);
     CHECK_EQ(rogue_test::readFrame(sink->frameAt(0), 2), std::vector<uint8_t>({2, 3}));
@@ -172,7 +172,7 @@ TEST_CASE("Stream rate drop in count mode keeps every N plus first frame") {
 
     for (uint8_t idx = 0; idx < 5; ++idx) rateDrop->acceptFrame(rogue_test::makeFrame(pool, {idx}));
 
-    REQUIRE(rogue_test::waitUntil([&]() { return sink->frameCount() == 2U; }));
+    REQUIRE(rogue_test::waitUntil([&]() { return sink->frameCount() == 2U; }, 1000));
     CHECK_EQ(rogue_test::readFrame(sink->frameAt(0), 1), std::vector<uint8_t>({0}));
     CHECK_EQ(rogue_test::readFrame(sink->frameAt(1), 1), std::vector<uint8_t>({3}));
 }
