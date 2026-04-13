@@ -1,0 +1,446 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SplitterV2 &mdash; Rogue v6.9.0-146-g9016781d5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom.css?v=8b50afe1" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=5f168154"></script>
+      <script src="../../../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../../../_static/custom.js?v=7b5dfb0b"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" />
+    <link rel="next" title="InverterV1" href="inverterv1.html" />
+    <link rel="prev" title="SplitterV1" href="splitterv1.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../../../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../../../index.html">Python API</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../../../pyrogue/index.html">pyrogue</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../../index.html">rogue</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../../version.html">rogue.Version</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../logging.html">rogue.Logging</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../generalerror.html">rogue.GeneralError</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../interfaces/index.html">rogue.interfaces</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="../index.html">rogue.protocols</a><ul class="current">
+<li class="toctree-l5"><a class="reference internal" href="../udp/index.html">rogue.protocols.udp</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../rssi/index.html">rogue.protocols.rssi</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../srp/index.html">rogue.protocols.srp</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../packetizer/index.html">rogue.protocols.packetizer</a></li>
+<li class="toctree-l5 current"><a class="reference internal" href="index.html">rogue.protocols.batcher</a><ul class="current">
+<li class="toctree-l6"><a class="reference internal" href="combinerv1.html">CombinerV1</a></li>
+<li class="toctree-l6"><a class="reference internal" href="combinerv2.html">CombinerV2</a></li>
+<li class="toctree-l6"><a class="reference internal" href="splitterv1.html">SplitterV1</a></li>
+<li class="toctree-l6 current"><a class="current reference internal" href="#">SplitterV2</a></li>
+<li class="toctree-l6"><a class="reference internal" href="inverterv1.html">InverterV1</a></li>
+<li class="toctree-l6"><a class="reference internal" href="inverterv2.html">InverterV2</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="../xilinx/index.html">rogue.protocols.xilinx</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../../hardware/index.html">rogue.hardware</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../utilities/index.html">rogue.utilities</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../cpp/index.html">C++ API</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">API Reference</a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Python API</a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">rogue</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">rogue.protocols</a></li>
+          <li class="breadcrumb-item"><a href="index.html">rogue.protocols.batcher</a></li>
+      <li class="breadcrumb-item active">SplitterV2</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../../_sources/api/python/rogue/protocols/batcher/splitterv2.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="splitterv2">
+<span id="api-python-protocols-batcher-splitterv2"></span><h1>SplitterV2<a class="headerlink" href="#splitterv2" title="Link to this heading"></a></h1>
+<p>For conceptual usage, see:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../../../../../built_in_modules/protocols/batcher/splitter.html"><span class="doc">Batcher Protocol Splitter</span></a></p></li>
+<li><p><a class="reference internal" href="../../../../../built_in_modules/protocols/batcher/index.html"><span class="doc">Batcher Protocol</span></a></p></li>
+</ul>
+<p class="rubric">Implementation</p>
+<p>This Python API is provided by a Rogue C++ class exported into Python.</p>
+<p>Native C++ class:
+- <a class="reference internal" href="../../../../cpp/protocols/batcher/splitterV2.html"><span class="doc">SplitterV2</span></a></p>
+<section id="generated-api">
+<h2>Generated API<a class="headerlink" href="#generated-api" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="rogue.protocols.batcher.SplitterV2">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">rogue.protocols.batcher.</span></span><span class="sig-name descname"><span class="pre">SplitterV2</span></span><a class="headerlink" href="#rogue.protocols.batcher.SplitterV2" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/protocols/batcher/splitterV2.html#_CPPv4N5rogue9protocols7batcher10SplitterV2E" title="rogue::protocols::batcher::SplitterV2"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">rogue::protocols::batcher::SplitterV2</span></code></a></p>
+<p>Binding source: <a class="reference external" href="../../../../../_doxygen/SplitterV2_8cpp_source.html">[SplitterV2.cpp]</a></p>
+<p>Splits one batcher v2 super-frame into per-record output frames.</p>
+<p>Protocol reference: <a class="reference external" href="https://confluence.slac.stanford.edu/x/L2VlK">https://confluence.slac.stanford.edu/x/L2VlK</a> <code class="docutils literal notranslate"><span class="pre">SplitterV2</span></code> uses <code class="docutils literal notranslate"><span class="pre">CoreV2</span></code> to parse a batcher super-frame, then emits one Rogue stream frame per parsed <code class="docutils literal notranslate"><span class="pre">Data</span></code> record:</p>
+<ul class="simple">
+<li><p>Payload bytes copied from record data.</p></li>
+<li><p>Channel set from record destination.</p></li>
+<li><p>First/last user fields propagated from record metadata. Threading model:</p></li>
+<li><p>No internal worker thread is created.</p></li>
+<li><p>Processing executes synchronously in the caller thread of <code class="docutils literal notranslate"><span class="pre">acceptFrame()</span></code>.</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/protocols/batcher/splitterV2.html#_CPPv4N5rogue9protocols7batcher10SplitterV2E" title="rogue::protocols::batcher::SplitterV2"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">rogue::protocols::batcher::SplitterV2</span></code></a></p>
+<p>Constructs a <code class="docutils literal notranslate"><span class="pre">SplitterV2</span></code> instance.</p>
+<p>This constructor is a low-level C++ allocation path. Prefer <code class="docutils literal notranslate"><span class="pre">create()</span></code> when shared ownership or Python exposure is required.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_addSlave</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">slave</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/stream/master.html#_CPPv4N5rogue10interfaces6stream6Master8addSlaveENSt10shared_ptrIN5rogue10interfaces6stream5SlaveEEE" title="rogue::interfaces::stream::Master::addSlave"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::stream::Master::addSlave()</span></code></a></p>
+<p>Attaches a downstream slave.</p>
+<p>Multiple slaves are supported. The first attached slave is used for frame allocation and receives frames last during send. Exposed as <code class="docutils literal notranslate"><span class="pre">_addSlave()</span></code> in Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>slave</strong> – Stream slave pointer.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_slaveCount</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/stream/master.html#_CPPv4N5rogue10interfaces6stream6Master10slaveCountEv" title="rogue::interfaces::stream::Master::slaveCount"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::stream::Master::slaveCount()</span></code></a></p>
+<p>Returns the number of attached slaves.</p>
+<p>Exposed as <code class="docutils literal notranslate"><span class="pre">_slaveCount()</span></code> in Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Number of attached slaves.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_reqFrame</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zeroCopyEn</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/stream/master.html#_CPPv4N5rogue10interfaces6stream6Master8reqFrameE8uint32_tb" title="rogue::interfaces::stream::Master::reqFrame"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::stream::Master::reqFrame()</span></code></a></p>
+<p>Requests allocation of a new frame from the primary slave.</p>
+<p>Creates an empty frame with at least the requested payload capacity. The Master will forward this request to the primary Slave object. The request for a new Frame includes a flag which indicates if a zeroCopy frame is allowed. In most cases this flag can be set to <code class="docutils literal notranslate"><span class="pre">true</span></code>. Non-zero-copy frames are requested if the Master may need to transmit the same frame multiple times. Exposed as <code class="docutils literal notranslate"><span class="pre">_reqFrame()</span></code> in Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>size</strong> – Minimum requested payload size in bytes.</p></li>
+<li><p><strong>zeroCopyEn</strong> – Set to <code class="docutils literal notranslate"><span class="pre">true</span></code> when zero-copy frame allocation is allowed.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Newly allocated frame pointer.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_sendFrame</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/stream/master.html#_CPPv4N5rogue10interfaces6stream6Master9sendFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE" title="rogue::interfaces::stream::Master::sendFrame"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::stream::Master::sendFrame()</span></code></a></p>
+<p>Sends a frame to all attached slaves.</p>
+<p>This method sends the passed Frame to all of the attached Slave objects by calling their acceptFrame() method. First the secondary Slaves are called in order of attachment, followed last by the primary Slave. If the Frame is a zero copy frame it will most likely be empty when the sendFrame() method returns Exposed as <code class="docutils literal notranslate"><span class="pre">_sendFrame()</span></code> in Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>frame</strong> – Frame to send.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_stop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/stream/master.html#_CPPv4N5rogue10interfaces6stream6Master4stopEv" title="rogue::interfaces::stream::Master::stop"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::stream::Master::stop()</span></code></a></p>
+<p>Stops frame generation and shuts down associated threads.</p>
+<p>Exposed as <code class="docutils literal notranslate"><span class="pre">stop()</span></code> in Python. This is the primary subclass hook on <code class="docutils literal notranslate"><span class="pre">Master</span></code>. Override when the subclass owns background activity or transport resources that require deterministic shutdown.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">__rshift__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/stream/master.html#_CPPv4N5rogue10interfaces6stream6Master8rshiftPyEN5boost6python6objectE" title="rogue::interfaces::stream::Master::rshiftPy"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::stream::Master::rshiftPy()</span></code></a></p>
+<p>Supports <code class="docutils literal notranslate"><span class="pre">&gt;&gt;</span></code> operator usage from Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>p</strong> – Python object expected to resolve to a stream <code class="docutils literal notranslate"><span class="pre">Slave</span></code>.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Original Python object for chaining semantics.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">setDebug</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">debug</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/stream/slave.html#_CPPv4N5rogue10interfaces6stream5Slave8setDebugE8uint32_tNSt6stringE" title="rogue::interfaces::stream::Slave::setDebug"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::stream::Slave::setDebug()</span></code></a></p>
+<p>Sets debug message verbosity and logger name.</p>
+<p>This method enables debug messages when using the base Slave class attached as a primary or secondary Slave on a Master. Typically used when attaching a base Slave object for debug purposes. Exposed as <code class="docutils literal notranslate"><span class="pre">setDebug()</span></code> in Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>debug</strong> – Maximum number of bytes to print in debug message.</p></li>
+<li><p><strong>name</strong> – Name included in debug messages.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_acceptFrame</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/stream/slave.html#_CPPv4N5rogue10interfaces6stream5Slave11acceptFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE" title="rogue::interfaces::stream::Slave::acceptFrame"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::stream::Slave::acceptFrame()</span></code></a></p>
+<p>Accepts a frame from an upstream master.</p>
+<p>Invokes the Python override when provided.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>frame</strong> – Frame received from the stream path.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">getFrameCount</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/stream/slave.html#_CPPv4N5rogue10interfaces6stream5Slave13getFrameCountEv" title="rogue::interfaces::stream::Slave::getFrameCount"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::stream::Slave::getFrameCount()</span></code></a></p>
+<p>Returns frame counter.</p>
+<p>Returns the total frames received. Only valid if acceptFrame is not re-implemented as a sub-class. Typically used when attaching a base Slave object for debug purposes. Exposed as <code class="docutils literal notranslate"><span class="pre">getFrameCount()</span></code> in Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Total number of Frame objects received.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">getByteCount</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/stream/slave.html#_CPPv4N5rogue10interfaces6stream5Slave12getByteCountEv" title="rogue::interfaces::stream::Slave::getByteCount"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::stream::Slave::getByteCount()</span></code></a></p>
+<p>Returns byte counter.</p>
+<p>Returns the total bytes received. Only valid if acceptFrame is not re-implemented as a sub-class. Typically used when attaching a base Slave object for debug purposes. Exposed as <code class="docutils literal notranslate"><span class="pre">getByteCount()</span></code> in Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Total number of bytes received.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">_stop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/stream/slave.html#_CPPv4N5rogue10interfaces6stream5Slave4stopEv" title="rogue::interfaces::stream::Slave::stop"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::stream::Slave::stop()</span></code></a></p>
+<p>Shuts down threads associated with this object.</p>
+<p>Called during shutdown to stop activity and allow clean process exit. Subclasses should override when they own worker threads or timers. Exposed as <code class="docutils literal notranslate"><span class="pre">stop()</span></code> in Python.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">getAllocCount</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/stream/pool.html#_CPPv4N5rogue10interfaces6stream4Pool13getAllocCountEv" title="rogue::interfaces::stream::Pool::getAllocCount"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::stream::Pool::getAllocCount()</span></code></a></p>
+<p>Returns total currently allocated buffer count.</p>
+<p>This value is incremented as buffers are allocated and decremented as buffers are freed. Exposed as <code class="docutils literal notranslate"><span class="pre">getAllocCount()</span></code> in Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Total currently allocated buffers.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">getAllocBytes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/stream/pool.html#_CPPv4N5rogue10interfaces6stream4Pool13getAllocBytesEv" title="rogue::interfaces::stream::Pool::getAllocBytes"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::stream::Pool::getAllocBytes()</span></code></a></p>
+<p>Returns total currently allocated bytes.</p>
+<p>This value is incremented as buffers are allocated and decremented as buffers are freed. Exposed as <code class="docutils literal notranslate"><span class="pre">getAllocBytes()</span></code> in Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Total currently allocated bytes.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">setFixedSize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/stream/pool.html#_CPPv4N5rogue10interfaces6stream4Pool12setFixedSizeE8uint32_t" title="rogue::interfaces::stream::Pool::setFixedSize"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::stream::Pool::setFixedSize()</span></code></a></p>
+<p>Sets fixed-size mode.</p>
+<p>This method puts the allocator into fixed size mode. Exposed as <code class="docutils literal notranslate"><span class="pre">setFixedSize()</span></code> in Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>size</strong> – Fixed size value.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">getFixedSize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/stream/pool.html#_CPPv4N5rogue10interfaces6stream4Pool12getFixedSizeEv" title="rogue::interfaces::stream::Pool::getFixedSize"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::stream::Pool::getFixedSize()</span></code></a></p>
+<p>Returns fixed-size allocation setting.</p>
+<p>A return value of <code class="docutils literal notranslate"><span class="pre">0</span></code> means fixed-size mode is disabled. Exposed as <code class="docutils literal notranslate"><span class="pre">getFixedSize()</span></code> in Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Fixed size value or <code class="docutils literal notranslate"><span class="pre">0</span></code> when fixed-size mode is disabled.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">setPoolSize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/stream/pool.html#_CPPv4N5rogue10interfaces6stream4Pool11setPoolSizeE8uint32_t" title="rogue::interfaces::stream::Pool::setPoolSize"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::stream::Pool::setPoolSize()</span></code></a></p>
+<p>Sets buffer pool size. Exposed as <code class="docutils literal notranslate"><span class="pre">setPoolSize()</span></code> in Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>size</strong> – Number of entries to keep in the pool.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">getPoolSize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/stream/pool.html#_CPPv4N5rogue10interfaces6stream4Pool11getPoolSizeEv" title="rogue::interfaces::stream::Pool::getPoolSize"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::stream::Pool::getPoolSize()</span></code></a></p>
+<p>Returns configured maximum number of cached pool entries. Exposed as <code class="docutils literal notranslate"><span class="pre">getPoolSize()</span></code> in Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Pool size.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">__lshift__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/stream/slave.html#_CPPv4N5rogue10interfaces6stream5Slave8lshiftPyEN5boost6python6objectE" title="rogue::interfaces::stream::Slave::lshiftPy"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::stream::Slave::lshiftPy()</span></code></a></p>
+<p>Supports <code class="docutils literal notranslate"><span class="pre">&lt;&lt;</span></code> operator usage from Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>p</strong> – Python object expected to resolve to a stream <code class="docutils literal notranslate"><span class="pre">Master</span></code>.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Original Python object for chaining semantics.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="splitterv1.html" class="btn btn-neutral float-left" title="SplitterV1" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="inverterv1.html" class="btn btn-neutral float-right" title="InverterV1" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

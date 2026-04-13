@@ -1,0 +1,248 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Setting Up Rogue In Yocto &mdash; Rogue v6.9.0-146-g9016781d5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=8b50afe1" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5f168154"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script src="../_static/custom.js?v=7b5dfb0b"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="PyRogue Tree" href="../pyrogue_tree/index.html" />
+    <link rel="prev" title="Setting Up Ubuntu On Windows" href="windows.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Introduction</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Installing &amp; Compiling Rogue</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="miniforge.html">Installing Rogue With Miniforge</a></li>
+<li class="toctree-l2"><a class="reference internal" href="miniforge_build.html">Building Rogue Inside Miniforge</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docker.html">Running Rogue With Docker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="build.html">Building Rogue From Source</a></li>
+<li class="toctree-l2"><a class="reference internal" href="application.html">Compiling A Rogue Application</a></li>
+<li class="toctree-l2"><a class="reference internal" href="firewall.html">Rogue and Miniforge behind a firewall</a></li>
+<li class="toctree-l2"><a class="reference internal" href="windows.html">Setting Up Ubuntu On Windows</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Setting Up Rogue In Yocto</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API Reference</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Installing &amp; Compiling Rogue</a></li>
+      <li class="breadcrumb-item active">Setting Up Rogue In Yocto</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/installing/yocto.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="setting-up-rogue-in-yocto">
+<span id="installing-yocto"></span><h1>Setting Up Rogue In Yocto<a class="headerlink" href="#setting-up-rogue-in-yocto" title="Link to this heading"></a></h1>
+<p>Step 1 - Create a new application layer</p>
+<p>Only perform this step if you do not already have an application layer created</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">bitbake</span><span class="o">-</span><span class="n">layers</span> <span class="n">create</span><span class="o">-</span><span class="n">layer</span> <span class="n">sources</span><span class="o">/</span><span class="n">meta</span><span class="o">-</span><span class="n">user</span>
+<span class="n">bitbake</span><span class="o">-</span><span class="n">layers</span> <span class="n">add</span><span class="o">-</span><span class="n">layer</span>    <span class="n">sources</span><span class="o">/</span><span class="n">meta</span><span class="o">-</span><span class="n">user</span>
+</pre></div>
+</div>
+<p>Step 2 - Add your prebuilt application receipe</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mkdir</span> <span class="o">-</span><span class="n">p</span> <span class="n">sources</span><span class="o">/</span><span class="n">meta</span><span class="o">-</span><span class="n">user</span><span class="o">/</span><span class="n">recipes</span><span class="o">-</span><span class="n">apps</span>
+<span class="n">mkdir</span> <span class="o">-</span><span class="n">p</span> <span class="n">sources</span><span class="o">/</span><span class="n">meta</span><span class="o">-</span><span class="n">user</span><span class="o">/</span><span class="n">recipes</span><span class="o">-</span><span class="n">apps</span><span class="o">/</span><span class="n">rogue</span>
+<span class="n">touch</span>    <span class="n">sources</span><span class="o">/</span><span class="n">meta</span><span class="o">-</span><span class="n">user</span><span class="o">/</span><span class="n">recipes</span><span class="o">-</span><span class="n">apps</span><span class="o">/</span><span class="n">rogue</span><span class="o">/</span><span class="n">rogue</span><span class="o">.</span><span class="n">bb</span>
+</pre></div>
+</div>
+<p>This will create a directory in project-spec/meta-user/recipes-apps/rogue</p>
+<p>The sub-directory ‘files’ can be ignored or removed.</p>
+<p>You will want to replace the file <cite>sources/meta-user/recipes-apps/rogue/rogue.bb</cite> with the following content:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>#
+# rogue recipe for Yocto
+#
+
+ROGUE_VERSION = &quot;6.7.0&quot;
+ROGUE_MD5SUM  = &quot;51e6797e9f3fb61b22ad0804a471b760&quot;
+
+SUMMARY = &quot;Recipe to build Rogue&quot;
+HOMEPAGE =&quot;https://github.com/slaclab/rogue&quot;
+LICENSE = &quot;MIT&quot;
+LIC_FILES_CHKSUM = &quot;file://${COMMON_LICENSE_DIR}/MIT;md5=0835ade698e0bcf8506ecda2f7b4f302&quot;
+
+SRC_URI = &quot;https://github.com/slaclab/rogue/archive/v${ROGUE_VERSION}.tar.gz&quot;
+SRC_URI[md5sum] = &quot;${ROGUE_MD5SUM}&quot;
+INSANE_SKIP += &quot;src-uri-bad&quot;
+
+S = &quot;${WORKDIR}/rogue-${ROGUE_VERSION}&quot;
+PROVIDES = &quot;rogue&quot;
+EXTRA_OECMAKE += &quot;-DROGUE_INSTALL=system -DROGUE_VERSION=v${ROGUE_VERSION}&quot;
+
+inherit cmake python3native setuptools3
+
+DEPENDS += &quot; \
+   python3 \
+   python3-native \
+   python3-numpy \
+   python3-numpy-native \
+   python3-pyzmq \
+   python3-parse \
+   python3-pyyaml \
+   python3-click \
+   python3-sqlalchemy \
+   python3-pyserial \
+   bzip2 \
+   zeromq \
+   boost \
+   cmake \
+&quot;
+
+RDEPENDS:${PN} += &quot; \
+   python3-numpy \
+   python3-pyzmq \
+   python3-parse \
+   python3-pyyaml \
+   python3-click \
+   python3-sqlalchemy \
+   python3-pyserial \
+   python3-json \
+   python3-logging \
+&quot;
+
+FILES:${PN}-dev += &quot;/usr/include/rogue/*&quot;
+FILES:${PN} += &quot;/usr/lib/*&quot;
+
+do_configure() {
+   setup_target_config
+   cmake_do_configure
+   cmake --build ${B}
+   bbplain $(cp -vH ${WORKDIR}/build/setup.py ${S}/.)
+   bbplain $(sed -i &quot;s/..\/python/python/&quot; ${S}/setup.py)
+   setuptools3_do_configure
+}
+
+do_install() {
+   setup_target_config
+   cmake_do_install
+   setuptools3_do_install
+   # Ensure the target directory exists
+   install -d ${D}${PYTHON_SITEPACKAGES_DIR}
+   # Install the rogue.so file into the Python site-packages directory
+   install -m 0755 ${S}/python/rogue.so ${D}${PYTHON_SITEPACKAGES_DIR}
+}
+</pre></div>
+</div>
+<p>Update the <cite>ROGUE_VERSION</cite> line for an updated version when appropriate. You will need to first download the tar.gz file and compute the MD5SUM using the following commands if you update the ROGUE_VERSION line:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">wget</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">slaclab</span><span class="o">/</span><span class="n">rogue</span><span class="o">/</span><span class="n">archive</span><span class="o">/</span><span class="n">vx</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
+<span class="o">&gt;</span> <span class="n">md5sum</span> <span class="n">vx</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
+</pre></div>
+</div>
+<p>RDEPENDS is the  Runtime Dependencies. If your rogue application requires additional python libraries you can add them to the RDEPENDS += line in the above text.</p>
+<p>Step 3 - Add your application to the image installation list</p>
+<p>To enable compilation and installation of the rogue package in your Yocto project execute the following command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">echo</span> <span class="s2">&quot;IMAGE_INSTALL:append = </span><span class="se">\&quot;</span><span class="s2"> rogue</span><span class="se">\&quot;</span><span class="s2">&quot;</span>  <span class="o">&gt;&gt;</span> <span class="n">sources</span><span class="o">/</span><span class="n">meta</span><span class="o">-</span><span class="n">user</span><span class="o">/</span><span class="n">conf</span><span class="o">/</span><span class="n">layer</span><span class="o">.</span><span class="n">conf</span>
+</pre></div>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="windows.html" class="btn btn-neutral float-left" title="Setting Up Ubuntu On Windows" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../pyrogue_tree/index.html" class="btn btn-neutral float-right" title="PyRogue Tree" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

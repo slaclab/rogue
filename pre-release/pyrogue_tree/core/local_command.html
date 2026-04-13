@@ -1,0 +1,375 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LocalCommand &mdash; Rogue v6.9.0-146-g9016781d5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=8b50afe1" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=5f168154"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/custom.js?v=7b5dfb0b"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="RemoteCommand" href="remote_command.html" />
+    <link rel="prev" title="Command" href="command.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">PyRogue Tree</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Components And Concepts</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="root.html">Root</a></li>
+<li class="toctree-l3"><a class="reference internal" href="device.html">Device</a></li>
+<li class="toctree-l3"><a class="reference internal" href="variable.html">Variable</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="command.html">Command</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">LocalCommand</a></li>
+<li class="toctree-l4"><a class="reference internal" href="remote_command.html">RemoteCommand</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="block.html">Blocks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="block_operations.html">Device Block Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="model.html">Model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fixed_point_models.html">Fixed-Point Models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="float_types_summary.html">Floating Point Types Summary</a></li>
+<li class="toctree-l3"><a class="reference internal" href="poll_queue.html">PollQueue</a></li>
+<li class="toctree-l3"><a class="reference internal" href="yaml_configuration.html">YAML Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="memory_variable_stream.html">Variable Update Stream</a></li>
+<li class="toctree-l3"><a class="reference internal" href="groups.html">Groups</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../builtin_devices/index.html">Built-in Devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../client_interfaces/index.html">Client Interfaces</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">API Reference</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">PyRogue Tree</a></li>
+          <li class="breadcrumb-item"><a href="index.html">PyRogue Tree Components And Concepts</a></li>
+          <li class="breadcrumb-item"><a href="command.html">Command</a></li>
+      <li class="breadcrumb-item active">LocalCommand</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/pyrogue_tree/core/local_command.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="localcommand">
+<span id="pyrogue-tree-node-command-local-command"></span><h1>LocalCommand<a class="headerlink" href="#localcommand" title="Link to this heading"></a></h1>
+<p><code class="xref py py-class docutils literal notranslate"><span class="pre">LocalCommand</span></code> is the right choice when a tree action should
+run Python logic rather than write a hardware command register. It gives the
+tree a normal <code class="docutils literal notranslate"><span class="pre">Command</span></code> node, but the implementation stays in software.</p>
+<p>Typical use cases:</p>
+<ul class="simple">
+<li><p>Orchestration steps such as initialization or reset sequences</p></li>
+<li><p>File and configuration workflows</p></li>
+<li><p>Helper actions that combine multiple Variable or Device operations</p></li>
+<li><p>Operator-visible procedures that do not map to one hardware strobe bit</p></li>
+</ul>
+<section id="when-to-use-localcommand">
+<h2>When To Use LocalCommand<a class="headerlink" href="#when-to-use-localcommand" title="Link to this heading"></a></h2>
+<p>Use <code class="docutils literal notranslate"><span class="pre">LocalCommand</span></code> when the important interaction is a procedure rather than
+state.</p>
+<p>That makes it the software-defined counterpart to <code class="docutils literal notranslate"><span class="pre">RemoteCommand</span></code>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">LocalCommand</span></code> runs Python-defined behavior</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">RemoteCommand</span></code> performs an action through a hardware-backed write path</p></li>
+</ul>
+<p>If the action really lives in a memory-mapped register field, especially a
+reset pulse or trigger bit, <code class="docutils literal notranslate"><span class="pre">RemoteCommand</span></code> is usually the better fit. If
+the action is “run this workflow”, <code class="docutils literal notranslate"><span class="pre">LocalCommand</span></code> usually reads better in
+the tree.</p>
+</section>
+<section id="what-you-usually-set">
+<h2>What You Usually Set<a class="headerlink" href="#what-you-usually-set" title="Link to this heading"></a></h2>
+<p>Most <code class="docutils literal notranslate"><span class="pre">LocalCommand</span></code> definitions use the shared command behavior from
+<a class="reference internal" href="command.html"><span class="doc">Command</span></a>, plus a small set of parameters that shape
+the local action itself:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">function</span></code> for the Python callback to execute</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">value</span></code> for the default command argument, when the command takes one</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">retValue</span></code> when the command returns a value and you want the return type to
+be described clearly</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">description</span></code> for operator-facing help text</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hidden</span></code> and <code class="docutils literal notranslate"><span class="pre">groups</span></code> for presentation and workflow policy</p></li>
+</ul>
+</section>
+<section id="how-invocation-works">
+<h2>How Invocation Works<a class="headerlink" href="#how-invocation-works" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">LocalCommand</span></code> is an alias-style specialization of
+<a class="reference internal" href="../../api/python/pyrogue/basecommand.html#pyrogue.BaseCommand" title="pyrogue.BaseCommand"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseCommand</span></code></a>. The callback wrapper can supply any subset of
+these keyword arguments:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">root</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dev</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cmd</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">arg</span></code></p></li>
+</ul>
+<p>That means the callback can be as small or as explicit as the job requires. A
+simple no-argument helper works fine, but so does a callback that needs access
+to the surrounding <code class="docutils literal notranslate"><span class="pre">Device</span></code>, the <code class="docutils literal notranslate"><span class="pre">Root</span></code>, the command node itself, or a
+user-supplied argument.</p>
+<p>The common invocation forms are:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">cmd()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cmd(arg)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cmd.call(arg)</span></code></p></li>
+</ul>
+<p>If the callback accepts <code class="docutils literal notranslate"><span class="pre">arg</span></code>, then <code class="docutils literal notranslate"><span class="pre">value=...</span></code> becomes the command’s
+default argument. Calling the command without an explicit argument uses that
+stored default.</p>
+</section>
+<section id="example-patterns">
+<h2>Example Patterns<a class="headerlink" href="#example-patterns" title="Link to this heading"></a></h2>
+<section id="device-local-procedure">
+<h3>Device-Local Procedure<a class="headerlink" href="#device-local-procedure" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyDevice</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalCommand</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;SoftReset&#39;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Run the device software reset sequence&#39;</span><span class="p">,</span>
+            <span class="n">function</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_soft_reset</span><span class="p">,</span>
+        <span class="p">))</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_soft_reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Device-specific software sequence</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">countReset</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initialize</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>This is the simplest <code class="docutils literal notranslate"><span class="pre">LocalCommand</span></code> pattern: expose a named tree action and
+back it with ordinary Python logic.</p>
+</section>
+<section id="command-with-an-argument">
+<h3>Command With An Argument<a class="headerlink" href="#command-with-an-argument" title="Link to this heading"></a></h3>
+<p>Many <code class="docutils literal notranslate"><span class="pre">LocalCommand</span></code> nodes are thin wrappers around a higher-level software
+workflow that needs one input value, such as a file path, a numeric count, or
+an option string.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">ConfigRoot</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalCommand</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;LoadConfig&#39;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Load configuration from a YAML file&#39;</span><span class="p">,</span>
+            <span class="n">value</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="n">function</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_load_config</span><span class="p">,</span>
+        <span class="p">))</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_load_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loadYaml</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">arg</span><span class="p">,</span> <span class="n">writeEach</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">modes</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span> <span class="s1">&#39;WO&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Here, <code class="docutils literal notranslate"><span class="pre">value=''</span></code> establishes the default argument shape and lets the command
+be called either as <code class="docutils literal notranslate"><span class="pre">LoadConfig('/path/file.yml')</span></code> or by reusing the stored
+default argument.</p>
+</section>
+<section id="using-the-self-command-decorator">
+<h3>Using the <code class="docutils literal notranslate"><span class="pre">&#64;self.command</span></code> Decorator<a class="headerlink" href="#using-the-self-command-decorator" title="Link to this heading"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">Device.command()</span></code> provides a compact way to define a <code class="docutils literal notranslate"><span class="pre">LocalCommand</span></code> inline
+next to the logic it wraps.</p>
+<p>In the current implementation:</p>
+<ul class="simple">
+<li><p>The decorator creates <code class="docutils literal notranslate"><span class="pre">LocalCommand(function=...)</span></code> under the hood.</p></li>
+<li><p>If you do not pass <code class="docutils literal notranslate"><span class="pre">name=...</span></code>, the function name becomes the command name.</p></li>
+<li><p>The decorated function may accept any subset of <code class="docutils literal notranslate"><span class="pre">root</span></code>, <code class="docutils literal notranslate"><span class="pre">dev</span></code>, <code class="docutils literal notranslate"><span class="pre">cmd</span></code>,
+and <code class="docutils literal notranslate"><span class="pre">arg</span></code>.</p></li>
+</ul>
+<p>This is often the cleanest form for small device-local procedures because the
+tree-facing command and the Python logic are defined together.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyDevice</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="nd">@self</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">&#39;Capture the current state to disk&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">SaveSnapshot</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">saveYaml</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">arg</span><span class="p">,</span> <span class="n">modes</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span> <span class="s1">&#39;RO&#39;</span><span class="p">,</span> <span class="s1">&#39;WO&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>The decorator form still creates a <code class="docutils literal notranslate"><span class="pre">LocalCommand(function=...)</span></code> under the
+hood. Use whichever form reads more clearly in the surrounding code.</p>
+<p>It is also a good fit for callbacks that want explicit access to the command
+context:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyDevice</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="nd">@self</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">&#39;Report the current device path&#39;</span><span class="p">)</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">ReportPath</span><span class="p">(</span><span class="n">cmd</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Command path: </span><span class="si">{</span><span class="n">cmd</span><span class="o">.</span><span class="n">path</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="nd">@self</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Generate a requested number of frames&#39;</span><span class="p">)</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">GenerateFrames</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">dev</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+                <span class="n">dev</span><span class="o">.</span><span class="n">_gen_frame</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>These examples show the main decorator patterns: a default-name command, a
+callback that uses the command object itself, and a callback that uses both an
+argument and the surrounding <code class="docutils literal notranslate"><span class="pre">Device</span></code>.</p>
+</section>
+</section>
+<section id="built-in-command-functions">
+<h2>Built-In Command Functions<a class="headerlink" href="#built-in-command-functions" title="Link to this heading"></a></h2>
+<p>PyRogue includes a small set of built-in command helper functions on
+<a class="reference internal" href="../../api/python/pyrogue/basecommand.html#pyrogue.BaseCommand" title="pyrogue.BaseCommand"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseCommand</span></code></a>, but those helpers are mainly useful for
+commands that have a meaningful backing value or write path.</p>
+<p>In practice:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">LocalCommand</span></code> usually uses a custom Python callback.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">BaseCommand.nothing</span></code> is the main built-in helper that is naturally useful
+for <code class="docutils literal notranslate"><span class="pre">LocalCommand</span></code> itself.</p></li>
+<li><p>The write-oriented helpers such as <code class="docutils literal notranslate"><span class="pre">touchOne</span></code> and <code class="docutils literal notranslate"><span class="pre">toggle</span></code> are discussed
+in <a class="reference internal" href="remote_command.html"><span class="doc">RemoteCommand</span></a>, where they are used most often.</p></li>
+</ul>
+<p><code class="docutils literal notranslate"><span class="pre">nothing</span></code> is a no-op handler. It is occasionally useful as a placeholder
+while bringing up a tree shape or when a command node should exist before its
+real implementation is attached.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyDevice</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalCommand</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;ReservedAction&#39;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Placeholder command for a future software action&#39;</span><span class="p">,</span>
+            <span class="n">function</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">BaseCommand</span><span class="o">.</span><span class="n">nothing</span><span class="p">,</span>
+        <span class="p">))</span>
+</pre></div>
+</div>
+</section>
+<section id="what-to-explore-next">
+<h2>What To Explore Next<a class="headerlink" href="#what-to-explore-next" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Hardware-backed commands: <a class="reference internal" href="remote_command.html"><span class="doc">RemoteCommand</span></a></p></li>
+<li><p>Shared command behavior: <a class="reference internal" href="command.html"><span class="doc">Command</span></a></p></li>
+<li><p>Tree-level placement and decorators: <a class="reference internal" href="device.html"><span class="doc">Device</span></a></p></li>
+</ul>
+</section>
+<section id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">LocalCommand</span></code> is an alias-style specialization of
+<a class="reference internal" href="../../api/python/pyrogue/basecommand.html#pyrogue.BaseCommand" title="pyrogue.BaseCommand"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseCommand</span></code></a>.</p>
+<p>For full API documentation, see:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../../api/python/pyrogue/basecommand.html"><span class="doc">BaseCommand</span></a></p></li>
+<li><p><a class="reference internal" href="command.html"><span class="doc">Command</span></a></p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="command.html" class="btn btn-neutral float-left" title="Command" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="remote_command.html" class="btn btn-neutral float-right" title="RemoteCommand" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

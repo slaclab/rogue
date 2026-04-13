@@ -1,0 +1,218 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rogue Widgets &mdash; Rogue v6.9.0-146-g9016781d5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=8b50afe1" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5f168154"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script src="../_static/custom.js?v=7b5dfb0b"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Tutorials" href="../tutorials/index.html" />
+    <link rel="prev" title="Channel URLs" href="channel_urls.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Using The PyDM GUI</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="starting_gui.html">Starting The Rogue PyDM GUI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="timeplot_gui.html">Starting The Rogue PyDM Timeplot GUI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="channel_urls.html">Channel URLs</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Rogue Widgets</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API Reference</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Using The PyDM GUI</a></li>
+      <li class="breadcrumb-item active">Rogue Widgets</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/pydm/rogue_widgets.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="rogue-widgets">
+<span id="id1"></span><h1>Rogue Widgets<a class="headerlink" href="#rogue-widgets" title="Link to this heading"></a></h1>
+<p>Rogue provides PyDM widgets that understand common PyRogue structures and
+workflows. These are most useful when building custom screens, because they let
+you reuse the same tree-aware controls that appear in the stock debug tools.</p>
+<p>The main widgets exported by <code class="docutils literal notranslate"><span class="pre">pyrogue.pydm.widgets</span></code> are:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">SystemWindow</span></code>: Top-level system window that combines root controls, run
+control widgets, data-writer widgets, and the system log.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">RootControl</span></code>: Widget for reset actions and configuration file management.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">RunControl</span></code>: Widget for a <code class="docutils literal notranslate"><span class="pre">pyrogue.RunControl</span></code> Device.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">DataWriter</span></code>: Widget for a <code class="docutils literal notranslate"><span class="pre">pyrogue.DataWriter</span></code> Device.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SystemLog</span></code>: Widget that displays the Rogue system log.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Process</span></code>: Widget for a <code class="docutils literal notranslate"><span class="pre">pyrogue.Process</span></code> Device.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">DebugTree</span></code>: Tree browser for Devices, Variables, and Commands.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PyRogueLabel</span></code>: Label widget with Rogue-oriented unit display handling.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PyRogueLineEdit</span></code>: Rogue-aware line edit that keeps the stale-value visual
+state.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Plotter</span></code>: General plotting widget exported by the widget package.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">TimePlotter</span></code>: Plotting widget for time-varying values.</p></li>
+</ul>
+<p>These widgets are not just cosmetic wrappers. Several of them inspect the
+connected Rogue node and build out a larger Qt layout dynamically after the
+channel connects. For example, <code class="docutils literal notranslate"><span class="pre">SystemWindow</span></code> discovers <code class="docutils literal notranslate"><span class="pre">DataWriter</span></code> and
+<code class="docutils literal notranslate"><span class="pre">RunControl</span></code> devices under the bound <code class="docutils literal notranslate"><span class="pre">Root</span></code> and adds matching subwidgets.</p>
+<section id="how-to-use-them">
+<h2>How To Use Them<a class="headerlink" href="#how-to-use-them" title="Link to this heading"></a></h2>
+<p>These widgets are typically placed in a Qt Designer <code class="docutils literal notranslate"><span class="pre">.ui</span></code> file and then bound
+to Rogue channels such as:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>rogue://0/root
+rogue://0/root.MyProcess
+rogue://0/root.MyDevice.MyVariable/disp
+</pre></div>
+</div>
+<p>Some widgets expect to bind to a Root-level path, while others expect a
+specific Device or Variable path. In general:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">SystemWindow</span></code> and <code class="docutils literal notranslate"><span class="pre">DebugTree</span></code> are Root-oriented.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Process</span></code>, <code class="docutils literal notranslate"><span class="pre">RunControl</span></code>, and <code class="docutils literal notranslate"><span class="pre">DataWriter</span></code> are Device-oriented.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PyRogueLabel</span></code> and <code class="docutils literal notranslate"><span class="pre">PyRogueLineEdit</span></code> are typically Variable-oriented.</p></li>
+</ul>
+<p>When in doubt, inspect the widget’s constructor and <code class="docutils literal notranslate"><span class="pre">connection_changed</span></code>
+implementation in <code class="docutils literal notranslate"><span class="pre">python/pyrogue/pydm/widgets</span></code>. Most path requirements are
+clear there because the widget appends explicit child paths such as
+<code class="docutils literal notranslate"><span class="pre">.SystemLog</span></code> or <code class="docutils literal notranslate"><span class="pre">.runState</span></code> after connecting.</p>
+</section>
+<section id="choosing-between-stock-and-custom-widgets">
+<h2>Choosing Between Stock And Custom Widgets<a class="headerlink" href="#choosing-between-stock-and-custom-widgets" title="Link to this heading"></a></h2>
+<p>Use the stock debug GUI when you want a ready-made environment for broad tree
+inspection. Use custom screens with Rogue widgets when you want:</p>
+<ul class="simple">
+<li><p>A reduced operator-facing surface,</p></li>
+<li><p>A system-specific workflow,</p></li>
+<li><p>Or a custom layout that focuses on the important Variables and Commands.</p></li>
+</ul>
+<p>For code-constructed displays, the normal top-level object is a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">pydm.Display</span></code> subclass. Rogue’s widgets are then added to that
+display just like any other Qt/PyDM widget tree. Those displays can now be
+launched directly through <a class="reference internal" href="../api/python/pyrogue/pydm_runpydm.html#pyrogue.pydm.runPyDM" title="pyrogue.pydm.runPyDM"><code class="xref py py-func docutils literal notranslate"><span class="pre">pyrogue.pydm.runPyDM()</span></code></a> using the
+<code class="docutils literal notranslate"><span class="pre">display=</span></code> or <code class="docutils literal notranslate"><span class="pre">display_factory=</span></code> arguments. The launcher details for that
+pattern are covered in <a class="reference internal" href="starting_gui.html"><span class="doc">Starting The Rogue PyDM GUI</span></a>.</p>
+</section>
+<section id="what-to-explore-next">
+<h2>What To Explore Next<a class="headerlink" href="#what-to-explore-next" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Rogue channel syntax and modes: <a class="reference internal" href="channel_urls.html"><span class="doc">Channel URLs</span></a></p></li>
+<li><p>Launching a custom UI file: <a class="reference internal" href="starting_gui.html"><span class="doc">Starting The Rogue PyDM GUI</span></a></p></li>
+<li><p>Time-series plotting workflows: <a class="reference internal" href="timeplot_gui.html"><span class="doc">Starting The Rogue PyDM Timeplot GUI</span></a></p></li>
+</ul>
+</section>
+<section id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Rogue PyDM widget API index: <a class="reference internal" href="../api/python/pyrogue/pydm_widgets/index.html"><span class="doc">pyrogue.pydm.widgets</span></a></p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="channel_urls.html" class="btn btn-neutral float-left" title="Channel URLs" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../tutorials/index.html" class="btn btn-neutral float-right" title="Tutorials" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

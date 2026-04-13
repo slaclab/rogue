@@ -1,0 +1,884 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pyrogue.pydm.widgets.time_plotter &mdash; Rogue v6.9.0-146-g9016781d5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css?v=8b50afe1" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=5f168154"></script>
+      <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../../_static/custom.js?v=7b5dfb0b"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/index.html">API Reference</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../pydm.html">pyrogue.pydm</a></li>
+      <li class="breadcrumb-item active">pyrogue.pydm.widgets.time_plotter</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pyrogue.pydm.widgets.time_plotter</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="c1">#-----------------------------------------------------------------------------</span>
+<span class="c1"># Company    : SLAC National Accelerator Laboratory</span>
+<span class="c1">#-----------------------------------------------------------------------------</span>
+<span class="c1">#  Description:</span>
+<span class="c1">#       PyRogue PyDM Debug Tree Widget</span>
+<span class="c1">#-----------------------------------------------------------------------------</span>
+<span class="c1"># This file is part of the rogue software platform. It is subject to</span>
+<span class="c1"># the license terms in the LICENSE.txt file found in the top-level directory</span>
+<span class="c1"># of this distribution and at:</span>
+<span class="c1">#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.</span>
+<span class="c1"># No part of the rogue software platform, including this file, may be</span>
+<span class="c1"># copied, modified, propagated, or distributed except according to the terms</span>
+<span class="c1"># contained in the LICENSE.txt file.</span>
+<span class="c1">#-----------------------------------------------------------------------------</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pyrogue.pydm.data_plugins.rogue_plugin</span><span class="w"> </span><span class="kn">import</span> <span class="n">nodeFromAddress</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pyrogue.pydm.widgets.debug_tree</span><span class="w"> </span><span class="kn">import</span> <span class="n">makeVariableViewWidget</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">pydm</span><span class="w"> </span><span class="kn">import</span> <span class="n">Display</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pydm.widgets.frame</span><span class="w"> </span><span class="kn">import</span> <span class="n">PyDMFrame</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pydm.widgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">PyDMLabel</span><span class="p">,</span> <span class="n">PyDMPushButton</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pydm.widgets.timeplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pwt</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">qtpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">QtCore</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qtpy.QtCore</span><span class="w"> </span><span class="kn">import</span> <span class="n">Property</span><span class="p">,</span> <span class="n">Slot</span><span class="p">,</span> <span class="n">QEvent</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qtpy.QtGui</span><span class="w"> </span><span class="kn">import</span> <span class="n">QFontMetrics</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qtpy.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">QVBoxLayout</span><span class="p">,</span> <span class="n">QHBoxLayout</span><span class="p">,</span> <span class="n">QTreeWidgetItem</span><span class="p">,</span> <span class="n">QTreeWidget</span><span class="p">,</span> <span class="n">QLabel</span><span class="p">,</span>
+    <span class="n">QGroupBox</span><span class="p">,</span> <span class="n">QLineEdit</span><span class="p">,</span> <span class="n">QPushButton</span><span class="p">,</span> <span class="n">QScrollArea</span><span class="p">,</span> <span class="n">QFrame</span><span class="p">,</span> <span class="n">QWidget</span><span class="p">)</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">pyqtgraph</span><span class="w"> </span><span class="kn">import</span> <span class="n">ViewBox</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">qtpy.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QSplitter</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">random</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">DebugDev</span><span class="p">(</span><span class="n">QTreeWidgetItem</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Tree item representing a device in the time-plot selection tree.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    main : TimePlotter</span>
+<span class="sd">        Owning time-plotter widget.</span>
+<span class="sd">    path : str</span>
+<span class="sd">        Full Rogue node path for this device.</span>
+<span class="sd">    top : SelectionTree</span>
+<span class="sd">        Owning selection-tree widget.</span>
+<span class="sd">    parent : QTreeWidget | QTreeWidgetItem</span>
+<span class="sd">        Parent tree widget/item.</span>
+<span class="sd">    dev : pyrogue.Device</span>
+<span class="sd">        Backing Rogue device object.</span>
+<span class="sd">    noExpand : bool</span>
+<span class="sd">        If ``True``, delay child expansion until user expands the row.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">main</span><span class="p">:</span> <span class="s2">&quot;TimePlotter&quot;</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">top</span><span class="p">:</span> <span class="s2">&quot;SelectionTree&quot;</span><span class="p">,</span>
+        <span class="n">parent</span><span class="p">:</span> <span class="n">QTreeWidget</span> <span class="o">|</span> <span class="n">QTreeWidgetItem</span><span class="p">,</span>
+        <span class="n">dev</span><span class="p">:</span> <span class="n">pyrogue</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span>
+        <span class="n">noExpand</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">QTreeWidgetItem</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">parent</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_main</span><span class="o">=</span><span class="n">main</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_top</span>      <span class="o">=</span> <span class="n">top</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span>   <span class="o">=</span> <span class="n">parent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dev</span>      <span class="o">=</span> <span class="n">dev</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dummy</span>    <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_path</span>     <span class="o">=</span> <span class="n">path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_groups</span>   <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span><span class="n">DebugDev</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_depth</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">_depth</span><span class="o">+</span><span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_depth</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="n">w</span> <span class="o">=</span> <span class="n">PyDMLabel</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">init_channel</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">+</span> <span class="s1">&#39;/name&#39;</span><span class="p">)</span>
+        <span class="n">w</span><span class="o">.</span><span class="n">showUnits</span>             <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">w</span><span class="o">.</span><span class="n">precisionFromPV</span>       <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">w</span><span class="o">.</span><span class="n">alarmSensitiveContent</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">w</span><span class="o">.</span><span class="n">alarmSensitiveBorder</span>  <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_top</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">setItemWidget</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">w</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setToolTip</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev</span><span class="o">.</span><span class="n">description</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_top</span><span class="o">.</span><span class="n">_node</span> <span class="o">==</span> <span class="n">dev</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="o">.</span><span class="n">addTopLevelItem</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setExpanded</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_setup</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="p">(</span><span class="ow">not</span> <span class="n">noExpand</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dev</span><span class="o">.</span><span class="n">expand</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dummy</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setExpanded</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_setup</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dummy</span> <span class="o">=</span> <span class="n">QTreeWidgetItem</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="c1"># One dummy item to add expand control</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setExpanded</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">noExpand</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+        <span class="c1"># Get dictionary of variables followed by commands</span>
+        <span class="n">lst</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dev</span><span class="o">.</span><span class="n">variablesByGroup</span><span class="p">(</span><span class="n">incGroups</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_top</span><span class="o">.</span><span class="n">_incGroups</span><span class="p">,</span>
+                                         <span class="n">excGroups</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_top</span><span class="o">.</span><span class="n">_excGroups</span><span class="p">)</span>
+
+
+<span class="c1">#         lst.update(self._dev.commandsByGroup(incGroups=self._top._incGroups,</span>
+<span class="c1">#                                              excGroups=self._top._excGroups))</span>
+
+        <span class="c1"># First create variables/commands</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">val</span> <span class="ow">in</span> <span class="n">lst</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+            <span class="k">if</span> <span class="n">val</span><span class="o">.</span><span class="n">guiGroup</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">val</span><span class="o">.</span><span class="n">guiGroup</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">[</span><span class="n">val</span><span class="o">.</span><span class="n">guiGroup</span><span class="p">]</span> <span class="o">=</span> <span class="n">DebugGroup</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">,</span> <span class="n">main</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_main</span><span class="p">,</span> <span class="n">top</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_top</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">val</span><span class="o">.</span><span class="n">guiGroup</span><span class="p">)</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">[</span><span class="n">val</span><span class="o">.</span><span class="n">guiGroup</span><span class="p">]</span><span class="o">.</span><span class="n">addNode</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">DebugHolder</span><span class="p">(</span><span class="n">main</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_main</span><span class="p">,</span><span class="n">path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="n">val</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">top</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_top</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="n">val</span><span class="p">)</span>
+
+        <span class="c1"># Then create devices</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">val</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dev</span><span class="o">.</span><span class="n">devicesByGroup</span><span class="p">(</span><span class="n">incGroups</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_top</span><span class="o">.</span><span class="n">_incGroups</span><span class="p">,</span> <span class="n">excGroups</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_top</span><span class="o">.</span><span class="n">_excGroups</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+            <span class="k">if</span> <span class="n">val</span><span class="o">.</span><span class="n">guiGroup</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">val</span><span class="o">.</span><span class="n">guiGroup</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">[</span><span class="n">val</span><span class="o">.</span><span class="n">guiGroup</span><span class="p">]</span> <span class="o">=</span> <span class="n">DebugGroup</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">,</span> <span class="n">main</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_main</span><span class="p">,</span> <span class="n">top</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_top</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">val</span><span class="o">.</span><span class="n">guiGroup</span><span class="p">)</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">_groups</span><span class="p">[</span><span class="n">val</span><span class="o">.</span><span class="n">guiGroup</span><span class="p">]</span><span class="o">.</span><span class="n">addNode</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">DebugDev</span><span class="p">(</span><span class="n">main</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_main</span><span class="p">,</span><span class="n">path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="n">val</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">top</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_top</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="n">val</span><span class="p">,</span> <span class="n">noExpand</span><span class="o">=</span><span class="n">noExpand</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_expand</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dummy</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">removeChild</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dummy</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dummy</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_setup</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">DebugGroup</span><span class="p">(</span><span class="n">QTreeWidgetItem</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Tree item representing a GUI group in the selection tree.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    main : TimePlotter</span>
+<span class="sd">        Owning time-plotter widget.</span>
+<span class="sd">    path : str</span>
+<span class="sd">        Parent Rogue node path for this group.</span>
+<span class="sd">    top : SelectionTree</span>
+<span class="sd">        Owning selection-tree widget.</span>
+<span class="sd">    parent : QTreeWidgetItem</span>
+<span class="sd">        Parent tree item.</span>
+<span class="sd">    name : str</span>
+<span class="sd">        GUI group name.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">main</span><span class="p">:</span> <span class="s2">&quot;TimePlotter&quot;</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">top</span><span class="p">:</span> <span class="s2">&quot;SelectionTree&quot;</span><span class="p">,</span> <span class="n">parent</span><span class="p">:</span> <span class="n">QTreeWidgetItem</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">QTreeWidgetItem</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">parent</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_main</span> <span class="o">=</span> <span class="n">main</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_top</span>      <span class="o">=</span> <span class="n">top</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span>   <span class="o">=</span> <span class="n">parent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>     <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dummy</span>    <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_path</span>     <span class="o">=</span> <span class="n">path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_list</span>     <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_depth</span>    <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">_depth</span><span class="o">+</span><span class="mi">1</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lab</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_top</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">setItemWidget</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_lab</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dummy</span> <span class="o">=</span> <span class="n">QTreeWidgetItem</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="c1"># One dummy item to add expand control</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setExpanded</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_setup</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+        <span class="c1"># Create variables</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_list</span><span class="p">:</span>
+
+            <span class="k">if</span> <span class="n">n</span><span class="o">.</span><span class="n">isDevice</span><span class="p">:</span>
+                <span class="n">DebugDev</span><span class="p">(</span><span class="n">main</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_main</span><span class="p">,</span>
+                         <span class="n">path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="n">n</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                         <span class="n">top</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_top</span><span class="p">,</span>
+                         <span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
+                         <span class="n">dev</span><span class="o">=</span><span class="n">n</span><span class="p">,</span>
+                         <span class="n">noExpand</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+            <span class="k">elif</span> <span class="n">n</span><span class="o">.</span><span class="n">isVariable</span> <span class="ow">or</span> <span class="n">n</span><span class="o">.</span><span class="n">isCommand</span><span class="p">:</span>
+                <span class="n">DebugHolder</span><span class="p">(</span><span class="n">main</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_main</span><span class="p">,</span>
+                            <span class="n">path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="n">n</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                            <span class="n">top</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_top</span><span class="p">,</span>
+                            <span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
+                            <span class="n">variable</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_expand</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dummy</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">removeChild</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dummy</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dummy</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_setup</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">addNode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">pyrogue</span><span class="o">.</span><span class="n">Node</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">DebugHolder</span><span class="p">(</span><span class="n">QTreeWidgetItem</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Tree item representing a variable entry in the selection tree.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    main : TimePlotter</span>
+<span class="sd">        Owning time-plotter widget.</span>
+<span class="sd">    path : str</span>
+<span class="sd">        Full Rogue node path for this variable/command.</span>
+<span class="sd">    top : SelectionTree</span>
+<span class="sd">        Owning selection-tree widget.</span>
+<span class="sd">    parent : QTreeWidgetItem</span>
+<span class="sd">        Parent tree item.</span>
+<span class="sd">    variable : pyrogue.BaseVariable | pyrogue.BaseCommand</span>
+<span class="sd">        Backing Rogue variable/command object.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">main</span><span class="p">:</span> <span class="s2">&quot;TimePlotter&quot;</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">top</span><span class="p">:</span> <span class="s2">&quot;SelectionTree&quot;</span><span class="p">,</span>
+        <span class="n">parent</span><span class="p">:</span> <span class="n">QTreeWidgetItem</span><span class="p">,</span>
+        <span class="n">variable</span><span class="p">:</span> <span class="n">pyrogue</span><span class="o">.</span><span class="n">BaseVariable</span> <span class="o">|</span> <span class="n">pyrogue</span><span class="o">.</span><span class="n">BaseCommand</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">QTreeWidgetItem</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">parent</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_main</span>   <span class="o">=</span> <span class="n">main</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_top</span>    <span class="o">=</span> <span class="n">top</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span> <span class="o">=</span> <span class="n">parent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_var</span>    <span class="o">=</span> <span class="n">variable</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_path</span>   <span class="o">=</span> <span class="n">path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_depth</span>  <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">_depth</span><span class="o">+</span><span class="mi">1</span>
+
+        <span class="c1"># print(f&#39;DebugHolder: {self._var=}, {self._var.name=}, {self._var.path=}, {self._var.pollInterval=}&#39;)</span>
+
+        <span class="n">w</span> <span class="o">=</span> <span class="n">PyDMLabel</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">init_channel</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">+</span> <span class="s1">&#39;/name&#39;</span><span class="p">)</span>
+        <span class="n">w</span><span class="o">.</span><span class="n">showUnits</span>             <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">w</span><span class="o">.</span><span class="n">precisionFromPV</span>       <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">w</span><span class="o">.</span><span class="n">alarmSensitiveContent</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">w</span><span class="o">.</span><span class="n">alarmSensitiveBorder</span>  <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="n">fm</span> <span class="o">=</span> <span class="n">QFontMetrics</span><span class="p">(</span><span class="n">w</span><span class="o">.</span><span class="n">font</span><span class="p">())</span>
+        <span class="n">width</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">fm</span><span class="o">.</span><span class="n">horizontalAdvance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="mf">1.1</span><span class="p">)</span>
+
+        <span class="n">rightEdge</span> <span class="o">=</span> <span class="n">width</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_top</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">indentation</span><span class="p">()</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_depth</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">rightEdge</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_top</span><span class="o">.</span><span class="n">_colWidths</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_top</span><span class="o">.</span><span class="n">_colWidths</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">rightEdge</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_top</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">setItemWidget</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">w</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setToolTip</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_var</span><span class="o">.</span><span class="n">description</span><span class="p">)</span>
+
+        <span class="n">w</span> <span class="o">=</span> <span class="n">makeVariableViewWidget</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_top</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">setItemWidget</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
+
+        <span class="n">pe</span> <span class="o">=</span> <span class="n">QLineEdit</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">_makeSetPoll</span><span class="p">(</span><span class="n">le</span><span class="p">):</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">_setPoll</span><span class="p">():</span>
+                <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_var</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">le</span><span class="o">.</span><span class="n">text</span><span class="p">())</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_var</span><span class="o">.</span><span class="n">setPollInterval</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">le</span><span class="o">.</span><span class="n">text</span><span class="p">()))</span>
+            <span class="k">return</span> <span class="n">_setPoll</span>
+
+        <span class="n">pe</span><span class="o">.</span><span class="n">returnPressed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">_makeSetPoll</span><span class="p">(</span><span class="n">pe</span><span class="p">))</span>
+        <span class="n">pe</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_var</span><span class="o">.</span><span class="n">pollInterval</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_top</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">setItemWidget</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">pe</span><span class="p">)</span>
+        <span class="c1">#self.setText(3,str(self._var.pollInterval))</span>
+        <span class="c1"># self.setText(4,str(self._var._value))</span>
+
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">funcgen</span><span class="p">(</span><span class="nb">str</span><span class="p">):</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">ret</span><span class="p">():</span>
+                <span class="c1">#calls the button&#39;s toggle method, and also changes the state of DefaultTop so that the correct color will be used in the plot</span>
+                <span class="k">if</span> <span class="n">w</span><span class="o">.</span><span class="n">_state</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_main</span><span class="o">.</span><span class="n">do_remove</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_main</span><span class="o">.</span><span class="n">do_add</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+                <span class="n">w</span><span class="o">.</span><span class="n">toggle</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">ret</span>
+
+        <span class="n">f</span> <span class="o">=</span> <span class="n">funcgen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">)</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">ToggleButton</span><span class="p">(</span><span class="n">main</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_main</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">)</span>
+        <span class="n">w</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">&#39;Add&#39;</span><span class="p">)</span>
+        <span class="n">w</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_top</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">setItemWidget</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="n">w</span><span class="p">)</span>
+        <span class="n">width</span> <span class="o">=</span> <span class="n">fm</span><span class="o">.</span><span class="n">horizontalAdvance</span><span class="p">(</span><span class="s1">&#39;0xAAAAAAAA    &#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">width</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_top</span><span class="o">.</span><span class="n">_colWidths</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_top</span><span class="o">.</span><span class="n">_colWidths</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">width</span>
+
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SelectionTree</span><span class="p">(</span><span class="n">PyDMFrame</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Rogue node selection tree used by :class:`TimePlotter`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    main : TimePlotter</span>
+<span class="sd">        Parent plotter widget coordinating add/remove actions.</span>
+<span class="sd">    parent : QWidget | None, optional</span>
+<span class="sd">        Parent Qt widget.</span>
+<span class="sd">    init_channel : str | None, optional</span>
+<span class="sd">        Initial Rogue channel address.</span>
+<span class="sd">    incGroups : list[str] | None, optional</span>
+<span class="sd">        Include filter for Rogue groups.</span>
+<span class="sd">    excGroups : list[str] | None, optional</span>
+<span class="sd">        Exclude filter for Rogue groups.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">main</span><span class="p">:</span> <span class="s2">&quot;TimePlotter&quot;</span><span class="p">,</span>
+        <span class="n">parent</span><span class="p">:</span> <span class="n">QWidget</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">init_channel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">incGroups</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">excGroups</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Hidden&#39;</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">PyDMFrame</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">init_channel</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_main</span> <span class="o">=</span> <span class="n">main</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_node</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_incGroups</span> <span class="o">=</span> <span class="n">incGroups</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_excGroups</span> <span class="o">=</span> <span class="n">excGroups</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tree</span>      <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_colWidths</span> <span class="o">=</span> <span class="p">[</span><span class="mi">250</span><span class="p">,</span><span class="mi">50</span><span class="p">,</span><span class="mi">150</span><span class="p">,</span><span class="mi">50</span><span class="p">,</span><span class="mi">50</span><span class="p">]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">connection_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">connected</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+        <span class="n">build</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_node</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_connected</span> <span class="o">!=</span> <span class="n">connected</span> <span class="ow">and</span> <span class="n">connected</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">SelectionTree</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">connection_changed</span><span class="p">(</span><span class="n">connected</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">build</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_node</span> <span class="o">=</span> <span class="n">nodeFromAddress</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">channel</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel</span>
+
+        <span class="n">vb</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">vb</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tree</span> <span class="o">=</span> <span class="n">QTreeWidget</span><span class="p">()</span>
+        <span class="n">vb</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">setColumnCount</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">setHeaderLabels</span><span class="p">([</span><span class="s1">&#39;Node&#39;</span><span class="p">,</span><span class="s1">&#39;Value&#39;</span><span class="p">,</span><span class="s1">&#39;Plot&#39;</span><span class="p">,</span><span class="s1">&#39;Poll Interval&#39;</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">itemExpanded</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_expandCb</span><span class="p">)</span>
+
+        <span class="n">hb</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
+        <span class="n">vb</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">hb</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_node</span><span class="o">.</span><span class="n">isinstance</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
+            <span class="n">hb</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">PyDMPushButton</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Read All&#39;</span><span class="p">,</span>
+                                        <span class="n">pressValue</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                        <span class="n">init_channel</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">+</span> <span class="s1">&#39;.ReadAll&#39;</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">hb</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">PyDMPushButton</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Read Recursive&#39;</span><span class="p">,</span>
+                                        <span class="n">pressValue</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                        <span class="n">init_channel</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">+</span> <span class="s1">&#39;.ReadDevice&#39;</span><span class="p">))</span>
+
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setUpdatesEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">DebugDev</span><span class="p">(</span><span class="n">main</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_main</span><span class="p">,</span> <span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">,</span> <span class="n">top</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_node</span><span class="p">,</span> <span class="n">noExpand</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setUpdatesEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="nd">@Slot</span><span class="p">(</span><span class="n">QTreeWidgetItem</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_expandCb</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">QTreeWidgetItem</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setUpdatesEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">item</span><span class="o">.</span><span class="n">_expand</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">setColumnWidth</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_colWidths</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">setColumnWidth</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_colWidths</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="c1"># self._tree.resizeColumnToContents(1)</span>
+        <span class="c1"># self._tree.resizeColumnToContents(2)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">setColumnWidth</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_colWidths</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">setColumnWidth</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_colWidths</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">setColumnWidth</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_colWidths</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
+        <span class="c1"># self._tree.setColumnWidth(4,self._colWidths[4])</span>
+        <span class="c1"># self._tree.resizeColumnToContents(5)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setUpdatesEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="nd">@Property</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">incGroups</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_incGroups</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_incGroups</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_incGroups</span><span class="p">)</span>
+
+    <span class="nd">@incGroups</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">incGroups</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_incGroups</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_incGroups</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+
+    <span class="nd">@Property</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">excGroups</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_excGroups</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_excGroups</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_excGroups</span><span class="p">)</span>
+
+    <span class="nd">@excGroups</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">excGroups</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_excGroups</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_excGroups</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">eventFilter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">event</span><span class="p">:</span> <span class="n">QEvent</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">type</span><span class="p">()</span> <span class="o">==</span> <span class="n">QEvent</span><span class="o">.</span><span class="n">Wheel</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">ToggleButton</span><span class="p">(</span><span class="n">QPushButton</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Add/remove button with state-aware styling for selected plot channels.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    main : TimePlotter</span>
+<span class="sd">        Owning time-plotter widget.</span>
+<span class="sd">    state : bool</span>
+<span class="sd">        Initial toggle state.</span>
+<span class="sd">    path : str</span>
+<span class="sd">        Rogue node path represented by this button.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">main</span><span class="p">:</span> <span class="s2">&quot;TimePlotter&quot;</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_main</span> <span class="o">=</span> <span class="n">main</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_state</span> <span class="o">=</span> <span class="n">state</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">=</span> <span class="n">path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">styleSheet</span> <span class="o">=</span> <span class="s1">&#39;QPushButton {background-color: </span><span class="si">%s</span><span class="s1">;</span><span class="se">\</span>
+<span class="s1">                                          color: black;</span><span class="se">\</span>
+<span class="s1">                                          border: none;</span><span class="se">\</span>
+<span class="s1">                                          font: bold}&#39;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">styleSheet</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">_main</span><span class="o">.</span><span class="n">_addColor</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">toggle</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">&#39;Add&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_state</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">styleSheet</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">_main</span><span class="o">.</span><span class="n">_addColor</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">&#39;Remove&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_state</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">styleSheet</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">_main</span><span class="o">.</span><span class="n">_colorSelector</span><span class="o">.</span><span class="n">current_color</span><span class="p">())</span>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">setStyle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">styleSheet</span><span class="o">%</span><span class="n">color</span><span class="p">)</span>
+
+<div class="viewcode-block" id="TimePlotter">
+<a class="viewcode-back" href="../../../../api/python/pyrogue/pydm_widgets/timeplotter.html#pyrogue.pydm.widgets.TimePlotter">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">TimePlotter</span><span class="p">(</span><span class="n">PyDMFrame</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Widget combining variable selection tree and live time plots.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    parent : QWidget | None, optional</span>
+<span class="sd">        Parent Qt widget.</span>
+<span class="sd">    init_channel : str | None, optional</span>
+<span class="sd">        Initial Rogue channel address.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">:</span> <span class="n">QWidget</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">init_channel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">init_channel</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_node</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_addColor</span> <span class="o">=</span> <span class="s1">&#39;#dddddd&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_colorSelector</span> <span class="o">=</span> <span class="n">ColorSelector</span><span class="p">()</span>
+
+<div class="viewcode-block" id="TimePlotter.connection_changed">
+<a class="viewcode-back" href="../../../../api/python/pyrogue/pydm_widgets/timeplotter.html#pyrogue.pydm.widgets.TimePlotter.connection_changed">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">connection_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">connected</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+        <span class="n">build</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_node</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_connected</span> <span class="o">!=</span> <span class="n">connected</span> <span class="ow">and</span> <span class="n">connected</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">TimePlotter</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">connection_changed</span><span class="p">(</span><span class="n">connected</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">build</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_node</span> <span class="o">=</span> <span class="n">nodeFromAddress</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">channel</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setup_ui</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="TimePlotter.setup_ui">
+<a class="viewcode-back" href="../../../../api/python/pyrogue/pydm_widgets/timeplotter.html#pyrogue.pydm.widgets.TimePlotter.setup_ui">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setup_ui</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+        <span class="n">vb</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">vb</span><span class="p">)</span>
+
+        <span class="n">main_layout</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
+        <span class="n">main_box</span> <span class="o">=</span> <span class="n">QGroupBox</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">main_box</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">main_layout</span><span class="p">)</span>
+
+        <span class="n">buttons_layout</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
+        <span class="n">buttons_box</span> <span class="o">=</span> <span class="n">QGroupBox</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">buttons_box</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">buttons_layout</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">width_edit</span> <span class="o">=</span> <span class="n">QLineEdit</span><span class="p">()</span>
+        <span class="n">apply_btn</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">()</span>
+        <span class="n">apply_btn</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">&quot;Set width&quot;</span><span class="p">)</span>
+        <span class="n">apply_btn</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">do_setwidth</span><span class="p">)</span>
+
+        <span class="n">auto_axis_btn</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">()</span>
+        <span class="n">auto_axis_btn</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">&quot;Auto height&quot;</span><span class="p">)</span>
+        <span class="n">auto_axis_btn</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">do_autoheight</span><span class="p">)</span>
+
+        <span class="c1"># Create the legend layout</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">legend_layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">legend_layout</span><span class="o">.</span><span class="n">setContentsMargins</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+
+        <span class="c1"># Create a Frame to host the items in the legend</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frm_legend</span> <span class="o">=</span> <span class="n">QFrame</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frm_legend</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">legend_layout</span><span class="p">)</span>
+
+        <span class="c1"># Create a ScrollArea</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scroll_area</span> <span class="o">=</span> <span class="n">QScrollArea</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scroll_area</span><span class="o">.</span><span class="n">setMinimumHeight</span><span class="p">(</span><span class="mi">200</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scroll_area</span><span class="o">.</span><span class="n">setVerticalScrollBarPolicy</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">ScrollBarAlwaysOn</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scroll_area</span><span class="o">.</span><span class="n">setHorizontalScrollBarPolicy</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">ScrollBarAlwaysOff</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scroll_area</span><span class="o">.</span><span class="n">setWidgetResizable</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scroll_area</span><span class="o">.</span><span class="n">setAlignment</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">AlignTop</span><span class="p">)</span>
+
+        <span class="c1"># Add the Frame to the scroll area</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scroll_area</span><span class="o">.</span><span class="n">setWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frm_legend</span><span class="p">)</span>
+
+        <span class="n">buttons_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width_edit</span><span class="p">)</span>
+        <span class="n">buttons_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">apply_btn</span><span class="p">)</span>
+        <span class="n">buttons_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">auto_axis_btn</span><span class="p">)</span>
+
+        <span class="n">plots_layout</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
+        <span class="n">plots_box</span> <span class="o">=</span> <span class="n">QGroupBox</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">plots_box</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">plots_layout</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">plots</span> <span class="o">=</span> <span class="n">pwt</span><span class="o">.</span><span class="n">PyDMTimePlot</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">background</span> <span class="o">=</span> <span class="s1">&#39;#f6f6f6&#39;</span><span class="p">,</span> <span class="n">plot_by_timestamps</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plots</span><span class="o">.</span><span class="n">setShowLegend</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plots</span><span class="o">.</span><span class="n">setShowXGrid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plots</span><span class="o">.</span><span class="n">setShowYGrid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plots</span><span class="o">.</span><span class="n">setTitle</span><span class="p">(</span><span class="s1">&#39;Plots&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plots</span><span class="o">.</span><span class="n">setTimeSpan</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+
+        <span class="n">plots_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plots</span><span class="p">)</span>
+        <span class="n">plots_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">buttons_box</span><span class="p">)</span>
+
+        <span class="n">selection_layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">selection_tree</span> <span class="o">=</span> <span class="n">SelectionTree</span><span class="p">(</span><span class="n">main</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span><span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">init_channel</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">channel</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">selection_tree</span><span class="o">.</span><span class="n">setMinimumWidth</span><span class="p">(</span><span class="mi">718</span><span class="p">)</span>
+        <span class="n">selection_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selection_tree</span><span class="p">)</span>
+        <span class="n">selection_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scroll_area</span><span class="p">)</span>
+        <span class="n">selection_box</span> <span class="o">=</span> <span class="n">QGroupBox</span><span class="p">()</span>
+        <span class="n">selection_box</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">selection_layout</span><span class="p">)</span>
+
+        <span class="n">selection_splitter</span> <span class="o">=</span> <span class="n">QSplitter</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">Vertical</span><span class="p">)</span>
+        <span class="n">selection_splitter</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selection_tree</span><span class="p">)</span>
+        <span class="n">selection_splitter</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scroll_area</span><span class="p">)</span>
+
+        <span class="n">graphs_layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">()</span>
+        <span class="n">graphs_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plots</span><span class="p">)</span>
+        <span class="n">graphs_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">buttons_box</span><span class="p">)</span>
+        <span class="n">graphs_box</span> <span class="o">=</span> <span class="n">QGroupBox</span><span class="p">()</span>
+        <span class="n">graphs_box</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">graphs_layout</span><span class="p">)</span>
+
+        <span class="n">main_splitter</span> <span class="o">=</span> <span class="n">QSplitter</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">Horizontal</span><span class="p">)</span>
+
+        <span class="n">main_splitter</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">selection_splitter</span><span class="p">)</span>
+        <span class="n">main_splitter</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">graphs_box</span><span class="p">)</span>
+        <span class="n">main_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">main_splitter</span><span class="p">)</span>
+
+        <span class="n">vb</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">main_box</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TimePlotter.do_add">
+<a class="viewcode-back" href="../../../../api/python/pyrogue/pydm_widgets/timeplotter.html#pyrogue.pydm.widgets.TimePlotter.do_add">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">do_add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plots</span><span class="o">.</span><span class="n">addYChannel</span><span class="p">(</span><span class="n">y_channel</span><span class="o">=</span><span class="n">path</span><span class="p">,</span>
+                <span class="n">color</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_colorSelector</span><span class="o">.</span><span class="n">take_color</span><span class="p">(</span><span class="n">path</span><span class="p">),</span>
+                <span class="n">lineWidth</span> <span class="o">=</span> <span class="mi">5</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plots</span><span class="o">.</span><span class="n">setShowLegend</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="n">disp</span> <span class="o">=</span> <span class="n">LegendRow</span><span class="p">(</span><span class="n">parent</span> <span class="o">=</span> <span class="bp">self</span><span class="p">,</span><span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span><span class="n">main</span> <span class="o">=</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="n">disp</span><span class="o">.</span><span class="n">setMaximumHeight</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">legend_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">disp</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TimePlotter.do_remove">
+<a class="viewcode-back" href="../../../../api/python/pyrogue/pydm_widgets/timeplotter.html#pyrogue.pydm.widgets.TimePlotter.do_remove">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">do_remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">curve</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plots</span><span class="o">.</span><span class="n">findCurve</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plots</span><span class="o">.</span><span class="n">removeYChannel</span><span class="p">(</span><span class="n">curve</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">widget</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">frm_legend</span><span class="o">.</span><span class="n">findChildren</span><span class="p">(</span><span class="n">QWidget</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">widget</span><span class="p">,</span><span class="n">LegendRow</span><span class="p">)</span> <span class="ow">and</span> <span class="n">widget</span><span class="o">.</span><span class="n">_path</span> <span class="o">==</span> <span class="n">path</span><span class="p">:</span>
+                <span class="n">widget</span><span class="o">.</span><span class="n">setParent</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+                <span class="n">widget</span><span class="o">.</span><span class="n">deleteLater</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="TimePlotter.do_setwidth">
+<a class="viewcode-back" href="../../../../api/python/pyrogue/pydm_widgets/timeplotter.html#pyrogue.pydm.widgets.TimePlotter.do_setwidth">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">do_setwidth</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">width_edit</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">plots</span><span class="o">.</span><span class="n">setTimeSpan</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="TimePlotter.do_autoheight">
+<a class="viewcode-back" href="../../../../api/python/pyrogue/pydm_widgets/timeplotter.html#pyrogue.pydm.widgets.TimePlotter.do_autoheight">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">do_autoheight</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># self.plots.setAutoRangeY(True)</span>
+        <span class="c1"># self.plots.autoRangeY = True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plots</span><span class="o">.</span><span class="n">plotItem</span><span class="o">.</span><span class="n">enableAutoRange</span><span class="p">(</span><span class="n">ViewBox</span><span class="o">.</span><span class="n">YAxis</span><span class="p">,</span> <span class="n">enable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TimePlotter.minimumSizeHint">
+<a class="viewcode-back" href="../../../../api/python/pyrogue/pydm_widgets/timeplotter.html#pyrogue.pydm.widgets.TimePlotter.minimumSizeHint">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">minimumSizeHint</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">QSize</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">QSize</span><span class="p">(</span><span class="mi">1500</span><span class="p">,</span> <span class="mi">900</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TimePlotter.ui_filepath">
+<a class="viewcode-back" href="../../../../api/python/pyrogue/pydm_widgets/timeplotter.html#pyrogue.pydm.widgets.TimePlotter.ui_filepath">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">ui_filepath</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+</div>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">LegendRow</span><span class="p">(</span><span class="n">Display</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Legend row widget for one plotted channel.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    parent : QWidget | None, optional</span>
+<span class="sd">        Parent Qt widget.</span>
+<span class="sd">    args : list[str] | None, optional</span>
+<span class="sd">        Display argument list forwarded to :class:`pydm.Display`.</span>
+<span class="sd">    macros : dict[str, str] | None, optional</span>
+<span class="sd">        Macro substitutions forwarded to :class:`pydm.Display`.</span>
+<span class="sd">    path : str | None, optional</span>
+<span class="sd">        Rogue path of the plotted variable represented by this legend row.</span>
+<span class="sd">    main : TimePlotter | None, optional</span>
+<span class="sd">        Owning time-plotter widget.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">parent</span><span class="p">:</span> <span class="n">QWidget</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">args</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">macros</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">main</span><span class="p">:</span> <span class="n">TimePlotter</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">LegendRow</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="n">parent</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">,</span> <span class="n">macros</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">=</span> <span class="n">path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sizeX</span> <span class="o">=</span> <span class="mi">40</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sizeY</span> <span class="o">=</span> <span class="mi">40</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_main</span> <span class="o">=</span> <span class="n">main</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setMaximumHeight</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setup_ui</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">setup_ui</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+        <span class="c1">#setup main layout</span>
+        <span class="n">main_layout</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
+        <span class="n">main_box</span> <span class="o">=</span> <span class="n">QGroupBox</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">main_box</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">main_layout</span><span class="p">)</span>
+
+        <span class="c1">#Add widgets to layout</span>
+        <span class="n">main_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">))</span>
+        <span class="n">button</span> <span class="o">=</span> <span class="n">ToggleButton</span><span class="p">(</span><span class="n">main</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_main</span><span class="p">,</span> <span class="n">state</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">)</span>
+        <span class="n">button</span><span class="o">.</span><span class="n">setStyle</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_main</span><span class="o">.</span><span class="n">_colorSelector</span><span class="o">.</span><span class="n">current_color</span><span class="p">())</span>
+        <span class="n">button</span><span class="o">.</span><span class="n">setMaximumWidth</span><span class="p">(</span><span class="mi">150</span><span class="p">)</span>
+        <span class="n">button</span><span class="o">.</span><span class="n">setMaximumHeight</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
+        <span class="n">button</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s1">&#39;Remove&#39;</span><span class="p">)</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">legendbuttonfuncgen</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">f</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_main</span><span class="o">.</span><span class="n">do_remove</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">widget</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_main</span><span class="o">.</span><span class="n">selection_tree</span><span class="o">.</span><span class="n">findChildren</span><span class="p">(</span><span class="n">QWidget</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">widget</span><span class="p">,</span><span class="n">ToggleButton</span><span class="p">)</span> <span class="ow">and</span> <span class="n">widget</span><span class="o">.</span><span class="n">_path</span> <span class="o">==</span> <span class="n">path</span><span class="p">:</span>
+                        <span class="n">widget</span><span class="o">.</span><span class="n">toggle</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">f</span>
+
+        <span class="n">button</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">legendbuttonfuncgen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">))</span>
+        <span class="n">main_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">button</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">main_layout</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">ui_filepath</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># No UI file is being used</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">ColorSelector</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Allocates reusable colors for plot channels.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_colorList</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;#F94144&#39;</span><span class="p">,</span> <span class="s1">&#39;#F3722C&#39;</span><span class="p">,</span> <span class="s1">&#39;#F8961E&#39;</span><span class="p">,</span> <span class="s1">&#39;#F9844A&#39;</span><span class="p">,</span> <span class="s1">&#39;#F9C74F&#39;</span><span class="p">,</span> <span class="s1">&#39;#90BE6D&#39;</span><span class="p">,</span> <span class="s1">&#39;#43AA8B&#39;</span><span class="p">,</span> <span class="s1">&#39;#4D908E&#39;</span><span class="p">,</span> <span class="s1">&#39;#577590&#39;</span><span class="p">,</span> <span class="s1">&#39;#277DA1&#39;</span><span class="p">,</span><span class="s1">&#39;#f70a0a&#39;</span><span class="p">,</span><span class="s1">&#39;#f75d0a&#39;</span><span class="p">,</span><span class="s1">&#39;#f7a00a&#39;</span><span class="p">,</span><span class="s1">&#39;#f7f30a&#39;</span><span class="p">,</span><span class="s1">&#39;#98f70a&#39;</span><span class="p">,</span><span class="s1">&#39;#1af70a&#39;</span><span class="p">,</span><span class="s1">&#39;#0af7c0&#39;</span><span class="p">,</span><span class="s1">&#39;#0accf7&#39;</span><span class="p">,</span><span class="s1">&#39;#0a75f7&#39;</span><span class="p">,</span><span class="s1">&#39;#0a1ef7&#39;</span><span class="p">,</span><span class="s1">&#39;#710af7&#39;</span><span class="p">,</span><span class="s1">&#39;#e70af7&#39;</span><span class="p">,</span><span class="s1">&#39;#f70a71&#39;</span><span class="p">,</span><span class="s1">&#39;#8a2d06&#39;</span><span class="p">,</span><span class="s1">&#39;#838a06&#39;&#39;#188a06&#39;</span><span class="p">,</span><span class="s1">&#39;#188a06&#39;</span><span class="p">,</span><span class="s1">&#39;#188a06&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_currentDict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_currentColor</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">take_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channel</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_colorList</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_colorList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">generate_new_color</span><span class="p">())</span>
+
+        <span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_colorList</span><span class="p">)</span>
+        <span class="n">color</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_colorList</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_currentDict</span><span class="p">[</span><span class="n">channel</span><span class="p">]</span> <span class="o">=</span> <span class="n">color</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_currentColor</span> <span class="o">=</span> <span class="n">color</span>
+        <span class="k">return</span> <span class="n">color</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">give_back_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channel</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+        <span class="n">color</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">currentDict</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">channel</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_colorList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">color</span><span class="p">)</span>
+        <span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_colorList</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">current_color</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_currentColor</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">generate_new_color</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+
+        <span class="k">return</span> <span class="s1">&#39;#&#39;</span> <span class="o">+</span> <span class="nb">hex</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mh">0x100000</span><span class="p">,</span><span class="mh">0xffffff</span><span class="p">))[</span><span class="mi">2</span><span class="p">:]</span> <span class="c1">#&lt;----------Change this</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

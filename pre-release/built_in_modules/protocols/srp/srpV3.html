@@ -1,0 +1,294 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SRP Protocol Version 3 &mdash; Rogue v6.9.0-146-g9016781d5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=8b50afe1" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=5f168154"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../_static/custom.js?v=7b5dfb0b"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="SRP Protocol Version 3 Emulation" href="srpV3Emulation.html" />
+    <link rel="prev" title="SRP Protocol Version 0" href="srpV0.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Built-in Modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../interfaces/index.html">Interfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../simulation/index.html">Simulation Utilities</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">Protocols</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../udp/index.html">UDP Protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../rssi/index.html">RSSI Protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../packetizer/index.html">Packetizer Protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../network.html">Network Wrapper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../batcher/index.html">Batcher Protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../epicsV4/index.html">EPICS V4 Access</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../epicsV7/index.html">EPICS V7 Access</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">SRP Protocol</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="srpV0.html">SRP Protocol Version 0</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">SRP Protocol Version 3</a></li>
+<li class="toctree-l4"><a class="reference internal" href="srpV3Emulation.html">SRP Protocol Version 3 Emulation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cmd.html">SRP Protocol Command</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../xilinx/index.html">Xilinx Protocols</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../uart.html">UART Memory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gpib.html">GPIB Control</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../hardware/index.html">Hardware</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utilities/index.html">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">API Reference</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Built-in Modules</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Protocols</a></li>
+          <li class="breadcrumb-item"><a href="index.html">SRP Protocol</a></li>
+      <li class="breadcrumb-item active">SRP Protocol Version 3</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/built_in_modules/protocols/srp/srpV3.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="srp-protocol-version-3">
+<span id="protocols-srp-srpv3"></span><h1>SRP Protocol Version 3<a class="headerlink" href="#srp-protocol-version-3" title="Link to this heading"></a></h1>
+<p>For current SRP register links, Rogue provides
+<code class="docutils literal notranslate"><span class="pre">rogue.protocols.srp.SrpV3</span></code>. <code class="docutils literal notranslate"><span class="pre">SrpV3</span></code> converts Rogue memory transactions
+into SRPv3 stream frames and decodes hardware responses back into memory
+transaction completion.</p>
+<p>Rogue does not re-document the SRPv3 wire format here. Use the protocol
+specification for packet-level details:</p>
+<ul class="simple">
+<li><p>SRPv3 reference: <a class="reference external" href="https://confluence.slac.stanford.edu/x/cRmVD">https://confluence.slac.stanford.edu/x/cRmVD</a></p></li>
+</ul>
+<section id="when-to-use-srpv3">
+<h2>When To Use <code class="docutils literal notranslate"><span class="pre">SrpV3</span></code><a class="headerlink" href="#when-to-use-srpv3" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Use for current systems unless endpoint compatibility requires <a class="reference internal" href="srpV0.html"><span class="doc">SRP Protocol Version 0</span></a>.</p></li>
+<li><p>Use when the link needs SRP register semantics rather than raw commands.</p></li>
+<li><p>Pair it with a stream transport such as DMA or UDP/RSSI/packetizer.</p></li>
+</ul>
+</section>
+<section id="behavior">
+<h2>Behavior<a class="headerlink" href="#behavior" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Rogue can issue multiple SRPv3 requests before responses return; these are
+tracked as in-flight transactions by transaction ID.</p></li>
+<li><p>Responses are matched by ID, so response order does not need to match request
+order.</p></li>
+<li><p>If a response is missing, the initiating memory master times out based on the
+configured software timeout (see <code class="docutils literal notranslate"><span class="pre">Master.setTimeout()</span></code>, microseconds).</p></li>
+<li><p>Late responses that arrive after timeout are treated as expired and ignored.</p></li>
+<li><p>SRPv3 also carries a hardware timeout field in the request header
+(C++: <code class="docutils literal notranslate"><span class="pre">setHardwareTimeout()</span></code>, Python binding: <code class="docutils literal notranslate"><span class="pre">_setHardwareTimeout()</span></code>),
+which is separate from Rogue software wait
+timeout handling.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SrpV3</span></code> enforces 4-byte alignment and defaults to a 4096-byte max
+transaction size (from constructor <code class="docutils literal notranslate"><span class="pre">memory::Slave(4,</span> <span class="pre">4096)</span></code>).</p></li>
+</ul>
+<p>The class sits directly between the memory and stream interfaces. Connect it to
+a lower stream transport, then use the SRP object as the <code class="docutils literal notranslate"><span class="pre">memBase</span></code> for
+PyRogue devices or other memory clients.</p>
+</section>
+<section id="threading-and-locking">
+<h2>Threading And Locking<a class="headerlink" href="#threading-and-locking" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">doTransaction()</span></code> and <code class="docutils literal notranslate"><span class="pre">acceptFrame()</span></code> can be invoked from different
+runtime contexts.</p></li>
+<li><p>In-flight transaction matching is protected by the base memory-slave mutex.</p></li>
+<li><p>Per-transaction payload/state access is protected via <code class="docutils literal notranslate"><span class="pre">TransactionLock</span></code>.</p></li>
+</ul>
+</section>
+<section id="logging">
+<h2>Logging<a class="headerlink" href="#logging" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">SrpV3</span></code> uses Rogue C++ logging.</p>
+<ul class="simple">
+<li><p>Logger name: <code class="docutils literal notranslate"><span class="pre">pyrogue.SrpV3</span></code></p></li>
+<li><p>Recommended unified one-liner:
+<code class="docutils literal notranslate"><span class="pre">pyrogue.setLogLevel('SrpV3',</span> <span class="pre">'DEBUG')</span></code></p></li>
+<li><p>Legacy Logging API:
+<code class="docutils literal notranslate"><span class="pre">rogue.Logging.setFilter('pyrogue.SrpV3',</span> <span class="pre">rogue.Logging.Debug)</span></code></p></li>
+<li><p>Typical messages: transmitted request headers, received response headers,
+undersized frames, bad headers, error tails, and transaction-ID mismatches</p></li>
+</ul>
+<p>You can set the filter before or after constructing the <code class="docutils literal notranslate"><span class="pre">SrpV3</span></code> object.
+Enable it before construction only if you want constructor or very early
+protocol-startup messages.</p>
+</section>
+<section id="python-example">
+<h2>Python Example<a class="headerlink" href="#python-example" title="Link to this heading"></a></h2>
+<p>The most common PyRogue pattern is to construct the transport and <code class="docutils literal notranslate"><span class="pre">SrpV3</span></code>
+inside a <code class="docutils literal notranslate"><span class="pre">Root</span></code> subclass, then pass the SRP object as <code class="docutils literal notranslate"><span class="pre">memBase</span></code> when adding
+devices.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">rogue.hardware.axi</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">rogue.protocols.srp</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyRegs</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;ScratchPad&#39;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Example RW register&#39;</span><span class="p">,</span>
+            <span class="n">offset</span><span class="o">=</span><span class="mh">0x0000</span><span class="p">,</span>
+            <span class="n">bitSize</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span>
+            <span class="n">base</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
+        <span class="p">))</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyRoot</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="s1">&#39;/dev/datadev_0&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="c1"># Stream transport carrying SRPv3 frames.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">regStream</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">hardware</span><span class="o">.</span><span class="n">axi</span><span class="o">.</span><span class="n">AxiStreamDma</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># SRPv3 protocol bridge.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">srp</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">srp</span><span class="o">.</span><span class="n">SrpV3</span><span class="p">()</span>
+
+        <span class="c1"># Bidirectional stream connection: transport &lt;-&gt; SRPv3.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">regStream</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">srp</span>
+
+        <span class="c1"># Optional protocol timeout field encoded into SRPv3 header.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">srp</span><span class="o">.</span><span class="n">_setHardwareTimeout</span><span class="p">(</span><span class="mh">0x0A</span><span class="p">)</span>  <span class="c1"># Python binding name.</span>
+
+        <span class="c1"># Attach register map device to SRPv3 memory slave interface.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">MyRegs</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Regs&#39;</span><span class="p">,</span>
+            <span class="n">offset</span><span class="o">=</span><span class="mh">0x00000000</span><span class="p">,</span>
+            <span class="n">memBase</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">srp</span><span class="p">,</span>
+            <span class="n">expand</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">))</span>
+</pre></div>
+</div>
+</section>
+<section id="related-topics">
+<h2>Related Topics<a class="headerlink" href="#related-topics" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="../../../memory_interface/tcp_bridge.html"><span class="doc">Memory TCP Bridge</span></a></p></li>
+<li><p><a class="reference internal" href="../../hardware/dma/stream.html"><span class="doc">AxiStreamDma</span></a></p></li>
+<li><p><a class="reference internal" href="index.html"><span class="doc">SRP Protocol</span></a></p></li>
+<li><p>SRPv0 comparison: <a class="reference internal" href="srpV0.html"><span class="doc">SRP Protocol Version 0</span></a></p></li>
+<li><p>Command-only path: <a class="reference internal" href="cmd.html"><span class="doc">SRP Protocol Command</span></a></p></li>
+</ul>
+</section>
+<section id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Python: <a class="reference internal" href="../../../api/python/rogue/protocols/srp/srpv3.html"><span class="doc">SrpV3</span></a></p></li>
+<li><p>C++: <a class="reference internal" href="../../../api/cpp/protocols/srp/srpV3.html"><span class="doc">SrpV3</span></a></p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="srpV0.html" class="btn btn-neutral float-left" title="SRP Protocol Version 0" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="srpV3Emulation.html" class="btn btn-neutral float-right" title="SRP Protocol Version 3 Emulation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

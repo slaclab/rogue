@@ -1,0 +1,394 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Slave &mdash; Rogue v6.9.0-146-g9016781d5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css?v=8b50afe1" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=5f168154"></script>
+      <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../../_static/custom.js?v=7b5dfb0b"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link rel="next" title="Fifo" href="fifo.html" />
+    <link rel="prev" title="Master" href="master.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../../python/index.html">Python API</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../../index.html">C++ API</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../../rogue_index.html">rogue</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../../interfaces_index.html">rogue::interfaces</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html">rogue::interfaces::api</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../memory/index.html">rogue::interfaces::memory</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="index.html">rogue::interfaces::stream</a><ul class="current">
+<li class="toctree-l5"><a class="reference internal" href="frame.html">Frame</a></li>
+<li class="toctree-l5"><a class="reference internal" href="frameLock.html">Frame Lock</a></li>
+<li class="toctree-l5"><a class="reference internal" href="frameIterator.html">Frame Iterator</a></li>
+<li class="toctree-l5"><a class="reference internal" href="frameAccessor.html">Frame Accessor</a></li>
+<li class="toctree-l5"><a class="reference internal" href="helpers.html">Frame Helpers</a></li>
+<li class="toctree-l5"><a class="reference internal" href="master.html">Master</a></li>
+<li class="toctree-l5 current"><a class="current reference internal" href="#">Slave</a></li>
+<li class="toctree-l5"><a class="reference internal" href="fifo.html">Fifo</a></li>
+<li class="toctree-l5"><a class="reference internal" href="tcpCore.html">TcpCore</a></li>
+<li class="toctree-l5"><a class="reference internal" href="tcpClient.html">TcpClient</a></li>
+<li class="toctree-l5"><a class="reference internal" href="tcpServer.html">TcpServer</a></li>
+<li class="toctree-l5"><a class="reference internal" href="filter.html">Filter</a></li>
+<li class="toctree-l5"><a class="reference internal" href="rateDrop.html">RateDrop</a></li>
+<li class="toctree-l5"><a class="reference internal" href="buffer.html">Buffer</a></li>
+<li class="toctree-l5"><a class="reference internal" href="pool.html">Pool</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../zmqClient.html">rogue::interfaces::ZmqClient</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../protocols_index.html">rogue::protocols</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../hardware_index.html">rogue::hardware</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../utilities_index.html">rogue::utilities</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">API Reference</a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">C++ API</a></li>
+          <li class="breadcrumb-item"><a href="../../interfaces_index.html">rogue::interfaces</a></li>
+          <li class="breadcrumb-item"><a href="index.html">rogue::interfaces::stream</a></li>
+      <li class="breadcrumb-item active">Slave</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../_sources/api/cpp/interfaces/stream/slave.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="slave">
+<span id="interfaces-stream-slave"></span><h1>Slave<a class="headerlink" href="#slave" title="Link to this heading"></a></h1>
+<p>For conceptual usage, see:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../../../../stream_interface/index.html"><span class="doc">Stream Interface</span></a></p></li>
+<li><p><a class="reference internal" href="../../../../stream_interface/receiving.html"><span class="doc">Receiving Frames</span></a></p></li>
+</ul>
+<section id="python-binding">
+<h2>Python binding<a class="headerlink" href="#python-binding" title="Link to this heading"></a></h2>
+<p>This C++ class is also exported into Python as <code class="docutils literal notranslate"><span class="pre">rogue.interfaces.stream.Slave</span></code>.</p>
+<p>Python API page:
+- <a class="reference internal" href="../../../python/rogue/interfaces/stream/slave.html"><span class="doc">Slave</span></a></p>
+<p>objects in C++ are referenced by the following shared pointer typedef:</p>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream8SlavePtrE">
+<span id="_CPPv3N5rogue10interfaces6stream8SlavePtrE"></span><span id="_CPPv2N5rogue10interfaces6stream8SlavePtrE"></span><span id="rogue::interfaces::stream::SlavePtr"></span><span class="target" id="namespacerogue_1_1interfaces_1_1stream_1a62f9a9320c2fd274e6b34855c70d0a9d"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream5SlaveE" title="rogue::interfaces::stream::Slave"><span class="n"><span class="pre">Slave</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">SlavePtr</span></span></span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream8SlavePtrE" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/stream_2Slave_8h_source.html#l00234"><span class="pre">[header]</span></a></dt>
+<dd><p>Shared pointer alias for <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref"><span class="pre">Slave</span></span></a></code>. </p>
+</dd></dl>
+
+<p>The class description is shown below:</p>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream5SlaveE">
+<span id="_CPPv3N5rogue10interfaces6stream5SlaveE"></span><span id="_CPPv2N5rogue10interfaces6stream5SlaveE"></span><span id="rogue::interfaces::stream::Slave"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Slave"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Slave</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="pool.html#_CPPv4N5rogue10interfaces6stream4PoolE" title="rogue::interfaces::stream::Pool"><span class="n"><span class="pre">Pool</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">EnableSharedFromThis</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream5SlaveE" title="rogue::interfaces::stream::Slave"><span class="n"><span class="pre">Slave</span></span></a><span class="p"><span class="pre">&gt;</span></span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5SlaveE" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/stream_2Slave_8h_source.html#l00071"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/stream_2Slave_8h_source.html#l00072"><span class="pre">[source]</span></a></dt>
+<dd><p>Stream slave endpoint and default frame pool. </p>
+<p>A <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref"><span class="pre">Slave</span></span></a></code> receives frames from upstream masters via <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Slave_1ada9c9da8e59d974e991007d1baa547e4"><span class="std std-ref"><span class="pre">acceptFrame()</span></span></a></code> and also implements <code class="docutils literal notranslate"><a class="reference internal" href="pool.html#classrogue_1_1interfaces_1_1stream_1_1Pool"><span class="std std-ref"><span class="pre">Pool</span></span></a></code>, so it can service frame-allocation requests in the same stream path. A single slave can be attached to multiple masters.</p>
+<p><code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref"><span class="pre">Slave</span></span></a></code> is not abstract (no pure virtual methods), but it is intended to be subclassed for most real applications (protocol endpoints, transforms, sinks, file/network bridges).</p>
+<p>Subclass contract in practice:<ul class="simple">
+<li><p>Primary override point: <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Slave_1ada9c9da8e59d974e991007d1baa547e4"><span class="std std-ref"><span class="pre">acceptFrame()</span></span></a></code>. Implement per-frame ingress logic here (decode, transform, queue, forward, or consume).</p></li>
+<li><p>Optional lifecycle override: <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Slave_1ac859b66aedfa71ee9ae24a3778599dd3"><span class="std std-ref"><span class="pre">stop()</span></span></a></code>. Override when the subclass owns worker threads, timers, sockets, or device resources needing clean shutdown.</p></li>
+<li><p>Optional allocation overrides (from <code class="docutils literal notranslate"><a class="reference internal" href="pool.html#classrogue_1_1interfaces_1_1stream_1_1Pool"><span class="std std-ref"><span class="pre">Pool</span></span></a></code>): <code class="docutils literal notranslate"><a class="reference internal" href="pool.html#classrogue_1_1interfaces_1_1stream_1_1Pool_1ab2731033cbedad75750e0ebe67921fe0"><span class="std std-ref"><span class="pre">acceptReq()</span></span></a></code> and <code class="docutils literal notranslate"><a class="reference internal" href="pool.html#classrogue_1_1interfaces_1_1stream_1_1Pool_1a4fe1e33ca13196a4194319071ddc6416"><span class="std std-ref"><span class="pre">retBuffer()</span></span></a></code> when custom memory allocation/recycling is needed (for example DMA-backed buffers).</p></li>
+</ul>
+</p>
+<p>Base-class behavior notes:<ul class="simple">
+<li><p>Base <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Slave_1ada9c9da8e59d974e991007d1baa547e4"><span class="std std-ref"><span class="pre">acceptFrame()</span></span></a></code> increments frame/byte counters and can emit debug logging (<code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Slave_1a0db1eae3e974be56cfe5cd35653d752d"><span class="std std-ref"><span class="pre">setDebug()</span></span></a></code>), while taking a frame lock during inspection.</p></li>
+<li><p>If a subclass overrides <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Slave_1ada9c9da8e59d974e991007d1baa547e4"><span class="std std-ref"><span class="pre">acceptFrame()</span></span></a></code> and still wants those counters/debug semantics, it should explicitly call <code class="docutils literal notranslate"><span class="pre">Slave::acceptFrame(frame)</span></code> or provide equivalent logic. </p></li>
+</ul>
+</p>
+<p>Subclassed by <a class="reference internal" href="../../hardware/axi/axiStreamDma.html#classrogue_1_1hardware_1_1axi_1_1AxiStreamDma"><span class="std std-ref">rogue::hardware::axi::AxiStreamDma</span></a>, <a class="reference internal" href="fifo.html#classrogue_1_1interfaces_1_1stream_1_1Fifo"><span class="std std-ref">rogue::interfaces::stream::Fifo</span></a>, <a class="reference internal" href="filter.html#classrogue_1_1interfaces_1_1stream_1_1Filter"><span class="std std-ref">rogue::interfaces::stream::Filter</span></a>, <a class="reference internal" href="rateDrop.html#classrogue_1_1interfaces_1_1stream_1_1RateDrop"><span class="std std-ref">rogue::interfaces::stream::RateDrop</span></a>, rogue::interfaces::stream::SlaveWrap, <a class="reference internal" href="tcpCore.html#classrogue_1_1interfaces_1_1stream_1_1TcpCore"><span class="std std-ref">rogue::interfaces::stream::TcpCore</span></a>, <a class="reference internal" href="../../protocols/batcher/combinerV1.html#classrogue_1_1protocols_1_1batcher_1_1CombinerV1"><span class="std std-ref">rogue::protocols::batcher::CombinerV1</span></a>, <a class="reference internal" href="../../protocols/batcher/combinerV2.html#classrogue_1_1protocols_1_1batcher_1_1CombinerV2"><span class="std std-ref">rogue::protocols::batcher::CombinerV2</span></a>, <a class="reference internal" href="../../protocols/batcher/inverterV1.html#classrogue_1_1protocols_1_1batcher_1_1InverterV1"><span class="std std-ref">rogue::protocols::batcher::InverterV1</span></a>, <a class="reference internal" href="../../protocols/batcher/inverterV2.html#classrogue_1_1protocols_1_1batcher_1_1InverterV2"><span class="std std-ref">rogue::protocols::batcher::InverterV2</span></a>, <a class="reference internal" href="../../protocols/batcher/splitterV1.html#classrogue_1_1protocols_1_1batcher_1_1SplitterV1"><span class="std std-ref">rogue::protocols::batcher::SplitterV1</span></a>, <a class="reference internal" href="../../protocols/batcher/splitterV2.html#classrogue_1_1protocols_1_1batcher_1_1SplitterV2"><span class="std std-ref">rogue::protocols::batcher::SplitterV2</span></a>, <a class="reference internal" href="../../protocols/packetizer/application.html#classrogue_1_1protocols_1_1packetizer_1_1Application"><span class="std std-ref">rogue::protocols::packetizer::Application</span></a>, <a class="reference internal" href="../../protocols/packetizer/transport.html#classrogue_1_1protocols_1_1packetizer_1_1Transport"><span class="std std-ref">rogue::protocols::packetizer::Transport</span></a>, <a class="reference internal" href="../../protocols/rssi/application.html#classrogue_1_1protocols_1_1rssi_1_1Application"><span class="std std-ref">rogue::protocols::rssi::Application</span></a>, <a class="reference internal" href="../../protocols/rssi/transport.html#classrogue_1_1protocols_1_1rssi_1_1Transport"><span class="std std-ref">rogue::protocols::rssi::Transport</span></a>, <a class="reference internal" href="../../protocols/srp/srpV0.html#classrogue_1_1protocols_1_1srp_1_1SrpV0"><span class="std std-ref">rogue::protocols::srp::SrpV0</span></a>, <a class="reference internal" href="../../protocols/srp/srpV3.html#classrogue_1_1protocols_1_1srp_1_1SrpV3"><span class="std std-ref">rogue::protocols::srp::SrpV3</span></a>, <a class="reference internal" href="../../protocols/srp/srpV3Emulation.html#classrogue_1_1protocols_1_1srp_1_1SrpV3Emulation"><span class="std std-ref">rogue::protocols::srp::SrpV3Emulation</span></a>, <a class="reference internal" href="../../protocols/udp/client.html#classrogue_1_1protocols_1_1udp_1_1Client"><span class="std std-ref">rogue::protocols::udp::Client</span></a>, <a class="reference internal" href="../../protocols/udp/server.html#classrogue_1_1protocols_1_1udp_1_1Server"><span class="std std-ref">rogue::protocols::udp::Server</span></a>, <a class="reference internal" href="../../protocols/xilinx/xvc.html#classrogue_1_1protocols_1_1xilinx_1_1Xvc"><span class="std std-ref">rogue::protocols::xilinx::Xvc</span></a>, <a class="reference internal" href="../../utilities/prbs/prbs.html#classrogue_1_1utilities_1_1Prbs"><span class="std std-ref">rogue::utilities::Prbs</span></a>, <a class="reference internal" href="../../utilities/compression/unzip.html#classrogue_1_1utilities_1_1StreamUnZip"><span class="std std-ref">rogue::utilities::StreamUnZip</span></a>, <a class="reference internal" href="../../utilities/compression/zip.html#classrogue_1_1utilities_1_1StreamZip"><span class="std std-ref">rogue::utilities::StreamZip</span></a>, <a class="reference internal" href="../../utilities/fileio/channel.html#classrogue_1_1utilities_1_1fileio_1_1StreamWriterChannel"><span class="std std-ref">rogue::utilities::fileio::StreamWriterChannel</span></a></p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream5Slave5SlaveEv">
+<span id="_CPPv3N5rogue10interfaces6stream5Slave5SlaveEv"></span><span id="_CPPv2N5rogue10interfaces6stream5Slave5SlaveEv"></span><span id="rogue::interfaces::stream::Slave::Slave"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Slave_1a3ccdf29d62da59bcc00ab7d4f5ca95aa"></span><span class="sig-name descname"><span class="n"><span class="pre">Slave</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Slave5SlaveEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/stream_2Slave_8h_source.html#l00108"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/stream_2Slave_8cpp_source.html#l00055"><span class="pre">[impl]</span></a></dt>
+<dd><p>Constructs a stream slave. </p>
+<p>Creator.</p>
+<p>This constructor is a low-level C++ allocation path. Prefer <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Slave_1a548867dabef6d6a10bbf7d366e98ffb7"><span class="std std-ref"><span class="pre">create()</span></span></a></code> when shared ownership or Python exposure is required. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream5SlaveD0Ev">
+<span id="_CPPv3N5rogue10interfaces6stream5SlaveD0Ev"></span><span id="_CPPv2N5rogue10interfaces6stream5SlaveD0Ev"></span><span id="rogue::interfaces::stream::Slave::~Slave"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Slave_1a74588fad9c45c5ac06c75e534db4da42"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">~Slave</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5SlaveD0Ev" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/stream_2Slave_8h_source.html#l00111"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/stream_2Slave_8cpp_source.html#l00062"><span class="pre">[impl]</span></a></dt>
+<dd><p>Destroys the stream slave. </p>
+<p>Destructor. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream5Slave4stopEv">
+<span id="_CPPv3N5rogue10interfaces6stream5Slave4stopEv"></span><span id="_CPPv2N5rogue10interfaces6stream5Slave4stopEv"></span><span id="rogue::interfaces::stream::Slave::stop"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Slave_1ac859b66aedfa71ee9ae24a3778599dd3"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">stop</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Slave4stopEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/stream_2Slave_8h_source.html#l00122"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/stream_2Slave_8cpp_source.html#l00064"><span class="pre">[impl]</span></a></dt>
+<dd><p>Shuts down threads associated with this object. </p>
+<p>Called during shutdown to stop activity and allow clean process exit. Subclasses should override when they own worker threads or timers.</p>
+<p>Exposed as <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Slave_1ac859b66aedfa71ee9ae24a3778599dd3"><span class="std std-ref"><span class="pre">stop()</span></span></a></code> in Python. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream5Slave8setDebugE8uint32_tNSt6stringE">
+<span id="_CPPv3N5rogue10interfaces6stream5Slave8setDebugE8uint32_tNSt6stringE"></span><span id="_CPPv2N5rogue10interfaces6stream5Slave8setDebugE8uint32_tNSt6stringE"></span><span id="rogue::interfaces::stream::Slave::setDebug__uint32_t.ss"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Slave_1a0db1eae3e974be56cfe5cd35653d752d"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setDebug</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">debug</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">name</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Slave8setDebugE8uint32_tNSt6stringE" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/stream_2Slave_8h_source.html#l00137"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/stream_2Slave_8cpp_source.html#l00067"><span class="pre">[impl]</span></a></dt>
+<dd><p>Sets debug message verbosity and logger name. </p>
+<p>Set debug message size.</p>
+<p>This method enables debug messages when using the base <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">Slave</span></a> class attached as a primary or secondary <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">Slave</span></a> on a <a class="reference internal" href="master.html#classrogue_1_1interfaces_1_1stream_1_1Master"><span class="std std-ref">Master</span></a>. Typically used when attaching a base <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">Slave</span></a> object for debug purposes.</p>
+<p>Exposed as <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Slave_1a0db1eae3e974be56cfe5cd35653d752d"><span class="std std-ref"><span class="pre">setDebug()</span></span></a></code> in Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>debug</strong> – Maximum number of bytes to print in debug message. </p></li>
+<li><p><strong>name</strong> – Name included in debug messages. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream5Slave11acceptFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE">
+<span id="_CPPv3N5rogue10interfaces6stream5Slave11acceptFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE"></span><span id="_CPPv2N5rogue10interfaces6stream5Slave11acceptFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE"></span><span id="rogue::interfaces::stream::Slave::acceptFrame__std::shared_ptr:rogue::interfaces::stream::Frame:"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Slave_1ada9c9da8e59d974e991007d1baa547e4"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">acceptFrame</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="frame.html#_CPPv4N5rogue10interfaces6stream5FrameE" title="rogue::interfaces::stream::Frame"><span class="n"><span class="pre">Frame</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">frame</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Slave11acceptFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/stream_2Slave_8h_source.html#l00156"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/stream_2Slave_8cpp_source.html#l00073"><span class="pre">[impl]</span></a></dt>
+<dd><p>Accepts a frame from a master. </p>
+<p>Accept a frame from master.</p>
+<p>This method is called by the <a class="reference internal" href="master.html#classrogue_1_1interfaces_1_1stream_1_1Master"><span class="std std-ref">Master</span></a> object to which this <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">Slave</span></a> is attached when passing a <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a>. By default this method will print debug information if enabled and is typically re-implemented by a <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">Slave</span></a> sub-class. This is the primary subclass extension point for implementing stream processing behavior.</p>
+<p>Base implementation behavior:<ul class="simple">
+<li><p>Increments <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Slave_1a504c34d1b91a6358b3eaf7ee6be4417f"><span class="std std-ref"><span class="pre">getFrameCount()</span></span></a></code> / <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Slave_1a83a0b347fcb2524362e0c65f8f9d916c"><span class="std std-ref"><span class="pre">getByteCount()</span></span></a></code> counters.</p></li>
+<li><p>Acquires a frame lock and optionally logs data bytes per <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Slave_1a0db1eae3e974be56cfe5cd35653d752d"><span class="std std-ref"><span class="pre">setDebug()</span></span></a></code>.</p></li>
+</ul>
+</p>
+<p>Re-implemented as <code class="docutils literal notranslate"><span class="pre">_acceptFrame()</span></code> in Python subclasses.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>frame</strong> – <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> pointer (FramePtr). </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream5Slave13getFrameCountEv">
+<span id="_CPPv3N5rogue10interfaces6stream5Slave13getFrameCountEv"></span><span id="_CPPv2N5rogue10interfaces6stream5Slave13getFrameCountEv"></span><span id="rogue::interfaces::stream::Slave::getFrameCount"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Slave_1a504c34d1b91a6358b3eaf7ee6be4417f"></span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getFrameCount</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Slave13getFrameCountEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/stream_2Slave_8h_source.html#l00169"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/stream_2Slave_8cpp_source.html#l00134"><span class="pre">[impl]</span></a></dt>
+<dd><p>Returns frame counter. </p>
+<p>Get frame counter.</p>
+<p>Returns the total frames received. Only valid if acceptFrame is not re-implemented as a sub-class. Typically used when attaching a base <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">Slave</span></a> object for debug purposes.</p>
+<p>Exposed as <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Slave_1a504c34d1b91a6358b3eaf7ee6be4417f"><span class="std std-ref"><span class="pre">getFrameCount()</span></span></a></code> in Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Total number of <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> objects received. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream5Slave12getByteCountEv">
+<span id="_CPPv3N5rogue10interfaces6stream5Slave12getByteCountEv"></span><span id="_CPPv2N5rogue10interfaces6stream5Slave12getByteCountEv"></span><span id="rogue::interfaces::stream::Slave::getByteCount"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Slave_1a83a0b347fcb2524362e0c65f8f9d916c"></span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getByteCount</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Slave12getByteCountEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/stream_2Slave_8h_source.html#l00182"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/stream_2Slave_8cpp_source.html#l00139"><span class="pre">[impl]</span></a></dt>
+<dd><p>Returns byte counter. </p>
+<p>Get byte counter.</p>
+<p>Returns the total bytes received. Only valid if acceptFrame is not re-implemented as a sub-class. Typically used when attaching a base <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">Slave</span></a> object for debug purposes.</p>
+<p>Exposed as <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Slave_1a83a0b347fcb2524362e0c65f8f9d916c"><span class="std std-ref"><span class="pre">getByteCount()</span></span></a></code> in Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Total number of bytes received. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream5Slave18ensureSingleBufferERNSt10shared_ptrIN5rogue10interfaces6stream5FrameEEEb">
+<span id="_CPPv3N5rogue10interfaces6stream5Slave18ensureSingleBufferERNSt10shared_ptrIN5rogue10interfaces6stream5FrameEEEb"></span><span id="_CPPv2N5rogue10interfaces6stream5Slave18ensureSingleBufferERNSt10shared_ptrIN5rogue10interfaces6stream5FrameEEEb"></span><span id="rogue::interfaces::stream::Slave::ensureSingleBuffer__std::shared_ptr:rogue::interfaces::stream::Frame:R.b"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Slave_1acd935c19dce0c05794a4aa62ebbd7e9c"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ensureSingleBuffer</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="frame.html#_CPPv4N5rogue10interfaces6stream5FrameE" title="rogue::interfaces::stream::Frame"><span class="n"><span class="pre">Frame</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">frame</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">reqEn</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Slave18ensureSingleBufferERNSt10shared_ptrIN5rogue10interfaces6stream5FrameEEEb" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/stream_2Slave_8h_source.html#l00199"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/stream_2Slave_8cpp_source.html#l00144"><span class="pre">[impl]</span></a></dt>
+<dd><p>Ensures frame is backed by a single buffer. </p>
+<p>This method makes sure the passed frame is composed of a single buffer. If the <code class="docutils literal notranslate"><span class="pre">reqEn</span></code> flag is true and the passed frame is not single-buffer, a new frame can be requested and data copied into it, updating the passed frame pointer. A frame lock must be held when this method is called.</p>
+<p>Not exposed to Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>frame</strong> – Reference to frame pointer (FramePtr). </p></li>
+<li><p><strong>reqEn</strong> – Flag to determine if a new frame should be requested. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">true</span></code> if frame is single-buffer after processing. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream5Slave13reqLocalFrameE8uint32_tb">
+<span id="_CPPv3N5rogue10interfaces6stream5Slave13reqLocalFrameE8uint32_tb"></span><span id="_CPPv2N5rogue10interfaces6stream5Slave13reqLocalFrameE8uint32_tb"></span><span id="rogue::interfaces::stream::Slave::reqLocalFrame__uint32_t.b"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Slave_1a9c6b8723f4b4d90ea62cbd1377356d8c"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="frame.html#_CPPv4N5rogue10interfaces6stream5FrameE" title="rogue::interfaces::stream::Frame"><span class="n"><span class="pre">Frame</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">reqLocalFrame</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">size</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">zeroCopyEn</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Slave13reqLocalFrameE8uint32_tb" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/stream_2Slave_8h_source.html#l00211"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/stream_2Slave_8cpp_source.html#l00173"><span class="pre">[impl]</span></a></dt>
+<dd><p>Services a local frame allocation request through this object’s pool interface. </p>
+<p>This bypasses upstream links and allocates from the local <a class="reference internal" href="pool.html#classrogue_1_1interfaces_1_1stream_1_1Pool"><span class="std std-ref">Pool</span></a> implementation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>size</strong> – Minimum required frame payload size in bytes. </p></li>
+<li><p><strong>zeroCopyEn</strong> – True to allow zero-copy buffer use when supported. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Newly allocated frame pointer. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream5Slave8lshiftPyEN5boost6python6objectE">
+<span id="_CPPv3N5rogue10interfaces6stream5Slave8lshiftPyEN5boost6python6objectE"></span><span id="_CPPv2N5rogue10interfaces6stream5Slave8lshiftPyEN5boost6python6objectE"></span><span id="rogue::interfaces::stream::Slave::lshiftPy__boost::python::object"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Slave_1a9b665aa11a8dbc6de5fc6e3cfe5fab8a"></span><span class="n"><span class="pre">boost</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">python</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">object</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">lshiftPy</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">boost</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">python</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">object</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">p</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Slave8lshiftPyEN5boost6python6objectE" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/stream_2Slave_8h_source.html#l00220"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/stream_2Slave_8cpp_source.html#l00201"><span class="pre">[impl]</span></a></dt>
+<dd><p>Supports <code class="docutils literal notranslate"><span class="pre">&lt;&lt;</span></code> operator usage from Python. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>p</strong> – Python object expected to resolve to a stream <code class="docutils literal notranslate"><a class="reference internal" href="master.html#classrogue_1_1interfaces_1_1stream_1_1Master"><span class="std std-ref"><span class="pre">Master</span></span></a></code>. </p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Original Python object for chaining semantics. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream5SlavelsERNSt10shared_ptrIN5rogue10interfaces6stream6MasterEEE">
+<span id="_CPPv3N5rogue10interfaces6stream5SlavelsERNSt10shared_ptrIN5rogue10interfaces6stream6MasterEEE"></span><span id="_CPPv2N5rogue10interfaces6stream5SlavelsERNSt10shared_ptrIN5rogue10interfaces6stream6MasterEEE"></span><span id="rogue::interfaces::stream::Slave::lshift-operator__std::shared_ptr:rogue::interfaces::stream::Master:R"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Slave_1abdf4a7693ed532772a29cc576bf28a7b"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="master.html#_CPPv4N5rogue10interfaces6stream6MasterE" title="rogue::interfaces::stream::Master"><span class="n"><span class="pre">Master</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="sig-name descname"><span class="k"><span class="pre">operator</span></span><span class="o"><span class="pre">&lt;&lt;</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="master.html#_CPPv4N5rogue10interfaces6stream6MasterE" title="rogue::interfaces::stream::Master"><span class="n"><span class="pre">Master</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">other</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5SlavelsERNSt10shared_ptrIN5rogue10interfaces6stream6MasterEEE" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/stream_2Slave_8h_source.html#l00220"><span class="pre">[header]</span></a></dt>
+<dd><p>Connects this slave to a master via stream chaining operator. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>other</strong> – Upstream master to attach. </p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Reference to <code class="docutils literal notranslate"><span class="pre">other</span></code> for chaining. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-static-functions">Public Static Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream5Slave6createEv">
+<span id="_CPPv3N5rogue10interfaces6stream5Slave6createEv"></span><span id="_CPPv2N5rogue10interfaces6stream5Slave6createEv"></span><span id="rogue::interfaces::stream::Slave::create"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Slave_1a548867dabef6d6a10bbf7d366e98ffb7"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream5SlaveE" title="rogue::interfaces::stream::Slave"><span class="n"><span class="pre">Slave</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">create</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Slave6createEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/stream_2Slave_8h_source.html#l00096"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/stream_2Slave_8cpp_source.html#l00049"><span class="pre">[impl]</span></a></dt>
+<dd><p>Creates a new stream slave. </p>
+<p>Class creation.</p>
+<p>Exposed as <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref"><span class="pre">rogue.interfaces.stream.Slave()</span></span></a></code> in Python. This static factory is the preferred construction path when the object is shared across Rogue graph connections or exposed to Python. It returns <code class="docutils literal notranslate"><span class="pre">std::shared_ptr</span></code> ownership compatible with Rogue pointer typedefs.</p>
+<p><em>Company : SLAC National Accelerator Laboratory </em></p>
+<p>Description: Stream interface slave The function calls in this are a mess! create buffer, allocate buffer, etc <em>need to be reworked. </em></p>
+<p>This file is part of the rogue software platform. It is subject to the license terms in the LICENSE.txt file found in the top-level directory of this distribution and at: <a class="reference external" href="https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html">https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html</a>. No part of the rogue software platform, including this file, may be copied, modified, propagated, or distributed except according to the terms <em>contained in the LICENSE.txt file. </em></p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Shared pointer to a newly created slave.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream5Slave12setup_pythonEv">
+<span id="_CPPv3N5rogue10interfaces6stream5Slave12setup_pythonEv"></span><span id="_CPPv2N5rogue10interfaces6stream5Slave12setup_pythonEv"></span><span id="rogue::interfaces::stream::Slave::setup_python"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Slave_1a79e017cfa3ef423f16c28929573dcf7a"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setup_python</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Slave12setup_pythonEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/stream_2Slave_8h_source.html#l00099"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/stream_2Slave_8cpp_source.html#l00177"><span class="pre">[impl]</span></a></dt>
+<dd><p>Registers this type with Python bindings. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="master.html" class="btn btn-neutral float-left" title="Master" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="fifo.html" class="btn btn-neutral float-right" title="Fifo" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

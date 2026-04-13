@@ -1,0 +1,326 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GPIB Control &mdash; Rogue v6.9.0-146-g9016781d5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=8b50afe1" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=5f168154"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/custom.js?v=7b5dfb0b"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Hardware" href="../hardware/index.html" />
+    <link rel="prev" title="UART Memory" href="uart.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Built-in Modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../interfaces/index.html">Interfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../simulation/index.html">Simulation Utilities</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Protocols</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="udp/index.html">UDP Protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rssi/index.html">RSSI Protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="packetizer/index.html">Packetizer Protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="network.html">Network Wrapper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="batcher/index.html">Batcher Protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epicsV4/index.html">EPICS V4 Access</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epicsV7/index.html">EPICS V7 Access</a></li>
+<li class="toctree-l3"><a class="reference internal" href="srp/index.html">SRP Protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="xilinx/index.html">Xilinx Protocols</a></li>
+<li class="toctree-l3"><a class="reference internal" href="uart.html">UART Memory</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">GPIB Control</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../hardware/index.html">Hardware</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../utilities/index.html">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">API Reference</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Built-in Modules</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Protocols</a></li>
+      <li class="breadcrumb-item active">GPIB Control</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/built_in_modules/protocols/gpib.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="gpib-control">
+<span id="protocols-gpib"></span><h1>GPIB Control<a class="headerlink" href="#gpib-control" title="Link to this heading"></a></h1>
+<p>For instrument control over a host GPIB stack, PyRogue provides
+<code class="docutils literal notranslate"><span class="pre">pyrogue.protocols.gpib</span></code> so SCPI-style commands can be exposed through the
+normal <code class="docutils literal notranslate"><span class="pre">RemoteVariable</span></code> memory-access model. This is the right fit when a lab
+instrument already has a stable command set but does not present a register bus
+in the FPGA sense.</p>
+<p>The implementation has two layers. <code class="docutils literal notranslate"><span class="pre">GpibController</span></code> is a memory <code class="docutils literal notranslate"><span class="pre">Slave</span></code>
+that translates transactions into GPIB read and write operations, and
+<code class="docutils literal notranslate"><span class="pre">GpibDevice</span></code> is the <code class="docutils literal notranslate"><span class="pre">pyrogue.Device</span></code> wrapper that owns that controller and
+registers Variables with it. Each mapped Variable must provide a <code class="docutils literal notranslate"><span class="pre">key</span></code> extra
+attribute, because that key becomes the SCPI command prefix used on the wire.</p>
+<section id="host-dependencies">
+<h2>Host Dependencies<a class="headerlink" href="#host-dependencies" title="Link to this heading"></a></h2>
+<p>This interface depends on the external <code class="docutils literal notranslate"><span class="pre">gpib_ctypes</span></code> package and a working
+GPIB stack on the host:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>gpib_ctypes
+</pre></div>
+</div>
+<p>The module source also references additional host setup guidance at:</p>
+<p><a class="reference external" href="https://gist.github.com/ochococo/8362414fff28fa593bc8f368ba94d46a">https://gist.github.com/ochococo/8362414fff28fa593bc8f368ba94d46a</a></p>
+</section>
+<section id="gpibdevice-workflow">
+<h2>GpibDevice Workflow<a class="headerlink" href="#gpibdevice-workflow" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">GpibDevice</span></code> keeps the user-facing PyRogue model conventional even though the
+underlying instrument interface is command-oriented:</p>
+<ul class="simple">
+<li><p>It creates a <code class="docutils literal notranslate"><span class="pre">GpibController</span></code> and installs it as <code class="docutils literal notranslate"><span class="pre">memBase</span></code>.</p></li>
+<li><p>It registers Variables that carry <code class="docutils literal notranslate"><span class="pre">extraArgs={'key':</span> <span class="pre">...}</span></code>.</p></li>
+<li><p>Reads and verifies send <code class="docutils literal notranslate"><span class="pre">&lt;key&gt;?</span></code>, parse the response with the Variable
+display/parser path, and return the encoded bytes to the transaction.</p></li>
+<li><p>Writes decode the transaction bytes with the Variable Model and send
+<code class="docutils literal notranslate"><span class="pre">&lt;key&gt;</span> <span class="pre">&lt;display_value&gt;</span></code>.</p></li>
+<li><p>Posted writes are not currently supported.</p></li>
+</ul>
+</section>
+<section id="configuration-example">
+<h2>Configuration Example<a class="headerlink" href="#configuration-example" title="Link to this heading"></a></h2>
+<p>Variables should be created with a <code class="docutils literal notranslate"><span class="pre">key</span></code> extra attribute matching the
+instrument command name.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue.protocols.gpib</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pgp</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyInstrument</span><span class="p">(</span><span class="n">pgp</span><span class="o">.</span><span class="n">GpibDevice</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">gpibAddr</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">gpibBoard</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Output voltage setpoint/readback&#39;</span><span class="p">,</span>
+            <span class="n">offset</span><span class="o">=</span><span class="mh">0x00</span><span class="p">,</span>
+            <span class="n">bitSize</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span>
+            <span class="n">base</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">Float</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span>
+            <span class="n">extraArgs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;key&#39;</span><span class="p">:</span> <span class="s1">&#39;VOLT&#39;</span><span class="p">},</span>
+        <span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Current&#39;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Output current setpoint/readback&#39;</span><span class="p">,</span>
+            <span class="n">offset</span><span class="o">=</span><span class="mh">0x04</span><span class="p">,</span>
+            <span class="n">bitSize</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span>
+            <span class="n">base</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">Float</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span>
+            <span class="n">extraArgs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;key&#39;</span><span class="p">:</span> <span class="s1">&#39;CURR&#39;</span><span class="p">},</span>
+        <span class="p">))</span>
+</pre></div>
+</div>
+</section>
+<section id="key-constructor-arguments">
+<h2>Key Constructor Arguments<a class="headerlink" href="#key-constructor-arguments" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">gpibAddr</span></code> selects the instrument address on the bus.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">gpibBoard</span></code> selects the host GPIB board number when more than one board is
+present.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">timeout</span></code> controls how long the GPIB layer waits for command completion.</p></li>
+</ul>
+<p>For Variables, the most important configuration point is the <code class="docutils literal notranslate"><span class="pre">key</span></code> extra
+attribute, because the controller uses that key to build the SCPI command
+string. The Variable Model and display/parser behavior are therefore part of
+the protocol contract, not just tree presentation.</p>
+</section>
+<section id="instrument-example">
+<h2>Instrument Example<a class="headerlink" href="#instrument-example" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue.protocols.gpib</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pgp</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">PowerSupply</span><span class="p">(</span><span class="n">pgp</span><span class="o">.</span><span class="n">GpibDevice</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;PowerSupply&#39;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Example SCPI instrument on GPIB&#39;</span><span class="p">,</span>
+            <span class="n">gpibAddr</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+            <span class="n">gpibBoard</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Writes send &quot;VOLT &lt;value&gt;&quot;, reads send &quot;VOLT?&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Voltage&#39;</span><span class="p">,</span>
+            <span class="n">offset</span><span class="o">=</span><span class="mh">0x00</span><span class="p">,</span>
+            <span class="n">bitSize</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span>
+            <span class="n">base</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">Float</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span>
+            <span class="n">extraArgs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;key&#39;</span><span class="p">:</span> <span class="s1">&#39;VOLT&#39;</span><span class="p">},</span>
+        <span class="p">))</span>
+
+        <span class="c1"># Writes send &quot;OUTP &lt;value&gt;&quot;, reads send &quot;OUTP?&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;OutputEnable&#39;</span><span class="p">,</span>
+            <span class="n">offset</span><span class="o">=</span><span class="mh">0x04</span><span class="p">,</span>
+            <span class="n">bitSize</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">base</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">Bool</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span>
+            <span class="n">extraArgs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;key&#39;</span><span class="p">:</span> <span class="s1">&#39;OUTP&#39;</span><span class="p">},</span>
+        <span class="p">))</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyRoot</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;MyRoot&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">PowerSupply</span><span class="p">())</span>
+</pre></div>
+</div>
+</section>
+<section id="operational-notes">
+<h2>Operational Notes<a class="headerlink" href="#operational-notes" title="Link to this heading"></a></h2>
+<p>The transaction size must match the Variable’s encoded byte width, because the
+controller checks the byte count before issuing the GPIB command. Readback
+parsing depends on the instrument returning a string compatible with the
+Variable’s display parser. This path is intended for low-rate instrument
+control and monitoring, not for high-rate acquisition.</p>
+</section>
+<section id="logging">
+<h2>Logging<a class="headerlink" href="#logging" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">GpibController</span></code> uses Python logging.</p>
+<p>The logger name includes the board and address:</p>
+<ul class="simple">
+<li><p>Pattern: <code class="docutils literal notranslate"><span class="pre">pyrogue.GpibController.GPIB.&lt;board&gt;.&lt;addr&gt;</span></code></p></li>
+<li><p>Example: <code class="docutils literal notranslate"><span class="pre">pyrogue.GpibController.GPIB.0.5</span></code></p></li>
+<li><p>Logging API:
+<code class="docutils literal notranslate"><span class="pre">pyrogue.setLogLevel('pyrogue.GpibController',</span> <span class="pre">'DEBUG')</span></code></p></li>
+</ul>
+<p>This logger is useful for command and response tracing because it emits
+messages such as:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Write</span> <span class="pre">Sending</span> <span class="pre">&lt;command&gt;</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Read</span> <span class="pre">Sending</span> <span class="pre">&lt;command?&gt;</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Read</span> <span class="pre">Got:</span> <span class="pre">&lt;response&gt;</span></code></p></li>
+</ul>
+</section>
+<section id="related-topics">
+<h2>Related Topics<a class="headerlink" href="#related-topics" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>PyRogue Variable behavior: <a class="reference internal" href="../../pyrogue_tree/core/variable.html"><span class="doc">Variable</span></a></p></li>
+<li><p>Model conversion rules: <a class="reference internal" href="../../pyrogue_tree/core/model.html"><span class="doc">Model</span></a></p></li>
+<li><p>Memory-style transaction flow: <a class="reference internal" href="../../memory_interface/index.html"><span class="doc">Memory Interface</span></a></p></li>
+</ul>
+</section>
+<section id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Python:</p>
+<ul>
+<li><p><a class="reference internal" href="../../api/python/pyrogue/protocols/gpibcontroller.html"><span class="doc">GpibController</span></a></p></li>
+<li><p><a class="reference internal" href="../../api/python/pyrogue/protocols/gpibdevice.html"><span class="doc">GpibDevice</span></a></p></li>
+</ul>
+</li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="uart.html" class="btn btn-neutral float-left" title="UART Memory" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../hardware/index.html" class="btn btn-neutral float-right" title="Hardware" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

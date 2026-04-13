@@ -1,0 +1,352 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Transaction &mdash; Rogue v6.9.0-146-g9016781d5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom.css?v=8b50afe1" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=5f168154"></script>
+      <script src="../../../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../../../_static/custom.js?v=7b5dfb0b"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" />
+    <link rel="next" title="Block" href="block.html" />
+    <link rel="prev" title="Hub" href="hub.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../../../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../../../index.html">Python API</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../../../pyrogue/index.html">pyrogue</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../../index.html">rogue</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../../version.html">rogue.Version</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../logging.html">rogue.Logging</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../generalerror.html">rogue.GeneralError</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="../index.html">rogue.interfaces</a><ul class="current">
+<li class="toctree-l5"><a class="reference internal" href="../stream/index.html">rogue.interfaces.stream</a></li>
+<li class="toctree-l5 current"><a class="reference internal" href="index.html">rogue.interfaces.memory</a><ul class="current">
+<li class="toctree-l6"><a class="reference internal" href="master.html">Master</a></li>
+<li class="toctree-l6"><a class="reference internal" href="slave.html">Slave</a></li>
+<li class="toctree-l6"><a class="reference internal" href="hub.html">Hub</a></li>
+<li class="toctree-l6 current"><a class="current reference internal" href="#">Transaction</a></li>
+<li class="toctree-l6"><a class="reference internal" href="block.html">Block</a></li>
+<li class="toctree-l6"><a class="reference internal" href="emulate.html">Emulate</a></li>
+<li class="toctree-l6"><a class="reference internal" href="tcpclient.html">TcpClient</a></li>
+<li class="toctree-l6"><a class="reference internal" href="tcpserver.html">TcpServer</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="../zmqclient.html">ZmqClient</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../../protocols/index.html">rogue.protocols</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../hardware/index.html">rogue.hardware</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../utilities/index.html">rogue.utilities</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../cpp/index.html">C++ API</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">API Reference</a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Python API</a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">rogue</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">rogue.interfaces</a></li>
+          <li class="breadcrumb-item"><a href="index.html">rogue.interfaces.memory</a></li>
+      <li class="breadcrumb-item active">Transaction</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../../_sources/api/python/rogue/interfaces/memory/transaction.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="transaction">
+<span id="api-python-interfaces-memory-transaction"></span><h1>Transaction<a class="headerlink" href="#transaction" title="Link to this heading"></a></h1>
+<p>For conceptual usage, see:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../../../../../memory_interface/transactions.html"><span class="doc">Memory Transactions and Lifecycle</span></a></p></li>
+</ul>
+<p class="rubric">Implementation</p>
+<p>This Python API is provided by a Rogue C++ class exported into Python.</p>
+<p>Native C++ class:
+- <a class="reference internal" href="../../../../cpp/interfaces/memory/transaction.html"><span class="doc">Transaction</span></a></p>
+<section id="generated-api">
+<h2>Generated API<a class="headerlink" href="#generated-api" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="rogue.interfaces.memory.Transaction">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">rogue.interfaces.memory.</span></span><span class="sig-name descname"><span class="pre">Transaction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeout</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#rogue.interfaces.memory.Transaction" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/memory/transaction.html#_CPPv4N5rogue10interfaces6memory11TransactionE" title="rogue::interfaces::memory::Transaction"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">rogue::interfaces::memory::Transaction</span></code></a></p>
+<p>Binding source: <a class="reference external" href="../../../../../_doxygen/Transaction_8cpp_source.html">[Transaction.cpp]</a></p>
+<p>Memory transaction container passed between master and slave.</p>
+<p>Encapsulates a single memory operation request and completion state while it moves between <code class="docutils literal notranslate"><span class="pre">Master</span></code> and <code class="docutils literal notranslate"><span class="pre">Slave</span></code> layers. Lifecycle and ownership:</p>
+<ul class="simple">
+<li><p>Instances are created internally by <code class="docutils literal notranslate"><span class="pre">Master</span></code>; callers do not construct them directly.</p></li>
+<li><p>A transaction is identified by a unique 32-bit ID.</p></li>
+<li><p>Data is accessed through an internal byte iterator and guarded by <code class="docutils literal notranslate"><span class="pre">TransactionLock</span></code>.</p></li>
+<li><p>Completion is signaled via <code class="docutils literal notranslate"><span class="pre">done()</span></code> or <code class="docutils literal notranslate"><span class="pre">error*()</span></code> and may be observed by wait logic. Timeout and completion behavior:</p></li>
+<li><p>A per-transaction timeout is captured at creation and used by wait/refresh logic.</p></li>
+<li><p>Transactions may expire when timeout is reached before completion.</p></li>
+<li><p>Timeout refresh can propagate from parent/peer activity to avoid premature expiration. Subtransaction behavior:</p></li>
+<li><p>A transaction can be split into child subtransactions.</p></li>
+<li><p>Parent tracks children in <code class="docutils literal notranslate"><span class="pre">subTranMap_</span></code> and completes only after all children complete (or propagates child error to the parent). Python integration:</p></li>
+<li><p>Python buffer-backed transactions are supported when Python APIs are used.</p></li>
+<li><p>Accessors such as <code class="docutils literal notranslate"><span class="pre">id()</span></code>, <code class="docutils literal notranslate"><span class="pre">address()</span></code>, <code class="docutils literal notranslate"><span class="pre">size()</span></code>, <code class="docutils literal notranslate"><span class="pre">type()</span></code>, and <code class="docutils literal notranslate"><span class="pre">expired()</span></code> are exposed to Python bindings.</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeout</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/memory/transaction.html#_CPPv4N5rogue10interfaces6memory11TransactionE" title="rogue::interfaces::memory::Transaction"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">rogue::interfaces::memory::Transaction</span></code></a></p>
+<p>Constructs a transaction container.</p>
+<p>This constructor is a low-level C++ allocation path. Prefer <code class="docutils literal notranslate"><span class="pre">create()</span></code> for normal transaction lifecycle management. Do not call this constructor directly in normal use; transactions are expected to be created by <code class="docutils literal notranslate"><span class="pre">Master</span></code> through the internal <code class="docutils literal notranslate"><span class="pre">create()</span></code> path. That path ensures consistent ownership and integration with transaction request/wait bookkeeping.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>timeout</strong> – Initial timeout value copied into this transaction.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.interfaces.memory.Transaction.lock">
+<span class="sig-name descname"><span class="pre">lock</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rogue.interfaces.memory.Transaction.lock" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/memory/transaction.html#_CPPv4N5rogue10interfaces6memory11Transaction4lockEv" title="rogue::interfaces::memory::Transaction::lock"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::memory::Transaction::lock()</span></code></a></p>
+<p>Locks the transaction and returns a lock wrapper.</p>
+<p>Exposed as <code class="docutils literal notranslate"><span class="pre">lock()</span></code> in Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Transaction lock pointer.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.interfaces.memory.Transaction.id">
+<span class="sig-name descname"><span class="pre">id</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rogue.interfaces.memory.Transaction.id" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/memory/transaction.html#_CPPv4N5rogue10interfaces6memory11Transaction2idEv" title="rogue::interfaces::memory::Transaction::id"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::memory::Transaction::id()</span></code></a></p>
+<p>Returns the transaction ID.</p>
+<p>Exposed as <code class="docutils literal notranslate"><span class="pre">id()</span></code> in Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>32-bit transaction ID.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.interfaces.memory.Transaction.address">
+<span class="sig-name descname"><span class="pre">address</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rogue.interfaces.memory.Transaction.address" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/memory/transaction.html#_CPPv4N5rogue10interfaces6memory11Transaction7addressEv" title="rogue::interfaces::memory::Transaction::address"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::memory::Transaction::address()</span></code></a></p>
+<p>Returns the transaction address.</p>
+<p>Exposed as <code class="docutils literal notranslate"><span class="pre">address()</span></code> in Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>64-bit transaction address.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.interfaces.memory.Transaction.size">
+<span class="sig-name descname"><span class="pre">size</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rogue.interfaces.memory.Transaction.size" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/memory/transaction.html#_CPPv4N5rogue10interfaces6memory11Transaction4sizeEv" title="rogue::interfaces::memory::Transaction::size"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::memory::Transaction::size()</span></code></a></p>
+<p>Returns the transaction size.</p>
+<p>Exposed as <code class="docutils literal notranslate"><span class="pre">size()</span></code> in Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>32-bit transaction size in bytes.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.interfaces.memory.Transaction.type">
+<span class="sig-name descname"><span class="pre">type</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rogue.interfaces.memory.Transaction.type" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/memory/transaction.html#_CPPv4N5rogue10interfaces6memory11Transaction4typeEv" title="rogue::interfaces::memory::Transaction::type"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::memory::Transaction::type()</span></code></a></p>
+<p>Returns the transaction type constant.</p>
+<p>Type values are defined in <code class="docutils literal notranslate"><span class="pre">rogue/interfaces/memory/Constants.h</span></code>, including:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">rogue::interfaces::memory::Read</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">rogue::interfaces::memory::Write</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">rogue::interfaces::memory::Post</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">rogue::interfaces::memory::Verify</span></code> Exposed as <code class="docutils literal notranslate"><span class="pre">type()</span></code> in Python.</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>32-bit transaction type.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.interfaces.memory.Transaction.done">
+<span class="sig-name descname"><span class="pre">done</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rogue.interfaces.memory.Transaction.done" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/memory/transaction.html#_CPPv4N5rogue10interfaces6memory11Transaction4doneEv" title="rogue::interfaces::memory::Transaction::done"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::memory::Transaction::done()</span></code></a></p>
+<p>Marks transaction completion without error.</p>
+<p>The transaction lock must be held before calling this method. Exposed as <code class="docutils literal notranslate"><span class="pre">done()</span></code> in Python.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.interfaces.memory.Transaction.error">
+<span class="sig-name descname"><span class="pre">error</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rogue.interfaces.memory.Transaction.error" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/memory/transaction.html#_CPPv4N5rogue10interfaces6memory11Transaction8errorStrENSt6stringE" title="rogue::interfaces::memory::Transaction::errorStr"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::memory::Transaction::errorStr()</span></code></a></p>
+<p>Marks transaction completion with a formatted C-string error.</p>
+<p>The transaction lock must be held before calling this method.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.interfaces.memory.Transaction.expired">
+<span class="sig-name descname"><span class="pre">expired</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rogue.interfaces.memory.Transaction.expired" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/memory/transaction.html#_CPPv4N5rogue10interfaces6memory11Transaction7expiredEv" title="rogue::interfaces::memory::Transaction::expired"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::memory::Transaction::expired()</span></code></a></p>
+<p>Returns whether this transaction has expired.</p>
+<p>Expiration is set by <code class="docutils literal notranslate"><span class="pre">Master</span></code> when timeout occurs and no further waiting is performed. The lock must be held before checking expiration state. Exposed as <code class="docutils literal notranslate"><span class="pre">expired()</span></code> in Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">true</span></code> if transaction is expired; otherwise <code class="docutils literal notranslate"><span class="pre">false</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.interfaces.memory.Transaction.setData">
+<span class="sig-name descname"><span class="pre">setData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#rogue.interfaces.memory.Transaction.setData" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/memory/transaction.html#_CPPv4N5rogue10interfaces6memory11Transaction7setDataEN5boost6python6objectE8uint32_t" title="rogue::interfaces::memory::Transaction::setData"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::memory::Transaction::setData()</span></code></a></p>
+<p>Copies data from a Python byte-array-like object into the transaction.</p>
+<p>Exposed to Python as <code class="docutils literal notranslate"><span class="pre">setData()</span></code>. The copy size is defined by the provided source buffer size.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p</strong> – Python byte-array-like source object.</p></li>
+<li><p><strong>offset</strong> – Offset for transaction data access.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.interfaces.memory.Transaction.getData">
+<span class="sig-name descname"><span class="pre">getData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#rogue.interfaces.memory.Transaction.getData" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/interfaces/memory/transaction.html#_CPPv4N5rogue10interfaces6memory11Transaction7getDataEN5boost6python6objectE8uint32_t" title="rogue::interfaces::memory::Transaction::getData"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::interfaces::memory::Transaction::getData()</span></code></a></p>
+<p>Copies transaction data into a Python byte-array-like object.</p>
+<p>Exposed to Python as <code class="docutils literal notranslate"><span class="pre">getData()</span></code>. The copy size is defined by the provided destination buffer size.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p</strong> – Python byte-array-like destination object.</p></li>
+<li><p><strong>offset</strong> – Offset for transaction data access.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="hub.html" class="btn btn-neutral float-left" title="Hub" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="block.html" class="btn btn-neutral float-right" title="Block" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,331 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UDP Protocol &mdash; Rogue v6.9.0-146-g9016781d5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=8b50afe1" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=5f168154"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../_static/custom.js?v=7b5dfb0b"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="UDP Protocol Client" href="client.html" />
+    <link rel="prev" title="Protocols" href="../index.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Built-in Modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../interfaces/index.html">Interfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../simulation/index.html">Simulation Utilities</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">Protocols</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">UDP Protocol</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="client.html">UDP Protocol Client</a></li>
+<li class="toctree-l4"><a class="reference internal" href="server.html">UDP Protocol Server</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../rssi/index.html">RSSI Protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../packetizer/index.html">Packetizer Protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../network.html">Network Wrapper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../batcher/index.html">Batcher Protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../epicsV4/index.html">EPICS V4 Access</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../epicsV7/index.html">EPICS V7 Access</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../srp/index.html">SRP Protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../xilinx/index.html">Xilinx Protocols</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../uart.html">UART Memory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gpib.html">GPIB Control</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../hardware/index.html">Hardware</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utilities/index.html">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">API Reference</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Built-in Modules</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Protocols</a></li>
+      <li class="breadcrumb-item active">UDP Protocol</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/built_in_modules/protocols/udp/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="udp-protocol">
+<span id="protocols-udp"></span><h1>UDP Protocol<a class="headerlink" href="#udp-protocol" title="Link to this heading"></a></h1>
+<p>For stream transport over IP networks, Rogue provides
+<code class="docutils literal notranslate"><span class="pre">rogue.protocols.udp</span></code>. In most Rogue systems, UDP is used as the datagram
+layer underneath RSSI and packetizer rather than as a standalone application
+protocol.</p>
+<p>Direct UDP-only deployment is usually limited to paths where dropped or
+out-of-order packets are acceptable. For most FPGA control and data links,
+UDP is just the transport substrate below RSSI, packetizer, and often SRP.</p>
+<section id="where-udp-fits-in-the-stack">
+<h2>Where UDP Fits In The Stack<a class="headerlink" href="#where-udp-fits-in-the-stack" title="Link to this heading"></a></h2>
+<p>Typical protocol stack:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>UDP &lt;-&gt; RSSI &lt;-&gt; Packetizer &lt;-&gt; Application logic
+</pre></div>
+</div>
+<p>Use UDP directly only when datagram delivery semantics are acceptable for your
+application. For ordered and reliable link behavior, use RSSI on top of UDP.</p>
+</section>
+<section id="key-classes">
+<h2>Key Classes<a class="headerlink" href="#key-classes" title="Link to this heading"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">rogue::protocols::udp</span></code> layer is split into:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Core</span></code>:
+shared transport configuration (payload sizing, socket timeout, RX buffer
+tuning). See <a class="reference internal" href="../../../api/python/rogue/protocols/udp/core.html"><span class="doc">Core</span></a> and
+<a class="reference internal" href="../../../api/cpp/protocols/udp/core.html"><span class="doc">Core</span></a>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Client</span></code>:
+outbound endpoint to a specific remote host/port. See <a class="reference internal" href="client.html"><span class="doc">UDP Protocol Client</span></a> and
+<a class="reference internal" href="../../../api/python/rogue/protocols/udp/client.html"><span class="doc">Client</span></a> and
+<a class="reference internal" href="../../../api/cpp/protocols/udp/client.html"><span class="doc">Client</span></a>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Server</span></code>:
+local bind endpoint that receives inbound datagrams and can transmit to the
+most recently observed peer. See <a class="reference internal" href="server.html"><span class="doc">UDP Protocol Server</span></a> and
+<a class="reference internal" href="../../../api/python/rogue/protocols/udp/server.html"><span class="doc">Server</span></a> and
+<a class="reference internal" href="../../../api/cpp/protocols/udp/server.html"><span class="doc">Server</span></a>.</p></li>
+</ul>
+<p>Each endpoint is both a stream <code class="docutils literal notranslate"><span class="pre">Slave</span></code> for outbound traffic and a stream
+<code class="docutils literal notranslate"><span class="pre">Master</span></code> for inbound traffic, so UDP objects can sit directly inside a Rogue
+stream graph.</p>
+</section>
+<section id="payload-sizing-and-mtu">
+<h2>Payload Sizing And MTU<a class="headerlink" href="#payload-sizing-and-mtu" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">udp::Core.maxPayload()</span></code> sets frame payload limits by MTU mode:</p>
+<ul class="simple">
+<li><p>Jumbo mode (<code class="docutils literal notranslate"><span class="pre">jumbo=True</span></code>): <code class="docutils literal notranslate"><span class="pre">8972</span></code> bytes payload</p></li>
+<li><p>Standard mode (<code class="docutils literal notranslate"><span class="pre">jumbo=False</span></code>): <code class="docutils literal notranslate"><span class="pre">1472</span></code> bytes payload</p></li>
+</ul>
+<p>When UDP is used under RSSI, RSSI payload is typically derived from UDP payload
+budget (for example <code class="docutils literal notranslate"><span class="pre">udp.maxPayload()</span> <span class="pre">-</span> <span class="pre">8</span></code> as used in integration tests and
+wrapper patterns).</p>
+</section>
+<section id="threading-and-lifecycle">
+<h2>Threading And Lifecycle<a class="headerlink" href="#threading-and-lifecycle" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Client</span></code> and <code class="docutils literal notranslate"><span class="pre">Server</span></code> each start a background RX thread at construction.</p></li>
+<li><p>C++ <code class="docutils literal notranslate"><span class="pre">stop()</span></code> (Python <code class="docutils literal notranslate"><span class="pre">_stop()</span></code>) joins the thread and closes the socket.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Core</span></code> does not define a separate managed start/stop state machine.</p></li>
+</ul>
+</section>
+<section id="when-to-use-udp-directly">
+<h2>When To Use UDP Directly<a class="headerlink" href="#when-to-use-udp-directly" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>You need lightweight datagram transport over IP networks.</p></li>
+<li><p>Your reliability and framing requirements are handled by upper layers.</p></li>
+<li><p>You are integrating with existing UDP-based firmware endpoints.</p></li>
+</ul>
+</section>
+<section id="when-not-to-use-udp-by-itself">
+<h2>When Not To Use UDP By Itself<a class="headerlink" href="#when-not-to-use-udp-by-itself" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>If you need ordered/reliable delivery semantics by default, use RSSI over
+UDP instead of raw UDP-only application flows.</p></li>
+<li><p>If you need transaction-level memory semantics, use SRP on top of stream
+transport rather than direct UDP framing.</p></li>
+<li><p>For most FPGA control/configuration links, do not deploy raw UDP-only paths;
+use RSSI (and usually packetizer/SRP) above UDP.</p></li>
+</ul>
+</section>
+<section id="python-example">
+<h2>Python Example<a class="headerlink" href="#python-example" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">rogue.protocols.udp</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">rogue.protocols.rssi</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">rogue.protocols.packetizer</span>
+
+<span class="n">serv</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">udp</span><span class="o">.</span><span class="n">Server</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+<span class="n">cli</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">udp</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="s2">&quot;127.0.0.1&quot;</span><span class="p">,</span> <span class="n">serv</span><span class="o">.</span><span class="n">getPort</span><span class="p">(),</span> <span class="kc">True</span><span class="p">)</span>
+
+<span class="n">s_rssi</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">rssi</span><span class="o">.</span><span class="n">Server</span><span class="p">(</span><span class="n">serv</span><span class="o">.</span><span class="n">maxPayload</span><span class="p">()</span> <span class="o">-</span> <span class="mi">8</span><span class="p">)</span>
+<span class="n">c_rssi</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">rssi</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">cli</span><span class="o">.</span><span class="n">maxPayload</span><span class="p">()</span> <span class="o">-</span> <span class="mi">8</span><span class="p">)</span>
+
+<span class="n">s_pkt</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">packetizer</span><span class="o">.</span><span class="n">CoreV2</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+<span class="n">c_pkt</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">packetizer</span><span class="o">.</span><span class="n">CoreV2</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+<span class="n">cli</span> <span class="o">==</span> <span class="n">c_rssi</span><span class="o">.</span><span class="n">transport</span><span class="p">()</span>
+<span class="n">c_rssi</span><span class="o">.</span><span class="n">application</span><span class="p">()</span> <span class="o">==</span> <span class="n">c_pkt</span><span class="o">.</span><span class="n">transport</span><span class="p">()</span>
+<span class="n">serv</span> <span class="o">==</span> <span class="n">s_rssi</span><span class="o">.</span><span class="n">transport</span><span class="p">()</span>
+<span class="n">s_rssi</span><span class="o">.</span><span class="n">application</span><span class="p">()</span> <span class="o">==</span> <span class="n">s_pkt</span><span class="o">.</span><span class="n">transport</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="c-example">
+<h2>C++ Example<a class="headerlink" href="#c-example" title="Link to this heading"></a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;rogue/protocols/udp/Client.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;rogue/protocols/udp/Server.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;rogue/protocols/rssi/Client.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;rogue/protocols/rssi/Server.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;rogue/protocols/packetizer/CoreV2.h&gt;</span>
+
+<span class="k">namespace</span><span class="w"> </span><span class="nn">rpu</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="nn">rogue</span><span class="o">::</span><span class="nn">protocols</span><span class="o">::</span><span class="nn">udp</span><span class="p">;</span>
+<span class="k">namespace</span><span class="w"> </span><span class="nn">rpr</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="nn">rogue</span><span class="o">::</span><span class="nn">protocols</span><span class="o">::</span><span class="nn">rssi</span><span class="p">;</span>
+<span class="k">namespace</span><span class="w"> </span><span class="nn">rpp</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="nn">rogue</span><span class="o">::</span><span class="nn">protocols</span><span class="o">::</span><span class="nn">packetizer</span><span class="p">;</span>
+
+<span class="k">auto</span><span class="w"> </span><span class="n">serv</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">rpu</span><span class="o">::</span><span class="n">Server</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">);</span>
+<span class="k">auto</span><span class="w"> </span><span class="n">client</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rpu</span><span class="o">::</span><span class="n">Client</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="s">&quot;127.0.0.1&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">serv</span><span class="o">-&gt;</span><span class="n">getPort</span><span class="p">(),</span><span class="w"> </span><span class="nb">true</span><span class="p">);</span>
+
+<span class="k">auto</span><span class="w"> </span><span class="n">sRssi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rpr</span><span class="o">::</span><span class="n">Server</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="n">serv</span><span class="o">-&gt;</span><span class="n">maxPayload</span><span class="p">());</span>
+<span class="k">auto</span><span class="w"> </span><span class="n">cRssi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rpr</span><span class="o">::</span><span class="n">Client</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="n">client</span><span class="o">-&gt;</span><span class="n">maxPayload</span><span class="p">());</span>
+
+<span class="k">auto</span><span class="w"> </span><span class="n">sPack</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rpp</span><span class="o">::</span><span class="n">CoreV2</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="nb">true</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">);</span>
+<span class="k">auto</span><span class="w"> </span><span class="n">cPack</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rpp</span><span class="o">::</span><span class="n">CoreV2</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="nb">true</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">);</span>
+
+<span class="n">client</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">cRssi</span><span class="o">-&gt;</span><span class="n">transport</span><span class="p">();</span>
+<span class="n">cRssi</span><span class="o">-&gt;</span><span class="n">application</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">cPack</span><span class="o">-&gt;</span><span class="n">transport</span><span class="p">();</span>
+<span class="n">serv</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">sRssi</span><span class="o">-&gt;</span><span class="n">transport</span><span class="p">();</span>
+<span class="n">sRssi</span><span class="o">-&gt;</span><span class="n">application</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">sPack</span><span class="o">-&gt;</span><span class="n">transport</span><span class="p">();</span>
+</pre></div>
+</div>
+</section>
+<section id="logging">
+<h2>Logging<a class="headerlink" href="#logging" title="Link to this heading"></a></h2>
+<p>UDP transport uses Rogue C++ logging.</p>
+<p>Static logger names:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pyrogue.udp.Client</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pyrogue.udp.Server</span></code></p></li>
+<li><p>Unified Logging API:
+<code class="docutils literal notranslate"><span class="pre">pyrogue.setLogLevel('pyrogue.udp',</span> <span class="pre">'DEBUG')</span></code></p></li>
+<li><p>Legacy Logging API:
+<code class="docutils literal notranslate"><span class="pre">rogue.Logging.setFilter('pyrogue.udp',</span> <span class="pre">rogue.Logging.Debug)</span></code></p></li>
+</ul>
+<p>At debug level, UDP logs socket setup and transmit/receive path events. There
+is no additional runtime <code class="docutils literal notranslate"><span class="pre">setDebug(...)</span></code> helper on these classes.</p>
+</section>
+<section id="related-topics">
+<h2>Related Topics<a class="headerlink" href="#related-topics" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="../network.html"><span class="doc">Network Wrapper</span></a></p></li>
+<li><p><a class="reference internal" href="../rssi/index.html"><span class="doc">RSSI Protocol</span></a></p></li>
+<li><p><a class="reference internal" href="../packetizer/index.html"><span class="doc">Packetizer Protocol</span></a></p></li>
+<li><p><a class="reference internal" href="../srp/index.html"><span class="doc">SRP Protocol</span></a></p></li>
+<li><p><a class="reference internal" href="../../../stream_interface/connecting.html"><span class="doc">Connecting Streams</span></a></p></li>
+</ul>
+</section>
+<section id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>C++: <a class="reference internal" href="../../../api/cpp/protocols/udp/index.html"><span class="doc">rogue::protocols::udp</span></a></p></li>
+<li><p>Python:
+<a class="reference internal" href="../../../api/python/rogue/protocols/udp/core.html"><span class="doc">Core</span></a>
+<a class="reference internal" href="../../../api/python/rogue/protocols/udp/client.html"><span class="doc">Client</span></a>
+<a class="reference internal" href="../../../api/python/rogue/protocols/udp/server.html"><span class="doc">Server</span></a></p></li>
+</ul>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">UDP Protocol</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="client.html">UDP Protocol Client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="server.html">UDP Protocol Server</a></li>
+</ul>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../index.html" class="btn btn-neutral float-left" title="Protocols" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="client.html" class="btn btn-neutral float-right" title="UDP Protocol Client" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

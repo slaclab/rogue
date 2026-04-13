@@ -1,0 +1,473 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sending Frames &mdash; Rogue v6.9.0-146-g9016781d5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=8b50afe1" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5f168154"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script src="../_static/custom.js?v=7b5dfb0b"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Receiving Frames" href="receiving.html" />
+    <link rel="prev" title="Frame Model" href="frame_model.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Stream Interface</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="connecting.html">Connecting Streams</a></li>
+<li class="toctree-l2"><a class="reference internal" href="frame_model.html">Frame Model</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Sending Frames</a></li>
+<li class="toctree-l2"><a class="reference internal" href="receiving.html">Receiving Frames</a></li>
+<li class="toctree-l2"><a class="reference internal" href="built_in_modules.html">Built-in Stream Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../custom_module/index.html">Creating Custom Modules</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API Reference</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Stream Interface</a></li>
+      <li class="breadcrumb-item active">Sending Frames</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/stream_interface/sending.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="sending-frames">
+<span id="stream-interface-sending"></span><span id="interfaces-stream-sending"></span><h1>Sending Frames<a class="headerlink" href="#sending-frames" title="Link to this heading"></a></h1>
+<p>Custom transmitters are typically implemented by subclassing
+<a class="reference internal" href="../api/cpp/interfaces/stream/master.html#interfaces-stream-master"><span class="std std-ref">Master</span></a>.</p>
+<p>You usually write a custom stream <code class="docutils literal notranslate"><span class="pre">Master</span></code> when an application needs to originate
+data rather than just route or transform it. Common cases include packetizing a
+software data source, generating simulated or diagnostic traffic, wrapping a
+piece of hardware that produces bytes on demand, or translating some other data
+model into Rogue <code class="docutils literal notranslate"><span class="pre">Frame</span></code> objects. The <code class="docutils literal notranslate"><span class="pre">Master</span></code> owns the act of creating a <code class="docutils literal notranslate"><span class="pre">Frame</span></code> and
+handing it to the downstream stream topology.</p>
+<p>At a high level, sending a <code class="docutils literal notranslate"><span class="pre">Frame</span></code> always follows the same pattern:</p>
+<ol class="arabic simple">
+<li><p>Request a <code class="docutils literal notranslate"><span class="pre">Frame</span></code> from the primary <code class="docutils literal notranslate"><span class="pre">Slave</span></code>.</p></li>
+<li><p>Fill payload and metadata.</p></li>
+<li><p>Send the <code class="docutils literal notranslate"><span class="pre">Frame</span></code> to connected <code class="docutils literal notranslate"><span class="pre">Slave</span></code> objects.</p></li>
+</ol>
+<p><code class="docutils literal notranslate"><span class="pre">Frame</span></code> allocation is driven by the downstream primary <code class="docutils literal notranslate"><span class="pre">Slave</span></code>. In most
+cases you should request the <code class="docutils literal notranslate"><span class="pre">Frame</span></code> with <code class="docutils literal notranslate"><span class="pre">zeroCopyEn=True</span></code> and let that
+<code class="docutils literal notranslate"><span class="pre">Slave</span></code> decide whether to supply zero-copy buffers. If the same <code class="docutils literal notranslate"><span class="pre">Frame</span></code>
+object must be reused or resent, request it with <code class="docutils literal notranslate"><span class="pre">zeroCopyEn=False</span></code> because
+zero-copy <code class="docutils literal notranslate"><span class="pre">Frame</span></code> objects are often consumed or emptied by the primary path
+once sent.</p>
+<p>Python and C++ subclasses are interchangeable at runtime: a Python <code class="docutils literal notranslate"><span class="pre">Master</span></code>
+can send into C++ <code class="docutils literal notranslate"><span class="pre">Slave</span></code> objects, and a C++ <code class="docutils literal notranslate"><span class="pre">Master</span></code> can send into Python
+<code class="docutils literal notranslate"><span class="pre">Slave</span></code> objects. That makes
+it practical to prototype the control flow in Python first, then move only the
+performance-critical transmitter into C++.</p>
+<section id="python-master-subclass">
+<h2>Python Master Subclass<a class="headerlink" href="#python-master-subclass" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">rogue.interfaces.stream</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ris</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyCustomMaster</span><span class="p">(</span><span class="n">ris</span><span class="o">.</span><span class="n">Master</span><span class="p">):</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">send_bytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">payload</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">chan</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="c1"># Request a ``Frame`` from the primary ``Slave``. The requested size is the</span>
+        <span class="c1"># total capacity we need. Passing True allows the downstream path to</span>
+        <span class="c1"># choose zero-copy buffers when that is beneficial.</span>
+        <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqFrame</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">payload</span><span class="p">),</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">frame</span><span class="o">.</span><span class="n">lock</span><span class="p">():</span>
+            <span class="c1"># Write the payload starting at offset 0. In Python this</span>
+            <span class="c1"># automatically extends the valid ``Frame`` payload length.</span>
+            <span class="n">frame</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">payload</span><span class="p">)</span>
+
+            <span class="c1"># Attach metadata before releasing the ``Frame`` downstream.</span>
+            <span class="n">frame</span><span class="o">.</span><span class="n">setChannel</span><span class="p">(</span><span class="n">chan</span><span class="p">)</span>
+
+        <span class="c1"># After _sendFrame() returns, the connected ``Slave`` objects have</span>
+        <span class="c1"># accepted the ``Frame`` and a zero-copy implementation may have</span>
+        <span class="c1"># consumed it.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sendFrame</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">send_numpy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arr</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">chan</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="n">arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+        <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqFrame</span><span class="p">(</span><span class="n">arr</span><span class="o">.</span><span class="n">nbytes</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">frame</span><span class="o">.</span><span class="n">lock</span><span class="p">():</span>
+            <span class="c1"># putNumpy() is the safer NumPy-specific path because it handles</span>
+            <span class="c1"># strided or non-contiguous arrays correctly.</span>
+            <span class="n">frame</span><span class="o">.</span><span class="n">putNumpy</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
+            <span class="n">frame</span><span class="o">.</span><span class="n">setChannel</span><span class="p">(</span><span class="n">chan</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sendFrame</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The Python transmit path is compact because the binding hides a few mechanical
+steps. <code class="docutils literal notranslate"><span class="pre">frame.write()</span></code> accepts ordinary Python buffer objects such as
+<code class="docutils literal notranslate"><span class="pre">bytes</span></code>, <code class="docutils literal notranslate"><span class="pre">bytearray</span></code>, and contiguous NumPy arrays, and it automatically
+advances the <code class="docutils literal notranslate"><span class="pre">Frame</span></code> payload to the highest byte written. <code class="docutils literal notranslate"><span class="pre">frame.putNumpy()</span></code> is
+more explicit when the source is a NumPy array and is usually the better choice
+when the array may be strided or non-contiguous. If a <code class="docutils literal notranslate"><span class="pre">Frame</span></code> must be reused,
+request it with <code class="docutils literal notranslate"><span class="pre">zeroCopyEn=False</span></code> so that the downstream path does not hand
+back a <code class="docutils literal notranslate"><span class="pre">Frame</span></code> whose buffers will be consumed on send. For shared <code class="docutils literal notranslate"><span class="pre">Frame</span></code>
+semantics and metadata behavior, see <a class="reference internal" href="frame_model.html"><span class="doc">Frame Model</span></a>.</p>
+<p>For many applications, this Python pattern is enough. It is easy to read, easy
+to test, and integrates naturally with Python-side orchestration. When the data
+rate is moderate or <code class="docutils literal notranslate"><span class="pre">Frame</span></code> construction is driven by higher-level application
+logic, the convenience usually outweighs the extra overhead.</p>
+</section>
+<section id="c-master-subclass">
+<h2>C++ Master Subclass<a class="headerlink" href="#c-master-subclass" title="Link to this heading"></a></h2>
+<p>The C++ flow follows the same overall pattern, but payload access is more
+explicit. You usually declare the valid payload length with <code class="docutils literal notranslate"><span class="pre">setPayload()</span></code>,
+then fill the <code class="docutils literal notranslate"><span class="pre">Frame</span></code> through a <code class="docutils literal notranslate"><span class="pre">FrameIterator</span></code>. That is the normal Rogue style
+because a <code class="docutils literal notranslate"><span class="pre">Frame</span></code> is a logical byte stream, not necessarily a single contiguous
+block of memory.</p>
+<p>This is usually the right choice when the transmitter is performance-sensitive,
+when it is already implemented in C++, or when it needs tight control over the
+layout and copy path used to populate the <code class="docutils literal notranslate"><span class="pre">Frame</span></code>.</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;algorithm&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;rogue/interfaces/stream/Master.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;rogue/interfaces/stream/Frame.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;rogue/interfaces/stream/FrameIterator.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;rogue/interfaces/stream/FrameLock.h&quot;</span>
+
+<span class="k">namespace</span><span class="w"> </span><span class="nn">ris</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nn">rogue</span><span class="o">::</span><span class="nn">interfaces</span><span class="o">::</span><span class="nn">stream</span><span class="p">;</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyCustomMaster</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">ris</span><span class="o">::</span><span class="n">Master</span><span class="w"> </span><span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+<span class="w">   </span><span class="k">using</span><span class="w"> </span><span class="n">Ptr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">MyCustomMaster</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">   </span><span class="k">static</span><span class="w"> </span><span class="n">Ptr</span><span class="w"> </span><span class="nf">create</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">MyCustomMaster</span><span class="o">&gt;</span><span class="p">();</span><span class="w"> </span><span class="p">}</span>
+
+<span class="w">   </span><span class="kt">void</span><span class="w"> </span><span class="nf">sendPacket</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">uint8_t</span><span class="o">*</span><span class="w"> </span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">size</span><span class="p">,</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">chan</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">ris</span><span class="o">::</span><span class="n">FramePtr</span><span class="w"> </span><span class="n">frame</span><span class="p">;</span>
+<span class="w">      </span><span class="n">ris</span><span class="o">::</span><span class="n">FrameIterator</span><span class="w"> </span><span class="n">it</span><span class="p">;</span>
+<span class="w">      </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">x</span><span class="p">;</span>
+
+<span class="w">      </span><span class="c1">// Request a ``Frame`` large enough to hold the outgoing payload.</span>
+<span class="w">      </span><span class="n">frame</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">reqFrame</span><span class="p">(</span><span class="n">size</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">);</span>
+<span class="w">      </span><span class="k">auto</span><span class="w"> </span><span class="n">lock</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">();</span>
+
+<span class="w">      </span><span class="c1">// In C++ the ``Frame`` payload size is generally declared explicitly.</span>
+<span class="w">      </span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">setPayload</span><span class="p">(</span><span class="n">size</span><span class="p">);</span>
+<span class="w">      </span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">setChannel</span><span class="p">(</span><span class="n">chan</span><span class="p">);</span>
+
+<span class="w">      </span><span class="c1">// Get an iterator to the first byte in the ``Frame``.</span>
+<span class="w">      </span><span class="n">it</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">begin</span><span class="p">();</span>
+
+<span class="w">      </span><span class="c1">// Direct iterator writes are convenient for a few fixed fields.</span>
+<span class="w">      </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">4</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">size</span><span class="p">;</span><span class="w"> </span><span class="n">x</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="o">*</span><span class="n">it</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">uint8_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">x</span><span class="p">);</span>
+<span class="w">         </span><span class="o">++</span><span class="n">it</span><span class="p">;</span>
+<span class="w">      </span><span class="p">}</span>
+
+<span class="w">      </span><span class="c1">// std::copy is the safest general-purpose bulk write because the</span>
+<span class="w">      </span><span class="c1">// iterator handles ``Frame`` objects backed by multiple buffers.</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">size</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">4</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="n">it</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">copy</span><span class="p">(</span><span class="n">data</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">size</span><span class="p">,</span><span class="w"> </span><span class="n">it</span><span class="p">);</span>
+<span class="w">      </span><span class="p">}</span>
+
+<span class="w">      </span><span class="c1">// After sendFrame(), the downstream path owns the ``Frame`` contents.</span>
+<span class="w">      </span><span class="n">sendFrame</span><span class="p">(</span><span class="n">frame</span><span class="p">);</span>
+<span class="w">   </span><span class="p">}</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+</section>
+<section id="transmit-frame-layout">
+<h2>Transmit Frame Layout<a class="headerlink" href="#transmit-frame-layout" title="Link to this heading"></a></h2>
+<p>Common transmit-side <code class="docutils literal notranslate"><span class="pre">Frame</span></code> API patterns include metadata tagging and offset
+layout writes.</p>
+<p>In practice, many transmitters need more than “write bytes and send”. They need
+to prepend a header, place payload data at a known offset, and annotate the
+<code class="docutils literal notranslate"><span class="pre">Frame</span></code> so downstream code can route or interpret it correctly. The following examples
+show that more realistic pattern in both languages.</p>
+<section id="python-header-and-payload-example">
+<h3>Python Header And Payload Example<a class="headerlink" href="#python-header-and-payload-example" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="n">header</span> <span class="o">=</span> <span class="nb">bytes</span><span class="p">([</span><span class="mh">0xA5</span><span class="p">,</span> <span class="mh">0x5A</span><span class="p">,</span> <span class="mh">0x01</span><span class="p">,</span> <span class="mh">0x00</span><span class="p">])</span>
+<span class="n">payload</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">256</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+
+<span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqFrame</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">header</span><span class="p">)</span> <span class="o">+</span> <span class="n">payload</span><span class="o">.</span><span class="n">nbytes</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+<span class="k">with</span> <span class="n">frame</span><span class="o">.</span><span class="n">lock</span><span class="p">():</span>
+    <span class="c1"># The header is written at offset 0 because write() defaults to the</span>
+    <span class="c1"># beginning of the ``Frame``.</span>
+    <span class="n">frame</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">header</span><span class="p">)</span>
+
+    <span class="c1"># The payload starts immediately after the header by using an explicit</span>
+    <span class="c1"># offset.</span>
+    <span class="n">frame</span><span class="o">.</span><span class="n">putNumpy</span><span class="p">(</span><span class="n">payload</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">header</span><span class="p">))</span>
+
+    <span class="c1"># Metadata can be used downstream for routing or packet interpretation.</span>
+    <span class="n">frame</span><span class="o">.</span><span class="n">setChannel</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">frame</span><span class="o">.</span><span class="n">setFlags</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">frame</span><span class="o">.</span><span class="n">setFirstUser</span><span class="p">(</span><span class="mh">0x11</span><span class="p">)</span>
+    <span class="n">frame</span><span class="o">.</span><span class="n">setLastUser</span><span class="p">(</span><span class="mh">0x22</span><span class="p">)</span>
+
+    <span class="c1"># getSize() is total capacity, while getPayload() is the number of valid</span>
+    <span class="c1"># bytes currently defined in the ``Frame``.</span>
+    <span class="k">assert</span> <span class="n">frame</span><span class="o">.</span><span class="n">getPayload</span><span class="p">()</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">header</span><span class="p">)</span> <span class="o">+</span> <span class="n">payload</span><span class="o">.</span><span class="n">nbytes</span>
+    <span class="k">assert</span> <span class="n">frame</span><span class="o">.</span><span class="n">getAvailable</span><span class="p">()</span> <span class="o">==</span> <span class="n">frame</span><span class="o">.</span><span class="n">getSize</span><span class="p">()</span> <span class="o">-</span> <span class="n">frame</span><span class="o">.</span><span class="n">getPayload</span><span class="p">()</span>
+
+<span class="bp">self</span><span class="o">.</span><span class="n">_sendFrame</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="c-header-and-payload-example">
+<h3>C++ Header And Payload Example<a class="headerlink" href="#c-header-and-payload-example" title="Link to this heading"></a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;array&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;vector&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;rogue/interfaces/stream/Frame.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;rogue/interfaces/stream/FrameIterator.h&quot;</span>
+
+<span class="k">namespace</span><span class="w"> </span><span class="nn">ris</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nn">rogue</span><span class="o">::</span><span class="nn">interfaces</span><span class="o">::</span><span class="nn">stream</span><span class="p">;</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">MyCustomMaster::sendPacketWithLayout</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">   </span><span class="n">std</span><span class="o">::</span><span class="n">array</span><span class="o">&lt;</span><span class="kt">uint8_t</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="o">&gt;</span><span class="w"> </span><span class="n">header</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mh">0xA5</span><span class="p">,</span><span class="w"> </span><span class="mh">0x5A</span><span class="p">,</span><span class="w"> </span><span class="mh">0x01</span><span class="p">,</span><span class="w"> </span><span class="mh">0x00</span><span class="p">};</span>
+<span class="w">   </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">uint8_t</span><span class="o">&gt;</span><span class="w"> </span><span class="n">payload</span><span class="p">(</span><span class="mi">256</span><span class="p">);</span>
+<span class="w">   </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">payload</span><span class="p">.</span><span class="n">size</span><span class="p">();</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="n">payload</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">uint8_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
+
+<span class="w">   </span><span class="k">auto</span><span class="w"> </span><span class="n">frame</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">reqFrame</span><span class="p">(</span><span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">header</span><span class="p">.</span><span class="n">size</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">payload</span><span class="p">.</span><span class="n">size</span><span class="p">()),</span><span class="w"> </span><span class="nb">true</span><span class="p">);</span>
+<span class="w">   </span><span class="k">auto</span><span class="w"> </span><span class="n">lock</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">();</span>
+
+<span class="w">   </span><span class="c1">// Declare how many bytes will be valid once construction finishes.</span>
+<span class="w">   </span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">setPayload</span><span class="p">(</span><span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">header</span><span class="p">.</span><span class="n">size</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">payload</span><span class="p">.</span><span class="n">size</span><span class="p">()));</span>
+
+<span class="w">   </span><span class="c1">// Write the fixed-size header at the front of the ``Frame``.</span>
+<span class="w">   </span><span class="k">auto</span><span class="w"> </span><span class="n">itHdr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">begin</span><span class="p">();</span>
+<span class="w">   </span><span class="n">ris</span><span class="o">::</span><span class="n">toFrame</span><span class="p">(</span><span class="n">itHdr</span><span class="p">,</span><span class="w"> </span><span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">header</span><span class="p">.</span><span class="n">size</span><span class="p">()),</span><span class="w"> </span><span class="n">header</span><span class="p">.</span><span class="n">data</span><span class="p">());</span>
+
+<span class="w">   </span><span class="c1">// Then write the payload beginning immediately after the header.</span>
+<span class="w">   </span><span class="k">auto</span><span class="w"> </span><span class="n">itPay</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">begin</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">int32_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">header</span><span class="p">.</span><span class="n">size</span><span class="p">());</span>
+<span class="w">   </span><span class="n">ris</span><span class="o">::</span><span class="n">toFrame</span><span class="p">(</span><span class="n">itPay</span><span class="p">,</span><span class="w"> </span><span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">payload</span><span class="p">.</span><span class="n">size</span><span class="p">()),</span><span class="w"> </span><span class="n">payload</span><span class="p">.</span><span class="n">data</span><span class="p">());</span>
+
+<span class="w">   </span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">setChannel</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+<span class="w">   </span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">setFlags</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="w">   </span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">setFirstUser</span><span class="p">(</span><span class="mh">0x11</span><span class="p">);</span>
+<span class="w">   </span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">setLastUser</span><span class="p">(</span><span class="mh">0x22</span><span class="p">);</span>
+
+<span class="w">   </span><span class="c1">// Release the completed ``Frame`` to connected ``Slave`` objects.</span>
+<span class="w">   </span><span class="n">sendFrame</span><span class="p">(</span><span class="n">frame</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="efficient-c-payload-writes">
+<h2>Efficient C++ Payload Writes<a class="headerlink" href="#efficient-c-payload-writes" title="Link to this heading"></a></h2>
+<p>Iterator use is worth spelling out in more detail because it explains why the
+Rogue stream API looks the way it does. A <code class="docutils literal notranslate"><span class="pre">Frame</span></code> represents a logical byte
+stream, but the bytes do not have to live in one contiguous block of memory.
+The underlying storage may be made of multiple <code class="docutils literal notranslate"><span class="pre">Buffer</span></code> objects, and that is
+often intentional. For example, a transport or allocator may build a large
+<code class="docutils literal notranslate"><span class="pre">Frame</span></code> from a sequence of packet-sized segments. A <code class="docutils literal notranslate"><span class="pre">FrameIterator</span></code> hides those
+layout details and lets you walk the frame as if it were contiguous.</p>
+<p>That is why <code class="docutils literal notranslate"><span class="pre">std::copy</span></code> and the helper functions such as <code class="docutils literal notranslate"><span class="pre">toFrame()</span></code> are
+the safest general-purpose transmit tools. They keep working when the <code class="docutils literal notranslate"><span class="pre">Frame</span></code> is
+split across multiple buffers, and they let the transmitter remain agnostic to
+how the downstream path allocated the storage. In most code this is the right
+tradeoff: correctness, clarity, and layout independence matter more than the
+small overhead of iterator bookkeeping.</p>
+<p>There are cases where that overhead matters. If profiling shows that transmit
+side copies are a real bottleneck, you can drop down to contiguous-buffer
+copies one segment at a time. The iterator provides two pieces of information
+for that: <code class="docutils literal notranslate"><span class="pre">remBuffer()</span></code> reports how many bytes remain in the current
+contiguous segment, and <code class="docutils literal notranslate"><span class="pre">ptr()</span></code> returns a direct pointer into that segment.
+That leads to a pattern like this:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">count</span><span class="p">;</span>
+<span class="kt">uint8_t</span><span class="o">*</span><span class="w"> </span><span class="n">src</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">data</span><span class="p">;</span>
+
+<span class="n">frame</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">reqFrame</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">);</span>
+<span class="n">frame</span><span class="o">-&gt;</span><span class="n">setPayload</span><span class="p">(</span><span class="mi">100</span><span class="p">);</span>
+
+<span class="n">it</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">begin</span><span class="p">();</span>
+
+<span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">it</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">end</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">   </span><span class="c1">// Bytes left in the current contiguous region.</span>
+<span class="w">   </span><span class="n">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">it</span><span class="p">.</span><span class="n">remBuffer</span><span class="p">();</span>
+
+<span class="w">   </span><span class="c1">// Direct copy into this region.</span>
+<span class="w">   </span><span class="n">std</span><span class="o">::</span><span class="n">memcpy</span><span class="p">(</span><span class="n">it</span><span class="p">.</span><span class="n">ptr</span><span class="p">(),</span><span class="w"> </span><span class="n">src</span><span class="p">,</span><span class="w"> </span><span class="n">count</span><span class="p">);</span>
+
+<span class="w">   </span><span class="n">src</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">count</span><span class="p">;</span>
+<span class="w">   </span><span class="n">it</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">count</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>This approach is more verbose than <code class="docutils literal notranslate"><span class="pre">std::copy</span></code> because you are now managing
+the segment boundaries yourself, but it avoids per-byte iterator work inside
+the copy loop. It is a useful optimization when the <code class="docutils literal notranslate"><span class="pre">Frame</span></code> layout is segmented
+and you still want efficient bulk transfer.</p>
+<p>For structured fields at known offsets, <code class="docutils literal notranslate"><span class="pre">toFrame()</span></code> is often the clearest
+option because it preserves the iterator semantics while handling the byte count
+and iterator advance for you.</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">data64</span><span class="p">;</span>
+<span class="kt">uint32_t</span><span class="w"> </span><span class="n">data32</span><span class="p">;</span>
+<span class="kt">uint8_t</span><span class="w">  </span><span class="n">data8</span><span class="p">;</span>
+
+<span class="n">frame</span><span class="o">-&gt;</span><span class="n">setPayload</span><span class="p">(</span><span class="mi">13</span><span class="p">);</span>
+<span class="n">it</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">begin</span><span class="p">();</span>
+
+<span class="c1">// Write 64 bits and advance 8 bytes.</span>
+<span class="n">ris</span><span class="o">::</span><span class="n">toFrame</span><span class="p">(</span><span class="n">it</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">data64</span><span class="p">);</span>
+
+<span class="c1">// Then 32 bits and advance 4 bytes.</span>
+<span class="n">ris</span><span class="o">::</span><span class="n">toFrame</span><span class="p">(</span><span class="n">it</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">data32</span><span class="p">);</span>
+
+<span class="c1">// Then the final byte.</span>
+<span class="n">ris</span><span class="o">::</span><span class="n">toFrame</span><span class="p">(</span><span class="n">it</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">data8</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>If you need high-performance element-level access, use
+<a class="reference internal" href="../api/cpp/interfaces/stream/frameAccessor.html#interfaces-stream-frame-accessor"><span class="std std-ref">Frame Accessor</span></a> after verifying that the target range
+lives in a single contiguous buffer. <code class="docutils literal notranslate"><span class="pre">ensureSingleBuffer(frame,</span> <span class="pre">true)</span></code> can
+flatten a <code class="docutils literal notranslate"><span class="pre">Frame</span></code> into one buffer when necessary, but that should be a deliberate
+decision because flattening may undo a segmentation strategy chosen by the
+upstream allocator.</p>
+<p>Taken together, these access patterns form a progression. Start with iterator
+based code, because it is robust and matches Rogue’s <code class="docutils literal notranslate"><span class="pre">Frame</span></code> model. Move to
+segment-by-segment contiguous copies only when measurements show the iterator
+path is too expensive. Use <code class="docutils literal notranslate"><span class="pre">FrameAccessor</span></code> only for the narrow cases where
+you truly need typed array-style access and can guarantee contiguous storage.</p>
+</section>
+<section id="what-to-explore-next">
+<h2>What To Explore Next<a class="headerlink" href="#what-to-explore-next" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Frame semantics and metadata behavior: <a class="reference internal" href="frame_model.html"><span class="doc">Frame Model</span></a></p></li>
+<li><p>Receive-side access patterns: <a class="reference internal" href="receiving.html"><span class="doc">Receiving Frames</span></a></p></li>
+<li><p>Built-in module insertion points: <a class="reference internal" href="built_in_modules.html"><span class="doc">Built-in Stream Modules</span></a></p></li>
+<li><p>Stream connection topologies: <a class="reference internal" href="connecting.html"><span class="doc">Connecting Streams</span></a></p></li>
+</ul>
+</section>
+<section id="related-topics">
+<h2>Related Topics<a class="headerlink" href="#related-topics" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Building custom C++ extensions: <a class="reference internal" href="../custom_module/index.html"><span class="doc">Creating Custom Modules</span></a></p></li>
+</ul>
+</section>
+<section id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Python:</p>
+<ul>
+<li><p><a class="reference internal" href="../api/python/rogue/interfaces/stream/master.html"><span class="doc">Master</span></a></p></li>
+<li><p><a class="reference internal" href="../api/python/rogue/interfaces/stream/frame.html"><span class="doc">Frame</span></a></p></li>
+</ul>
+</li>
+<li><p>C++:</p>
+<ul>
+<li><p><a class="reference internal" href="../api/cpp/interfaces/stream/master.html"><span class="doc">Master</span></a></p></li>
+<li><p><a class="reference internal" href="../api/cpp/interfaces/stream/helpers.html"><span class="doc">Frame Helpers</span></a></p></li>
+<li><p><a class="reference internal" href="../api/cpp/interfaces/stream/frameAccessor.html"><span class="doc">Frame Accessor</span></a></p></li>
+<li><p><a class="reference internal" href="../api/cpp/interfaces/stream/frame.html"><span class="doc">Frame</span></a></p></li>
+</ul>
+</li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="frame_model.html" class="btn btn-neutral float-left" title="Frame Model" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="receiving.html" class="btn btn-neutral float-right" title="Receiving Frames" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

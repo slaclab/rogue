@@ -1,0 +1,309 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Float4 &mdash; Rogue v6.9.0-146-g9016781d5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=8b50afe1" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=5f168154"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../_static/custom.js?v=7b5dfb0b"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Double" href="double.html" />
+    <link rel="prev" title="Float6" href="float6.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">Python API</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">pyrogue</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="node.html">Node</a></li>
+<li class="toctree-l4"><a class="reference internal" href="root.html">Root</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pollqueue.html">PollQueue</a></li>
+<li class="toctree-l4"><a class="reference internal" href="device.html">Device</a></li>
+<li class="toctree-l4"><a class="reference internal" href="localblock.html">LocalBlock</a></li>
+<li class="toctree-l4"><a class="reference internal" href="process.html">Process</a></li>
+<li class="toctree-l4"><a class="reference internal" href="runcontrol.html">RunControl</a></li>
+<li class="toctree-l4"><a class="reference internal" href="datareceiver.html">DataReceiver</a></li>
+<li class="toctree-l4"><a class="reference internal" href="datawriter.html">DataWriter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="basecommand.html">BaseCommand</a></li>
+<li class="toctree-l4"><a class="reference internal" href="remotecommand.html">RemoteCommand</a></li>
+<li class="toctree-l4"><a class="reference internal" href="basevariable.html">BaseVariable</a></li>
+<li class="toctree-l4"><a class="reference internal" href="remotevariable.html">RemoteVariable</a></li>
+<li class="toctree-l4"><a class="reference internal" href="localvariable.html">LocalVariable</a></li>
+<li class="toctree-l4"><a class="reference internal" href="linkvariable.html">LinkVariable</a></li>
+<li class="toctree-l4"><a class="reference internal" href="model.html">Model</a></li>
+<li class="toctree-l4"><a class="reference internal" href="uint.html">UInt</a></li>
+<li class="toctree-l4"><a class="reference internal" href="int.html">Int</a></li>
+<li class="toctree-l4"><a class="reference internal" href="bool.html">Bool</a></li>
+<li class="toctree-l4"><a class="reference internal" href="string.html">String</a></li>
+<li class="toctree-l4"><a class="reference internal" href="float.html">Float</a></li>
+<li class="toctree-l4"><a class="reference internal" href="float16.html">Float16</a></li>
+<li class="toctree-l4"><a class="reference internal" href="float8.html">Float8</a></li>
+<li class="toctree-l4"><a class="reference internal" href="bfloat16.html">BFloat16</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tensorfloat32.html">TensorFloat32</a></li>
+<li class="toctree-l4"><a class="reference internal" href="float6.html">Float6</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Float4</a></li>
+<li class="toctree-l4"><a class="reference internal" href="double.html">Double</a></li>
+<li class="toctree-l4"><a class="reference internal" href="fixed.html">Fixed</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ufixed.html">UFixed</a></li>
+<li class="toctree-l4"><a class="reference internal" href="wordcount.html">wordCount</a></li>
+<li class="toctree-l4"><a class="reference internal" href="bytecount.html">byteCount</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reversebits.html">reverseBits</a></li>
+<li class="toctree-l4"><a class="reference internal" href="twoscomplement.html">twosComplement</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pydm_runpydm.html">runPyDM</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pydm_widgets/index.html">pyrogue.pydm.widgets</a></li>
+<li class="toctree-l4"><a class="reference internal" href="interfaces/index.html">pyrogue.interfaces</a></li>
+<li class="toctree-l4"><a class="reference internal" href="protocols/index.html">pyrogue.protocols</a></li>
+<li class="toctree-l4"><a class="reference internal" href="utilities/index.html">pyrogue.utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../rogue/index.html">rogue</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../cpp/index.html">C++ API</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">API Reference</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Python API</a></li>
+          <li class="breadcrumb-item"><a href="index.html">pyrogue</a></li>
+      <li class="breadcrumb-item active">Float4</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/api/python/pyrogue/float4.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="float4">
+<span id="api-python-float4"></span><h1>Float4<a class="headerlink" href="#float4" title="Link to this heading"></a></h1>
+<p>For conceptual model usage and type mapping, see:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../../../pyrogue_tree/core/model.html"><span class="doc">Model</span></a></p></li>
+</ul>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyrogue.Float4">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pyrogue.</span></span><span class="sig-name descname"><span class="pre">Float4</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bitSize</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Float4"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Float4" title="Link to this definition"></a></dt>
+<dd><p>Model class for 4-bit E2M1 floating point numbers (NVIDIA Blackwell FP4).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bitSize</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Number of bits being represented. Must be 8 (stored in 1-byte word).</p></li>
+<li><p><strong>args</strong> (<em>Any</em>)</p></li>
+<li><p><strong>kwargs</strong> (<em>Any</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Any</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Format: 1 sign bit, 2 exponent bits, 1 mantissa bit (E2M1).
+Bias = 1. No infinity representation. No NaN representation.
+All 16 bit patterns are finite values or zero.
+Only 8 distinct magnitudes: 0, 0.5, 1.0, 1.5, 2.0, 3.0, 4.0, 6.0.
+Maximum representable value is 6.0.
+Stored in lower 4 bits of a uint8_t byte.
+Supported by NVIDIA Blackwell GPUs.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyrogue.Float4.pytype">
+<span class="sig-name descname"><span class="pre">pytype</span></span><a class="headerlink" href="#pyrogue.Float4.pytype" title="Link to this definition"></a></dt>
+<dd><p>alias of <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.Float4.toBytes">
+<span class="sig-name descname"><span class="pre">toBytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Float4.toBytes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Float4.toBytes" title="Link to this definition"></a></dt>
+<dd><p>Convert float to 1-byte E2M1 encoding (4 active bits in uint8).</p>
+<p>NaN and infinity inputs are clamped to max finite value (+/-6.0)
+since E2M1 has no NaN or infinity encodings.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytearray" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bytearray</span></code></a></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.Float4.fromBytes">
+<span class="sig-name descname"><span class="pre">fromBytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ba</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Float4.fromBytes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Float4.fromBytes" title="Link to this definition"></a></dt>
+<dd><p>Decode 1-byte E2M1 encoding to float.</p>
+<p>All 16 bit patterns decode to finite values or zero (no NaN/Inf).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ba</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.14)"><em>bytes</em></a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.Float4.fromString">
+<span class="sig-name descname"><span class="pre">fromString</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Float4.fromString"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Float4.fromString" title="Link to this definition"></a></dt>
+<dd><p>Parse a string into a float value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></span></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>string</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.Float4.minValue">
+<span class="sig-name descname"><span class="pre">minValue</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Float4.minValue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Float4.minValue" title="Link to this definition"></a></dt>
+<dd><p>Return the minimum representable value (-6.0).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.Float4.maxValue">
+<span class="sig-name descname"><span class="pre">maxValue</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Float4.maxValue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Float4.maxValue" title="Link to this definition"></a></dt>
+<dd><p>Return the maximum representable value (6.0).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyrogue.Float4BE">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pyrogue.</span></span><span class="sig-name descname"><span class="pre">Float4BE</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bitSize</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Float4BE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Float4BE" title="Link to this definition"></a></dt>
+<dd><p>Model class for 4-bit E2M1 floats stored as big endian.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>args</strong> (<em>Any</em>)</p></li>
+<li><p><strong>kwargs</strong> (<em>Any</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Any</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="float6.html" class="btn btn-neutral float-left" title="Float6" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="double.html" class="btn btn-neutral float-right" title="Double" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

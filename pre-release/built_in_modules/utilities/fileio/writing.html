@@ -1,0 +1,336 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Writing Frames To A File &mdash; Rogue v6.9.0-146-g9016781d5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=8b50afe1" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=5f168154"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../_static/custom.js?v=7b5dfb0b"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Reading Frames From A File" href="reading.html" />
+    <link rel="prev" title="Rogue File Data Format" href="format.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Built-in Modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../interfaces/index.html">Interfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../simulation/index.html">Simulation Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../protocols/index.html">Protocols</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../hardware/index.html">Hardware</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">Utilities</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">File I/O Utilities</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="format.html">Rogue File Data Format</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Writing Frames To A File</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reading.html">Reading Frames From A File</a></li>
+<li class="toctree-l4"><a class="reference internal" href="custom.html">Custom Writers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="python_reader.html">Python File Reader</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../prbs/index.html">PRBS Utilities</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../hls/index.html">HLS Utilities</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../compression/index.html">Compression Utilities</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">API Reference</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Built-in Modules</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Utilities</a></li>
+          <li class="breadcrumb-item"><a href="index.html">File I/O Utilities</a></li>
+      <li class="breadcrumb-item active">Writing Frames To A File</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/built_in_modules/utilities/fileio/writing.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="writing-frames-to-a-file">
+<span id="utilities-fileio-writing"></span><h1>Writing Frames To A File<a class="headerlink" href="#writing-frames-to-a-file" title="Link to this heading"></a></h1>
+<p>For file capture that should be controlled from a PyRogue tree, PyRogue
+provides <code class="docutils literal notranslate"><span class="pre">pyrogue.utilities.fileio.StreamWriter</span></code>. It wraps
+<code class="docutils literal notranslate"><span class="pre">rogue.utilities.fileio.StreamWriter</span></code> and exposes the usual file controls
+through <a class="reference internal" href="../../../api/python/pyrogue/datawriter.html#pyrogue.DataWriter" title="pyrogue.DataWriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataWriter</span></code></a>.</p>
+<p>The underlying <code class="docutils literal notranslate"><span class="pre">rogue.utilities.fileio.StreamWriter</span></code> is still the object that
+does the capture work. It receives Rogue <code class="docutils literal notranslate"><span class="pre">Frame</span></code> traffic on one or more input
+channels and writes those frames in the standard Rogue file format, preserving
+payload bytes plus frame metadata.</p>
+<p>For the on-disk format details (header words, channel/flags/error encoding,
+raw mode, and split-file behavior), see <a class="reference internal" href="format.html#utilities-fileio-format"><span class="std std-ref">Rogue File Data Format</span></a>.</p>
+<section id="when-to-use-each-form">
+<h2>When To Use Each Form<a class="headerlink" href="#when-to-use-each-form" title="Link to this heading"></a></h2>
+<p>Use the PyRogue wrapper when operators or client code should be able to select
+the output file, open and close runs, and watch file counters through the tree.
+That is the pattern used in larger acquisition roots, where the writer becomes
+part of the operator-facing control surface.</p>
+<p>Use the direct Rogue writer when a script already owns the stream graph and
+just needs a sink that writes files. That form is smaller and avoids the tree
+layer entirely.</p>
+</section>
+<section id="common-controls">
+<h2>Common Controls<a class="headerlink" href="#common-controls" title="Link to this heading"></a></h2>
+<p>At the wrapper level, most setups are shaped by a small set of controls:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">DataFile</span></code>
+Output file selected through the inherited <code class="docutils literal notranslate"><span class="pre">pyrogue.DataWriter</span></code> interface.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">BufferSize</span></code>
+Staging buffer size before writes are flushed to the OS.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">MaxFileSize</span></code>
+Non-zero enables split-file capture.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">configStream</span></code>
+Optional mapping of channel index to a stream source that emits YAML or
+status snapshots at file open and close.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">rawMode</span></code>
+When <code class="docutils literal notranslate"><span class="pre">True</span></code>, write payload bytes only instead of the normal Rogue framed
+record format.</p></li>
+</ul>
+<p>The direct writer has the matching lower-level methods:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">setBufferSize(bytes)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">setMaxSize(bytes)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">setDropErrors(bool)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">getChannel(index)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">open(path)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">close()</span></code></p></li>
+</ul>
+</section>
+<section id="channel-behavior">
+<h2>Channel Behavior<a class="headerlink" href="#channel-behavior" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">StreamWriter</span></code> supports multiple incoming stream channels. That detail is
+important because capture files often mix event data, metadata, debug streams,
+or multiple firmware virtual channels in one recording.</p>
+<p><code class="docutils literal notranslate"><span class="pre">getChannel(index)</span></code> returns the sink for one capture path, but channel <code class="docutils literal notranslate"><span class="pre">0</span></code>
+has a special meaning. Data written through <code class="docutils literal notranslate"><span class="pre">getChannel(0)</span></code> preserves the
+incoming frame’s own channel metadata. Data written through <code class="docutils literal notranslate"><span class="pre">getChannel(N)</span></code>
+with <code class="docutils literal notranslate"><span class="pre">N</span> <span class="pre">&gt;</span> <span class="pre">0</span></code> is forced to file channel <code class="docutils literal notranslate"><span class="pre">N</span></code> regardless of the frame’s
+original channel field. That pattern is commonly used when a tree routes
+distinct sources into fixed file channels.</p>
+</section>
+<section id="tree-managed-writer-form">
+<h2>Tree-Managed Writer Form<a class="headerlink" href="#tree-managed-writer-form" title="Link to this heading"></a></h2>
+<p>The wrapper inherits the standard file-control surface from
+<a class="reference internal" href="../../../api/python/pyrogue/datawriter.html#pyrogue.DataWriter" title="pyrogue.DataWriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataWriter</span></code></a>, then adds the file I/O-specific behavior from
+the underlying Rogue writer.</p>
+<p>In practice, the wrapper is usually configured around <code class="docutils literal notranslate"><span class="pre">configStream</span></code>,
+<code class="docutils literal notranslate"><span class="pre">rawMode</span></code>, and the inherited <code class="docutils literal notranslate"><span class="pre">DataWriter</span></code> controls such as <code class="docutils literal notranslate"><span class="pre">DataFile</span></code>,
+<code class="docutils literal notranslate"><span class="pre">BufferSize</span></code>, and <code class="docutils literal notranslate"><span class="pre">MaxFileSize</span></code>.</p>
+<p>In many systems, <code class="docutils literal notranslate"><span class="pre">configStream</span></code> is mapped to a reserved channel such as
+<code class="docutils literal notranslate"><span class="pre">255</span></code> so metadata stays separate from event/data channels.</p>
+<p>Opening the wrapper does two things: it opens the file, then emits any
+configured YAML or status streams into their assigned channels. Closing does
+the same status dump again before the underlying writer shuts down. That is why
+the wrapper is a better fit when the file should carry both event traffic and
+the configuration context that surrounded the run.</p>
+</section>
+<section id="logging">
+<h2>Logging<a class="headerlink" href="#logging" title="Link to this heading"></a></h2>
+<p>The underlying C++ <code class="docutils literal notranslate"><span class="pre">StreamWriter</span></code> uses Rogue C++ logging.</p>
+<ul class="simple">
+<li><p>Logger name: <code class="docutils literal notranslate"><span class="pre">pyrogue.fileio.StreamWriter</span></code></p></li>
+<li><p>Unified Logging API:
+<code class="docutils literal notranslate"><span class="pre">pyrogue.setLogLevel('pyrogue.fileio.StreamWriter',</span> <span class="pre">'DEBUG')</span></code></p></li>
+<li><p>Legacy Logging API:
+<code class="docutils literal notranslate"><span class="pre">rogue.Logging.setFilter('pyrogue.fileio.StreamWriter',</span> <span class="pre">rogue.Logging.Debug)</span></code></p></li>
+<li><p>Typical messages: file open/close flow, split-file rollover, and write-path
+operational diagnostics</p></li>
+</ul>
+<p>The PyRogue wrapper itself is primarily a control surface around that C++
+writer, so the most useful logging usually comes from the underlying
+<code class="docutils literal notranslate"><span class="pre">StreamWriter</span></code> logger.</p>
+</section>
+<section id="python-direct-utility-example">
+<h2>Python Direct-Utility Example<a class="headerlink" href="#python-direct-utility-example" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">rogue.utilities.fileio</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ruf</span>
+
+<span class="c1"># Assume streamA and streamB are existing stream masters.</span>
+<span class="n">fwrite</span> <span class="o">=</span> <span class="n">ruf</span><span class="o">.</span><span class="n">StreamWriter</span><span class="p">()</span>
+
+<span class="c1"># Buffer size controls staged write size before flushing to the OS.</span>
+<span class="n">fwrite</span><span class="o">.</span><span class="n">setBufferSize</span><span class="p">(</span><span class="mi">10000</span><span class="p">)</span>
+
+<span class="c1"># Split output file at 100 MB boundaries: myFile.dat.1, .2, ...</span>
+<span class="n">fwrite</span><span class="o">.</span><span class="n">setMaxSize</span><span class="p">(</span><span class="mi">100000000</span><span class="p">)</span>
+
+<span class="c1"># Drop incoming frames with non-zero frame error.</span>
+<span class="n">fwrite</span><span class="o">.</span><span class="n">setDropErrors</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Map each source to a writer channel.</span>
+<span class="n">streamA</span> <span class="o">&gt;&gt;</span> <span class="n">fwrite</span><span class="o">.</span><span class="n">getChannel</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">streamB</span> <span class="o">&gt;&gt;</span> <span class="n">fwrite</span><span class="o">.</span><span class="n">getChannel</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">fwrite</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;myFile.dat&quot;</span><span class="p">)</span>
+<span class="c1"># ... stream traffic is captured while file is open ...</span>
+<span class="n">fwrite</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="python-tree-managed-example">
+<h2>Python Tree-Managed Example<a class="headerlink" href="#python-tree-managed-example" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue.interfaces.stream</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pis</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue.utilities.fileio</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">puf</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue.utilities.prbs</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pup</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyRoot</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="c1"># Tree-managed writer with a reserved metadata channel.</span>
+        <span class="n">status_stream</span> <span class="o">=</span> <span class="n">pis</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">root</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">puf</span><span class="o">.</span><span class="n">StreamWriter</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Writer&#39;</span><span class="p">,</span> <span class="n">configStream</span><span class="o">=</span><span class="p">{</span><span class="mi">255</span><span class="p">:</span> <span class="n">status_stream</span><span class="p">}))</span>
+
+        <span class="c1"># Real stream source feeding capture channel 0.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pup</span><span class="o">.</span><span class="n">PrbsTx</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;PrbsTx&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">PrbsTx</span> <span class="o">&gt;&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">Writer</span><span class="o">.</span><span class="n">getChannel</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="n">root</span> <span class="o">=</span> <span class="n">MyRoot</span><span class="p">()</span>
+
+<span class="c1"># File control can be performed through Device variables/commands.</span>
+<span class="n">root</span><span class="o">.</span><span class="n">Writer</span><span class="o">.</span><span class="n">DataFile</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;myFile.dat&quot;</span><span class="p">)</span>
+<span class="n">root</span><span class="o">.</span><span class="n">Writer</span><span class="o">.</span><span class="n">Open</span><span class="p">()</span>
+<span class="c1"># ...</span>
+<span class="n">root</span><span class="o">.</span><span class="n">Writer</span><span class="o">.</span><span class="n">Close</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="c-streamwriter-example">
+<h2>C++ StreamWriter Example<a class="headerlink" href="#c-streamwriter-example" title="Link to this heading"></a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;rogue/utilities/fileio/StreamWriter.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;rogue/utilities/fileio/StreamWriterChannel.h&gt;</span>
+
+<span class="k">namespace</span><span class="w"> </span><span class="nn">ruf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nn">rogue</span><span class="o">::</span><span class="nn">utilities</span><span class="o">::</span><span class="nn">fileio</span><span class="p">;</span>
+
+<span class="c1">// Assume streamA and streamB are existing stream masters.</span>
+<span class="k">auto</span><span class="w"> </span><span class="n">fwrite</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ruf</span><span class="o">::</span><span class="n">StreamWriter</span><span class="o">::</span><span class="n">create</span><span class="p">();</span>
+
+<span class="n">fwrite</span><span class="o">-&gt;</span><span class="n">setBufferSize</span><span class="p">(</span><span class="mi">10000</span><span class="p">);</span>
+<span class="n">fwrite</span><span class="o">-&gt;</span><span class="n">setMaxSize</span><span class="p">(</span><span class="mi">100000000</span><span class="p">);</span>
+<span class="n">fwrite</span><span class="o">-&gt;</span><span class="n">setDropErrors</span><span class="p">(</span><span class="nb">true</span><span class="p">);</span>
+
+<span class="n">streamA</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">fwrite</span><span class="o">-&gt;</span><span class="n">getChannel</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="n">streamB</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">fwrite</span><span class="o">-&gt;</span><span class="n">getChannel</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+
+<span class="n">fwrite</span><span class="o">-&gt;</span><span class="n">open</span><span class="p">(</span><span class="s">&quot;myFile.dat&quot;</span><span class="p">);</span>
+<span class="c1">// ... stream traffic is captured while file is open ...</span>
+<span class="n">fwrite</span><span class="o">-&gt;</span><span class="n">close</span><span class="p">();</span>
+</pre></div>
+</div>
+</section>
+<section id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>C++: <a class="reference internal" href="../../../api/cpp/utilities/fileio/writer.html"><span class="doc">StreamWriter</span></a></p></li>
+<li><p>Python: <a class="reference internal" href="../../../api/python/pyrogue/utilities/fileio/streamwriter.html"><span class="doc">StreamWriter</span></a></p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="format.html" class="btn btn-neutral float-left" title="Rogue File Data Format" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="reading.html" class="btn btn-neutral float-right" title="Reading Frames From A File" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

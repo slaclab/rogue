@@ -1,0 +1,257 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Frame Accessor &mdash; Rogue v6.9.0-146-g9016781d5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css?v=8b50afe1" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=5f168154"></script>
+      <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../../_static/custom.js?v=7b5dfb0b"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link rel="next" title="Frame Helpers" href="helpers.html" />
+    <link rel="prev" title="Frame Iterator" href="frameIterator.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../../python/index.html">Python API</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../../index.html">C++ API</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../../rogue_index.html">rogue</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../../interfaces_index.html">rogue::interfaces</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html">rogue::interfaces::api</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../memory/index.html">rogue::interfaces::memory</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="index.html">rogue::interfaces::stream</a><ul class="current">
+<li class="toctree-l5"><a class="reference internal" href="frame.html">Frame</a></li>
+<li class="toctree-l5"><a class="reference internal" href="frameLock.html">Frame Lock</a></li>
+<li class="toctree-l5"><a class="reference internal" href="frameIterator.html">Frame Iterator</a></li>
+<li class="toctree-l5 current"><a class="current reference internal" href="#">Frame Accessor</a></li>
+<li class="toctree-l5"><a class="reference internal" href="helpers.html">Frame Helpers</a></li>
+<li class="toctree-l5"><a class="reference internal" href="master.html">Master</a></li>
+<li class="toctree-l5"><a class="reference internal" href="slave.html">Slave</a></li>
+<li class="toctree-l5"><a class="reference internal" href="fifo.html">Fifo</a></li>
+<li class="toctree-l5"><a class="reference internal" href="tcpCore.html">TcpCore</a></li>
+<li class="toctree-l5"><a class="reference internal" href="tcpClient.html">TcpClient</a></li>
+<li class="toctree-l5"><a class="reference internal" href="tcpServer.html">TcpServer</a></li>
+<li class="toctree-l5"><a class="reference internal" href="filter.html">Filter</a></li>
+<li class="toctree-l5"><a class="reference internal" href="rateDrop.html">RateDrop</a></li>
+<li class="toctree-l5"><a class="reference internal" href="buffer.html">Buffer</a></li>
+<li class="toctree-l5"><a class="reference internal" href="pool.html">Pool</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../zmqClient.html">rogue::interfaces::ZmqClient</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../protocols_index.html">rogue::protocols</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../hardware_index.html">rogue::hardware</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../utilities_index.html">rogue::utilities</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">API Reference</a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">C++ API</a></li>
+          <li class="breadcrumb-item"><a href="../../interfaces_index.html">rogue::interfaces</a></li>
+          <li class="breadcrumb-item"><a href="index.html">rogue::interfaces::stream</a></li>
+      <li class="breadcrumb-item active">Frame Accessor</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../_sources/api/cpp/interfaces/stream/frameAccessor.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="frame-accessor">
+<span id="interfaces-stream-frame-accessor"></span><h1>Frame Accessor<a class="headerlink" href="#frame-accessor" title="Link to this heading"></a></h1>
+<p>For conceptual usage, see:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../../../../stream_interface/index.html"><span class="doc">Stream Interface</span></a></p></li>
+</ul>
+<p>The class description is shown below:</p>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4I0EN5rogue10interfaces6stream13FrameAccessorE">
+<span id="_CPPv3I0EN5rogue10interfaces6stream13FrameAccessorE"></span><span id="_CPPv2I0EN5rogue10interfaces6stream13FrameAccessorE"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">T</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameAccessor"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">FrameAccessor</span></span></span><a class="headerlink" href="#_CPPv4I0EN5rogue10interfaces6stream13FrameAccessorE" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/FrameAccessor_8h_source.html#l00043"><span class="pre">[header]</span></a></dt>
+<dd><p>Typed accessor over a contiguous frame-data region. </p>
+<p><code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1FrameAccessor"><span class="std std-ref"><span class="pre">FrameAccessor</span></span></a><span class="pre">&lt;T&gt;</span></code> provides typed element access into frame payload data when the requested range is fully contained in a single underlying buffer span. This avoids per-byte iterator overhead in tight loops while preserving a checked construction step. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream13FrameAccessor13FrameAccessorERN5rogue10interfaces6stream13FrameIteratorE8uint32_t">
+<span id="_CPPv3N5rogue10interfaces6stream13FrameAccessor13FrameAccessorERN5rogue10interfaces6stream13FrameIteratorE8uint32_t"></span><span id="_CPPv2N5rogue10interfaces6stream13FrameAccessor13FrameAccessorERN5rogue10interfaces6stream13FrameIteratorE8uint32_t"></span><span id="rogue::interfaces::stream::FrameAccessor::FrameAccessor__rogue::interfaces::stream::FrameIteratorR.uint32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameAccessor_1a5ded8ca069c83e412c62b7e22a437ebe"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">FrameAccessor</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="frameIterator.html#_CPPv4N5rogue10interfaces6stream13FrameIteratorE" title="rogue::interfaces::stream::FrameIterator"><span class="n"><span class="pre">FrameIterator</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">iter</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">size</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream13FrameAccessor13FrameAccessorERN5rogue10interfaces6stream13FrameIteratorE8uint32_t" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/FrameAccessor_8h_source.html#l00059"><span class="pre">[header]</span></a></dt>
+<dd><p>Creates a typed accessor at the iterator location. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>iter</strong> – <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> iterator positioned at the first element. </p></li>
+<li><p><strong>size</strong> – Number of elements in the accessor. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Throws<span class="colon">:</span></dt>
+<dd class="field-even"><p><span><span class="cpp-expr sig sig-inline cpp"><span class="n">rogue</span><span class="p">::</span><a class="reference internal" href="../../generalerror.html#_CPPv4N5rogue12GeneralErrorE" title="rogue::GeneralError"><span class="n">GeneralError</span></a></span></span> – If the range spans multiple buffers. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream13FrameAccessorixEK8uint32_t">
+<span id="_CPPv3N5rogue10interfaces6stream13FrameAccessorixEK8uint32_t"></span><span id="_CPPv2N5rogue10interfaces6stream13FrameAccessorixEK8uint32_t"></span><span id="rogue::interfaces::stream::FrameAccessor::subscript-operator__uint32_tC"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameAccessor_1a99c7d33bb014283c45a29ed1ecb60ede"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0EN5rogue10interfaces6stream13FrameAccessorE" title="rogue::interfaces::stream::FrameAccessor::T"><span class="n"><span class="pre">T</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="sig-name descname"><span class="k"><span class="pre">operator</span></span><span class="o"><span class="pre">[]</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">offset</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream13FrameAccessorixEK8uint32_t" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/FrameAccessor_8h_source.html#l00077"><span class="pre">[header]</span></a></dt>
+<dd><p>Dereference by index. </p>
+<p>Returns element reference at <code class="docutils literal notranslate"><span class="pre">offset</span></code> without bounds checking.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>offset</strong> – Element index. </p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Element reference. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream13FrameAccessor2atEK8uint32_t">
+<span id="_CPPv3N5rogue10interfaces6stream13FrameAccessor2atEK8uint32_t"></span><span id="_CPPv2N5rogue10interfaces6stream13FrameAccessor2atEK8uint32_t"></span><span id="rogue::interfaces::stream::FrameAccessor::at__uint32_tC"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameAccessor_1abffbc982fc606541c1c5b6d5ea835caa"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0EN5rogue10interfaces6stream13FrameAccessorE" title="rogue::interfaces::stream::FrameAccessor::T"><span class="n"><span class="pre">T</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="sig-name descname"><span class="n"><span class="pre">at</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">offset</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream13FrameAccessor2atEK8uint32_t" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/FrameAccessor_8h_source.html#l00088"><span class="pre">[header]</span></a></dt>
+<dd><p>Returns element reference at <code class="docutils literal notranslate"><span class="pre">offset</span></code> with bounds checking. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>offset</strong> – Element index. </p>
+</dd>
+<dt class="field-even">Throws<span class="colon">:</span></dt>
+<dd class="field-even"><p><span><span class="cpp-expr sig sig-inline cpp"><span class="n">rogue</span><span class="p">::</span><a class="reference internal" href="../../generalerror.html#_CPPv4N5rogue12GeneralErrorE" title="rogue::GeneralError"><span class="n">GeneralError</span></a></span></span> – If <code class="docutils literal notranslate"><span class="pre">offset</span> <span class="pre">&gt;=</span> <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1FrameAccessor_1a01f45f2caade8b8d0626f7bd12f75eb0"><span class="std std-ref"><span class="pre">size()</span></span></a></code>. </p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Element reference. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream13FrameAccessor4sizeEv">
+<span id="_CPPv3N5rogue10interfaces6stream13FrameAccessor4sizeEv"></span><span id="_CPPv2N5rogue10interfaces6stream13FrameAccessor4sizeEv"></span><span id="rogue::interfaces::stream::FrameAccessor::size"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameAccessor_1a01f45f2caade8b8d0626f7bd12f75eb0"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">size</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream13FrameAccessor4sizeEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/FrameAccessor_8h_source.html#l00099"><span class="pre">[header]</span></a></dt>
+<dd><p>Returns number of elements in this accessor. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream13FrameAccessor5beginEv">
+<span id="_CPPv3N5rogue10interfaces6stream13FrameAccessor5beginEv"></span><span id="_CPPv2N5rogue10interfaces6stream13FrameAccessor5beginEv"></span><span id="rogue::interfaces::stream::FrameAccessor::begin"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameAccessor_1a532b767e25a388875708836841ebdcdc"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0EN5rogue10interfaces6stream13FrameAccessorE" title="rogue::interfaces::stream::FrameAccessor::T"><span class="n"><span class="pre">T</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">begin</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream13FrameAccessor5beginEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/FrameAccessor_8h_source.html#l00104"><span class="pre">[header]</span></a></dt>
+<dd><p>Returns pointer to first element. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream13FrameAccessor3endEv">
+<span id="_CPPv3N5rogue10interfaces6stream13FrameAccessor3endEv"></span><span id="_CPPv2N5rogue10interfaces6stream13FrameAccessor3endEv"></span><span id="rogue::interfaces::stream::FrameAccessor::end"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameAccessor_1ad17901f217c18558924c3027fb520711"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0EN5rogue10interfaces6stream13FrameAccessorE" title="rogue::interfaces::stream::FrameAccessor::T"><span class="n"><span class="pre">T</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">end</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream13FrameAccessor3endEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/FrameAccessor_8h_source.html#l00109"><span class="pre">[header]</span></a></dt>
+<dd><p>Returns pointer one-past-last element. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="frameIterator.html" class="btn btn-neutral float-left" title="Frame Iterator" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="helpers.html" class="btn btn-neutral float-right" title="Frame Helpers" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,235 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Welcome to Rogue’s documentation! &mdash; Rogue v6.9.0-146-g9016781d5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=8b50afe1" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5f168154"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="_static/copybutton.js?v=f281be69"></script>
+      <script src="_static/custom.js?v=7b5dfb0b"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Installing &amp; Compiling Rogue" href="installing/index.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="#" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/index.html">API Reference</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Welcome to Rogue’s documentation!</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="welcome-to-rogue-s-documentation">
+<span id="introduction"></span><span id="root-index"></span><h1>Welcome to Rogue’s documentation!<a class="headerlink" href="#welcome-to-rogue-s-documentation" title="Link to this heading"></a></h1>
+<p>Rogue is a mixed C++/Python framework for building hardware control and data
+acquisition applications. It provides reusable interfaces for moving streaming
+data, accessing register maps, organizing systems into a hierarchical device
+tree, and exposing that tree to tools such as GUIs, scripting, and higher-level
+DAQ software.</p>
+<p>In practice, Rogue is most useful when you need to combine:</p>
+<ul class="simple">
+<li><p>High-throughput data paths that run in C++ threads</p></li>
+<li><p>Structured hardware control and orchestration in Python</p></li>
+<li><p>A clean abstraction boundary between hardware transports and application logic</p></li>
+</ul>
+<p>Whether you are bringing up a single board or coordinating a distributed
+multi-server system, Rogue is designed to let you start quickly and scale
+without rewriting core architecture.</p>
+<section id="goals-of-rogue">
+<h2>Goals of Rogue<a class="headerlink" href="#goals-of-rogue" title="Link to this heading"></a></h2>
+<p>The primary goal of Rogue is to accelerate data acquisition (DAQ) system
+development while keeping performance and integration requirements manageable.</p>
+<ul class="simple">
+<li><p>Speed up system bring-up with reusable interfaces and building blocks.</p></li>
+<li><p>Support heterogeneous hardware and software connections through consistent
+transport and control abstractions.</p></li>
+<li><p>Provide easy-to-use abstractions for common access patterns such as register
+access, streaming data flow, and device orchestration.</p></li>
+<li><p>Preserve fine-grained operational control when detailed behavior tuning is
+required.</p></li>
+<li><p>Keep control logic decoupled from transport details so systems remain
+maintainable as requirements evolve.</p></li>
+<li><p>Scale from single-board setups to multi-node, multi-server deployments.</p></li>
+<li><p>Integrate with higher-level control ecosystems, including:</p>
+<ul>
+<li><p>EPICS, CODA, Ignition (MySQL), EuDaq</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="structure-of-rogue">
+<h2>Structure of Rogue<a class="headerlink" href="#structure-of-rogue" title="Link to this heading"></a></h2>
+<p>Rogue uses a layered architecture that combines low-level performance with
+high-level application development.</p>
+<section id="mixed-c-python-codebase">
+<h3>Mixed C++/Python Codebase<a class="headerlink" href="#mixed-c-python-codebase" title="Link to this heading"></a></h3>
+<p>Rogue combines Python ergonomics with C++ performance. User-facing APIs are
+exposed in Python, and most applications can be developed entirely in Python.
+For performance-critical paths, equivalent C++ APIs are available when native
+execution is required.</p>
+<ul class="simple">
+<li><p>C++ base classes expose core methods into Python.</p></li>
+<li><p>C++ threads handle bulk transport and communication mechanisms.</p></li>
+<li><p>Python enables rapid iteration, orchestration, and system composition.</p></li>
+<li><p>Performance-critical components can be implemented or migrated to C++.</p></li>
+</ul>
+</section>
+<section id="high-level-python-interfaces">
+<h3>High-Level Python Interfaces<a class="headerlink" href="#high-level-python-interfaces" title="Link to this heading"></a></h3>
+<p>At the application layer, Rogue uses a tree model that keeps system structure
+explicit and manageable.</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="pyrogue_tree/index.html#pyrogue-tree"><span class="std std-ref">Tree-based</span></a> structure for hierarchical system
+organization.</p></li>
+<li><p>Devices can contain Variables, Commands, and other Devices.</p></li>
+<li><p>These objects derive from the <a class="reference internal" href="pyrogue_tree/core/index.html#pyrogue-tree-node"><span class="std std-ref">Node</span></a> base class.</p></li>
+<li><p><a class="reference internal" href="pyrogue_tree/core/variable.html#pyrogue-tree-node-variable"><span class="std std-ref">Variables</span></a> describe register data
+(addressing, type, access behavior, and display semantics).</p></li>
+<li><p><a class="reference internal" href="pyrogue_tree/core/command.html#pyrogue-tree-node-command"><span class="std std-ref">Commands</span></a> define operational procedures
+and control actions.</p></li>
+</ul>
+</section>
+<section id="low-level-c-interfaces">
+<h3>Low-Level C++ Interfaces<a class="headerlink" href="#low-level-c-interfaces" title="Link to this heading"></a></h3>
+<p>Below the Python layer, core interfaces provide deterministic access to data
+movement and register transactions.</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="stream_interface/index.html#interfaces-stream"><span class="std std-ref">Stream Interface</span></a> for bulk data movement and
+asynchronous messaging.</p></li>
+<li><p><a class="reference internal" href="memory_interface/index.html#interfaces-memory"><span class="std std-ref">Memory Interface</span></a> for register and memory-mapped
+access.</p></li>
+</ul>
+</section>
+<section id="additional-modules-and-ecosystem-components">
+<h3>Additional Modules and Ecosystem Components<a class="headerlink" href="#additional-modules-and-ecosystem-components" title="Link to this heading"></a></h3>
+<p>Rogue also includes ecosystem modules that round out integration, operations,
+and user-facing workflows.</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="built_in_modules/index.html"><span class="doc">Built-in Modules</span></a> groups reusable integration modules,
+including:
+<a class="reference internal" href="built_in_modules/utilities/index.html#utilities"><span class="std std-ref">Utilities</span></a> for file I/O, PRBS tools, compression, and
+other support functions,
+<a class="reference internal" href="built_in_modules/protocols/index.html#protocols"><span class="std std-ref">Protocols</span></a> for transport/control integrations such as UDP,
+RSSI, SRP, and packetizer,
+and <a class="reference internal" href="built_in_modules/hardware/index.html#hardware"><span class="std std-ref">Hardware</span></a> interfaces for AXI and raw memory-mapped
+access paths.</p></li>
+<li><p><a class="reference internal" href="pydm/index.html#pydm"><span class="std std-ref">PyDM GUI support</span></a> for Rogue channel integration and custom
+widgets used to monitor and control device trees.</p></li>
+</ul>
+<p>To continue, explore the sections in the sidebar.</p>
+<div class="toctree-wrapper compound">
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="installing/index.html" class="btn btn-neutral float-right" title="Installing &amp; Compiling Rogue" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

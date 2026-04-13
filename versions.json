@@ -1,0 +1,11 @@
+{
+  "default": "pre-release",
+  "versions": [
+    {
+      "slug": "pre-release",
+      "title": "Pre-release",
+      "kind": "branch",
+      "url": "/rogue/pre-release/"
+    }
+  ]
+}

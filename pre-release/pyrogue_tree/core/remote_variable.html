@@ -1,0 +1,495 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RemoteVariable &mdash; Rogue v6.9.0-146-g9016781d5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=8b50afe1" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=5f168154"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/custom.js?v=7b5dfb0b"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="LinkVariable" href="link_variable.html" />
+    <link rel="prev" title="LocalVariable" href="local_variable.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">PyRogue Tree</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Components And Concepts</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="root.html">Root</a></li>
+<li class="toctree-l3"><a class="reference internal" href="device.html">Device</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="variable.html">Variable</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="local_variable.html">LocalVariable</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">RemoteVariable</a></li>
+<li class="toctree-l4"><a class="reference internal" href="link_variable.html">LinkVariable</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="command.html">Command</a></li>
+<li class="toctree-l3"><a class="reference internal" href="block.html">Blocks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="block_operations.html">Device Block Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="model.html">Model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fixed_point_models.html">Fixed-Point Models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="float_types_summary.html">Floating Point Types Summary</a></li>
+<li class="toctree-l3"><a class="reference internal" href="poll_queue.html">PollQueue</a></li>
+<li class="toctree-l3"><a class="reference internal" href="yaml_configuration.html">YAML Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="memory_variable_stream.html">Variable Update Stream</a></li>
+<li class="toctree-l3"><a class="reference internal" href="groups.html">Groups</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../builtin_devices/index.html">Built-in Devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../client_interfaces/index.html">Client Interfaces</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">API Reference</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">PyRogue Tree</a></li>
+          <li class="breadcrumb-item"><a href="index.html">PyRogue Tree Components And Concepts</a></li>
+          <li class="breadcrumb-item"><a href="variable.html">Variable</a></li>
+      <li class="breadcrumb-item active">RemoteVariable</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/pyrogue_tree/core/remote_variable.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="remotevariable">
+<span id="pyrogue-tree-node-variable-remote-variable"></span><h1>RemoteVariable<a class="headerlink" href="#remotevariable" title="Link to this heading"></a></h1>
+<p><a class="reference internal" href="../../api/python/pyrogue/remotevariable.html#pyrogue.RemoteVariable" title="pyrogue.RemoteVariable"><code class="xref py py-class docutils literal notranslate"><span class="pre">RemoteVariable</span></code></a> maps a <code class="docutils literal notranslate"><span class="pre">Variable</span></code> onto
+hardware-accessible memory. In most PyRogue applications, this means a
+register or bit field in an FPGA or in a device reachable through the Rogue
+memory path. It is the standard choice for register-style control and
+monitoring.</p>
+<section id="when-to-use-remotevariable">
+<h2>When To Use RemoteVariable<a class="headerlink" href="#when-to-use-remotevariable" title="Link to this heading"></a></h2>
+<p>Use <code class="docutils literal notranslate"><span class="pre">RemoteVariable</span></code> when the tree value should correspond to a specific
+memory-mapped hardware location.</p>
+<p>That usually means:</p>
+<ul class="simple">
+<li><p>Configuration registers</p></li>
+<li><p>Status registers</p></li>
+<li><p>Counters, flags, masks, and control fields</p></li>
+<li><p>Wide logical values assembled from more than one register location</p></li>
+</ul>
+<p>Unlike <code class="docutils literal notranslate"><span class="pre">LocalVariable</span></code>, a <code class="docutils literal notranslate"><span class="pre">RemoteVariable</span></code> participates in the hardware
+transaction path. Reads and writes flow through the parent <code class="docutils literal notranslate"><span class="pre">Device</span></code>, the
+<code class="docutils literal notranslate"><span class="pre">Block</span></code> structure built during attachment, and the underlying memory
+interface.</p>
+</section>
+<section id="what-you-usually-set">
+<h2>What You Usually Set<a class="headerlink" href="#what-you-usually-set" title="Link to this heading"></a></h2>
+<p>Most <code class="docutils literal notranslate"><span class="pre">RemoteVariable</span></code> definitions combine the shared Variable parameters from
+<a class="reference internal" href="variable.html"><span class="doc">Variable</span></a> with a small set of hardware-mapping
+parameters:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">offset</span></code> for the memory location.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">bitSize</span></code> and <code class="docutils literal notranslate"><span class="pre">bitOffset</span></code> for the field layout.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">base</span></code> for the typed interpretation of the data.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">verify</span></code> when write-back verification policy matters.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">overlapEn</span></code> when multiple Variables share one register word.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">numValues</span></code>, <code class="docutils literal notranslate"><span class="pre">valueBits</span></code>, and <code class="docutils literal notranslate"><span class="pre">valueStride</span></code> for arrays or tables.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">bulkOpEn</span></code> when large Variables need different transaction behavior.</p></li>
+</ul>
+<p>The first three parameters define where the value lives and how its bits should
+be interpreted. The remaining options mainly control transaction policy and
+layout edge cases, such as write verification, shared register words, packed
+arrays, and bulk-operation participation.</p>
+</section>
+<section id="memory-mapping-parameters">
+<h2>Memory Mapping Parameters<a class="headerlink" href="#memory-mapping-parameters" title="Link to this heading"></a></h2>
+<p>A <code class="docutils literal notranslate"><span class="pre">RemoteVariable</span></code> is defined by memory-mapping parameters such as:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">offset</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">bitSize</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">bitOffset</span></code></p></li>
+<li><p>Optional <code class="docutils literal notranslate"><span class="pre">base</span></code>/type Model and packing parameters</p></li>
+</ul>
+<p>These define where the value exists in the hardware address space and how its
+bits should be interpreted. The <code class="docutils literal notranslate"><span class="pre">base</span></code> Model tells PyRogue whether the value
+should behave like an unsigned integer, signed integer, boolean, floating
+point quantity, byte array, and so on.</p>
+<p>At the tree level, this means a <code class="docutils literal notranslate"><span class="pre">RemoteVariable</span></code> gives users a typed,
+formatted value-oriented interface while PyRogue handles the lower-level
+details of byte packing, block grouping, and memory transactions underneath.</p>
+<p><code class="docutils literal notranslate"><span class="pre">offset</span></code>, <code class="docutils literal notranslate"><span class="pre">bitSize</span></code>, and <code class="docutils literal notranslate"><span class="pre">bitOffset</span></code> can each be either a single value or
+lists. List form is used when one logical Variable is split across multiple
+register locations.</p>
+<p>If the value uses a fixed-point interpretation such as <code class="docutils literal notranslate"><span class="pre">base=pr.Fixed(...)</span></code>
+or <code class="docutils literal notranslate"><span class="pre">base=pr.UFixed(...)</span></code>, see <a class="reference internal" href="fixed_point_models.html"><span class="doc">Fixed-Point Models</span></a>
+for the scaling and display model behind those types.</p>
+</section>
+<section id="how-remotevariable-fits-the-tree">
+<h2>How RemoteVariable Fits The Tree<a class="headerlink" href="#how-remotevariable-fits-the-tree" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">RemoteVariable</span></code> is where the <code class="docutils literal notranslate"><span class="pre">Variable</span></code> and <code class="docutils literal notranslate"><span class="pre">Device</span></code> narratives meet:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Variable</span></code> provides the user-facing typed value interface</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Device</span></code> provides the write/verify/read/check transaction model</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Block</span></code> groups one or more compatible RemoteVariables into efficient
+transaction units</p></li>
+</ul>
+<p>So when a user calls <code class="docutils literal notranslate"><span class="pre">get(read=True)</span></code> or <code class="docutils literal notranslate"><span class="pre">set(write=True)</span></code>, the actual
+hardware activity still runs through the parent <code class="docutils literal notranslate"><span class="pre">Device</span></code> and its Block
+operations.</p>
+</section>
+<section id="example-patterns">
+<h2>Example Patterns<a class="headerlink" href="#example-patterns" title="Link to this heading"></a></h2>
+<p>Most <code class="docutils literal notranslate"><span class="pre">RemoteVariable</span></code> definitions in real PyRogue device trees fall into a
+small set of patterns:</p>
+<ul class="simple">
+<li><p>A single control or status field in one register word</p></li>
+<li><p>An enumerated field where raw bit values map to named hardware modes</p></li>
+<li><p>A logical value assembled from multiple register locations</p></li>
+<li><p>A packed array exposed through <code class="docutils literal notranslate"><span class="pre">numValues</span></code>, <code class="docutils literal notranslate"><span class="pre">valueBits</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">valueStride</span></code></p></li>
+<li><p>Multiple Variables intentionally sharing one register word through
+<code class="docutils literal notranslate"><span class="pre">overlapEn=True</span></code></p></li>
+</ul>
+<p>The following examples mirror those patterns.</p>
+<section id="single-register-fields">
+<h3>Single Register Fields<a class="headerlink" href="#single-register-fields" title="Link to this heading"></a></h3>
+<p>This is the most common case: a normal register field with a fixed offset,
+bit position, and access mode.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyDevice</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;ScratchPad&#39;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Register used to test reads and writes&#39;</span><span class="p">,</span>
+            <span class="n">offset</span><span class="o">=</span><span class="mh">0x00</span><span class="p">,</span>
+            <span class="n">bitSize</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span>
+            <span class="n">bitOffset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span>
+            <span class="n">base</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
+            <span class="n">disp</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">{:#08x}</span><span class="s1">&#39;</span><span class="p">,</span>
+        <span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;RxReady&#39;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Polled status bit&#39;</span><span class="p">,</span>
+            <span class="n">offset</span><span class="o">=</span><span class="mh">0x04</span><span class="p">,</span>
+            <span class="n">bitSize</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">bitOffset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">base</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">Bool</span><span class="p">,</span>
+            <span class="n">pollInterval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="p">))</span>
+</pre></div>
+</div>
+</section>
+<section id="enumerated-fields">
+<h3>Enumerated Fields<a class="headerlink" href="#enumerated-fields" title="Link to this heading"></a></h3>
+<p>Enum mappings are also common. They let the Variable present hardware-meaningful
+state names while still using the underlying integer register field.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyDevice</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;RxDataWidth&#39;</span><span class="p">,</span>
+            <span class="n">offset</span><span class="o">=</span><span class="mh">0x10</span><span class="p">,</span>
+            <span class="n">bitOffset</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span>
+            <span class="n">bitSize</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span>
+            <span class="n">base</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
+            <span class="n">enum</span><span class="o">=</span><span class="p">{</span>
+                <span class="mi">2</span><span class="p">:</span> <span class="s1">&#39;16&#39;</span><span class="p">,</span>
+                <span class="mi">3</span><span class="p">:</span> <span class="s1">&#39;20&#39;</span><span class="p">,</span>
+                <span class="mi">4</span><span class="p">:</span> <span class="s1">&#39;32&#39;</span><span class="p">,</span>
+                <span class="mi">5</span><span class="p">:</span> <span class="s1">&#39;40&#39;</span><span class="p">,</span>
+                <span class="mi">6</span><span class="p">:</span> <span class="s1">&#39;64&#39;</span><span class="p">,</span>
+                <span class="mi">7</span><span class="p">:</span> <span class="s1">&#39;80&#39;</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">))</span>
+</pre></div>
+</div>
+</section>
+<section id="split-variables-across-multiple-addresses">
+<h3>Split Variables Across Multiple Addresses<a class="headerlink" href="#split-variables-across-multiple-addresses" title="Link to this heading"></a></h3>
+<p>Some hardware maps place one logical field across multiple words. In that
+case, pass lists for <code class="docutils literal notranslate"><span class="pre">offset</span></code>, <code class="docutils literal notranslate"><span class="pre">bitOffset</span></code>, and <code class="docutils literal notranslate"><span class="pre">bitSize</span></code>.</p>
+<p>In this example, one logical 7-bit field is split across two 32-bit words in
+the memory map:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">offset=0x34</span></code> contributes bit 15 (1 bit)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">offset=0x38</span></code> contributes bits 5:0 (6 bits)</p></li>
+</ul>
+<p>PyRogue combines those segments in list order into one Variable value.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">GtRegs</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;RXDFELPMRESET_TIME&#39;</span><span class="p">,</span>
+            <span class="n">offset</span><span class="o">=</span><span class="p">[</span><span class="mh">0x34</span><span class="p">,</span> <span class="mh">0x38</span><span class="p">],</span>
+            <span class="n">bitOffset</span><span class="o">=</span><span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+            <span class="n">bitSize</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span>
+            <span class="n">base</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
+        <span class="p">))</span>
+</pre></div>
+</div>
+</section>
+<section id="packed-arrays">
+<h3>Packed Arrays<a class="headerlink" href="#packed-arrays" title="Link to this heading"></a></h3>
+<p>When hardware exposes a register table or memory-backed array, use
+<code class="docutils literal notranslate"><span class="pre">numValues</span></code>, <code class="docutils literal notranslate"><span class="pre">valueBits</span></code>, and <code class="docutils literal notranslate"><span class="pre">valueStride</span></code>. This pattern is common for
+tables, coefficient memories, and page/register dumps.</p>
+<p>The array below exposes 256 32-bit elements at one base offset.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">TableRegs</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;DataBlock&#39;</span><span class="p">,</span>
+            <span class="n">offset</span><span class="o">=</span><span class="mh">0x0000</span><span class="p">,</span>
+            <span class="n">bitSize</span><span class="o">=</span><span class="mi">32</span> <span class="o">*</span> <span class="mh">0x100</span><span class="p">,</span>
+            <span class="n">bitOffset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">numValues</span><span class="o">=</span><span class="mh">0x100</span><span class="p">,</span>
+            <span class="n">valueBits</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span>
+            <span class="n">valueStride</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span>
+            <span class="n">updateNotify</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">bulkOpEn</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">overlapEn</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">verify</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">hidden</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">base</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span>
+            <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;NoStream&#39;</span><span class="p">,</span> <span class="s1">&#39;NoState&#39;</span><span class="p">,</span> <span class="s1">&#39;NoConfig&#39;</span><span class="p">],</span>
+        <span class="p">))</span>
+</pre></div>
+</div>
+<p>For very large arrays, projects often disable per-write verification or bulk
+operations to control traffic and latency.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;PixelData&#39;</span><span class="p">,</span>
+    <span class="n">offset</span><span class="o">=</span><span class="mh">0x4000</span><span class="p">,</span>
+    <span class="n">bitSize</span><span class="o">=</span><span class="mi">32</span> <span class="o">*</span> <span class="n">num_cols</span><span class="p">,</span>
+    <span class="n">bitOffset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">numValues</span><span class="o">=</span><span class="n">num_cols</span><span class="p">,</span>
+    <span class="n">valueBits</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span>
+    <span class="n">valueStride</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span>
+    <span class="n">bulkOpEn</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">verify</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">hidden</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">base</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
+    <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span>
+    <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;NoStream&#39;</span><span class="p">,</span> <span class="s1">&#39;NoState&#39;</span><span class="p">,</span> <span class="s1">&#39;NoConfig&#39;</span><span class="p">],</span>
+<span class="p">))</span>
+</pre></div>
+</div>
+</section>
+<section id="overlapping-variables-in-one-register">
+<h3>Overlapping Variables In One Register<a class="headerlink" href="#overlapping-variables-in-one-register" title="Link to this heading"></a></h3>
+<p>Sometimes one register word is exposed both as a full-word access point and as
+smaller subfields. In that case, each Variable sharing the same address range
+must enable <code class="docutils literal notranslate"><span class="pre">overlapEn=True</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SharedWordRegs</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;ConnectionConfig&#39;</span><span class="p">,</span>
+            <span class="n">offset</span><span class="o">=</span><span class="mh">0x4014</span><span class="p">,</span>
+            <span class="n">base</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">UIntBE</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;WO&#39;</span><span class="p">,</span>
+            <span class="n">overlapEn</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;ConnectionSpeed&#39;</span><span class="p">,</span>
+            <span class="n">offset</span><span class="o">=</span><span class="mh">0x4014</span><span class="p">,</span>
+            <span class="n">bitSize</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span>
+            <span class="n">bitOffset</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">overlapEn</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">enum</span><span class="o">=</span><span class="p">{</span>
+                <span class="mh">0x28</span><span class="p">:</span> <span class="s1">&#39;CXP_1&#39;</span><span class="p">,</span>
+                <span class="mh">0x30</span><span class="p">:</span> <span class="s1">&#39;CXP_2&#39;</span><span class="p">,</span>
+                <span class="mh">0x38</span><span class="p">:</span> <span class="s1">&#39;CXP_3&#39;</span><span class="p">,</span>
+                <span class="mh">0x40</span><span class="p">:</span> <span class="s1">&#39;CXP_5&#39;</span><span class="p">,</span>
+                <span class="mh">0x48</span><span class="p">:</span> <span class="s1">&#39;CXP_6&#39;</span><span class="p">,</span>
+                <span class="mh">0x50</span><span class="p">:</span> <span class="s1">&#39;CXP_10&#39;</span><span class="p">,</span>
+                <span class="mh">0x58</span><span class="p">:</span> <span class="s1">&#39;CXP_12&#39;</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="n">base</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">UIntBE</span><span class="p">,</span>
+        <span class="p">))</span>
+</pre></div>
+</div>
+</section>
+<section id="wide-values-across-many-registers">
+<h3>Wide Values Across Many Registers<a class="headerlink" href="#wide-values-across-many-registers" title="Link to this heading"></a></h3>
+<p>List form also works well for read-only counters or masks split across many
+consecutive words.</p>
+<p>For <code class="docutils literal notranslate"><span class="pre">ES_QUALIFIER</span></code>, the logical value is assembled from five 16-bit segments:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">offset=0xB0</span></code> -&gt; bits 15:0</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">offset=0xB4</span></code> -&gt; bits 31:16</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">offset=0xB8</span></code> -&gt; bits 47:32</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">offset=0xBC</span></code> -&gt; bits 63:48</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">offset=0xC0</span></code> -&gt; bits 79:64</p></li>
+</ul>
+<p>For <code class="docutils literal notranslate"><span class="pre">RX_PRBS_ERR_CNT</span></code>, the logical value is assembled from two 16-bit
+segments:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">offset=0x978</span></code> -&gt; bits 15:0</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">offset=0x97C</span></code> -&gt; bits 31:16</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">EyeScanRegs</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;ES_QUALIFIER&#39;</span><span class="p">,</span>
+            <span class="n">offset</span><span class="o">=</span><span class="p">[</span><span class="mh">0xB0</span><span class="p">,</span> <span class="mh">0xB4</span><span class="p">,</span> <span class="mh">0xB8</span><span class="p">,</span> <span class="mh">0xBC</span><span class="p">,</span> <span class="mh">0xC0</span><span class="p">],</span>
+            <span class="n">bitOffset</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+            <span class="n">bitSize</span><span class="o">=</span><span class="p">[</span><span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">],</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">base</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
+        <span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;RX_PRBS_ERR_CNT&#39;</span><span class="p">,</span>
+            <span class="n">offset</span><span class="o">=</span><span class="p">[</span><span class="mh">0x978</span><span class="p">,</span> <span class="mh">0x97C</span><span class="p">],</span>
+            <span class="n">bitOffset</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+            <span class="n">bitSize</span><span class="o">=</span><span class="p">[</span><span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">],</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">base</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
+        <span class="p">))</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="what-to-explore-next">
+<h2>What To Explore Next<a class="headerlink" href="#what-to-explore-next" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Software-owned Variables: <a class="reference internal" href="local_variable.html"><span class="doc">LocalVariable</span></a></p></li>
+<li><p>Derived Variables: <a class="reference internal" href="link_variable.html"><span class="doc">LinkVariable</span></a></p></li>
+<li><p>Block grouping and transaction units: <a class="reference internal" href="block.html"><span class="doc">Blocks</span></a></p></li>
+<li><p>Device transaction sequencing: <a class="reference internal" href="block_operations.html"><span class="doc">Device Block Operations</span></a></p></li>
+</ul>
+</section>
+<section id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<p>See <a class="reference internal" href="../../api/python/pyrogue/remotevariable.html"><span class="doc">RemoteVariable</span></a> for generated API details.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="local_variable.html" class="btn btn-neutral float-left" title="LocalVariable" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="link_variable.html" class="btn btn-neutral float-right" title="LinkVariable" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

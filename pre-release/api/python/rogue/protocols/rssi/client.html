@@ -1,0 +1,506 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Client &mdash; Rogue v6.9.0-146-g9016781d5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom.css?v=8b50afe1" />
+
+  
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=5f168154"></script>
+      <script src="../../../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../../../_static/custom.js?v=7b5dfb0b"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" />
+    <link rel="next" title="Server" href="server.html" />
+    <link rel="prev" title="Transport" href="transport.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../../../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../../../index.html">Python API</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../../../pyrogue/index.html">pyrogue</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../../index.html">rogue</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../../version.html">rogue.Version</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../logging.html">rogue.Logging</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../generalerror.html">rogue.GeneralError</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../interfaces/index.html">rogue.interfaces</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="../index.html">rogue.protocols</a><ul class="current">
+<li class="toctree-l5"><a class="reference internal" href="../udp/index.html">rogue.protocols.udp</a></li>
+<li class="toctree-l5 current"><a class="reference internal" href="index.html">rogue.protocols.rssi</a><ul class="current">
+<li class="toctree-l6"><a class="reference internal" href="application.html">Application</a></li>
+<li class="toctree-l6"><a class="reference internal" href="transport.html">Transport</a></li>
+<li class="toctree-l6 current"><a class="current reference internal" href="#">Client</a></li>
+<li class="toctree-l6"><a class="reference internal" href="server.html">Server</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="../srp/index.html">rogue.protocols.srp</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../packetizer/index.html">rogue.protocols.packetizer</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../batcher/index.html">rogue.protocols.batcher</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../xilinx/index.html">rogue.protocols.xilinx</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../../hardware/index.html">rogue.hardware</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../utilities/index.html">rogue.utilities</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../cpp/index.html">C++ API</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">API Reference</a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Python API</a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">rogue</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">rogue.protocols</a></li>
+          <li class="breadcrumb-item"><a href="index.html">rogue.protocols.rssi</a></li>
+      <li class="breadcrumb-item active">Client</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../../_sources/api/python/rogue/protocols/rssi/client.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="client">
+<span id="api-python-protocols-rssi-client"></span><h1>Client<a class="headerlink" href="#client" title="Link to this heading"></a></h1>
+<p>For conceptual usage, see:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../../../../../built_in_modules/protocols/rssi/client.html"><span class="doc">RSSI Protocol Client</span></a></p></li>
+</ul>
+<p class="rubric">Implementation</p>
+<p>This Python API is provided by a Rogue C++ class exported into Python.</p>
+<p>Native C++ class:
+- <a class="reference internal" href="../../../../cpp/protocols/rssi/client.html"><span class="doc">Client</span></a></p>
+<section id="generated-api">
+<h2>Generated API<a class="headerlink" href="#generated-api" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="rogue.protocols.rssi.Client">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">rogue.protocols.rssi.</span></span><span class="sig-name descname"><span class="pre">Client</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">segSize</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#rogue.protocols.rssi.Client" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/protocols/rssi/client.html#_CPPv4N5rogue9protocols4rssi6ClientE" title="rogue::protocols::rssi::Client"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">rogue::protocols::rssi::Client</span></code></a></p>
+<p>Binding source: <a class="reference external" href="../../../../../_doxygen/rssi_2Client_8cpp_source.html">[Client.cpp]</a></p>
+<p>RSSI client convenience wrapper.</p>
+<p>Bundles transport, application, and controller components for client-side RSSI links. Protocol reference: <a class="reference external" href="https://confluence.slac.stanford.edu/x/1IyfD">https://confluence.slac.stanford.edu/x/1IyfD</a> Construction wires the internal components together: <code class="docutils literal notranslate"><span class="pre">Transport</span> <span class="pre">&lt;-&gt;</span> <span class="pre">Controller</span> <span class="pre">&lt;-&gt;</span> <span class="pre">Application</span></code>.</p>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">segSize</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/protocols/rssi/client.html#_CPPv4N5rogue9protocols4rssi6ClientE" title="rogue::protocols::rssi::Client"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">rogue::protocols::rssi::Client</span></code></a></p>
+<p>Constructs an RSSI client bundle.</p>
+<p>This constructor is a low-level C++ allocation path. Prefer <code class="docutils literal notranslate"><span class="pre">create()</span></code> when shared ownership or Python exposure is required.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>segSize</strong> – Initial local maximum segment size.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.protocols.rssi.Client.transport">
+<span class="sig-name descname"><span class="pre">transport</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rogue.protocols.rssi.Client.transport" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/protocols/rssi/client.html#_CPPv4N5rogue9protocols4rssi6Client9transportEv" title="rogue::protocols::rssi::Client::transport"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::protocols::rssi::Client::transport()</span></code></a></p>
+<p>Returns the transport endpoint.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Shared transport interface.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.protocols.rssi.Client.application">
+<span class="sig-name descname"><span class="pre">application</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rogue.protocols.rssi.Client.application" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/protocols/rssi/client.html#_CPPv4N5rogue9protocols4rssi6Client11applicationEv" title="rogue::protocols::rssi::Client::application"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::protocols::rssi::Client::application()</span></code></a></p>
+<p>Returns the application endpoint.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Shared application interface.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.protocols.rssi.Client.getOpen">
+<span class="sig-name descname"><span class="pre">getOpen</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rogue.protocols.rssi.Client.getOpen" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/protocols/rssi/client.html#_CPPv4N5rogue9protocols4rssi6Client7getOpenEv" title="rogue::protocols::rssi::Client::getOpen"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::protocols::rssi::Client::getOpen()</span></code></a></p>
+<p>Returns whether the link is in open state.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True when connection state is open.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.protocols.rssi.Client.getDownCount">
+<span class="sig-name descname"><span class="pre">getDownCount</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rogue.protocols.rssi.Client.getDownCount" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/protocols/rssi/client.html#_CPPv4N5rogue9protocols4rssi6Client12getDownCountEv" title="rogue::protocols::rssi::Client::getDownCount"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::protocols::rssi::Client::getDownCount()</span></code></a></p>
+<p>Returns the down-transition counter.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Number of times the link entered a down/closed state.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.protocols.rssi.Client.getDropCount">
+<span class="sig-name descname"><span class="pre">getDropCount</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rogue.protocols.rssi.Client.getDropCount" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/protocols/rssi/client.html#_CPPv4N5rogue9protocols4rssi6Client12getDropCountEv" title="rogue::protocols::rssi::Client::getDropCount"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::protocols::rssi::Client::getDropCount()</span></code></a></p>
+<p>Returns the dropped-frame counter.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Number of dropped received frames.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.protocols.rssi.Client.getRetranCount">
+<span class="sig-name descname"><span class="pre">getRetranCount</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rogue.protocols.rssi.Client.getRetranCount" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/protocols/rssi/client.html#_CPPv4N5rogue9protocols4rssi6Client14getRetranCountEv" title="rogue::protocols::rssi::Client::getRetranCount"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::protocols::rssi::Client::getRetranCount()</span></code></a></p>
+<p>Returns the retransmit counter.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Number of retransmitted frames.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.protocols.rssi.Client.getLocBusy">
+<span class="sig-name descname"><span class="pre">getLocBusy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rogue.protocols.rssi.Client.getLocBusy" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/protocols/rssi/client.html#_CPPv4N5rogue9protocols4rssi6Client10getLocBusyEv" title="rogue::protocols::rssi::Client::getLocBusy"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::protocols::rssi::Client::getLocBusy()</span></code></a></p>
+<p>Returns the local busy state.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True when the local endpoint is currently busy.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.protocols.rssi.Client.getLocBusyCnt">
+<span class="sig-name descname"><span class="pre">getLocBusyCnt</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rogue.protocols.rssi.Client.getLocBusyCnt" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/protocols/rssi/client.html#_CPPv4N5rogue9protocols4rssi6Client13getLocBusyCntEv" title="rogue::protocols::rssi::Client::getLocBusyCnt"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::protocols::rssi::Client::getLocBusyCnt()</span></code></a></p>
+<p>Returns the local busy event counter.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Number of local busy assertions.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.protocols.rssi.Client.getRemBusy">
+<span class="sig-name descname"><span class="pre">getRemBusy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rogue.protocols.rssi.Client.getRemBusy" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/protocols/rssi/client.html#_CPPv4N5rogue9protocols4rssi6Client10getRemBusyEv" title="rogue::protocols::rssi::Client::getRemBusy"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::protocols::rssi::Client::getRemBusy()</span></code></a></p>
+<p>Returns the remote busy state.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True when the remote endpoint reports busy.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.protocols.rssi.Client.getRemBusyCnt">
+<span class="sig-name descname"><span class="pre">getRemBusyCnt</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rogue.protocols.rssi.Client.getRemBusyCnt" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/protocols/rssi/client.html#_CPPv4N5rogue9protocols4rssi6Client13getRemBusyCntEv" title="rogue::protocols::rssi::Client::getRemBusyCnt"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::protocols::rssi::Client::getRemBusyCnt()</span></code></a></p>
+<p>Returns the remote busy event counter.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Number of remote busy indications.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.protocols.rssi.Client.setLocTryPeriod">
+<span class="sig-name descname"><span class="pre">setLocTryPeriod</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rogue.protocols.rssi.Client.setLocTryPeriod" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/protocols/rssi/client.html#_CPPv4N5rogue9protocols4rssi6Client15setLocTryPeriodE8uint32_t" title="rogue::protocols::rssi::Client::setLocTryPeriod"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::protocols::rssi::Client::setLocTryPeriod()</span></code></a></p>
+<p>Sets the local connection retry period in microseconds.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.protocols.rssi.Client.getLocTryPeriod">
+<span class="sig-name descname"><span class="pre">getLocTryPeriod</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rogue.protocols.rssi.Client.getLocTryPeriod" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/protocols/rssi/client.html#_CPPv4N5rogue9protocols4rssi6Client15getLocTryPeriodEv" title="rogue::protocols::rssi::Client::getLocTryPeriod"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::protocols::rssi::Client::getLocTryPeriod()</span></code></a></p>
+<p>Returns the local connection retry period in microseconds.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.protocols.rssi.Client.setLocMaxBuffers">
+<span class="sig-name descname"><span class="pre">setLocMaxBuffers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rogue.protocols.rssi.Client.setLocMaxBuffers" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/protocols/rssi/client.html#_CPPv4N5rogue9protocols4rssi6Client16setLocMaxBuffersE7uint8_t" title="rogue::protocols::rssi::Client::setLocMaxBuffers"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::protocols::rssi::Client::setLocMaxBuffers()</span></code></a></p>
+<p>Sets the local maximum outstanding-buffer count.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.protocols.rssi.Client.getLocMaxBuffers">
+<span class="sig-name descname"><span class="pre">getLocMaxBuffers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rogue.protocols.rssi.Client.getLocMaxBuffers" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/protocols/rssi/client.html#_CPPv4N5rogue9protocols4rssi6Client16getLocMaxBuffersEv" title="rogue::protocols::rssi::Client::getLocMaxBuffers"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::protocols::rssi::Client::getLocMaxBuffers()</span></code></a></p>
+<p>Returns the local maximum outstanding-buffer count.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.protocols.rssi.Client.setLocMaxSegment">
+<span class="sig-name descname"><span class="pre">setLocMaxSegment</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rogue.protocols.rssi.Client.setLocMaxSegment" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/protocols/rssi/client.html#_CPPv4N5rogue9protocols4rssi6Client16setLocMaxSegmentE8uint16_t" title="rogue::protocols::rssi::Client::setLocMaxSegment"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::protocols::rssi::Client::setLocMaxSegment()</span></code></a></p>
+<p>Sets the local maximum segment size in bytes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.protocols.rssi.Client.getLocMaxSegment">
+<span class="sig-name descname"><span class="pre">getLocMaxSegment</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rogue.protocols.rssi.Client.getLocMaxSegment" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/protocols/rssi/client.html#_CPPv4N5rogue9protocols4rssi6Client16getLocMaxSegmentEv" title="rogue::protocols::rssi::Client::getLocMaxSegment"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::protocols::rssi::Client::getLocMaxSegment()</span></code></a></p>
+<p>Returns the local maximum segment size in bytes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.protocols.rssi.Client.setLocCumAckTout">
+<span class="sig-name descname"><span class="pre">setLocCumAckTout</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rogue.protocols.rssi.Client.setLocCumAckTout" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/protocols/rssi/client.html#_CPPv4N5rogue9protocols4rssi6Client16setLocCumAckToutE8uint16_t" title="rogue::protocols::rssi::Client::setLocCumAckTout"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::protocols::rssi::Client::setLocCumAckTout()</span></code></a></p>
+<p>Sets the local cumulative-ACK timeout.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.protocols.rssi.Client.getLocCumAckTout">
+<span class="sig-name descname"><span class="pre">getLocCumAckTout</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rogue.protocols.rssi.Client.getLocCumAckTout" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/protocols/rssi/client.html#_CPPv4N5rogue9protocols4rssi6Client16getLocCumAckToutEv" title="rogue::protocols::rssi::Client::getLocCumAckTout"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::protocols::rssi::Client::getLocCumAckTout()</span></code></a></p>
+<p>Returns the local cumulative-ACK timeout.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.protocols.rssi.Client.setLocRetranTout">
+<span class="sig-name descname"><span class="pre">setLocRetranTout</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rogue.protocols.rssi.Client.setLocRetranTout" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/protocols/rssi/client.html#_CPPv4N5rogue9protocols4rssi6Client16setLocRetranToutE8uint16_t" title="rogue::protocols::rssi::Client::setLocRetranTout"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::protocols::rssi::Client::setLocRetranTout()</span></code></a></p>
+<p>Sets the local retransmit timeout.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.protocols.rssi.Client.getLocRetranTout">
+<span class="sig-name descname"><span class="pre">getLocRetranTout</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rogue.protocols.rssi.Client.getLocRetranTout" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/protocols/rssi/client.html#_CPPv4N5rogue9protocols4rssi6Client16getLocRetranToutEv" title="rogue::protocols::rssi::Client::getLocRetranTout"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::protocols::rssi::Client::getLocRetranTout()</span></code></a></p>
+<p>Returns the local retransmit timeout.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.protocols.rssi.Client.setLocNullTout">
+<span class="sig-name descname"><span class="pre">setLocNullTout</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rogue.protocols.rssi.Client.setLocNullTout" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/protocols/rssi/client.html#_CPPv4N5rogue9protocols4rssi6Client14setLocNullToutE8uint16_t" title="rogue::protocols::rssi::Client::setLocNullTout"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::protocols::rssi::Client::setLocNullTout()</span></code></a></p>
+<p>Sets the local null-segment timeout.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.protocols.rssi.Client.getLocNullTout">
+<span class="sig-name descname"><span class="pre">getLocNullTout</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rogue.protocols.rssi.Client.getLocNullTout" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/protocols/rssi/client.html#_CPPv4N5rogue9protocols4rssi6Client14getLocNullToutEv" title="rogue::protocols::rssi::Client::getLocNullTout"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::protocols::rssi::Client::getLocNullTout()</span></code></a></p>
+<p>Returns the local null-segment timeout.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.protocols.rssi.Client.setLocMaxRetran">
+<span class="sig-name descname"><span class="pre">setLocMaxRetran</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rogue.protocols.rssi.Client.setLocMaxRetran" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/protocols/rssi/client.html#_CPPv4N5rogue9protocols4rssi6Client15setLocMaxRetranE7uint8_t" title="rogue::protocols::rssi::Client::setLocMaxRetran"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::protocols::rssi::Client::setLocMaxRetran()</span></code></a></p>
+<p>Sets the local maximum retransmit count.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.protocols.rssi.Client.getLocMaxRetran">
+<span class="sig-name descname"><span class="pre">getLocMaxRetran</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rogue.protocols.rssi.Client.getLocMaxRetran" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/protocols/rssi/client.html#_CPPv4N5rogue9protocols4rssi6Client15getLocMaxRetranEv" title="rogue::protocols::rssi::Client::getLocMaxRetran"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::protocols::rssi::Client::getLocMaxRetran()</span></code></a></p>
+<p>Returns the local maximum retransmit count.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.protocols.rssi.Client.setLocMaxCumAck">
+<span class="sig-name descname"><span class="pre">setLocMaxCumAck</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rogue.protocols.rssi.Client.setLocMaxCumAck" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/protocols/rssi/client.html#_CPPv4N5rogue9protocols4rssi6Client15setLocMaxCumAckE7uint8_t" title="rogue::protocols::rssi::Client::setLocMaxCumAck"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::protocols::rssi::Client::setLocMaxCumAck()</span></code></a></p>
+<p>Sets the local maximum cumulative-ACK interval.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.protocols.rssi.Client.getLocMaxCumAck">
+<span class="sig-name descname"><span class="pre">getLocMaxCumAck</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rogue.protocols.rssi.Client.getLocMaxCumAck" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/protocols/rssi/client.html#_CPPv4N5rogue9protocols4rssi6Client15getLocMaxCumAckEv" title="rogue::protocols::rssi::Client::getLocMaxCumAck"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::protocols::rssi::Client::getLocMaxCumAck()</span></code></a></p>
+<p>Returns the local maximum cumulative-ACK interval.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.protocols.rssi.Client.curMaxBuffers">
+<span class="sig-name descname"><span class="pre">curMaxBuffers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rogue.protocols.rssi.Client.curMaxBuffers" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/protocols/rssi/client.html#_CPPv4N5rogue9protocols4rssi6Client13curMaxBuffersEv" title="rogue::protocols::rssi::Client::curMaxBuffers"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::protocols::rssi::Client::curMaxBuffers()</span></code></a></p>
+<p>Returns the negotiated maximum outstanding-buffer count.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.protocols.rssi.Client.curMaxSegment">
+<span class="sig-name descname"><span class="pre">curMaxSegment</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rogue.protocols.rssi.Client.curMaxSegment" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/protocols/rssi/client.html#_CPPv4N5rogue9protocols4rssi6Client13curMaxSegmentEv" title="rogue::protocols::rssi::Client::curMaxSegment"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::protocols::rssi::Client::curMaxSegment()</span></code></a></p>
+<p>Returns the negotiated maximum segment size in bytes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.protocols.rssi.Client.curCumAckTout">
+<span class="sig-name descname"><span class="pre">curCumAckTout</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rogue.protocols.rssi.Client.curCumAckTout" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/protocols/rssi/client.html#_CPPv4N5rogue9protocols4rssi6Client13curCumAckToutEv" title="rogue::protocols::rssi::Client::curCumAckTout"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::protocols::rssi::Client::curCumAckTout()</span></code></a></p>
+<p>Returns the negotiated cumulative-ACK timeout.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.protocols.rssi.Client.curRetranTout">
+<span class="sig-name descname"><span class="pre">curRetranTout</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rogue.protocols.rssi.Client.curRetranTout" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/protocols/rssi/client.html#_CPPv4N5rogue9protocols4rssi6Client13curRetranToutEv" title="rogue::protocols::rssi::Client::curRetranTout"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::protocols::rssi::Client::curRetranTout()</span></code></a></p>
+<p>Returns the negotiated retransmit timeout.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.protocols.rssi.Client.curNullTout">
+<span class="sig-name descname"><span class="pre">curNullTout</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rogue.protocols.rssi.Client.curNullTout" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/protocols/rssi/client.html#_CPPv4N5rogue9protocols4rssi6Client11curNullToutEv" title="rogue::protocols::rssi::Client::curNullTout"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::protocols::rssi::Client::curNullTout()</span></code></a></p>
+<p>Returns the negotiated null-segment timeout.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.protocols.rssi.Client.curMaxRetran">
+<span class="sig-name descname"><span class="pre">curMaxRetran</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rogue.protocols.rssi.Client.curMaxRetran" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/protocols/rssi/client.html#_CPPv4N5rogue9protocols4rssi6Client12curMaxRetranEv" title="rogue::protocols::rssi::Client::curMaxRetran"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::protocols::rssi::Client::curMaxRetran()</span></code></a></p>
+<p>Returns the negotiated maximum retransmit count.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.protocols.rssi.Client.curMaxCumAck">
+<span class="sig-name descname"><span class="pre">curMaxCumAck</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rogue.protocols.rssi.Client.curMaxCumAck" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/protocols/rssi/client.html#_CPPv4N5rogue9protocols4rssi6Client12curMaxCumAckEv" title="rogue::protocols::rssi::Client::curMaxCumAck"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::protocols::rssi::Client::curMaxCumAck()</span></code></a></p>
+<p>Returns the negotiated maximum cumulative-ACK interval.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.protocols.rssi.Client.resetCounters">
+<span class="sig-name descname"><span class="pre">resetCounters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rogue.protocols.rssi.Client.resetCounters" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/protocols/rssi/client.html#_CPPv4N5rogue9protocols4rssi6Client13resetCountersEv" title="rogue::protocols::rssi::Client::resetCounters"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::protocols::rssi::Client::resetCounters()</span></code></a></p>
+<p>Resets runtime counters.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.protocols.rssi.Client.setTimeout">
+<span class="sig-name descname"><span class="pre">setTimeout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeout</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#rogue.protocols.rssi.Client.setTimeout" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/protocols/rssi/client.html#_CPPv4N5rogue9protocols4rssi6Client10setTimeoutE8uint32_t" title="rogue::protocols::rssi::Client::setTimeout"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::protocols::rssi::Client::setTimeout()</span></code></a></p>
+<p>Sets timeout in microseconds for frame transmits.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>timeout</strong> – Timeout in microseconds.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="transport.html" class="btn btn-neutral float-left" title="Transport" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="server.html" class="btn btn-neutral float-right" title="Server" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

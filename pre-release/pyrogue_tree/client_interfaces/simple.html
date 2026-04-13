@@ -1,0 +1,226 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Simple Client Interface &mdash; Rogue v6.9.0-146-g9016781d5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=8b50afe1" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=5f168154"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/custom.js?v=7b5dfb0b"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Virtual Client Interface" href="virtual.html" />
+    <link rel="prev" title="Python ZMQServer" href="zmq_server.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">PyRogue Tree</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../core/index.html">Components And Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../builtin_devices/index.html">Built-in Devices</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Client Interfaces</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="zmq_server.html">Python ZMQServer</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Simple Client Interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="virtual.html">Virtual Client Interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="commandline.html">Using the Command Line Client</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">API Reference</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">PyRogue Tree</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Client Interfaces</a></li>
+      <li class="breadcrumb-item active">Simple Client Interface</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/pyrogue_tree/client_interfaces/simple.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="simple-client-interface">
+<span id="interfaces-clients-simple"></span><h1>Simple Client Interface<a class="headerlink" href="#simple-client-interface" title="Link to this heading"></a></h1>
+<p>The Rogue <code class="docutils literal notranslate"><span class="pre">SimpleClient</span></code> is a lightweight Python client for direct access to
+a running tree over the ZMQ server endpoint.</p>
+<p>It is a good fit when you need:</p>
+<ul class="simple">
+<li><p>Script-friendly read/write/exec operations</p></li>
+<li><p>Minimal dependencies</p></li>
+<li><p>String-path based access without constructing a mirrored local tree</p></li>
+</ul>
+<p>Compared to <a class="reference internal" href="virtual.html"><span class="doc">Virtual Client Interface</span></a>, <code class="docutils literal notranslate"><span class="pre">SimpleClient</span></code>
+is intentionally narrower in scope but faster to adopt in small scripts.</p>
+<section id="basic-usage">
+<h2>Basic Usage<a class="headerlink" href="#basic-usage" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pyrogue.interfaces</span><span class="w"> </span><span class="kn">import</span> <span class="n">SimpleClient</span>
+
+<span class="k">with</span> <span class="n">SimpleClient</span><span class="p">(</span><span class="n">addr</span><span class="o">=</span><span class="s1">&#39;localhost&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">9099</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+    <span class="c1"># Read with hardware access</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;root.RogueVersion&#39;</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">client</span><span class="o">.</span><span class="n">getDisp</span><span class="p">(</span><span class="s1">&#39;root.RogueVersion&#39;</span><span class="p">))</span>
+
+    <span class="c1"># Read cached/shadow value only</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">client</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="s1">&#39;root.RogueVersion&#39;</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">client</span><span class="o">.</span><span class="n">valueDisp</span><span class="p">(</span><span class="s1">&#39;root.RogueVersion&#39;</span><span class="p">))</span>
+
+    <span class="c1"># Set values</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;root.AxiVersion.ScratchPad&#39;</span><span class="p">,</span> <span class="mh">0x100</span><span class="p">)</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">setDisp</span><span class="p">(</span><span class="s1">&#39;root.AxiVersion.ScratchPad&#39;</span><span class="p">,</span> <span class="s1">&#39;0x100&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Execute a command</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">exec</span><span class="p">(</span><span class="s1">&#39;root.SomeCommand&#39;</span><span class="p">,</span> <span class="s1">&#39;0x100&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="update-callbacks">
+<h2>Update Callbacks<a class="headerlink" href="#update-callbacks" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">SimpleClient</span></code> can register a callback that is invoked for each Variable
+update published by the server.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pyrogue.interfaces</span><span class="w"> </span><span class="kn">import</span> <span class="n">SimpleClient</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">on_update</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s1"> = </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="k">with</span> <span class="n">SimpleClient</span><span class="p">(</span><span class="n">addr</span><span class="o">=</span><span class="s1">&#39;localhost&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">9099</span><span class="p">,</span> <span class="n">cb</span><span class="o">=</span><span class="n">on_update</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Monitoring updates. Press Ctrl+C to stop.&#39;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Stopping monitor.&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="logging">
+<h2>Logging<a class="headerlink" href="#logging" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">SimpleClient</span></code> does not expose a dedicated Python or Rogue logger.</p>
+<p>In practice, troubleshooting usually relies on:</p>
+<ul class="simple">
+<li><p>Exceptions raised by failed request/reply operations</p></li>
+<li><p>Logging on the server side, especially <a class="reference internal" href="zmq_server.html"><span class="doc">Python ZMQServer</span></a></p></li>
+<li><p>Application-level prints or Python logging around client calls</p></li>
+</ul>
+<p>If you need richer client-side observability, <a class="reference internal" href="virtual.html"><span class="doc">Virtual Client Interface</span></a> is the better
+interface because it exposes a Python logger and richer mirrored-tree state.</p>
+</section>
+<section id="related-topics">
+<h2>Related Topics<a class="headerlink" href="#related-topics" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Server-side transport setup: <a class="reference internal" href="zmq_server.html"><span class="doc">Python ZMQServer</span></a></p></li>
+<li><p>Mirrored-tree access model: <a class="reference internal" href="virtual.html"><span class="doc">Virtual Client Interface</span></a></p></li>
+<li><p>CLI operations for quick checks: <a class="reference internal" href="commandline.html"><span class="doc">Using the Command Line Client</span></a></p></li>
+</ul>
+</section>
+<section id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<p><a class="reference internal" href="../../api/python/pyrogue/interfaces/simpleclient.html"><span class="doc">SimpleClient</span></a></p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="zmq_server.html" class="btn btn-neutral float-left" title="Python ZMQServer" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="virtual.html" class="btn btn-neutral float-right" title="Virtual Client Interface" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,327 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pgp2bSim &mdash; Rogue v6.9.0-146-g9016781d5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=8b50afe1" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=5f168154"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/custom.js?v=7b5dfb0b"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Protocols" href="../protocols/index.html" />
+    <link rel="prev" title="MemEmulate" href="mememulate.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Built-in Modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../interfaces/index.html">Interfaces</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Simulation Utilities</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="mememulate.html">MemEmulate</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Pgp2bSim</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../protocols/index.html">Protocols</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../hardware/index.html">Hardware</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../utilities/index.html">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">API Reference</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Built-in Modules</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Simulation Utilities</a></li>
+      <li class="breadcrumb-item active">Pgp2bSim</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/built_in_modules/simulation/pgp2b.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pgp2bsim">
+<span id="interfaces-simulation-pgp2b"></span><h1>Pgp2bSim<a class="headerlink" href="#pgp2bsim" title="Link to this heading"></a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">Pgp2bSim</span></code> builds a simulated PGP2B endpoint from stream TCP clients plus a
+sideband channel.</p>
+<section id="co-simulation-context">
+<h2>Co-Simulation Context<a class="headerlink" href="#co-simulation-context" title="Link to this heading"></a></h2>
+<p>In many development flows, VHDL is run in a simulator (commonly VCS) while
+Rogue software drives and observes the design through Rogue stream interfaces
+(with VHPI on the firmware side). This is often referred to as software
+co-simulation.</p>
+<p>In deployed firmware, PGP2b links are commonly used between FPGA endpoints.
+For simulation, SURF provides <code class="docutils literal notranslate"><span class="pre">RoguePgp2bSim</span></code> firmware modules that emulate
+PGP link endpoints and expose TCP-backed stream interfaces.</p>
+<p><code class="docutils literal notranslate"><span class="pre">Pgp2bSim</span></code> exists to connect two of those simulated endpoints through
+software. This avoids simulating full high-speed serial transceiver behavior in
+VHDL, which is typically much slower, while still exercising the intended data
+movement between link endpoints.</p>
+<p>In short, this module focuses on emulating the functional purpose of the link
+(frame movement and sideband exchange) rather than electrical-link behavior.
+Although this utility may ultimately belong in SURF, it is currently part of
+Rogue and documented here.</p>
+</section>
+<section id="simulation-workflow">
+<h2>Simulation Workflow<a class="headerlink" href="#simulation-workflow" title="Link to this heading"></a></h2>
+<p>Key pieces in the simulation workflow include:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Pgp2bSim(vcCount,</span> <span class="pre">host,</span> <span class="pre">port)</span></code>: constructs one simulated endpoint.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">connectPgp2bSim(a,</span> <span class="pre">b)</span></code>: links all virtual channels and sideband between
+two endpoints.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">setRecvCb(fn)</span></code> on each endpoint sideband object: registers callback for
+sideband <code class="docutils literal notranslate"><span class="pre">opCode</span></code>/<code class="docutils literal notranslate"><span class="pre">remData</span></code> events.</p></li>
+<li><p>Context-manager usage (<code class="docutils literal notranslate"><span class="pre">with</span></code>): ensures sockets/threads are cleaned up.</p></li>
+</ul>
+</section>
+<section id="configuration-example">
+<h2>Configuration Example<a class="headerlink" href="#configuration-example" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue.interfaces.simulation</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pis</span>
+
+<span class="c1"># Create one simulated endpoint with 4 virtual channels.</span>
+<span class="n">pgp</span> <span class="o">=</span> <span class="n">pis</span><span class="o">.</span><span class="n">Pgp2bSim</span><span class="p">(</span>
+    <span class="n">vcCount</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+    <span class="n">host</span><span class="o">=</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span>
+    <span class="n">port</span><span class="o">=</span><span class="mi">9000</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="key-constructor-arguments">
+<h2>Key Constructor Arguments<a class="headerlink" href="#key-constructor-arguments" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">vcCount</span></code> selects how many virtual channels are created.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">host</span></code> selects the TCP and sideband host endpoint.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">port</span></code> selects the base port for VC 0, with additional virtual channels on
+successive even-numbered ports.</p></li>
+</ul>
+<p>The current implementation uses a fixed sideband offset at <code class="docutils literal notranslate"><span class="pre">port+8</span></code> through
+<code class="docutils literal notranslate"><span class="pre">SideBandSim</span></code> rather than deriving that offset from <code class="docutils literal notranslate"><span class="pre">vcCount</span></code>, so
+<code class="docutils literal notranslate"><span class="pre">vcCount</span></code> should be kept at <code class="docutils literal notranslate"><span class="pre">&lt;=</span> <span class="pre">4</span></code> to avoid port overlap with the sideband
+channel.</p>
+</section>
+<section id="integrated-sideband-channel">
+<h2>Integrated Sideband Channel<a class="headerlink" href="#integrated-sideband-channel" title="Link to this heading"></a></h2>
+<p>In <code class="docutils literal notranslate"><span class="pre">Pgp2bSim</span></code>, sideband is not a separate topology concept; it is part of the
+simulated PGP endpoint. Internally it uses <code class="docutils literal notranslate"><span class="pre">SideBandSim</span></code> to exchange optional
+<code class="docutils literal notranslate"><span class="pre">opCode</span></code> and <code class="docutils literal notranslate"><span class="pre">remData</span></code> fields.</p>
+<p>Sideband port behavior (per endpoint):</p>
+<ul class="simple">
+<li><p>PULL socket connects to <code class="docutils literal notranslate"><span class="pre">port+8</span></code></p></li>
+<li><p>PUSH socket connects to <code class="docutils literal notranslate"><span class="pre">port+9</span></code></p></li>
+<li><p>These offsets are fixed in current code, independent of <code class="docutils literal notranslate"><span class="pre">vcCount</span></code>.</p></li>
+</ul>
+<p>Typical sideband callback pattern:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue.interfaces.simulation</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pis</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">on_a_sideband</span><span class="p">(</span><span class="n">op_code</span><span class="p">,</span> <span class="n">rem_data</span><span class="p">):</span>
+    <span class="c1"># Called when endpoint A receives sideband data.</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;A sideband:&quot;</span><span class="p">,</span> <span class="n">op_code</span><span class="p">,</span> <span class="n">rem_data</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">on_b_sideband</span><span class="p">(</span><span class="n">op_code</span><span class="p">,</span> <span class="n">rem_data</span><span class="p">):</span>
+    <span class="c1"># Called when endpoint B receives sideband data.</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;B sideband:&quot;</span><span class="p">,</span> <span class="n">op_code</span><span class="p">,</span> <span class="n">rem_data</span><span class="p">)</span>
+
+<span class="k">with</span> <span class="n">pis</span><span class="o">.</span><span class="n">Pgp2bSim</span><span class="p">(</span><span class="n">vcCount</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">9000</span><span class="p">)</span> <span class="k">as</span> <span class="n">a</span><span class="p">,</span> \
+     <span class="n">pis</span><span class="o">.</span><span class="n">Pgp2bSim</span><span class="p">(</span><span class="n">vcCount</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">9100</span><span class="p">)</span> <span class="k">as</span> <span class="n">b</span><span class="p">:</span>
+
+    <span class="n">pis</span><span class="o">.</span><span class="n">connectPgp2bSim</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+
+    <span class="c1"># Register sideband callbacks on each endpoint.</span>
+    <span class="n">a</span><span class="o">.</span><span class="n">setRecvCb</span><span class="p">(</span><span class="n">on_a_sideband</span><span class="p">)</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">setRecvCb</span><span class="p">(</span><span class="n">on_b_sideband</span><span class="p">)</span>
+
+    <span class="c1"># Inject sideband data from either endpoint.</span>
+    <span class="n">a</span><span class="o">.</span><span class="n">sendOpCode</span><span class="p">(</span><span class="mh">0x3A</span><span class="p">)</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">sendRemData</span><span class="p">(</span><span class="mh">0x55</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="standalone-sidebandsim-usage">
+<h2>Standalone SideBandSim Usage<a class="headerlink" href="#standalone-sidebandsim-usage" title="Link to this heading"></a></h2>
+<p>While sideband is integrated into <code class="docutils literal notranslate"><span class="pre">Pgp2bSim</span></code>, <code class="docutils literal notranslate"><span class="pre">SideBandSim</span></code> is also useful
+on its own to emulate PGP2b opcode/remData behavior in software/firmware
+co-simulation.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue.interfaces.simulation</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pis</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">on_sideband</span><span class="p">(</span><span class="n">op_code</span><span class="p">,</span> <span class="n">rem_data</span><span class="p">):</span>
+    <span class="c1"># Receive emulated opcode/remData notifications.</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;sideband rx:&quot;</span><span class="p">,</span> <span class="n">op_code</span><span class="p">,</span> <span class="n">rem_data</span><span class="p">)</span>
+
+<span class="k">with</span> <span class="n">pis</span><span class="o">.</span><span class="n">SideBandSim</span><span class="p">(</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="mi">9008</span><span class="p">)</span> <span class="k">as</span> <span class="n">sb</span><span class="p">:</span>
+    <span class="c1"># Register receive callback.</span>
+    <span class="n">sb</span><span class="o">.</span><span class="n">setRecvCb</span><span class="p">(</span><span class="n">on_sideband</span><span class="p">)</span>
+
+    <span class="c1"># Send opcode-only and remData-only examples.</span>
+    <span class="n">sb</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">opCode</span><span class="o">=</span><span class="mh">0x12</span><span class="p">)</span>
+    <span class="n">sb</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">remData</span><span class="o">=</span><span class="mh">0x34</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="connecting-two-simulated-endpoints">
+<h2>Connecting Two Simulated Endpoints<a class="headerlink" href="#connecting-two-simulated-endpoints" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue.interfaces.simulation</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pis</span>
+
+<span class="c1"># Build two simulated endpoints using different base-port ranges.</span>
+<span class="k">with</span> <span class="n">pis</span><span class="o">.</span><span class="n">Pgp2bSim</span><span class="p">(</span><span class="n">vcCount</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">9000</span><span class="p">)</span> <span class="k">as</span> <span class="n">a</span><span class="p">,</span> \
+     <span class="n">pis</span><span class="o">.</span><span class="n">Pgp2bSim</span><span class="p">(</span><span class="n">vcCount</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">9100</span><span class="p">)</span> <span class="k">as</span> <span class="n">b</span><span class="p">:</span>
+
+    <span class="c1"># Connect all VCs bidirectionally and link sideband callbacks.</span>
+    <span class="n">pis</span><span class="o">.</span><span class="n">connectPgp2bSim</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">connectPgp2bSim(a,</span> <span class="pre">b)</span></code> links each VC pair bidirectionally and cross-connects
+sideband callbacks.</p>
+</section>
+<section id="operational-notes">
+<h2>Operational Notes<a class="headerlink" href="#operational-notes" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Use distinct base-port ranges per endpoint to avoid overlap.</p></li>
+<li><p>Keep <code class="docutils literal notranslate"><span class="pre">vcCount</span></code> matched between both endpoints when linking.</p></li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">with</span></code> context management so background resources are cleaned up
+automatically.</p></li>
+</ul>
+</section>
+<section id="logging">
+<h2>Logging<a class="headerlink" href="#logging" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">Pgp2bSim</span></code> itself is a composition wrapper and does not create a dedicated
+logger of its own.</p>
+<p>The useful logging comes from two lower layers:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">SideBandSim</span></code> uses Python logging with names of the form
+<code class="docutils literal notranslate"><span class="pre">pyrogue.SideBandSim.&lt;host&gt;.&lt;port&gt;</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SideBandSim</span></code> logging API:
+<code class="docutils literal notranslate"><span class="pre">pyrogue.setLogLevel('pyrogue.SideBandSim',</span> <span class="pre">'DEBUG')</span></code></p></li>
+<li><p>The underlying TCP stream endpoints can be debugged through the normal
+TCP bridge logger family documented in <a class="reference internal" href="../../stream_interface/tcp_bridge.html"><span class="doc">Stream TCP Bridge</span></a></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">TcpCore</span></code> unified logging API:
+<code class="docutils literal notranslate"><span class="pre">pyrogue.setLogLevel('pyrogue.stream.TcpCore',</span> <span class="pre">'DEBUG')</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">TcpCore</span></code> legacy logging API:
+<code class="docutils literal notranslate"><span class="pre">rogue.Logging.setFilter('pyrogue.stream.TcpCore',</span> <span class="pre">rogue.Logging.Debug)</span></code></p></li>
+</ul>
+</section>
+<section id="related-topics">
+<h2>Related Topics<a class="headerlink" href="#related-topics" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Stream topologies and connection operators: <a class="reference internal" href="../../stream_interface/connecting.html"><span class="doc">Connecting Streams</span></a></p></li>
+<li><p>TCP stream transport behavior: <a class="reference internal" href="../../stream_interface/tcp_bridge.html"><span class="doc">Stream TCP Bridge</span></a></p></li>
+</ul>
+</section>
+<section id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Python:</p>
+<ul>
+<li><p><a class="reference internal" href="../../api/python/pyrogue/interfaces/simulation/pgp2bsim.html"><span class="doc">Pgp2bSim</span></a></p></li>
+<li><p><a class="reference internal" href="../../api/python/pyrogue/interfaces/simulation/sidebandsim.html"><span class="doc">SideBandSim</span></a></p></li>
+<li><p><a class="reference internal" href="../../api/python/rogue/interfaces/stream/tcpclient.html"><span class="doc">TcpClient</span></a></p></li>
+</ul>
+</li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="mememulate.html" class="btn btn-neutral float-left" title="MemEmulate" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../protocols/index.html" class="btn btn-neutral float-right" title="Protocols" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

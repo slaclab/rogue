@@ -1,0 +1,304 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Batcher Protocol Combiner &mdash; Rogue v6.9.0-146-g9016781d5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=8b50afe1" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=5f168154"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../_static/custom.js?v=7b5dfb0b"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Batcher Protocol Inverter" href="inverter.html" />
+    <link rel="prev" title="Batcher Protocol" href="index.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Built-in Modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../interfaces/index.html">Interfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../simulation/index.html">Simulation Utilities</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">Protocols</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../udp/index.html">UDP Protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../rssi/index.html">RSSI Protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../packetizer/index.html">Packetizer Protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../network.html">Network Wrapper</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">Batcher Protocol</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Batcher Protocol Combiner</a></li>
+<li class="toctree-l4"><a class="reference internal" href="inverter.html">Batcher Protocol Inverter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splitter.html">Batcher Protocol Splitter</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../epicsV4/index.html">EPICS V4 Access</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../epicsV7/index.html">EPICS V7 Access</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../srp/index.html">SRP Protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../xilinx/index.html">Xilinx Protocols</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../uart.html">UART Memory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gpib.html">GPIB Control</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../hardware/index.html">Hardware</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utilities/index.html">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">API Reference</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Built-in Modules</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Protocols</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Batcher Protocol</a></li>
+      <li class="breadcrumb-item active">Batcher Protocol Combiner</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/built_in_modules/protocols/batcher/combiner.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="batcher-protocol-combiner">
+<span id="protocols-batcher-combinerv2"></span><span id="protocols-batcher-combinerv1"></span><span id="protocols-batcher-combiner"></span><h1>Batcher Protocol Combiner<a class="headerlink" href="#batcher-protocol-combiner" title="Link to this heading"></a></h1>
+<p>For building batcher super-frames in software from individual Rogue stream
+frames, Rogue provides <code class="docutils literal notranslate"><span class="pre">rogue.protocols.batcher.CombinerV1</span></code> and
+<code class="docutils literal notranslate"><span class="pre">CombinerV2</span></code>. These are the software equivalents of the firmware batcher and
+the inverse of the splitter classes.</p>
+<p>Use a combiner when you need to produce batched super-frames in software,
+for example to emulate firmware batching in test setups, or to generate
+controlled inputs for CI regression testing of the unbatcher (splitter)
+classes.</p>
+<section id="version-selection">
+<h2>Version Selection<a class="headerlink" href="#version-selection" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">CombinerV1</span></code> to produce batcher v1 super-frames.</p></li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">CombinerV2</span></code> to produce batcher v2 super-frames.</p></li>
+</ul>
+</section>
+<section id="how-combining-works">
+<h2>How Combining Works<a class="headerlink" href="#how-combining-works" title="Link to this heading"></a></h2>
+<p>The combiner operates in two phases:</p>
+<ol class="arabic simple">
+<li><p><strong>Queue</strong> – Individual frames are accepted via the stream slave interface
+(<code class="docutils literal notranslate"><span class="pre">acceptFrame()</span></code>). Each frame’s payload, channel, firstUser, and lastUser
+are preserved in the queue.</p></li>
+<li><p><strong>Batch</strong> – Calling <code class="docutils literal notranslate"><span class="pre">sendBatch()</span></code> builds a single batcher super-frame
+containing all queued frames, writes the appropriate super-header and
+per-record tails, and emits the super-frame downstream.</p></li>
+</ol>
+<p><code class="docutils literal notranslate"><span class="pre">CombinerV1</span></code> writes the width-dependent header and tail padding required by
+the v1 protocol. The <code class="docutils literal notranslate"><span class="pre">width</span></code> constructor parameter controls the AXI stream
+width encoding (0 = 16-bit through 5 = 512-bit).</p>
+<p><code class="docutils literal notranslate"><span class="pre">CombinerV2</span></code> writes the fixed 2-byte header and 7-byte per-record tails
+defined by the v2 protocol.</p>
+</section>
+<section id="round-trip-guarantee">
+<h2>Round-Trip Guarantee<a class="headerlink" href="#round-trip-guarantee" title="Link to this heading"></a></h2>
+<p>A combiner followed by the matching splitter reproduces the original frames:</p>
+<ul class="simple">
+<li><p>Payload bytes are identical.</p></li>
+<li><p>Channel, firstUser, and lastUser metadata are preserved.</p></li>
+</ul>
+<p>This makes the combiner useful as a test fixture for CI regression testing
+of the splitter and inverter classes.</p>
+</section>
+<section id="python-examples">
+<h2>Python Examples<a class="headerlink" href="#python-examples" title="Link to this heading"></a></h2>
+<section id="v1">
+<h3>V1<a class="headerlink" href="#v1" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">rogue.protocols.batcher</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">rogue.interfaces.stream</span>
+
+<span class="c1"># Build a batcher v1 super-frame from individual frames.</span>
+<span class="n">combiner</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">batcher</span><span class="o">.</span><span class="n">CombinerV1</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>  <span class="c1"># width=2 -&gt; 64-bit</span>
+
+<span class="c1"># Downstream splitter to verify round-trip.</span>
+<span class="n">splitter</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">batcher</span><span class="o">.</span><span class="n">SplitterV1</span><span class="p">()</span>
+<span class="n">dst</span> <span class="o">=</span> <span class="n">MyRecordSink</span><span class="p">()</span>
+
+<span class="c1"># Connect a stream source to the combiner, then to the splitter/sink.</span>
+<span class="n">src</span> <span class="o">=</span> <span class="n">MyFrameSource</span><span class="p">()</span>
+<span class="n">src</span> <span class="o">&gt;&gt;</span> <span class="n">combiner</span>
+<span class="n">combiner</span> <span class="o">&gt;&gt;</span> <span class="n">splitter</span> <span class="o">&gt;&gt;</span> <span class="n">dst</span>
+
+<span class="c1"># src sends frames into the combiner via the stream interface,</span>
+<span class="c1"># which queues them internally. Then sendBatch() builds and emits</span>
+<span class="c1"># the super-frame downstream.</span>
+<span class="n">combiner</span><span class="o">.</span><span class="n">sendBatch</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="v2">
+<h3>V2<a class="headerlink" href="#v2" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">rogue.protocols.batcher</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">rogue.interfaces.stream</span>
+
+<span class="c1"># Build a batcher v2 super-frame from individual frames.</span>
+<span class="n">combiner</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">batcher</span><span class="o">.</span><span class="n">CombinerV2</span><span class="p">()</span>
+
+<span class="c1"># Downstream splitter to verify round-trip.</span>
+<span class="n">splitter</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">batcher</span><span class="o">.</span><span class="n">SplitterV2</span><span class="p">()</span>
+<span class="n">dst</span> <span class="o">=</span> <span class="n">MyRecordSink</span><span class="p">()</span>
+
+<span class="c1"># Connect a stream source to the combiner, then to the splitter/sink.</span>
+<span class="n">src</span> <span class="o">=</span> <span class="n">MyFrameSource</span><span class="p">()</span>
+<span class="n">src</span> <span class="o">&gt;&gt;</span> <span class="n">combiner</span>
+<span class="n">combiner</span> <span class="o">&gt;&gt;</span> <span class="n">splitter</span> <span class="o">&gt;&gt;</span> <span class="n">dst</span>
+
+<span class="c1"># src sends frames into the combiner via the stream interface,</span>
+<span class="c1"># which queues them internally. Then sendBatch() builds and emits</span>
+<span class="c1"># the super-frame downstream.</span>
+<span class="n">combiner</span><span class="o">.</span><span class="n">sendBatch</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="c-example">
+<h2>C++ Example<a class="headerlink" href="#c-example" title="Link to this heading"></a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;rogue/protocols/batcher/CombinerV1.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;rogue/protocols/batcher/SplitterV1.h&gt;</span>
+
+<span class="k">namespace</span><span class="w"> </span><span class="nn">rpb</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nn">rogue</span><span class="o">::</span><span class="nn">protocols</span><span class="o">::</span><span class="nn">batcher</span><span class="p">;</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// Width=2 -&gt; 64-bit AXI stream.</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">combiner</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rpb</span><span class="o">::</span><span class="n">CombinerV1</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">splitter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rpb</span><span class="o">::</span><span class="n">SplitterV1</span><span class="o">::</span><span class="n">create</span><span class="p">();</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">dst</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MyRecordSink</span><span class="o">::</span><span class="n">create</span><span class="p">();</span>
+
+<span class="w">    </span><span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="n">combiner</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">splitter</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">dst</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// After queuing frames via the stream interface:</span>
+<span class="w">    </span><span class="n">combiner</span><span class="o">-&gt;</span><span class="n">sendBatch</span><span class="p">();</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="threading-and-lifecycle">
+<h2>Threading And Lifecycle<a class="headerlink" href="#threading-and-lifecycle" title="Link to this heading"></a></h2>
+<p>The combiner classes do not create worker threads. Frame queueing runs
+synchronously inside <code class="docutils literal notranslate"><span class="pre">acceptFrame()</span></code>, and batch building runs
+synchronously inside <code class="docutils literal notranslate"><span class="pre">sendBatch()</span></code>.</p>
+</section>
+<section id="related-topics">
+<h2>Related Topics<a class="headerlink" href="#related-topics" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="index.html"><span class="doc">Batcher Protocol</span></a></p></li>
+<li><p><a class="reference internal" href="splitter.html"><span class="doc">Batcher Protocol Splitter</span></a></p></li>
+</ul>
+</section>
+<section id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Python:
+<a class="reference internal" href="../../../api/python/rogue/protocols/batcher/combinerv1.html"><span class="doc">CombinerV1</span></a>
+<a class="reference internal" href="../../../api/python/rogue/protocols/batcher/combinerv2.html"><span class="doc">CombinerV2</span></a></p></li>
+<li><p>C++:
+<a class="reference internal" href="../../../api/cpp/protocols/batcher/combinerV1.html"><span class="doc">CombinerV1</span></a>
+<a class="reference internal" href="../../../api/cpp/protocols/batcher/combinerV2.html"><span class="doc">CombinerV2</span></a></p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Batcher Protocol" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="inverter.html" class="btn btn-neutral float-right" title="Batcher Protocol Inverter" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

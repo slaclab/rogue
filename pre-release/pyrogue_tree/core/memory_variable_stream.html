@@ -1,0 +1,274 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Variable Update Stream &mdash; Rogue v6.9.0-146-g9016781d5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=8b50afe1" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=5f168154"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/custom.js?v=7b5dfb0b"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Groups" href="groups.html" />
+    <link rel="prev" title="YAML Configuration" href="yaml_configuration.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">PyRogue Tree</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Components And Concepts</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="root.html">Root</a></li>
+<li class="toctree-l3"><a class="reference internal" href="device.html">Device</a></li>
+<li class="toctree-l3"><a class="reference internal" href="variable.html">Variable</a></li>
+<li class="toctree-l3"><a class="reference internal" href="command.html">Command</a></li>
+<li class="toctree-l3"><a class="reference internal" href="block.html">Blocks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="block_operations.html">Device Block Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="model.html">Model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fixed_point_models.html">Fixed-Point Models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="float_types_summary.html">Floating Point Types Summary</a></li>
+<li class="toctree-l3"><a class="reference internal" href="poll_queue.html">PollQueue</a></li>
+<li class="toctree-l3"><a class="reference internal" href="yaml_configuration.html">YAML Configuration</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Variable Update Stream</a></li>
+<li class="toctree-l3"><a class="reference internal" href="groups.html">Groups</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../builtin_devices/index.html">Built-in Devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../client_interfaces/index.html">Client Interfaces</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">API Reference</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">PyRogue Tree</a></li>
+          <li class="breadcrumb-item"><a href="index.html">PyRogue Tree Components And Concepts</a></li>
+      <li class="breadcrumb-item active">Variable Update Stream</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/pyrogue_tree/core/memory_variable_stream.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="variable-update-stream">
+<span id="interfaces-python-memory-variable"></span><h1>Variable Update Stream<a class="headerlink" href="#variable-update-stream" title="Link to this heading"></a></h1>
+<p><a class="reference internal" href="../../api/python/rogue/interfaces/stream/variable.html#pyrogue.interfaces.stream.Variable" title="pyrogue.interfaces.stream.Variable"><code class="xref py py-class docutils literal notranslate"><span class="pre">Variable</span></code></a> is a stream <code class="docutils literal notranslate"><span class="pre">Master</span></code> that
+publishes PyRogue Variable updates as YAML payload frames.</p>
+<p>This is useful when you want to bridge tree updates into an existing stream
+pipeline (for logging, forwarding, filtering, or transport) without polling
+variables manually.</p>
+<p>In the Core model, this adapter sits at the boundary between tree-update
+semantics and stream transport plumbing. <code class="docutils literal notranslate"><span class="pre">Root</span></code> and <code class="docutils literal notranslate"><span class="pre">Variable</span></code> still
+govern when values change. The stream adapter only listens for those updates,
+packages them into YAML, and sends them as stream Frames.</p>
+<section id="how-it-works">
+<h2>How It Works<a class="headerlink" href="#how-it-works" title="Link to this heading"></a></h2>
+<p>When the stream object is constructed, it registers a Root variable listener
+with <code class="docutils literal notranslate"><span class="pre">root.addVarListener(func=...,</span> <span class="pre">done=...)</span></code>.</p>
+<p>At runtime:</p>
+<ul class="simple">
+<li><p>Each Variable update callback contributes one entry to an internal
+path-keyed update map.</p></li>
+<li><p>The callback receives a <code class="xref py py-class docutils literal notranslate"><span class="pre">pyrogue.VariableValue</span></code> snapshot, not just
+a raw Python value.</p></li>
+<li><p>When the Root finishes the current update batch and calls the listener’s
+<code class="docutils literal notranslate"><span class="pre">done</span></code> hook, the stream emits one YAML Frame containing the accumulated
+updates.</p></li>
+</ul>
+<p>This batching matters. A multi-Variable operation wrapped in
+<code class="docutils literal notranslate"><span class="pre">Root.updateGroup()</span></code> is normally emitted as one stream Frame rather than a
+burst of one-frame-per-variable traffic.</p>
+<p>The class can also emit a full YAML snapshot on demand with <code class="docutils literal notranslate"><span class="pre">streamYaml()</span></code>.</p>
+</section>
+<section id="data-format">
+<h2>Data Format<a class="headerlink" href="#data-format" title="Link to this heading"></a></h2>
+<p>Frames contain UTF-8 YAML text. In batch-update mode, payload content is built
+from the listener’s accumulated <code class="docutils literal notranslate"><span class="pre">{path:</span> <span class="pre">VariableValue}</span></code> update map. The YAML
+representer serializes each <code class="docutils literal notranslate"><span class="pre">VariableValue</span></code> to its current value, so the
+result is effectively a flat map of full Variable paths to values.</p>
+<p>In snapshot mode, payload content comes from
+<code class="docutils literal notranslate"><span class="pre">Root.getYaml(readFirst=False,</span> <span class="pre">...)</span></code>. That means snapshot frames use the
+normal tree-shaped YAML structure rooted at the <code class="docutils literal notranslate"><span class="pre">Root</span></code> name.</p>
+<p>In other words:</p>
+<ul class="simple">
+<li><p>Update frames are delta-style and path-keyed.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">streamYaml()</span></code> emits a full subtree snapshot.</p></li>
+</ul>
+<p>Neither mode forces a hardware read by itself. <code class="docutils literal notranslate"><span class="pre">streamYaml()</span></code> explicitly uses
+<code class="docutils literal notranslate"><span class="pre">readFirst=False</span></code>, so it serializes the currently cached tree state.</p>
+</section>
+<section id="group-filtering">
+<h2>Group Filtering<a class="headerlink" href="#group-filtering" title="Link to this heading"></a></h2>
+<p>The constructor accepts the same include/exclude filtering model used by Root
+variable listeners:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">incGroups</span></code> limits updates to Variables in selected groups.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">excGroups</span></code> suppresses Variables in selected groups.</p></li>
+</ul>
+<p>The default <code class="docutils literal notranslate"><span class="pre">excGroups=['NoStream']</span></code> means Variables in the built-in
+<code class="docutils literal notranslate"><span class="pre">NoStream</span></code> group are omitted unless you override that policy. This is the
+standard way to keep noisy, internal, or operator-irrelevant Variables out of
+configuration/status streams.</p>
+</section>
+<section id="typical-integration-pattern">
+<h2>Typical Integration Pattern<a class="headerlink" href="#typical-integration-pattern" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue.interfaces.stream</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pis</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue.utilities.fileio</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">puf</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyRoot</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="c1"># Emit variable updates as YAML frames.</span>
+        <span class="n">cfg_stream</span> <span class="o">=</span> <span class="n">pis</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">root</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">incGroups</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">excGroups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;NoStream&#39;</span><span class="p">])</span>
+
+        <span class="c1"># Record configuration/update frames on channel 1.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_writer</span> <span class="o">=</span> <span class="n">puf</span><span class="o">.</span><span class="n">StreamWriter</span><span class="p">(</span><span class="n">configStream</span><span class="o">=</span><span class="p">{</span><span class="mi">1</span><span class="p">:</span> <span class="n">cfg_stream</span><span class="p">},</span> <span class="n">rawMode</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_writer</span><span class="p">)</span>
+
+        <span class="c1"># Optional one-shot full snapshot frame.</span>
+        <span class="n">cfg_stream</span><span class="o">.</span><span class="n">streamYaml</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>This pattern is common when a design already has a Rogue stream pipeline and
+you want configuration or status updates to flow through the same transport.</p>
+</section>
+<section id="when-to-use-it">
+<h2>When To Use It<a class="headerlink" href="#when-to-use-it" title="Link to this heading"></a></h2>
+<p>Use the stream adapter when the important problem is transport integration:</p>
+<ul class="simple">
+<li><p>Forwarding tree updates into an existing stream path.</p></li>
+<li><p>Recording configuration or state changes alongside other stream data.</p></li>
+<li><p>Feeding a downstream logging, bridging, or filtering stage that already
+speaks Rogue stream Frames.</p></li>
+</ul>
+<p>Prefer event-driven updates over periodic full snapshots when you want lower
+traffic and better temporal correlation to actual tree changes. Use
+<code class="docutils literal notranslate"><span class="pre">streamYaml()</span></code> when a consumer needs a complete baseline frame, such as at
+file open or stream startup.</p>
+</section>
+<section id="what-to-explore-next">
+<h2>What To Explore Next<a class="headerlink" href="#what-to-explore-next" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Variable behavior and grouping policy: <a class="reference internal" href="variable.html"><span class="doc">Variable</span></a></p></li>
+<li><p>Group filters such as <code class="docutils literal notranslate"><span class="pre">NoStream</span></code>: <a class="reference internal" href="groups.html"><span class="doc">Groups</span></a></p></li>
+</ul>
+</section>
+<section id="related-topics">
+<h2>Related Topics<a class="headerlink" href="#related-topics" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Stream topology and transport flow: <a class="reference internal" href="../../stream_interface/index.html"><span class="doc">Stream Interface</span></a></p></li>
+<li><p>Stream connection patterns: <a class="reference internal" href="../../stream_interface/connecting.html"><span class="doc">Connecting Streams</span></a></p></li>
+<li><p>Frame send/receive APIs: <a class="reference internal" href="../../stream_interface/sending.html"><span class="doc">Sending Frames</span></a> and <a class="reference internal" href="../../stream_interface/receiving.html"><span class="doc">Receiving Frames</span></a></p></li>
+</ul>
+</section>
+<section id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<p>See <a class="reference internal" href="../../api/python/rogue/interfaces/stream/variable.html"><span class="doc">Variable</span></a> for generated API details.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="yaml_configuration.html" class="btn btn-neutral float-left" title="YAML Configuration" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="groups.html" class="btn btn-neutral float-right" title="Groups" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

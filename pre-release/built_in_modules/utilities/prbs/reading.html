@@ -1,0 +1,284 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Receiving PRBS Frames &mdash; Rogue v6.9.0-146-g9016781d5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=8b50afe1" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=5f168154"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../_static/custom.js?v=7b5dfb0b"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="HLS Utilities" href="../hls/index.html" />
+    <link rel="prev" title="Generating PRBS Frames" href="writing.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Built-in Modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../interfaces/index.html">Interfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../simulation/index.html">Simulation Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../protocols/index.html">Protocols</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../hardware/index.html">Hardware</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">Utilities</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../fileio/index.html">File I/O Utilities</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">PRBS Utilities</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="writing.html">Generating PRBS Frames</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Receiving PRBS Frames</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../hls/index.html">HLS Utilities</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../compression/index.html">Compression Utilities</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">API Reference</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Built-in Modules</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Utilities</a></li>
+          <li class="breadcrumb-item"><a href="index.html">PRBS Utilities</a></li>
+      <li class="breadcrumb-item active">Receiving PRBS Frames</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/built_in_modules/utilities/prbs/reading.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="receiving-prbs-frames">
+<span id="utilities-prbs-reading"></span><h1>Receiving PRBS Frames<a class="headerlink" href="#receiving-prbs-frames" title="Link to this heading"></a></h1>
+<p>PRBS receive paths verify stream data integrity and collect error counters
+after a transport or processing chain.</p>
+<p>When receive state should be visible to operators, GUIs, or remote clients
+through the tree, PyRogue provides <code class="docutils literal notranslate"><span class="pre">pyrogue.utilities.prbs.PrbsRx</span></code>. It wraps
+the underlying <code class="docutils literal notranslate"><span class="pre">rogue.utilities.Prbs</span></code> checker and exposes the receive
+counters as <code class="docutils literal notranslate"><span class="pre">Variables</span></code>.</p>
+<p>The direct <code class="docutils literal notranslate"><span class="pre">rogue.utilities.Prbs</span></code> form remains the smaller fit for scripts
+and standalone graphs that only need a checker endpoint.</p>
+<p>PRBS receive paths commonly check streams generated by FPGA firmware/VHDL
+implementations.</p>
+<section id="common-controls">
+<h2>Common Controls<a class="headerlink" href="#common-controls" title="Link to this heading"></a></h2>
+<p>Most receive setups are shaped by:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">rxEnable</span></code>
+Enable or disable checking.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">checkPayload</span></code>
+Control whether payload contents are verified.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">width</span></code> and <code class="docutils literal notranslate"><span class="pre">taps</span></code>
+Match the generator or firmware PRBS settings.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PrbsPair</span></code>
+Use this when one node should own both the transmit and receive wrappers for
+a loopback or paired-end validation setup.</p></li>
+</ul>
+<p>The direct Rogue endpoint provides the lower-level receive-side methods such as
+<code class="docutils literal notranslate"><span class="pre">getRxCount()</span></code>, <code class="docutils literal notranslate"><span class="pre">getRxErrors()</span></code>, <code class="docutils literal notranslate"><span class="pre">getRxBytes()</span></code>, <code class="docutils literal notranslate"><span class="pre">setWidth(width)</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">setTaps(taps)</span></code>.</p>
+</section>
+<section id="using-prbsrx-in-a-tree">
+<h2>Using <code class="docutils literal notranslate"><span class="pre">PrbsRx</span></code> In A Tree<a class="headerlink" href="#using-prbsrx-in-a-tree" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">pyrogue.utilities.prbs.PrbsRx</span></code> is the tree-managed form of the PRBS
+checker.</p>
+<p>Use it when receive counters, payload-check settings, and link-health state
+should be visible in the PyRogue tree. For loopback tests where both sides
+should live under one node, <code class="docutils literal notranslate"><span class="pre">pyrogue.utilities.prbs.PrbsPair</span></code> packages the
+same transmit and receive wrappers together.</p>
+</section>
+<section id="python-direct-utility-example">
+<h2>Python Direct-Utility Example<a class="headerlink" href="#python-direct-utility-example" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">rogue.utilities</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ru</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">rogue.utilities.fileio</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ruf</span>
+
+<span class="c1"># Replay captured frames from file.</span>
+<span class="n">fread</span> <span class="o">=</span> <span class="n">ruf</span><span class="o">.</span><span class="n">StreamReader</span><span class="p">()</span>
+
+<span class="c1"># Create PRBS checker endpoint.</span>
+<span class="n">prbs</span> <span class="o">=</span> <span class="n">ru</span><span class="o">.</span><span class="n">Prbs</span><span class="p">()</span>
+
+<span class="c1"># Feed replayed stream into checker.</span>
+<span class="n">prbs</span> <span class="o">&lt;&lt;</span> <span class="n">fread</span>
+
+<span class="c1"># Replay full split-file sequence and wait for completion.</span>
+<span class="n">fread</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;myFile.dat.1&quot;</span><span class="p">)</span>
+<span class="n">fread</span><span class="o">.</span><span class="n">closeWait</span><span class="p">()</span>
+
+<span class="c1"># Summarize checker statistics.</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Received </span><span class="si">{</span><span class="n">prbs</span><span class="o">.</span><span class="n">getRxCount</span><span class="p">()</span><span class="si">}</span><span class="s2"> frames&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Received </span><span class="si">{</span><span class="n">prbs</span><span class="o">.</span><span class="n">getRxErrors</span><span class="p">()</span><span class="si">}</span><span class="s2"> errors&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="python-tree-managed-example">
+<h2>Python Tree-Managed Example<a class="headerlink" href="#python-tree-managed-example" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue.utilities.fileio</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">puf</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue.utilities.prbs</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pup</span>
+
+<span class="c1"># Add tree-managed replay source and PRBS receiver.</span>
+<span class="n">fread</span> <span class="o">=</span> <span class="n">puf</span><span class="o">.</span><span class="n">StreamReader</span><span class="p">()</span>
+<span class="n">root</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">fread</span><span class="p">)</span>
+
+<span class="n">prbs</span> <span class="o">=</span> <span class="n">pup</span><span class="o">.</span><span class="n">PrbsRx</span><span class="p">()</span>
+<span class="n">root</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">prbs</span><span class="p">)</span>
+
+<span class="c1"># Route replayed stream into tree-managed PRBS checker.</span>
+<span class="n">fread</span> <span class="o">&gt;&gt;</span> <span class="n">prbs</span>
+</pre></div>
+</div>
+</section>
+<section id="c-prbs-receiver-example">
+<h2>C++ PRBS Receiver Example<a class="headerlink" href="#c-prbs-receiver-example" title="Link to this heading"></a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;rogue/utilities/fileio/StreamReader.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;rogue/utilities/Prbs.h&gt;</span>
+
+<span class="k">namespace</span><span class="w"> </span><span class="nn">ru</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="nn">rogue</span><span class="o">::</span><span class="nn">utilities</span><span class="p">;</span>
+<span class="k">namespace</span><span class="w"> </span><span class="nn">ruf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nn">rogue</span><span class="o">::</span><span class="nn">utilities</span><span class="o">::</span><span class="nn">fileio</span><span class="p">;</span>
+
+<span class="c1">// Create replay source and PRBS checker.</span>
+<span class="k">auto</span><span class="w"> </span><span class="n">fread</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ruf</span><span class="o">::</span><span class="n">StreamReader</span><span class="o">::</span><span class="n">create</span><span class="p">();</span>
+<span class="k">auto</span><span class="w"> </span><span class="n">prbs</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">ru</span><span class="o">::</span><span class="n">Prbs</span><span class="o">::</span><span class="n">create</span><span class="p">();</span>
+
+<span class="c1">// Feed replayed stream into checker.</span>
+<span class="o">*</span><span class="n">prbs</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">fread</span><span class="p">;</span>
+
+<span class="c1">// Replay full split-file sequence and wait for completion.</span>
+<span class="n">fread</span><span class="o">-&gt;</span><span class="n">open</span><span class="p">(</span><span class="s">&quot;myFile.dat.1&quot;</span><span class="p">);</span>
+<span class="n">fread</span><span class="o">-&gt;</span><span class="n">closeWait</span><span class="p">();</span>
+
+<span class="c1">// Summarize checker statistics.</span>
+<span class="n">printf</span><span class="p">(</span><span class="s">&quot;Received %u frames</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">prbs</span><span class="o">-&gt;</span><span class="n">getRxCount</span><span class="p">());</span>
+<span class="n">printf</span><span class="p">(</span><span class="s">&quot;Received %u errors</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">prbs</span><span class="o">-&gt;</span><span class="n">getRxErrors</span><span class="p">());</span>
+</pre></div>
+</div>
+</section>
+<section id="related-topics">
+<h2>Related Topics<a class="headerlink" href="#related-topics" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="index.html"><span class="doc">PRBS Utilities</span></a></p></li>
+<li><p><a class="reference internal" href="writing.html"><span class="doc">Generating PRBS Frames</span></a></p></li>
+</ul>
+</section>
+<section id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Python:</p>
+<ul>
+<li><p><a class="reference internal" href="../../../api/python/rogue/utilities/prbs/prbs.html"><span class="doc">Prbs</span></a></p></li>
+<li><p><a class="reference internal" href="../../../api/python/pyrogue/utilities/prbs/prbsrx.html"><span class="doc">PrbsRx</span></a></p></li>
+<li><p><a class="reference internal" href="../../../api/python/pyrogue/utilities/prbs/prbspair.html"><span class="doc">PrbsPair</span></a></p></li>
+</ul>
+</li>
+<li><p>C++:</p>
+<ul>
+<li><p><a class="reference internal" href="../../../api/cpp/utilities/prbs/prbs.html"><span class="doc">PRBS</span></a></p></li>
+</ul>
+</li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="writing.html" class="btn btn-neutral float-left" title="Generating PRBS Frames" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../hls/index.html" class="btn btn-neutral float-right" title="HLS Utilities" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

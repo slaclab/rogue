@@ -1,0 +1,337 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>YAML Configuration &mdash; Rogue v6.9.0-146-g9016781d5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=8b50afe1" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=5f168154"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/custom.js?v=7b5dfb0b"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Variable Update Stream" href="memory_variable_stream.html" />
+    <link rel="prev" title="PollQueue" href="poll_queue.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">PyRogue Tree</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Components And Concepts</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="root.html">Root</a></li>
+<li class="toctree-l3"><a class="reference internal" href="device.html">Device</a></li>
+<li class="toctree-l3"><a class="reference internal" href="variable.html">Variable</a></li>
+<li class="toctree-l3"><a class="reference internal" href="command.html">Command</a></li>
+<li class="toctree-l3"><a class="reference internal" href="block.html">Blocks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="block_operations.html">Device Block Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="model.html">Model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fixed_point_models.html">Fixed-Point Models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="float_types_summary.html">Floating Point Types Summary</a></li>
+<li class="toctree-l3"><a class="reference internal" href="poll_queue.html">PollQueue</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">YAML Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="memory_variable_stream.html">Variable Update Stream</a></li>
+<li class="toctree-l3"><a class="reference internal" href="groups.html">Groups</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../builtin_devices/index.html">Built-in Devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../client_interfaces/index.html">Client Interfaces</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">API Reference</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">PyRogue Tree</a></li>
+          <li class="breadcrumb-item"><a href="index.html">PyRogue Tree Components And Concepts</a></li>
+      <li class="breadcrumb-item active">YAML Configuration</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/pyrogue_tree/core/yaml_configuration.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="yaml-configuration">
+<span id="pyrogue-tree-root-yaml-configuration"></span><h1>YAML Configuration<a class="headerlink" href="#yaml-configuration" title="Link to this heading"></a></h1>
+<p>PyRogue supports configuration and state import/export through YAML APIs on
+<code class="docutils literal notranslate"><span class="pre">Root</span></code> and through subtree export on <code class="docutils literal notranslate"><span class="pre">Node</span></code>.</p>
+<p>These APIs are the standard way to capture a known-good configuration, restore
+it later, or inspect the current tree as structured YAML rather than as
+interactive Variables.</p>
+<section id="typical-yaml-workflows">
+<h2>Typical YAML Workflows<a class="headerlink" href="#typical-yaml-workflows" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Configuration baselines for known-good startup values</p></li>
+<li><p>Captured runtime state for debug and issue reproduction</p></li>
+<li><p>Status snapshots for validation and operator handoff</p></li>
+</ul>
+</section>
+<section id="main-entry-points">
+<h2>Main Entry Points<a class="headerlink" href="#main-entry-points" title="Link to this heading"></a></h2>
+<p>The main YAML entry points are:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Node.getYaml(...)</span></code> to export one subtree as YAML text.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Root.saveYaml(...)</span></code> to write YAML to a file, with optional auto-naming.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Root.loadYaml(...)</span></code> to read YAML from one or more files or directories.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Root.setYaml(...)</span></code> to apply YAML text directly.</p></li>
+</ul>
+<p>These APIs also back the built-in hidden Root commands:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">SaveConfig</span></code> / <code class="docutils literal notranslate"><span class="pre">LoadConfig</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SaveState</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SetYamlConfig</span></code> / <code class="docutils literal notranslate"><span class="pre">GetYamlConfig</span></code> / <code class="docutils literal notranslate"><span class="pre">GetYamlState</span></code></p></li>
+</ul>
+<p>The command wrappers mainly pre-select useful defaults for modes and group
+filters.</p>
+</section>
+<section id="configuration-vs-state-filters">
+<h2>Configuration Vs State Filters<a class="headerlink" href="#configuration-vs-state-filters" title="Link to this heading"></a></h2>
+<p>Typical defaults:</p>
+<ul class="simple">
+<li><p>Config operations use modes <code class="docutils literal notranslate"><span class="pre">['RW',</span> <span class="pre">'WO']</span></code> and exclude <code class="docutils literal notranslate"><span class="pre">NoConfig</span></code></p></li>
+<li><p>State operations use modes <code class="docutils literal notranslate"><span class="pre">['RW',</span> <span class="pre">'RO',</span> <span class="pre">'WO']</span></code> and exclude <code class="docutils literal notranslate"><span class="pre">NoState</span></code></p></li>
+</ul>
+<p>That means:</p>
+<ul class="simple">
+<li><p>Read-only Variables are normally ignored for config load</p></li>
+<li><p>Commands are ignored by YAML set/load (<code class="docutils literal notranslate"><span class="pre">BaseCommand._setDict</span></code> is a no-op)</p></li>
+</ul>
+<p>This is why configuration YAML usually reads like “things you can set”, while
+state YAML reads like “everything worth observing”.</p>
+</section>
+<section id="saving-yaml">
+<h2>Saving YAML<a class="headerlink" href="#saving-yaml" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">Node.getYaml(...)</span></code> and <code class="docutils literal notranslate"><span class="pre">Root.saveYaml(...)</span></code> both serialize current tree
+values using the same underlying tree-dictionary path.</p>
+<p>Important export options:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">readFirst=True</span></code> performs a Root-wide read before export.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">modes</span></code> controls which Variable access modes are included.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">incGroups</span></code> and <code class="docutils literal notranslate"><span class="pre">excGroups</span></code> apply the same group-filtering model used
+elsewhere in the tree.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">recurse</span></code> on <code class="docutils literal notranslate"><span class="pre">getYaml(...)</span></code> controls whether child Devices are included.</p></li>
+</ul>
+<p><code class="docutils literal notranslate"><span class="pre">saveYaml(...)</span></code> can either write to a named file or auto-generate a
+timestamped filename. If the target name ends in <code class="docutils literal notranslate"><span class="pre">.zip</span></code>, it writes the YAML
+payload into a compressed zip member.</p>
+</section>
+<section id="loading-and-applying-yaml">
+<h2>Loading And Applying YAML<a class="headerlink" href="#loading-and-applying-yaml" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">Root.loadYaml(...)</span></code> accepts more than a single file path. In the current
+implementation, the input can be:</p>
+<ul class="simple">
+<li><p>A single <code class="docutils literal notranslate"><span class="pre">.yml</span></code> or <code class="docutils literal notranslate"><span class="pre">.yaml</span></code> file.</p></li>
+<li><p>A directory, in which case all <code class="docutils literal notranslate"><span class="pre">.yml</span></code> and <code class="docutils literal notranslate"><span class="pre">.yaml</span></code> files in that
+directory are loaded in sorted order.</p></li>
+<li><p>A zip-file subdirectory path, using the same sorted-order rule on the
+matching member names in that directory.</p></li>
+<li><p>A Python list of those entries.</p></li>
+<li><p>A comma-separated string of entries.</p></li>
+</ul>
+<p><code class="docutils literal notranslate"><span class="pre">Root.setYaml(...)</span></code> applies YAML text directly without going through the
+filesystem.</p>
+<p>YAML content is parsed through <code class="xref py py-func docutils literal notranslate"><span class="pre">pyrogue.yamlToData()</span></code>, so the same
+<code class="docutils literal notranslate"><span class="pre">!include</span></code> handling is available during <code class="docutils literal notranslate"><span class="pre">loadYaml(...)</span></code> as when parsing
+YAML directly. Relative includes are resolved relative to the file being read.</p>
+<p>For directory-like inputs, “sorted order” means an ascending lexicographic sort
+of the full path strings being loaded. For one directory, that is effectively
+lexicographic filename order. For example:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">00-defaults.yml</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">10-overrides.yml</span></code></p></li>
+</ul>
+<p>load in that order, so later files can intentionally override earlier values.</p>
+<p>For <code class="docutils literal notranslate"><span class="pre">loadYaml(...,</span> <span class="pre">writeEach=False)</span></code> and <code class="docutils literal notranslate"><span class="pre">setYaml(...,</span> <span class="pre">writeEach=False)</span></code>,
+the application workflow is:</p>
+<ol class="arabic simple">
+<li><p>Parse YAML input to ordered dictionaries.</p></li>
+<li><p>Traverse the tree and assign Variable display values with
+<code class="docutils literal notranslate"><span class="pre">setDisp(...,</span> <span class="pre">write=False)</span></code>.</p></li>
+<li><p>After the full YAML payload is staged in shadow state, run the normal Root
+configuration-commit path through <code class="docutils literal notranslate"><span class="pre">Root._write()</span></code>.</p></li>
+</ol>
+<p>Implications:</p>
+<ul class="simple">
+<li><p>If a Variable is assigned more than once while loading, the last assignment
+wins in shadow memory before commit</p></li>
+<li><p>Hardware is not touched until the bulk commit step</p></li>
+<li><p>For directory and zip-directory loads, “last assignment wins” follows the
+lexicographic file/member order described above</p></li>
+<li><p>For explicit Python lists or comma-separated file lists, it follows the
+order you passed to <code class="docutils literal notranslate"><span class="pre">loadYaml(...)</span></code></p></li>
+</ul>
+<p>If <code class="docutils literal notranslate"><span class="pre">writeEach=True</span></code>, each <code class="docutils literal notranslate"><span class="pre">setDisp</span></code> write is issued immediately while YAML
+is being traversed (no final consolidated <code class="docutils literal notranslate"><span class="pre">Root._write()</span></code> pass). That means
+later YAML entries can still overwrite earlier values, but the intermediate
+hardware writes have already occurred.</p>
+<p>The load path is wrapped in both <code class="docutils literal notranslate"><span class="pre">Root.pollBlock()</span></code> and <code class="docutils literal notranslate"><span class="pre">Root.updateGroup()</span></code>
+so polling does not race with the configuration operation and listeners see a
+coalesced update batch.</p>
+<p>For zip-file subdirectory loads, only YAML files in the immediate requested
+directory are considered. Nested subdirectories are ignored, matching the
+normal directory behavior.</p>
+<p>The staged values are then committed using the normal tree transaction path.
+For the bulk write, verify, read, and check model behind that commit step, see
+<a class="reference internal" href="block_operations.html"><span class="doc">Device Block Operations</span></a>.</p>
+</section>
+<section id="practical-guidance">
+<h2>Practical Guidance<a class="headerlink" href="#practical-guidance" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Separate baseline configuration from transient runtime state.</p></li>
+<li><p>Track YAML files in source control when they represent release artifacts.</p></li>
+<li><p>Document version compatibility when tree names or meaning change.</p></li>
+<li><p>Prefer <code class="docutils literal notranslate"><span class="pre">writeEach=False</span></code> for coordinated configuration loads unless you
+specifically need immediate per-entry writes.</p></li>
+</ul>
+</section>
+<section id="array-matching-and-slicing-in-yaml-keys">
+<h2>Array Matching And Slicing In YAML Keys<a class="headerlink" href="#array-matching-and-slicing-in-yaml-keys" title="Link to this heading"></a></h2>
+<p>YAML load supports array-style Node matching:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">AmcCard[0]:</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">AmcCard[1:3]:</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">AmcCard[:]:</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">AmcCard[*]:</span></code></p></li>
+</ul>
+<p>Examples:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">Root</span><span class="p">:</span>
+<span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">AmcCard[:]</span><span class="p p-Indicator">:</span>
+<span class="w">    </span><span class="l l-Scalar l-Scalar-Plain">DacEnable[0]</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span>
+
+<span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">AmcCard[1:3]</span><span class="p p-Indicator">:</span>
+<span class="w">    </span><span class="nt">DacEnable</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span>
+</pre></div>
+</div>
+<p>The matching rules follow the same array-aware <code class="docutils literal notranslate"><span class="pre">nodeMatch()</span></code> behavior used by
+the tree:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[0]</span></code> selects one element.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[:]</span></code> and <code class="docutils literal notranslate"><span class="pre">[*]</span></code> select all elements.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[1:3]</span></code> uses Python-style slice semantics, so it selects elements 1 and 2.</p></li>
+</ul>
+<p>Array Variables can also be targeted at the Variable level, for example with
+<code class="docutils literal notranslate"><span class="pre">DacEnable[0]</span></code>.</p>
+<p>Related settings on Root:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ForceWrite</span></code>: force writes of non-stale Blocks in bulk config paths</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">InitAfterConfig</span></code>: call <code class="docutils literal notranslate"><span class="pre">initialize()</span></code> after config apply</p></li>
+</ul>
+</section>
+<section id="what-to-explore-next">
+<h2>What To Explore Next<a class="headerlink" href="#what-to-explore-next" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Root lifecycle and built-in commands: <a class="reference internal" href="root.html"><span class="doc">Root</span></a></p></li>
+<li><p>Group filtering semantics: <a class="reference internal" href="groups.html"><span class="doc">Groups</span></a></p></li>
+<li><p>Device block traversal and commit behavior: <a class="reference internal" href="block_operations.html"><span class="doc">Device Block Operations</span></a></p></li>
+</ul>
+</section>
+<section id="related-topics">
+<h2>Related Topics<a class="headerlink" href="#related-topics" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Polling behavior during bulk operations: <a class="reference internal" href="poll_queue.html"><span class="doc">PollQueue</span></a></p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="poll_queue.html" class="btn btn-neutral float-left" title="PollQueue" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="memory_variable_stream.html" class="btn btn-neutral float-right" title="Variable Update Stream" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

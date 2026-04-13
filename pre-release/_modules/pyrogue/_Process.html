@@ -1,0 +1,462 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pyrogue._Process &mdash; Rogue v6.9.0-146-g9016781d5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=8b50afe1" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=5f168154"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/custom.js?v=7b5dfb0b"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">API Reference</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">pyrogue._Process</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pyrogue._Process</h1><div class="highlight"><pre>
+<span></span><span class="c1">#-----------------------------------------------------------------------------</span>
+<span class="c1"># Company    : SLAC National Accelerator Laboratory</span>
+<span class="c1">#-----------------------------------------------------------------------------</span>
+<span class="c1">#  Description:</span>
+<span class="c1">#       PyRogue base module - Process Device Class</span>
+<span class="c1">#-----------------------------------------------------------------------------</span>
+<span class="c1"># This file is part of the rogue software platform. It is subject to</span>
+<span class="c1"># the license terms in the LICENSE.txt file found in the top-level directory</span>
+<span class="c1"># of this distribution and at:</span>
+<span class="c1">#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.</span>
+<span class="c1"># No part of the rogue software platform, including this file, may be</span>
+<span class="c1"># copied, modified, propagated, or distributed except according to the terms</span>
+<span class="c1"># contained in the LICENSE.txt file.</span>
+<span class="c1">#-----------------------------------------------------------------------------</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">threading</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+
+<div class="viewcode-block" id="Process">
+<a class="viewcode-back" href="../../api/python/pyrogue/process.html#pyrogue.Process">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Process</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Special Device base class to execute complex or long running processes or algorythms involving Variables.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    argVariable : object, optional</span>
+<span class="sd">        Variable providing input arguments.</span>
+<span class="sd">    returnVariable : object, optional</span>
+<span class="sd">        Variable receiving return values.</span>
+<span class="sd">    function : callable, optional</span>
+<span class="sd">        Process callback. The wrapper provides keyword arguments</span>
+<span class="sd">        ``root``, ``dev``, and ``arg``; the function may accept any subset</span>
+<span class="sd">        of these names.</span>
+<span class="sd">        Progress may be updated either as a direct fractional value with</span>
+<span class="sd">        :meth:`setProgress`, or as a step-based ratio using</span>
+<span class="sd">        :meth:`setTotalSteps`, :meth:`setStep`, and :meth:`incrementSteps`.</span>
+<span class="sd">    **kwargs : Any</span>
+<span class="sd">        Additional arguments forwarded to ``Device``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">argVariable</span><span class="p">:</span> <span class="n">pr</span><span class="o">.</span><span class="n">BaseVariable</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">returnVariable</span><span class="p">:</span> <span class="n">pr</span><span class="o">.</span><span class="n">BaseVariable</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">function</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize a process device.&quot;&quot;&quot;</span>
+
+        <span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span>   <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_thread</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_runEn</span>  <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_argVar</span> <span class="o">=</span> <span class="n">argVariable</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_retVar</span> <span class="o">=</span> <span class="n">returnVariable</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_function</span> <span class="o">=</span> <span class="n">function</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_functionWrap</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">functionWrapper</span><span class="p">(</span><span class="n">function</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_function</span><span class="p">,</span> <span class="n">callArgs</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;root&#39;</span><span class="p">,</span> <span class="s1">&#39;dev&#39;</span><span class="p">,</span> <span class="s1">&#39;arg&#39;</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalCommand</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Start&#39;</span><span class="p">,</span>
+            <span class="n">function</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_startProcess</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Start process. No Args.&#39;</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalCommand</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Stop&#39;</span><span class="p">,</span>
+            <span class="n">function</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_stopProcess</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Stop process. No Args.&#39;</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Running&#39;</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">pollInterval</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Status values indicating if operation is running.&#39;</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Progress&#39;</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">units</span><span class="o">=</span><span class="s1">&#39;Pct&#39;</span><span class="p">,</span>
+            <span class="n">value</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+            <span class="n">disp</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{:1.2f}</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="n">localSet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_clampProgressValue</span><span class="p">,</span>
+            <span class="n">pollInterval</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Percent complete: 0 - 100 %.&#39;</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Message&#39;</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">value</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="n">pollInterval</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Process status message. Prefixed with &#39;Error:&#39; if an error occurred.&quot;</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Step&#39;</span><span class="p">,</span>
+            <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">pollInterval</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="n">localSet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_updateProgress</span><span class="p">,</span>
+            <span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;Current number of completed steps. Prefer setStep() or incrementSteps().&quot;</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;TotalSteps&#39;</span><span class="p">,</span>
+            <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">pollInterval</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="n">localSet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_updateProgress</span><span class="p">,</span>
+            <span class="n">description</span> <span class="o">=</span> <span class="s2">&quot;Total number of process steps. Prefer setTotalSteps().&quot;</span><span class="p">))</span>
+
+        <span class="c1"># Add arg variable if not already added</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_argVar</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_argVar</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_argVar</span><span class="p">)</span>
+
+        <span class="c1"># Add return variable if not already added</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_retVar</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_retVar</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_retVar</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_clampedProgress</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return ``value`` clamped into the valid progress range.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">),</span> <span class="mf">1.0</span><span class="p">))</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_clampProgressValue</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">var</span><span class="p">:</span> <span class="n">pr</span><span class="o">.</span><span class="n">BaseVariable</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Clamp direct Progress writes while preserving the variable metadata range.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">var</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="s2">&quot;_block&quot;</span><span class="p">):</span>
+            <span class="n">var</span><span class="o">.</span><span class="n">_block</span><span class="o">.</span><span class="n">_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_clampedProgress</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_updateProgress</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Recompute progress from ``Step`` and ``TotalSteps``.</span>
+
+<span class="sd">        The step counter may temporarily run ahead of the declared total, or</span>
+<span class="sd">        the total may still be zero while a process is being configured.</span>
+<span class="sd">        Keep ``Progress`` bounded so helper callers cannot trip the variable</span>
+<span class="sd">        range checks just by updating ``Step`` and ``TotalSteps`` out of order.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">total</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">TotalSteps</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">total</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">progress</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">progress</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Step</span><span class="o">.</span><span class="n">value</span><span class="p">()</span> <span class="o">/</span> <span class="n">total</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setProgress</span><span class="p">(</span><span class="n">progress</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Process.setProgress">
+<a class="viewcode-back" href="../../api/python/pyrogue/process.html#pyrogue.Process.setProgress">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setProgress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set fractional progress directly.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        value : float</span>
+<span class="sd">            Fractional completion value. Values outside the valid ``0.0`` to</span>
+<span class="sd">            ``1.0`` range are clamped before being stored in ``Progress``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Progress</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_clampedProgress</span><span class="p">(</span><span class="n">value</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="Process.setTotalSteps">
+<a class="viewcode-back" href="../../api/python/pyrogue/process.html#pyrogue.Process.setTotalSteps">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setTotalSteps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the total number of steps used for step-based progress.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        value : int</span>
+<span class="sd">            Total number of expected steps. Non-positive totals cause the</span>
+<span class="sd">            derived progress ratio to read back as ``0.0``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">TotalSteps</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Process.setStep">
+<a class="viewcode-back" href="../../api/python/pyrogue/process.html#pyrogue.Process.setStep">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setStep</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the absolute completed-step count and refresh progress.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        value : int</span>
+<span class="sd">            Absolute completed-step count used when deriving progress from</span>
+<span class="sd">            ``Step`` and ``TotalSteps``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Step</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Process.incrementSteps">
+<a class="viewcode-back" href="../../api/python/pyrogue/process.html#pyrogue.Process.incrementSteps">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">incrementSteps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">incr</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Advance the completed-step count and refresh progress.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        incr : int, optional</span>
+<span class="sd">            Number of completed steps to add. The updated progress ratio is</span>
+<span class="sd">            recomputed from ``Step`` and ``TotalSteps`` and clamped into the</span>
+<span class="sd">            valid ``0.0`` to ``1.0`` range.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">Step</span><span class="o">.</span><span class="n">lock</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Step</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Step</span><span class="o">.</span><span class="n">value</span><span class="p">()</span> <span class="o">+</span> <span class="n">incr</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_incrementSteps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">incr</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Increment step counter and update progress.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        incr : int</span>
+<span class="sd">            Number of steps to add.</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        Compatibility wrapper for existing code. Prefer</span>
+<span class="sd">        :meth:`incrementSteps` in new code.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">incrementSteps</span><span class="p">(</span><span class="n">incr</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_setSteps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set absolute step counter and update progress.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        value : int</span>
+<span class="sd">            New step index.</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        Compatibility wrapper for existing code. Prefer :meth:`setStep` in</span>
+<span class="sd">        new code.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setStep</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_startProcess</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Running</span><span class="o">.</span><span class="n">value</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_runEn</span>  <span class="o">=</span> <span class="kc">True</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_thread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_run</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Process already running!&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_stopProcess</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_runEn</span>  <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_stopProcess</span><span class="p">()</span>
+        <span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="o">.</span><span class="n">_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Start the process with an optional argument.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        arg : object, optional</span>
+<span class="sd">            Argument to set on ``argVariable`` before running.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Running</span><span class="o">.</span><span class="n">value</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">arg</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_argVar</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_argVar</span><span class="o">.</span><span class="n">setDisp</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">_runEn</span>  <span class="o">=</span> <span class="kc">True</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_thread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_run</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Process already running!&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_run</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Running</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">updateGroup</span><span class="p">(</span><span class="n">period</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_process</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">pr</span><span class="o">.</span><span class="n">logException</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">,</span><span class="n">e</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Message</span><span class="o">.</span><span class="n">setDisp</span><span class="p">(</span><span class="s2">&quot;Stopped after error!&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">Running</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_process</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
+
+        <span class="c1"># User has provided a function Update status at start and end and call their function</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_function</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Message</span><span class="o">.</span><span class="n">setDisp</span><span class="p">(</span><span class="s2">&quot;Running&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setStep</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setProgress</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_argVar</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">arg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_argVar</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">arg</span> <span class="o">=</span> <span class="kc">None</span>
+
+            <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_functionWrap</span><span class="p">(</span><span class="n">function</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_function</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="o">=</span><span class="n">arg</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_retVar</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_retVar</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">Message</span><span class="o">.</span><span class="n">setDisp</span><span class="p">(</span><span class="s2">&quot;Done&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setProgress</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
+
+        <span class="c1"># No function run example process</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Message</span><span class="o">.</span><span class="n">setDisp</span><span class="p">(</span><span class="s2">&quot;Started&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setStep</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setTotalSteps</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_runEn</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+                    <span class="k">break</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">setStep</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">Message</span><span class="o">.</span><span class="n">setDisp</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Running for </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> seconds.&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Message</span><span class="o">.</span><span class="n">setDisp</span><span class="p">(</span><span class="s2">&quot;Done&quot;</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,195 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PyRogue Tree &mdash; Rogue v6.9.0-146-g9016781d5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=8b50afe1" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5f168154"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script src="../_static/custom.js?v=7b5dfb0b"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="PyRogue Tree Components And Concepts" href="core/index.html" />
+    <link rel="prev" title="Setting Up Rogue In Yocto" href="../installing/yocto.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">PyRogue Tree</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="core/index.html">Components And Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="builtin_devices/index.html">Built-in Devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="client_interfaces/index.html">Client Interfaces</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API Reference</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">PyRogue Tree</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/pyrogue_tree/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pyrogue-tree">
+<span id="id1"></span><h1>PyRogue Tree<a class="headerlink" href="#pyrogue-tree" title="Link to this heading"></a></h1>
+<p>PyRogue organizes application control around a hierarchical tree owned by one
+running <code class="docutils literal notranslate"><span class="pre">Root</span></code>. That tree is where hardware abstractions, operator-facing
+controls, background activity, and remote access meet.</p>
+<p>Most PyRogue work starts with the tree, even when the real task is hardware
+control, register definition, data movement, or GUI integration. The tree is
+the layer that gives those lower-level pieces a stable user-facing structure:
+<code class="docutils literal notranslate"><span class="pre">Device</span></code> Nodes describe the system, <code class="docutils literal notranslate"><span class="pre">Variable</span></code> and <code class="docutils literal notranslate"><span class="pre">Command</span></code> Nodes expose
+state and actions, and client interfaces make that structure visible to tools.</p>
+<p>The section is organized in the same order most users need to learn it:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="core/index.html"><span class="doc">PyRogue Tree Components And Concepts</span></a> explains the object model and runtime behavior of
+<code class="docutils literal notranslate"><span class="pre">Root</span></code>, <code class="docutils literal notranslate"><span class="pre">Device</span></code>, <code class="docutils literal notranslate"><span class="pre">Variable</span></code>, <code class="docutils literal notranslate"><span class="pre">Command</span></code>, <code class="docutils literal notranslate"><span class="pre">Block</span></code>, and <code class="docutils literal notranslate"><span class="pre">Model</span></code>.
+Start here if you are building or extending a tree.</p></li>
+<li><p><a class="reference internal" href="builtin_devices/index.html"><span class="doc">Built-in Devices</span></a> covers reusable <code class="docutils literal notranslate"><span class="pre">Device</span></code> implementations for
+common workflows such as run control, PRBS, stream read/write, and process
+control.</p></li>
+<li><p><a class="reference internal" href="client_interfaces/index.html"><span class="doc">Client Interfaces</span></a> covers the server/client access patterns used
+by scripts, GUIs, notebooks, and command-line tools.</p></li>
+</ul>
+<section id="architectural-view">
+<h2>Architectural View<a class="headerlink" href="#architectural-view" title="Link to this heading"></a></h2>
+<p>The tree model is intentionally independent from hardware bus topology.
+You can optimize memory and stream transport plumbing for performance while
+keeping a stable user-facing organization in the tree.</p>
+<p>That separation is important because it lets one design serve multiple needs at
+once. The same running <code class="docutils literal notranslate"><span class="pre">Root</span></code> can:</p>
+<ul class="simple">
+<li><p>Present a coherent register and control hierarchy to operators.</p></li>
+<li><p>Reuse built-in <code class="docutils literal notranslate"><span class="pre">Device</span></code> helpers for common behaviors.</p></li>
+<li><p>Expose the same live tree to PyDM, command-line clients, notebooks, or other
+remote consumers.</p></li>
+</ul>
+</section>
+<section id="reading-path">
+<h2>Reading Path<a class="headerlink" href="#reading-path" title="Link to this heading"></a></h2>
+<p>If you are new to this part of the docs, the most useful order is:</p>
+<ol class="arabic simple">
+<li><p>Read <a class="reference internal" href="core/index.html"><span class="doc">PyRogue Tree Components And Concepts</span></a> to understand the tree model and the
+role of <code class="docutils literal notranslate"><span class="pre">Root</span></code>.</p></li>
+<li><p>Continue into the core pages for <code class="docutils literal notranslate"><span class="pre">Root</span></code>, <code class="docutils literal notranslate"><span class="pre">Device</span></code>, <code class="docutils literal notranslate"><span class="pre">Variable</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">Command</span></code>.</p></li>
+<li><p>Move to built-in Devices once the composition model is clear.</p></li>
+<li><p>Read client interfaces after you know how the tree is organized internally.</p></li>
+</ol>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">PyRogue Tree:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="core/index.html">Components And Concepts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="builtin_devices/index.html">Built-in Devices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="client_interfaces/index.html">Client Interfaces</a></li>
+</ul>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../installing/yocto.html" class="btn btn-neutral float-left" title="Setting Up Rogue In Yocto" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="core/index.html" class="btn btn-neutral float-right" title="PyRogue Tree Components And Concepts" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

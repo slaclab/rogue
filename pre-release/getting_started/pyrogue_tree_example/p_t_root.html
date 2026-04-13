@@ -1,0 +1,389 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Build Your First PyRogue Root &mdash; Rogue v6.9.0-146-g9016781d5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=8b50afe1" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=5f168154"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/custom.js?v=7b5dfb0b"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Create A Custom PyRogue Device" href="p_t_device.html" />
+    <link rel="prev" title="PyRogue Tree Getting Started Guide" href="../index.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">PyRogue Tree Getting Started Guide</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Build Your First PyRogue Root</a></li>
+<li class="toctree-l3"><a class="reference internal" href="p_t_device.html">Create A Custom PyRogue Device</a></li>
+<li class="toctree-l3"><a class="reference internal" href="full_root.html">Review The Complete Root Example</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorials/device_workflow_tutorial.html">Device Workflow Tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorials/system_integration_tutorial.html">System Integration Tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced_examples/index.html">Advanced Tutorials</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">API Reference</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../tutorials/index.html">Tutorials</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">PyRogue Tree Getting Started Guide</a></li>
+      <li class="breadcrumb-item active">Build Your First PyRogue Root</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/getting_started/pyrogue_tree_example/p_t_root.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="build-your-first-pyrogue-root">
+<span id="tutorials-p-t-root"></span><h1>Build Your First PyRogue Root<a class="headerlink" href="#build-your-first-pyrogue-root" title="Link to this heading"></a></h1>
+<p>Creating a functional PyRogue Root tree from scratch is the goal of this
+walkthrough. Each section adds one building block so you can run, inspect, and
+extend the application incrementally.</p>
+<section id="creating-a-root-node">
+<h2>Creating A Root Node<a class="headerlink" href="#creating-a-root-node" title="Link to this heading"></a></h2>
+<p>The first step is to create the <a class="reference internal" href="../../pyrogue_tree/core/root.html#pyrogue-tree-node-root"><span class="std std-ref">Root</span></a> Node, which is the base Node of the tree.
+In order to do this, we need to create the subclass of Root, including calling the Root node.</p>
+<section id="basic-initialization">
+<h3>Basic Initialization<a class="headerlink" href="#basic-initialization" title="Link to this heading"></a></h3>
+<p>Steps:</p>
+<ol class="arabic simple">
+<li><p>Create the subclass of Root (ExampleRoot)</p></li>
+<li><p>Define needed specialized parameters(_sdata, _fig, _ax)</p></li>
+<li><p>Call the <code class="xref py py-meth docutils literal notranslate"><span class="pre">Root.__init__</span></code></p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">ExampleRoot</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epics4En</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_scnt</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sdata</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fig</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ax</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Example Root&quot;</span><span class="p">,</span>
+                            <span class="n">timeout</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
+                            <span class="n">pollEn</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="create-a-memory-space-emulator">
+<h3>Create a Memory Space Emulator<a class="headerlink" href="#create-a-memory-space-emulator" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Create the <a class="reference internal" href="../../built_in_modules/simulation/mememulate.html#interfaces-simulation-mememulate"><span class="std std-ref">memory emulater</span></a>.</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">ExampleRoot</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epics4En</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="o">...</span>
+        <span class="c1"># Use a memory space emulator</span>
+        <span class="n">sim</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">Emulate</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mh">0x1000</span><span class="p">)</span>
+        <span class="n">sim</span><span class="o">.</span><span class="n">setName</span><span class="p">(</span><span class="s2">&quot;SimSlave&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addInterface</span><span class="p">(</span><span class="n">sim</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="add-your-devices">
+<h3>Add Your Devices<a class="headerlink" href="#add-your-devices" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Add devices (see <a class="reference internal" href="p_t_device.html#tutorials-p-t-device"><span class="std std-ref">AxiVersion</span></a> for an example device class)</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">ExampleRoot</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epics4En</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="o">...</span>
+        <span class="c1"># Add Device</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">examples</span><span class="o">.</span><span class="n">AxiVersion</span><span class="p">(</span><span class="n">memBase</span><span class="o">=</span><span class="n">sim</span><span class="p">,</span>
+                                            <span class="n">guiGroup</span><span class="o">=</span><span class="s1">&#39;TestGroup&#39;</span><span class="p">,</span>
+                                            <span class="n">offset</span><span class="o">=</span><span class="mh">0x0</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">examples</span><span class="o">.</span><span class="n">LargeDevice</span><span class="p">(</span><span class="n">guiGroup</span><span class="o">=</span><span class="s1">&#39;TestGroup&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+</section>
+<section id="configuration-stream">
+<h3>Configuration Stream<a class="headerlink" href="#configuration-stream" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Create configuration stream <a class="reference internal" href="../../pyrogue_tree/core/memory_variable_stream.html#interfaces-python-memory-variable"><span class="std std-ref">Variable</span></a></p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">ExampleRoot</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epics4En</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="o">...</span>
+        <span class="c1"># Create configuration stream</span>
+        <span class="n">stream</span> <span class="o">=</span> <span class="n">pyrogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">root</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="add-special-devices">
+<h3>Add Special Devices<a class="headerlink" href="#add-special-devices" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Create PGP card <a class="reference internal" href="../../built_in_modules/hardware/index.html#hardware"><span class="std std-ref">hardware interfaces</span></a></p></li>
+<li><p>Create a PRBS transmitter device using <a class="reference internal" href="../../built_in_modules/utilities/prbs/reading.html"><span class="doc">Receiving PRBS Frames</span></a></p></li>
+<li><p>Create a stream-writer device using <a class="reference internal" href="../../built_in_modules/utilities/fileio/writing.html"><span class="doc">Writing Frames To A File</span></a></p></li>
+<li><p>Create a <a class="reference internal" href="../../pyrogue_tree/builtin_devices/data_receiver.html#pyrogue-tree-node-device-datareceiver"><span class="std std-ref">Data Receiver</span></a> device</p></li>
+<li><p>Create a <a class="reference internal" href="../../pyrogue_tree/builtin_devices/run_control.html#pyrogue-tree-node-device-runcontrol"><span class="std std-ref">Run Control</span></a> device</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">ExampleRoot</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epics4En</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="o">...</span>
+        <span class="c1"># PRBS Transmitter</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_prbsTx</span> <span class="o">=</span> <span class="n">pyrogue</span><span class="o">.</span><span class="n">utilities</span><span class="o">.</span><span class="n">prbs</span><span class="o">.</span><span class="n">PrbsTx</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_prbsTx</span><span class="p">)</span>
+
+        <span class="c1"># Add Data Writer, configuration goes to channel 1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fw</span> <span class="o">=</span> <span class="n">pyrogue</span><span class="o">.</span><span class="n">utilities</span><span class="o">.</span><span class="n">fileio</span><span class="o">.</span><span class="n">StreamWriter</span><span class="p">(</span><span class="n">configStream</span><span class="o">=</span><span class="p">{</span><span class="mi">1</span><span class="p">:</span> <span class="n">stream</span><span class="p">},</span><span class="n">rawMode</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fw</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_prbsTx</span> <span class="o">&gt;&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fw</span><span class="o">.</span><span class="n">getChannel</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="c1"># Data Receiver</span>
+        <span class="n">drx</span> <span class="o">=</span> <span class="n">pyrogue</span><span class="o">.</span><span class="n">DataReceiver</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_prbsTx</span> <span class="o">&gt;&gt;</span> <span class="n">drx</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">drx</span><span class="p">)</span>
+
+        <span class="c1"># Add Run Control</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">RunControl</span><span class="p">())</span>
+</pre></div>
+</div>
+</section>
+<section id="add-zmqserver">
+<h3>Add ZMQServer<a class="headerlink" href="#add-zmqserver" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Create a <a class="reference internal" href="../../pyrogue_tree/client_interfaces/zmq_server.html#interfaces-python-zmqserver"><span class="std std-ref">ZMQ Server</span></a> interface</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">ExampleRoot</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epics4En</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="o">...</span>
+        <span class="c1"># Add zmq server</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">zmqServer</span> <span class="o">=</span> <span class="n">pyrogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">ZmqServer</span><span class="p">(</span><span class="n">root</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">addr</span><span class="o">=</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addInterface</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">zmqServer</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="add-process-controller">
+<h3>Add Process Controller<a class="headerlink" href="#add-process-controller" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Add a <a class="reference internal" href="../../pyrogue_tree/builtin_devices/process.html#pyrogue-tree-node-device-process"><span class="std std-ref">Process Controller</span></a></p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">ExampleRoot</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epics4En</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="o">...</span>
+        <span class="c1"># Add process controller</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">pyrogue</span><span class="o">.</span><span class="n">Process</span><span class="p">()</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Test1&#39;</span><span class="p">,</span><span class="n">value</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">))</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Test2&#39;</span><span class="p">,</span><span class="n">value</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="add-linked-and-local-variables">
+<h3>Add Linked and Local Variables<a class="headerlink" href="#add-linked-and-local-variables" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Create <a class="reference internal" href="../../pyrogue_tree/core/link_variable.html#pyrogue-tree-node-variable-link-variable"><span class="std std-ref">Link</span></a> Variables</p></li>
+<li><p>Create <a class="reference internal" href="../../pyrogue_tree/core/local_variable.html#pyrogue-tree-node-variable-local-variable"><span class="std std-ref">Local</span></a> Variables</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">ExampleRoot</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epics4En</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="o">...</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;TestPlot&#39;</span><span class="p">,</span>
+            <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">pollInterval</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+            <span class="n">localGet</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mySin</span><span class="p">,</span>
+            <span class="n">minimum</span><span class="o">=-</span><span class="mf">1.0</span><span class="p">,</span>
+            <span class="n">maximum</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+            <span class="n">disp</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">{:1.2f}</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;TestXAxis&#39;</span><span class="p">,</span>
+            <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">pollInterval</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+            <span class="n">localGet</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_myXAxis</span><span class="p">,</span>
+            <span class="n">disp</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">{:1.2f}</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;TestArray&#39;</span><span class="p">,</span>
+            <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">pollInterval</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+            <span class="n">localGet</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_myArray</span><span class="p">,</span>
+            <span class="n">disp</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">{:1.2f}</span><span class="s1">&#39;</span><span class="p">))</span>
+            <span class="c1">#value = np.zeros(100,dtype=np.float64)))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LinkVariable</span><span class="p">(</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;TestPlotFigure&#39;</span><span class="p">,</span>
+            <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">dependencies</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">TestArray</span><span class="p">],</span>
+            <span class="n">linkedGet</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getPlot</span><span class="p">))</span>
+</pre></div>
+</div>
+</section>
+<section id="connect-to-epics-if-needed">
+<h3>Connect To EPICS If Needed<a class="headerlink" href="#connect-to-epics-if-needed" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Connect it to the <a class="reference internal" href="../../built_in_modules/protocols/epicsV4/epicspvserver.html#pyrogue-protocol-epicspvserver"><span class="std std-ref">EPICS Protocol</span></a> class</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">ExampleRoot</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epics4En</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="o">...</span>
+        <span class="k">if</span> <span class="n">epics4En</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_epics4</span><span class="o">=</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">epicsV4</span><span class="o">.</span><span class="n">EpicsPvServer</span><span class="p">(</span><span class="n">base</span><span class="o">=</span><span class="s2">&quot;test&quot;</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span><span class="n">incGroups</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">excGroups</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">addProtocol</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_epics4</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="create-and-connect-memory-commands">
+<h3>Create and Connect Memory Commands<a class="headerlink" href="#create-and-connect-memory-commands" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Create and connect memory commands using the built in <a class="reference internal" href="../../built_in_modules/interfaces/os_memory_bridge.html#interfaces-python-os-command-memory-slave"><span class="std std-ref">slave</span></a> and custom <a class="reference internal" href="../../built_in_modules/interfaces/os_memory_bridge.html#interfaces-python-osmemmaster"><span class="std std-ref">master</span></a></p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">ExampleRoot</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epics4En</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="o">...</span>
+        <span class="c1"># Remote memory command slave example</span>
+        <span class="n">osSlave</span> <span class="o">=</span> <span class="n">pyrogue</span><span class="o">.</span><span class="n">examples</span><span class="o">.</span><span class="n">OsMemSlave</span><span class="p">()</span>
+        <span class="n">osSlave</span><span class="o">.</span><span class="n">setName</span><span class="p">(</span><span class="s2">&quot;OsSlave&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addInterface</span><span class="p">(</span><span class="n">osSlave</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">examples</span><span class="o">.</span><span class="n">OsMemMaster</span><span class="p">(</span><span class="n">memBase</span><span class="o">=</span><span class="n">osSlave</span><span class="p">))</span>
+</pre></div>
+</div>
+</section>
+<section id="override-necessary-functions">
+<h3>Override Necessary Functions<a class="headerlink" href="#override-necessary-functions" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">ExampleRoot</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
+    <span class="o">...</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_mySin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">val</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_scnt</span> <span class="o">/</span> <span class="mi">100</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sdata</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sdata</span><span class="p">,</span><span class="n">val</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_scnt</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">val</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_myXAxis</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_scnt</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_myArray</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sdata</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_getPlot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">read</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fig</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fig</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_fig</span><span class="o">.</span><span class="n">clf</span><span class="p">()</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ax</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fig</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">Figure</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">TestArray</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">read</span><span class="o">=</span><span class="n">read</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fig</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../index.html" class="btn btn-neutral float-left" title="PyRogue Tree Getting Started Guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="p_t_device.html" class="btn btn-neutral float-right" title="Create A Custom PyRogue Device" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

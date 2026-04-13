@@ -1,0 +1,799 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pyrogue._Command &mdash; Rogue v6.9.0-146-g9016781d5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=8b50afe1" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=5f168154"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/custom.js?v=7b5dfb0b"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">API Reference</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">pyrogue._Command</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pyrogue._Command</h1><div class="highlight"><pre>
+<span></span><span class="c1">#-----------------------------------------------------------------------------</span>
+<span class="c1"># Company    : SLAC National Accelerator Laboratory</span>
+<span class="c1">#-----------------------------------------------------------------------------</span>
+<span class="c1">#  Description:</span>
+<span class="c1">#       PyRogue base module - Command Class</span>
+<span class="c1">#-----------------------------------------------------------------------------</span>
+<span class="c1"># This file is part of the rogue software platform. It is subject to</span>
+<span class="c1"># the license terms in the LICENSE.txt file found in the top-level directory</span>
+<span class="c1"># of this distribution and at:</span>
+<span class="c1">#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.</span>
+<span class="c1"># No part of the rogue software platform, including this file, may be</span>
+<span class="c1"># copied, modified, propagated, or distributed except according to the terms</span>
+<span class="c1"># contained in the LICENSE.txt file.</span>
+<span class="c1">#-----------------------------------------------------------------------------</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">inspect</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">operator</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">threading</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Iterable</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">rogue.interfaces.memory</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">CommandError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when command execution or verification fails.&quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+
+
+<div class="viewcode-block" id="BaseCommand">
+<a class="viewcode-back" href="../../api/python/pyrogue/basecommand.html#pyrogue.BaseCommand">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">BaseCommand</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">BaseVariable</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for PyRogue commands.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    name : str, optional</span>
+<span class="sd">        Command name.</span>
+<span class="sd">    description : str, optional (default = &quot;&quot;)</span>
+<span class="sd">        Human-readable description.</span>
+<span class="sd">    value : object, optional (default = 0)</span>
+<span class="sd">        Default command value.</span>
+<span class="sd">    retValue : object, optional</span>
+<span class="sd">        Example return value used to infer display type.</span>
+<span class="sd">    enum : dict, optional</span>
+<span class="sd">        Mapping from object values to display strings.</span>
+<span class="sd">    hidden : bool, optional (default = False)</span>
+<span class="sd">        If True, add the command to the ``Hidden`` group.</span>
+<span class="sd">    groups : list[str], optional</span>
+<span class="sd">        Groups to assign.</span>
+<span class="sd">    minimum : object, optional</span>
+<span class="sd">        Minimum allowed value.</span>
+<span class="sd">    maximum : object, optional</span>
+<span class="sd">        Maximum allowed value.</span>
+<span class="sd">    function : callable, optional</span>
+<span class="sd">        Callback executed when the command is invoked. The wrapper provides</span>
+<span class="sd">        keyword arguments ``root``, ``dev``, ``cmd``, and ``arg``; the</span>
+<span class="sd">        callback may accept any subset of these names.</span>
+<span class="sd">        Default to no-op for command if None.</span>
+<span class="sd">    background : bool, optional (default = False)</span>
+<span class="sd">        Reserved for background execution.</span>
+<span class="sd">    guiGroup : str, optional</span>
+<span class="sd">        GUI grouping label.</span>
+<span class="sd">    **kwargs : Any</span>
+<span class="sd">        Additional arguments forwarded to ``BaseVariable``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">value</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">retValue</span><span class="p">:</span> <span class="n">Any</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">enum</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">object</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">hidden</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">groups</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">minimum</span><span class="p">:</span> <span class="n">Any</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">maximum</span><span class="p">:</span> <span class="n">Any</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">function</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">background</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">guiGroup</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize a command variable.&quot;&quot;&quot;</span>
+        <span class="n">pr</span><span class="o">.</span><span class="n">BaseVariable</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;WO&#39;</span><span class="p">,</span>
+            <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">,</span>
+            <span class="n">enum</span><span class="o">=</span><span class="n">enum</span><span class="p">,</span>
+            <span class="n">hidden</span><span class="o">=</span><span class="n">hidden</span><span class="p">,</span>
+            <span class="n">groups</span><span class="o">=</span><span class="n">groups</span><span class="p">,</span>
+            <span class="n">minimum</span><span class="o">=</span><span class="n">minimum</span><span class="p">,</span>
+            <span class="n">maximum</span><span class="o">=</span><span class="n">maximum</span><span class="p">,</span>
+            <span class="n">bulkOpEn</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">guiGroup</span><span class="o">=</span><span class="n">guiGroup</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_function</span> <span class="o">=</span> <span class="n">function</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_functionWrap</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">functionWrapper</span><span class="p">(</span><span class="n">function</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_function</span><span class="p">,</span> <span class="n">callArgs</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;root&#39;</span><span class="p">,</span> <span class="s1">&#39;dev&#39;</span><span class="p">,</span> <span class="s1">&#39;cmd&#39;</span><span class="p">,</span> <span class="s1">&#39;arg&#39;</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_thread</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_retDisp</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">&quot;</span>
+
+        <span class="k">if</span> <span class="n">retValue</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_retTypeStr</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">retValue</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_retTypeStr</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;List[</span><span class="si">{</span><span class="n">retValue</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">]&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_retTypeStr</span> <span class="o">=</span> <span class="n">retValue</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+
+        <span class="c1"># args flag</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_arg</span> <span class="o">=</span> <span class="s1">&#39;arg&#39;</span> <span class="ow">in</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getfullargspec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_function</span><span class="p">)</span><span class="o">.</span><span class="n">args</span>
+
+        <span class="c1"># C++ functions</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_arg</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="nd">@pr</span><span class="o">.</span><span class="n">expose</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">arg</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return True if the command accepts an argument.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arg</span>
+
+    <span class="nd">@pr</span><span class="o">.</span><span class="n">expose</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">retTypeStr</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the display string for the return type.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_retTypeStr</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Invoke the command.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        arg : object, optional</span>
+<span class="sd">            Command argument. If ``None``, uses the default value.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_doFunc</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_doFunc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute command callback.</span>
+
+<span class="sd">        Execute command: TODO: Update comments.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        arg : object</span>
+<span class="sd">            Command argument.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">enable</span><span class="o">.</span><span class="n">value</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">True</span><span class="p">):</span>
+            <span class="k">return</span>
+
+        <span class="k">try</span><span class="p">:</span>
+
+            <span class="c1"># Convert arg</span>
+            <span class="k">if</span> <span class="n">arg</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">arg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">arg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parseDisp</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
+
+            <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_functionWrap</span><span class="p">(</span><span class="n">function</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_function</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="p">,</span> <span class="n">cmd</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="o">=</span><span class="n">arg</span><span class="p">)</span>
+
+            <span class="c1"># Set arg to local variable if not a remote variable</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arg</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">RemoteCommand</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_default</span> <span class="o">=</span> <span class="n">arg</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_queueUpdate</span><span class="p">()</span>
+
+            <span class="k">return</span> <span class="n">ret</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">pr</span><span class="o">.</span><span class="n">logException</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">,</span><span class="n">e</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">e</span>
+
+<div class="viewcode-block" id="BaseCommand.call">
+<a class="viewcode-back" href="../../api/python/pyrogue/basecommand.html#pyrogue.BaseCommand.call">[docs]</a>
+    <span class="nd">@pr</span><span class="o">.</span><span class="n">expose</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Invoke the command and return the raw result.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        arg : object, optional</span>
+<span class="sd">            Command argument.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BaseCommand.callDisp">
+<a class="viewcode-back" href="../../api/python/pyrogue/basecommand.html#pyrogue.BaseCommand.callDisp">[docs]</a>
+    <span class="nd">@pr</span><span class="o">.</span><span class="n">expose</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">callDisp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Invoke the command and return the display-formatted result.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        arg : object, optional</span>
+<span class="sd">            Command argument.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">genDisp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="n">arg</span><span class="p">),</span><span class="n">useDisp</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_retDisp</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BaseCommand.nothing">
+<a class="viewcode-back" href="../../api/python/pyrogue/basecommand.html#pyrogue.BaseCommand.nothing">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">nothing</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;No-op command handler.&quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="BaseCommand.read">
+<a class="viewcode-back" href="../../api/python/pyrogue/basecommand.html#pyrogue.BaseCommand.read">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read</span><span class="p">(</span><span class="n">cmd</span><span class="p">:</span> <span class="n">BaseCommand</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read the command variable.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        cmd : BaseCommand</span>
+<span class="sd">            Command to read.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cmd</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">read</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BaseCommand.setArg">
+<a class="viewcode-back" href="../../api/python/pyrogue/basecommand.html#pyrogue.BaseCommand.setArg">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setArg</span><span class="p">(</span><span class="n">cmd</span><span class="p">:</span> <span class="n">BaseCommand</span><span class="p">,</span> <span class="n">arg</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the command argument.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        cmd : BaseCommand</span>
+<span class="sd">            Command to write.</span>
+<span class="sd">        arg : object</span>
+<span class="sd">            Value to write.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cmd</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BaseCommand.setAndVerifyArg">
+<a class="viewcode-back" href="../../api/python/pyrogue/basecommand.html#pyrogue.BaseCommand.setAndVerifyArg">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setAndVerifyArg</span><span class="p">(</span><span class="n">cmd</span><span class="p">:</span> <span class="n">BaseCommand</span><span class="p">,</span> <span class="n">arg</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the argument and verify by reading it back.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        cmd : BaseCommand</span>
+<span class="sd">            Command to write.</span>
+<span class="sd">        arg : object</span>
+<span class="sd">            Value to write and verify.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cmd</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">cmd</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">ret</span> <span class="o">!=</span> <span class="n">arg</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">CommandError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Verification failed for </span><span class="si">{</span><span class="n">cmd</span><span class="o">.</span><span class="n">path</span><span class="si">}</span><span class="s1">. </span><span class="se">\n</span><span class="s1">Set to </span><span class="si">{</span><span class="n">arg</span><span class="si">}</span><span class="s1"> but read back </span><span class="si">{</span><span class="n">ret</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BaseCommand.createToggle">
+<a class="viewcode-back" href="../../api/python/pyrogue/basecommand.html#pyrogue.BaseCommand.createToggle">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">createToggle</span><span class="p">(</span><span class="n">sets</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">BaseCommand</span><span class="p">],</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a toggle function that iterates over provided values.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        sets : iterable</span>
+<span class="sd">            Values to write sequentially.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">toggle</span><span class="p">(</span><span class="n">cmd</span><span class="p">:</span> <span class="n">BaseCommand</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Write each configured toggle value to ``cmd``.&quot;&quot;&quot;</span>
+            <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">sets</span><span class="p">:</span>
+                <span class="n">cmd</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">toggle</span></div>
+
+
+<div class="viewcode-block" id="BaseCommand.toggle">
+<a class="viewcode-back" href="../../api/python/pyrogue/basecommand.html#pyrogue.BaseCommand.toggle">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">toggle</span><span class="p">(</span><span class="n">cmd</span><span class="p">:</span> <span class="n">BaseCommand</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Toggle a command by writing 1 then 0.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        cmd : BaseCommand</span>
+<span class="sd">            Command to toggle.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cmd</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">cmd</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BaseCommand.createTouch">
+<a class="viewcode-back" href="../../api/python/pyrogue/basecommand.html#pyrogue.BaseCommand.createTouch">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">createTouch</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">BaseCommand</span><span class="p">],</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a touch function that writes a fixed value.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        value : object</span>
+<span class="sd">            Value to write when the touch function is called.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">touch</span><span class="p">(</span><span class="n">cmd</span><span class="p">:</span> <span class="n">BaseCommand</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Write the captured fixed value to ``cmd``.&quot;&quot;&quot;</span>
+            <span class="n">cmd</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">touch</span></div>
+
+
+<div class="viewcode-block" id="BaseCommand.touch">
+<a class="viewcode-back" href="../../api/python/pyrogue/basecommand.html#pyrogue.BaseCommand.touch">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">touch</span><span class="p">(</span><span class="n">cmd</span><span class="p">:</span> <span class="n">BaseCommand</span><span class="p">,</span> <span class="n">arg</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Touch the command with a provided argument or 1.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        cmd : BaseCommand</span>
+<span class="sd">            Command to touch.</span>
+<span class="sd">        arg : object</span>
+<span class="sd">            Value to write. If ``None``, writes ``1``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">arg</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">cmd</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">cmd</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BaseCommand.touchZero">
+<a class="viewcode-back" href="../../api/python/pyrogue/basecommand.html#pyrogue.BaseCommand.touchZero">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">touchZero</span><span class="p">(</span><span class="n">cmd</span><span class="p">:</span> <span class="n">BaseCommand</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Touch the command with 0.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        cmd : BaseCommand</span>
+<span class="sd">            Command to touch.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cmd</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BaseCommand.touchOne">
+<a class="viewcode-back" href="../../api/python/pyrogue/basecommand.html#pyrogue.BaseCommand.touchOne">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">touchOne</span><span class="p">(</span><span class="n">cmd</span><span class="p">:</span> <span class="n">BaseCommand</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Touch the command with 1.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        cmd : BaseCommand</span>
+<span class="sd">            Command to touch.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cmd</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BaseCommand.createPostedTouch">
+<a class="viewcode-back" href="../../api/python/pyrogue/basecommand.html#pyrogue.BaseCommand.createPostedTouch">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">createPostedTouch</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">BaseCommand</span><span class="p">],</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a posted touch function for asynchronous writes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        value : object</span>
+<span class="sd">            Value to post.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">postedTouch</span><span class="p">(</span><span class="n">cmd</span><span class="p">:</span> <span class="n">BaseCommand</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Post the captured fixed value to ``cmd`` asynchronously.&quot;&quot;&quot;</span>
+            <span class="n">cmd</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">postedTouch</span></div>
+
+
+<div class="viewcode-block" id="BaseCommand.postedTouch">
+<a class="viewcode-back" href="../../api/python/pyrogue/basecommand.html#pyrogue.BaseCommand.postedTouch">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">postedTouch</span><span class="p">(</span><span class="n">cmd</span><span class="p">:</span> <span class="n">BaseCommand</span><span class="p">,</span> <span class="n">arg</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Post a command value without waiting for completion.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        cmd : BaseCommand</span>
+<span class="sd">            Command to post.</span>
+<span class="sd">        arg : object</span>
+<span class="sd">            Value to post.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cmd</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BaseCommand.postedTouchOne">
+<a class="viewcode-back" href="../../api/python/pyrogue/basecommand.html#pyrogue.BaseCommand.postedTouchOne">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">postedTouchOne</span><span class="p">(</span><span class="n">cmd</span><span class="p">:</span> <span class="n">BaseCommand</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Post a value of 1.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        cmd : BaseCommand</span>
+<span class="sd">            Command to post.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cmd</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BaseCommand.postedTouchZero">
+<a class="viewcode-back" href="../../api/python/pyrogue/basecommand.html#pyrogue.BaseCommand.postedTouchZero">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">postedTouchZero</span><span class="p">(</span><span class="n">cmd</span><span class="p">:</span> <span class="n">BaseCommand</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Post a value of 0.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        cmd : BaseCommand</span>
+<span class="sd">            Command to post.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cmd</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BaseCommand.replaceFunction">
+<a class="viewcode-back" href="../../api/python/pyrogue/basecommand.html#pyrogue.BaseCommand.replaceFunction">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">replaceFunction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">function</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Replace the command callback function.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        function : callable</span>
+<span class="sd">            New callback for this command. The wrapper provides keyword</span>
+<span class="sd">            arguments ``root``, ``dev``, ``cmd``, and ``arg``; the callback</span>
+<span class="sd">            may accept any subset of these names.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_function</span> <span class="o">=</span> <span class="n">function</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_functionWrap</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">functionWrapper</span><span class="p">(</span><span class="n">function</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_function</span><span class="p">,</span> <span class="n">callArgs</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;root&#39;</span><span class="p">,</span> <span class="s1">&#39;dev&#39;</span><span class="p">,</span> <span class="s1">&#39;cmd&#39;</span><span class="p">,</span> <span class="s1">&#39;arg&#39;</span><span class="p">])</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_setDict</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">d</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+        <span class="n">writeEach</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+        <span class="n">modes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">incGroups</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">excGroups</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">keys</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Commands do not support dict writes.&quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_getDict</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">modes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">incGroups</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">excGroups</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">properties</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Commands do not support dict reads.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="BaseCommand.get">
+<a class="viewcode-back" href="../../api/python/pyrogue/basecommand.html#pyrogue.BaseCommand.get">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">read</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the cached command argument value.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        read : bool, optional (default = True)</span>
+<span class="sd">            Unused for commands.</span>
+<span class="sd">        index : int, optional (default = -1)</span>
+<span class="sd">            Unused for commands.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_genDocs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Emit Sphinx documentation for this command.&quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;.. topic:: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">genDocDesc</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">description</span><span class="p">,</span><span class="mi">4</span><span class="p">),</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">genDocTableHeader</span><span class="p">([</span><span class="s1">&#39;Field&#39;</span><span class="p">,</span><span class="s1">&#39;Value&#39;</span><span class="p">],</span><span class="mi">4</span><span class="p">,</span><span class="mi">100</span><span class="p">),</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;path&#39;</span><span class="p">,</span> <span class="s1">&#39;enum&#39;</span><span class="p">,</span> <span class="s1">&#39;typeStr&#39;</span><span class="p">,</span> <span class="s1">&#39;disp&#39;</span><span class="p">]:</span>
+            <span class="n">astr</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">a</span><span class="p">))</span>
+
+            <span class="k">if</span> <span class="n">astr</span> <span class="o">!=</span> <span class="s1">&#39;None&#39;</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">genDocTableRow</span><span class="p">([</span><span class="n">a</span><span class="p">,</span><span class="n">astr</span><span class="p">],</span><span class="mi">4</span><span class="p">,</span><span class="mi">100</span><span class="p">),</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span></div>
+
+
+
+<span class="c1"># LocalCommand is the same as BaseCommand</span>
+<span class="n">LocalCommand</span> <span class="o">=</span> <span class="n">BaseCommand</span>
+
+
+<div class="viewcode-block" id="RemoteCommand">
+<a class="viewcode-back" href="../../api/python/pyrogue/remotecommand.html#pyrogue.RemoteCommand">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">RemoteCommand</span><span class="p">(</span><span class="n">BaseCommand</span><span class="p">,</span> <span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Remote command backed by a memory-mapped variable.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    name : str</span>
+<span class="sd">        Command name.</span>
+<span class="sd">    description : str, optional (default = &quot;&quot;)</span>
+<span class="sd">        Human-readable description.</span>
+<span class="sd">    value : object, optional</span>
+<span class="sd">        Default value.</span>
+<span class="sd">    retValue : object, optional</span>
+<span class="sd">        Example return value used to infer display type.</span>
+<span class="sd">    enum : dict, optional</span>
+<span class="sd">        Mapping from object values to display strings.</span>
+<span class="sd">    hidden : bool, optional (default = False)</span>
+<span class="sd">        If True, add the command to the ``Hidden`` group.</span>
+<span class="sd">    groups : list[str], optional</span>
+<span class="sd">        Groups to assign.</span>
+<span class="sd">    minimum : object, optional</span>
+<span class="sd">        Minimum allowed value.</span>
+<span class="sd">    maximum : object, optional</span>
+<span class="sd">        Maximum allowed value.</span>
+<span class="sd">    function : callable, optional</span>
+<span class="sd">        Callback executed when the command is invoked. The wrapper provides</span>
+<span class="sd">        keyword arguments ``root``, ``dev``, ``cmd``, and ``arg``; the</span>
+<span class="sd">        callback may accept any subset of these names.</span>
+<span class="sd">        Default to no-op for command if None.</span>
+<span class="sd">    base : object, optional (default = ``pr.UInt``)</span>
+<span class="sd">        Base data type for the underlying remote variable.</span>
+<span class="sd">    offset : int, optional</span>
+<span class="sd">        Memory offset.</span>
+<span class="sd">    bitSize : int, optional (default = 32)</span>
+<span class="sd">        Bit width of the value.</span>
+<span class="sd">    bitOffset : int, optional (default = 0)</span>
+<span class="sd">        Bit offset of the value.</span>
+<span class="sd">    overlapEn : bool, optional (default = False)</span>
+<span class="sd">        Allow overlapping remote variables.</span>
+<span class="sd">    guiGroup : str, optional</span>
+<span class="sd">        GUI grouping label.</span>
+<span class="sd">    **kwargs : Any</span>
+<span class="sd">        Additional arguments forwarded to ``RemoteVariable``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">value</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">retValue</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">enum</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">object</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">hidden</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">groups</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">minimum</span><span class="p">:</span> <span class="n">Any</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">maximum</span><span class="p">:</span> <span class="n">Any</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">function</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">base</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
+        <span class="n">offset</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">bitSize</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">32</span><span class="p">,</span>
+        <span class="n">bitOffset</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">overlapEn</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">guiGroup</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize a remote command.&quot;&quot;&quot;</span>
+
+        <span class="c1"># RemoteVariable constructor will handle assignment of most params</span>
+        <span class="n">BaseCommand</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">retValue</span><span class="o">=</span><span class="n">retValue</span><span class="p">,</span>
+            <span class="n">function</span><span class="o">=</span><span class="n">function</span><span class="p">,</span>
+            <span class="n">guiGroup</span><span class="o">=</span><span class="n">guiGroup</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;WO&#39;</span><span class="p">,</span>
+            <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">,</span>
+            <span class="n">enum</span><span class="o">=</span><span class="n">enum</span><span class="p">,</span>
+            <span class="n">hidden</span><span class="o">=</span><span class="n">hidden</span><span class="p">,</span>
+            <span class="n">groups</span><span class="o">=</span><span class="n">groups</span><span class="p">,</span>
+            <span class="n">minimum</span><span class="o">=</span><span class="n">minimum</span><span class="p">,</span>
+            <span class="n">maximum</span><span class="o">=</span><span class="n">maximum</span><span class="p">,</span>
+            <span class="n">base</span><span class="o">=</span><span class="n">base</span><span class="p">,</span>
+            <span class="n">offset</span><span class="o">=</span><span class="n">offset</span><span class="p">,</span>
+            <span class="n">bitSize</span><span class="o">=</span><span class="n">bitSize</span><span class="p">,</span>
+            <span class="n">bitOffset</span><span class="o">=</span><span class="n">bitOffset</span><span class="p">,</span>
+            <span class="n">overlapEn</span><span class="o">=</span><span class="n">overlapEn</span><span class="p">,</span>
+            <span class="n">bulkOpEn</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">verify</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">guiGroup</span><span class="o">=</span><span class="n">guiGroup</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+<div class="viewcode-block" id="RemoteCommand.set">
+<a class="viewcode-back" href="../../api/python/pyrogue/remotecommand.html#pyrogue.RemoteCommand.set">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>  <span class="n">index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">write</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Write a value to the remote command variable.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        value : object</span>
+<span class="sd">            Value to write.</span>
+<span class="sd">        index : int, optional (default = -1)</span>
+<span class="sd">            Optional index for array variables.</span>
+<span class="sd">        write : bool, optional (default = True)</span>
+<span class="sd">            If True, perform a hardware write transaction.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">.set(</span><span class="si">%r</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="n">operator</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="n">value</span><span class="p">,</span><span class="n">index</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">write</span><span class="p">:</span>
+                <span class="n">pr</span><span class="o">.</span><span class="n">startTransaction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_block</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">Write</span><span class="p">,</span> <span class="n">forceWr</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">checkEach</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">)</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">pr</span><span class="o">.</span><span class="n">logException</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">,</span><span class="n">e</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">e</span></div>
+
+
+
+<div class="viewcode-block" id="RemoteCommand.get">
+<a class="viewcode-back" href="../../api/python/pyrogue/remotecommand.html#pyrogue.RemoteCommand.get">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">read</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read a value from the remote command variable.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        index : int, optional (default = -1)</span>
+<span class="sd">            Optional index for array variables.</span>
+<span class="sd">        read : bool, optional (default = True)</span>
+<span class="sd">            If True, perform a hardware read transaction.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        object</span>
+<span class="sd">            Retrieved value.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="n">operator</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">read</span><span class="p">:</span>
+                <span class="n">pr</span><span class="o">.</span><span class="n">startTransaction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_block</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">Read</span><span class="p">,</span> <span class="n">forceWr</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">checkEach</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">pr</span><span class="o">.</span><span class="n">logException</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">,</span><span class="n">e</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">e</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_genDocs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Emit Sphinx documentation for this remote command.&quot;&quot;&quot;</span>
+        <span class="n">BaseCommand</span><span class="o">.</span><span class="n">_genDocs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">file</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;offset&#39;</span><span class="p">,</span> <span class="s1">&#39;bitSize&#39;</span><span class="p">,</span> <span class="s1">&#39;bitOffset&#39;</span><span class="p">,</span> <span class="s1">&#39;varBytes&#39;</span><span class="p">]:</span>
+            <span class="n">astr</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">a</span><span class="p">))</span>
+
+            <span class="k">if</span> <span class="n">astr</span> <span class="o">!=</span> <span class="s1">&#39;None&#39;</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">genDocTableRow</span><span class="p">([</span><span class="n">a</span><span class="p">,</span><span class="n">astr</span><span class="p">],</span><span class="mi">4</span><span class="p">,</span><span class="mi">100</span><span class="p">),</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span></div>
+
+
+
+
+<span class="c1"># Alias, this should go away</span>
+<span class="n">Command</span> <span class="o">=</span> <span class="n">BaseCommand</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

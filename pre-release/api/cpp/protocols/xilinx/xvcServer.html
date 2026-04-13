@@ -1,0 +1,217 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>XvcServer &mdash; Rogue v6.9.0-146-g9016781d5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css?v=8b50afe1" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=5f168154"></script>
+      <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../../_static/custom.js?v=7b5dfb0b"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link rel="next" title="XvcConnection" href="xvcConnection.html" />
+    <link rel="prev" title="JtagDriver" href="jtagDriver.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../../python/index.html">Python API</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../../index.html">C++ API</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../../rogue_index.html">rogue</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../interfaces_index.html">rogue::interfaces</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../../protocols_index.html">rogue::protocols</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../batcher/index.html">rogue::protocols::batcher</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../packetizer/index.html">rogue::protocols::packetizer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../rssi/index.html">rogue::protocols::rssi</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../srp/index.html">rogue::protocols::srp</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../udp/index.html">rogue::protocols::udp</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="index.html">rogue::protocols::xilinx</a><ul class="current">
+<li class="toctree-l5"><a class="reference internal" href="xvc.html">Xvc</a></li>
+<li class="toctree-l5"><a class="reference internal" href="jtagDriver.html">JtagDriver</a></li>
+<li class="toctree-l5 current"><a class="current reference internal" href="#">XvcServer</a></li>
+<li class="toctree-l5"><a class="reference internal" href="xvcConnection.html">XvcConnection</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../hardware_index.html">rogue::hardware</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../utilities_index.html">rogue::utilities</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">API Reference</a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">C++ API</a></li>
+          <li class="breadcrumb-item"><a href="../../protocols_index.html">rogue::protocols</a></li>
+          <li class="breadcrumb-item"><a href="index.html">rogue::protocols::xilinx</a></li>
+      <li class="breadcrumb-item active">XvcServer</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../_sources/api/cpp/protocols/xilinx/xvcServer.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="xvcserver">
+<span id="protocols-xilinx-classes-xvc-server"></span><h1>XvcServer<a class="headerlink" href="#xvcserver" title="Link to this heading"></a></h1>
+<p>For conceptual guidance, see <a class="reference internal" href="../../../../built_in_modules/protocols/xilinx/index.html"><span class="doc">Xilinx Protocols</span></a>.</p>
+<p>The class description is shown below:</p>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols6xilinx9XvcServerE">
+<span id="_CPPv3N5rogue9protocols6xilinx9XvcServerE"></span><span id="_CPPv2N5rogue9protocols6xilinx9XvcServerE"></span><span id="rogue::protocols::xilinx::XvcServer"></span><span class="target" id="classrogue_1_1protocols_1_1xilinx_1_1XvcServer"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">XvcServer</span></span></span><a class="headerlink" href="#_CPPv4N5rogue9protocols6xilinx9XvcServerE" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/XvcServer_8h_source.html#l00037"><span class="pre">[header]</span></a></dt>
+<dd><p>TCP listener for XVC client connections. </p>
+<p><code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1protocols_1_1xilinx_1_1XvcServer"><span class="std std-ref"><span class="pre">XvcServer</span></span></a></code> owns the listening socket and accepts one sub-connection at a time. Each accepted client is serviced via <code class="docutils literal notranslate"><a class="reference internal" href="xvcConnection.html#classrogue_1_1protocols_1_1xilinx_1_1XvcConnection"><span class="std std-ref"><span class="pre">XvcConnection</span></span></a></code>, which performs XVC protocol parsing and delegates JTAG operations to <code class="docutils literal notranslate"><a class="reference internal" href="jtagDriver.html#classrogue_1_1protocols_1_1xilinx_1_1JtagDriver"><span class="std std-ref"><span class="pre">JtagDriver</span></span></a></code>. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols6xilinx9XvcServer9XvcServerE8uint16_tP10JtagDriverj">
+<span id="_CPPv3N5rogue9protocols6xilinx9XvcServer9XvcServerE8uint16_tP10JtagDriverj"></span><span id="_CPPv2N5rogue9protocols6xilinx9XvcServer9XvcServerE8uint16_tP10JtagDriverj"></span><span id="rogue::protocols::xilinx::XvcServer::XvcServer__uint16_t.JtagDriverP.unsigned"></span><span class="target" id="classrogue_1_1protocols_1_1xilinx_1_1XvcServer_1ac6e2fcb80f8c2c7a81b3a6488bb21130"></span><span class="sig-name descname"><span class="n"><span class="pre">XvcServer</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">port</span></span>, <a class="reference internal" href="jtagDriver.html#_CPPv4N5rogue9protocols6xilinx10JtagDriverE" title="rogue::protocols::xilinx::JtagDriver"><span class="n"><span class="pre">JtagDriver</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">drv</span></span>, <span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">maxMsgSize</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">32768</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols6xilinx9XvcServer9XvcServerE8uint16_tP10JtagDriverj" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/XvcServer_8h_source.html#l00051"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/XvcServer_8cpp_source.html#l00034"><span class="pre">[impl]</span></a></dt>
+<dd><p>Constructs an XVC TCP server listener. </p>
+<p><em>Company : SLAC National Accelerator Laboratory </em></p>
+<p>Description:</p>
+<p>
+ This file is part of the rogue software platform. It is subject to the license terms in the LICENSE.txt file found in the top-level directory of this distribution and at: <a class="reference external" href="https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html">https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html</a>. No part of the rogue software platform, including this file, may be copied, modified, propagated, or distributed except according to the terms <em>contained in the LICENSE.txt file. </em></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>port</strong> – Local TCP port to bind and listen on. </p></li>
+<li><p><strong>drv</strong> – Driver used by accepted connections. </p></li>
+<li><p><strong>maxMsgSize</strong> – Maximum protocol message/vector size in bytes.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols6xilinx9XvcServer3runERbN5rogue10LoggingPtrE">
+<span id="_CPPv3N5rogue9protocols6xilinx9XvcServer3runERbN5rogue10LoggingPtrE"></span><span id="_CPPv2N5rogue9protocols6xilinx9XvcServer3runERbN5rogue10LoggingPtrE"></span><span id="rogue::protocols::xilinx::XvcServer::run__bR.rogue::LoggingPtr"></span><span class="target" id="classrogue_1_1protocols_1_1xilinx_1_1XvcServer_1a1e36eb09c43d68ddf8688472484b39f2"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">run</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">threadEn</span></span>, <span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">LoggingPtr</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">log</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols6xilinx9XvcServer3runERbN5rogue10LoggingPtrE" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/XvcServer_8h_source.html#l00059"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/XvcServer_8cpp_source.html#l00058"><span class="pre">[impl]</span></a></dt>
+<dd><p>Runs accept loop while thread enable flag is true. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>threadEn</strong> – Run-control flag checked by loop. </p></li>
+<li><p><strong>log</strong> – Logger used for connection-level diagnostics. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols6xilinx9XvcServerD0Ev">
+<span id="_CPPv3N5rogue9protocols6xilinx9XvcServerD0Ev"></span><span id="_CPPv2N5rogue9protocols6xilinx9XvcServerD0Ev"></span><span id="rogue::protocols::xilinx::XvcServer::~XvcServer"></span><span class="target" id="classrogue_1_1protocols_1_1xilinx_1_1XvcServer_1a4c44193ef9b68fb7691f0750ee57850e"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">~XvcServer</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols6xilinx9XvcServerD0Ev" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/XvcServer_8h_source.html#l00062"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/XvcServer_8cpp_source.html#l00054"><span class="pre">[impl]</span></a></dt>
+<dd><p>Closes the listening socket and destroys server instance. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="jtagDriver.html" class="btn btn-neutral float-left" title="JtagDriver" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="xvcConnection.html" class="btn btn-neutral float-right" title="XvcConnection" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

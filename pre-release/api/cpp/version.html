@@ -1,0 +1,327 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>rogue::Version &mdash; Rogue v6.9.0-146-g9016781d5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=8b50afe1" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=5f168154"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/custom.js?v=7b5dfb0b"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="rogue::Logging" href="logging.html" />
+    <link rel="prev" title="rogue" href="rogue_index.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../python/index.html">Python API</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">C++ API</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="rogue_index.html">rogue</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">rogue::Version</a></li>
+<li class="toctree-l4"><a class="reference internal" href="logging.html">rogue::Logging</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generalerror.html">rogue::GeneralError</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="interfaces_index.html">rogue::interfaces</a></li>
+<li class="toctree-l3"><a class="reference internal" href="protocols_index.html">rogue::protocols</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hardware_index.html">rogue::hardware</a></li>
+<li class="toctree-l3"><a class="reference internal" href="utilities_index.html">rogue::utilities</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">API Reference</a></li>
+          <li class="breadcrumb-item"><a href="index.html">C++ API</a></li>
+          <li class="breadcrumb-item"><a href="rogue_index.html">rogue</a></li>
+      <li class="breadcrumb-item active">rogue::Version</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/api/cpp/version.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="rogue-version">
+<span id="api-cpp-version"></span><h1>rogue::Version<a class="headerlink" href="#rogue-version" title="Link to this heading"></a></h1>
+<p>For version-checking workflows and deployment guidance, see
+<a class="reference internal" href="../../built_in_modules/interfaces/version.html"><span class="doc">Rogue Version Helper</span></a>.</p>
+<p>Migration notes for version-to-version behavior changes are collected in
+<a class="reference internal" href="../../migration/index.html"><span class="doc">Migration Notes</span></a>.</p>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue7VersionE">
+<span id="_CPPv3N5rogue7VersionE"></span><span id="_CPPv2N5rogue7VersionE"></span><span id="rogue::Version"></span><span class="target" id="classrogue_1_1Version"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Version</span></span></span><a class="headerlink" href="#_CPPv4N5rogue7VersionE" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../_doxygen/Version_8h_source.html#l00035"><span class="pre">[header]</span></a></dt>
+<dd><p>Rogue version query and comparison helpers. </p>
+<p>Provides access to the runtime Rogue version string/components and utilities to compare against a requested version expression. Comparison helpers parse the passed version string into major/minor/maintenance components. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue7Version7VersionEv">
+<span id="_CPPv3N5rogue7Version7VersionEv"></span><span id="_CPPv2N5rogue7Version7VersionEv"></span><span id="rogue::Version::Version"></span><span class="target" id="classrogue_1_1Version_1a63a062dff27ad5055f9794a7fccbb263"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Version</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue7Version7VersionEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../_doxygen/Version_8h_source.html#l00048"><span class="pre">[header]</span></a></dt>
+<dd><p>Default constructor. </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-static-functions">Public Static Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue7Version7currentEv">
+<span id="_CPPv3N5rogue7Version7currentEv"></span><span id="_CPPv2N5rogue7Version7currentEv"></span><span id="rogue::Version::current"></span><span class="target" id="classrogue_1_1Version_1a4e8630e63fd045f4f90fe031e580355a"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">current</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue7Version7currentEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../_doxygen/Version_8h_source.html#l00054"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../_doxygen/Version_8cpp_source.html#l00066"><span class="pre">[impl]</span></a></dt>
+<dd><p>Returns current Rogue version string. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#classrogue_1_1Version"><span class="std std-ref">Version</span></a> string. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue7Version16greaterThanEqualERKNSt6stringE">
+<span id="_CPPv3N5rogue7Version16greaterThanEqualERKNSt6stringE"></span><span id="_CPPv2N5rogue7Version16greaterThanEqualERKNSt6stringE"></span><span id="rogue::Version::greaterThanEqual__ssCR"></span><span class="target" id="classrogue_1_1Version_1a9d28f3ce57c144358b41a5118cdd3d37"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">greaterThanEqual</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">compare</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue7Version16greaterThanEqualERKNSt6stringE" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../_doxygen/Version_8h_source.html#l00061"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../_doxygen/Version_8cpp_source.html#l00071"><span class="pre">[impl]</span></a></dt>
+<dd><p>Returns whether current version is greater than or equal to <code class="docutils literal notranslate"><span class="pre">compare</span></code>. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>compare</strong> – <a class="reference internal" href="#classrogue_1_1Version"><span class="std std-ref">Version</span></a> string to compare against. </p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">true</span></code> when current version is &gt;= <code class="docutils literal notranslate"><span class="pre">compare</span></code>. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue7Version11greaterThanERKNSt6stringE">
+<span id="_CPPv3N5rogue7Version11greaterThanERKNSt6stringE"></span><span id="_CPPv2N5rogue7Version11greaterThanERKNSt6stringE"></span><span id="rogue::Version::greaterThan__ssCR"></span><span class="target" id="classrogue_1_1Version_1aedb062351a7ee00d5ccacfccafad6066"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">greaterThan</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">compare</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue7Version11greaterThanERKNSt6stringE" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../_doxygen/Version_8h_source.html#l00068"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../_doxygen/Version_8cpp_source.html#l00081"><span class="pre">[impl]</span></a></dt>
+<dd><p>Returns whether current version is greater than <code class="docutils literal notranslate"><span class="pre">compare</span></code>. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>compare</strong> – <a class="reference internal" href="#classrogue_1_1Version"><span class="std std-ref">Version</span></a> string to compare against. </p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">true</span></code> when current version is &gt; <code class="docutils literal notranslate"><span class="pre">compare</span></code>. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue7Version13lessThanEqualERKNSt6stringE">
+<span id="_CPPv3N5rogue7Version13lessThanEqualERKNSt6stringE"></span><span id="_CPPv2N5rogue7Version13lessThanEqualERKNSt6stringE"></span><span id="rogue::Version::lessThanEqual__ssCR"></span><span class="target" id="classrogue_1_1Version_1a0d7f1ed7ed8cc574cc1f61af0f8794b9"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">lessThanEqual</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">compare</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue7Version13lessThanEqualERKNSt6stringE" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../_doxygen/Version_8h_source.html#l00075"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../_doxygen/Version_8cpp_source.html#l00091"><span class="pre">[impl]</span></a></dt>
+<dd><p>Returns whether current version is less than or equal to <code class="docutils literal notranslate"><span class="pre">compare</span></code>. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>compare</strong> – <a class="reference internal" href="#classrogue_1_1Version"><span class="std std-ref">Version</span></a> string to compare against. </p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">true</span></code> when current version is &lt;= <code class="docutils literal notranslate"><span class="pre">compare</span></code>. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue7Version8lessThanERKNSt6stringE">
+<span id="_CPPv3N5rogue7Version8lessThanERKNSt6stringE"></span><span id="_CPPv2N5rogue7Version8lessThanERKNSt6stringE"></span><span id="rogue::Version::lessThan__ssCR"></span><span class="target" id="classrogue_1_1Version_1ac7e92a31169056abf75f3020716c0470"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">lessThan</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">compare</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue7Version8lessThanERKNSt6stringE" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../_doxygen/Version_8h_source.html#l00082"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../_doxygen/Version_8cpp_source.html#l00101"><span class="pre">[impl]</span></a></dt>
+<dd><p>Returns whether current version is less than <code class="docutils literal notranslate"><span class="pre">compare</span></code>. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>compare</strong> – <a class="reference internal" href="#classrogue_1_1Version"><span class="std std-ref">Version</span></a> string to compare against. </p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">true</span></code> when current version is &lt; <code class="docutils literal notranslate"><span class="pre">compare</span></code>. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue7Version10minVersionERKNSt6stringE">
+<span id="_CPPv3N5rogue7Version10minVersionERKNSt6stringE"></span><span id="_CPPv2N5rogue7Version10minVersionERKNSt6stringE"></span><span id="rogue::Version::minVersion__ssCR"></span><span class="target" id="classrogue_1_1Version_1a2b71bca2b2b0fec614ad97a03b816386"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">minVersion</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">compare</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue7Version10minVersionERKNSt6stringE" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../_doxygen/Version_8h_source.html#l00088"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../_doxygen/Version_8cpp_source.html#l00111"><span class="pre">[impl]</span></a></dt>
+<dd><p>Throws if current version is below required minimum. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>compare</strong> – Minimum required version string. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue7Version10maxVersionERKNSt6stringE">
+<span id="_CPPv3N5rogue7Version10maxVersionERKNSt6stringE"></span><span id="_CPPv2N5rogue7Version10maxVersionERKNSt6stringE"></span><span id="rogue::Version::maxVersion__ssCR"></span><span class="target" id="classrogue_1_1Version_1a13b3992fdd409845f087abdc275d28dd"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">maxVersion</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">compare</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue7Version10maxVersionERKNSt6stringE" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../_doxygen/Version_8h_source.html#l00094"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../_doxygen/Version_8cpp_source.html#l00116"><span class="pre">[impl]</span></a></dt>
+<dd><p>Throws if current version is above allowed maximum. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>compare</strong> – Maximum allowed version string. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue7Version12exactVersionERKNSt6stringE">
+<span id="_CPPv3N5rogue7Version12exactVersionERKNSt6stringE"></span><span id="_CPPv2N5rogue7Version12exactVersionERKNSt6stringE"></span><span id="rogue::Version::exactVersion__ssCR"></span><span class="target" id="classrogue_1_1Version_1aefb0069163372dfa1757eab7205ad334"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">exactVersion</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">compare</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue7Version12exactVersionERKNSt6stringE" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../_doxygen/Version_8h_source.html#l00100"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../_doxygen/Version_8cpp_source.html#l00121"><span class="pre">[impl]</span></a></dt>
+<dd><p>Throws unless current version exactly matches <code class="docutils literal notranslate"><span class="pre">compare</span></code>. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>compare</strong> – Required exact version string. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue7Version12setup_pythonEv">
+<span id="_CPPv3N5rogue7Version12setup_pythonEv"></span><span id="_CPPv2N5rogue7Version12setup_pythonEv"></span><span id="rogue::Version::setup_python"></span><span class="target" id="classrogue_1_1Version_1a7aea7193b0dc578cf29bfabe2c75867a"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setup_python</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue7Version12setup_pythonEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../_doxygen/Version_8h_source.html#l00103"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../_doxygen/Version_8cpp_source.html#l00168"><span class="pre">[impl]</span></a></dt>
+<dd><p>Registers Python bindings for version helpers. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue7Version8getMajorEv">
+<span id="_CPPv3N5rogue7Version8getMajorEv"></span><span id="_CPPv2N5rogue7Version8getMajorEv"></span><span id="rogue::Version::getMajor"></span><span class="target" id="classrogue_1_1Version_1ab6c7ac9e13381b53c99367ec455e5b1b"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getMajor</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue7Version8getMajorEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../_doxygen/Version_8h_source.html#l00106"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../_doxygen/Version_8cpp_source.html#l00126"><span class="pre">[impl]</span></a></dt>
+<dd><p>Returns major version component. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue7Version8getMinorEv">
+<span id="_CPPv3N5rogue7Version8getMinorEv"></span><span id="_CPPv2N5rogue7Version8getMinorEv"></span><span id="rogue::Version::getMinor"></span><span class="target" id="classrogue_1_1Version_1a36d67de1155c940e0eaa85df4624a725"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getMinor</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue7Version8getMinorEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../_doxygen/Version_8h_source.html#l00108"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../_doxygen/Version_8cpp_source.html#l00131"><span class="pre">[impl]</span></a></dt>
+<dd><p>Returns minor version component. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue7Version8getMaintEv">
+<span id="_CPPv3N5rogue7Version8getMaintEv"></span><span id="_CPPv2N5rogue7Version8getMaintEv"></span><span id="rogue::Version::getMaint"></span><span class="target" id="classrogue_1_1Version_1af24a56157fda7c6af2930e79af895cf5"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getMaint</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue7Version8getMaintEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../_doxygen/Version_8h_source.html#l00110"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../_doxygen/Version_8cpp_source.html#l00136"><span class="pre">[impl]</span></a></dt>
+<dd><p>Returns maintenance/patch version component. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue7Version8getDevelEv">
+<span id="_CPPv3N5rogue7Version8getDevelEv"></span><span id="_CPPv2N5rogue7Version8getDevelEv"></span><span id="rogue::Version::getDevel"></span><span class="target" id="classrogue_1_1Version_1ac587e43fc2e25a731a56e7b4044aa1e4"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getDevel</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue7Version8getDevelEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../_doxygen/Version_8h_source.html#l00112"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../_doxygen/Version_8cpp_source.html#l00141"><span class="pre">[impl]</span></a></dt>
+<dd><p>Returns development/build component. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue7Version5sleepE8uint32_t">
+<span id="_CPPv3N5rogue7Version5sleepE8uint32_t"></span><span id="_CPPv2N5rogue7Version5sleepE8uint32_t"></span><span id="rogue::Version::sleep__uint32_t"></span><span class="target" id="classrogue_1_1Version_1afd2303e02fceba210c2c19a82b760682"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">sleep</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">seconds</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue7Version5sleepE8uint32_t" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../_doxygen/Version_8h_source.html#l00115"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../_doxygen/Version_8cpp_source.html#l00158"><span class="pre">[impl]</span></a></dt>
+<dd><p>Sleep helper for testing/debug timing. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue7Version6usleepE8uint32_t">
+<span id="_CPPv3N5rogue7Version6usleepE8uint32_t"></span><span id="_CPPv2N5rogue7Version6usleepE8uint32_t"></span><span id="rogue::Version::usleep__uint32_t"></span><span class="target" id="classrogue_1_1Version_1af3058a68f0a8229966d05b5296b72337"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">usleep</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">useconds</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue7Version6usleepE8uint32_t" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../_doxygen/Version_8h_source.html#l00117"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../_doxygen/Version_8cpp_source.html#l00163"><span class="pre">[impl]</span></a></dt>
+<dd><p>Microsecond sleep helper for testing/debug timing. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue7Version13pythonVersionEv">
+<span id="_CPPv3N5rogue7Version13pythonVersionEv"></span><span id="_CPPv2N5rogue7Version13pythonVersionEv"></span><span id="rogue::Version::pythonVersion"></span><span class="target" id="classrogue_1_1Version_1aab804efac0661bf8890b69ebef52fb6b"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pythonVersion</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue7Version13pythonVersionEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../_doxygen/Version_8h_source.html#l00120"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../_doxygen/Version_8cpp_source.html#l00146"><span class="pre">[impl]</span></a></dt>
+<dd><p>Returns Python runtime version string. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="rogue_index.html" class="btn btn-neutral float-left" title="rogue" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="logging.html" class="btn btn-neutral float-right" title="rogue::Logging" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

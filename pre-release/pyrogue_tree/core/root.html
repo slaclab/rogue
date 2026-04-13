@@ -1,0 +1,451 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Root &mdash; Rogue v6.9.0-146-g9016781d5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=8b50afe1" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=5f168154"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/custom.js?v=7b5dfb0b"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Device" href="device.html" />
+    <link rel="prev" title="PyRogue Tree Components And Concepts" href="index.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">PyRogue Tree</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Components And Concepts</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Root</a></li>
+<li class="toctree-l3"><a class="reference internal" href="device.html">Device</a></li>
+<li class="toctree-l3"><a class="reference internal" href="variable.html">Variable</a></li>
+<li class="toctree-l3"><a class="reference internal" href="command.html">Command</a></li>
+<li class="toctree-l3"><a class="reference internal" href="block.html">Blocks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="block_operations.html">Device Block Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="model.html">Model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fixed_point_models.html">Fixed-Point Models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="float_types_summary.html">Floating Point Types Summary</a></li>
+<li class="toctree-l3"><a class="reference internal" href="poll_queue.html">PollQueue</a></li>
+<li class="toctree-l3"><a class="reference internal" href="yaml_configuration.html">YAML Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="memory_variable_stream.html">Variable Update Stream</a></li>
+<li class="toctree-l3"><a class="reference internal" href="groups.html">Groups</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../builtin_devices/index.html">Built-in Devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../client_interfaces/index.html">Client Interfaces</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">API Reference</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">PyRogue Tree</a></li>
+          <li class="breadcrumb-item"><a href="index.html">PyRogue Tree Components And Concepts</a></li>
+      <li class="breadcrumb-item active">Root</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/pyrogue_tree/core/root.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="root">
+<span id="pyrogue-tree-node-root"></span><h1>Root<a class="headerlink" href="#root" title="Link to this heading"></a></h1>
+<p>The <a class="reference internal" href="../../api/python/pyrogue/root.html#pyrogue.Root" title="pyrogue.Root"><code class="xref py py-class docutils literal notranslate"><span class="pre">Root</span></code></a> class is the top-level Node in a PyRogue tree.
+It owns the runtime lifecycle of the full application, coordinates whole-tree
+read and write workflows, manages background services such as polling and
+update propagation, and provides the common entry points used by GUIs, remote
+clients, and YAML-based configuration flows.</p>
+<p><code class="docutils literal notranslate"><span class="pre">Root</span></code> also inherits from <a class="reference internal" href="../../api/python/pyrogue/device.html#pyrogue.Device" title="pyrogue.Device"><code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code></a>. That is important
+because the top of the tree participates in the same child-Device hierarchy,
+managed-interface lifecycle, and block-traversal behavior as the rest of the
+tree. In practice, that is why a <code class="docutils literal notranslate"><span class="pre">Root</span></code> can own interfaces, recurse through
+child Devices during startup and shutdown, and serve as the top-level entry
+point for bulk read and write operations.</p>
+<p>Most applications define one <code class="docutils literal notranslate"><span class="pre">Root</span></code> subclass and then build the rest of the
+tree underneath it. In practice, that means <code class="docutils literal notranslate"><span class="pre">Root</span></code> is where you decide:</p>
+<ul class="simple">
+<li><p>How the tree is exposed to remote tools.</p></li>
+<li><p>Which memory or transport interfaces the design uses.</p></li>
+<li><p>How startup and shutdown should happen.</p></li>
+<li><p>Which top-level system actions and configuration workflows are available.</p></li>
+</ul>
+<section id="what-root-usually-owns">
+<h2>What Root Usually Owns<a class="headerlink" href="#what-root-usually-owns" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">Root</span></code> is not just a container. It is the object that turns a static tree
+definition into a live system.</p>
+<p>A typical <code class="docutils literal notranslate"><span class="pre">Root</span></code> subclass does four things:</p>
+<ol class="arabic simple">
+<li><p>Creates the hardware-facing interface path used for register access.</p></li>
+<li><p>Adds top-level <code class="docutils literal notranslate"><span class="pre">Device</span></code> instances to the tree and connects them to the hardware interface.</p></li>
+<li><p>Optionally exposes the running tree to remote tools such as PyDM or client
+scripts.</p></li>
+</ol>
+<p>For most DAQ-style applications, the first step means opening the connection to
+the hardware itself or to a simulation of that hardware. In practice that often
+means opening a device driver,
+<a class="reference internal" href="../../built_in_modules/hardware/dma/index.html"><span class="doc">AXI DMA Driver Wrappers</span></a>,
+<a class="reference internal" href="../../memory_interface/tcp_bridge.html"><span class="doc">Memory TCP Bridge</span></a>, or another transport path through a
+Rogue-provided wrapper.</p>
+<p>The key outcome of that step is usually one or more Rogue memory-interface
+objects. Those objects are the link between the hardware connection and the
+PyRogue tree: they are passed as <code class="docutils literal notranslate"><span class="pre">memBase</span></code> to <code class="docutils literal notranslate"><span class="pre">Device</span></code> instances so that
+<code class="docutils literal notranslate"><span class="pre">RemoteVariable</span></code> and other hardware-backed Nodes have a path for register
+transactions.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">rogue</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue.interfaces</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">axipcie</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">EvalBoard</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="s1">&#39;/dev/datadev_0&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;EvalBoard&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Evaluation board root&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="c1"># Create the memory-mapped hardware interface.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">memMap</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">hardware</span><span class="o">.</span><span class="n">axi</span><span class="o">.</span><span class="n">AxiMemMap</span><span class="p">(</span><span class="n">dev</span><span class="p">)</span>
+
+        <span class="c1"># Register it so tree transactions can route through Root.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addInterface</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">memMap</span><span class="p">)</span>
+
+        <span class="c1"># Expose the tree to remote tools.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">zmqServer</span> <span class="o">=</span> <span class="n">pyrogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">ZmqServer</span><span class="p">(</span>
+            <span class="n">root</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
+            <span class="n">addr</span><span class="o">=</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span>
+            <span class="n">port</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addInterface</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">zmqServer</span><span class="p">)</span>
+
+        <span class="c1"># Add the application-specific tree beneath Root.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">axipcie</span><span class="o">.</span><span class="n">AxiPcieCore</span><span class="p">(</span>
+            <span class="n">offset</span><span class="o">=</span><span class="mh">0x00000000</span><span class="p">,</span>
+            <span class="n">memBase</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">memMap</span><span class="p">,</span>
+            <span class="n">expand</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">))</span>
+</pre></div>
+</div>
+<p>That composition pattern is the normal starting point for PyRogue systems:
+<code class="docutils literal notranslate"><span class="pre">Root</span></code> owns lifecycle and top-level interfaces, while <code class="docutils literal notranslate"><span class="pre">Device</span></code> instances
+carry the hardware and application structure below it.</p>
+<section id="unified-python-and-c-logging">
+<h3>Unified Python and C++ logging<a class="headerlink" href="#unified-python-and-c-logging" title="Link to this heading"></a></h3>
+<p>If a PyRogue application wants one logging path for both Python Nodes and Rogue
+C++ transport/protocol objects, call <code class="docutils literal notranslate"><span class="pre">pyrogue.setUnifiedLogging(True)</span></code> or
+construct the Root with <code class="docutils literal notranslate"><span class="pre">unifyLogs=True</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyRoot</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;MyRoot&#39;</span><span class="p">,</span> <span class="n">unifyLogs</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This enables Rogue C++ log forwarding into Python logging and disables the
+native Rogue stdout sink to avoid duplicate messages. The forwarded records can
+then appear in <code class="docutils literal notranslate"><span class="pre">Root.SystemLog</span></code> and any other Python logging handlers already
+attached under the <code class="docutils literal notranslate"><span class="pre">pyrogue</span></code> logger tree.</p>
+<p>Example forwarded <code class="docutils literal notranslate"><span class="pre">SystemLog</span></code> entry:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;created&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">1772812345.123456</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;pyrogue.rssi.controller&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Closing link. Server=0&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;levelName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;WARNING&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;levelNumber&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;rogueCpp&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;rogueTid&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">48123</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;roguePid&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">90210</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;rogueLogger&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;pyrogue.rssi.controller&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;rogueTimestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">1772812345.123456</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;rogueComponent&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;rssi&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="lifecycle-and-startup">
+<h2>Lifecycle And Startup<a class="headerlink" href="#lifecycle-and-startup" title="Link to this heading"></a></h2>
+<p>The main lifecycle entry points on <code class="docutils literal notranslate"><span class="pre">Root</span></code> are
+<a class="reference internal" href="../../api/python/pyrogue/root.html#pyrogue.Root.start" title="pyrogue.Root.start"><code class="xref py py-meth docutils literal notranslate"><span class="pre">start()</span></code></a> and <a class="reference internal" href="../../api/python/pyrogue/root.html#pyrogue.Root.stop" title="pyrogue.Root.stop"><code class="xref py py-meth docutils literal notranslate"><span class="pre">stop()</span></code></a>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">Root.start()</span></code> does more than start background threads. It performs the full
+bring-up sequence that attaches the tree, finalizes Node initialization, starts
+managed interfaces, runs optional initial read or write operations, and then
+enables polling.</p>
+<section id="startup-sequence">
+<h3>Startup Sequence<a class="headerlink" href="#startup-sequence" title="Link to this heading"></a></h3>
+<p>When <a class="reference internal" href="../../api/python/pyrogue/root.html#pyrogue.Root.start" title="pyrogue.Root.start"><code class="xref py py-meth docutils literal notranslate"><span class="pre">start()</span></code></a> runs, the major stages are:</p>
+<ol class="arabic simple">
+<li><p>Attach the full tree with <code class="docutils literal notranslate"><span class="pre">_rootAttached()</span></code>.</p></li>
+<li><p>Run <code class="docutils literal notranslate"><span class="pre">_finishInit()</span></code> across the full hierarchy.</p></li>
+<li><p>Validate the collected memory <code class="docutils literal notranslate"><span class="pre">Block</span></code> layout.</p></li>
+<li><p>Apply timeout settings.</p></li>
+<li><p>Start background update and heartbeat services.</p></li>
+<li><p>Call <code class="xref py py-meth docutils literal notranslate"><span class="pre">_start()</span></code> recursively from the root.</p></li>
+<li><p>Optionally perform initial bulk read and write flows.</p></li>
+<li><p>Start <a class="reference internal" href="../../api/python/pyrogue/pollqueue.html#pyrogue.PollQueue" title="pyrogue.PollQueue"><code class="xref py py-class docutils literal notranslate"><span class="pre">PollQueue</span></code></a> and apply <code class="docutils literal notranslate"><span class="pre">PollEn</span></code> state.</p></li>
+</ol>
+<p>The important practical point is that a PyRogue tree is not fully live until
+that sequence has completed. Before startup, the structure exists, but runtime
+behaviors such as polling, managed-interface startup, and hardware-backed block
+access should be treated as not yet active.</p>
+</section>
+<section id="shutdown-sequence">
+<h3>Shutdown Sequence<a class="headerlink" href="#shutdown-sequence" title="Link to this heading"></a></h3>
+<p>When <a class="reference internal" href="../../api/python/pyrogue/root.html#pyrogue.Root.stop" title="pyrogue.Root.stop"><code class="xref py py-meth docutils literal notranslate"><span class="pre">stop()</span></code></a> runs, it:</p>
+<ol class="arabic simple">
+<li><p>Marks the Root as no longer running.</p></li>
+<li><p>Stops the update worker thread.</p></li>
+<li><p>Stops <a class="reference internal" href="../../api/python/pyrogue/pollqueue.html#pyrogue.PollQueue" title="pyrogue.PollQueue"><code class="xref py py-class docutils literal notranslate"><span class="pre">PollQueue</span></code></a>.</p></li>
+<li><p>Calls <code class="xref py py-meth docutils literal notranslate"><span class="pre">_stop()</span></code> recursively from the root.</p></li>
+</ol>
+<p>That shutdown path is why device-owned runtime resources should normally be
+started in <code class="docutils literal notranslate"><span class="pre">_start()</span></code> and stopped in <code class="docutils literal notranslate"><span class="pre">_stop()</span></code> rather than being managed ad
+hoc elsewhere.</p>
+</section>
+</section>
+<section id="tree-attachment-and-lookup">
+<h2>Tree Attachment And Lookup<a class="headerlink" href="#tree-attachment-and-lookup" title="Link to this heading"></a></h2>
+<p>During startup, <code class="docutils literal notranslate"><span class="pre">Root</span></code> is also responsible for attaching parent, root, and
+path context to the entire tree. That happens through <code class="docutils literal notranslate"><span class="pre">_rootAttached()</span></code>.</p>
+<p>At a high level:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Root</span></code> sets its own parent and root references to itself.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Root</span></code> establishes its full path from its name.</p></li>
+<li><p>Child Nodes are recursively attached with resolved parent/root/path context.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Device</span></code>-level attach logic builds the <code class="docutils literal notranslate"><span class="pre">Block</span></code> layout used by hardware
+access paths.</p></li>
+</ul>
+<p>Once the tree is attached, <a class="reference internal" href="../../api/python/pyrogue/root.html#pyrogue.Root.getNode" title="pyrogue.Root.getNode"><code class="xref py py-meth docutils literal notranslate"><span class="pre">getNode()</span></code></a> can resolve dotted
+paths such as <code class="docutils literal notranslate"><span class="pre">EvalBoard.AxiVersion.ScratchPad</span></code>. This is one of the key ways
+tooling and remote interfaces address Nodes in a running system.</p>
+</section>
+<section id="interfaces-and-remote-access">
+<h2>Interfaces And Remote Access<a class="headerlink" href="#interfaces-and-remote-access" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">Root</span></code> is also where remote access usually enters the system. The most common
+pattern is to add a <a class="reference internal" href="../../api/python/pyrogue/interfaces/zmqserver.html#pyrogue.interfaces.ZmqServer" title="pyrogue.interfaces.ZmqServer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ZmqServer</span></code></a> so that PyDM,
+client scripts, and other tools can connect to the same live tree.</p>
+<p>Common pattern in <code class="docutils literal notranslate"><span class="pre">Root.__init__</span></code>:</p>
+<ul class="simple">
+<li><p>Create <code class="docutils literal notranslate"><span class="pre">pyrogue.interfaces.ZmqServer(root=self,</span> <span class="pre">addr='127.0.0.1',</span> <span class="pre">port=0)</span></code></p></li>
+<li><p>Register it with <a class="reference internal" href="../../api/python/pyrogue/root.html#pyrogue.Root.addInterface" title="pyrogue.Root.addInterface"><code class="xref py py-meth docutils literal notranslate"><span class="pre">addInterface()</span></code></a></p></li>
+</ul>
+<p>Practical notes:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">port=0</span></code> auto-selects the first available base port starting at <code class="docutils literal notranslate"><span class="pre">9099</span></code>.</p></li>
+<li><p>Binding to <code class="docutils literal notranslate"><span class="pre">127.0.0.1</span></code> keeps the interface local to the host.</p></li>
+<li><p>Other deployments can bind to a non-local address as needed.</p></li>
+</ul>
+<p>For the broader client-side workflows built on top of that interface, see:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../client_interfaces/index.html"><span class="doc">Client Interfaces</span></a></p></li>
+<li><p><a class="reference internal" href="../client_interfaces/zmq_server.html"><span class="doc">Python ZMQServer</span></a></p></li>
+<li><p><a class="reference internal" href="../client_interfaces/simple.html"><span class="doc">Simple Client Interface</span></a></p></li>
+<li><p><a class="reference internal" href="../client_interfaces/virtual.html"><span class="doc">Virtual Client Interface</span></a></p></li>
+</ul>
+</section>
+<section id="polling-and-critical-sections">
+<h2>Polling And Critical Sections<a class="headerlink" href="#polling-and-critical-sections" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">Root</span></code> owns <a class="reference internal" href="../../api/python/pyrogue/pollqueue.html#pyrogue.PollQueue" title="pyrogue.PollQueue"><code class="xref py py-class docutils literal notranslate"><span class="pre">PollQueue</span></code></a>, which schedules periodic reads
+for polled Variables. In most applications, you do not instantiate or manage
+the poll queue directly; instead, you control it through <code class="docutils literal notranslate"><span class="pre">Root</span></code> and Variable
+settings such as <code class="docutils literal notranslate"><span class="pre">PollEn</span></code> and <code class="docutils literal notranslate"><span class="pre">pollInterval</span></code>.</p>
+<p>Use <a class="reference internal" href="../../api/python/pyrogue/root.html#pyrogue.Root.pollBlock" title="pyrogue.Root.pollBlock"><code class="xref py py-meth docutils literal notranslate"><span class="pre">pollBlock()</span></code></a> when a short sequence should not race
+with background poll reads.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">root</span><span class="o">.</span><span class="n">pollBlock</span><span class="p">():</span>
+    <span class="n">root</span><span class="o">.</span><span class="n">MyDevice</span><span class="o">.</span><span class="n">SomeControl</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">root</span><span class="o">.</span><span class="n">MyDevice</span><span class="o">.</span><span class="n">OtherControl</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>For the detailed scheduling and behavior model, see
+<a class="reference internal" href="poll_queue.html"><span class="doc">PollQueue</span></a>.</p>
+</section>
+<section id="yaml-configuration-and-bulk-operations">
+<h2>YAML Configuration And Bulk Operations<a class="headerlink" href="#yaml-configuration-and-bulk-operations" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">Root</span></code> provides the main tree-level YAML and bulk I/O entry points:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../../api/python/pyrogue/root.html#pyrogue.Root.saveYaml" title="pyrogue.Root.saveYaml"><code class="xref py py-meth docutils literal notranslate"><span class="pre">saveYaml()</span></code></a></p></li>
+<li><p><a class="reference internal" href="../../api/python/pyrogue/root.html#pyrogue.Root.loadYaml" title="pyrogue.Root.loadYaml"><code class="xref py py-meth docutils literal notranslate"><span class="pre">loadYaml()</span></code></a></p></li>
+<li><p><a class="reference internal" href="../../api/python/pyrogue/root.html#pyrogue.Root.setYaml" title="pyrogue.Root.setYaml"><code class="xref py py-meth docutils literal notranslate"><span class="pre">setYaml()</span></code></a></p></li>
+<li><p><a class="reference internal" href="../../api/python/pyrogue/node.html#pyrogue.Node.getYaml" title="pyrogue.Node.getYaml"><code class="xref py py-meth docutils literal notranslate"><span class="pre">getYaml()</span></code></a></p></li>
+</ul>
+<p>These methods back the built-in configuration and state commands exposed on the
+Root itself. They are the main mechanism for saving baselines, restoring known
+configurations, and applying configuration changes across the whole tree.</p>
+<p>For YAML matching, file formats, and array slicing, see
+<a class="reference internal" href="yaml_configuration.html"><span class="doc">YAML Configuration</span></a>.</p>
+<p>For the bulk transaction model used when those staged values are committed
+through the tree, see <a class="reference internal" href="block_operations.html"><span class="doc">Device Block Operations</span></a>.</p>
+</section>
+<section id="built-in-root-commands-and-variables">
+<h2>Built-In Root Commands And Variables<a class="headerlink" href="#built-in-root-commands-and-variables" title="Link to this heading"></a></h2>
+<p>Every <code class="docutils literal notranslate"><span class="pre">Root</span></code> instance includes a set of built-in control Nodes that support
+system-wide workflows.</p>
+<section id="built-in-commands">
+<h3>Built-in Commands<a class="headerlink" href="#built-in-commands" title="Link to this heading"></a></h3>
+<p>The following <code class="xref py py-class docutils literal notranslate"><span class="pre">LocalCommand</span></code> objects are created with the
+Root:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">WriteAll</span></code>: Write every Variable value to hardware.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ReadAll</span></code>: Read every Variable value from hardware.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SaveState</span></code>: Save current state to YAML.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SaveConfig</span></code>: Save configuration to YAML.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">LoadConfig</span></code>: Load configuration from YAML.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">RemoteVariableDump</span></code>: Save a dump of remote Variable state.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">RemoteConfigDump</span></code>: Save a dump of remote configuration state.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Initialize</span></code>: Invoke initialize behavior across the tree.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">HardReset</span></code>: Invoke hard-reset behavior across the tree.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CountReset</span></code>: Invoke count-reset behavior across the tree.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ClearLog</span></code>: Clear the Root system log.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SetYamlConfig</span></code>: Apply configuration from YAML text.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">GetYamlConfig</span></code>: Return configuration as YAML text.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">GetYamlState</span></code>: Return state as YAML text.</p></li>
+</ul>
+</section>
+<section id="built-in-variables">
+<h3>Built-in Variables<a class="headerlink" href="#built-in-variables" title="Link to this heading"></a></h3>
+<p>The following <a class="reference internal" href="../../api/python/pyrogue/localvariable.html#pyrogue.LocalVariable" title="pyrogue.LocalVariable"><code class="xref py py-class docutils literal notranslate"><span class="pre">LocalVariable</span></code></a> objects are also created with
+the Root:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">RogueVersion</span></code>: Rogue version string.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">RogueDirectory</span></code>: Rogue library directory.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SystemLog</span></code>: System log contents for remote tools.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SystemLogLast</span></code>: Most recent system log entry.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ForceWrite</span></code>: Controls whether non-stale Blocks are forced during bulk
+config writes.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">InitAfterConfig</span></code>: Controls whether <code class="docutils literal notranslate"><span class="pre">initialize()</span></code> runs after config
+application.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Time</span></code>: Current UTC time in seconds since epoch.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">LocalTime</span></code>: Current local time.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PollEn</span></code>: Global polling enable.</p></li>
+</ul>
+</section>
+</section>
+<section id="built-in-groups">
+<h2>Built-In Groups<a class="headerlink" href="#built-in-groups" title="Link to this heading"></a></h2>
+<p>Root-level configuration and state workflows use group filtering to include or
+exclude Nodes from bulk operations.</p>
+<p>Common built-in groups include:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">NoConfig</span></code>: Excluded from configuration save and load operations.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">NoState</span></code>: Excluded from state snapshot and export operations.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Hidden</span></code>: Hidden from normal GUI views unless explicitly included.</p></li>
+</ul>
+<p>For the full group-filtering model, see <a class="reference internal" href="groups.html"><span class="doc">Groups</span></a>.</p>
+</section>
+<section id="what-to-explore-next">
+<h2>What To Explore Next<a class="headerlink" href="#what-to-explore-next" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Device composition beneath Root: <a class="reference internal" href="device.html"><span class="doc">Device</span></a></p></li>
+<li><p>Variable behavior and access patterns: <a class="reference internal" href="variable.html"><span class="doc">Variable</span></a></p></li>
+<li><p>Poll scheduling behavior: <a class="reference internal" href="poll_queue.html"><span class="doc">PollQueue</span></a></p></li>
+<li><p>YAML configuration workflows: <a class="reference internal" href="yaml_configuration.html"><span class="doc">YAML Configuration</span></a></p></li>
+<li><p>Remote access patterns: <a class="reference internal" href="../client_interfaces/index.html"><span class="doc">Client Interfaces</span></a></p></li>
+</ul>
+</section>
+<section id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<p>See <a class="reference internal" href="../../api/python/pyrogue/root.html"><span class="doc">Root</span></a> for generated API details.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="PyRogue Tree Components And Concepts" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="device.html" class="btn btn-neutral float-right" title="Device" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

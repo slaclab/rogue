@@ -1,0 +1,371 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pool &mdash; Rogue v6.9.0-146-g9016781d5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css?v=8b50afe1" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=5f168154"></script>
+      <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../../_static/custom.js?v=7b5dfb0b"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link rel="next" title="rogue::interfaces::ZmqClient" href="../zmqClient.html" />
+    <link rel="prev" title="Buffer" href="buffer.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../../python/index.html">Python API</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../../index.html">C++ API</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../../rogue_index.html">rogue</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../../interfaces_index.html">rogue::interfaces</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html">rogue::interfaces::api</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../memory/index.html">rogue::interfaces::memory</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="index.html">rogue::interfaces::stream</a><ul class="current">
+<li class="toctree-l5"><a class="reference internal" href="frame.html">Frame</a></li>
+<li class="toctree-l5"><a class="reference internal" href="frameLock.html">Frame Lock</a></li>
+<li class="toctree-l5"><a class="reference internal" href="frameIterator.html">Frame Iterator</a></li>
+<li class="toctree-l5"><a class="reference internal" href="frameAccessor.html">Frame Accessor</a></li>
+<li class="toctree-l5"><a class="reference internal" href="helpers.html">Frame Helpers</a></li>
+<li class="toctree-l5"><a class="reference internal" href="master.html">Master</a></li>
+<li class="toctree-l5"><a class="reference internal" href="slave.html">Slave</a></li>
+<li class="toctree-l5"><a class="reference internal" href="fifo.html">Fifo</a></li>
+<li class="toctree-l5"><a class="reference internal" href="tcpCore.html">TcpCore</a></li>
+<li class="toctree-l5"><a class="reference internal" href="tcpClient.html">TcpClient</a></li>
+<li class="toctree-l5"><a class="reference internal" href="tcpServer.html">TcpServer</a></li>
+<li class="toctree-l5"><a class="reference internal" href="filter.html">Filter</a></li>
+<li class="toctree-l5"><a class="reference internal" href="rateDrop.html">RateDrop</a></li>
+<li class="toctree-l5"><a class="reference internal" href="buffer.html">Buffer</a></li>
+<li class="toctree-l5 current"><a class="current reference internal" href="#">Pool</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../zmqClient.html">rogue::interfaces::ZmqClient</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../protocols_index.html">rogue::protocols</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../hardware_index.html">rogue::hardware</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../utilities_index.html">rogue::utilities</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">API Reference</a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">C++ API</a></li>
+          <li class="breadcrumb-item"><a href="../../interfaces_index.html">rogue::interfaces</a></li>
+          <li class="breadcrumb-item"><a href="index.html">rogue::interfaces::stream</a></li>
+      <li class="breadcrumb-item active">Pool</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../_sources/api/cpp/interfaces/stream/pool.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pool">
+<span id="interfaces-stream-pool"></span><h1>Pool<a class="headerlink" href="#pool" title="Link to this heading"></a></h1>
+<p>For conceptual usage, see:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../../../../stream_interface/index.html"><span class="doc">Stream Interface</span></a></p></li>
+</ul>
+<p>Pool objects in C++ are referenced by the following shared pointer typedef:</p>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream7PoolPtrE">
+<span id="_CPPv3N5rogue10interfaces6stream7PoolPtrE"></span><span id="_CPPv2N5rogue10interfaces6stream7PoolPtrE"></span><span id="rogue::interfaces::stream::PoolPtr"></span><span class="target" id="namespacerogue_1_1interfaces_1_1stream_1a4ed9c7b624c6fb5aa4152b3a09bdd7c2"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream4PoolE" title="rogue::interfaces::stream::Pool"><span class="n"><span class="pre">Pool</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">PoolPtr</span></span></span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream7PoolPtrE" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Pool_8h_source.html#l00249"><span class="pre">[header]</span></a></dt>
+<dd><p>Shared pointer alias for <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Pool"><span class="std std-ref"><span class="pre">Pool</span></span></a></code>. </p>
+</dd></dl>
+
+<p>The class description is shown below:</p>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream4PoolE">
+<span id="_CPPv3N5rogue10interfaces6stream4PoolE"></span><span id="_CPPv2N5rogue10interfaces6stream4PoolE"></span><span id="rogue::interfaces::stream::Pool"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Pool"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Pool</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">EnableSharedFromThis</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream4PoolE" title="rogue::interfaces::stream::Pool"><span class="n"><span class="pre">Pool</span></span></a><span class="p"><span class="pre">&gt;</span></span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream4PoolE" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Pool_8h_source.html#l00071"><span class="pre">[header]</span></a></dt>
+<dd><p><a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> and buffer allocator for stream endpoints. </p>
+<p><code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Pool"><span class="std std-ref"><span class="pre">Pool</span></span></a></code> is the stream-memory allocation layer used by <code class="docutils literal notranslate"><a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref"><span class="pre">Slave</span></span></a></code> objects to service frame requests from upstream <code class="docutils literal notranslate"><a class="reference internal" href="master.html#classrogue_1_1interfaces_1_1stream_1_1Master"><span class="std std-ref"><span class="pre">Master</span></span></a></code> objects (<code class="docutils literal notranslate"><a class="reference internal" href="master.html#classrogue_1_1interfaces_1_1stream_1_1Master_1a3df9180bb10c5bd9faba17128af6e800"><span class="std std-ref"><span class="pre">Master::reqFrame()</span></span></a></code> eventually resolves through <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Pool_1ab2731033cbedad75750e0ebe67921fe0"><span class="std std-ref"><span class="pre">Pool::acceptReq()</span></span></a></code> on the primary slave).</p>
+<p>Core responsibilities:<ul class="simple">
+<li><p>Allocate and construct <code class="docutils literal notranslate"><a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref"><span class="pre">Frame</span></span></a></code> objects.</p></li>
+<li><p>Allocate and construct the underlying <code class="docutils literal notranslate"><a class="reference internal" href="buffer.html#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref"><span class="pre">Buffer</span></span></a></code> objects used by each frame.</p></li>
+<li><p>Reclaim and optionally recycle buffer data when buffers are returned.</p></li>
+<li><p>Track allocation statistics (<code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Pool_1a694f6e2bafd0e1bde90027c158685f72"><span class="std std-ref"><span class="pre">getAllocBytes()</span></span></a></code>, <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Pool_1a843fe5351d94a90fe8ef1aa792799a21"><span class="std std-ref"><span class="pre">getAllocCount()</span></span></a></code>).</p></li>
+</ul>
+</p>
+<p>Default behavior:<ul class="simple">
+<li><p>A request typically returns a frame with one buffer sized for the request.</p></li>
+<li><p><a class="reference internal" href="buffer.html#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> memory is released when returned (no caching required).</p></li>
+</ul>
+</p>
+<p>Fixed-size mode (<code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Pool_1a1180466e6f42279a8c9adb9c689711cd"><span class="std std-ref"><span class="pre">setFixedSize()</span></span></a></code>):<ul class="simple">
+<li><p>Each allocated buffer uses the configured fixed buffer size.</p></li>
+<li><p>If a frame request is larger than one fixed buffer, the frame is built from multiple buffers so total capacity satisfies the request.</p></li>
+</ul>
+</p>
+<p>Pooling mode (<code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Pool_1a4fc6d967cadc1799712e7fe7d56878f5"><span class="std std-ref"><span class="pre">setPoolSize()</span></span></a></code> with fixed-size operation):<ul class="simple">
+<li><p>Returned buffer memory blocks are cached in an internal free queue for reuse.</p></li>
+<li><p><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Pool"><span class="std std-ref">Pool</span></a> size defines the maximum number of cached entries retained.</p></li>
+<li><p>Reuse reduces allocator churn for high-rate streaming workloads.</p></li>
+</ul>
+</p>
+<p>Subclassing/advanced use:<ul class="simple">
+<li><p>Override <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Pool_1ab2731033cbedad75750e0ebe67921fe0"><span class="std std-ref"><span class="pre">acceptReq()</span></span></a></code> to customize how frames are assembled.</p></li>
+<li><p>Override <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Pool_1a4fe1e33ca13196a4194319071ddc6416"><span class="std std-ref"><span class="pre">retBuffer()</span></span></a></code> to customize return/recycle behavior.</p></li>
+<li><p>Use protected helpers (<code class="docutils literal notranslate"><span class="pre">allocBuffer()</span></code>, <code class="docutils literal notranslate"><span class="pre">createBuffer()</span></code>, <code class="docutils literal notranslate"><span class="pre">decCounter()</span></code>) when integrating external memory providers, such as DMA-backed memory. </p></li>
+</ul>
+</p>
+<p>Subclassed by <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">rogue::interfaces::stream::Slave</span></a></p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream4Pool4PoolEv">
+<span id="_CPPv3N5rogue10interfaces6stream4Pool4PoolEv"></span><span id="_CPPv2N5rogue10interfaces6stream4Pool4PoolEv"></span><span id="rogue::interfaces::stream::Pool::Pool"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Pool_1ac099f47e3db8287ec15628c726aad19c"></span><span class="sig-name descname"><span class="n"><span class="pre">Pool</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream4Pool4PoolEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Pool_8h_source.html#l00095"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/Pool_8cpp_source.html#l00042"><span class="pre">[impl]</span></a></dt>
+<dd><p>Constructs a pool with default allocation behavior enabled. </p>
+<p>Creator.</p>
+<p><em>Company : SLAC National Accelerator Laboratory </em></p>
+<p>Description: Stream memory pool The function calls in this are a mess! create buffer, allocate buffer, etc <em>need to be reworked. </em></p>
+<p>This file is part of the rogue software platform. It is subject to the license terms in the LICENSE.txt file found in the top-level directory of this distribution and at: <a class="reference external" href="https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html">https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html</a>. No part of the rogue software platform, including this file, may be copied, modified, propagated, or distributed except according to the terms <em>contained in the LICENSE.txt file. </em></p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream4PoolD0Ev">
+<span id="_CPPv3N5rogue10interfaces6stream4PoolD0Ev"></span><span id="_CPPv2N5rogue10interfaces6stream4PoolD0Ev"></span><span id="rogue::interfaces::stream::Pool::~Pool"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Pool_1a096c0e4114c4eddca6d549b83077d5ed"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">~Pool</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream4PoolD0Ev" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Pool_8h_source.html#l00098"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/Pool_8cpp_source.html#l00051"><span class="pre">[impl]</span></a></dt>
+<dd><p>Destroys the pool and releases any cached buffer storage. </p>
+<p>Destructor. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream4Pool13getAllocBytesEv">
+<span id="_CPPv3N5rogue10interfaces6stream4Pool13getAllocBytesEv"></span><span id="_CPPv2N5rogue10interfaces6stream4Pool13getAllocBytesEv"></span><span id="rogue::interfaces::stream::Pool::getAllocBytes"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Pool_1a694f6e2bafd0e1bde90027c158685f72"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getAllocBytes</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream4Pool13getAllocBytesEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Pool_8h_source.html#l00111"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/Pool_8cpp_source.html#l00059"><span class="pre">[impl]</span></a></dt>
+<dd><p>Returns total currently allocated bytes. </p>
+<p>Get allocated memory.</p>
+<p>This value is incremented as buffers are allocated and decremented as buffers are freed.</p>
+<p>Exposed as <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Pool_1a694f6e2bafd0e1bde90027c158685f72"><span class="std std-ref"><span class="pre">getAllocBytes()</span></span></a></code> in Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Total currently allocated bytes. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream4Pool13getAllocCountEv">
+<span id="_CPPv3N5rogue10interfaces6stream4Pool13getAllocCountEv"></span><span id="_CPPv2N5rogue10interfaces6stream4Pool13getAllocCountEv"></span><span id="rogue::interfaces::stream::Pool::getAllocCount"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Pool_1a843fe5351d94a90fe8ef1aa792799a21"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getAllocCount</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream4Pool13getAllocCountEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Pool_8h_source.html#l00124"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/Pool_8cpp_source.html#l00064"><span class="pre">[impl]</span></a></dt>
+<dd><p>Returns total currently allocated buffer count. </p>
+<p>Get allocated count.</p>
+<p>This value is incremented as buffers are allocated and decremented as buffers are freed.</p>
+<p>Exposed as <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Pool_1a843fe5351d94a90fe8ef1aa792799a21"><span class="std std-ref"><span class="pre">getAllocCount()</span></span></a></code> in Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Total currently allocated buffers. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream4Pool9acceptReqE8uint32_tb">
+<span id="_CPPv3N5rogue10interfaces6stream4Pool9acceptReqE8uint32_tb"></span><span id="_CPPv2N5rogue10interfaces6stream4Pool9acceptReqE8uint32_tb"></span><span id="rogue::interfaces::stream::Pool::acceptReq__uint32_t.b"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Pool_1ab2731033cbedad75750e0ebe67921fe0"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="frame.html#_CPPv4N5rogue10interfaces6stream5FrameE" title="rogue::interfaces::stream::Frame"><span class="n"><span class="pre">Frame</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">acceptReq</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">size</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">zeroCopyEn</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream4Pool9acceptReqE8uint32_tb" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Pool_8h_source.html#l00136"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/Pool_8cpp_source.html#l00073"><span class="pre">[impl]</span></a></dt>
+<dd><p>Services a frame allocation request from a master. </p>
+<p>Accept a frame request. Called from master.</p>
+<p>Called by <a class="reference internal" href="master.html#classrogue_1_1interfaces_1_1stream_1_1Master_1a3df9180bb10c5bd9faba17128af6e800"><span class="std std-ref">Master::reqFrame()</span></a> to allocate a frame and one or more buffers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>size</strong> – Minimum requested payload size in bytes. </p></li>
+<li><p><strong>zeroCopyEn</strong> – True to allow zero-copy buffers when supported. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Newly allocated frame. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream4Pool9retBufferEP7uint8_t8uint32_t8uint32_t">
+<span id="_CPPv3N5rogue10interfaces6stream4Pool9retBufferEP7uint8_t8uint32_t8uint32_t"></span><span id="_CPPv2N5rogue10interfaces6stream4Pool9retBufferEP7uint8_t8uint32_t8uint32_t"></span><span id="rogue::interfaces::stream::Pool::retBuffer__uint8_tP.uint32_t.uint32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Pool_1a4fe1e33ca13196a4194319071ddc6416"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">retBuffer</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">data</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">meta</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">size</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream4Pool9retBufferEP7uint8_t8uint32_t8uint32_t" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Pool_8h_source.html#l00150"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/Pool_8cpp_source.html#l00089"><span class="pre">[impl]</span></a></dt>
+<dd><p>Returns buffer data to the allocator. </p>
+<p>Return a buffer.</p>
+<p>This method is called by the <a class="reference internal" href="buffer.html#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> destructor in order to free the associated <a class="reference internal" href="buffer.html#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> memory. May be overridden by a subclass to change the way the buffer data is returned.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – Data pointer to release. </p></li>
+<li><p><strong>meta</strong> – Metadata specific to the allocator. </p></li>
+<li><p><strong>size</strong> – Size of data buffer. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream4Pool12setFixedSizeE8uint32_t">
+<span id="_CPPv3N5rogue10interfaces6stream4Pool12setFixedSizeE8uint32_t"></span><span id="_CPPv2N5rogue10interfaces6stream4Pool12setFixedSizeE8uint32_t"></span><span id="rogue::interfaces::stream::Pool::setFixedSize__uint32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Pool_1a1180466e6f42279a8c9adb9c689711cd"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setFixedSize</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">size</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream4Pool12setFixedSizeE8uint32_t" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Pool_8h_source.html#l00165"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/Pool_8cpp_source.html#l00116"><span class="pre">[impl]</span></a></dt>
+<dd><p>Sets fixed-size mode. </p>
+<p>Set fixed size mode.</p>
+<p>This method puts the allocator into fixed size mode.</p>
+<p>Exposed as <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Pool_1a1180466e6f42279a8c9adb9c689711cd"><span class="std std-ref"><span class="pre">setFixedSize()</span></span></a></code> in Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>size</strong> – Fixed size value. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream4Pool12getFixedSizeEv">
+<span id="_CPPv3N5rogue10interfaces6stream4Pool12getFixedSizeEv"></span><span id="_CPPv2N5rogue10interfaces6stream4Pool12getFixedSizeEv"></span><span id="rogue::interfaces::stream::Pool::getFixedSize"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Pool_1a2254a049f7825fbc82a2093c18820a3a"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getFixedSize</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream4Pool12getFixedSizeEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Pool_8h_source.html#l00177"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/Pool_8cpp_source.html#l00124"><span class="pre">[impl]</span></a></dt>
+<dd><p>Returns fixed-size allocation setting. </p>
+<p>Get fixed size mode.</p>
+<p>A return value of <code class="docutils literal notranslate"><span class="pre">0</span></code> means fixed-size mode is disabled.</p>
+<p>Exposed as <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Pool_1a2254a049f7825fbc82a2093c18820a3a"><span class="std std-ref"><span class="pre">getFixedSize()</span></span></a></code> in Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Fixed size value or <code class="docutils literal notranslate"><span class="pre">0</span></code> when fixed-size mode is disabled. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream4Pool11setPoolSizeE8uint32_t">
+<span id="_CPPv3N5rogue10interfaces6stream4Pool11setPoolSizeE8uint32_t"></span><span id="_CPPv2N5rogue10interfaces6stream4Pool11setPoolSizeE8uint32_t"></span><span id="rogue::interfaces::stream::Pool::setPoolSize__uint32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Pool_1a4fc6d967cadc1799712e7fe7d56878f5"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setPoolSize</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">size</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream4Pool11setPoolSizeE8uint32_t" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Pool_8h_source.html#l00186"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/Pool_8cpp_source.html#l00129"><span class="pre">[impl]</span></a></dt>
+<dd><p>Sets buffer pool size. </p>
+<p>Set buffer pool size.</p>
+<p>Exposed as <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Pool_1a4fc6d967cadc1799712e7fe7d56878f5"><span class="std std-ref"><span class="pre">setPoolSize()</span></span></a></code> in Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>size</strong> – Number of entries to keep in the pool. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream4Pool11getPoolSizeEv">
+<span id="_CPPv3N5rogue10interfaces6stream4Pool11getPoolSizeEv"></span><span id="_CPPv2N5rogue10interfaces6stream4Pool11getPoolSizeEv"></span><span id="rogue::interfaces::stream::Pool::getPoolSize"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Pool_1a73c526e6d724d2d69393cbe77db353bf"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getPoolSize</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream4Pool11getPoolSizeEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Pool_8h_source.html#l00195"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/Pool_8cpp_source.html#l00137"><span class="pre">[impl]</span></a></dt>
+<dd><p>Returns configured maximum number of cached pool entries. </p>
+<p>Get pool size.</p>
+<p>Exposed as <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Pool_1a73c526e6d724d2d69393cbe77db353bf"><span class="std std-ref"><span class="pre">getPoolSize()</span></span></a></code> in Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Pool"><span class="std std-ref">Pool</span></a> size. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-static-functions">Public Static Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream4Pool12setup_pythonEv">
+<span id="_CPPv3N5rogue10interfaces6stream4Pool12setup_pythonEv"></span><span id="_CPPv2N5rogue10interfaces6stream4Pool12setup_pythonEv"></span><span id="rogue::interfaces::stream::Pool::setup_python"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Pool_1a9e3c4474743d14d7cd7de7b729172a93"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setup_python</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream4Pool12setup_pythonEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Pool_8h_source.html#l00153"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/Pool_8cpp_source.html#l00103"><span class="pre">[impl]</span></a></dt>
+<dd><p>Registers this type with Python bindings. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="buffer.html" class="btn btn-neutral float-left" title="Buffer" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../zmqClient.html" class="btn btn-neutral float-right" title="rogue::interfaces::ZmqClient" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

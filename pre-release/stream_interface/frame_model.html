@@ -1,0 +1,249 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Frame Model &mdash; Rogue v6.9.0-146-g9016781d5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=8b50afe1" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5f168154"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script src="../_static/custom.js?v=7b5dfb0b"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Sending Frames" href="sending.html" />
+    <link rel="prev" title="Connecting Streams" href="connecting.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Stream Interface</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="connecting.html">Connecting Streams</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Frame Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sending.html">Sending Frames</a></li>
+<li class="toctree-l2"><a class="reference internal" href="receiving.html">Receiving Frames</a></li>
+<li class="toctree-l2"><a class="reference internal" href="built_in_modules.html">Built-in Stream Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../custom_module/index.html">Creating Custom Modules</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API Reference</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Stream Interface</a></li>
+      <li class="breadcrumb-item active">Frame Model</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/stream_interface/frame_model.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="frame-model">
+<span id="stream-interface-frame-model"></span><h1>Frame Model<a class="headerlink" href="#frame-model" title="Link to this heading"></a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">Frame</span></code> is the data and metadata container that moves through Rogue stream
+connections. Every send, receive, buffer, filter, or bridge operation in the
+stream interface is ultimately acting on a <code class="docutils literal notranslate"><span class="pre">Frame</span></code>.</p>
+<p>A <code class="docutils literal notranslate"><span class="pre">Frame</span></code> carries two kinds of information. The first is payload bytes. The
+second is metadata that tells the rest of the stream graph how that payload
+should be interpreted or routed. Understanding that split is the key to reading
+the rest of the stream documentation.</p>
+<section id="what-a-frame-carries">
+<h2>What A <code class="docutils literal notranslate"><span class="pre">Frame</span></code> Carries<a class="headerlink" href="#what-a-frame-carries" title="Link to this heading"></a></h2>
+<p>A <code class="docutils literal notranslate"><span class="pre">Frame</span></code> contains:</p>
+<ul class="simple">
+<li><p>Payload bytes</p></li>
+<li><p>Channel metadata via <code class="docutils literal notranslate"><span class="pre">getChannel()</span></code> and <code class="docutils literal notranslate"><span class="pre">setChannel()</span></code></p></li>
+<li><p>Error metadata via <code class="docutils literal notranslate"><span class="pre">getError()</span></code> and <code class="docutils literal notranslate"><span class="pre">setError()</span></code></p></li>
+<li><p>Flags and user fields via <code class="docutils literal notranslate"><span class="pre">getFlags()</span></code>, <code class="docutils literal notranslate"><span class="pre">setFlags()</span></code>, <code class="docutils literal notranslate"><span class="pre">setFirstUser()</span></code>,
+and <code class="docutils literal notranslate"><span class="pre">setLastUser()</span></code></p></li>
+</ul>
+<p>The payload is the byte stream itself. The metadata travels with the payload
+and lets downstream code decide how to decode, route, filter, or reject the
+<code class="docutils literal notranslate"><span class="pre">Frame</span></code> without reparsing the payload when a simple metadata check is enough.</p>
+</section>
+<section id="capacity-and-payload">
+<h2>Capacity And Payload<a class="headerlink" href="#capacity-and-payload" title="Link to this heading"></a></h2>
+<p>Three size-related methods appear often in stream code:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">getSize()</span></code> returns the total writable capacity of the <code class="docutils literal notranslate"><span class="pre">Frame</span></code> in bytes</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">getPayload()</span></code> returns how many bytes are currently marked valid</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">getAvailable()</span></code> returns how much writable capacity remains</p></li>
+</ul>
+<p>This distinction matters because a <code class="docutils literal notranslate"><span class="pre">Frame</span></code> may have enough allocated storage
+for more bytes than are currently valid. Write operations grow the valid payload
+as needed, up to the <code class="docutils literal notranslate"><span class="pre">Frame</span></code> capacity. Writes beyond <code class="docutils literal notranslate"><span class="pre">getSize()</span></code> raise an
+exception.</p>
+</section>
+<section id="locking-model">
+<h2>Locking Model<a class="headerlink" href="#locking-model" title="Link to this heading"></a></h2>
+<p>Because a <code class="docutils literal notranslate"><span class="pre">Frame</span></code> may be shared across multiple stages, payload and metadata
+access should be protected by the <code class="docutils literal notranslate"><span class="pre">Frame</span></code> lock when code is reading or
+modifying shared state:</p>
+<ul class="simple">
+<li><p>Python: <code class="docutils literal notranslate"><span class="pre">with</span> <span class="pre">frame.lock():</span></code></p></li>
+<li><p>C++: <code class="docutils literal notranslate"><span class="pre">auto</span> <span class="pre">lock</span> <span class="pre">=</span> <span class="pre">frame-&gt;lock();</span></code></p></li>
+</ul>
+<p>It is common to copy the data you need while holding the lock, then release the
+lock before doing more expensive application work.</p>
+</section>
+<section id="python-access-patterns">
+<h2>Python Access Patterns<a class="headerlink" href="#python-access-patterns" title="Link to this heading"></a></h2>
+<p>Python bindings provide several convenient ways to access <code class="docutils literal notranslate"><span class="pre">Frame</span></code> contents:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">frame.write(obj,</span> <span class="pre">offset=0)</span></code> writes from a Python buffer object</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">frame.read(obj,</span> <span class="pre">offset=0)</span></code> reads into a writable Python buffer object</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">frame.putNumpy(arr,</span> <span class="pre">offset=0)</span></code> writes from a NumPy array</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">frame.getNumpy(offset=0,</span> <span class="pre">count=0)</span></code> returns a copied <code class="docutils literal notranslate"><span class="pre">np.uint8</span></code> array</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">frame.getMemoryview()</span></code> returns a memoryview over copied <code class="docutils literal notranslate"><span class="pre">Frame</span></code> bytes</p></li>
+</ul>
+<p><code class="docutils literal notranslate"><span class="pre">write()</span></code> accepts ordinary Python buffer-compatible objects such as
+<code class="docutils literal notranslate"><span class="pre">bytes</span></code>, <code class="docutils literal notranslate"><span class="pre">bytearray</span></code>, and contiguous NumPy arrays. <code class="docutils literal notranslate"><span class="pre">putNumpy()</span></code> is the
+more explicit and usually safer choice when the source is a NumPy array,
+especially if the array may be non-contiguous.</p>
+</section>
+<section id="c-access-patterns">
+<h2>C++ Access Patterns<a class="headerlink" href="#c-access-patterns" title="Link to this heading"></a></h2>
+<p>The C++ side exposes more of the <code class="docutils literal notranslate"><span class="pre">Frame</span></code> layout and is designed to support
+both correctness-first and performance-oriented access styles.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">FrameIterator</span></code> with <code class="docutils literal notranslate"><span class="pre">toFrame()</span></code> and <code class="docutils literal notranslate"><span class="pre">fromFrame()</span></code> is the safest
+general-purpose access method across multi-buffer payloads</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">FrameAccessor&lt;T&gt;</span></code> provides typed contiguous access when the requested range
+fits within one underlying buffer</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ensureSingleBuffer(frame,</span> <span class="pre">true)</span></code> can flatten a <code class="docutils literal notranslate"><span class="pre">Frame</span></code> when contiguous
+access is required</p></li>
+</ul>
+<p>The important detail is that a <code class="docutils literal notranslate"><span class="pre">Frame</span></code> payload does not have to live in one
+contiguous memory block. It may span multiple underlying <code class="docutils literal notranslate"><span class="pre">Buffer</span></code> objects.
+That is why iterator-based access appears so often in Rogue examples.</p>
+</section>
+<section id="what-to-explore-next">
+<h2>What To Explore Next<a class="headerlink" href="#what-to-explore-next" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Connection semantics: <a class="reference internal" href="connecting.html"><span class="doc">Connecting Streams</span></a></p></li>
+<li><p>Transmit-side <code class="docutils literal notranslate"><span class="pre">Frame</span></code> construction: <a class="reference internal" href="sending.html"><span class="doc">Sending Frames</span></a></p></li>
+<li><p>Receive-side <code class="docutils literal notranslate"><span class="pre">Frame</span></code> inspection: <a class="reference internal" href="receiving.html"><span class="doc">Receiving Frames</span></a></p></li>
+</ul>
+</section>
+<section id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Python:</p>
+<ul>
+<li><p><a class="reference internal" href="../api/python/rogue/interfaces/stream/frame.html"><span class="doc">Frame</span></a></p></li>
+</ul>
+</li>
+<li><p>C++:</p>
+<ul>
+<li><p><a class="reference internal" href="../api/cpp/interfaces/stream/frame.html"><span class="doc">Frame</span></a></p></li>
+<li><p><a class="reference internal" href="../api/cpp/interfaces/stream/frameIterator.html"><span class="doc">Frame Iterator</span></a></p></li>
+<li><p><a class="reference internal" href="../api/cpp/interfaces/stream/helpers.html"><span class="doc">Frame Helpers</span></a></p></li>
+<li><p><a class="reference internal" href="../api/cpp/interfaces/stream/frameAccessor.html"><span class="doc">Frame Accessor</span></a></p></li>
+</ul>
+</li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="connecting.html" class="btn btn-neutral float-left" title="Connecting Streams" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="sending.html" class="btn btn-neutral float-right" title="Sending Frames" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

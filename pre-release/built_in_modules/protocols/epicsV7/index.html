@@ -1,0 +1,254 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EPICS V7 Access &mdash; Rogue v6.9.0-146-g9016781d5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=8b50afe1" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=5f168154"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../_static/custom.js?v=7b5dfb0b"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Epics PV Server (V7 Protocol)" href="epicspvserver.html" />
+    <link rel="prev" title="Epics PV Holder Protocol" href="../epicsV4/epicspvholder.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Built-in Modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../interfaces/index.html">Interfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../simulation/index.html">Simulation Utilities</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">Protocols</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../udp/index.html">UDP Protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../rssi/index.html">RSSI Protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../packetizer/index.html">Packetizer Protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../network.html">Network Wrapper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../batcher/index.html">Batcher Protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../epicsV4/index.html">EPICS V4 Access</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">EPICS V7 Access</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="epicspvserver.html">Epics PV Server (V7 Protocol)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="epicspvholder.html">Epics PV Holder (V7 Protocol)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../srp/index.html">SRP Protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../xilinx/index.html">Xilinx Protocols</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../uart.html">UART Memory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gpib.html">GPIB Control</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../hardware/index.html">Hardware</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utilities/index.html">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">API Reference</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Built-in Modules</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Protocols</a></li>
+      <li class="breadcrumb-item active">EPICS V7 Access</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/built_in_modules/protocols/epicsV7/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="epics-v7-access">
+<span id="protocols-epicsv7"></span><h1>EPICS V7 Access<a class="headerlink" href="#epics-v7-access" title="Link to this heading"></a></h1>
+<p>EPICS-facing protocol integration using softIocPVA (pythonSoftIOC) to serve
+PyRogue Variables as real EPICS records. The V7 integration supports both CA
+and PVA client access.</p>
+<p>Use these pages for conceptual behavior and integration patterns. Generated
+API pages are available in the Python API reference:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../../../api/python/pyrogue/protocols/epicsv7/index.html"><span class="doc">pyrogue.protocols.epicsv7</span></a></p></li>
+</ul>
+<section id="how-the-epics-v7-integration-is-structured">
+<h2>How The EPICS V7 Integration Is Structured<a class="headerlink" href="#how-the-epics-v7-integration-is-structured" title="Link to this heading"></a></h2>
+<p>The EPICS V7 integration has two primary components:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">EpicsPvServer</span></code> scans the running PyRogue tree, selects Variables to
+expose, and creates the EPICS record namespace using softIocPVA.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">EpicsPvHolder</span></code> represents one served record and handles value updates,
+type mapping, and EPICS put behavior for its bound Variable or Command.</p></li>
+</ul>
+<p>In practice, <code class="docutils literal notranslate"><span class="pre">EpicsPvServer</span></code> owns many <code class="docutils literal notranslate"><span class="pre">EpicsPvHolder</span></code> instances.</p>
+</section>
+<section id="key-differences-from-epics-v4">
+<h2>Key Differences from EPICS V4<a class="headerlink" href="#key-differences-from-epics-v4" title="Link to this heading"></a></h2>
+<p>The V7 integration uses softioc (pythonSoftIOC) instead of p4p. This provides:</p>
+<ul class="simple">
+<li><p><strong>Real EPICS records</strong> — softIocPVA creates longIn/longOut, ai/ao, and
+other record types rather than SharedPV objects.</p></li>
+<li><p><strong>Commands via caput</strong> — PyRogue Commands are exposed as longOut records.
+Clients invoke them with a plain put (value is forwarded as the command
+argument), not with an RPC call.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Neither softioc nor p4p exposes a Python callback that fires when a CA or
+PVA client issues a <code class="docutils literal notranslate"><span class="pre">caget</span></code> / <code class="docutils literal notranslate"><span class="pre">ctxt.get()</span></code>. Both EPICS V4 and V7
+integrations serve the most recently pushed value from the EPICS record
+buffer. To ensure clients receive up-to-date hardware values, the Rogue
+server process must execute hardware reads itself — either via PyRogue
+auto-polling (<code class="docutils literal notranslate"><span class="pre">pollInterval</span></code> on variables or <code class="docutils literal notranslate"><span class="pre">pollEn=True</span></code> on the
+Root) or by calling device-level read commands explicitly.</p>
+</div>
+</section>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h2>
+<p>Install the softioc dependency with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">softioc</span>
+</pre></div>
+</div>
+<p>or add <code class="docutils literal notranslate"><span class="pre">softioc</span></code> to your conda environment.</p>
+</section>
+<section id="typical-workflow">
+<h2>Typical Workflow<a class="headerlink" href="#typical-workflow" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p>Start a PyRogue <code class="docutils literal notranslate"><span class="pre">Root</span></code> and ensure Variables are tagged with the intended
+include and exclude groups.</p></li>
+<li><p>Create
+<code class="docutils literal notranslate"><span class="pre">EpicsPvServer(base=...,</span> <span class="pre">root=...,</span> <span class="pre">incGroups=...,</span> <span class="pre">excGroups=...,</span> <span class="pre">pvMap=...)</span></code>.</p></li>
+<li><p>Register it with the <code class="docutils literal notranslate"><span class="pre">Root</span></code> protocol lifecycle and inspect the resulting
+mapping with <code class="docutils literal notranslate"><span class="pre">list()</span></code> or <code class="docutils literal notranslate"><span class="pre">dump()</span></code>.</p></li>
+<li><p>Validate end-to-end behavior with any EPICS client (CA or PVA).</p></li>
+</ol>
+</section>
+<section id="group-filtering">
+<h2>Group Filtering<a class="headerlink" href="#group-filtering" title="Link to this heading"></a></h2>
+<p>Variable exposure is controlled by normal PyRogue group filtering.
+<code class="docutils literal notranslate"><span class="pre">incGroups</span></code> includes only matching Variables when it is set, and
+<code class="docutils literal notranslate"><span class="pre">excGroups</span></code> excludes matching Variables. The default exclusion list includes
+<code class="docutils literal notranslate"><span class="pre">NoServe</span></code>.</p>
+<p>For group semantics and filtering behavior in the tree model, see
+<a class="reference internal" href="../../../pyrogue_tree/core/groups.html"><span class="doc">Groups</span></a>.</p>
+</section>
+<section id="subtopics">
+<h2>Subtopics<a class="headerlink" href="#subtopics" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Server setup and PV mapping details: <a class="reference internal" href="epicspvserver.html"><span class="doc">Epics PV Server (V7 Protocol)</span></a></p></li>
+<li><p>Per-variable publication behavior: <a class="reference internal" href="epicspvholder.html"><span class="doc">Epics PV Holder (V7 Protocol)</span></a></p></li>
+</ul>
+</section>
+<section id="related-topics">
+<h2>Related Topics<a class="headerlink" href="#related-topics" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>EPICS V4 integration (p4p-based): <a class="reference internal" href="../epicsV4/index.html"><span class="doc">EPICS V4 Access</span></a></p></li>
+<li><p>General protocol overview: <a class="reference internal" href="../index.html"><span class="doc">Protocols</span></a></p></li>
+<li><p>Tree group filtering: <a class="reference internal" href="../../../pyrogue_tree/core/groups.html"><span class="doc">Groups</span></a></p></li>
+</ul>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">EPICS V7 Access</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="epicspvserver.html">Epics PV Server (V7 Protocol)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="epicspvholder.html">Epics PV Holder (V7 Protocol)</a></li>
+</ul>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../epicsV4/epicspvholder.html" class="btn btn-neutral float-left" title="Epics PV Holder Protocol" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="epicspvserver.html" class="btn btn-neutral float-right" title="Epics PV Server (V7 Protocol)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

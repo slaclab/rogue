@@ -1,0 +1,288 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Virtual Client Interface &mdash; Rogue v6.9.0-146-g9016781d5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=8b50afe1" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=5f168154"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/custom.js?v=7b5dfb0b"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Using the Command Line Client" href="commandline.html" />
+    <link rel="prev" title="Simple Client Interface" href="simple.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">PyRogue Tree</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../core/index.html">Components And Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../builtin_devices/index.html">Built-in Devices</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Client Interfaces</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="zmq_server.html">Python ZMQServer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="simple.html">Simple Client Interface</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Virtual Client Interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="commandline.html">Using the Command Line Client</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">API Reference</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">PyRogue Tree</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Client Interfaces</a></li>
+      <li class="breadcrumb-item active">Virtual Client Interface</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/pyrogue_tree/client_interfaces/virtual.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="virtual-client-interface">
+<span id="interfaces-clients-virtual"></span><h1>Virtual Client Interface<a class="headerlink" href="#virtual-client-interface" title="Link to this heading"></a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">VirtualClient</span></code> mirrors a running remote tree into a local client-side object
+model, so client code can use familiar <code class="docutils literal notranslate"><span class="pre">Device</span></code>/<code class="docutils literal notranslate"><span class="pre">Variable</span></code>/<code class="docutils literal notranslate"><span class="pre">Command</span></code> access patterns.</p>
+<p>Use <code class="docutils literal notranslate"><span class="pre">VirtualClient</span></code> when you need:</p>
+<ul class="simple">
+<li><p>Tree-like object access from the client (<code class="docutils literal notranslate"><span class="pre">client.root.Device.Var</span></code> style)</p></li>
+<li><p>Richer metadata and listener behavior</p></li>
+<li><p>A path to prototype complex workflows in client code before moving logic into
+the server-side tree</p></li>
+</ul>
+<p>Unlike <a class="reference internal" href="simple.html"><span class="doc">Simple Client Interface</span></a>, <code class="docutils literal notranslate"><span class="pre">VirtualClient</span></code> depends
+on broader Rogue/PyRogue libraries.</p>
+<section id="basic-usage">
+<h2>Basic Usage<a class="headerlink" href="#basic-usage" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pyrogue.interfaces</span><span class="w"> </span><span class="kn">import</span> <span class="n">VirtualClient</span>
+
+<span class="k">with</span> <span class="n">VirtualClient</span><span class="p">(</span><span class="n">addr</span><span class="o">=</span><span class="s1">&#39;localhost&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">9099</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+    <span class="n">root</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">root</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">RogueVersion</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">RogueVersion</span><span class="o">.</span><span class="n">valueDisp</span><span class="p">())</span>
+
+    <span class="n">root</span><span class="o">.</span><span class="n">AxiVersion</span><span class="o">.</span><span class="n">ScratchPad</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mh">0x100</span><span class="p">)</span>
+    <span class="n">root</span><span class="o">.</span><span class="n">AxiVersion</span><span class="o">.</span><span class="n">ScratchPad</span><span class="o">.</span><span class="n">setDisp</span><span class="p">(</span><span class="s1">&#39;0x100&#39;</span><span class="p">)</span>
+    <span class="n">root</span><span class="o">.</span><span class="n">SomeCommand</span><span class="o">.</span><span class="n">exec</span><span class="p">(</span><span class="s1">&#39;0x100&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="access-to-metadata-and-listeners">
+<h2>Access To Metadata And Listeners<a class="headerlink" href="#access-to-metadata-and-listeners" title="Link to this heading"></a></h2>
+<p>Because the tree is mirrored, you can inspect Variable metadata and attach
+listeners in the same style as server-side code.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pyrogue.interfaces</span><span class="w"> </span><span class="kn">import</span> <span class="n">VirtualClient</span>
+
+<span class="k">with</span> <span class="n">VirtualClient</span><span class="p">(</span><span class="n">addr</span><span class="o">=</span><span class="s1">&#39;localhost&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">9099</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+    <span class="n">root</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">root</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">AxiVersion</span><span class="o">.</span><span class="n">ScratchPad</span><span class="o">.</span><span class="n">typeStr</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">AxiVersion</span><span class="o">.</span><span class="n">ScratchPad</span><span class="o">.</span><span class="n">mode</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">AxiVersion</span><span class="o">.</span><span class="n">ScratchPad</span><span class="o">.</span><span class="n">units</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">listener</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">varValue</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s1"> = </span><span class="si">{</span><span class="n">varValue</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="n">root</span><span class="o">.</span><span class="n">UpTime</span><span class="o">.</span><span class="n">addListener</span><span class="p">(</span><span class="n">listener</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="waiting-on-variable-conditions">
+<h2>Waiting On Variable Conditions<a class="headerlink" href="#waiting-on-variable-conditions" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">VariableWait</span></code> is useful when client logic needs to block until one or more
+Variable conditions are satisfied.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pyrogue.interfaces</span><span class="w"> </span><span class="kn">import</span> <span class="n">VirtualClient</span><span class="p">,</span> <span class="n">VariableWait</span>
+
+<span class="k">with</span> <span class="n">VirtualClient</span><span class="p">(</span><span class="n">addr</span><span class="o">=</span><span class="s1">&#39;localhost&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">9099</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+    <span class="n">root</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">root</span>
+
+    <span class="c1"># Wait until uptime exceeds 1000 seconds</span>
+    <span class="n">VariableWait</span><span class="p">(</span>
+        <span class="p">[</span><span class="n">root</span><span class="o">.</span><span class="n">AxiVersion</span><span class="o">.</span><span class="n">UpTime</span><span class="p">],</span>
+        <span class="k">lambda</span> <span class="n">values</span><span class="p">:</span> <span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">value</span> <span class="o">&gt;</span> <span class="mi">1000</span><span class="p">,</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="link-state-monitoring">
+<h2>Link-State Monitoring<a class="headerlink" href="#link-state-monitoring" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">VirtualClient</span></code> exposes connection state and link monitor callbacks.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pyrogue.interfaces</span><span class="w"> </span><span class="kn">import</span> <span class="n">VirtualClient</span>
+
+<span class="k">with</span> <span class="n">VirtualClient</span><span class="p">(</span><span class="n">addr</span><span class="o">=</span><span class="s1">&#39;localhost&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">9099</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">link_monitor</span><span class="p">(</span><span class="n">state</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Link state is now </span><span class="si">{</span><span class="n">state</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="n">client</span><span class="o">.</span><span class="n">addLinkMonitor</span><span class="p">(</span><span class="n">link_monitor</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">client</span><span class="o">.</span><span class="n">linked</span><span class="p">)</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">remLinkMonitor</span><span class="p">(</span><span class="n">link_monitor</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="timeout-tuning">
+<h2>Timeout Tuning<a class="headerlink" href="#timeout-tuning" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">VirtualClient</span></code> has two separate timeout concepts:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">linkTimeout</span></code>: how long the client may go without publish updates or a
+successful request reply before it marks the link down</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">requestStallTimeout</span></code>: an optional policy timeout for declaring a single
+in-flight request stalled</p></li>
+</ul>
+<p>In practice, <code class="docutils literal notranslate"><span class="pre">linkTimeout</span></code> is the normal tuning knob. It is useful when a
+system may legitimately spend a long time servicing a request, for example
+when a Rogue tree is backed by firmware co-simulation.</p>
+<p><code class="docutils literal notranslate"><span class="pre">requestStallTimeout</span></code> is disabled by default and is often best left that way.
+It is only useful when the deployment has a known upper bound for legitimate
+request duration and wants the client to declare a request hung after that
+threshold.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pyrogue.interfaces</span><span class="w"> </span><span class="kn">import</span> <span class="n">VirtualClient</span>
+
+<span class="k">with</span> <span class="n">VirtualClient</span><span class="p">(</span>
+    <span class="n">addr</span><span class="o">=</span><span class="s1">&#39;localhost&#39;</span><span class="p">,</span>
+    <span class="n">port</span><span class="o">=</span><span class="mi">9099</span><span class="p">,</span>
+    <span class="n">linkTimeout</span><span class="o">=</span><span class="mf">600.0</span><span class="p">,</span>
+    <span class="n">requestStallTimeout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+    <span class="n">root</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">root</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">RogueVersion</span><span class="o">.</span><span class="n">valueDisp</span><span class="p">())</span>
+</pre></div>
+</div>
+<p>If no explicit arguments are passed, the defaults can also be provided with
+environment variables:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ROGUE_VIRTUAL_LINK_TIMEOUT</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ROGUE_VIRTUAL_REQUEST_STALL_TIMEOUT</span></code></p></li>
+</ul>
+</section>
+<section id="logging">
+<h2>Logging<a class="headerlink" href="#logging" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">VirtualClient</span></code> uses Python logging.</p>
+<ul class="simple">
+<li><p>Logger name: <code class="docutils literal notranslate"><span class="pre">pyrogue.VirtualClient</span></code></p></li>
+<li><p>Logging API:
+<code class="docutils literal notranslate"><span class="pre">pyrogue.setLogLevel('pyrogue.VirtualClient',</span> <span class="pre">'DEBUG')</span></code></p></li>
+</ul>
+<p>This logger is useful for client-side connection/setup issues and for
+understanding mirrored-tree behavior. It complements, rather than replaces,
+the server-side transport logging on the ZMQ server.</p>
+</section>
+<section id="related-topics">
+<h2>Related Topics<a class="headerlink" href="#related-topics" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Server endpoint and port behavior: <a class="reference internal" href="zmq_server.html"><span class="doc">Python ZMQServer</span></a></p></li>
+<li><p>Minimal string-path client usage: <a class="reference internal" href="simple.html"><span class="doc">Simple Client Interface</span></a></p></li>
+<li><p>CLI and GUI workflows: <a class="reference internal" href="commandline.html"><span class="doc">Using the Command Line Client</span></a></p></li>
+</ul>
+</section>
+<section id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<p>See <a class="reference internal" href="../../api/python/pyrogue/interfaces/virtualclient.html"><span class="doc">VirtualClient</span></a> for generated API details.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="simple.html" class="btn btn-neutral float-left" title="Simple Client Interface" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="commandline.html" class="btn btn-neutral float-right" title="Using the Command Line Client" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

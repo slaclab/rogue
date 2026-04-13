@@ -1,0 +1,351 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SimpleClient &mdash; Rogue v6.9.0-146-g9016781d5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css?v=8b50afe1" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=5f168154"></script>
+      <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../../_static/custom.js?v=7b5dfb0b"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link rel="next" title="VirtualClient" href="virtualclient.html" />
+    <link rel="prev" title="pyrogue.interfaces.SqlReader" href="sqlreader.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../../index.html">Python API</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="../index.html">pyrogue</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../node.html">Node</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../root.html">Root</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pollqueue.html">PollQueue</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../device.html">Device</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../localblock.html">LocalBlock</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../process.html">Process</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../runcontrol.html">RunControl</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../datareceiver.html">DataReceiver</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../datawriter.html">DataWriter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../basecommand.html">BaseCommand</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../remotecommand.html">RemoteCommand</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../basevariable.html">BaseVariable</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../remotevariable.html">RemoteVariable</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../localvariable.html">LocalVariable</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../linkvariable.html">LinkVariable</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../model.html">Model</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../uint.html">UInt</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../int.html">Int</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../bool.html">Bool</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../string.html">String</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../float.html">Float</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../float16.html">Float16</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../float8.html">Float8</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../bfloat16.html">BFloat16</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../tensorfloat32.html">TensorFloat32</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../float6.html">Float6</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../float4.html">Float4</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../double.html">Double</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../fixed.html">Fixed</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../ufixed.html">UFixed</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../wordcount.html">wordCount</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../bytecount.html">byteCount</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reversebits.html">reverseBits</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../twoscomplement.html">twosComplement</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pydm_runpydm.html">runPyDM</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../pydm_widgets/index.html">pyrogue.pydm.widgets</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="index.html">pyrogue.interfaces</a><ul class="current">
+<li class="toctree-l5"><a class="reference internal" href="oscommandmemoryslave.html">OsCommandMemorySlave</a></li>
+<li class="toctree-l5"><a class="reference internal" href="sqllogger.html">pyrogue.interfaces.SqlLogger</a></li>
+<li class="toctree-l5"><a class="reference internal" href="sqlreader.html">pyrogue.interfaces.SqlReader</a></li>
+<li class="toctree-l5 current"><a class="current reference internal" href="#">SimpleClient</a></li>
+<li class="toctree-l5"><a class="reference internal" href="virtualclient.html">VirtualClient</a></li>
+<li class="toctree-l5"><a class="reference internal" href="zmqserver.html">ZmqServer</a></li>
+<li class="toctree-l5"><a class="reference internal" href="simulation/index.html">pyrogue.interfaces.simulation</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../protocols/index.html">pyrogue.protocols</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../utilities/index.html">pyrogue.utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../rogue/index.html">rogue</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../cpp/index.html">C++ API</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">API Reference</a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Python API</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">pyrogue</a></li>
+          <li class="breadcrumb-item"><a href="index.html">pyrogue.interfaces</a></li>
+      <li class="breadcrumb-item active">SimpleClient</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../_sources/api/python/pyrogue/interfaces/simpleclient.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="simpleclient">
+<span id="api-python-interfaces-simpleclient"></span><h1>SimpleClient<a class="headerlink" href="#simpleclient" title="Link to this heading"></a></h1>
+<p>For conceptual usage, see:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../../../../pyrogue_tree/client_interfaces/index.html"><span class="doc">Client Interfaces</span></a></p></li>
+<li><p><a class="reference internal" href="../../../../pyrogue_tree/client_interfaces/simple.html"><span class="doc">Simple Client Interface</span></a></p></li>
+</ul>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyrogue.interfaces.SimpleClient">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pyrogue.interfaces.</span></span><span class="sig-name descname"><span class="pre">SimpleClient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">addr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'localhost'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">9099</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cb</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/pyrogue/interfaces/_SimpleClient.html#SimpleClient"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.SimpleClient" title="Link to this definition"></a></dt>
+<dd><p>A lightweight client inerface for Rogue. This can be used in
+scripts or as an interface to Rogue in matlab. For a more
+powerfull, tree access capable client. Please see the
+VirtualClient class.</p>
+<p>To use in Matlab first you need the zmq package in your  python installation:</p>
+<p>&gt; pip install zmq</p>
+<p>&gt; pip install matlab</p>
+<p>You then need to set the appropriate flags in Matlab to load the zmq module:</p>
+<p>&gt;&gt; py.sys.setdlopenflags(int32(bitor(2, 8)));</p>
+<p>&gt;&gt; c = py.SimpleClient.SimpleClient(“localhost”,9099);</p>
+<p>&gt;&gt; c.get(“dummyTree.Time”)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>addr</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>, default: <code class="docutils literal notranslate"><span class="pre">'localhost'</span></code>) – host address</p></li>
+<li><p><strong>port</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>, default: <code class="docutils literal notranslate"><span class="pre">9099</span></code>) – host port</p></li>
+<li><p><strong>cb</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code></a>[[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>], <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>] | <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span>, default: <code class="docutils literal notranslate"><span class="pre">None</span></code>) – call back function for variable updates, in the form func(path,value)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.interfaces.SimpleClient.get">
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/pyrogue/interfaces/_SimpleClient.html#SimpleClient.get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.SimpleClient.get" title="Link to this definition"></a></dt>
+<dd><p>Get a variable value, initating a read</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>path</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – Path of the variable to return a value for</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Variable value in native form</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.interfaces.SimpleClient.getDisp">
+<span class="sig-name descname"><span class="pre">getDisp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/pyrogue/interfaces/_SimpleClient.html#SimpleClient.getDisp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.SimpleClient.getDisp" title="Link to this definition"></a></dt>
+<dd><p>Get a variable value, in string form, initating a read</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>path</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – Path of the variable to return a value for</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Variable value in string form</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.interfaces.SimpleClient.value">
+<span class="sig-name descname"><span class="pre">value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/pyrogue/interfaces/_SimpleClient.html#SimpleClient.value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.SimpleClient.value" title="Link to this definition"></a></dt>
+<dd><p>Get a variable value, without initating a read</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>path</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – Path of the variable to return a value for</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Variable value</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.interfaces.SimpleClient.valueDisp">
+<span class="sig-name descname"><span class="pre">valueDisp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/pyrogue/interfaces/_SimpleClient.html#SimpleClient.valueDisp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.SimpleClient.valueDisp" title="Link to this definition"></a></dt>
+<dd><p>Get a variable value, in string form, without initating a read</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>path</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – Path of the variable to return a value for</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Variable value in string form</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.interfaces.SimpleClient.set">
+<span class="sig-name descname"><span class="pre">set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/pyrogue/interfaces/_SimpleClient.html#SimpleClient.set"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.SimpleClient.set" title="Link to this definition"></a></dt>
+<dd><p>Set a variable value, using its native type</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – Path of the variable to set</p></li>
+<li><p><strong>value</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a></span>) – Value to set</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.interfaces.SimpleClient.setDisp">
+<span class="sig-name descname"><span class="pre">setDisp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/pyrogue/interfaces/_SimpleClient.html#SimpleClient.setDisp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.SimpleClient.setDisp" title="Link to this definition"></a></dt>
+<dd><p>Set a variable value, using a string representation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – Path of the variable to set</p></li>
+<li><p><strong>value</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – Value to set</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.interfaces.SimpleClient.exec">
+<span class="sig-name descname"><span class="pre">exec</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/pyrogue/interfaces/_SimpleClient.html#SimpleClient.exec"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.SimpleClient.exec" title="Link to this definition"></a></dt>
+<dd><p>Call a command, with the optional arg</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – Path of the variable to set</p></li>
+<li><p><strong>arg</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a></span>, default: <code class="docutils literal notranslate"><span class="pre">None</span></code>) – Command argument, in native or string form</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Return value of the underlying command</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="sqlreader.html" class="btn btn-neutral float-left" title="pyrogue.interfaces.SqlReader" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="virtualclient.html" class="btn btn-neutral float-right" title="VirtualClient" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

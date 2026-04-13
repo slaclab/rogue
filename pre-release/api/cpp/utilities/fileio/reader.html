@@ -1,0 +1,285 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>StreamReader &mdash; Rogue v6.9.0-146-g9016781d5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css?v=8b50afe1" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=5f168154"></script>
+      <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../../_static/custom.js?v=7b5dfb0b"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link rel="next" title="rogue::utilities::prbs" href="../prbs/index.html" />
+    <link rel="prev" title="StreamWriterChannel" href="channel.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../../python/index.html">Python API</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../../index.html">C++ API</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../../rogue_index.html">rogue</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../interfaces_index.html">rogue::interfaces</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../protocols_index.html">rogue::protocols</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../hardware_index.html">rogue::hardware</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../../utilities_index.html">rogue::utilities</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../compression/index.html">rogue::utilities::compression</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="index.html">rogue::utilities::fileio</a><ul class="current">
+<li class="toctree-l5"><a class="reference internal" href="writer.html">StreamWriter</a></li>
+<li class="toctree-l5"><a class="reference internal" href="channel.html">StreamWriterChannel</a></li>
+<li class="toctree-l5 current"><a class="current reference internal" href="#">StreamReader</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../prbs/index.html">rogue::utilities::prbs</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">API Reference</a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">C++ API</a></li>
+          <li class="breadcrumb-item"><a href="../../utilities_index.html">rogue::utilities</a></li>
+          <li class="breadcrumb-item"><a href="index.html">rogue::utilities::fileio</a></li>
+      <li class="breadcrumb-item active">StreamReader</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../_sources/api/cpp/utilities/fileio/reader.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="streamreader">
+<span id="utilities-fileio-reader"></span><h1>StreamReader<a class="headerlink" href="#streamreader" title="Link to this heading"></a></h1>
+<p>The StreamReader class is the utilitiy for reading data from a Rogue file in a streaming fashion.</p>
+<p>The file format consumed by StreamReader is documented here:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../../../../built_in_modules/utilities/fileio/format.html#utilities-fileio-format"><span class="std std-ref">Rogue File Data Format</span></a></p></li>
+</ul>
+<p>For conceptual utility usage, see:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../../../../built_in_modules/utilities/fileio/index.html"><span class="doc">File I/O Utilities</span></a></p></li>
+</ul>
+<p>StreamReader objects in C++ are referenced by the following shared pointer typedef:</p>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9utilities6fileio15StreamReaderPtrE">
+<span id="_CPPv3N5rogue9utilities6fileio15StreamReaderPtrE"></span><span id="_CPPv2N5rogue9utilities6fileio15StreamReaderPtrE"></span><span id="rogue::utilities::fileio::StreamReaderPtr"></span><span class="target" id="namespacerogue_1_1utilities_1_1fileio_1a878055c9cf70b6b55575671d1692411c"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">utilities</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">fileio</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue9utilities6fileio12StreamReaderE" title="rogue::utilities::fileio::StreamReader"><span class="n"><span class="pre">StreamReader</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">utilities</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">fileio</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">StreamReaderPtr</span></span></span><a class="headerlink" href="#_CPPv4N5rogue9utilities6fileio15StreamReaderPtrE" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/StreamReader_8h_source.html#l00144"><span class="pre">[header]</span></a></dt>
+<dd></dd></dl>
+
+<p>The class description is shown below:</p>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9utilities6fileio12StreamReaderE">
+<span id="_CPPv3N5rogue9utilities6fileio12StreamReaderE"></span><span id="_CPPv2N5rogue9utilities6fileio12StreamReaderE"></span><span id="rogue::utilities::fileio::StreamReader"></span><span class="target" id="classrogue_1_1utilities_1_1fileio_1_1StreamReader"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">StreamReader</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="../../interfaces/stream/master.html#_CPPv4N5rogue10interfaces6stream6MasterE" title="rogue::interfaces::stream::Master"><span class="n"><span class="pre">Master</span></span></a><a class="headerlink" href="#_CPPv4N5rogue9utilities6fileio12StreamReaderE" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/StreamReader_8h_source.html#l00051"><span class="pre">[header]</span></a></dt>
+<dd><p>Reads Rogue stream data files and emits frames on stream master interface. </p>
+<p><code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1utilities_1_1fileio_1_1StreamReader"><span class="std std-ref"><span class="pre">StreamReader</span></span></a></code> opens a file (or indexed file sequence) created by Rogue file writer utilities, parses frame headers/metadata, reconstructs stream frames, and forwards them downstream via <code class="docutils literal notranslate"><a class="reference internal" href="../../interfaces/stream/master.html#classrogue_1_1interfaces_1_1stream_1_1Master_1ac4270a45820c4c03dd7f2b472df4efd8"><span class="std std-ref"><span class="pre">sendFrame()</span></span></a></code>.</p>
+<p>File sequence behavior:<ul class="simple">
+<li><p>If opened on a filename ending in <code class="docutils literal notranslate"><span class="pre">.1</span></code>, the reader attempts <code class="docutils literal notranslate"><span class="pre">.2</span></code>, <code class="docutils literal notranslate"><span class="pre">.3</span></code>, … automatically as each file completes.</p></li>
+<li><p>Otherwise only the specified file is read.</p></li>
+</ul>
+</p>
+<p>Read activity runs in a background thread while <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1utilities_1_1fileio_1_1StreamReader_1af310a52ac05d8a0b58518961894625de"><span class="std std-ref"><span class="pre">isActive()</span></span></a></code> is true. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9utilities6fileio12StreamReader12StreamReaderEv">
+<span id="_CPPv3N5rogue9utilities6fileio12StreamReader12StreamReaderEv"></span><span id="_CPPv2N5rogue9utilities6fileio12StreamReader12StreamReaderEv"></span><span id="rogue::utilities::fileio::StreamReader::StreamReader"></span><span class="target" id="classrogue_1_1utilities_1_1fileio_1_1StreamReader_1ab0acb81c3e07de450f1319d6d585347f"></span><span class="sig-name descname"><span class="n"><span class="pre">StreamReader</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9utilities6fileio12StreamReader12StreamReaderEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/StreamReader_8h_source.html#l00106"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/StreamReader_8cpp_source.html#l00065"><span class="pre">[impl]</span></a></dt>
+<dd><p>Constructs a stream reader instance. </p>
+<p>Creator.</p>
+<p>This constructor is a low-level C++ allocation path. Prefer <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1utilities_1_1fileio_1_1StreamReader_1a13a21672f31b75e45ce4909a5b25ac13"><span class="std std-ref"><span class="pre">create()</span></span></a></code> when shared ownership or Python exposure is required. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9utilities6fileio12StreamReaderD0Ev">
+<span id="_CPPv3N5rogue9utilities6fileio12StreamReaderD0Ev"></span><span id="_CPPv2N5rogue9utilities6fileio12StreamReaderD0Ev"></span><span id="rogue::utilities::fileio::StreamReader::~StreamReader"></span><span class="target" id="classrogue_1_1utilities_1_1fileio_1_1StreamReader_1a2b14863975f0d7acaf00e6446d174de8"></span><span class="sig-name descname"><span class="n"><span class="pre">~StreamReader</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9utilities6fileio12StreamReaderD0Ev" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/StreamReader_8h_source.html#l00109"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/StreamReader_8cpp_source.html#l00072"><span class="pre">[impl]</span></a></dt>
+<dd><p>Destroys stream reader and closes active file/thread. </p>
+<p>Deconstructor. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9utilities6fileio12StreamReader4openENSt6stringE">
+<span id="_CPPv3N5rogue9utilities6fileio12StreamReader4openENSt6stringE"></span><span id="_CPPv2N5rogue9utilities6fileio12StreamReader4openENSt6stringE"></span><span id="rogue::utilities::fileio::StreamReader::open__ss"></span><span class="target" id="classrogue_1_1utilities_1_1fileio_1_1StreamReader_1a8282e867ca83ec89181a03cf1fdb2009"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">open</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">file</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9utilities6fileio12StreamReader4openENSt6stringE" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/StreamReader_8h_source.html#l00116"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/StreamReader_8cpp_source.html#l00077"><span class="pre">[impl]</span></a></dt>
+<dd><p>Opens a file and starts background read processing. </p>
+<p>Open a data file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>file</strong> – Input data filename. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9utilities6fileio12StreamReader5closeEv">
+<span id="_CPPv3N5rogue9utilities6fileio12StreamReader5closeEv"></span><span id="_CPPv2N5rogue9utilities6fileio12StreamReader5closeEv"></span><span id="rogue::utilities::fileio::StreamReader::close"></span><span class="target" id="classrogue_1_1utilities_1_1fileio_1_1StreamReader_1a443b4f30a5b4e6a97c16afd22ca27355"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">close</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9utilities6fileio12StreamReader5closeEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/StreamReader_8h_source.html#l00121"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/StreamReader_8cpp_source.html#l00125"><span class="pre">[impl]</span></a></dt>
+<dd><p>Stops read thread and closes active file immediately. </p>
+<p>Close a data file. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9utilities6fileio12StreamReader6isOpenEv">
+<span id="_CPPv3N5rogue9utilities6fileio12StreamReader6isOpenEv"></span><span id="_CPPv2N5rogue9utilities6fileio12StreamReader6isOpenEv"></span><span id="rogue::utilities::fileio::StreamReader::isOpen"></span><span class="target" id="classrogue_1_1utilities_1_1fileio_1_1StreamReader_1a9290704af6468aa0707d90a5d9ef8f7d"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">isOpen</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9utilities6fileio12StreamReader6isOpenEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/StreamReader_8h_source.html#l00128"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/StreamReader_8cpp_source.html#l00132"><span class="pre">[impl]</span></a></dt>
+<dd><p>Returns whether a file descriptor is currently open. </p>
+<p>Get open status.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">true</span></code> if file is open; otherwise <code class="docutils literal notranslate"><span class="pre">false</span></code>. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9utilities6fileio12StreamReader9closeWaitEv">
+<span id="_CPPv3N5rogue9utilities6fileio12StreamReader9closeWaitEv"></span><span id="_CPPv2N5rogue9utilities6fileio12StreamReader9closeWaitEv"></span><span id="rogue::utilities::fileio::StreamReader::closeWait"></span><span class="target" id="classrogue_1_1utilities_1_1fileio_1_1StreamReader_1ababff3960108dd630cffd9cd3abce191"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">closeWait</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9utilities6fileio12StreamReader9closeWaitEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/StreamReader_8h_source.html#l00133"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/StreamReader_8cpp_source.html#l00148"><span class="pre">[impl]</span></a></dt>
+<dd><p>Waits for read activity to complete, then closes file/thread. </p>
+<p>Close when done. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9utilities6fileio12StreamReader8isActiveEv">
+<span id="_CPPv3N5rogue9utilities6fileio12StreamReader8isActiveEv"></span><span id="_CPPv2N5rogue9utilities6fileio12StreamReader8isActiveEv"></span><span id="rogue::utilities::fileio::StreamReader::isActive"></span><span class="target" id="classrogue_1_1utilities_1_1fileio_1_1StreamReader_1af310a52ac05d8a0b58518961894625de"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">isActive</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9utilities6fileio12StreamReader8isActiveEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/StreamReader_8h_source.html#l00140"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/StreamReader_8cpp_source.html#l00156"><span class="pre">[impl]</span></a></dt>
+<dd><p>Returns read activity state. </p>
+<p>Return true when done.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">true</span></code> while background reader is active. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-static-functions">Public Static Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9utilities6fileio12StreamReader6createEv">
+<span id="_CPPv3N5rogue9utilities6fileio12StreamReader6createEv"></span><span id="_CPPv2N5rogue9utilities6fileio12StreamReader6createEv"></span><span id="rogue::utilities::fileio::StreamReader::create"></span><span class="target" id="classrogue_1_1utilities_1_1fileio_1_1StreamReader_1a13a21672f31b75e45ce4909a5b25ac13"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">utilities</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">fileio</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue9utilities6fileio12StreamReaderE" title="rogue::utilities::fileio::StreamReader"><span class="n"><span class="pre">StreamReader</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">create</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9utilities6fileio12StreamReader6createEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/StreamReader_8h_source.html#l00094"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/StreamReader_8cpp_source.html#l00046"><span class="pre">[impl]</span></a></dt>
+<dd><p>Creates a stream reader instance. </p>
+<p>Class creation.</p>
+<p>This static factory is the preferred construction path when the object is shared across Rogue graph connections or exposed to Python. It returns <code class="docutils literal notranslate"><span class="pre">std::shared_ptr</span></code> ownership compatible with Rogue pointer typedefs.</p>
+<p><em>Company : SLAC National Accelerator Laboratory </em></p>
+<p>Description : <em>Class to read data files. </em></p>
+<p>This file is part of the rogue software platform. It is subject to the license terms in the LICENSE.txt file found in the top-level directory of this distribution and at: <a class="reference external" href="https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html">https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html</a>. No part of the rogue software platform, including this file, may be copied, modified, propagated, or distributed except according to the terms <em>contained in the LICENSE.txt file. </em></p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Shared pointer to the created reader.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9utilities6fileio12StreamReader12setup_pythonEv">
+<span id="_CPPv3N5rogue9utilities6fileio12StreamReader12setup_pythonEv"></span><span id="_CPPv2N5rogue9utilities6fileio12StreamReader12setup_pythonEv"></span><span id="rogue::utilities::fileio::StreamReader::setup_python"></span><span class="target" id="classrogue_1_1utilities_1_1fileio_1_1StreamReader_1a9504bb5908d71d3c6292807c93456e7d"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setup_python</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9utilities6fileio12StreamReader12setup_pythonEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/StreamReader_8h_source.html#l00097"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/StreamReader_8cpp_source.html#l00052"><span class="pre">[impl]</span></a></dt>
+<dd><p>Registers Python bindings for this class. </p>
+<p>Setup class in python. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="channel.html" class="btn btn-neutral float-left" title="StreamWriterChannel" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../prbs/index.html" class="btn btn-neutral float-right" title="rogue::utilities::prbs" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
