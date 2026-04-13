@@ -1,4 +1,4 @@
-# Python Test Suite Layout
+# Test Suite Layout
 
 This README documents the test layout in `tests/`. The Python and native C++
 tests are organized by behavior and execution style rather than by history.
