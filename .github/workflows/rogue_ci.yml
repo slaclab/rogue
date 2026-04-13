@@ -34,13 +34,13 @@ jobs:
       - name: Check for trailing whitespace and tabs
         run: |
           # Check for trailing whitespace
-          if grep -rnI '[[:blank:]]$' --include=\*.{cpp,h,py} .; then
+          if grep -rnI '[[:blank:]]$' --include=\*.{cpp,h,py} --exclude=doctest.h .; then
             echo "Error: Trailing whitespace found in the repository!"
             exit 1
           fi
 
           # Check for tab characters instead of spaces
-          if grep -rnI $'\t' --include=\*.{cpp,h,py} .; then
+          if grep -rnI $'\t' --include=\*.{cpp,h,py} --exclude=doctest.h .; then
             echo "Error: Tab characters found in the repository! Please use spaces for indentation."
             exit 1
           fi
