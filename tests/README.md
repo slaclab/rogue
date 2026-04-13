@@ -39,8 +39,8 @@ Common commands:
 - Standard build tree:
   - Configure/build into the repo-local `build/` directory with
     `cmake -S . -B build ...`
-  - Run both Python and native C++ tests from that same `build/` tree
-    after sourcing `build/setup_rogue.sh`
+  - Run both Python and Python-enabled native C++ tests from that same
+    `build/` tree after sourcing `build/setup_rogue.sh`
 
 - Fast deterministic suite:
   - `pytest -m "not integration and not epics and not perf" -q`
@@ -57,12 +57,14 @@ Common commands:
 - Python-enabled native C++ smoke subset:
   - `source build/setup_rogue.sh`
   - `ctest --test-dir build --output-on-failure -L requires-python`
-- Deterministic no-Python native subset:
-  - `source build/setup_rogue.sh`
-  - `ctest --test-dir build --output-on-failure -L no-python`
+- Deterministic native C++ subset in a dedicated `-DNO_PYTHON=1` build:
+  - See `cpp/README.md` for the required reconfigure/build step and
+    `ctest --test-dir build --output-on-failure -L no-python`
 
 Planning / handoff docs:
 
-- `BRANCH_STATUS.md`: summary of the current branch state and major changes
-- `NEXT_STEPS.md`: likely follow-up work and wrap-up checklist
+- `BRANCH_STATUS.md`: summary of the current branch state, including the native
+  C++ suite status
+- `NEXT_STEPS.md`: likely follow-up work and wrap-up checklist for both the
+  Python and native C++ suites
 - `cpp/README.md`: native C++ suite layout, labels, and commands

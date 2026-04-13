@@ -1,8 +1,8 @@
 # Branch Status
 
 This document is a handoff summary for the long-running test/coverage branch.
-It focuses on the current state of the Python test suite, the major changes
-made on the branch, and the main things to remember before doing more work.
+It now covers both the Python test suite reorganization and the in-tree native
+C++ test suite added on top of that work.
 
 ## Current Test Layout
 
@@ -15,15 +15,18 @@ The test suite was reorganized by behavior and execution style:
 - `tests/integration/`: real transport, socket, and environment-dependent tests
 - `tests/perf/`: soak, throughput, and benchmark-style tests
 - `tests/utilities/`: helper and exporter modules
+- `tests/cpp/`: native C++ unit and smoke tests driven by `ctest`
 
 ## High-Level Outcomes
 
-The branch focused on three things:
+The branch focused on four things:
 
 1. Increase deterministic coverage of core PyRogue behavior.
 2. Reorganize the test suite so file names and directories match behavior.
 3. Add more real end-to-end interface/integration coverage while reducing
    dependence on fixed local ports.
+4. Add an in-tree native C++ regression suite for low-level Rogue core
+   behaviors.
 
 ## Coverage / Validation Snapshot
 
@@ -36,6 +39,15 @@ Most recent known results from the branch work:
   - `python -m pytest --cov`
   - result: `159 passed`
   - total Python coverage: `56%`
+- Python-enabled native C++ smoke subset:
+  - `ctest --test-dir build --output-on-failure -L requires-python`
+  - result: passed in a Python-enabled build
+- Deterministic native C++ core subset:
+  - `ctest --test-dir build --output-on-failure -L cpp-core`
+  - result: passed in a dedicated native test build
+- Deterministic no-Python native subset:
+  - `ctest --test-dir build --output-on-failure -L no-python`
+  - result: passed in a `-DNO_PYTHON=1` build
 
 Selected module coverage from the last full run:
 
@@ -62,6 +74,29 @@ Selected module coverage from the last full run:
   - `test_stream_bridge_integration.py`
   - `test_udp_packetizer_integration.py`
 - Performance/soak-style tests were split into `tests/perf/`.
+
+### Native C++ test suite
+
+- `ROGUE_BUILD_TESTS` was added as a top-level CMake option, default `ON`.
+- `enable_testing()` and a `tests/cpp` subtree were added to the main build.
+- A shared native test support target now provides the doctest main and common
+  helpers for individual test executables.
+- Common CTest labels were added:
+  - `cpp`
+  - `cpp-core`
+  - `no-python`
+  - `requires-python`
+  - `smoke`
+- The current deterministic native test files are:
+  - `tests/cpp/core/test_version.cpp`
+  - `tests/cpp/memory/test_memory_bits.cpp`
+  - `tests/cpp/memory/test_transaction_block.cpp`
+  - `tests/cpp/memory/test_variable.cpp`
+  - `tests/cpp/stream/test_frame_pool.cpp`
+  - `tests/cpp/stream/test_iterator.cpp`
+  - `tests/cpp/stream/test_fifo_filter_rate_drop.cpp`
+- The current Python-enabled smoke test file is:
+  - `tests/cpp/smoke/test_api_smoke.cpp`
 
 ### Shared test infrastructure
 
@@ -124,6 +159,12 @@ Examples include:
   - config/status parsing used unsupported bare `yaml.load(...)`
 - `src/rogue/interfaces/ZmqClient.cpp`
   - raw timeout `printf` replaced by a debug log call
+- `src/rogue/interfaces/memory/Master.cpp`
+  - zero-length `copyBits`, `setBits`, and `anyBits` requests incorrectly ran
+    a loop iteration instead of behaving as no-ops
+- `src/rogue/interfaces/stream/Pool.cpp`
+  - the destructor repeatedly freed the same queue front without advancing,
+    which the new frame/pool tests exposed
 
 ## Recent CI / Test Stability Notes
 
@@ -137,6 +178,10 @@ Examples include:
   - `rogue.GeneralError: Invalid compiled version string`
   when the Python source overlay and compiled Rogue install are out of sync.
   Rebuild or reinstall before trusting local results.
+- On macOS, local `ctest` runs can also pick up an installed Rogue library from
+  `lib/` instead of the fresh build tree unless the runtime library path points
+  at `build/`. Keep that in mind before treating local native failures as real
+  regressions.
 
 ## Things That Are Still Intentionally Low Coverage
 
@@ -149,6 +194,8 @@ coverage:
 - `python/pyrogue/utilities/hls/_RegInterfParser.py`
 - `python/pyrogue/utilities/prbs.py`
 - `python/pyrogue/interfaces/stream/*`
+- socket-backed native transport coverage under `tests/cpp/`
+- native protocol-transform coverage beyond the basic API smoke path
 
 That is expected for this branch unless the next work item explicitly targets
 those modules.
