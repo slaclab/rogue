@@ -41,6 +41,8 @@ Common commands:
     `cmake -S . -B build ...`
   - Run both Python and Python-enabled native C++ tests from that same
     `build/` tree after sourcing `build/setup_rogue.sh`
+  - Add `-DROGUE_BUILD_TESTS=ON` when you want the native C++ suite built in
+    that tree
 
 - Fast deterministic suite:
   - `pytest -m "not integration and not epics and not perf" -q`

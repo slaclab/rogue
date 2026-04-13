@@ -43,7 +43,7 @@ endif()
 # Project name
 project (rogue)
 
-option(ROGUE_BUILD_TESTS "Build Rogue native C++ tests" ON)
+option(ROGUE_BUILD_TESTS "Build Rogue native C++ tests" OFF)
 
 # Current Apple support target is arm64 only.
 if (APPLE AND NOT ((CMAKE_SYSTEM_PROCESSOR STREQUAL "arm64") OR (CMAKE_SYSTEM_PROCESSOR STREQUAL "aarch64")))

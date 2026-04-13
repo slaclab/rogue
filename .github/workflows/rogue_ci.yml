@@ -69,7 +69,7 @@ jobs:
       - name: Build Rogue
         run: |
           python -c "import numpy; print(numpy.get_include())"
-          cmake -S . -B build -DROGUE_INSTALL=local
+          cmake -S . -B build -DROGUE_INSTALL=local -DROGUE_BUILD_TESTS=ON
           cmake --build build -j$(nproc)
           cmake --build build --target install
 
@@ -135,7 +135,7 @@ jobs:
       # Rogue
       - name: Build Rogue
         run: |
-          cmake -S . -B build -DROGUE_INSTALL=local -DNO_PYTHON=1 -DSTATIC_LIB=1
+          cmake -S . -B build -DROGUE_INSTALL=local -DROGUE_BUILD_TESTS=ON -DNO_PYTHON=1 -DSTATIC_LIB=1
           cmake --build build -j$(nproc)
           cmake --build build --target install
 
@@ -196,7 +196,7 @@ jobs:
       - name: Build Rogue
         run: |
           python -c "import numpy; print(numpy.get_include())"
-          cmake -S . -B build -DROGUE_INSTALL=conda
+          cmake -S . -B build -DROGUE_INSTALL=conda -DROGUE_BUILD_TESTS=ON
           cmake --build build -j$(sysctl -n hw.ncpu)
           cmake --build build --target install
 

@@ -16,7 +16,8 @@ material.
 
 ## Structural Changes On This Branch
 
-- Added `ROGUE_BUILD_TESTS` as a top-level CMake option, default `ON`.
+- Added `ROGUE_BUILD_TESTS` as a top-level CMake option, default `OFF`, so the
+  native suite is opt-in for manual builds and explicit in CI.
 - Added `enable_testing()` and a `tests/cpp` subtree to the main build.
 - Vendored a single-header doctest harness under `tests/cpp/vendor/`.
 - Added a shared native test support target with the doctest main and common
@@ -81,10 +82,12 @@ This branch exposed and fixed two real product bugs:
 
 ## CI / Runtime Notes
 
-- The full-build CI job currently runs `ctest ... -L requires-python`, not the
-  full native label set.
+- The full-build CI job now enables `ROGUE_BUILD_TESTS` explicitly and runs
+  `ctest ... -L cpp`.
 - The small build job runs `ctest ... -L no-python` in a dedicated
-  `-DNO_PYTHON=1` build.
+  `-DNO_PYTHON=1` build with `ROGUE_BUILD_TESTS=ON`.
+- The macOS build job also enables `ROGUE_BUILD_TESTS` explicitly and runs
+  `ctest ... -L cpp`.
 - On macOS, local `ctest` runs can pick up an installed Rogue library from
   `lib/` instead of the fresh build tree unless the runtime library path points
   at `build/`.

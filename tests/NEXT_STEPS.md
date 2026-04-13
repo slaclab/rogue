@@ -23,7 +23,7 @@ tree before debugging unexpected native failures.
 
 Current state:
 
-- the full-build CI job only runs `ctest ... -L requires-python`
+- the full-build CI job runs `ctest ... -L cpp`
 - the small build job runs `ctest ... -L no-python`
 
 Recommended steady state:

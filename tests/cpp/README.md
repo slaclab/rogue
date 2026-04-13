@@ -28,6 +28,8 @@ Labels:
 
 Common commands:
 
+- Native C++ tests are opt-in for manual builds. Enable them with
+  `-DROGUE_BUILD_TESTS=ON`.
 - Configure/build with native tests in the standard repo-local `build/`
   directory:
   - `cmake -S . -B build -DROGUE_INSTALL=local -DROGUE_BUILD_TESTS=ON`
