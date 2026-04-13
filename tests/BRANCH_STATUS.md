@@ -1,201 +1,98 @@
 # Branch Status
 
-This document is a handoff summary for the long-running test/coverage branch.
-It now covers both the Python test suite reorganization and the in-tree native
-C++ test suite added on top of that work.
+This document is a handoff summary for the `cpp-tests` branch relative to
+`origin/pre-release`. It only describes the native C++ test work and closely
+related fixes that are new on this branch.
 
-## Current Test Layout
+## Branch Scope
 
-The test suite was reorganized by behavior and execution style:
+This branch adds an in-tree native C++ regression suite to the main Rogue
+build. The goal is fast deterministic coverage of low-level Rogue memory and
+stream behavior, plus one small Python-enabled C++ API smoke test.
 
-- `tests/core/`: deterministic PyRogue tree/runtime behavior
-- `tests/interfaces/`: client/server wrappers and interface helpers
-- `tests/fileio/`: file and stream reader/writer behavior
-- `tests/protocols/`: protocol-specific deterministic tests
-- `tests/integration/`: real transport, socket, and environment-dependent tests
-- `tests/perf/`: soak, throughput, and benchmark-style tests
-- `tests/utilities/`: helper and exporter modules
-- `tests/cpp/`: native C++ unit and smoke tests driven by `ctest`
+The branch does not try to expand the already-merged Python test work from the
+parent branch. Treat `origin/pre-release` as the source of truth for that
+material.
 
-## High-Level Outcomes
+## Structural Changes On This Branch
 
-The branch focused on four things:
-
-1. Increase deterministic coverage of core PyRogue behavior.
-2. Reorganize the test suite so file names and directories match behavior.
-3. Add more real end-to-end interface/integration coverage while reducing
-   dependence on fixed local ports.
-4. Add an in-tree native C++ regression suite for low-level Rogue core
-   behaviors.
-
-## Coverage / Validation Snapshot
-
-Most recent known results from the branch work:
-
-- Fast deterministic suite:
-  - `pytest -m "not integration and not epics and not perf" -q`
-  - result: `143 passed, 16 deselected`
-- Full unsandboxed Python suite:
-  - `python -m pytest --cov`
-  - result: `159 passed`
-  - total Python coverage: `56%`
-- Python-enabled native C++ smoke subset:
-  - `ctest --test-dir build --output-on-failure -L requires-python`
-  - result: passed in a Python-enabled build
-- Deterministic native C++ core subset:
-  - `ctest --test-dir build --output-on-failure -L cpp-core`
-  - result: passed in a dedicated native test build
-- Deterministic no-Python native subset:
-  - `ctest --test-dir build --output-on-failure -L no-python`
-  - result: passed in a `-DNO_PYTHON=1` build
-
-Selected module coverage from the last full run:
-
-- `python/pyrogue/_Root.py`: `91%`
-- `python/pyrogue/_Device.py`: `88%`
-- `python/pyrogue/_Node.py`: `88%`
-- `python/pyrogue/_Variable.py`: `83%`
-- `python/pyrogue/_Command.py`: `90%`
-- `python/pyrogue/_Process.py`: `98%`
-- `python/pyrogue/interfaces/_SimpleClient.py`: `100%`
-- `python/pyrogue/interfaces/_Virtual.py`: `86%`
-- `python/pyrogue/interfaces/_ZmqServer.py`: `97%`
-- `python/pyrogue/utilities/cpsw.py`: `88%`
-
-## Important Structural Changes Already Done
-
-### Test reorganization
-
-- Old legacy files were moved into the new layout.
-- Misleading integration names were cleaned up, for example:
-  - `test_memory_transport_integration.py`
-  - `test_remote_enum_integration.py`
-  - `test_remote_list_variable_integration.py`
-  - `test_stream_bridge_integration.py`
-  - `test_udp_packetizer_integration.py`
-- Performance/soak-style tests were split into `tests/perf/`.
-
-### Native C++ test suite
-
-- `ROGUE_BUILD_TESTS` was added as a top-level CMake option, default `ON`.
-- `enable_testing()` and a `tests/cpp` subtree were added to the main build.
-- A shared native test support target now provides the doctest main and common
-  helpers for individual test executables.
-- Common CTest labels were added:
+- Added `ROGUE_BUILD_TESTS` as a top-level CMake option, default `ON`.
+- Added `enable_testing()` and a `tests/cpp` subtree to the main build.
+- Vendored a single-header doctest harness under `tests/cpp/vendor/`.
+- Added a shared native test support target with the doctest main and common
+  helpers in `tests/cpp/support/`.
+- Replaced the old standalone `tests/api_test` executable path with a
+  CTest-managed smoke test in `tests/cpp/smoke/`.
+- Added native test labels:
   - `cpp`
   - `cpp-core`
   - `no-python`
   - `requires-python`
   - `smoke`
-- The current deterministic native test files are:
-  - `tests/cpp/core/test_version.cpp`
-  - `tests/cpp/memory/test_memory_bits.cpp`
-  - `tests/cpp/memory/test_transaction_block.cpp`
-  - `tests/cpp/memory/test_variable.cpp`
-  - `tests/cpp/stream/test_frame_pool.cpp`
-  - `tests/cpp/stream/test_iterator.cpp`
-  - `tests/cpp/stream/test_fifo_filter_rate_drop.cpp`
-- The current Python-enabled smoke test file is:
-  - `tests/cpp/smoke/test_api_smoke.cpp`
 
-### Shared test infrastructure
+## Current Native Test Coverage
 
-- `tests/conftest.py` now provides:
-  - `MemoryRoot`
-  - `wait_until`
-  - log suppression helpers for normal test runs
-  - `_find_free_port_block(...)`
-  - `free_zmq_port`
-  - `free_tcp_port`
+The current deterministic test files are:
 
-### New high-value end-to-end interface coverage
+- `tests/cpp/core/test_version.cpp`
+  - version helper string/component consistency and compare helpers
+- `tests/cpp/memory/test_memory_bits.cpp`
+  - `copyBits`, `setBits`, and `anyBits` edge cases
+- `tests/cpp/memory/test_transaction_block.cpp`
+  - block write/read/verify paths and transaction alignment/error behavior
+- `tests/cpp/memory/test_variable.cpp`
+  - variable geometry, shift/stride/index handling, and typed accessor errors
+- `tests/cpp/stream/test_frame_pool.cpp`
+  - pool allocation, frame payload accounting, append/clear/min/adjust paths
+- `tests/cpp/stream/test_iterator.cpp`
+  - iterator traversal, arithmetic, and end-buffer semantics
+- `tests/cpp/stream/test_fifo_filter_rate_drop.cpp`
+  - FIFO, filter, and rate-drop flow-control behavior
 
-- `tests/interfaces/test_interfaces_virtual_integration.py`
-  - live `VirtualClient` over `ZmqServer`
-  - includes `NoServe` remote-tree visibility behavior
-- `tests/interfaces/test_interfaces_simple_client_integration.py`
-  - live `SimpleClient` over `ZmqServer`
+The current Python-enabled smoke file is:
 
-### Dynamic port allocation
+- `tests/cpp/smoke/test_api_smoke.cpp`
+  - short asserted public C++ API construction path
 
-Several socket-backed tests were converted away from fixed ports:
+## Validation Snapshot
 
-- `tests/interfaces/test_interfaces_virtual_integration.py`
-- `tests/interfaces/test_interfaces_simple_client_integration.py`
-- `tests/integration/test_memory_transport_integration.py`
-- `tests/integration/test_remote_enum_integration.py`
-- `tests/integration/test_stream_bridge_integration.py`
+Known validation completed on this branch:
 
-`tests/integration/test_udp_packetizer_integration.py` already used dynamic
-binding through the Rogue API and did not need to change.
+- Python-enabled native smoke subset:
+  - `ctest --test-dir build --output-on-failure -L requires-python`
+  - result: passed in a Python-enabled build
+- Deterministic native core subset:
+  - `ctest --test-dir build --output-on-failure -L cpp-core`
+  - result: passed in a local native build
+- Deterministic no-Python subset:
+  - `ctest --test-dir build --output-on-failure -L no-python`
+  - result: passed in a `-DNO_PYTHON=1` build
 
-## Notable Product / Test Fixes Made On This Branch
+## Product Fixes Found By The Native Tests
 
-This branch found and fixed a number of real bugs while expanding coverage.
-Examples include:
+This branch exposed and fixed two real product bugs:
 
-- `_Model.py`
-  - `Int.fromBytes()` returned `None`
-  - `Int.fromString()` mishandled sign extension for non-byte-aligned widths
-- `_Block.py`
-  - `LocalBlock` in-place operators passed `None` where a real variable was
-    required
-- `_Variable.py`
-  - indexed `_setDict()` bug for scalar array indices
-  - indexed `setDisp()` bug for 0-D ndarray values
-  - `VariableWaitClass.get_values()` key mismatch
-  - missing documented `VariableValue.updated` field
-  - YAML slice scalar broadcasting fix
-- `_Process.py`
-  - `__call__()` argument-variable bug
-  - progress overruns above 100%
-  - progress clamping/zero-total handling
-- `utilities/cpsw.py`
-  - malformed child-device output
-  - overwritten file prologue
-- `interfaces/_SqlLogging.py`
-  - syslog JSON decoding used the wrapper object instead of the string payload
-- `utilities/fileio/_FileReader.py`
-  - config/status parsing used unsupported bare `yaml.load(...)`
-- `src/rogue/interfaces/ZmqClient.cpp`
-  - raw timeout `printf` replaced by a debug log call
 - `src/rogue/interfaces/memory/Master.cpp`
-  - zero-length `copyBits`, `setBits`, and `anyBits` requests incorrectly ran
-    a loop iteration instead of behaving as no-ops
+  - zero-length `copyBits`, `setBits`, and `anyBits` requests incorrectly ran a
+    loop iteration instead of behaving as no-ops
 - `src/rogue/interfaces/stream/Pool.cpp`
-  - the destructor repeatedly freed the same queue front without advancing,
-    which the new frame/pool tests exposed
+  - `Pool::~Pool()` repeatedly freed the same queue front without advancing,
+    which could corrupt destruction behavior
 
-## Recent CI / Test Stability Notes
+## CI / Runtime Notes
 
-- The SQL logging test needed hardening because CI sometimes raced teardown
-  before the listener-driven syslog row landed in SQLite.
-  - `tests/interfaces/test_interfaces_sql_logging.py` now waits for the row.
-- This Rogue build does not support `ZmqServer(..., port=0)` auto-bind in the
-  integration tests used here.
-  - The tests now use caller-selected free ports instead.
-- Local shell runs can fail with:
-  - `rogue.GeneralError: Invalid compiled version string`
-  when the Python source overlay and compiled Rogue install are out of sync.
-  Rebuild or reinstall before trusting local results.
-- On macOS, local `ctest` runs can also pick up an installed Rogue library from
+- The full-build CI job currently runs `ctest ... -L requires-python`, not the
+  full native label set.
+- The small build job runs `ctest ... -L no-python` in a dedicated
+  `-DNO_PYTHON=1` build.
+- On macOS, local `ctest` runs can pick up an installed Rogue library from
   `lib/` instead of the fresh build tree unless the runtime library path points
-  at `build/`. Keep that in mind before treating local native failures as real
-  regressions.
+  at `build/`.
 
-## Things That Are Still Intentionally Low Coverage
+## Still Deferred
 
-These areas were not the focus of the branch and still show low or zero
-coverage:
+These native areas remain intentionally out of scope for this branch:
 
-- `python/pyrogue/examples/*`
-- `python/pyrogue/pydm/*`
-- `python/pyrogue/protocols/gpib.py`
-- `python/pyrogue/utilities/hls/_RegInterfParser.py`
-- `python/pyrogue/utilities/prbs.py`
-- `python/pyrogue/interfaces/stream/*`
-- socket-backed native transport coverage under `tests/cpp/`
-- native protocol-transform coverage beyond the basic API smoke path
-
-That is expected for this branch unless the next work item explicitly targets
-those modules.
+- socket-backed native transport tests
+- native protocol-transform coverage beyond the current smoke path
+- long-running or perf-style native workloads
