@@ -12,6 +12,8 @@ These pages provide the C++ API reference for
    :maxdepth: 1
    :caption: Batcher Classes:
 
+   combinerV1
+   combinerV2
    coreV1
    coreV2
    data

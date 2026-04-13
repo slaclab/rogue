@@ -196,6 +196,9 @@ bool rpb::CoreV2::processFrame(ris::FramePtr frame) {
     // Get sequence #
     ris::fromFrame(beg, 1, &seq_);
 
+    // Store frame reference now that validation has passed
+    frame_ = frame;
+
     // Compute remaining frame size
     rem -= headerSize_;
 

@@ -10,6 +10,8 @@ Python-visible batcher protocol classes exported from Rogue C++.
 .. toctree::
    :maxdepth: 1
 
+   combinerv1
+   combinerv2
    splitterv1
    splitterv2
    inverterv1
