@@ -77,7 +77,7 @@ jobs:
       - name: Rogue Native C++ Tests
         run: |
           source build/setup_rogue.sh
-          ctest --test-dir build --output-on-failure -L requires-python
+          ctest --test-dir build --output-on-failure -L cpp
 
       - name: Rogue Tests
         run: |
@@ -204,7 +204,7 @@ jobs:
         shell: bash -el {0}
         run: |
           source build/setup_rogue.sh
-          ctest --test-dir build --output-on-failure -L requires-python
+          ctest --test-dir build --output-on-failure -L cpp
 
       - name: Rogue Tests
         run: |
