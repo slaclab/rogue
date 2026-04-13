@@ -12,6 +12,10 @@
 
 name: Release Documentation
 
+concurrency:
+  group: gh-pages-publish
+  cancel-in-progress: false
+
 on:
   push:
     tags:

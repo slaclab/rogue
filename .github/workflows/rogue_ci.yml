@@ -101,28 +101,6 @@ jobs:
           codecov
           coverage report -m
 
-      - name: Install documentation dependencies
-        if: startsWith(github.ref, 'refs/tags/')
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y doxygen
-          python -m pip install -r pip_requirements_docs.txt
-
-      # Generate Documentation
-      - name: Generate Documentation
-        if: startsWith(github.ref, 'refs/tags/')
-        run: |
-          source setup_rogue.sh
-          cd docs
-          make html
-
-      - name: Deploy Documentation
-        if: startsWith(github.ref, 'refs/tags/')
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GH_TOKEN }}
-          publish_dir: docs/build/html
-
 # ----------------------------------------------------------------------------
 
   small_build_test:

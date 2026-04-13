@@ -102,6 +102,22 @@ def validate_safe_slug(value: str, field_name: str) -> str:
     return slug
 
 
+def validate_output_root(path: Path) -> Path:
+    resolved = path.resolve()
+
+    if resolved == resolved.anchor:
+        raise ValueError("--output-root must not be the filesystem root")
+
+    if resolved.name != "gh-pages":
+        raise ValueError("--output-root must point at the prepared gh-pages worktree root")
+
+    git_marker = resolved / ".git"
+    if not git_marker.exists():
+        raise ValueError("--output-root must point at a git worktree containing a .git marker")
+
+    return resolved
+
+
 def choose_default_slug(versions: list[dict[str, str]]) -> str | None:
     for preferred_slug in ("latest", "pre-release"):
         if any(entry["slug"] == preferred_slug for entry in versions):
@@ -287,7 +303,7 @@ def main() -> int:
     args = parse_args()
 
     site_dir = Path(args.site_dir).resolve()
-    output_root = Path(args.output_root).resolve()
+    output_root = validate_output_root(Path(args.output_root))
     site_root = normalize_site_root(args.site_root)
 
     if not site_dir.is_dir():

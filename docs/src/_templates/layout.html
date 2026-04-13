@@ -4,8 +4,7 @@
   {{ super() }}
   <script>
     window.ROGUE_DOCS = {
-      siteRoot: {{ rogue_docs_site_root | default('', true) | tojson }},
-      defaultVersion: {{ rogue_docs_default_version | default('latest', true) | tojson }}
+      siteRoot: {{ rogue_docs_site_root | default('', true) | tojson }}
     };
   </script>
 {%- endblock %}
