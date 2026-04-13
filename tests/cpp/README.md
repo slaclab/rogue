@@ -34,6 +34,7 @@ Common commands:
   directory:
   - `cmake -S . -B build -DROGUE_INSTALL=local -DROGUE_BUILD_TESTS=ON`
   - `cmake --build build -j$(nproc)`
+  - `cmake --build build --target install`
 - Run all Python-enabled native tests from that same `build/` tree:
   - `source build/setup_rogue.sh`
   - `ctest --test-dir build --output-on-failure -L cpp`
@@ -44,6 +45,7 @@ Common commands:
   needed:
   - `cmake -S . -B build -DROGUE_INSTALL=local -DROGUE_BUILD_TESTS=ON -DNO_PYTHON=1 -DSTATIC_LIB=1`
   - `cmake --build build -j$(nproc)`
+  - `cmake --build build --target install`
 - Run the deterministic native subset in a no-Python build:
   - `source build/setup_rogue.sh`
   - `ctest --test-dir build --output-on-failure -L cpp-core`
