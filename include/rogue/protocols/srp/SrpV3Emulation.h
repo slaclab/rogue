@@ -3,7 +3,7 @@
  * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description :
- *    SLAC Register Protocol (SRP) SrpV3 Server
+ *    SLAC Register Protocol (SRP) SrpV3 Emulation
  *-----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to
  * the license terms in the LICENSE.txt file found in the top-level directory
@@ -14,8 +14,8 @@
  * contained in the LICENSE.txt file.
  *-----------------------------------------------------------------------------
  **/
-#ifndef __ROGUE_PROTOCOLS_SRP_SRPV3SERVER_H__
-#define __ROGUE_PROTOCOLS_SRP_SRPV3SERVER_H__
+#ifndef __ROGUE_PROTOCOLS_SRP_SRPV3EMULATION_H__
+#define __ROGUE_PROTOCOLS_SRP_SRPV3EMULATION_H__
 #include "rogue/Directives.h"
 
 #include <stdint.h>
@@ -40,16 +40,16 @@ namespace srp {
  * @brief Software SRPv3 server that emulates a hardware SRP endpoint.
  *
  * @details
- * `SrpV3Server` acts as the remote endpoint of the SRPv3 protocol,
+ * `SrpV3Emulation` acts as the remote endpoint of the SRPv3 protocol,
  * receiving SRPv3 request frames and producing SRPv3 response frames.
  * It maintains an internal memory space, enabling full software-only
  * testing of the SRPv3 protocol path without FPGA or ASIC hardware.
  *
  * Typical CI/test usage connects `SrpV3` (the client/master) to
- * `SrpV3Server` via a bidirectional stream path:
+ * `SrpV3Emulation` via a bidirectional stream path:
  *
  * @code
- *   SrpV3 (client) == SrpV3Server (server)
+ *   SrpV3 (client) == SrpV3Emulation (server)
  * @endcode
  *
  * When a request frame arrives via `acceptFrame()`, the server queues
@@ -76,7 +76,7 @@ namespace srp {
  * Protocol reference:
  * https://confluence.slac.stanford.edu/x/cRmVD
  */
-class SrpV3Server : public rogue::interfaces::stream::Master,
+class SrpV3Emulation : public rogue::interfaces::stream::Master,
                     public rogue::interfaces::stream::Slave {
     std::shared_ptr<rogue::Logging> log_;
 
@@ -117,9 +117,9 @@ class SrpV3Server : public rogue::interfaces::stream::Master,
      * is shared across Rogue graph connections or exposed to Python.
      * It returns `std::shared_ptr` ownership compatible with Rogue pointer typedefs.
      *
-     * @return Shared pointer to the created `SrpV3Server`.
+     * @return Shared pointer to the created `SrpV3Emulation`.
      */
-    static std::shared_ptr<rogue::protocols::srp::SrpV3Server> create();
+    static std::shared_ptr<rogue::protocols::srp::SrpV3Emulation> create();
 
     /** @brief Registers Python bindings for this class. */
     static void setup_python();
@@ -132,10 +132,10 @@ class SrpV3Server : public rogue::interfaces::stream::Master,
      * Prefer `create()` when shared ownership or Python exposure is required.
      * Starts an internal worker thread for processing queued request frames.
      */
-    SrpV3Server();
+    SrpV3Emulation();
 
     /** @brief Destroys the SRP v3 server instance and frees allocated memory. */
-    ~SrpV3Server();
+    ~SrpV3Emulation();
 
     /**
      * @brief Stops the worker thread.
@@ -187,7 +187,7 @@ class SrpV3Server : public rogue::interfaces::stream::Master,
 };
 
 // Convenience
-typedef std::shared_ptr<rogue::protocols::srp::SrpV3Server> SrpV3ServerPtr;
+typedef std::shared_ptr<rogue::protocols::srp::SrpV3Emulation> SrpV3EmulationPtr;
 }  // namespace srp
 }  // namespace protocols
 }  // namespace rogue

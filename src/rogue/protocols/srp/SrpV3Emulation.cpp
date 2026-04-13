@@ -3,7 +3,7 @@
  * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description :
- *    SRP protocol server, Version 3
+ *    SRP protocol emulation, Version 3
  *-----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to
  * the license terms in the LICENSE.txt file found in the top-level directory
@@ -16,7 +16,7 @@
  **/
 #include "rogue/Directives.h"
 
-#include "rogue/protocols/srp/SrpV3Server.h"
+#include "rogue/protocols/srp/SrpV3Emulation.h"
 
 #include <inttypes.h>
 #include <stdint.h>
@@ -44,32 +44,32 @@ namespace bp = boost::python;
 #endif
 
 //! Class creation
-rps::SrpV3ServerPtr rps::SrpV3Server::create() {
-    rps::SrpV3ServerPtr p = std::make_shared<rps::SrpV3Server>();
+rps::SrpV3EmulationPtr rps::SrpV3Emulation::create() {
+    rps::SrpV3EmulationPtr p = std::make_shared<rps::SrpV3Emulation>();
     return (p);
 }
 
 //! Setup class in python
-void rps::SrpV3Server::setup_python() {
+void rps::SrpV3Emulation::setup_python() {
 #ifndef NO_PYTHON
-    bp::class_<rps::SrpV3Server, rps::SrpV3ServerPtr, bp::bases<ris::Master, ris::Slave>, boost::noncopyable>(
-        "SrpV3Server",
+    bp::class_<rps::SrpV3Emulation, rps::SrpV3EmulationPtr, bp::bases<ris::Master, ris::Slave>, boost::noncopyable>(
+        "SrpV3Emulation",
         bp::init<>());
-    bp::implicitly_convertible<rps::SrpV3ServerPtr, ris::MasterPtr>();
-    bp::implicitly_convertible<rps::SrpV3ServerPtr, ris::SlavePtr>();
+    bp::implicitly_convertible<rps::SrpV3EmulationPtr, ris::MasterPtr>();
+    bp::implicitly_convertible<rps::SrpV3EmulationPtr, ris::SlavePtr>();
 #endif
 }
 
 //! Constructor
-rps::SrpV3Server::SrpV3Server() : ris::Master(), ris::Slave() {
-    log_      = rogue::Logging::create("SrpV3Server");
+rps::SrpV3Emulation::SrpV3Emulation() : ris::Master(), ris::Slave() {
+    log_      = rogue::Logging::create("SrpV3Emulation");
     totAlloc_ = 0;
     threadEn_ = true;
-    thread_   = std::thread(&SrpV3Server::runThread, this);
+    thread_   = std::thread(&SrpV3Emulation::runThread, this);
 }
 
 //! Destructor
-rps::SrpV3Server::~SrpV3Server() {
+rps::SrpV3Emulation::~SrpV3Emulation() {
     stop();
 
     MemoryMap::iterator it = memMap_.begin();
@@ -80,7 +80,7 @@ rps::SrpV3Server::~SrpV3Server() {
 }
 
 //! Stop the worker thread
-void rps::SrpV3Server::stop() {
+void rps::SrpV3Emulation::stop() {
     {
         std::lock_guard<std::mutex> lock(queMtx_);
         threadEn_ = false;
@@ -93,7 +93,7 @@ void rps::SrpV3Server::stop() {
 }
 
 //! Worker thread
-void rps::SrpV3Server::runThread() {
+void rps::SrpV3Emulation::runThread() {
     ris::FramePtr frame;
     log_->debug("Worker thread started");
 
@@ -115,7 +115,7 @@ void rps::SrpV3Server::runThread() {
 }
 
 //! Allocate a new 4K page filled with random data
-uint8_t* rps::SrpV3Server::allocatePage(uint64_t addr4k) {
+uint8_t* rps::SrpV3Emulation::allocatePage(uint64_t addr4k) {
     uint8_t* page = reinterpret_cast<uint8_t*>(malloc(0x1000));
     if (page == nullptr) {
         log_->error("Failed to allocate page at 0x%" PRIx64, addr4k);
@@ -134,7 +134,7 @@ uint8_t* rps::SrpV3Server::allocatePage(uint64_t addr4k) {
 }
 
 //! Read from internal memory
-void rps::SrpV3Server::readMemory(uint64_t address, uint8_t* data, uint32_t size) {
+void rps::SrpV3Emulation::readMemory(uint64_t address, uint8_t* data, uint32_t size) {
     uint64_t addr4k;
     uint64_t off4k;
     uint64_t size4k;
@@ -163,7 +163,7 @@ void rps::SrpV3Server::readMemory(uint64_t address, uint8_t* data, uint32_t size
 }
 
 //! Write to internal memory
-void rps::SrpV3Server::writeMemory(uint64_t address, const uint8_t* data, uint32_t size) {
+void rps::SrpV3Emulation::writeMemory(uint64_t address, const uint8_t* data, uint32_t size) {
     uint64_t addr4k;
     uint64_t off4k;
     uint64_t size4k;
@@ -191,7 +191,7 @@ void rps::SrpV3Server::writeMemory(uint64_t address, const uint8_t* data, uint32
 }
 
 //! Queue an incoming frame for processing
-void rps::SrpV3Server::acceptFrame(ris::FramePtr frame) {
+void rps::SrpV3Emulation::acceptFrame(ris::FramePtr frame) {
     {
         std::lock_guard<std::mutex> lock(queMtx_);
         queue_.push(frame);
@@ -200,7 +200,7 @@ void rps::SrpV3Server::acceptFrame(ris::FramePtr frame) {
 }
 
 //! Process a single request frame
-void rps::SrpV3Server::processFrame(ris::FramePtr frame) {
+void rps::SrpV3Emulation::processFrame(ris::FramePtr frame) {
     uint32_t header[HeadLen / 4];
     uint32_t tail[TailLen / 4];
     uint32_t fSize;

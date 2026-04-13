@@ -1,18 +1,18 @@
-.. _protocols_srp_srpV3Server:
+.. _protocols_srp_srpV3Emulation:
 
-=============================
-SRP Protocol Version 3 Server
-=============================
+================================
+SRP Protocol Version 3 Emulation
+================================
 
 For CI regression testing of the SRPv3 protocol path, Rogue provides
-``rogue.protocols.srp.SrpV3Server``. ``SrpV3Server`` emulates a hardware
+``rogue.protocols.srp.SrpV3Emulation``. ``SrpV3Emulation`` emulates a hardware
 SRP endpoint in software, accepting SRPv3 request frames and returning
 SRPv3 response frames with an internal memory backing store.
 
 This module is **not** intended for use with hardware. It is purely a
 software construct for testing the :doc:`srpV3` client module.
 
-When To Use ``SrpV3Server``
+When To Use ``SrpV3Emulation``
 ===========================
 
 - Use for CI regression testing of the SRPv3 protocol path.
@@ -34,7 +34,7 @@ Behavior
 - Posted writes are processed silently with no response frame.
 - Internal memory is allocated on demand in 4 KiB pages.
 
-Connect ``SrpV3Server`` to an ``SrpV3`` client via a bidirectional stream
+Connect ``SrpV3Emulation`` to an ``SrpV3`` client via a bidirectional stream
 path using the ``==`` operator. The server acts as the remote endpoint,
 completing the full protocol round-trip in software.
 
@@ -47,20 +47,20 @@ Threading And Locking
 Logging
 =======
 
-``SrpV3Server`` uses Rogue C++ logging.
+``SrpV3Emulation`` uses Rogue C++ logging.
 
-- Logger name: ``pyrogue.SrpV3Server``
+- Logger name: ``pyrogue.SrpV3Emulation``
 - Recommended unified one-liner:
-  ``pyrogue.setLogLevel('SrpV3Server', 'DEBUG')``
+  ``pyrogue.setLogLevel('SrpV3Emulation', 'DEBUG')``
 - Legacy Logging API:
-  ``rogue.Logging.setFilter('pyrogue.SrpV3Server', rogue.Logging.Debug)``
+  ``rogue.Logging.setFilter('pyrogue.SrpV3Emulation', rogue.Logging.Debug)``
 - Typical messages: incoming request details, memory page allocations,
   response transmission, and frame validation warnings.
 
 Python Example
 ==============
 
-The typical test pattern connects ``SrpV3`` and ``SrpV3Server`` inside a
+The typical test pattern connects ``SrpV3`` and ``SrpV3Emulation`` inside a
 ``Root`` subclass to create a software-only register access path.
 
 .. code-block:: python
@@ -89,7 +89,7 @@ The typical test pattern connects ``SrpV3`` and ``SrpV3Server`` inside a
            self.srp = rogue.protocols.srp.SrpV3()
 
            # SRPv3 server (software emulation of hardware endpoint)
-           self.srpServer = rogue.protocols.srp.SrpV3Server()
+           self.srpServer = rogue.protocols.srp.SrpV3Emulation()
 
            # Bidirectional stream: client <-> server
            self.srp == self.srpServer
@@ -116,5 +116,5 @@ Related Topics
 API Reference
 =============
 
-- Python: :doc:`/api/python/rogue/protocols/srp/srpv3server`
-- C++: :doc:`/api/cpp/protocols/srp/srpV3Server`
+- Python: :doc:`/api/python/rogue/protocols/srp/srpv3emulation`
+- C++: :doc:`/api/cpp/protocols/srp/srpV3Emulation`

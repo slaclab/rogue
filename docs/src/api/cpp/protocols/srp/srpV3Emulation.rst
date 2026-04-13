@@ -1,15 +1,15 @@
-.. _protocols_srp_classes_srpV3Server:
+.. _protocols_srp_classes_srpV3Emulation:
 
-===========
-SrpV3Server
-===========
+==============
+SrpV3Emulation
+==============
 
-`rogue::protocols::srp::SrpV3Server` is a software emulation of a hardware
+`rogue::protocols::srp::SrpV3Emulation` is a software emulation of a hardware
 SRPv3 endpoint. It accepts SRPv3 request frames and sends SRPv3 response
 frames backed by an internal memory store. This module is used for CI
 regression testing of the :doc:`srpV3` client module without hardware.
 
-For conceptual guidance, see :doc:`/built_in_modules/protocols/srp/srpV3Server`.
+For conceptual guidance, see :doc:`/built_in_modules/protocols/srp/srpV3Emulation`.
 
 Threading and locking summary
 =============================
@@ -20,16 +20,16 @@ Threading and locking summary
 Python binding
 --------------
 
-This C++ class is also exported into Python as ``rogue.protocols.srp.SrpV3Server``.
+This C++ class is also exported into Python as ``rogue.protocols.srp.SrpV3Emulation``.
 
 Python API page:
-- :doc:`/api/python/rogue/protocols/srp/srpv3server`
+- :doc:`/api/python/rogue/protocols/srp/srpv3emulation`
 
 objects in C++ are referenced by the following shared pointer typedef:
 
-.. doxygentypedef:: rogue::protocols::srp::SrpV3ServerPtr
+.. doxygentypedef:: rogue::protocols::srp::SrpV3EmulationPtr
 
 The class description is shown below:
 
-.. doxygenclass:: rogue::protocols::srp::SrpV3Server
+.. doxygenclass:: rogue::protocols::srp::SrpV3Emulation
    :members:

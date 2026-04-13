@@ -67,7 +67,7 @@ class SrpV3TestDevice(pr.Device):
 
 
 class SrpV3TestRoot(pr.Root):
-    """Root that wires SrpV3 client to SrpV3Server for software-only testing."""
+    """Root that wires SrpV3 client to SrpV3Emulation for software-only testing."""
 
     def __init__(self, **kwargs):
         super().__init__(
@@ -82,7 +82,7 @@ class SrpV3TestRoot(pr.Root):
         self.srp = rogue.protocols.srp.SrpV3()
 
         # SRPv3 server (emulated hardware endpoint)
-        self.srpServer = rogue.protocols.srp.SrpV3Server()
+        self.srpServer = rogue.protocols.srp.SrpV3Emulation()
 
         # Bidirectional stream connection: client <-> server
         self.srp == self.srpServer
@@ -108,7 +108,7 @@ class SrpV3MultiDeviceRoot(pr.Root):
         )
 
         self.srp = rogue.protocols.srp.SrpV3()
-        self.srpServer = rogue.protocols.srp.SrpV3Server()
+        self.srpServer = rogue.protocols.srp.SrpV3Emulation()
         self.srp == self.srpServer
 
         for i in range(4):
@@ -119,15 +119,15 @@ class SrpV3MultiDeviceRoot(pr.Root):
             ))
 
 
-def test_srpv3_server_basic_write_read():
-    """Test basic write and read-back through SrpV3 <-> SrpV3Server."""
+def test_srpv3_emulation_basic_write_read():
+    """Test basic write and read-back through SrpV3 <-> SrpV3Emulation."""
     with SrpV3TestRoot() as root:
         root.Dev.ScratchPad.set(0xDEADBEEF)
         val = root.Dev.ScratchPad.get()
         assert val == 0xDEADBEEF
 
 
-def test_srpv3_server_multiple_registers():
+def test_srpv3_emulation_multiple_registers():
     """Test writing and reading multiple registers."""
     with SrpV3TestRoot() as root:
         root.Dev.ScratchPad.set(0x12345678)
@@ -139,7 +139,7 @@ def test_srpv3_server_multiple_registers():
         assert root.Dev.Register2.get() == 0x11223344
 
 
-def test_srpv3_server_overwrite():
+def test_srpv3_emulation_overwrite():
     """Test that overwriting a register works correctly."""
     with SrpV3TestRoot() as root:
         root.Dev.ScratchPad.set(0x11111111)
@@ -149,7 +149,7 @@ def test_srpv3_server_overwrite():
         assert root.Dev.ScratchPad.get() == 0x22222222
 
 
-def test_srpv3_server_wide_register():
+def test_srpv3_emulation_wide_register():
     """Test 64-bit register write and read."""
     with SrpV3TestRoot() as root:
         root.Dev.WideRegister.set(0x0102030405060708)
@@ -157,7 +157,7 @@ def test_srpv3_server_wide_register():
         assert val == 0x0102030405060708
 
 
-def test_srpv3_server_uninitialized_read():
+def test_srpv3_emulation_uninitialized_read():
     """Test that reading uninitialized memory returns consistent random data."""
     with SrpV3TestRoot() as root:
         val1 = root.Dev.ScratchPad.get()
@@ -165,7 +165,7 @@ def test_srpv3_server_uninitialized_read():
         assert val1 == val2
 
 
-def test_srpv3_server_multi_device():
+def test_srpv3_emulation_multi_device():
     """Test multiple devices at different address offsets."""
     with SrpV3MultiDeviceRoot() as root:
         # Write different values to each device
@@ -179,7 +179,7 @@ def test_srpv3_server_multi_device():
             assert root.Dev[i].Register1.get() == 0x2000 + i
 
 
-def test_srpv3_server_zero_write():
+def test_srpv3_emulation_zero_write():
     """Test writing zero to a register."""
     with SrpV3TestRoot() as root:
         root.Dev.ScratchPad.set(0xFFFFFFFF)
@@ -189,9 +189,9 @@ def test_srpv3_server_zero_write():
         assert root.Dev.ScratchPad.get() == 0x00000000
 
 
-def test_srpv3_server_rejects_invalid_request_size():
+def test_srpv3_emulation_rejects_invalid_request_size():
     """Malformed raw SRPv3 requests with impossible sizes are dropped."""
-    server = rogue.protocols.srp.SrpV3Server()
+    server = rogue.protocols.srp.SrpV3Emulation()
     capture = FrameCapture()
     inject = rogue.interfaces.stream.Master()
 

@@ -13,7 +13,7 @@
 target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/Cmd.cpp")
 target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/SrpV0.cpp")
 target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/SrpV3.cpp")
-target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/SrpV3Server.cpp")
+target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/SrpV3Emulation.cpp")
 
 if (NOT NO_PYTHON)
    target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/module.cpp")
