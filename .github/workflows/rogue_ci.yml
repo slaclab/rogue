@@ -74,6 +74,8 @@ jobs:
           cmake --build build --target install
 
       # Run Tests
+      # Full Linux build runs the complete native C++ suite in a
+      # Python-enabled configuration.
       - name: Rogue Native C++ Tests
         run: |
           source build/setup_rogue.sh
@@ -137,6 +139,8 @@ jobs:
           cmake --build build -j$(nproc)
           cmake --build build --target install
 
+      # Small Linux build validates the deterministic native subset in a true
+      # -DNO_PYTHON=1 configuration.
       - name: Rogue Native C++ Tests
         run: |
           source build/setup_rogue.sh
@@ -200,6 +204,8 @@ jobs:
         run: |
           python -c "import rogue, pyrogue; print('rogue import ok')"
 
+      # macOS mirrors the full-build native coverage on Apple silicon using the
+      # Python-enabled build configuration.
       - name: Rogue Native C++ Tests
         shell: bash -el {0}
         run: |
