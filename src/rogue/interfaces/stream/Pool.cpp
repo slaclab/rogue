@@ -51,6 +51,7 @@ ris::Pool::Pool() {
 ris::Pool::~Pool() {
     while (!dataQ_.empty()) {
         free(dataQ_.front());
+        dataQ_.pop();
     }
 }
 
