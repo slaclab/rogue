@@ -123,7 +123,7 @@ uint8_t* rps::SrpV3Server::allocatePage(uint64_t addr4k) {
     }
 
     // Fill with random data to emulate uninitialized hardware memory
-    std::mt19937 gen(std::random_device{}());
+    std::mt19937 gen(std::random_device {}());
     uint32_t* p32 = reinterpret_cast<uint32_t*>(page);
     for (size_t i = 0; i < 0x1000 / 4; i++) p32[i] = gen();
 
