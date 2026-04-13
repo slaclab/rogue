@@ -1,0 +1,298 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CombinerV1 &mdash; Rogue v6.10.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css?v=8b50afe1" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=dc21db2b"></script>
+      <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../../_static/custom.js?v=7b5dfb0b"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link rel="next" title="CombinerV2" href="combinerV2.html" />
+    <link rel="prev" title="rogue::protocols::batcher" href="index.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../../python/index.html">Python API</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../../index.html">C++ API</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../../rogue_index.html">rogue</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../interfaces_index.html">rogue::interfaces</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../../protocols_index.html">rogue::protocols</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="index.html">rogue::protocols::batcher</a><ul class="current">
+<li class="toctree-l5 current"><a class="current reference internal" href="#">CombinerV1</a></li>
+<li class="toctree-l5"><a class="reference internal" href="combinerV2.html">CombinerV2</a></li>
+<li class="toctree-l5"><a class="reference internal" href="coreV1.html">CoreV1</a></li>
+<li class="toctree-l5"><a class="reference internal" href="coreV2.html">CoreV2</a></li>
+<li class="toctree-l5"><a class="reference internal" href="data.html">Data</a></li>
+<li class="toctree-l5"><a class="reference internal" href="inverterV1.html">InverterV1</a></li>
+<li class="toctree-l5"><a class="reference internal" href="inverterV2.html">InverterV2</a></li>
+<li class="toctree-l5"><a class="reference internal" href="splitterV1.html">SplitterV1</a></li>
+<li class="toctree-l5"><a class="reference internal" href="splitterV2.html">SplitterV2</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../packetizer/index.html">rogue::protocols::packetizer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../rssi/index.html">rogue::protocols::rssi</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../srp/index.html">rogue::protocols::srp</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../udp/index.html">rogue::protocols::udp</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../xilinx/index.html">rogue::protocols::xilinx</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../hardware_index.html">rogue::hardware</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../utilities_index.html">rogue::utilities</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">API Reference</a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">C++ API</a></li>
+          <li class="breadcrumb-item"><a href="../../protocols_index.html">rogue::protocols</a></li>
+          <li class="breadcrumb-item"><a href="index.html">rogue::protocols::batcher</a></li>
+      <li class="breadcrumb-item active">CombinerV1</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../_sources/api/cpp/protocols/batcher/combinerV1.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="combinerv1">
+<span id="protocols-batcher-classes-combinerv1"></span><h1>CombinerV1<a class="headerlink" href="#combinerv1" title="Link to this heading"></a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">CombinerV1</span></code> combines individual Rogue stream frames into a Batcher v1
+super-frame. It is the software inverse of <code class="docutils literal notranslate"><span class="pre">SplitterV1</span></code>.
+For conceptual guidance, see <a class="reference internal" href="../../../../built_in_modules/protocols/batcher/combiner.html"><span class="doc">Batcher Protocol Combiner</span></a>.</p>
+<p>Protocol reference: <a class="reference external" href="https://confluence.slac.stanford.edu/x/th1SDg">https://confluence.slac.stanford.edu/x/th1SDg</a></p>
+<section id="python-binding">
+<h2>Python binding<a class="headerlink" href="#python-binding" title="Link to this heading"></a></h2>
+<p>This C++ class is also exported into Python as <code class="docutils literal notranslate"><span class="pre">rogue.protocols.batcher.CombinerV1</span></code>.</p>
+<p>Python API page:
+- <a class="reference internal" href="../../../python/rogue/protocols/batcher/combinerv1.html"><span class="doc">CombinerV1</span></a></p>
+<p>CombinerV1 objects in C++ are referenced by the following shared pointer typedef:</p>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols7batcher13CombinerV1PtrE">
+<span id="_CPPv3N5rogue9protocols7batcher13CombinerV1PtrE"></span><span id="_CPPv2N5rogue9protocols7batcher13CombinerV1PtrE"></span><span id="rogue::protocols::batcher::CombinerV1Ptr"></span><span class="target" id="namespacerogue_1_1protocols_1_1batcher_1aa4b94bf4e1b007c2a9aa3a84d3494f3d"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">protocols</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">batcher</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue9protocols7batcher10CombinerV1E" title="rogue::protocols::batcher::CombinerV1"><span class="n"><span class="pre">CombinerV1</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">protocols</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">batcher</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">CombinerV1Ptr</span></span></span><a class="headerlink" href="#_CPPv4N5rogue9protocols7batcher13CombinerV1PtrE" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/CombinerV1_8h_source.html#l00122"><span class="pre">[header]</span></a></dt>
+<dd></dd></dl>
+
+<p>The class description is shown below:</p>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols7batcher10CombinerV1E">
+<span id="_CPPv3N5rogue9protocols7batcher10CombinerV1E"></span><span id="_CPPv2N5rogue9protocols7batcher10CombinerV1E"></span><span id="rogue::protocols::batcher::CombinerV1"></span><span class="target" id="classrogue_1_1protocols_1_1batcher_1_1CombinerV1"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CombinerV1</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="../../interfaces/stream/master.html#_CPPv4N5rogue10interfaces6stream6MasterE" title="rogue::interfaces::stream::Master"><span class="n"><span class="pre">Master</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="../../interfaces/stream/slave.html#_CPPv4N5rogue10interfaces6stream5SlaveE" title="rogue::interfaces::stream::Slave"><span class="n"><span class="pre">Slave</span></span></a><a class="headerlink" href="#_CPPv4N5rogue9protocols7batcher10CombinerV1E" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/CombinerV1_8h_source.html#l00058"><span class="pre">[header]</span></a></dt>
+<dd><p>Combines individual frames into a batcher v1 super-frame. </p>
+<p>Protocol reference: <a class="reference external" href="https://confluence.slac.stanford.edu/x/th1SDg">https://confluence.slac.stanford.edu/x/th1SDg</a></p>
+<p><code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1protocols_1_1batcher_1_1CombinerV1"><span class="std std-ref"><span class="pre">CombinerV1</span></span></a></code> is the software inverse of <code class="docutils literal notranslate"><a class="reference internal" href="splitterV1.html#classrogue_1_1protocols_1_1batcher_1_1SplitterV1"><span class="std std-ref"><span class="pre">SplitterV1</span></span></a></code>. It collects individual Rogue stream frames and packs them into a single batcher v1 super-frame with the appropriate super-header and per-record tails.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">width</span></code> parameter controls the AXI stream width encoding:<ul class="simple">
+<li><p>0 = 16-bit (header=2, tail=8)</p></li>
+<li><p>1 = 32-bit (header=4, tail=8)</p></li>
+<li><p>2 = 64-bit (header=8, tail=8)</p></li>
+<li><p>3 = 128-bit (header=16, tail=16)</p></li>
+<li><p>4 = 256-bit (header=32, tail=32)</p></li>
+<li><p>5 = 512-bit (header=64, tail=64)</p></li>
+</ul>
+</p>
+<p>Threading model:<ul class="simple">
+<li><p>No internal worker thread is created.</p></li>
+<li><p><code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1protocols_1_1batcher_1_1CombinerV1_1a34cbee3255eb1221f9d1f60814439fd6"><span class="std std-ref"><span class="pre">acceptFrame()</span></span></a></code> queues frames; <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1protocols_1_1batcher_1_1CombinerV1_1ade09f29df3a4ee1a11363198c06bea46"><span class="std std-ref"><span class="pre">sendBatch()</span></span></a></code> builds and emits the super-frame. </p></li>
+</ul>
+</p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols7batcher10CombinerV110CombinerV1E7uint8_t">
+<span id="_CPPv3N5rogue9protocols7batcher10CombinerV110CombinerV1E7uint8_t"></span><span id="_CPPv2N5rogue9protocols7batcher10CombinerV110CombinerV1E7uint8_t"></span><span id="rogue::protocols::batcher::CombinerV1::CombinerV1__uint8_t"></span><span class="target" id="classrogue_1_1protocols_1_1batcher_1_1CombinerV1_1a65555ca067e075bd957d9aaf5d008671"></span><span class="k"><span class="pre">explicit</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CombinerV1</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">width</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols7batcher10CombinerV110CombinerV1E7uint8_t" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/CombinerV1_8h_source.html#l00094"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/CombinerV1_8cpp_source.html#l00087"><span class="pre">[impl]</span></a></dt>
+<dd><p>Constructs a <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1protocols_1_1batcher_1_1CombinerV1"><span class="std std-ref"><span class="pre">CombinerV1</span></span></a></code> instance. </p>
+<p>Creator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>width</strong> – AXI stream width encoding (0-5). </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols7batcher10CombinerV1D0Ev">
+<span id="_CPPv3N5rogue9protocols7batcher10CombinerV1D0Ev"></span><span id="_CPPv2N5rogue9protocols7batcher10CombinerV1D0Ev"></span><span id="rogue::protocols::batcher::CombinerV1::~CombinerV1"></span><span class="target" id="classrogue_1_1protocols_1_1batcher_1_1CombinerV1_1aff668c74fc76d65ffefa9794cbc81432"></span><span class="sig-name descname"><span class="n"><span class="pre">~CombinerV1</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols7batcher10CombinerV1D0Ev" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/CombinerV1_8h_source.html#l00097"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/CombinerV1_8cpp_source.html#l00104"><span class="pre">[impl]</span></a></dt>
+<dd><p>Destroys the combiner. </p>
+<p>Deconstructor. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols7batcher10CombinerV111acceptFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE">
+<span id="_CPPv3N5rogue9protocols7batcher10CombinerV111acceptFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE"></span><span id="_CPPv2N5rogue9protocols7batcher10CombinerV111acceptFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE"></span><span id="rogue::protocols::batcher::CombinerV1::acceptFrame__std::shared_ptr:rogue::interfaces::stream::Frame:"></span><span class="target" id="classrogue_1_1protocols_1_1batcher_1_1CombinerV1_1a34cbee3255eb1221f9d1f60814439fd6"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">acceptFrame</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="../../interfaces/stream/frame.html#_CPPv4N5rogue10interfaces6stream5FrameE" title="rogue::interfaces::stream::Frame"><span class="n"><span class="pre">Frame</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">frame</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols7batcher10CombinerV111acceptFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/CombinerV1_8h_source.html#l00103"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/CombinerV1_8cpp_source.html#l00107"><span class="pre">[impl]</span></a></dt>
+<dd><p>Accepts a frame and immediately queues it for batching. </p>
+<p>Accept a frame from master.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>frame</strong> – Input frame to be included in the next batch. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols7batcher10CombinerV19sendBatchEv">
+<span id="_CPPv3N5rogue9protocols7batcher10CombinerV19sendBatchEv"></span><span id="_CPPv2N5rogue9protocols7batcher10CombinerV19sendBatchEv"></span><span id="rogue::protocols::batcher::CombinerV1::sendBatch"></span><span class="target" id="classrogue_1_1protocols_1_1batcher_1_1CombinerV1_1ade09f29df3a4ee1a11363198c06bea46"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">sendBatch</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols7batcher10CombinerV19sendBatchEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/CombinerV1_8h_source.html#l00112"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/CombinerV1_8cpp_source.html#l00122"><span class="pre">[impl]</span></a></dt>
+<dd><p>Builds and sends a batcher v1 super-frame from all queued frames. </p>
+<p>Build and send the batched super-frame.</p>
+<p>If no frames are queued, this is a no-op. After sending, the queue is cleared and the sequence counter is incremented. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols7batcher10CombinerV18getCountEv">
+<span id="_CPPv3N5rogue9protocols7batcher10CombinerV18getCountEv"></span><span id="_CPPv2N5rogue9protocols7batcher10CombinerV18getCountEv"></span><span id="rogue::protocols::batcher::CombinerV1::getCount"></span><span class="target" id="classrogue_1_1protocols_1_1batcher_1_1CombinerV1_1a72d909df798d456957f75aff124bd1cc"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getCount</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols7batcher10CombinerV18getCountEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/CombinerV1_8h_source.html#l00118"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/CombinerV1_8cpp_source.html#l00116"><span class="pre">[impl]</span></a></dt>
+<dd><p>Returns the number of frames currently queued. </p>
+<p>Return queue count.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Queue depth. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-static-functions">Public Static Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols7batcher10CombinerV112setup_pythonEv">
+<span id="_CPPv3N5rogue9protocols7batcher10CombinerV112setup_pythonEv"></span><span id="_CPPv2N5rogue9protocols7batcher10CombinerV112setup_pythonEv"></span><span id="rogue::protocols::batcher::CombinerV1::setup_python"></span><span class="target" id="classrogue_1_1protocols_1_1batcher_1_1CombinerV1_1a3d0955c95eff5e85612073e60581e422"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setup_python</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols7batcher10CombinerV112setup_pythonEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/CombinerV1_8h_source.html#l00081"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/CombinerV1_8cpp_source.html#l00076"><span class="pre">[impl]</span></a></dt>
+<dd><p>Registers Python bindings for this class. </p>
+<p>Setup class in python. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols7batcher10CombinerV16createE7uint8_t">
+<span id="_CPPv3N5rogue9protocols7batcher10CombinerV16createE7uint8_t"></span><span id="_CPPv2N5rogue9protocols7batcher10CombinerV16createE7uint8_t"></span><span id="rogue::protocols::batcher::CombinerV1::create__uint8_t"></span><span class="target" id="classrogue_1_1protocols_1_1batcher_1_1CombinerV1_1a0b8f972be57734abf7ab86e2deebb419"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">protocols</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">batcher</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue9protocols7batcher10CombinerV1E" title="rogue::protocols::batcher::CombinerV1"><span class="n"><span class="pre">CombinerV1</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">create</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">width</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols7batcher10CombinerV16createE7uint8_t" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/CombinerV1_8h_source.html#l00088"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/CombinerV1_8cpp_source.html#l00070"><span class="pre">[impl]</span></a></dt>
+<dd><p>Creates a <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1protocols_1_1batcher_1_1CombinerV1"><span class="std std-ref"><span class="pre">CombinerV1</span></span></a></code> instance. </p>
+<p>Class creation.</p>
+<p><em>Company : SLAC National Accelerator Laboratory </em></p>
+<p>Description : AXI Batcher V1 Combiner (SW Batcher) (<a class="reference external" href="https://confluence.slac.stanford.edu/x/th1SDg">https://confluence.slac.stanford.edu/x/th1SDg</a>)</p>
+<p>Builds a batcher v1 super-frame from individual frames. This is the software inverse of the <a class="reference internal" href="splitterV1.html#classrogue_1_1protocols_1_1batcher_1_1SplitterV1"><span class="std std-ref">SplitterV1</span></a> unbatcher.</p>
+<p>Super-frame layout (same as FW batcher):</p>
+<p>[Super Header][Record0 <a class="reference internal" href="data.html#classrogue_1_1protocols_1_1batcher_1_1Data"><span class="std std-ref">Data</span></a>][Record0 Tail][Record1 <a class="reference internal" href="data.html#classrogue_1_1protocols_1_1batcher_1_1Data"><span class="std std-ref">Data</span></a>][Record1 Tail]…</p>
+<p>Super Header: Byte 0: Bits 3:0 = <a class="reference internal" href="../../version.html#classrogue_1_1Version"><span class="std std-ref">Version</span></a> = 1 Bits 7:4 = Width = 2 * 2 ^ val Bytes Byte 1: Bits 15:8 = Sequence # for debug Rest of width padded with zeros</p>
+<p>Frame Tail: Tail size is max(width, 8 bytes). Padded with zeros. Word 0: bits 31:0 = size (payload bytes) Word 1: bits 7:0 = Destination bits 15:8 = First user bits 23:16 = Last user bits 31:24 = Width (bits 3:0 = width encoding, bits 7:4 = 0)</p>
+<p>
+ This file is part of the rogue software platform. It is subject to the license terms in the LICENSE.txt file found in the top-level directory of this distribution and at: <a class="reference external" href="https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html">https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html</a>. No part of the rogue software platform, including this file, may be copied, modified, propagated, or distributed except according to the terms <em>contained in the LICENSE.txt file. </em></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>width</strong> – AXI stream width encoding (0-5). </p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Shared pointer to the created combiner.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="rogue::protocols::batcher" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="combinerV2.html" class="btn btn-neutral float-right" title="CombinerV2" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

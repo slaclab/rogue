@@ -1,0 +1,625 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blocks &mdash; Rogue v6.10.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=8b50afe1" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc21db2b"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/custom.js?v=7b5dfb0b"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Device Block Operations" href="block_operations.html" />
+    <link rel="prev" title="RemoteCommand" href="remote_command.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">PyRogue Tree</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Components And Concepts</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="root.html">Root</a></li>
+<li class="toctree-l3"><a class="reference internal" href="device.html">Device</a></li>
+<li class="toctree-l3"><a class="reference internal" href="variable.html">Variable</a></li>
+<li class="toctree-l3"><a class="reference internal" href="command.html">Command</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Blocks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="block_operations.html">Device Block Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="model.html">Model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fixed_point_models.html">Fixed-Point Models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="float_types_summary.html">Floating Point Types Summary</a></li>
+<li class="toctree-l3"><a class="reference internal" href="poll_queue.html">PollQueue</a></li>
+<li class="toctree-l3"><a class="reference internal" href="yaml_configuration.html">YAML Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="memory_variable_stream.html">Variable Update Stream</a></li>
+<li class="toctree-l3"><a class="reference internal" href="groups.html">Groups</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../builtin_devices/index.html">Built-in Devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../client_interfaces/index.html">Client Interfaces</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">API Reference</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">PyRogue Tree</a></li>
+          <li class="breadcrumb-item"><a href="index.html">PyRogue Tree Components And Concepts</a></li>
+      <li class="breadcrumb-item active">Blocks</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/pyrogue_tree/core/block.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="blocks">
+<span id="interfaces-memory-blocks-advanced"></span><span id="interfaces-memory-blocks"></span><span id="pyrogue-tree-node-block"></span><span id="pyrogue-tree-blocks"></span><h1>Blocks<a class="headerlink" href="#blocks" title="Link to this heading"></a></h1>
+<p>A Block is the transaction unit used by PyRogue memory access. Variables map
+bit fields into Block byte ranges, and hardware reads/writes execute at Block
+level.</p>
+<section id="why-blocks-exist">
+<h2>Why Blocks Exist<a class="headerlink" href="#why-blocks-exist" title="Link to this heading"></a></h2>
+<p>Blocks separate two concerns:</p>
+<ol class="arabic simple">
+<li><p>Value staging and conversion (pack/unpack Variable values into bytes)</p></li>
+<li><p>Transport sequencing (initiate/check read/write/verify operations)</p></li>
+</ol>
+<p>This separation lets Variable APIs stay high-level while transaction handling
+stays efficient and ordered.</p>
+</section>
+<section id="how-variables-connect-to-blocks">
+<h2>How Variables Connect To Blocks<a class="headerlink" href="#how-variables-connect-to-blocks" title="Link to this heading"></a></h2>
+<p>When Devices attach to a Root, compatible <code class="docutils literal notranslate"><span class="pre">RemoteVariable</span></code> instances are
+grouped into Blocks. Grouping follows address/size compatibility and memory
+path constraints (for example minimum access width).</p>
+<p>For <a class="reference internal" href="../../api/python/pyrogue/remotevariable.html#pyrogue.RemoteVariable" title="pyrogue.RemoteVariable"><code class="xref py py-class docutils literal notranslate"><span class="pre">RemoteVariable</span></code></a>:</p>
+<ul class="simple">
+<li><p>Each Variable defines offset/bit mapping metadata</p></li>
+<li><p>During Device attach/build, Device logic groups compatible remote Variables
+into Blocks</p></li>
+<li><p>Each Variable gets <code class="docutils literal notranslate"><span class="pre">_block</span></code> pointing to the Block that services it</p></li>
+<li><p>Transaction methods on Device/Root call Block transactions, not per-Variable
+raw bus operations</p></li>
+</ul>
+<p>For <a class="reference internal" href="../../api/python/pyrogue/localvariable.html#pyrogue.LocalVariable" title="pyrogue.LocalVariable"><code class="xref py py-class docutils literal notranslate"><span class="pre">LocalVariable</span></code></a>:</p>
+<ul class="simple">
+<li><p>Each Variable uses a local software Block (<a class="reference internal" href="../../api/python/pyrogue/localblock.html#pyrogue.LocalBlock" title="pyrogue.LocalBlock"><code class="xref py py-class docutils literal notranslate"><span class="pre">LocalBlock</span></code></a>)
+for in-memory set/get behavior</p></li>
+</ul>
+<p>Implications of Block grouping:</p>
+<ul class="simple">
+<li><p>Several Variables can share one Block transaction</p></li>
+<li><p>Partial updates can target changed sub-ranges</p></li>
+<li><p>Grouped Block operations reduce transaction overhead</p></li>
+</ul>
+</section>
+<section id="how-device-builds-blocks">
+<h2>How Device Builds Blocks<a class="headerlink" href="#how-device-builds-blocks" title="Link to this heading"></a></h2>
+<p>The grouping is performed by <a class="reference internal" href="../../api/python/pyrogue/device.html#pyrogue.Device" title="pyrogue.Device"><code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code></a> during attach time,
+inside <code class="docutils literal notranslate"><span class="pre">Device._buildBlocks()</span></code>. The process is worth understanding because it
+determines both transaction grouping and the default ordering later used by
+bulk block operations.</p>
+<p>At a high level, the build process is:</p>
+<ol class="arabic simple">
+<li><p>Walk the Device’s child Nodes.</p></li>
+<li><p>Add each <code class="docutils literal notranslate"><span class="pre">LocalVariable</span></code>’s software Block directly to the Device.</p></li>
+<li><p>Collect hardware-backed <code class="docutils literal notranslate"><span class="pre">RemoteVariable</span></code> instances whose offsets are
+defined.</p></li>
+<li><p>Align each RemoteVariable to the Device’s minimum access size.</p></li>
+<li><p>Sort the RemoteVariables by <code class="docutils literal notranslate"><span class="pre">(offset,</span> <span class="pre">varBytes)</span></code>.</p></li>
+<li><p>Group overlapping compatible RemoteVariables into shared Blocks.</p></li>
+<li><p>Reuse a pre-created custom Block when a Variable falls inside it.</p></li>
+<li><p>Create any remaining new Blocks, bind their Variables, and attach them to
+the Device.</p></li>
+</ol>
+<p>Some details matter:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">LocalVariable</span></code> uses a one-to-one software Block. It does not participate
+in the RemoteVariable grouping algorithm.</p></li>
+<li><p>RemoteVariable grouping begins from sorted address order, so the auto-built
+hardware Blocks are normally address-oriented.</p></li>
+<li><p>If two RemoteVariables overlap the same byte region after alignment, they are
+grouped into the same Block and their internal offsets are shifted relative
+to that Block base.</p></li>
+<li><p>A custom Block added ahead of time with <code class="docutils literal notranslate"><span class="pre">addCustomBlock(...)</span></code> takes
+precedence for Variables that fall inside its address range.</p></li>
+<li><p>After a Block is chosen or created, the Device sets each Variable’s
+<code class="docutils literal notranslate"><span class="pre">_block</span></code> reference to that Block and enables the Block according to the
+Device’s current enable state.</p></li>
+</ul>
+<p>This is why the later bulk methods in <a class="reference internal" href="block_operations.html"><span class="doc">Device Block Operations</span></a>
+do not decide grouping on the fly. By the time reads, writes, verifies, and
+checks run, the Device has already built the Block structure they will
+traverse.</p>
+</section>
+<section id="access-path-remotevariable">
+<h2>Access Path (RemoteVariable)<a class="headerlink" href="#access-path-remotevariable" title="Link to this heading"></a></h2>
+<p>Typical read/write path:</p>
+<ul class="simple">
+<li><p>User/API calls <code class="docutils literal notranslate"><span class="pre">set</span></code> or <code class="docutils literal notranslate"><span class="pre">get</span></code> on a Variable</p></li>
+<li><p>Device/Root APIs initiate Block transactions</p></li>
+<li><p>Block reads/writes memory through the Device’s memory interface</p></li>
+<li><p>Completion/check updates Variable state and notifications</p></li>
+</ul>
+<p>In bulk operations, many Variables can share one Block transaction, improving
+access efficiency versus isolated per-Variable transfers.</p>
+</section>
+<section id="block-apis-and-transaction-flow">
+<h2>Block APIs And Transaction Flow<a class="headerlink" href="#block-apis-and-transaction-flow" title="Link to this heading"></a></h2>
+<section id="conversion-vs-transaction">
+<h3>Conversion vs Transaction<a class="headerlink" href="#conversion-vs-transaction" title="Link to this heading"></a></h3>
+<p>The Block API has two layers:</p>
+<ul class="simple">
+<li><p>Conversion layer:
+<code class="docutils literal notranslate"><span class="pre">set*/get*</span></code> methods convert between native types and staged Block bytes.</p></li>
+<li><p>Transaction layer:
+<code class="docutils literal notranslate"><span class="pre">write/read/startTransaction/checkTransaction</span></code> moves staged bytes to and
+from hardware.</p></li>
+</ul>
+<p>In the C++ <code class="docutils literal notranslate"><span class="pre">Variable</span></code> API, a typed set call performs both steps:</p>
+<ol class="arabic simple">
+<li><p>Conversion into staged bytes via a bound <code class="docutils literal notranslate"><span class="pre">Block</span></code> method</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Block::write()</span></code> (write + verify/check sequence)</p></li>
+</ol>
+<p>A typed get call similarly performs:</p>
+<ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Block::read()</span></code></p></li>
+<li><p>Conversion from staged bytes via a bound <code class="docutils literal notranslate"><span class="pre">Block</span></code> method</p></li>
+</ol>
+<p>Typical write path:</p>
+<ol class="arabic simple">
+<li><p>Variable <code class="docutils literal notranslate"><span class="pre">set</span></code> updates staged Block bytes using Model conversion</p></li>
+<li><p>Write (and optional verify) transactions are initiated</p></li>
+<li><p>Completion is checked</p></li>
+</ol>
+<p>Typical read path:</p>
+<ol class="arabic simple">
+<li><p>Read transactions are initiated</p></li>
+<li><p>Completion is checked</p></li>
+<li><p>Bytes are decoded back into Variable values</p></li>
+</ol>
+<p>In PyRogue terminology, waiting for operation responses is called <code class="docutils literal notranslate"><span class="pre">check</span></code>.</p>
+</section>
+<section id="block-helper-functions">
+<h3>Block Helper Functions<a class="headerlink" href="#block-helper-functions" title="Link to this heading"></a></h3>
+<p>PyRogue exposes helper functions used by Variable/Device/Root flow:</p>
+<ul class="simple">
+<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">startTransaction()</span></code></p></li>
+<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">checkTransaction()</span></code></p></li>
+<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">writeBlocks()</span></code></p></li>
+<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">verifyBlocks()</span></code></p></li>
+<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">readBlocks()</span></code></p></li>
+<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">checkBlocks()</span></code></p></li>
+<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">writeAndVerifyBlocks()</span></code></p></li>
+<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">readAndCheckBlocks()</span></code></p></li>
+</ul>
+<p>Most users call these indirectly through <code class="docutils literal notranslate"><span class="pre">Device</span></code>/<code class="docutils literal notranslate"><span class="pre">Root</span></code> methods. Direct
+use is mainly for custom transaction sequencing.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Bulk read all Blocks attached to a Device</span>
+<span class="n">myDevice</span><span class="o">.</span><span class="n">readBlocks</span><span class="p">(</span><span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">myDevice</span><span class="o">.</span><span class="n">checkBlocks</span><span class="p">(</span><span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Write only the Block backing one Variable</span>
+<span class="n">myDevice</span><span class="o">.</span><span class="n">writeBlocks</span><span class="p">(</span><span class="n">variable</span><span class="o">=</span><span class="n">myDevice</span><span class="o">.</span><span class="n">MyReg</span><span class="p">,</span> <span class="n">checkEach</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="logging">
+<h3>Logging<a class="headerlink" href="#logging" title="Link to this heading"></a></h3>
+<p>Each hardware-backed Block creates its own Rogue C++ logger when Variables are
+bound into it.</p>
+<ul class="simple">
+<li><p>Logger pattern: <code class="docutils literal notranslate"><span class="pre">pyrogue.memory.block.&lt;path&gt;</span></code></p></li>
+<li><p>Example: <code class="docutils literal notranslate"><span class="pre">pyrogue.memory.block.Root.MyDevice.MyRegister</span></code></p></li>
+<li><p>Unified Logging API:
+<code class="docutils literal notranslate"><span class="pre">pyrogue.setLogLevel('pyrogue.memory.block',</span> <span class="pre">'DEBUG')</span></code></p></li>
+<li><p>Legacy Logging API:
+<code class="docutils literal notranslate"><span class="pre">rogue.Logging.setFilter('pyrogue.memory.block',</span> <span class="pre">rogue.Logging.Debug)</span></code></p></li>
+</ul>
+<p>This logger is useful for low-level register-access debugging because it emits
+messages during:</p>
+<ul class="simple">
+<li><p>Variable-to-Block binding</p></li>
+<li><p>Transaction start/check flow</p></li>
+<li><p>Retry handling</p></li>
+<li><p>Verify/readback behavior</p></li>
+</ul>
+<p>The logger name is derived from the first Variable path assigned to the Block,
+so filtering by the <code class="docutils literal notranslate"><span class="pre">pyrogue.memory.block</span></code> prefix is usually the practical
+choice.</p>
+</section>
+<section id="packing-rules-and-variable-layout">
+<h3>Packing Rules And Variable Layout<a class="headerlink" href="#packing-rules-and-variable-layout" title="Link to this heading"></a></h3>
+<p>The internal <code class="docutils literal notranslate"><span class="pre">setBytes</span></code>/<code class="docutils literal notranslate"><span class="pre">getBytes</span></code> helpers are used by all typed methods
+and apply Variable layout metadata:</p>
+<ul class="simple">
+<li><p>Bit offsets and bit sizes (including disjoint fields)</p></li>
+<li><p>List semantics (<code class="docutils literal notranslate"><span class="pre">numValues</span></code>, <code class="docutils literal notranslate"><span class="pre">valueStride</span></code>)</p></li>
+<li><p>Fast contiguous byte-copy optimization when possible</p></li>
+<li><p>Byte reversal and bit-order constraints</p></li>
+</ul>
+<p>Because every typed method funnels through these helpers, custom subclasses can
+extend behavior while preserving the same packing model.</p>
+</section>
+</section>
+<section id="models-in-block-conversion">
+<h2>Models In Block Conversion<a class="headerlink" href="#models-in-block-conversion" title="Link to this heading"></a></h2>
+<p>Blocks use <code class="docutils literal notranslate"><span class="pre">Model</span></code> definitions to translate between Python-facing value types
+and hardware bit/byte representation.</p>
+<p>Canonical Model documentation is in <a class="reference internal" href="model.html"><span class="doc">Model</span></a>.</p>
+<section id="model-driven-block-method-dispatch">
+<h3>Model-Driven Block Method Dispatch<a class="headerlink" href="#model-driven-block-method-dispatch" title="Link to this heading"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">Variable</span></code> instances bind to typed <code class="docutils literal notranslate"><span class="pre">Block</span></code> conversion methods based on
+Model and size constraints.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Model</p></th>
+<th class="head"><p>C++ path</p></th>
+<th class="head"><p>Python path</p></th>
+<th class="head"><p>Notes</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Bytes</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">set/getByteArray</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">set/getByteArrayPy</span></code></p></td>
+<td><p>Raw byte semantics.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">UInt</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">set/getUInt</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">set/getUIntPy</span></code></p></td>
+<td><p>Fallback for very wide values.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Int</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">set/getInt</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">set/getIntPy</span></code></p></td>
+<td><p>Fallback for very wide values.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Bool</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">set/getBool</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">set/getBoolPy</span></code></p></td>
+<td><p>Typically 1-bit value semantics.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">String</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">set/getString</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">set/getStringPy</span></code></p></td>
+<td><p>Byte payload interpreted as text.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Float</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">set/getFloat</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">set/getFloatPy</span></code></p></td>
+<td><p>32-bit float conversion.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Double</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">set/getDouble</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">set/getDoublePy</span></code></p></td>
+<td><p>64-bit float conversion.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Fixed</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">set/getFixed</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">set/getFixedPy</span></code></p></td>
+<td><p>Uses binary-point metadata.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">PyFunc</span></code></p></td>
+<td><p>(Python-focused)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">set/getPyFunc</span></code></p></td>
+<td><p>Delegates conversion to Model hooks.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="built-in-model-families">
+<h3>Built-in Model Families<a class="headerlink" href="#built-in-model-families" title="Link to this heading"></a></h3>
+<p>The following built-in Models are commonly used with Blocks:</p>
+<p>Canonical Model coverage is in <a class="reference internal" href="model.html"><span class="doc">Model</span></a>.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Model</p></th>
+<th class="head"><p>Hardware Type</p></th>
+<th class="head"><p>Python Type</p></th>
+<th class="head"><p>Bit Size</p></th>
+<th class="head"><p>Notes</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="../../api/cpp/interfaces/memory/model.html#interfaces-memory-model-uint"><span class="std std-ref">UInt</span></a></p></td>
+<td><p>unsigned integer</p></td>
+<td><p>int</p></td>
+<td><p>unconstrained</p></td>
+<td><p>Little endian</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../api/cpp/interfaces/memory/model.html#interfaces-memory-model-uintbe"><span class="std std-ref">UIntBE</span></a></p></td>
+<td><p>unsigned integer</p></td>
+<td><p>int</p></td>
+<td><p>unconstrained</p></td>
+<td><p>Big endian</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../api/cpp/interfaces/memory/model.html#interfaces-memory-model-uintreversed"><span class="std std-ref">UIntReversed</span></a></p></td>
+<td><p>unsigned integer</p></td>
+<td><p>int</p></td>
+<td><p>unconstrained</p></td>
+<td><p>Reversed bit order</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../api/cpp/interfaces/memory/model.html#interfaces-memory-model-int"><span class="std std-ref">Int</span></a></p></td>
+<td><p>signed integer</p></td>
+<td><p>int</p></td>
+<td><p>unconstrained</p></td>
+<td><p>Little endian</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../api/cpp/interfaces/memory/model.html#interfaces-memory-model-intbe"><span class="std std-ref">IntBE</span></a></p></td>
+<td><p>signed integer</p></td>
+<td><p>int</p></td>
+<td><p>unconstrained</p></td>
+<td><p>Big endian</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../api/cpp/interfaces/memory/model.html#interfaces-memory-model-bool"><span class="std std-ref">Bool</span></a></p></td>
+<td><p>bit</p></td>
+<td><p>bool</p></td>
+<td><p>1-bit</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../api/cpp/interfaces/memory/model.html#interfaces-memory-model-string"><span class="std std-ref">String</span></a></p></td>
+<td><p>bytes</p></td>
+<td><p>string</p></td>
+<td><p>unconstrained</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../api/cpp/interfaces/memory/model.html#interfaces-memory-model-float"><span class="std std-ref">Float</span></a></p></td>
+<td><p>32-bit float</p></td>
+<td><p>float</p></td>
+<td><p>32-bits</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../api/cpp/interfaces/memory/model.html#interfaces-memory-model-floatbe"><span class="std std-ref">FloatBE</span></a></p></td>
+<td><p>32-bit float</p></td>
+<td><p>float</p></td>
+<td><p>32-bits</p></td>
+<td><p>Big endian</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../api/cpp/interfaces/memory/model.html#interfaces-memory-model-double"><span class="std std-ref">Double</span></a></p></td>
+<td><p>64-bit float</p></td>
+<td><p>float</p></td>
+<td><p>64-bits</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../api/cpp/interfaces/memory/model.html#interfaces-memory-model-doublebe"><span class="std std-ref">DoubleBE</span></a></p></td>
+<td><p>64-bit float</p></td>
+<td><p>float</p></td>
+<td><p>64-bits</p></td>
+<td><p>Big endian</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../api/cpp/interfaces/memory/model.html#interfaces-memory-model-fixed"><span class="std std-ref">Fixed</span></a></p></td>
+<td><p>fixed point</p></td>
+<td><p>float</p></td>
+<td><p>unconstrained</p></td>
+<td><p>Fixed-point conversion</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../api/cpp/interfaces/memory/model.html#interfaces-memory-model-ufixed"><span class="std std-ref">UFixed</span></a></p></td>
+<td><p>fixed point</p></td>
+<td><p>float</p></td>
+<td><p>unconstrained</p></td>
+<td><p>Unsigned fixed-point conversion</p></td>
+</tr>
+</tbody>
+</table>
+<p>Most Model conversions run in low-level C++ Block paths for performance. An
+important exception is very wide integer handling, where Python Model logic is
+used when values exceed native conversion widths.</p>
+</section>
+</section>
+<section id="implementation-boundary-python-and-c">
+<h2>Implementation Boundary (Python and C++)<a class="headerlink" href="#implementation-boundary-python-and-c" title="Link to this heading"></a></h2>
+<p>The Block API called from PyRogue maps to the <code class="docutils literal notranslate"><span class="pre">rogue.interfaces.memory</span></code>
+runtime layer.</p>
+<p>In practice:</p>
+<ul class="simple">
+<li><p>Python code invokes methods on <code class="docutils literal notranslate"><span class="pre">pyrogue.Device</span></code> / <code class="docutils literal notranslate"><span class="pre">pyrogue.RemoteVariable</span></code></p></li>
+<li><p>These route into Block/Variable objects exposed by
+<code class="docutils literal notranslate"><span class="pre">rogue.interfaces.memory</span></code></p></li>
+<li><p>Underlying C++ Block/Variable code handles transaction staging,
+read/write/verify behavior, stale tracking, packing/unpacking, and update
+notification triggers</p></li>
+</ul>
+</section>
+<section id="hub-interaction">
+<h2>Hub Interaction<a class="headerlink" href="#hub-interaction" title="Link to this heading"></a></h2>
+<p>Blocks are transaction sources; Hubs are transaction routers.</p>
+<p>During a transaction, Hub logic:</p>
+<ul class="simple">
+<li><p>Offsets addresses by local Hub/Device base</p></li>
+<li><p>Forwards transactions to downstream memory slaves</p></li>
+<li><p>Splits transactions into sub-transactions when request size exceeds
+downstream max-access capability</p></li>
+</ul>
+<p>This is why Variable-to-Block transactions continue to work cleanly across
+multi-level Device trees with address translation.</p>
+</section>
+<section id="advanced-patterns">
+<h2>Advanced Patterns<a class="headerlink" href="#advanced-patterns" title="Link to this heading"></a></h2>
+<section id="custom-models-complete-example">
+<h3>Custom Models (Complete Example)<a class="headerlink" href="#custom-models-complete-example" title="Link to this heading"></a></h3>
+<p>Custom Models are a good fit when built-in Model classes do not match the
+desired encoding/decoding behavior.</p>
+<p>The example below defines a complete <code class="docutils literal notranslate"><span class="pre">MyUInt</span></code> custom Model and then uses it
+in a <code class="docutils literal notranslate"><span class="pre">RemoteVariable</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">rogue.interfaces.memory</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">rim</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyUInt</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">ptype</span> <span class="o">=</span> <span class="nb">int</span>
+    <span class="n">defaultdisp</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{:#x}</span><span class="s1">&#39;</span>
+    <span class="n">modelId</span> <span class="o">=</span> <span class="n">rim</span><span class="o">.</span><span class="n">PyFunc</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bitsize</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">bitsize</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">toBytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">byteCount</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span><span class="p">),</span> <span class="s1">&#39;little&#39;</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">fromBytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ba</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="n">ba</span><span class="p">,</span> <span class="s1">&#39;little&#39;</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">fromString</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">string</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">minValue</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mi">0</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">maxValue</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyDevice</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;MyRegister&#39;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Register with custom Model&#39;</span><span class="p">,</span>
+            <span class="n">offset</span><span class="o">=</span><span class="mh">0x1000</span><span class="p">,</span>
+            <span class="n">bitSize</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span>
+            <span class="n">bitOffset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">base</span><span class="o">=</span><span class="n">MyUInt</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span>
+        <span class="p">))</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">RemoteVariable(base=MyUInt,</span> <span class="pre">...)</span></code> binds this Model to Block conversion for
+that Variable.</p>
+</section>
+<section id="pre-allocating-blocks">
+<h3>Pre-Allocating Blocks<a class="headerlink" href="#pre-allocating-blocks" title="Link to this heading"></a></h3>
+<p>When you need a specific transaction grouping, pre-create a Block and then add
+Variables that overlap that address range.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">rogue.interfaces.memory</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">rim</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">GroupedDevice</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="c1"># Pre-allocate a 128-byte Block at offset 0x1000.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addCustomBlock</span><span class="p">(</span><span class="n">rim</span><span class="o">.</span><span class="n">Block</span><span class="p">(</span><span class="mh">0x1000</span><span class="p">,</span> <span class="mi">128</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;MyRegister&#39;</span><span class="p">,</span>
+            <span class="n">offset</span><span class="o">=</span><span class="mh">0x1000</span><span class="p">,</span>
+            <span class="n">bitSize</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span>
+            <span class="n">bitOffset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">base</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span>
+        <span class="p">))</span>
+</pre></div>
+</div>
+<p>This can improve throughput for use cases that benefit from larger grouped
+transactions.</p>
+</section>
+</section>
+<section id="what-to-explore-next">
+<h2>What To Explore Next<a class="headerlink" href="#what-to-explore-next" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Model API and utility helpers: <a class="reference internal" href="model.html"><span class="doc">Model</span></a></p></li>
+<li><p>Root bulk write/read/check sequencing: <a class="reference internal" href="root.html"><span class="doc">Root</span></a></p></li>
+<li><p>C++ Block reference: <a class="reference internal" href="../../api/cpp/interfaces/memory/block.html"><span class="doc">Block</span></a></p></li>
+<li><p>Python LocalBlock reference: <a class="reference internal" href="../../api/python/pyrogue/localblock.html"><span class="doc">LocalBlock</span></a></p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="remote_command.html" class="btn btn-neutral float-left" title="RemoteCommand" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="block_operations.html" class="btn btn-neutral float-right" title="Device Block Operations" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,313 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Packetizer Protocol CoreV2 &mdash; Rogue v6.10.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=8b50afe1" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=dc21db2b"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../_static/custom.js?v=7b5dfb0b"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Network Wrapper" href="../network.html" />
+    <link rel="prev" title="Packetizer Protocol Core" href="core.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Built-in Modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../interfaces/index.html">Interfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../simulation/index.html">Simulation Utilities</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">Protocols</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../udp/index.html">UDP Protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../rssi/index.html">RSSI Protocol</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">Packetizer Protocol</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="core.html">Packetizer Protocol Core</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Packetizer Protocol CoreV2</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../network.html">Network Wrapper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../batcher/index.html">Batcher Protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../epicsV4/index.html">EPICS V4 Access</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../epicsV7/index.html">EPICS V7 Access</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../srp/index.html">SRP Protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../xilinx/index.html">Xilinx Protocols</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../uart.html">UART Memory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gpib.html">GPIB Control</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../hardware/index.html">Hardware</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utilities/index.html">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">API Reference</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Built-in Modules</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Protocols</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Packetizer Protocol</a></li>
+      <li class="breadcrumb-item active">Packetizer Protocol CoreV2</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/built_in_modules/protocols/packetizer/coreV2.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="packetizer-protocol-corev2">
+<span id="protocols-packetizer-corev2"></span><h1>Packetizer Protocol CoreV2<a class="headerlink" href="#packetizer-protocol-corev2" title="Link to this heading"></a></h1>
+<p>For packetizer v2 links, Rogue provides <code class="docutils literal notranslate"><span class="pre">rogue.protocols.packetizer.CoreV2</span></code>.
+This class owns the v2 controller, exposes the lower transport edge through
+<code class="docutils literal notranslate"><span class="pre">transport()</span></code>, and creates per-destination application endpoints with
+<code class="docutils literal notranslate"><span class="pre">application(dest)</span></code>.</p>
+<p>Use <code class="docutils literal notranslate"><span class="pre">CoreV2</span></code> for new packetizer deployments, or whenever the peer already
+expects the v2 wire format.</p>
+<section id="protocol-behavior">
+<h2>Protocol Behavior<a class="headerlink" href="#protocol-behavior" title="Link to this heading"></a></h2>
+<p>Packetizer v2 serves the same routing role as v1 but adds a more structured
+tail format, better support for interleaving packet chunks, and configurable
+CRC behavior.</p>
+<p>Important v2 format traits:</p>
+<ul class="simple">
+<li><p>The firmware protocol assumes a 64-bit AXI-Stream datapath.</p></li>
+<li><p>Each packet has an 8-byte header and an 8-byte tail.</p></li>
+<li><p>The header includes version, CRC type, <code class="docutils literal notranslate"><span class="pre">TUserFirst</span></code>, <code class="docutils literal notranslate"><span class="pre">TDest</span></code>, <code class="docutils literal notranslate"><span class="pre">TID</span></code>,
+packet sequence number, and SOF information.</p></li>
+<li><p>The tail includes <code class="docutils literal notranslate"><span class="pre">TUserLast</span></code>, EOF, <code class="docutils literal notranslate"><span class="pre">LAST_BYTE_CNT</span></code>, and CRC.</p></li>
+</ul>
+</section>
+<section id="crc-behavior">
+<h2>CRC Behavior<a class="headerlink" href="#crc-behavior" title="Link to this heading"></a></h2>
+<p>CRC handling is one of the main reasons to choose v2. The CRC mode is a
+link-level compatibility choice, so software and firmware must agree on how CRC
+is generated and checked.</p>
+<p>Practical points:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">enIbCrc</span></code> enables inbound CRC checking in software.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">enObCrc</span></code> enables outbound CRC generation in software.</p></li>
+<li><p>The v2 protocol allows different CRC modes, including no CRC and full-path
+CRC behavior as defined by the specification.</p></li>
+<li><p>If firmware is not checking CRC, the field may be ignored or expected to be
+zero depending on the peer implementation.</p></li>
+</ul>
+</section>
+<section id="key-constructor-arguments">
+<h2>Key Constructor Arguments<a class="headerlink" href="#key-constructor-arguments" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">CoreV2(enIbCrc,</span> <span class="pre">enObCrc,</span> <span class="pre">enSsi)</span></code></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">enIbCrc</span></code> enables inbound CRC checking.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">enObCrc</span></code> enables outbound CRC generation.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">enSsi</span></code> enables SSI framing behavior.</p></li>
+</ul>
+</section>
+<section id="common-controls">
+<h2>Common Controls<a class="headerlink" href="#common-controls" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">transport()</span></code> returns the lower-layer stream edge.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">application(dest)</span></code> returns the destination endpoint for values <code class="docutils literal notranslate"><span class="pre">0..255</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">getDropCount()</span></code> reports the controller drop count.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">setTimeout(timeout)</span></code> forwards timeout tuning into the controller, in
+microseconds.</p></li>
+</ul>
+</section>
+<section id="python-example">
+<h2>Python Example<a class="headerlink" href="#python-example" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">rogue.protocols.packetizer</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">rogue.protocols.rssi</span>
+
+<span class="c1"># Packetizer v2 core:</span>
+<span class="c1">#   enIbCrc=True  -&gt; validate inbound CRC</span>
+<span class="c1">#   enObCrc=True  -&gt; generate outbound CRC</span>
+<span class="c1">#   enSsi=True    -&gt; enable SSI framing behavior</span>
+<span class="n">pkt</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">packetizer</span><span class="o">.</span><span class="n">CoreV2</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Lower protocol layer.</span>
+<span class="n">rssi</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">rssi</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="mi">1472</span> <span class="o">-</span> <span class="mi">8</span><span class="p">)</span>
+<span class="n">rssi</span><span class="o">.</span><span class="n">application</span><span class="p">()</span> <span class="o">==</span> <span class="n">pkt</span><span class="o">.</span><span class="n">transport</span><span class="p">()</span>
+
+<span class="c1"># Outbound traffic enters destination channel 1.</span>
+<span class="n">data_source</span> <span class="o">&gt;&gt;</span> <span class="n">pkt</span><span class="o">.</span><span class="n">application</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># Inbound traffic from destination channel 0 is delivered to a sink.</span>
+<span class="n">pkt</span><span class="o">.</span><span class="n">application</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">reg_sink</span>
+</pre></div>
+</div>
+</section>
+<section id="c-example">
+<h2>C++ Example<a class="headerlink" href="#c-example" title="Link to this heading"></a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;rogue/protocols/packetizer/CoreV2.h&gt;</span>
+
+<span class="k">namespace</span><span class="w"> </span><span class="nn">rpp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nn">rogue</span><span class="o">::</span><span class="nn">protocols</span><span class="o">::</span><span class="nn">packetizer</span><span class="p">;</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// Packetizer v2 core with inbound CRC, outbound CRC, and SSI enabled.</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">pkt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rpp</span><span class="o">::</span><span class="n">CoreV2</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="nb">true</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// Access one application destination endpoint.</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">app0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pkt</span><span class="o">-&gt;</span><span class="n">application</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="w">    </span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">app0</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// Query drop count for diagnostics.</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">dropCount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pkt</span><span class="o">-&gt;</span><span class="n">getDropCount</span><span class="p">();</span>
+<span class="w">    </span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">dropCount</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// Lower-layer connection would be made through pkt-&gt;transport().</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="threading-and-lifecycle">
+<h2>Threading And Lifecycle<a class="headerlink" href="#threading-and-lifecycle" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">CoreV2</span></code> does not start its own worker thread. Packetizer lifecycle still
+belongs to the lower transport layer attached to <code class="docutils literal notranslate"><span class="pre">transport()</span></code>.</p>
+</section>
+<section id="compatibility-notes">
+<h2>Compatibility Notes<a class="headerlink" href="#compatibility-notes" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">CoreV2</span></code> must connect to a packetizer v2 peer.</p></li>
+<li><p>If the remote endpoint expects packetizer v1, use <a class="reference internal" href="core.html"><span class="doc">Packetizer Protocol Core</span></a>.</p></li>
+</ul>
+<p>In mixed system stacks, software <code class="docutils literal notranslate"><span class="pre">CoreV2</span></code> endpoints are commonly paired with
+firmware v2 packetizer or depacketizer implementations in the transport path.</p>
+</section>
+<section id="logging">
+<h2>Logging<a class="headerlink" href="#logging" title="Link to this heading"></a></h2>
+<p>Packetizer v2 logs through the same controller logger used by v1:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pyrogue.packetizer.Controller</span></code></p></li>
+<li><p>Unified Logging API:
+<code class="docutils literal notranslate"><span class="pre">pyrogue.setLogLevel('pyrogue.packetizer',</span> <span class="pre">'DEBUG')</span></code></p></li>
+<li><p>Legacy Logging API:
+<code class="docutils literal notranslate"><span class="pre">rogue.Logging.setFilter('pyrogue.packetizer',</span> <span class="pre">rogue.Logging.Debug)</span></code></p></li>
+</ul>
+<p>You can enable it before or after constructing packetizer objects. Enable it
+before construction only if you want constructor or earliest startup messages:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">rogue</span>
+
+<span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">setFilter</span><span class="p">(</span><span class="s1">&#39;pyrogue.packetizer&#39;</span><span class="p">,</span> <span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">Debug</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This logger reports CRC failures, packet drops, and queue timeout conditions.
+There is no separate <code class="docutils literal notranslate"><span class="pre">CoreV2</span></code>-specific logger name.</p>
+</section>
+<section id="related-topics">
+<h2>Related Topics<a class="headerlink" href="#related-topics" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="index.html"><span class="doc">Packetizer Protocol</span></a></p></li>
+<li><p><a class="reference internal" href="core.html"><span class="doc">Packetizer Protocol Core</span></a></p></li>
+</ul>
+</section>
+<section id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Python: <a class="reference internal" href="../../../api/python/rogue/protocols/packetizer/corev2.html"><span class="doc">CoreV2</span></a></p></li>
+<li><p>C++: <a class="reference internal" href="../../../api/cpp/protocols/packetizer/coreV2.html"><span class="doc">CoreV2</span></a></p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="core.html" class="btn btn-neutral float-left" title="Packetizer Protocol Core" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../network.html" class="btn btn-neutral float-right" title="Network Wrapper" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

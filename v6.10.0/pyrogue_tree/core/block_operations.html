@@ -1,0 +1,597 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Device Block Operations &mdash; Rogue v6.10.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=8b50afe1" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc21db2b"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/custom.js?v=7b5dfb0b"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Model" href="model.html" />
+    <link rel="prev" title="Blocks" href="block.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">PyRogue Tree</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Components And Concepts</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="root.html">Root</a></li>
+<li class="toctree-l3"><a class="reference internal" href="device.html">Device</a></li>
+<li class="toctree-l3"><a class="reference internal" href="variable.html">Variable</a></li>
+<li class="toctree-l3"><a class="reference internal" href="command.html">Command</a></li>
+<li class="toctree-l3"><a class="reference internal" href="block.html">Blocks</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Device Block Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="model.html">Model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fixed_point_models.html">Fixed-Point Models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="float_types_summary.html">Floating Point Types Summary</a></li>
+<li class="toctree-l3"><a class="reference internal" href="poll_queue.html">PollQueue</a></li>
+<li class="toctree-l3"><a class="reference internal" href="yaml_configuration.html">YAML Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="memory_variable_stream.html">Variable Update Stream</a></li>
+<li class="toctree-l3"><a class="reference internal" href="groups.html">Groups</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../builtin_devices/index.html">Built-in Devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../client_interfaces/index.html">Client Interfaces</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">API Reference</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">PyRogue Tree</a></li>
+          <li class="breadcrumb-item"><a href="index.html">PyRogue Tree Components And Concepts</a></li>
+      <li class="breadcrumb-item active">Device Block Operations</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/pyrogue_tree/core/block_operations.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="device-block-operations">
+<span id="pyrogue-tree-block-operations"></span><h1>Device Block Operations<a class="headerlink" href="#device-block-operations" title="Link to this heading"></a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">Device</span></code> provides a family of methods that traverse a tree and initiate or
+check <code class="docutils literal notranslate"><span class="pre">Block</span></code> transactions:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../../api/python/pyrogue/device.html#pyrogue.Device.writeBlocks" title="pyrogue.Device.writeBlocks"><code class="xref py py-meth docutils literal notranslate"><span class="pre">writeBlocks()</span></code></a></p></li>
+<li><p><a class="reference internal" href="../../api/python/pyrogue/device.html#pyrogue.Device.verifyBlocks" title="pyrogue.Device.verifyBlocks"><code class="xref py py-meth docutils literal notranslate"><span class="pre">verifyBlocks()</span></code></a></p></li>
+<li><p><a class="reference internal" href="../../api/python/pyrogue/device.html#pyrogue.Device.readBlocks" title="pyrogue.Device.readBlocks"><code class="xref py py-meth docutils literal notranslate"><span class="pre">readBlocks()</span></code></a></p></li>
+<li><p><a class="reference internal" href="../../api/python/pyrogue/device.html#pyrogue.Device.checkBlocks" title="pyrogue.Device.checkBlocks"><code class="xref py py-meth docutils literal notranslate"><span class="pre">checkBlocks()</span></code></a></p></li>
+<li><p><a class="reference internal" href="../../api/python/pyrogue/device.html#pyrogue.Device.writeAndVerifyBlocks" title="pyrogue.Device.writeAndVerifyBlocks"><code class="xref py py-meth docutils literal notranslate"><span class="pre">writeAndVerifyBlocks()</span></code></a></p></li>
+<li><p><a class="reference internal" href="../../api/python/pyrogue/device.html#pyrogue.Device.readAndCheckBlocks" title="pyrogue.Device.readAndCheckBlocks"><code class="xref py py-meth docutils literal notranslate"><span class="pre">readAndCheckBlocks()</span></code></a></p></li>
+</ul>
+<p>These methods sit between the tree model and the lower-level <code class="docutils literal notranslate"><span class="pre">Block</span></code>
+transaction layer. They are used in three main ways:</p>
+<ul class="simple">
+<li><p>As the default path for bulk reads and writes across a subtree.</p></li>
+<li><p>As the per-Variable path used by many hardware-backed reads and writes.</p></li>
+<li><p>As the main override points when hardware needs custom sequencing.</p></li>
+</ul>
+<section id="why-these-methods-exist">
+<h2>Why These Methods Exist<a class="headerlink" href="#why-these-methods-exist" title="Link to this heading"></a></h2>
+<p>PyRogue separates transaction initiation from transaction completion. That is
+why these methods come in pairs and helper sequences rather than as one large
+“do everything” call.</p>
+<p>At a high level:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">writeBlocks</span></code> initiates write transactions.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">verifyBlocks</span></code> initiates verify transactions.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">readBlocks</span></code> initiates read transactions.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">checkBlocks</span></code> waits for initiated transactions to complete.</p></li>
+</ul>
+<p>That split lets a <code class="docutils literal notranslate"><span class="pre">Device</span></code> issue many transactions first and then wait for
+completion afterward. The composed helpers:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">writeAndVerifyBlocks</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">readAndCheckBlocks</span></code></p></li>
+</ul>
+<p>simply bundle the most common full flows on top of those same methods. In
+practice, most readers only need two ideas first:</p>
+<ul class="simple">
+<li><p>The default bulk path is “issue transactions across this <code class="docutils literal notranslate"><span class="pre">Device</span></code> or
+subtree, then check them.”</p></li>
+<li><p>These same methods are also the normal place to override sequencing when the
+hardware needs something more specific.</p></li>
+</ul>
+</section>
+<section id="default-full-device-behavior">
+<h2>Default Full-Device Behavior<a class="headerlink" href="#default-full-device-behavior" title="Link to this heading"></a></h2>
+<p>When called without <code class="docutils literal notranslate"><span class="pre">variable=...</span></code>, these methods operate on the current
+<code class="docutils literal notranslate"><span class="pre">Device</span></code> and, optionally, its child Devices.</p>
+<p>The default traversal is simple:</p>
+<ol class="arabic simple">
+<li><p>Process the <code class="docutils literal notranslate"><span class="pre">Block</span></code> objects attached directly to the current <code class="docutils literal notranslate"><span class="pre">Device</span></code>.</p></li>
+<li><p>Recurse into child Devices if <code class="docutils literal notranslate"><span class="pre">recurse=True</span></code>.</p></li>
+</ol>
+<p>So the current <code class="docutils literal notranslate"><span class="pre">Device</span></code> goes first, and child Devices follow after that.
+That is the baseline behavior that custom overrides either preserve or replace.</p>
+</section>
+<section id="ordering-rules">
+<h2>Ordering Rules<a class="headerlink" href="#ordering-rules" title="Link to this heading"></a></h2>
+<p>Within that default traversal, the ordering is also defined.</p>
+<p>Inside one <code class="docutils literal notranslate"><span class="pre">Device</span></code>:</p>
+<ul class="simple">
+<li><p>Automatically built hardware-backed Blocks are created from Variables sorted
+by <code class="docutils literal notranslate"><span class="pre">(offset,</span> <span class="pre">varBytes)</span></code>, so those Blocks are normally issued in
+address-oriented order.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">LocalVariable</span></code> Blocks are appended as the Device walks its child Nodes, so
+they follow Node insertion order rather than address sorting.</p></li>
+</ul>
+<p>For the Block-building process that creates that ordering, see
+<a class="reference internal" href="block.html"><span class="doc">Blocks</span></a>.</p>
+<p>For child Devices, the traversal follows add order. <code class="docutils literal notranslate"><span class="pre">Node</span></code> stores children
+in an <code class="docutils literal notranslate"><span class="pre">OrderedDict</span></code>, and <code class="docutils literal notranslate"><span class="pre">Device</span></code> recurses through
+<code class="docutils literal notranslate"><span class="pre">self.devices.values()</span></code>.</p>
+<p>So the default recursive flow is:</p>
+<ul class="simple">
+<li><p>This Device’s Blocks first.</p></li>
+<li><p>Then child Devices in add order.</p></li>
+</ul>
+</section>
+<section id="single-variable-behavior">
+<h2>Single-Variable Behavior<a class="headerlink" href="#single-variable-behavior" title="Link to this heading"></a></h2>
+<p>The same methods can also target one specific Variable by passing
+<code class="docutils literal notranslate"><span class="pre">variable=...</span></code>.</p>
+<p>That path does not perform full subtree traversal. Instead, it operates only on
+the <code class="docutils literal notranslate"><span class="pre">Block</span></code> associated with that Variable. This is how many hardware-backed
+per-Variable <code class="docutils literal notranslate"><span class="pre">get</span></code> and <code class="docutils literal notranslate"><span class="pre">set</span></code> paths reuse the same <code class="docutils literal notranslate"><span class="pre">Device</span></code> block methods
+without turning into full-tree operations.</p>
+</section>
+<section id="common-usage-patterns">
+<h2>Common Usage Patterns<a class="headerlink" href="#common-usage-patterns" title="Link to this heading"></a></h2>
+<p>Most manual use of these APIs falls into one of three patterns: operate on a
+subtree, operate on one Variable’s backing <code class="docutils literal notranslate"><span class="pre">Block</span></code>, or call a composed
+helper when the full flow is what you actually want.</p>
+<section id="read-one-subtree">
+<h3>Read One Subtree<a class="headerlink" href="#read-one-subtree" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Initiate reads across this Device subtree, then wait for completion.</span>
+<span class="n">my_dev</span><span class="o">.</span><span class="n">readAndCheckBlocks</span><span class="p">(</span><span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This is the normal manual pattern when you want a current hardware snapshot of
+one part of the tree.</p>
+</section>
+<section id="write-and-verify-one-subtree">
+<h3>Write And Verify One Subtree<a class="headerlink" href="#write-and-verify-one-subtree" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Force a full write/verify/check pass across this Device subtree.</span>
+<span class="n">my_dev</span><span class="o">.</span><span class="n">writeAndVerifyBlocks</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This pattern is often useful for ADC and mixed-signal configuration, where a
+command needs to push a complete known-good register set into hardware in one
+step.</p>
+</section>
+<section id="target-one-variable-s-block">
+<h3>Target One Variable’s <code class="docutils literal notranslate"><span class="pre">Block</span></code><a class="headerlink" href="#target-one-variable-s-block" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Only issue a write for the Block backing one Variable.</span>
+<span class="n">my_dev</span><span class="o">.</span><span class="n">writeBlocks</span><span class="p">(</span><span class="n">variable</span><span class="o">=</span><span class="n">my_dev</span><span class="o">.</span><span class="n">MyRegister</span><span class="p">,</span> <span class="n">checkEach</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">my_dev</span><span class="o">.</span><span class="n">checkBlocks</span><span class="p">(</span><span class="n">variable</span><span class="o">=</span><span class="n">my_dev</span><span class="o">.</span><span class="n">MyRegister</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This is the manual form of the narrower path that hardware-backed per-Variable
+operations use internally.</p>
+</section>
+</section>
+<section id="composed-helpers">
+<h2>Composed Helpers<a class="headerlink" href="#composed-helpers" title="Link to this heading"></a></h2>
+<p>Two helpers cover the most common complete flows:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">writeAndVerifyBlocks(...)</span></code> runs
+<code class="docutils literal notranslate"><span class="pre">writeBlocks</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">verifyBlocks</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">checkBlocks</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">readAndCheckBlocks(...)</span></code> runs
+<code class="docutils literal notranslate"><span class="pre">readBlocks</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">checkBlocks</span></code>.</p></li>
+</ul>
+<p>These helpers are often the clearest way to trigger a full operation from a
+script, a command callback, or a one-shot configuration step. They are also a
+good way to avoid open-coding the same multi-step sequence in many places.</p>
+</section>
+<section id="how-yaml-configuration-uses-these-methods">
+<h2>How YAML Configuration Uses These Methods<a class="headerlink" href="#how-yaml-configuration-uses-these-methods" title="Link to this heading"></a></h2>
+<p>YAML configuration loading is one of the main places where users encounter
+bulk block operations indirectly.</p>
+<p>For <code class="docutils literal notranslate"><span class="pre">Root.loadYaml(...,</span> <span class="pre">writeEach=False)</span></code> and <code class="docutils literal notranslate"><span class="pre">Root.setYaml(...,</span> <span class="pre">writeEach=False)</span></code>,
+PyRogue first stages values into Variables with <code class="docutils literal notranslate"><span class="pre">setDisp(...,</span> <span class="pre">write=False)</span></code>.
+Only after that full YAML payload has been applied to the tree does Root
+commit the configuration through its normal bulk write path.</p>
+<p>In practice, that means YAML configuration uses the same transaction model
+described on this page:</p>
+<ul class="simple">
+<li><p>Values are staged first.</p></li>
+<li><p>The resulting Block writes are issued across the tree.</p></li>
+<li><p>Verification and completion checks run through the normal bulk helpers.</p></li>
+</ul>
+<p>So the YAML page should be read as “how the tree is described and matched,”
+while this page remains the right place for “how the resulting hardware
+transactions are issued and checked.”</p>
+<p>Two Root settings are especially relevant in that YAML-driven path:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ForceWrite</span></code> can force writes of non-stale Blocks during config apply.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">InitAfterConfig</span></code> can trigger <code class="docutils literal notranslate"><span class="pre">initialize()</span></code> after the configuration has
+been committed.</p></li>
+</ul>
+</section>
+<section id="method-parameters">
+<h2>Method Parameters<a class="headerlink" href="#method-parameters" title="Link to this heading"></a></h2>
+<p>The methods share a common shape, but the meaning of the parameters is easiest
+to understand after the default traversal and common usage patterns are clear.
+The most important controls are <code class="docutils literal notranslate"><span class="pre">recurse</span></code>, <code class="docutils literal notranslate"><span class="pre">variable</span></code>, <code class="docutils literal notranslate"><span class="pre">checkEach</span></code>, and
+for writes, <code class="docutils literal notranslate"><span class="pre">force</span></code>.</p>
+<section id="writeblocks">
+<h3><code class="docutils literal notranslate"><span class="pre">writeBlocks</span></code><a class="headerlink" href="#writeblocks" title="Link to this heading"></a></h3>
+<p>Signature:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">writeBlocks</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">checkEach</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">index</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Important parameters:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">force</span></code>:
+Write even when the value is not marked stale.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">recurse</span></code>:
+Include child Devices when <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">variable</span></code>:
+Operate on one Variable’s Block instead of the full Device subtree.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">checkEach</span></code>:
+Request per-transaction checking behavior instead of deferring checks.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">index</span></code>:
+Array index used for targeted Variable operations.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">**kwargs</span></code>:
+Passed through to the underlying transaction helpers.</p></li>
+</ul>
+</section>
+<section id="verifyblocks">
+<h3><code class="docutils literal notranslate"><span class="pre">verifyBlocks</span></code><a class="headerlink" href="#verifyblocks" title="Link to this heading"></a></h3>
+<p>Signature:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">verifyBlocks</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">checkEach</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Important parameters:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">recurse</span></code>:
+Include child Devices when <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">variable</span></code>:
+Verify only one Variable’s Block.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">checkEach</span></code>:
+Request per-transaction checking behavior.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">**kwargs</span></code>:
+Passed through to the transaction helper.</p></li>
+</ul>
+</section>
+<section id="readblocks">
+<h3><code class="docutils literal notranslate"><span class="pre">readBlocks</span></code><a class="headerlink" href="#readblocks" title="Link to this heading"></a></h3>
+<p>Signature:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">readBlocks</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">checkEach</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">index</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Important parameters:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">recurse</span></code>:
+Include child Devices when <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">variable</span></code>:
+Read only one Variable’s Block.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">checkEach</span></code>:
+Request per-transaction checking behavior.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">index</span></code>:
+Array index used for targeted Variable reads.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">**kwargs</span></code>:
+Passed through to the transaction helper.</p></li>
+</ul>
+</section>
+<section id="checkblocks">
+<h3><code class="docutils literal notranslate"><span class="pre">checkBlocks</span></code><a class="headerlink" href="#checkblocks" title="Link to this heading"></a></h3>
+<p>Signature:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">checkBlocks</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Important parameters:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">recurse</span></code>:
+Include child Devices when <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">variable</span></code>:
+Check only one Variable’s Block.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">**kwargs</span></code>:
+Passed through to the transaction helper.</p></li>
+</ul>
+</section>
+<section id="device-wide-checkeach-behavior">
+<h3>Device-Wide <code class="docutils literal notranslate"><span class="pre">checkEach</span></code> Behavior<a class="headerlink" href="#device-wide-checkeach-behavior" title="Link to this heading"></a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">checkEach</span></code> control exists at two levels.</p>
+<p>At call time, <code class="docutils literal notranslate"><span class="pre">writeBlocks</span></code>, <code class="docutils literal notranslate"><span class="pre">verifyBlocks</span></code>, <code class="docutils literal notranslate"><span class="pre">readBlocks</span></code>,
+<code class="docutils literal notranslate"><span class="pre">writeAndVerifyBlocks</span></code>, and <code class="docutils literal notranslate"><span class="pre">readAndCheckBlocks</span></code> all accept a
+<code class="docutils literal notranslate"><span class="pre">checkEach=...</span></code> argument. That requests transaction-by-transaction checking
+for that one operation.</p>
+<p>At Device scope, the persistent control is <code class="docutils literal notranslate"><span class="pre">forceCheckEach</span></code>. Each block
+method combines the caller’s argument with the Device setting:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">checkEach</span> <span class="o">=</span> <span class="n">checkEach</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">forceCheckEach</span>
+</pre></div>
+</div>
+<p>So a Device can force per-transaction checking for all reads, writes, and
+verifies by setting:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">forceCheckEach</span> <span class="o">=</span> <span class="kc">True</span>
+</pre></div>
+</div>
+<p>There is not a separate <code class="docutils literal notranslate"><span class="pre">Device(...,</span> <span class="pre">checkEach=...)</span></code> constructor argument in
+this implementation. If a Device should always use this stricter behavior, set
+<code class="docutils literal notranslate"><span class="pre">forceCheckEach</span></code> in the subclass:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">MyDevice</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">forceCheckEach</span> <span class="o">=</span> <span class="kc">True</span>
+</pre></div>
+</div>
+<p>This is useful when the hardware benefits from immediate acknowledgement of
+each transaction instead of the default “issue many operations, then check
+them” flow. One example is a board or front-end path where tight sequencing or
+hardware-side backpressure makes deferred checking less desirable.</p>
+</section>
+</section>
+<section id="how-to-override-properly">
+<h2>How To Override Properly<a class="headerlink" href="#how-to-override-properly" title="Link to this heading"></a></h2>
+<p>The normal reason to override these methods is that the hardware needs extra
+ordering around the default traversal. Before overriding, it helps to separate
+two questions:</p>
+<ul class="simple">
+<li><p>Are you keeping the inherited traversal and just adding steps around it?</p></li>
+<li><p>Or are you intentionally replacing part of the inherited traversal order?</p></li>
+</ul>
+<p>Common cases:</p>
+<ul class="simple">
+<li><p>A commit or apply strobe must be written after configuration registers.</p></li>
+<li><p>A page or bank select register must be set before reads or writes.</p></li>
+<li><p>A debug-freeze or capture gate must wrap a read sequence.</p></li>
+<li><p>Child Devices must be traversed in a hardware-specific order rather than the
+default add order.</p></li>
+<li><p>A subsystem needs to change the order in which some operations happen.</p></li>
+</ul>
+<p>The general rule is:</p>
+<ul class="simple">
+<li><p>Keep the default traversal unless you intentionally need to replace it.</p></li>
+<li><p>Preserve the relevant keyword parameters.</p></li>
+<li><p>Add only the extra pre- or post-sequencing behavior you need.</p></li>
+</ul>
+<p>The following examples move from the smallest override to the most structural
+one.</p>
+<section id="example-post-write-update-strobe">
+<h3>Example: Post-Write Update Strobe<a class="headerlink" href="#example-post-write-update-strobe" title="Link to this heading"></a></h3>
+<p>This pattern is often needed for ADC and similar devices whose configuration
+registers are shadowed internally and do not take effect until a separate
+update strobe is written:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">MyDevice</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">RemoteCommand</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;DeviceUpdate&#39;</span><span class="p">,</span>
+            <span class="n">offset</span><span class="o">=</span><span class="mh">0x3FC</span><span class="p">,</span>
+            <span class="n">function</span><span class="o">=</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">BaseCommand</span><span class="o">.</span><span class="n">touchZero</span><span class="p">,</span>
+        <span class="p">))</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">writeBlocks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">checkEach</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">index</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">writeBlocks</span><span class="p">(</span>
+            <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">,</span>
+            <span class="n">recurse</span><span class="o">=</span><span class="n">recurse</span><span class="p">,</span>
+            <span class="n">variable</span><span class="o">=</span><span class="n">variable</span><span class="p">,</span>
+            <span class="n">checkEach</span><span class="o">=</span><span class="n">checkEach</span><span class="p">,</span>
+            <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">DeviceUpdate</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Here, <code class="docutils literal notranslate"><span class="pre">DeviceUpdate</span></code> is a real hardware command register. The write to
+<code class="docutils literal notranslate"><span class="pre">0x3FC</span></code> tells the ADC to latch the configuration values that were just
+written through the normal block path. A closely related pattern is an
+<code class="docutils literal notranslate"><span class="pre">ApplyConfig</span></code> bit or pulse in clocking and timing devices.</p>
+</section>
+<section id="example-wrap-reads-with-a-control-register">
+<h3>Example: Wrap Reads With A Control Register<a class="headerlink" href="#example-wrap-reads-with-a-control-register" title="Link to this heading"></a></h3>
+<p>Another common pattern is to bracket reads with a hardware control action when
+the live status registers would otherwise change while the read sequence is in
+progress:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">MyReader</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">RemoteCommand</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;FreezeDebug&#39;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Freeze debug snapshot registers during readout&#39;</span><span class="p">,</span>
+            <span class="n">offset</span><span class="o">=</span><span class="mh">0xA0</span><span class="p">,</span>
+            <span class="n">bitSize</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">bitOffset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">base</span><span class="o">=</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
+            <span class="n">function</span><span class="o">=</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">RemoteCommand</span><span class="o">.</span><span class="n">touch</span><span class="p">,</span>
+        <span class="p">))</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">readBlocks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">checkEach</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">index</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">FreezeDebug</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">readBlocks</span><span class="p">(</span>
+                <span class="n">recurse</span><span class="o">=</span><span class="n">recurse</span><span class="p">,</span>
+                <span class="n">variable</span><span class="o">=</span><span class="n">variable</span><span class="p">,</span>
+                <span class="n">checkEach</span><span class="o">=</span><span class="n">checkEach</span><span class="p">,</span>
+                <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">FreezeDebug</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In this pattern, <code class="docutils literal notranslate"><span class="pre">FreezeDebug</span></code> controls a hardware snapshot or hold function.
+The assertion at the start of <code class="docutils literal notranslate"><span class="pre">readBlocks</span></code> freezes a bank of debug registers
+so the read transactions see one consistent sample of the hardware state. The
+final write releases the freeze after the read requests have been issued.</p>
+</section>
+<section id="example-custom-child-device-ordering">
+<h3>Example: Custom Child-Device Ordering<a class="headerlink" href="#example-custom-child-device-ordering" title="Link to this heading"></a></h3>
+<p>Sometimes the reason to override a block method is not a local register strobe,
+but the ordering of child-Device configuration. The default recursive behavior
+visits child Devices in add order. That is often correct, but some hardware
+trees need a stricter sequence.</p>
+<p>One real pattern is a mixed-clocking and data-converter system where the clock
+generator must be configured first, some DAC setup must complete before a JESD
+initialization step runs, and the ADC devices should only be configured after
+that intermediate hardware procedure:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">MyCarrier</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">writeBlocks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">checkEach</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">index</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">writeBlocks</span><span class="p">(</span>
+            <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">,</span>
+            <span class="n">recurse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">variable</span><span class="o">=</span><span class="n">variable</span><span class="p">,</span>
+            <span class="n">checkEach</span><span class="o">=</span><span class="n">checkEach</span><span class="p">,</span>
+            <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">Clock</span><span class="o">.</span><span class="n">writeBlocks</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="n">variable</span><span class="p">,</span> <span class="n">checkEach</span><span class="o">=</span><span class="n">checkEach</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">DacA</span><span class="o">.</span><span class="n">writeBlocks</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="n">variable</span><span class="p">,</span> <span class="n">checkEach</span><span class="o">=</span><span class="n">checkEach</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">DacB</span><span class="o">.</span><span class="n">writeBlocks</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="n">variable</span><span class="p">,</span> <span class="n">checkEach</span><span class="o">=</span><span class="n">checkEach</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">InitJesdLinks</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">AdcA</span><span class="o">.</span><span class="n">writeBlocks</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="n">variable</span><span class="p">,</span> <span class="n">checkEach</span><span class="o">=</span><span class="n">checkEach</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">AdcB</span><span class="o">.</span><span class="n">writeBlocks</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="n">variable</span><span class="p">,</span> <span class="n">checkEach</span><span class="o">=</span><span class="n">checkEach</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">checkBlocks</span><span class="p">(</span><span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In that pattern, the override is intentionally replacing the default child
+recursion order. The important part is to make that decision explicit:
+preserve the normal parameter behavior, disable the inherited recursion where
+needed, and then issue child-Device operations in the hardware order that the
+system requires.</p>
+</section>
+<section id="example-one-shot-configure-command">
+<h3>Example: One-Shot Configure Command<a class="headerlink" href="#example-one-shot-configure-command" title="Link to this heading"></a></h3>
+<p>Sometimes the cleanest solution is not to override the block methods at all,
+but instead to call a composed helper from a <code class="docutils literal notranslate"><span class="pre">Command</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@self</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">Configure</span><span class="p">():</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">writeAndVerifyBlocks</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">checkEach</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This is a good fit when the special behavior is a named procedure rather than a
+global change to all future block writes.</p>
+</section>
+</section>
+<section id="relationship-to-blocks">
+<h2>Relationship To <code class="docutils literal notranslate"><span class="pre">Blocks</span></code><a class="headerlink" href="#relationship-to-blocks" title="Link to this heading"></a></h2>
+<p>This page is about the Device-level traversal methods. The companion
+<code class="docutils literal notranslate"><span class="pre">Blocks</span></code> page is about what a <code class="docutils literal notranslate"><span class="pre">Block</span></code> is, how Variables map into Blocks,
+and how conversion and transaction layers are separated.</p>
+<p>Use the two pages together:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="block.html"><span class="doc">Blocks</span></a> for what Blocks are.</p></li>
+<li><p>This page for how Devices traverse and sequence Block operations.</p></li>
+</ul>
+</section>
+<section id="what-to-explore-next">
+<h2>What To Explore Next<a class="headerlink" href="#what-to-explore-next" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>What Blocks are and how Variables map into them: <a class="reference internal" href="block.html"><span class="doc">Blocks</span></a></p></li>
+<li><p>Device structure and lifecycle hooks: <a class="reference internal" href="device.html"><span class="doc">Device</span></a></p></li>
+<li><p>Variable behavior and hardware-backed access paths: <a class="reference internal" href="variable.html"><span class="doc">Variable</span></a></p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="block.html" class="btn btn-neutral float-left" title="Blocks" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="model.html" class="btn btn-neutral float-right" title="Model" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

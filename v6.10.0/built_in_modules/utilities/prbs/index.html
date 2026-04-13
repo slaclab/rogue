@@ -1,0 +1,281 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PRBS Utilities &mdash; Rogue v6.10.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=8b50afe1" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=dc21db2b"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../_static/custom.js?v=7b5dfb0b"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Generating PRBS Frames" href="writing.html" />
+    <link rel="prev" title="Python File Reader" href="../fileio/python_reader.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Built-in Modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../interfaces/index.html">Interfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../simulation/index.html">Simulation Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../protocols/index.html">Protocols</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../hardware/index.html">Hardware</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">Utilities</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../fileio/index.html">File I/O Utilities</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">PRBS Utilities</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="writing.html">Generating PRBS Frames</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reading.html">Receiving PRBS Frames</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../hls/index.html">HLS Utilities</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../compression/index.html">Compression Utilities</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">API Reference</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Built-in Modules</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Utilities</a></li>
+      <li class="breadcrumb-item active">PRBS Utilities</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/built_in_modules/utilities/prbs/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="prbs-utilities">
+<span id="utilities-prbs"></span><h1>PRBS Utilities<a class="headerlink" href="#prbs-utilities" title="Link to this heading"></a></h1>
+<p>For link validation with deterministic pseudo-random traffic, Rogue provides a
+PRBS family with both tree-managed <code class="docutils literal notranslate"><span class="pre">pyrogue.utilities.prbs</span></code> wrappers and the
+direct <code class="docutils literal notranslate"><span class="pre">rogue.utilities.Prbs</span></code> endpoint for smaller script-only tests.</p>
+<p>PRBS implementations also exist in FPGA and VHDL designs, so Rogue PRBS
+endpoints are commonly used to send traffic into firmware checkers or to verify
+traffic generated by firmware sources.</p>
+<section id="how-prbs-fits-in-a-stream-graph">
+<h2>How PRBS Fits In A Stream Graph<a class="headerlink" href="#how-prbs-fits-in-a-stream-graph" title="Link to this heading"></a></h2>
+<p>Rogue PRBS support is implemented as stream endpoints, so it can be inserted
+directly into existing stream topologies for test and validation:</p>
+<ul class="simple">
+<li><p>Generator role:
+emits deterministic frames into a transport or processing path.</p></li>
+<li><p>Checker role:
+receives frames and reports mismatch/error counters.</p></li>
+<li><p>Combined loopback role:
+connects TX and RX paths end-to-end to verify full data flow.</p></li>
+</ul>
+<p>Because patterns are deterministic, PRBS tests are useful both for first
+bring-up and for recurring regression checks where repeatability matters.</p>
+</section>
+<section id="direct-endpoints-and-tree-managed-devices">
+<h2>Direct Endpoints And Tree-Managed Devices<a class="headerlink" href="#direct-endpoints-and-tree-managed-devices" title="Link to this heading"></a></h2>
+<p>Two Python forms are common:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">rogue.utilities.Prbs</span></code>:
+lightweight direct stream endpoint for scripts and non-tree tests.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pyrogue.utilities.prbs</span></code> wrappers (<code class="docutils literal notranslate"><span class="pre">PrbsTx</span></code>, <code class="docutils literal notranslate"><span class="pre">PrbsRx</span></code>, <code class="docutils literal notranslate"><span class="pre">PrbsPair</span></code>):
+tree-managed integration with Variables/Commands for GUI and runtime control.</p></li>
+</ul>
+<p>Common controls/counters exposed by the implementation include width/taps
+selection, transmit period, payload generation/check enable, and frame/error
+counters.</p>
+<p><code class="docutils literal notranslate"><span class="pre">PrbsPair</span></code> is a convenience wrapper that keeps both transmit and receive
+control under one node for loopback tests and end-to-end validation.</p>
+<p>The direct Rogue endpoint is the simpler fit when a test script just needs to
+generate or check traffic inside a stream graph. The PyRogue wrappers are the
+better fit when operators, GUIs, or client code need tree-visible counters and
+controls.</p>
+</section>
+<section id="typical-validation-workflow">
+<h2>Typical Validation Workflow<a class="headerlink" href="#typical-validation-workflow" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p>Generate PRBS frames at the source side.</p></li>
+<li><p>Route traffic through the transport/path under test.</p></li>
+<li><p>Check receive counters and error counters at the sink side.</p></li>
+<li><p>Tune width/taps/period when matching target link characteristics.</p></li>
+</ol>
+<p>C++ API details for PRBS utilities are documented in
+<a class="reference internal" href="../../../api/cpp/utilities/prbs/index.html"><span class="doc">rogue::utilities::prbs</span></a>.</p>
+<p>Typical patterns are:</p>
+<ul class="simple">
+<li><p>Generate PRBS frames and capture them to file.</p></li>
+<li><p>Replay file data into a PRBS checker.</p></li>
+<li><p>Use the PyRogue <code class="docutils literal notranslate"><span class="pre">PrbsTx</span></code>/<code class="docutils literal notranslate"><span class="pre">PrbsRx</span></code> wrappers for GUI-visible control and
+counters.</p></li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">PrbsPair</span></code> when one tree node should own both directions of a software
+loopback or end-to-end smoke test.</p></li>
+<li><p>Validate software-to-firmware and firmware-to-software PRBS links during FPGA
+bring-up.</p></li>
+</ul>
+</section>
+<section id="logging">
+<h2>Logging<a class="headerlink" href="#logging" title="Link to this heading"></a></h2>
+<p>The core <code class="docutils literal notranslate"><span class="pre">rogue.utilities.Prbs</span></code> implementation uses Rogue C++ logging with
+two static logger names:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pyrogue.prbs.tx</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pyrogue.prbs.rx</span></code></p></li>
+<li><p>Unified Logging API:
+<code class="docutils literal notranslate"><span class="pre">pyrogue.setLogLevel('pyrogue.prbs',</span> <span class="pre">'DEBUG')</span></code></p></li>
+<li><p>Legacy Logging API:
+<code class="docutils literal notranslate"><span class="pre">rogue.Logging.setFilter('pyrogue.prbs',</span> <span class="pre">rogue.Logging.Debug)</span></code></p></li>
+</ul>
+<p>The PyRogue wrappers also have their own Python loggers, but the transport/data
+path debug output from the underlying PRBS generator/checker comes from the
+C++ logger names above.</p>
+</section>
+<section id="subtopics">
+<h2>Subtopics<a class="headerlink" href="#subtopics" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="writing.html"><span class="doc">Generating PRBS Frames</span></a>
+Starts from <code class="docutils literal notranslate"><span class="pre">pyrogue.utilities.prbs.PrbsTx</span></code>, then shows the matching direct
+<code class="docutils literal notranslate"><span class="pre">rogue.utilities.Prbs</span></code> transmit form.</p></li>
+<li><p><a class="reference internal" href="reading.html"><span class="doc">Receiving PRBS Frames</span></a>
+Starts from <code class="docutils literal notranslate"><span class="pre">pyrogue.utilities.prbs.PrbsRx</span></code> and <code class="docutils literal notranslate"><span class="pre">PrbsPair</span></code>, then shows
+the matching direct <code class="docutils literal notranslate"><span class="pre">rogue.utilities.Prbs</span></code> receive form.</p></li>
+</ul>
+</section>
+<section id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Python:</p>
+<ul>
+<li><p><a class="reference internal" href="../../../api/python/rogue/utilities/prbs/prbs.html"><span class="doc">Prbs</span></a></p></li>
+<li><p><a class="reference internal" href="../../../api/python/pyrogue/utilities/prbs/prbstx.html"><span class="doc">PrbsTx</span></a></p></li>
+<li><p><a class="reference internal" href="../../../api/python/pyrogue/utilities/prbs/prbsrx.html"><span class="doc">PrbsRx</span></a></p></li>
+<li><p><a class="reference internal" href="../../../api/python/pyrogue/utilities/prbs/prbspair.html"><span class="doc">PrbsPair</span></a></p></li>
+</ul>
+</li>
+<li><p>C++:</p>
+<ul>
+<li><p><a class="reference internal" href="../../../api/cpp/utilities/prbs/prbs.html"><span class="doc">PRBS</span></a></p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="related-topics">
+<h2>Related Topics<a class="headerlink" href="#related-topics" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>File capture/replay integration:
+<a class="reference internal" href="../fileio/index.html"><span class="doc">File I/O Utilities</span></a></p></li>
+<li><p>Stream graph wiring patterns:
+<a class="reference internal" href="../../../stream_interface/connecting.html"><span class="doc">Connecting Streams</span></a></p></li>
+<li><p>Top-level PyRogue tree devices:
+<a class="reference internal" href="../../../pyrogue_tree/builtin_devices/index.html"><span class="doc">Built-in Devices</span></a></p></li>
+</ul>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">PRBS Utilities:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="writing.html">Generating PRBS Frames</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reading.html">Receiving PRBS Frames</a></li>
+</ul>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../fileio/python_reader.html" class="btn btn-neutral float-left" title="Python File Reader" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="writing.html" class="btn btn-neutral float-right" title="Generating PRBS Frames" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

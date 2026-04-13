@@ -1,0 +1,310 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Packetizer Protocol &mdash; Rogue v6.10.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=8b50afe1" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=dc21db2b"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../_static/custom.js?v=7b5dfb0b"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Packetizer Protocol Core" href="core.html" />
+    <link rel="prev" title="RSSI Protocol Server" href="../rssi/server.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Built-in Modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../interfaces/index.html">Interfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../simulation/index.html">Simulation Utilities</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">Protocols</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../udp/index.html">UDP Protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../rssi/index.html">RSSI Protocol</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Packetizer Protocol</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="core.html">Packetizer Protocol Core</a></li>
+<li class="toctree-l4"><a class="reference internal" href="coreV2.html">Packetizer Protocol CoreV2</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../network.html">Network Wrapper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../batcher/index.html">Batcher Protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../epicsV4/index.html">EPICS V4 Access</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../epicsV7/index.html">EPICS V7 Access</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../srp/index.html">SRP Protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../xilinx/index.html">Xilinx Protocols</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../uart.html">UART Memory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gpib.html">GPIB Control</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../hardware/index.html">Hardware</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utilities/index.html">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">API Reference</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Built-in Modules</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Protocols</a></li>
+      <li class="breadcrumb-item active">Packetizer Protocol</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/built_in_modules/protocols/packetizer/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="packetizer-protocol">
+<span id="protocols-packetizer"></span><h1>Packetizer Protocol<a class="headerlink" href="#packetizer-protocol" title="Link to this heading"></a></h1>
+<p>For carrying multiple logical application streams over one shared transport
+path, Rogue provides <code class="docutils literal notranslate"><span class="pre">rogue.protocols.packetizer</span></code>. Packetizer sits above a
+lower transport such as RSSI, DMA, or PGP and turns that shared link into a
+set of destination-addressed application channels.</p>
+<p>In practice, packetizer is the layer that lets one physical transport session
+carry different traffic types at the same time, such as register transactions,
+waveform data, and diagnostic events. The receive side can then reconstruct the
+original frame boundaries and route each stream to the correct destination
+endpoint.</p>
+<p>In many systems, a software packetizer endpoint in Rogue connects directly to a
+firmware packetizer endpoint. That is what preserves AXI-Stream sideband
+metadata such as destination and user fields while traffic crosses an external
+transport.</p>
+<section id="protocol-specifications">
+<h2>Protocol Specifications<a class="headerlink" href="#protocol-specifications" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Packetizer v1 specification: <a class="reference external" href="https://confluence.slac.stanford.edu/x/1oyfD">https://confluence.slac.stanford.edu/x/1oyfD</a></p></li>
+<li><p>Packetizer v2 specification: <a class="reference external" href="https://confluence.slac.stanford.edu/x/3nh4DQ">https://confluence.slac.stanford.edu/x/3nh4DQ</a></p></li>
+</ul>
+</section>
+<section id="how-packetizer-fits-in-the-stack">
+<h2>How Packetizer Fits In The Stack<a class="headerlink" href="#how-packetizer-fits-in-the-stack" title="Link to this heading"></a></h2>
+<p>A common network-backed stack looks like this:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>UDP &lt;-&gt; RSSI &lt;-&gt; Packetizer &lt;-&gt; Application endpoints
+</pre></div>
+</div>
+<p>On DMA-backed systems, the lower side might instead be:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>AxiStreamDma &lt;-&gt; Packetizer &lt;-&gt; Application endpoints
+</pre></div>
+</div>
+<p>Both packetizer core variants expose the same main structure:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">transport()</span></code> is the lower-layer edge facing RSSI, UDP, DMA, or another
+transport path.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">application(dest)</span></code> is the upper-layer edge for one application channel.</p></li>
+<li><p>A controller in the middle packetizes outbound frames and depacketizes
+inbound ones.</p></li>
+</ul>
+<p>The destination field is an 8-bit selector, so one transport session can carry
+up to 256 logical application channels. In real designs, that lets software and
+firmware share one lower transport while still separating register, data, and
+debug traffic cleanly.</p>
+</section>
+<section id="packetizer-versions-at-a-glance">
+<h2>Packetizer Versions At A Glance<a class="headerlink" href="#packetizer-versions-at-a-glance" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Core</span></code> implements packetizer v1.
+It uses an 8-byte header and a compact 1-byte tail carrying <code class="docutils literal notranslate"><span class="pre">TUserLast</span></code> and
+EOF information.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CoreV2</span></code> implements packetizer v2.
+It keeps the same overall role but adds a more structured 64-bit tail,
+interleaving support, and configurable CRC behavior.</p></li>
+</ul>
+</section>
+<section id="subtopics">
+<h2>Subtopics<a class="headerlink" href="#subtopics" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="core.html"><span class="doc">Packetizer Protocol Core</span></a>
+Use packetizer v1 when the peer requires the older v1 wire format.</p></li>
+<li><p><a class="reference internal" href="coreV2.html"><span class="doc">Packetizer Protocol CoreV2</span></a>
+Use packetizer v2 for new designs or whenever the link already standardizes on
+v2 behavior and CRC handling.</p></li>
+</ul>
+</section>
+<section id="version-selection">
+<h2>Version Selection<a class="headerlink" href="#version-selection" title="Link to this heading"></a></h2>
+<p>Packetizer version is a compatibility choice, not just a software preference.
+Both ends of the link must agree on the same wire format.</p>
+<ul class="simple">
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">Core</span></code> when the peer expects packetizer v1.</p></li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">CoreV2</span></code> when the peer expects packetizer v2.</p></li>
+<li><p>Do not mix v1 and v2 endpoints across the same link.</p></li>
+</ul>
+<p>If the version is still open, <code class="docutils literal notranslate"><span class="pre">CoreV2</span></code> is usually the better default. If the
+firmware side is already fixed, match that firmware.</p>
+</section>
+<section id="end-to-end-example">
+<h2>End-To-End Example<a class="headerlink" href="#end-to-end-example" title="Link to this heading"></a></h2>
+<p>Packetizer often sits above RSSI, with one application destination carrying the
+traffic for a given path:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">rogue.protocols.packetizer</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">rogue.protocols.rssi</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">rogue.utilities</span>
+
+<span class="c1"># Lower transport/reliability layer.</span>
+<span class="n">rssi</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">rssi</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="mi">1472</span> <span class="o">-</span> <span class="mi">8</span><span class="p">)</span>
+
+<span class="c1"># Packetizer layer. This example uses v2 with inbound and outbound CRC.</span>
+<span class="n">pkt</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">packetizer</span><span class="o">.</span><span class="n">CoreV2</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Source and sink connected to destination channel 0.</span>
+<span class="n">tx</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">utilities</span><span class="o">.</span><span class="n">Prbs</span><span class="p">()</span>
+<span class="n">rx</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">utilities</span><span class="o">.</span><span class="n">Prbs</span><span class="p">()</span>
+
+<span class="c1"># Outbound traffic enters packetizer on application destination 0.</span>
+<span class="n">tx</span> <span class="o">&gt;&gt;</span> <span class="n">pkt</span><span class="o">.</span><span class="n">application</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="c1"># Packetizer transport side connects bidirectionally to RSSI.</span>
+<span class="n">rssi</span><span class="o">.</span><span class="n">application</span><span class="p">()</span> <span class="o">==</span> <span class="n">pkt</span><span class="o">.</span><span class="n">transport</span><span class="p">()</span>
+
+<span class="c1"># Inbound traffic for destination 0 is delivered to the receiver.</span>
+<span class="n">pkt</span><span class="o">.</span><span class="n">application</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">rx</span>
+</pre></div>
+</div>
+</section>
+<section id="threading-and-lifecycle">
+<h2>Threading And Lifecycle<a class="headerlink" href="#threading-and-lifecycle" title="Link to this heading"></a></h2>
+<p>Packetizer core objects are wiring helpers. They do not start their own worker
+threads, and they do not define a standalone start or stop API in Python.</p>
+<p>Lifecycle control usually belongs to the lower transport layer that packetizer
+attaches to:</p>
+<ul class="simple">
+<li><p>RSSI endpoints own protocol lifecycle and background activity.</p></li>
+<li><p>UDP endpoints own socket lifecycle.</p></li>
+<li><p>DMA wrappers own driver-facing threads.</p></li>
+</ul>
+<p>If a packetizer path is misbehaving, the lower layer is often the first place
+to inspect.</p>
+</section>
+<section id="related-topics">
+<h2>Related Topics<a class="headerlink" href="#related-topics" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="../network.html"><span class="doc">Network Wrapper</span></a></p></li>
+<li><p><a class="reference internal" href="../rssi/index.html"><span class="doc">RSSI Protocol</span></a></p></li>
+<li><p><a class="reference internal" href="../udp/index.html"><span class="doc">UDP Protocol</span></a></p></li>
+<li><p><a class="reference internal" href="../../hardware/dma/stream.html"><span class="doc">AxiStreamDma</span></a></p></li>
+<li><p><a class="reference internal" href="../batcher/index.html"><span class="doc">Batcher Protocol</span></a></p></li>
+</ul>
+</section>
+<section id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>C++: <a class="reference internal" href="../../../api/cpp/protocols/packetizer/index.html"><span class="doc">rogue::protocols::packetizer</span></a></p></li>
+<li><p>Python:
+<a class="reference internal" href="../../../api/python/rogue/protocols/packetizer/application.html"><span class="doc">Application</span></a>
+<a class="reference internal" href="../../../api/python/rogue/protocols/packetizer/transport.html"><span class="doc">Transport</span></a>
+<a class="reference internal" href="../../../api/python/rogue/protocols/packetizer/core.html"><span class="doc">Core</span></a>
+<a class="reference internal" href="../../../api/python/rogue/protocols/packetizer/corev2.html"><span class="doc">CoreV2</span></a></p></li>
+</ul>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Packetizer Protocol</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="core.html">Packetizer Protocol Core</a></li>
+<li class="toctree-l1"><a class="reference internal" href="coreV2.html">Packetizer Protocol CoreV2</a></li>
+</ul>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../rssi/server.html" class="btn btn-neutral float-left" title="RSSI Protocol Server" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="core.html" class="btn btn-neutral float-right" title="Packetizer Protocol Core" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

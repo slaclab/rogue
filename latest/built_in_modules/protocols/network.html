@@ -1,0 +1,376 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Network Wrapper &mdash; Rogue v6.10.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=8b50afe1" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc21db2b"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/custom.js?v=7b5dfb0b"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Batcher Protocol" href="batcher/index.html" />
+    <link rel="prev" title="Packetizer Protocol CoreV2" href="packetizer/coreV2.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Built-in Modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../interfaces/index.html">Interfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../simulation/index.html">Simulation Utilities</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Protocols</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="udp/index.html">UDP Protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rssi/index.html">RSSI Protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="packetizer/index.html">Packetizer Protocol</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Network Wrapper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="batcher/index.html">Batcher Protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epicsV4/index.html">EPICS V4 Access</a></li>
+<li class="toctree-l3"><a class="reference internal" href="epicsV7/index.html">EPICS V7 Access</a></li>
+<li class="toctree-l3"><a class="reference internal" href="srp/index.html">SRP Protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="xilinx/index.html">Xilinx Protocols</a></li>
+<li class="toctree-l3"><a class="reference internal" href="uart.html">UART Memory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gpib.html">GPIB Control</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../hardware/index.html">Hardware</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../utilities/index.html">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">API Reference</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Built-in Modules</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Protocols</a></li>
+      <li class="breadcrumb-item active">Network Wrapper</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/built_in_modules/protocols/network.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="network-wrapper">
+<span id="protocols-network"></span><h1>Network Wrapper<a class="headerlink" href="#network-wrapper" title="Link to this heading"></a></h1>
+<p>For building a standard UDP, RSSI, and packetizer stack under one tree-managed
+object, PyRogue provides <code class="docutils literal notranslate"><span class="pre">pyrogue.protocols.UdpRssiPack</span></code>. It wires together
+the underlying <code class="docutils literal notranslate"><span class="pre">rogue.protocols.udp.*</span></code>, <code class="docutils literal notranslate"><span class="pre">rogue.protocols.rssi.*</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">rogue.protocols.packetizer.*</span></code> modules internally.</p>
+<p>For software that needs to connect to an FPGA RSSI endpoint, this is almost
+always the module to use. In most deployed systems, <code class="docutils literal notranslate"><span class="pre">UdpRssiPack</span></code> is the
+standard wrapper for register links and data links built on UDP and RSSI.</p>
+<p>For the underlying protocol behavior, see <a class="reference internal" href="udp/index.html#protocols-udp"><span class="std std-ref">UDP Protocol</span></a>,
+<a class="reference internal" href="rssi/index.html#protocols-rssi"><span class="std std-ref">RSSI Protocol</span></a>, and <a class="reference internal" href="packetizer/index.html#protocols-packetizer"><span class="std std-ref">Packetizer Protocol</span></a>.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">pyrogue.protocols.UdpRssiPack</span></code> is a convenience <code class="docutils literal notranslate"><span class="pre">pyrogue.Device</span></code> that
+bundles the network stack used by many Rogue and PyRogue systems:</p>
+<ul class="simple">
+<li><p>UDP transport (<code class="docutils literal notranslate"><span class="pre">rogue.protocols.udp.Client</span></code> or <code class="docutils literal notranslate"><span class="pre">Server</span></code>)</p></li>
+<li><p>RSSI reliability layer (<code class="docutils literal notranslate"><span class="pre">rogue.protocols.rssi.Client</span></code> or <code class="docutils literal notranslate"><span class="pre">Server</span></code>)</p></li>
+<li><p>Packetizer framing (<code class="docutils literal notranslate"><span class="pre">rogue.protocols.packetizer.Core</span></code> or <code class="docutils literal notranslate"><span class="pre">CoreV2</span></code>)</p></li>
+</ul>
+<p>Internally, it wires the stream graph as:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>UDP &lt;-&gt; RSSI Transport &lt;-&gt; RSSI Application &lt;-&gt; Packetizer
+</pre></div>
+</div>
+<p>Because it is a <code class="docutils literal notranslate"><span class="pre">pyrogue.Device</span></code>, RSSI status and configuration variables are
+exposed directly in the PyRogue tree.</p>
+</section>
+<section id="implementation-details">
+<h2>Implementation Details<a class="headerlink" href="#implementation-details" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">server=False</span></code>:
+Creates <code class="docutils literal notranslate"><span class="pre">udp.Client(host,</span> <span class="pre">port,</span> <span class="pre">jumbo)</span></code> and <code class="docutils literal notranslate"><span class="pre">rssi.Client(...)</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">server=True</span></code>:
+Creates <code class="docutils literal notranslate"><span class="pre">udp.Server(port,</span> <span class="pre">jumbo)</span></code> and <code class="docutils literal notranslate"><span class="pre">rssi.Server(...)</span></code>.</p></li>
+<li><p>Packetizer selection by <code class="docutils literal notranslate"><span class="pre">packVer</span></code>:
+<code class="docutils literal notranslate"><span class="pre">packVer=1</span></code> uses <code class="docutils literal notranslate"><span class="pre">packetizer.Core(enSsi)</span></code>;
+<code class="docutils literal notranslate"><span class="pre">packVer=2</span></code> uses <code class="docutils literal notranslate"><span class="pre">packetizer.CoreV2(False,</span> <span class="pre">True,</span> <span class="pre">enSsi)</span></code>.</p></li>
+<li><p>RSSI segment size is derived from transport payload budget:
+<code class="docutils literal notranslate"><span class="pre">udp.maxPayload()</span> <span class="pre">-</span> <span class="pre">8</span></code>.</p></li>
+</ul>
+</section>
+<section id="when-to-use">
+<h2>When To Use<a class="headerlink" href="#when-to-use" title="Link to this heading"></a></h2>
+<p>Use <code class="docutils literal notranslate"><span class="pre">UdpRssiPack</span></code> when you want:</p>
+<ul class="simple">
+<li><p>A standard UDP + RSSI + packetizer stack with minimal setup code</p></li>
+<li><p>Link status/counters in the PyRogue variable tree</p></li>
+<li><p>Start/stop lifecycle managed through the Root interface mechanism</p></li>
+</ul>
+<p>For most hardware systems (software talking to an FPGA RSSI endpoint), use
+<code class="docutils literal notranslate"><span class="pre">server=False</span></code> so Rogue acts as the RSSI/UDP client and connects outbound to
+the FPGA target.</p>
+</section>
+<section id="key-constructor-arguments">
+<h2>Key Constructor Arguments<a class="headerlink" href="#key-constructor-arguments" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">server</span></code>:
+Choose server mode (<code class="docutils literal notranslate"><span class="pre">True</span></code>) or client mode (<code class="docutils literal notranslate"><span class="pre">False</span></code>). Typical FPGA
+register/data links use <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">host</span></code>/<code class="docutils literal notranslate"><span class="pre">port</span></code>:
+Remote endpoint for client mode, or bind port for server mode.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">jumbo</span></code>:
+Enable jumbo-MTU path assumptions in UDP setup.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">packVer</span></code>:
+Packetizer version, <code class="docutils literal notranslate"><span class="pre">1</span></code> or <code class="docutils literal notranslate"><span class="pre">2</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">enSsi</span></code>:
+Enable SSI handling in packetizer.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">wait</span></code>:
+In client mode, wait for RSSI link-up during startup.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">defaults</span></code> (via <code class="docutils literal notranslate"><span class="pre">kwargs</span></code>):
+Optional RSSI parameter overrides such as <code class="docutils literal notranslate"><span class="pre">locMaxBuffers</span></code>,
+<code class="docutils literal notranslate"><span class="pre">locCumAckTout</span></code>, <code class="docutils literal notranslate"><span class="pre">locRetranTout</span></code>, <code class="docutils literal notranslate"><span class="pre">locNullTout</span></code>,
+<code class="docutils literal notranslate"><span class="pre">locMaxRetran</span></code>, <code class="docutils literal notranslate"><span class="pre">locMaxCumAck</span></code>.</p></li>
+</ul>
+<p>In practice, real trees usually only set <code class="docutils literal notranslate"><span class="pre">host</span></code>, <code class="docutils literal notranslate"><span class="pre">port</span></code>, <code class="docutils literal notranslate"><span class="pre">packVer</span></code>,
+<code class="docutils literal notranslate"><span class="pre">jumbo</span></code>, and sometimes <code class="docutils literal notranslate"><span class="pre">enSsi</span></code>. The local example roots in this repository
+and nearby Rogue-based projects follow that pattern, often instantiating one
+<code class="docutils literal notranslate"><span class="pre">UdpRssiPack</span></code> for SRP traffic and another for event data.</p>
+</section>
+<section id="startup-behavior">
+<h2>Startup Behavior<a class="headerlink" href="#startup-behavior" title="Link to this heading"></a></h2>
+<p>During <code class="docutils literal notranslate"><span class="pre">UdpRssiPack._start()</span></code>:</p>
+<ul class="simple">
+<li><p>RSSI is started first.</p></li>
+<li><p>In client mode with <code class="docutils literal notranslate"><span class="pre">wait=True</span></code>, startup waits for link-open.</p></li>
+<li><p>After link bring-up, UDP RX buffer count is tuned from negotiated RSSI
+buffer depth (<code class="docutils literal notranslate"><span class="pre">udp.setRxBufferCount(rssi.curMaxBuffers())</span></code>).</p></li>
+</ul>
+<p>This startup behavior is why using the wrapper through Root-managed lifecycle
+is preferred for full applications.</p>
+</section>
+<section id="typical-root-integration">
+<h2>Typical Root Integration<a class="headerlink" href="#typical-root-integration" title="Link to this heading"></a></h2>
+<p>Use <code class="docutils literal notranslate"><span class="pre">add()</span></code> to place the wrapper in the tree, then <code class="docutils literal notranslate"><span class="pre">addInterface()</span></code> so
+Root start/stop sequencing manages the transport lifecycle.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue.protocols</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue.utilities.fileio</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">rogue.protocols.srp</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyRoot</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;MyRoot&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Add bundled UDP + RSSI + packetizer stack.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">UdpRssiPack</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Net&#39;</span><span class="p">,</span>
+            <span class="n">server</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">host</span><span class="o">=</span><span class="s1">&#39;10.0.0.5&#39;</span><span class="p">,</span>
+            <span class="n">port</span><span class="o">=</span><span class="mi">8192</span><span class="p">,</span>
+            <span class="n">jumbo</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">packVer</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+            <span class="n">enSsi</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">))</span>
+        <span class="c1"># Register managed interface lifecycle with Root.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addInterface</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Net</span><span class="p">)</span>
+
+        <span class="c1"># VC 0: register/memory path (for Device memBase)</span>
+        <span class="n">srp</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">srp</span><span class="o">.</span><span class="n">SrpV3</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Net</span><span class="o">.</span><span class="n">application</span><span class="p">(</span><span class="n">dest</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">==</span> <span class="n">srp</span>
+
+        <span class="c1"># VC 1: data path to file writer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">utilities</span><span class="o">.</span><span class="n">fileio</span><span class="o">.</span><span class="n">StreamWriter</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;DataWriter&#39;</span>
+        <span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Net</span><span class="o">.</span><span class="n">application</span><span class="p">(</span><span class="n">dest</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">DataWriter</span><span class="o">.</span><span class="n">getChannel</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># Example memory-mapped device:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">MyDevice</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Dev&#39;</span><span class="p">,</span> <span class="n">memBase</span><span class="o">=</span><span class="n">srp</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mh">0x0</span><span class="p">))</span>
+</pre></div>
+</div>
+</section>
+<section id="lifecycle-notes">
+<h2>Lifecycle Notes<a class="headerlink" href="#lifecycle-notes" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Root-managed mode:
+Add <code class="docutils literal notranslate"><span class="pre">UdpRssiPack</span></code> to the tree and register it via <code class="docutils literal notranslate"><span class="pre">Root.addInterface(...)</span></code>.</p></li>
+<li><p>Standalone mode:
+Direct scripts can call wrapper <code class="docutils literal notranslate"><span class="pre">start</span></code>/<code class="docutils literal notranslate"><span class="pre">stop</span></code> commands (or <code class="docutils literal notranslate"><span class="pre">_start</span></code> /
+<code class="docutils literal notranslate"><span class="pre">_stop</span></code>) when no Root lifecycle manager is present.</p></li>
+<li><p>Managed Interface Lifecycle reference:
+<a class="reference internal" href="../../pyrogue_tree/core/device.html#pyrogue-tree-node-device-managed-interfaces"><span class="std std-ref">Example: Runtime Work In _start() And _stop()</span></a></p></li>
+</ul>
+</section>
+<section id="server-mode-less-common">
+<h2>Server Mode (Less Common)<a class="headerlink" href="#server-mode-less-common" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">server=True</span></code> is typically used for software peer links, integration tests,
+or cases where the remote endpoint must initiate the connection to Rogue.
+This is not the common deployment for FPGA RSSI endpoints.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">UdpRssiPack</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Net&#39;</span><span class="p">,</span>
+    <span class="n">server</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">port</span><span class="o">=</span><span class="mi">8192</span><span class="p">,</span>
+    <span class="n">jumbo</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">packVer</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">enSsi</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">))</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">addInterface</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Net</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="available-helper-methods-commands">
+<h2>Available Helper Methods/Commands<a class="headerlink" href="#available-helper-methods-commands" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">application(dest)</span></code>:
+Return packetizer application endpoint for a destination VC.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">countReset()</span></code>:
+Reset RSSI counters.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">start</span></code> / <code class="docutils literal notranslate"><span class="pre">stop</span></code>:
+Local commands exported by the wrapper device for link control.</p></li>
+</ul>
+</section>
+<section id="logging">
+<h2>Logging<a class="headerlink" href="#logging" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">UdpRssiPack</span></code> itself is a PyRogue <code class="docutils literal notranslate"><span class="pre">Device</span></code>, so any wrapper-level Python log
+messages follow normal PyRogue logger naming. Most transport/protocol debug
+output, however, comes from the underlying Rogue C++ modules:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pyrogue.udp.Client</span></code> / <code class="docutils literal notranslate"><span class="pre">pyrogue.udp.Server</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pyrogue.rssi.controller</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pyrogue.packetizer.Controller</span></code></p></li>
+<li><p>Unified Logging API:
+<code class="docutils literal notranslate"><span class="pre">pyrogue.setLogLevel('pyrogue.udp',</span> <span class="pre">'DEBUG')</span></code>,
+<code class="docutils literal notranslate"><span class="pre">pyrogue.setLogLevel('pyrogue.rssi',</span> <span class="pre">'DEBUG')</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">pyrogue.setLogLevel('pyrogue.packetizer',</span> <span class="pre">'DEBUG')</span></code></p></li>
+<li><p>Legacy Logging API:
+<code class="docutils literal notranslate"><span class="pre">rogue.Logging.setFilter('pyrogue.udp',</span> <span class="pre">rogue.Logging.Debug)</span></code>,
+<code class="docutils literal notranslate"><span class="pre">rogue.Logging.setFilter('pyrogue.rssi',</span> <span class="pre">rogue.Logging.Debug)</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">rogue.Logging.setFilter('pyrogue.packetizer',</span> <span class="pre">rogue.Logging.Debug)</span></code></p></li>
+</ul>
+<p>In practice, enable the underlying protocol loggers rather than relying on any
+wrapper-level Python logging when debugging link behavior.</p>
+</section>
+<section id="relationship-to-the-lower-level-modules">
+<h2>Relationship To The Lower-Level Modules<a class="headerlink" href="#relationship-to-the-lower-level-modules" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">UdpRssiPack</span></code> is the right page when you want the preassembled wrapper and
+tree-visible RSSI controls. If you need to reason about the transport behavior
+itself, or to build a custom stack without the wrapper, move to the direct
+protocol pages for UDP, RSSI, and packetizer. Those pages stay focused on the
+underlying <code class="docutils literal notranslate"><span class="pre">rogue.protocols.*</span></code> modules rather than on the convenience device.</p>
+</section>
+<section id="related-topics">
+<h2>Related Topics<a class="headerlink" href="#related-topics" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="rssi/index.html#protocols-rssi"><span class="std std-ref">RSSI Protocol</span></a></p></li>
+<li><p><a class="reference internal" href="udp/index.html#protocols-udp"><span class="std std-ref">UDP Protocol</span></a></p></li>
+<li><p><a class="reference internal" href="packetizer/index.html#protocols-packetizer"><span class="std std-ref">Packetizer Protocol</span></a></p></li>
+</ul>
+</section>
+<section id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Python:</p>
+<ul>
+<li><p><a class="reference internal" href="../../api/python/pyrogue/protocols/network_udprssipack.html"><span class="doc">UdpRssiPack</span></a></p></li>
+</ul>
+</li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="packetizer/coreV2.html" class="btn btn-neutral float-left" title="Packetizer Protocol CoreV2" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="batcher/index.html" class="btn btn-neutral float-right" title="Batcher Protocol" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,294 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SrpV0 &mdash; Rogue v6.10.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css?v=8b50afe1" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=dc21db2b"></script>
+      <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../../_static/custom.js?v=7b5dfb0b"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link rel="next" title="SrpV3" href="srpV3.html" />
+    <link rel="prev" title="rogue::protocols::srp" href="index.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../../python/index.html">Python API</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../../index.html">C++ API</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../../rogue_index.html">rogue</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../interfaces_index.html">rogue::interfaces</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../../protocols_index.html">rogue::protocols</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../batcher/index.html">rogue::protocols::batcher</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../packetizer/index.html">rogue::protocols::packetizer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../rssi/index.html">rogue::protocols::rssi</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="index.html">rogue::protocols::srp</a><ul class="current">
+<li class="toctree-l5 current"><a class="current reference internal" href="#">SrpV0</a></li>
+<li class="toctree-l5"><a class="reference internal" href="srpV3.html">SrpV3</a></li>
+<li class="toctree-l5"><a class="reference internal" href="srpV3Emulation.html">SrpV3Emulation</a></li>
+<li class="toctree-l5"><a class="reference internal" href="cmd.html">Cmd</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../udp/index.html">rogue::protocols::udp</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../xilinx/index.html">rogue::protocols::xilinx</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../hardware_index.html">rogue::hardware</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../utilities_index.html">rogue::utilities</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">API Reference</a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">C++ API</a></li>
+          <li class="breadcrumb-item"><a href="../../protocols_index.html">rogue::protocols</a></li>
+          <li class="breadcrumb-item"><a href="index.html">rogue::protocols::srp</a></li>
+      <li class="breadcrumb-item active">SrpV0</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../_sources/api/cpp/protocols/srp/srpV0.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="srpv0">
+<span id="protocols-srp-classes-srpv0"></span><h1>SrpV0<a class="headerlink" href="#srpv0" title="Link to this heading"></a></h1>
+<p><cite>rogue::protocols::srp::SrpV0</cite> bridges Rogue memory transactions to SRPv0
+stream frames that are transported to hardware SRP endpoints.
+For conceptual guidance, see <a class="reference internal" href="../../../../built_in_modules/protocols/srp/srpV0.html"><span class="doc">SRP Protocol Version 0</span></a>.</p>
+<p>For SRPv0 packet-level protocol details, see:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="Https://confluence.slac.stanford.edu/x/aRmVD">Https://confluence.slac.stanford.edu/x/aRmVD</a></p></li>
+</ul>
+<section id="threading-and-locking-summary">
+<h2>Threading and locking summary<a class="headerlink" href="#threading-and-locking-summary" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">doTransaction()</span></code> and <code class="docutils literal notranslate"><span class="pre">acceptFrame()</span></code> may run in different contexts.</p></li>
+<li><p>In-flight map access is managed by base memory-slave synchronization.</p></li>
+<li><p>Per-transaction payload access is guarded via transaction locking.</p></li>
+</ul>
+<section id="python-binding">
+<h3>Python binding<a class="headerlink" href="#python-binding" title="Link to this heading"></a></h3>
+<p>This C++ class is also exported into Python as <code class="docutils literal notranslate"><span class="pre">rogue.protocols.srp.SrpV0</span></code>.</p>
+<p>Python API page:
+- <a class="reference internal" href="../../../python/rogue/protocols/srp/srpv0.html"><span class="doc">SrpV0</span></a></p>
+<p>objects in C++ are referenced by the following shared pointer typedef:</p>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols3srp8SrpV0PtrE">
+<span id="_CPPv3N5rogue9protocols3srp8SrpV0PtrE"></span><span id="_CPPv2N5rogue9protocols3srp8SrpV0PtrE"></span><span id="rogue::protocols::srp::SrpV0Ptr"></span><span class="target" id="namespacerogue_1_1protocols_1_1srp_1a28c6fac59fb7ec0991609dab2f02fcc9"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">protocols</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">srp</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue9protocols3srp5SrpV0E" title="rogue::protocols::srp::SrpV0"><span class="n"><span class="pre">SrpV0</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">protocols</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">srp</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">SrpV0Ptr</span></span></span><a class="headerlink" href="#_CPPv4N5rogue9protocols3srp8SrpV0PtrE" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/SrpV0_8h_source.html#l00155"><span class="pre">[header]</span></a></dt>
+<dd></dd></dl>
+
+<p>The class description is shown below:</p>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols3srp5SrpV0E">
+<span id="_CPPv3N5rogue9protocols3srp5SrpV0E"></span><span id="_CPPv2N5rogue9protocols3srp5SrpV0E"></span><span id="rogue::protocols::srp::SrpV0"></span><span class="target" id="classrogue_1_1protocols_1_1srp_1_1SrpV0"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">SrpV0</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="../../interfaces/stream/master.html#_CPPv4N5rogue10interfaces6stream6MasterE" title="rogue::interfaces::stream::Master"><span class="n"><span class="pre">Master</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="../../interfaces/stream/slave.html#_CPPv4N5rogue10interfaces6stream5SlaveE" title="rogue::interfaces::stream::Slave"><span class="n"><span class="pre">Slave</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="../../interfaces/memory/slave.html#_CPPv4N5rogue10interfaces6memory5SlaveE" title="rogue::interfaces::memory::Slave"><span class="n"><span class="pre">Slave</span></span></a><a class="headerlink" href="#_CPPv4N5rogue9protocols3srp5SrpV0E" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/SrpV0_8h_source.html#l00084"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/SrpV0_8h_source.html#l00086"><span class="pre">[source]</span></a></dt>
+<dd><p>SRP v0 bridge between Rogue memory transactions and stream frames. </p>
+<p><code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1protocols_1_1srp_1_1SrpV0"><span class="std std-ref"><span class="pre">SrpV0</span></span></a></code> sits between the memory interface (<code class="docutils literal notranslate"><span class="pre">memory::Slave</span></code>) and stream transport (<code class="docutils literal notranslate"><span class="pre">stream::Master</span></code>/<code class="docutils literal notranslate"><span class="pre">stream::Slave</span></code>). It serializes memory read/write transactions into SRP v0 request frames and decodes incoming SRP responses to complete transactions.</p>
+<p>SRP frames are stream transactions carried over a physical/link transport (for example DMA, TCP, or other Rogue stream backends) before arriving at an FPGA or ASIC endpoint that implements the SRP protocol for register access.</p>
+<p>Implementation behavior:<ul class="simple">
+<li><p><code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1protocols_1_1srp_1_1SrpV0_1a7b2b255b438189bf98a11c8a687f24ac"><span class="std std-ref"><span class="pre">doTransaction()</span></span></a></code> serializes each memory request into one SRPv0 frame and transmits it immediately.</p></li>
+<li><p>Non-posted transactions are registered in the base <code class="docutils literal notranslate"><span class="pre">memory::Slave</span></code> in-flight transaction map (<code class="docutils literal notranslate"><a class="reference internal" href="../../interfaces/memory/slave.html#classrogue_1_1interfaces_1_1memory_1_1Slave_1a97ac9ad623a4920c6ebf58bc18e7ec7f"><span class="std std-ref"><span class="pre">addTransaction()</span></span></a></code>), keyed by transaction ID.</p></li>
+<li><p>Multiple requests may be transmitted before any responses arrive, so multiple transactions can be in flight concurrently.</p></li>
+<li><p><code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1protocols_1_1srp_1_1SrpV0_1aaa7ee8776cf36d98a63a5c0575c7c6b6"><span class="std std-ref"><span class="pre">acceptFrame()</span></span></a></code> extracts the response ID and resolves it with <code class="docutils literal notranslate"><span class="pre">getTransaction(id)</span></code>, so responses are matched by ID and may arrive out of order without violating correctness.</p></li>
+</ul>
+</p>
+<p>Threading/locking model:<ul class="simple">
+<li><p>In-flight map access is protected by the <code class="docutils literal notranslate"><span class="pre">memory::Slave</span></code> mutex.</p></li>
+<li><p>Per-transaction payload/state access is protected by <code class="docutils literal notranslate"><span class="pre">TransactionLock</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1protocols_1_1srp_1_1SrpV0_1a7b2b255b438189bf98a11c8a687f24ac"><span class="std std-ref"><span class="pre">doTransaction()</span></span></a></code> and <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1protocols_1_1srp_1_1SrpV0_1aaa7ee8776cf36d98a63a5c0575c7c6b6"><span class="std std-ref"><span class="pre">acceptFrame()</span></span></a></code> can be called from different runtime contexts provided by the connected stream transport stack.</p></li>
+</ul>
+</p>
+<p>Missing, late, or invalid responses:<ul class="simple">
+<li><p>Software wait timeout is enforced by the initiating <code class="docutils literal notranslate"><span class="pre">memory::Master</span></code> transaction timeout (<code class="docutils literal notranslate"><span class="pre">Master::setTimeout()</span></code> in microseconds).</p></li>
+<li><p>If no valid response arrives before timeout, the waiting side completes with a timeout error.</p></li>
+<li><p>If a late response arrives after timeout, it is treated as expired and ignored.</p></li>
+<li><p>If a response has unknown ID, malformed header/size, or hardware error status in tail bits, the response is rejected. Hardware-status errors complete the transaction with error immediately; malformed/unknown responses typically leave the original transaction pending until software timeout.</p></li>
+</ul>
+</p>
+<p>The class is typically connected in a bidirectional stream path where outgoing requests are emitted through the <code class="docutils literal notranslate"><span class="pre">stream::Master</span></code> side and incoming frames are received through <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1protocols_1_1srp_1_1SrpV0_1aaa7ee8776cf36d98a63a5c0575c7c6b6"><span class="std std-ref"><span class="pre">acceptFrame()</span></span></a></code>.</p>
+<p>Protocol reference: <a class="reference external" href="https://confluence.slac.stanford.edu/x/aRmVD">https://confluence.slac.stanford.edu/x/aRmVD</a></p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols3srp5SrpV05SrpV0Ev">
+<span id="_CPPv3N5rogue9protocols3srp5SrpV05SrpV0Ev"></span><span id="_CPPv2N5rogue9protocols3srp5SrpV05SrpV0Ev"></span><span id="rogue::protocols::srp::SrpV0::SrpV0"></span><span class="target" id="classrogue_1_1protocols_1_1srp_1_1SrpV0_1ad3e2771c206aabe1795c6f48ca17a5d7"></span><span class="sig-name descname"><span class="n"><span class="pre">SrpV0</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols3srp5SrpV05SrpV0Ev" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/SrpV0_8h_source.html#l00125"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/SrpV0_8cpp_source.html#l00066"><span class="pre">[impl]</span></a></dt>
+<dd><p>Constructs an SRP v0 interface instance. </p>
+<p>Creator with version constant.</p>
+<p>This constructor is a low-level C++ allocation path. Prefer <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1protocols_1_1srp_1_1SrpV0_1a519e51a497734f71c9a58c4f52b0f26a"><span class="std std-ref"><span class="pre">create()</span></span></a></code> when shared ownership or Python exposure is required. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols3srp5SrpV0D0Ev">
+<span id="_CPPv3N5rogue9protocols3srp5SrpV0D0Ev"></span><span id="_CPPv2N5rogue9protocols3srp5SrpV0D0Ev"></span><span id="rogue::protocols::srp::SrpV0::~SrpV0"></span><span class="target" id="classrogue_1_1protocols_1_1srp_1_1SrpV0_1ab359b78065496b737f09e8cd6c417b60"></span><span class="sig-name descname"><span class="n"><span class="pre">~SrpV0</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols3srp5SrpV0D0Ev" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/SrpV0_8h_source.html#l00128"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/SrpV0_8cpp_source.html#l00071"><span class="pre">[impl]</span></a></dt>
+<dd><p>Destroys the SRP v0 interface instance. </p>
+<p>Deconstructor. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols3srp5SrpV013doTransactionENSt10shared_ptrIN5rogue10interfaces6memory11TransactionEEE">
+<span id="_CPPv3N5rogue9protocols3srp5SrpV013doTransactionENSt10shared_ptrIN5rogue10interfaces6memory11TransactionEEE"></span><span id="_CPPv2N5rogue9protocols3srp5SrpV013doTransactionENSt10shared_ptrIN5rogue10interfaces6memory11TransactionEEE"></span><span id="rogue::protocols::srp::SrpV0::doTransaction__std::shared_ptr:rogue::interfaces::memory::Transaction:"></span><span class="target" id="classrogue_1_1protocols_1_1srp_1_1SrpV0_1a7b2b255b438189bf98a11c8a687f24ac"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">doTransaction</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="../../interfaces/memory/transaction.html#_CPPv4N5rogue10interfaces6memory11TransactionE" title="rogue::interfaces::memory::Transaction"><span class="n"><span class="pre">Transaction</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">tran</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols3srp5SrpV013doTransactionENSt10shared_ptrIN5rogue10interfaces6memory11TransactionEEE" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/SrpV0_8h_source.html#l00140"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/SrpV0_8cpp_source.html#l00103"><span class="pre">[impl]</span></a></dt>
+<dd><p>Processes a memory transaction and emits SRP v0 request frame(s). </p>
+<p>Post a transaction.</p>
+<p>Called by upstream memory masters. The transaction metadata and data payload are encoded into SRP v0 format and forwarded downstream through the stream master connection.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>tran</strong> – Transaction to execute over SRP. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols3srp5SrpV011acceptFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE">
+<span id="_CPPv3N5rogue9protocols3srp5SrpV011acceptFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE"></span><span id="_CPPv2N5rogue9protocols3srp5SrpV011acceptFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE"></span><span id="rogue::protocols::srp::SrpV0::acceptFrame__std::shared_ptr:rogue::interfaces::stream::Frame:"></span><span class="target" id="classrogue_1_1protocols_1_1srp_1_1SrpV0_1aaa7ee8776cf36d98a63a5c0575c7c6b6"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">acceptFrame</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="../../interfaces/stream/frame.html#_CPPv4N5rogue10interfaces6stream5FrameE" title="rogue::interfaces::stream::Frame"><span class="n"><span class="pre">Frame</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">frame</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols3srp5SrpV011acceptFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/SrpV0_8h_source.html#l00151"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/SrpV0_8cpp_source.html#l00175"><span class="pre">[impl]</span></a></dt>
+<dd><p>Accepts an incoming SRP v0 response frame. </p>
+<p>Accept a frame from master.</p>
+<p>Decodes the frame, matches it to the corresponding outstanding transaction, and updates completion/error state.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>frame</strong> – Received SRP stream frame. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-static-functions">Public Static Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols3srp5SrpV06createEv">
+<span id="_CPPv3N5rogue9protocols3srp5SrpV06createEv"></span><span id="_CPPv2N5rogue9protocols3srp5SrpV06createEv"></span><span id="rogue::protocols::srp::SrpV0::create"></span><span class="target" id="classrogue_1_1protocols_1_1srp_1_1SrpV0_1a519e51a497734f71c9a58c4f52b0f26a"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">protocols</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">srp</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue9protocols3srp5SrpV0E" title="rogue::protocols::srp::SrpV0"><span class="n"><span class="pre">SrpV0</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">create</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols3srp5SrpV06createEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/SrpV0_8h_source.html#l00113"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/SrpV0_8cpp_source.html#l00050"><span class="pre">[impl]</span></a></dt>
+<dd><p>Creates an SRP v0 interface instance. </p>
+<p>Class creation.</p>
+<p>This static factory is the preferred construction path when the object is shared across Rogue graph connections or exposed to Python. It returns <code class="docutils literal notranslate"><span class="pre">std::shared_ptr</span></code> ownership compatible with Rogue pointer typedefs.</p>
+<p><em>Company : SLAC National Accelerator Laboratory </em></p>
+<p>Description : <em>SRP protocol bridge,  0 </em></p>
+<p>This file is part of the rogue software platform. It is subject to the license terms in the LICENSE.txt file found in the top-level directory of this distribution and at: <a class="reference external" href="https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html">https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html</a>. No part of the rogue software platform, including this file, may be copied, modified, propagated, or distributed except according to the terms <em>contained in the LICENSE.txt file. </em></p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Shared pointer to the created <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1protocols_1_1srp_1_1SrpV0"><span class="std std-ref"><span class="pre">SrpV0</span></span></a></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols3srp5SrpV012setup_pythonEv">
+<span id="_CPPv3N5rogue9protocols3srp5SrpV012setup_pythonEv"></span><span id="_CPPv2N5rogue9protocols3srp5SrpV012setup_pythonEv"></span><span id="rogue::protocols::srp::SrpV0::setup_python"></span><span class="target" id="classrogue_1_1protocols_1_1srp_1_1SrpV0_1a051f867c951dd03d1f9419d341a1c595"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setup_python</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols3srp5SrpV012setup_pythonEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/SrpV0_8h_source.html#l00116"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/SrpV0_8cpp_source.html#l00056"><span class="pre">[impl]</span></a></dt>
+<dd><p>Registers Python bindings for this class. </p>
+<p>Setup class in python. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="rogue::protocols::srp" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="srpV3.html" class="btn btn-neutral float-right" title="SrpV3" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

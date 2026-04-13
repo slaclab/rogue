@@ -1,0 +1,296 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reading Frames From A File &mdash; Rogue v6.10.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=8b50afe1" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=dc21db2b"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../_static/custom.js?v=7b5dfb0b"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Custom Writers" href="custom.html" />
+    <link rel="prev" title="Writing Frames To A File" href="writing.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Built-in Modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../interfaces/index.html">Interfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../simulation/index.html">Simulation Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../protocols/index.html">Protocols</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../hardware/index.html">Hardware</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">Utilities</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">File I/O Utilities</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="format.html">Rogue File Data Format</a></li>
+<li class="toctree-l4"><a class="reference internal" href="writing.html">Writing Frames To A File</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Reading Frames From A File</a></li>
+<li class="toctree-l4"><a class="reference internal" href="custom.html">Custom Writers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="python_reader.html">Python File Reader</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../prbs/index.html">PRBS Utilities</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../hls/index.html">HLS Utilities</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../compression/index.html">Compression Utilities</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">API Reference</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Built-in Modules</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Utilities</a></li>
+          <li class="breadcrumb-item"><a href="index.html">File I/O Utilities</a></li>
+      <li class="breadcrumb-item active">Reading Frames From A File</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/built_in_modules/utilities/fileio/reading.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="reading-frames-from-a-file">
+<span id="utilities-fileio-reading"></span><h1>Reading Frames From A File<a class="headerlink" href="#reading-frames-from-a-file" title="Link to this heading"></a></h1>
+<p>For replay workflows that should be controlled from a PyRogue tree, PyRogue
+provides <code class="docutils literal notranslate"><span class="pre">pyrogue.utilities.fileio.StreamReader</span></code>. It wraps the lower-level
+<code class="docutils literal notranslate"><span class="pre">rogue.utilities.fileio.StreamReader</span></code> and exposes file selection plus open
+and close commands through a small tree-visible <code class="docutils literal notranslate"><span class="pre">Device</span></code>.</p>
+<p>The underlying <code class="docutils literal notranslate"><span class="pre">rogue.utilities.fileio.StreamReader</span></code> reconstructs captured
+Rogue records as live <code class="docutils literal notranslate"><span class="pre">Frame</span></code> traffic. Payload bytes, channel IDs, flags, and
+error state are restored from the file and propagated downstream as replayed
+frames.</p>
+<p>Frames can be read in a streaming fashion using <code class="docutils literal notranslate"><span class="pre">StreamReader</span></code>. Each data
+record is emitted as a Rogue <code class="docutils literal notranslate"><span class="pre">Frame</span></code> with payload and metadata preserved from
+the original file capture. If multiple channels were used during writing, the
+replayed frames retain those channel IDs. A stream filter stage can then route
+replayed frames by channel as needed.</p>
+<p>For file-format details consumed by the reader, see
+<a class="reference internal" href="format.html#utilities-fileio-format"><span class="std std-ref">Rogue File Data Format</span></a>.</p>
+<section id="when-to-use-each-form">
+<h2>When To Use Each Form<a class="headerlink" href="#when-to-use-each-form" title="Link to this heading"></a></h2>
+<p>Use the wrapper when replay should be started from a <code class="docutils literal notranslate"><span class="pre">Root</span></code> tree, a GUI, or
+remote client code. Use the direct Rogue reader when a standalone script just
+needs a file-to-stream replay source.</p>
+</section>
+<section id="common-controls">
+<h2>Common Controls<a class="headerlink" href="#common-controls" title="Link to this heading"></a></h2>
+<p>At the wrapper layer, most workflows only need:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">DataFile</span></code>
+Input filename exposed as a tree variable.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Open</span></code>
+Starts replay.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Close</span></code>
+Stops replay.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">isOpen</span></code>
+Reports whether replay is still active.</p></li>
+</ul>
+<p>At the direct utility layer, the main controls are:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">open(path)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">closeWait()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">close()</span></code></p></li>
+</ul>
+<p>When the input name ends with <code class="docutils literal notranslate"><span class="pre">.1</span></code>, the reader automatically attempts
+<code class="docutils literal notranslate"><span class="pre">.2</span></code>, <code class="docutils literal notranslate"><span class="pre">.3</span></code>, and so on as a split-file sequence.</p>
+</section>
+<section id="tree-managed-reader-form">
+<h2>Tree-Managed Reader Form<a class="headerlink" href="#tree-managed-reader-form" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">pyrogue.utilities.fileio.StreamReader</span></code> is intentionally thinner than the
+writer wrapper. It adds the file-selection variables and commands, but it does
+not expose a tree-visible <code class="docutils literal notranslate"><span class="pre">closeWait()</span></code> equivalent.</p>
+<p>That means wrapper-level code usually calls <code class="docutils literal notranslate"><span class="pre">Open()</span></code> and then polls
+<code class="docutils literal notranslate"><span class="pre">isOpen</span></code> when blocking behavior is needed. If a script wants direct blocking
+control, the lower-level <code class="docutils literal notranslate"><span class="pre">rogue.utilities.fileio.StreamReader</span></code> remains the
+simpler form.</p>
+</section>
+<section id="logging">
+<h2>Logging<a class="headerlink" href="#logging" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">StreamReader</span></code> does not expose a dedicated file-reader logger in the same way
+that <code class="docutils literal notranslate"><span class="pre">StreamWriter</span></code> does.</p>
+<p>For replay debugging, the practical approaches are:</p>
+<ul class="simple">
+<li><p>Attach a downstream debug <code class="docutils literal notranslate"><span class="pre">Slave</span></code> and use <code class="docutils literal notranslate"><span class="pre">setDebug(maxBytes,</span> <span class="pre">name)</span></code> to
+inspect replayed frames.</p></li>
+<li><p>Use application-level logging in the downstream stream consumer if replay
+behavior needs to be correlated with higher-level processing.</p></li>
+</ul>
+<p>See <a class="reference internal" href="../../../stream_interface/debugStreams.html"><span class="doc">Debugging Streams</span></a> for the standard debug-tap pattern.</p>
+</section>
+<section id="python-direct-utility-example">
+<h2>Python Direct-Utility Example<a class="headerlink" href="#python-direct-utility-example" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">rogue.utilities.fileio</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ruf</span>
+
+<span class="c1"># Create the file-to-stream replay source.</span>
+<span class="n">fread</span> <span class="o">=</span> <span class="n">ruf</span><span class="o">.</span><span class="n">StreamReader</span><span class="p">()</span>
+
+<span class="c1"># Connect reader output to an existing stream slave.</span>
+<span class="n">fread</span> <span class="o">&gt;&gt;</span> <span class="n">receiver</span>
+
+<span class="c1"># Opening .1 auto-advances through split files (.2, .3, ...).</span>
+<span class="n">fread</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;myFile.dat.1&quot;</span><span class="p">)</span>
+<span class="n">fread</span><span class="o">.</span><span class="n">closeWait</span><span class="p">()</span>
+
+<span class="c1"># Or call close() for immediate stop.</span>
+<span class="c1"># fread.close()</span>
+</pre></div>
+</div>
+</section>
+<section id="python-tree-managed-example">
+<h2>Python Tree-Managed Example<a class="headerlink" href="#python-tree-managed-example" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue.utilities.fileio</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">puf</span>
+
+<span class="c1"># Add a tree-managed reader so file replay can be controlled by clients/GUI.</span>
+<span class="n">fread</span> <span class="o">=</span> <span class="n">puf</span><span class="o">.</span><span class="n">StreamReader</span><span class="p">()</span>
+<span class="n">root</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">fread</span><span class="p">)</span>
+
+<span class="c1"># Route replayed frames to a downstream stream consumer.</span>
+<span class="n">fread</span> <span class="o">&gt;&gt;</span> <span class="n">receiver</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+
+<span class="c1"># Configure and run replay via Device variables/commands.</span>
+<span class="n">fread</span><span class="o">.</span><span class="n">DataFile</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;myFile.dat.1&quot;</span><span class="p">)</span>
+<span class="n">fread</span><span class="o">.</span><span class="n">Open</span><span class="p">()</span>
+
+<span class="c1"># Wait for replay to finish when script-style blocking behavior is needed.</span>
+<span class="k">while</span> <span class="n">fread</span><span class="o">.</span><span class="n">isOpen</span><span class="o">.</span><span class="n">get</span><span class="p">():</span>
+   <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This wrapper is a natural partner for tree-facing stream sinks such as
+<code class="docutils literal notranslate"><span class="pre">pyrogue.DataReceiver</span></code> subclasses: the reader provides the replay source,
+and the downstream device decodes or publishes the replayed frames.</p>
+</section>
+<section id="c-streamreader-example">
+<h2>C++ StreamReader Example<a class="headerlink" href="#c-streamreader-example" title="Link to this heading"></a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;rogue/utilities/fileio/StreamReader.h&gt;</span>
+
+<span class="k">namespace</span><span class="w"> </span><span class="nn">ruf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nn">rogue</span><span class="o">::</span><span class="nn">utilities</span><span class="o">::</span><span class="nn">fileio</span><span class="p">;</span>
+
+<span class="c1">// Create the file-to-stream replay source.</span>
+<span class="k">auto</span><span class="w"> </span><span class="n">fread</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ruf</span><span class="o">::</span><span class="n">StreamReader</span><span class="o">::</span><span class="n">create</span><span class="p">();</span>
+
+<span class="c1">// Connect reader output to an existing stream slave.</span>
+<span class="n">fread</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">receiver</span><span class="p">;</span>
+
+<span class="c1">// Open split-file sequence and wait for completion.</span>
+<span class="n">fread</span><span class="o">-&gt;</span><span class="n">open</span><span class="p">(</span><span class="s">&quot;myFile.dat.1&quot;</span><span class="p">);</span>
+<span class="n">fread</span><span class="o">-&gt;</span><span class="n">closeWait</span><span class="p">();</span>
+</pre></div>
+</div>
+</section>
+<section id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>C++: <a class="reference internal" href="../../../api/cpp/utilities/fileio/reader.html"><span class="doc">StreamReader</span></a></p></li>
+<li><p>Python: <a class="reference internal" href="../../../api/python/pyrogue/utilities/fileio/streamreader.html"><span class="doc">StreamReader</span></a></p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="writing.html" class="btn btn-neutral float-left" title="Writing Frames To A File" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="custom.html" class="btn btn-neutral float-right" title="Custom Writers" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

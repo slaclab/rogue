@@ -1,0 +1,770 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Frame &mdash; Rogue v6.10.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css?v=8b50afe1" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=dc21db2b"></script>
+      <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../../_static/custom.js?v=7b5dfb0b"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link rel="next" title="Frame Lock" href="frameLock.html" />
+    <link rel="prev" title="rogue::interfaces::stream" href="index.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../../python/index.html">Python API</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../../index.html">C++ API</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../../rogue_index.html">rogue</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../../interfaces_index.html">rogue::interfaces</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html">rogue::interfaces::api</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../memory/index.html">rogue::interfaces::memory</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="index.html">rogue::interfaces::stream</a><ul class="current">
+<li class="toctree-l5 current"><a class="current reference internal" href="#">Frame</a></li>
+<li class="toctree-l5"><a class="reference internal" href="frameLock.html">Frame Lock</a></li>
+<li class="toctree-l5"><a class="reference internal" href="frameIterator.html">Frame Iterator</a></li>
+<li class="toctree-l5"><a class="reference internal" href="frameAccessor.html">Frame Accessor</a></li>
+<li class="toctree-l5"><a class="reference internal" href="helpers.html">Frame Helpers</a></li>
+<li class="toctree-l5"><a class="reference internal" href="master.html">Master</a></li>
+<li class="toctree-l5"><a class="reference internal" href="slave.html">Slave</a></li>
+<li class="toctree-l5"><a class="reference internal" href="fifo.html">Fifo</a></li>
+<li class="toctree-l5"><a class="reference internal" href="tcpCore.html">TcpCore</a></li>
+<li class="toctree-l5"><a class="reference internal" href="tcpClient.html">TcpClient</a></li>
+<li class="toctree-l5"><a class="reference internal" href="tcpServer.html">TcpServer</a></li>
+<li class="toctree-l5"><a class="reference internal" href="filter.html">Filter</a></li>
+<li class="toctree-l5"><a class="reference internal" href="rateDrop.html">RateDrop</a></li>
+<li class="toctree-l5"><a class="reference internal" href="buffer.html">Buffer</a></li>
+<li class="toctree-l5"><a class="reference internal" href="pool.html">Pool</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../zmqClient.html">rogue::interfaces::ZmqClient</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../protocols_index.html">rogue::protocols</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../hardware_index.html">rogue::hardware</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../utilities_index.html">rogue::utilities</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">API Reference</a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">C++ API</a></li>
+          <li class="breadcrumb-item"><a href="../../interfaces_index.html">rogue::interfaces</a></li>
+          <li class="breadcrumb-item"><a href="index.html">rogue::interfaces::stream</a></li>
+      <li class="breadcrumb-item active">Frame</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../_sources/api/cpp/interfaces/stream/frame.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="frame">
+<span id="interfaces-stream-frame"></span><h1>Frame<a class="headerlink" href="#frame" title="Link to this heading"></a></h1>
+<p>For conceptual usage, see:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../../../../stream_interface/index.html"><span class="doc">Stream Interface</span></a></p></li>
+<li><p><a class="reference internal" href="../../../../stream_interface/frame_model.html"><span class="doc">Frame Model</span></a></p></li>
+<li><p><a class="reference internal" href="../../../../stream_interface/connecting.html"><span class="doc">Connecting Streams</span></a></p></li>
+</ul>
+<section id="python-binding">
+<h2>Python binding<a class="headerlink" href="#python-binding" title="Link to this heading"></a></h2>
+<p>This C++ class is also exported into Python as <code class="docutils literal notranslate"><span class="pre">rogue.interfaces.stream.Frame</span></code>.</p>
+<p>Python API page:
+- <a class="reference internal" href="../../../python/rogue/interfaces/stream/frame.html"><span class="doc">Frame</span></a></p>
+<p>objects in C++ are referenced by the following shared pointer typedef:</p>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream8FramePtrE">
+<span id="_CPPv3N5rogue10interfaces6stream8FramePtrE"></span><span id="_CPPv2N5rogue10interfaces6stream8FramePtrE"></span><span id="rogue::interfaces::stream::FramePtr"></span><span class="target" id="namespacerogue_1_1interfaces_1_1stream_1aabbfca1143d6d05a2bb0afc11e667778"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream5FrameE" title="rogue::interfaces::stream::Frame"><span class="n"><span class="pre">Frame</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">FramePtr</span></span></span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream8FramePtrE" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8h_source.html#l00549"><span class="pre">[header]</span></a></dt>
+<dd><p>Shared pointer alias for <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref"><span class="pre">Frame</span></span></a></code>. </p>
+</dd></dl>
+
+<p>The class description is shown below:</p>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream5FrameE">
+<span id="_CPPv3N5rogue10interfaces6stream5FrameE"></span><span id="_CPPv2N5rogue10interfaces6stream5FrameE"></span><span id="rogue::interfaces::stream::Frame"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Frame</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">EnableSharedFromThis</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream5FrameE" title="rogue::interfaces::stream::Frame"><span class="n"><span class="pre">Frame</span></span></a><span class="p"><span class="pre">&gt;</span></span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5FrameE" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8h_source.html#l00056"><span class="pre">[header]</span></a></dt>
+<dd><p>Container for one stream frame payload and metadata. </p>
+<p>In Rogue stream interfaces, each logical frame in flight is represented by one <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref"><span class="pre">Frame</span></span></a></code> instance. The frame object does not directly allocate contiguous payload memory. Instead, it owns an ordered list of <code class="docutils literal notranslate"><a class="reference internal" href="buffer.html#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref"><span class="pre">Buffer</span></span></a></code> objects that provide the underlying storage.</p>
+<p><code class="docutils literal notranslate"><a class="reference internal" href="frameIterator.html#classrogue_1_1interfaces_1_1stream_1_1FrameIterator"><span class="std std-ref"><span class="pre">FrameIterator</span></span></a></code> traverses payload bytes across buffer boundaries, so higher-level protocol code can read or write frame content without manual buffer stitching. The frame also carries transport metadata (<code class="docutils literal notranslate"><span class="pre">flags</span></code>, <code class="docutils literal notranslate"><span class="pre">channel</span></code>, <code class="docutils literal notranslate"><span class="pre">error</span></code>) and payload accounting (<code class="docutils literal notranslate"><span class="pre">size</span></code>, <code class="docutils literal notranslate"><span class="pre">payload</span></code>, and available space). </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-types">Public Types</p>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream5Frame14BufferIteratorE">
+<span id="_CPPv3N5rogue10interfaces6stream5Frame14BufferIteratorE"></span><span id="_CPPv2N5rogue10interfaces6stream5Frame14BufferIteratorE"></span><span id="rogue::interfaces::stream::Frame::BufferIterator"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a64b4313f9494e4f54e69a03e946db671"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="buffer.html#_CPPv4N5rogue10interfaces6stream6BufferE" title="rogue::interfaces::stream::Buffer"><span class="n"><span class="pre">Buffer</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">iterator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">BufferIterator</span></span></span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Frame14BufferIteratorE" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8h_source.html#l00093"><span class="pre">[header]</span></a></dt>
+<dd><p>Iterator alias for the internal buffer list. </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream5Frame5FrameEv">
+<span id="_CPPv3N5rogue10interfaces6stream5Frame5FrameEv"></span><span id="_CPPv2N5rogue10interfaces6stream5Frame5FrameEv"></span><span id="rogue::interfaces::stream::Frame::Frame"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a5d63afba0513bee7ac5cafb60a0476b8"></span><span class="sig-name descname"><span class="n"><span class="pre">Frame</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Frame5FrameEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8h_source.html#l00118"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8cpp_source.html#l00052"><span class="pre">[impl]</span></a></dt>
+<dd><p>Constructs an empty frame. </p>
+<p>Create an empty frame.</p>
+<p>This constructor is a low-level C++ allocation path. Prefer <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame_1a91634f18880c4d2ec19410bac81ea655"><span class="std std-ref"><span class="pre">create()</span></span></a></code> when shared ownership or Python exposure is required. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream5FrameD0Ev">
+<span id="_CPPv3N5rogue10interfaces6stream5FrameD0Ev"></span><span id="_CPPv2N5rogue10interfaces6stream5FrameD0Ev"></span><span id="rogue::interfaces::stream::Frame::~Frame"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1ad929bf5a0ef04651a748a0a35feeebcc"></span><span class="sig-name descname"><span class="n"><span class="pre">~Frame</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5FrameD0Ev" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8h_source.html#l00121"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8cpp_source.html#l00062"><span class="pre">[impl]</span></a></dt>
+<dd><p>Destroys the frame instance. </p>
+<p>Destroy a frame. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream5Frame4lockEv">
+<span id="_CPPv3N5rogue10interfaces6stream5Frame4lockEv"></span><span id="_CPPv2N5rogue10interfaces6stream5Frame4lockEv"></span><span id="rogue::interfaces::stream::Frame::lock"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a04cb04c567c0209eec0ee5fb85608ddd"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="frameLock.html#_CPPv4N5rogue10interfaces6stream9FrameLockE" title="rogue::interfaces::stream::FrameLock"><span class="n"><span class="pre">FrameLock</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">lock</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Frame4lockEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8h_source.html#l00138"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8cpp_source.html#l00065"><span class="pre">[impl]</span></a></dt>
+<dd><p>Locks the frame and returns a scoped lock object. </p>
+<p>Get lock.</p>
+<p>Acquire this lock before operating on a <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref"><span class="pre">Frame</span></span></a></code> object from user code, especially when reading or writing payload bytes, adjusting payload size, or changing metadata fields (<code class="docutils literal notranslate"><span class="pre">flags</span></code>, <code class="docutils literal notranslate"><span class="pre">channel</span></code>, <code class="docutils literal notranslate"><span class="pre">error</span></code>). This is the standard synchronization mechanism for frame access and should be treated as required whenever a frame can be observed or modified outside a single thread’s private scope.</p>
+<p>Exposed as <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame_1a04cb04c567c0209eec0ee5fb85608ddd"><span class="std std-ref"><span class="pre">lock()</span></span></a></code> in Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Shared pointer to a <code class="docutils literal notranslate"><a class="reference internal" href="frameLock.html#classrogue_1_1interfaces_1_1stream_1_1FrameLock"><span class="std std-ref"><span class="pre">FrameLock</span></span></a></code>. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream5Frame11appendFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE">
+<span id="_CPPv3N5rogue10interfaces6stream5Frame11appendFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE"></span><span id="_CPPv2N5rogue10interfaces6stream5Frame11appendFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE"></span><span id="rogue::interfaces::stream::Frame::appendFrame__std::shared_ptr:rogue::interfaces::stream::Frame:"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1aaf190a62e58c9302252f19d3c3275f19"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="buffer.html#_CPPv4N5rogue10interfaces6stream6BufferE" title="rogue::interfaces::stream::Buffer"><span class="n"><span class="pre">Buffer</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">iterator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">appendFrame</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream5FrameE" title="rogue::interfaces::stream::Frame"><span class="n"><span class="pre">Frame</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">frame</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Frame11appendFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8h_source.html#l00152"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8cpp_source.html#l00080"><span class="pre">[impl]</span></a></dt>
+<dd><p>Appends another frame’s buffers to the end of this frame. </p>
+<p>Append passed frame buffers to end of frame.</p>
+<p>Buffers from the passed frame are appended to the end of this frame and will be removed from the source frame.</p>
+<p>Not exposed to Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>frame</strong> – Source frame pointer (<code class="docutils literal notranslate"><span class="pre">FramePtr</span></code>) to append. </p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Iterator pointing to the first inserted buffer from <code class="docutils literal notranslate"><span class="pre">frame</span></code>. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream5Frame12appendBufferENSt10shared_ptrIN5rogue10interfaces6stream6BufferEEE">
+<span id="_CPPv3N5rogue10interfaces6stream5Frame12appendBufferENSt10shared_ptrIN5rogue10interfaces6stream6BufferEEE"></span><span id="_CPPv2N5rogue10interfaces6stream5Frame12appendBufferENSt10shared_ptrIN5rogue10interfaces6stream6BufferEEE"></span><span id="rogue::interfaces::stream::Frame::appendBuffer__std::shared_ptr:rogue::interfaces::stream::Buffer:"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a79562c028bc1e89c7bc4299089235898"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="buffer.html#_CPPv4N5rogue10interfaces6stream6BufferE" title="rogue::interfaces::stream::Buffer"><span class="n"><span class="pre">Buffer</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">iterator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">appendBuffer</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="buffer.html#_CPPv4N5rogue10interfaces6stream6BufferE" title="rogue::interfaces::stream::Buffer"><span class="n"><span class="pre">Buffer</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">buff</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Frame12appendBufferENSt10shared_ptrIN5rogue10interfaces6stream6BufferEEE" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8h_source.html#l00165"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8cpp_source.html#l00070"><span class="pre">[impl]</span></a></dt>
+<dd><p>Appends one buffer to the end of the frame. </p>
+<p>Add a buffer to end of frame.</p>
+<p>Not exposed to Python.</p>
+<p>This is for advanced manipulation of the underlying buffers. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>buff</strong> – <a class="reference internal" href="buffer.html#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> pointer (<code class="docutils literal notranslate"><span class="pre">BufferPtr</span></code>) to append. </p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Iterator pointing to the added buffer. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream5Frame11beginBufferEv">
+<span id="_CPPv3N5rogue10interfaces6stream5Frame11beginBufferEv"></span><span id="_CPPv2N5rogue10interfaces6stream5Frame11beginBufferEv"></span><span id="rogue::interfaces::stream::Frame::beginBuffer"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1aa3733f246a54a102aa54934d8d5044a3"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="buffer.html#_CPPv4N5rogue10interfaces6stream6BufferE" title="rogue::interfaces::stream::Buffer"><span class="n"><span class="pre">Buffer</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">iterator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">beginBuffer</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Frame11beginBufferEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8h_source.html#l00177"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8cpp_source.html#l00093"><span class="pre">[impl]</span></a></dt>
+<dd><p>Returns iterator to first underlying buffer. </p>
+<p><a class="reference internal" href="buffer.html#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> begin iterator.</p>
+<p>Not exposed to Python.</p>
+<p>This is for advanced manipulation of the underlying buffers. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Iterator pointing to the start of the buffer list. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream5Frame9endBufferEv">
+<span id="_CPPv3N5rogue10interfaces6stream5Frame9endBufferEv"></span><span id="_CPPv2N5rogue10interfaces6stream5Frame9endBufferEv"></span><span id="rogue::interfaces::stream::Frame::endBuffer"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1acdfcab165c0dce18db414b1751915889"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="buffer.html#_CPPv4N5rogue10interfaces6stream6BufferE" title="rogue::interfaces::stream::Buffer"><span class="n"><span class="pre">Buffer</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">iterator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">endBuffer</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Frame9endBufferEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8h_source.html#l00188"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8cpp_source.html#l00098"><span class="pre">[impl]</span></a></dt>
+<dd><p>Returns end iterator for underlying buffer list. </p>
+<p><a class="reference internal" href="buffer.html#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> end iterator.</p>
+<p>Not exposed to Python.</p>
+<p>This is for advanced manipulation of the underlying buffers. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Iterator pointing to the end of the buffer list. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream5Frame11bufferCountEv">
+<span id="_CPPv3N5rogue10interfaces6stream5Frame11bufferCountEv"></span><span id="_CPPv2N5rogue10interfaces6stream5Frame11bufferCountEv"></span><span id="rogue::interfaces::stream::Frame::bufferCount"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a72b21b83111b76963f8a0c487df5c154"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">bufferCount</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Frame11bufferCountEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8h_source.html#l00199"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8cpp_source.html#l00103"><span class="pre">[impl]</span></a></dt>
+<dd><p>Returns number of underlying buffers in the frame. </p>
+<p><a class="reference internal" href="buffer.html#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> count.</p>
+<p>Not exposed to Python.</p>
+<p>This is for advanced manipulation of the underlying buffers. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Number of buffers in the list. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream5Frame5clearEv">
+<span id="_CPPv3N5rogue10interfaces6stream5Frame5clearEv"></span><span id="_CPPv2N5rogue10interfaces6stream5Frame5clearEv"></span><span id="rogue::interfaces::stream::Frame::clear"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1abb77abc689a3ce1f04e3a727490db83a"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">clear</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Frame5clearEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8h_source.html#l00207"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8cpp_source.html#l00108"><span class="pre">[impl]</span></a></dt>
+<dd><p>Removes all buffers from the frame. </p>
+<p>Clear the list.</p>
+<p>Not exposed to Python. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream5Frame7isEmptyEv">
+<span id="_CPPv3N5rogue10interfaces6stream5Frame7isEmptyEv"></span><span id="_CPPv2N5rogue10interfaces6stream5Frame7isEmptyEv"></span><span id="rogue::interfaces::stream::Frame::isEmpty"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1abeaa1812591830ce728a83075bcb400e"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">isEmpty</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Frame7isEmptyEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8h_source.html#l00217"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8cpp_source.html#l00115"><span class="pre">[impl]</span></a></dt>
+<dd><p>Returns whether the frame contains no buffers. </p>
+<p><a class="reference internal" href="buffer.html#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> list is empty.</p>
+<p>Not exposed to Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">true</span></code> if frame buffer list is empty. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream5Frame7getSizeEv">
+<span id="_CPPv3N5rogue10interfaces6stream5Frame7getSizeEv"></span><span id="_CPPv2N5rogue10interfaces6stream5Frame7getSizeEv"></span><span id="rogue::interfaces::stream::Frame::getSize"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1ae18b2ebade7c22f6e6ff2ca6047410a9"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getSize</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Frame7getSizeEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8h_source.html#l00229"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8cpp_source.html#l00144"><span class="pre">[impl]</span></a></dt>
+<dd><p>Returns total raw frame capacity in bytes. </p>
+<p>This function returns the full buffer size.</p>
+<p>Exposed as <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame_1ae18b2ebade7c22f6e6ff2ca6047410a9"><span class="std std-ref"><span class="pre">getSize()</span></span></a></code> in Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Total raw buffer size of frame in bytes. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream5Frame12getAvailableEv">
+<span id="_CPPv3N5rogue10interfaces6stream5Frame12getAvailableEv"></span><span id="_CPPv2N5rogue10interfaces6stream5Frame12getAvailableEv"></span><span id="rogue::interfaces::stream::Frame::getAvailable"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a84a26b8dd545c2dc3a489b3596c4a4d0"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getAvailable</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Frame12getAvailableEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8h_source.html#l00241"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8cpp_source.html#l00154"><span class="pre">[impl]</span></a></dt>
+<dd><p>Returns remaining available payload space in bytes. </p>
+<p>This is the space remaining for payload.</p>
+<p>Exposed as <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame_1a84a26b8dd545c2dc3a489b3596c4a4d0"><span class="std std-ref"><span class="pre">getAvailable()</span></span></a></code> in Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Remaining bytes available for payload in the frame. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream5Frame10getPayloadEv">
+<span id="_CPPv3N5rogue10interfaces6stream5Frame10getPayloadEv"></span><span id="_CPPv2N5rogue10interfaces6stream5Frame10getPayloadEv"></span><span id="rogue::interfaces::stream::Frame::getPayload"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a6de871a21683c12274372162c82512f2"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getPayload</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Frame10getPayloadEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8h_source.html#l00250"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8cpp_source.html#l00165"><span class="pre">[impl]</span></a></dt>
+<dd><p>Returns current payload size in bytes. </p>
+<p>Exposed as <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame_1a6de871a21683c12274372162c82512f2"><span class="std std-ref"><span class="pre">getPayload()</span></span></a></code> in Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Total payload bytes in the frame. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream5Frame10setPayloadE8uint32_t">
+<span id="_CPPv3N5rogue10interfaces6stream5Frame10setPayloadE8uint32_t"></span><span id="_CPPv2N5rogue10interfaces6stream5Frame10setPayloadE8uint32_t"></span><span id="rogue::interfaces::stream::Frame::setPayload__uint32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1aaf4d97a4f4ffe2b7803acc9c62758f5d"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setPayload</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">size</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Frame10setPayloadE8uint32_t" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8h_source.html#l00260"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8cpp_source.html#l00175"><span class="pre">[impl]</span></a></dt>
+<dd><p>Sets payload size in bytes. </p>
+<p>Not exposed to Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>size</strong> – New payload size. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream5Frame10minPayloadE8uint32_t">
+<span id="_CPPv3N5rogue10interfaces6stream5Frame10minPayloadE8uint32_t"></span><span id="_CPPv2N5rogue10interfaces6stream5Frame10minPayloadE8uint32_t"></span><span id="rogue::interfaces::stream::Frame::minPayload__uint32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1ac371a2feba1fe233d0589e732928cd79"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">minPayload</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">size</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Frame10minPayloadE8uint32_t" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8h_source.html#l00273"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8cpp_source.html#l00219"><span class="pre">[impl]</span></a></dt>
+<dd><p>Expands payload size to at least the passed value. </p>
+<p>If current payload size is larger than the passed value, the payload size is unchanged.</p>
+<p>Not exposed to Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>size</strong> – New minimum size. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream5Frame13adjustPayloadE7int32_t">
+<span id="_CPPv3N5rogue10interfaces6stream5Frame13adjustPayloadE7int32_t"></span><span id="_CPPv2N5rogue10interfaces6stream5Frame13adjustPayloadE7int32_t"></span><span id="rogue::interfaces::stream::Frame::adjustPayload__int32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1ac0a596f34fcbdcaf1488121a52ae989c"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">adjustPayload</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">int32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Frame13adjustPayloadE7int32_t" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8h_source.html#l00285"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8cpp_source.html#l00224"><span class="pre">[impl]</span></a></dt>
+<dd><p>Adjusts payload size by a signed delta. </p>
+<p>Adjust payload size.</p>
+<p><code class="docutils literal notranslate"><span class="pre">value</span></code> is a positive or negative size adjustment.</p>
+<p>Not exposed to Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>value</strong> – Size adjustment value. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream5Frame14setPayloadFullEv">
+<span id="_CPPv3N5rogue10interfaces6stream5Frame14setPayloadFullEv"></span><span id="_CPPv2N5rogue10interfaces6stream5Frame14setPayloadFullEv"></span><span id="rogue::interfaces::stream::Frame::setPayloadFull"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1aba2378680daedbcc5452cf474e06597e"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setPayloadFull</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Frame14setPayloadFullEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8h_source.html#l00295"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8cpp_source.html#l00237"><span class="pre">[impl]</span></a></dt>
+<dd><p>Sets payload size to full available frame capacity. </p>
+<p>Set the buffer as full (minus tail reservation)</p>
+<p>Sets payload size equal to total available buffer capacity.</p>
+<p>Not exposed to Python. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream5Frame15setPayloadEmptyEv">
+<span id="_CPPv3N5rogue10interfaces6stream5Frame15setPayloadEmptyEv"></span><span id="_CPPv2N5rogue10interfaces6stream5Frame15setPayloadEmptyEv"></span><span id="rogue::interfaces::stream::Frame::setPayloadEmpty"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1aae025cc94c81b1d7c32174a5ab520354"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setPayloadEmpty</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Frame15setPayloadEmptyEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8h_source.html#l00298"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8cpp_source.html#l00253"><span class="pre">[impl]</span></a></dt>
+<dd><p>Sets the frame payload size to zero bytes. </p>
+<p>Set the buffer as empty (minus header reservation) </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream5Frame8getFlagsEv">
+<span id="_CPPv3N5rogue10interfaces6stream5Frame8getFlagsEv"></span><span id="_CPPv2N5rogue10interfaces6stream5Frame8getFlagsEv"></span><span id="rogue::interfaces::stream::Frame::getFlags"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1af06fb1ca0017c196d03a9843c6e2ce1b"></span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getFlags</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Frame8getFlagsEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8h_source.html#l00313"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8cpp_source.html#l00269"><span class="pre">[impl]</span></a></dt>
+<dd><p>Returns 16-bit frame flags field. </p>
+<p>Get flags.</p>
+<p>The <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> flags field is a 16-bit application specific field for passing data between a stream <a class="reference internal" href="master.html#classrogue_1_1interfaces_1_1stream_1_1Master"><span class="std std-ref">Master</span></a> and <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">Slave</span></a>. A typical use in Rogue is to pass the first and last user Axi-Stream fields.</p>
+<p>Exposed as <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame_1af06fb1ca0017c196d03a9843c6e2ce1b"><span class="std std-ref"><span class="pre">getFlags()</span></span></a></code> in Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>16-bit flag value. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream5Frame8setFlagsE8uint16_t">
+<span id="_CPPv3N5rogue10interfaces6stream5Frame8setFlagsE8uint16_t"></span><span id="_CPPv2N5rogue10interfaces6stream5Frame8setFlagsE8uint16_t"></span><span id="rogue::interfaces::stream::Frame::setFlags__uint16_t"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a72b9b5f1fba5a053f43daf71b6e7ff6c"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setFlags</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">flags</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Frame8setFlagsE8uint16_t" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8h_source.html#l00322"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8cpp_source.html#l00274"><span class="pre">[impl]</span></a></dt>
+<dd><p>Sets 16-bit frame flags field. </p>
+<p>Set error state.</p>
+<p>Exposed as <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame_1a72b9b5f1fba5a053f43daf71b6e7ff6c"><span class="std std-ref"><span class="pre">setFlags()</span></span></a></code> in Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>flags</strong> – 16-bit flag value. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream5Frame12getFirstUserEv">
+<span id="_CPPv3N5rogue10interfaces6stream5Frame12getFirstUserEv"></span><span id="_CPPv2N5rogue10interfaces6stream5Frame12getFirstUserEv"></span><span id="rogue::interfaces::stream::Frame::getFirstUser"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1acf5caf501e8f998b343e562e5432a946"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getFirstUser</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Frame12getFirstUserEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8h_source.html#l00334"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8cpp_source.html#l00279"><span class="pre">[impl]</span></a></dt>
+<dd><p>Returns the lower 8-bit user field from flags (SSI/Axi-Stream). </p>
+<p>The first user value is stored in the lower 8 bits of the flag field.</p>
+<p>Exposed as <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame_1acf5caf501e8f998b343e562e5432a946"><span class="std std-ref"><span class="pre">getFirstUser()</span></span></a></code> in Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>8-bit first-user value. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream5Frame12setFirstUserE7uint8_t">
+<span id="_CPPv3N5rogue10interfaces6stream5Frame12setFirstUserE7uint8_t"></span><span id="_CPPv2N5rogue10interfaces6stream5Frame12setFirstUserE7uint8_t"></span><span id="rogue::interfaces::stream::Frame::setFirstUser__uint8_t"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1adc623290ea7a27b565b9e7bb40ebe80a"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setFirstUser</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">fuser</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Frame12setFirstUserE7uint8_t" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8h_source.html#l00343"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8cpp_source.html#l00285"><span class="pre">[impl]</span></a></dt>
+<dd><p>Sets the lower 8-bit user field in flags (SSI/Axi-Stream). </p>
+<p>Exposed as <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame_1adc623290ea7a27b565b9e7bb40ebe80a"><span class="std std-ref"><span class="pre">setFirstUser()</span></span></a></code> to Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>fuser</strong> – 8-bit first-user value. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream5Frame11getLastUserEv">
+<span id="_CPPv3N5rogue10interfaces6stream5Frame11getLastUserEv"></span><span id="_CPPv2N5rogue10interfaces6stream5Frame11getLastUserEv"></span><span id="rogue::interfaces::stream::Frame::getLastUser"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a85622715941a780db631f9b041ecb6f9"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getLastUser</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Frame11getLastUserEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8h_source.html#l00355"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8cpp_source.html#l00290"><span class="pre">[impl]</span></a></dt>
+<dd><p>Returns the upper 8-bit user field from flags (SSI/Axi-Stream). </p>
+<p>The last user value is stored in the upper 8 bits of the flag field.</p>
+<p>Exposed as <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame_1a85622715941a780db631f9b041ecb6f9"><span class="std std-ref"><span class="pre">getLastUser()</span></span></a></code> in Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>8-bit last-user value. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream5Frame11setLastUserE7uint8_t">
+<span id="_CPPv3N5rogue10interfaces6stream5Frame11setLastUserE7uint8_t"></span><span id="_CPPv2N5rogue10interfaces6stream5Frame11setLastUserE7uint8_t"></span><span id="rogue::interfaces::stream::Frame::setLastUser__uint8_t"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a31850834a52ecffc85db7dac3d03f540"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setLastUser</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">fuser</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Frame11setLastUserE7uint8_t" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8h_source.html#l00364"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8cpp_source.html#l00296"><span class="pre">[impl]</span></a></dt>
+<dd><p>Sets the upper 8-bit user field in flags (SSI/Axi-Stream). </p>
+<p>Exposed as <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame_1a31850834a52ecffc85db7dac3d03f540"><span class="std std-ref"><span class="pre">setLastUser()</span></span></a></code> to Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>fuser</strong> – 8-bit last-user value. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream5Frame10getChannelEv">
+<span id="_CPPv3N5rogue10interfaces6stream5Frame10getChannelEv"></span><span id="_CPPv2N5rogue10interfaces6stream5Frame10getChannelEv"></span><span id="rogue::interfaces::stream::Frame::getChannel"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a69a180c5ee97b4cbec23888387d6fef6"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getChannel</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Frame10getChannelEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8h_source.html#l00378"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8cpp_source.html#l00312"><span class="pre">[impl]</span></a></dt>
+<dd><p>Returns frame channel value. </p>
+<p>Get channel.</p>
+<p>Most Frames in Rogue will not use this channel field since most <a class="reference internal" href="master.html#classrogue_1_1interfaces_1_1stream_1_1Master"><span class="std std-ref">Master</span></a> to <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">Slave</span></a> connections are not channelized. Exceptions include data coming out of a data file reader.</p>
+<p>Exposed as <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame_1a69a180c5ee97b4cbec23888387d6fef6"><span class="std std-ref"><span class="pre">getChannel()</span></span></a></code> in Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>8-bit channel ID. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream5Frame10setChannelE7uint8_t">
+<span id="_CPPv3N5rogue10interfaces6stream5Frame10setChannelE7uint8_t"></span><span id="_CPPv2N5rogue10interfaces6stream5Frame10setChannelE7uint8_t"></span><span id="rogue::interfaces::stream::Frame::setChannel__uint8_t"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1ae4f4ad8000d05381f5cd06b7353c2106"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setChannel</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">channel</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Frame10setChannelE7uint8_t" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8h_source.html#l00387"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8cpp_source.html#l00317"><span class="pre">[impl]</span></a></dt>
+<dd><p>Sets frame channel value. </p>
+<p>Set channel.</p>
+<p>Exposed as <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame_1ae4f4ad8000d05381f5cd06b7353c2106"><span class="std std-ref"><span class="pre">setChannel()</span></span></a></code> in Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>channel</strong> – 8-bit channel ID. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream5Frame8getErrorEv">
+<span id="_CPPv3N5rogue10interfaces6stream5Frame8getErrorEv"></span><span id="_CPPv2N5rogue10interfaces6stream5Frame8getErrorEv"></span><span id="rogue::interfaces::stream::Frame::getError"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a7762575ce42e07c04eba9ecd160de55d"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getError</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Frame8getErrorEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8h_source.html#l00400"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8cpp_source.html#l00302"><span class="pre">[impl]</span></a></dt>
+<dd><p>Returns frame error status value. </p>
+<p>Get error state.</p>
+<p>The error value is application specific, depending on the stream <a class="reference internal" href="master.html#classrogue_1_1interfaces_1_1stream_1_1Master"><span class="std std-ref">Master</span></a> implementation. A non-zero value is considered an error.</p>
+<p>Exposed as <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame_1a7762575ce42e07c04eba9ecd160de55d"><span class="std std-ref"><span class="pre">getError()</span></span></a></code> in Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Error status value. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream5Frame8setErrorE7uint8_t">
+<span id="_CPPv3N5rogue10interfaces6stream5Frame8setErrorE7uint8_t"></span><span id="_CPPv2N5rogue10interfaces6stream5Frame8setErrorE7uint8_t"></span><span id="rogue::interfaces::stream::Frame::setError__uint8_t"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a2f2b7dad7c5b1bf0a97e757f85e927e0"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setError</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">error</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Frame8setErrorE7uint8_t" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8h_source.html#l00409"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8cpp_source.html#l00307"><span class="pre">[impl]</span></a></dt>
+<dd><p>Sets frame error status value. </p>
+<p>Set error state.</p>
+<p>Exposed as <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame_1a2f2b7dad7c5b1bf0a97e757f85e927e0"><span class="std std-ref"><span class="pre">setError()</span></span></a></code> in Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>error</strong> – New error value. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream5Frame5beginEv">
+<span id="_CPPv3N5rogue10interfaces6stream5Frame5beginEv"></span><span id="_CPPv2N5rogue10interfaces6stream5Frame5beginEv"></span><span id="rogue::interfaces::stream::Frame::begin"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1aaeca1bab583acb86d077803c503eeccb"></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="frameIterator.html#_CPPv4N5rogue10interfaces6stream13FrameIteratorE" title="rogue::interfaces::stream::FrameIterator"><span class="n"><span class="pre">FrameIterator</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">begin</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Frame5beginEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8h_source.html#l00425"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8cpp_source.html#l00322"><span class="pre">[impl]</span></a></dt>
+<dd><p>Returns begin iterator over frame payload. </p>
+<p>Get start iterator.</p>
+<p>Returns an iterator for accessing data within the frame. This iterator assumes the payload size of the frame has already been set. This means the frame has either been received already containing data, or the <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame_1aaf4d97a4f4ffe2b7803acc9c62758f5d"><span class="std std-ref">setPayload()</span></a> method has been called.</p>
+<p>Not exposed to Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><a class="reference internal" href="frameIterator.html#classrogue_1_1interfaces_1_1stream_1_1FrameIterator"><span class="std std-ref"><span class="pre">FrameIterator</span></span></a></code> pointing to beginning of payload. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream5Frame3endEv">
+<span id="_CPPv3N5rogue10interfaces6stream5Frame3endEv"></span><span id="_CPPv2N5rogue10interfaces6stream5Frame3endEv"></span><span id="rogue::interfaces::stream::Frame::end"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1abd51de2cb75f15e14af25228266d95d4"></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="frameIterator.html#_CPPv4N5rogue10interfaces6stream13FrameIteratorE" title="rogue::interfaces::stream::FrameIterator"><span class="n"><span class="pre">FrameIterator</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">end</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Frame3endEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8h_source.html#l00438"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8cpp_source.html#l00327"><span class="pre">[impl]</span></a></dt>
+<dd><p>Returns end iterator over frame payload. </p>
+<p>Get end iterator.</p>
+<p>This iterator is used to detect when the end of the frame payload is reached when iterating through the frame.</p>
+<p>Not exposed to Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><a class="reference internal" href="frameIterator.html#classrogue_1_1interfaces_1_1stream_1_1FrameIterator"><span class="std std-ref"><span class="pre">FrameIterator</span></span></a></code> end position. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream5Frame9beginReadEv">
+<span id="_CPPv3N5rogue10interfaces6stream5Frame9beginReadEv"></span><span id="_CPPv2N5rogue10interfaces6stream5Frame9beginReadEv"></span><span id="rogue::interfaces::stream::Frame::beginRead"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a3ce0fb9b3a6bce92a4da65cdc02c6e31"></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="frameIterator.html#_CPPv4N5rogue10interfaces6stream13FrameIteratorE" title="rogue::interfaces::stream::FrameIterator"><span class="n"><span class="pre">FrameIterator</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">beginRead</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Frame9beginReadEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8h_source.html#l00448"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8cpp_source.html#l00332"><span class="pre">[impl]</span></a></dt>
+<dd><p>Returns legacy read-begin iterator. </p>
+<p>Get write start iterator.</p>
+<p>Legacy alias retained for compatibility. Prefer <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame_1aaeca1bab583acb86d077803c503eeccb"><span class="std std-ref"><span class="pre">begin()</span></span></a></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Iterator to payload start. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream5Frame7endReadEv">
+<span id="_CPPv3N5rogue10interfaces6stream5Frame7endReadEv"></span><span id="_CPPv2N5rogue10interfaces6stream5Frame7endReadEv"></span><span id="rogue::interfaces::stream::Frame::endRead"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a999963d876be5bd5946fd1f9497611bd"></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="frameIterator.html#_CPPv4N5rogue10interfaces6stream13FrameIteratorE" title="rogue::interfaces::stream::FrameIterator"><span class="n"><span class="pre">FrameIterator</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">endRead</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Frame7endReadEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8h_source.html#l00458"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8cpp_source.html#l00337"><span class="pre">[impl]</span></a></dt>
+<dd><p>Returns legacy read-end iterator. </p>
+<p>Get write end iterator.</p>
+<p>Legacy alias retained for compatibility. Prefer <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame_1abd51de2cb75f15e14af25228266d95d4"><span class="std std-ref"><span class="pre">end()</span></span></a></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Iterator to payload end. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream5Frame10beginWriteEv">
+<span id="_CPPv3N5rogue10interfaces6stream5Frame10beginWriteEv"></span><span id="_CPPv2N5rogue10interfaces6stream5Frame10beginWriteEv"></span><span id="rogue::interfaces::stream::Frame::beginWrite"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a5d6b7dd95ee4300853fc13201342daed"></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="frameIterator.html#_CPPv4N5rogue10interfaces6stream13FrameIteratorE" title="rogue::interfaces::stream::FrameIterator"><span class="n"><span class="pre">FrameIterator</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">beginWrite</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Frame10beginWriteEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8h_source.html#l00468"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8cpp_source.html#l00342"><span class="pre">[impl]</span></a></dt>
+<dd><p>Returns legacy write-begin iterator. </p>
+<p>Get read start iterator.</p>
+<p>Legacy alias retained for compatibility. Prefer <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame_1aaeca1bab583acb86d077803c503eeccb"><span class="std std-ref"><span class="pre">begin()</span></span></a></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Iterator to payload start. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream5Frame8endWriteEv">
+<span id="_CPPv3N5rogue10interfaces6stream5Frame8endWriteEv"></span><span id="_CPPv2N5rogue10interfaces6stream5Frame8endWriteEv"></span><span id="rogue::interfaces::stream::Frame::endWrite"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a475dbc60413e797dc8e8e8f649ebf641"></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="frameIterator.html#_CPPv4N5rogue10interfaces6stream13FrameIteratorE" title="rogue::interfaces::stream::FrameIterator"><span class="n"><span class="pre">FrameIterator</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">endWrite</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Frame8endWriteEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8h_source.html#l00478"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8cpp_source.html#l00347"><span class="pre">[impl]</span></a></dt>
+<dd><p>Returns legacy write-end iterator. </p>
+<p>Get end of payload iterator.</p>
+<p>Legacy alias retained for compatibility. Prefer <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame_1abd51de2cb75f15e14af25228266d95d4"><span class="std std-ref"><span class="pre">end()</span></span></a></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Iterator to payload end. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream5Frame6readPyEN5boost6python6objectE8uint32_t">
+<span id="_CPPv3N5rogue10interfaces6stream5Frame6readPyEN5boost6python6objectE8uint32_t"></span><span id="_CPPv2N5rogue10interfaces6stream5Frame6readPyEN5boost6python6objectE8uint32_t"></span><span id="rogue::interfaces::stream::Frame::readPy__boost::python::object.uint32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1af320eb307d9043eb62fd137d807a62c7"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">readPy</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">boost</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">python</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">object</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">p</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">offset</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Frame6readPyEN5boost6python6objectE8uint32_t" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8h_source.html#l00491"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8cpp_source.html#l00354"><span class="pre">[impl]</span></a></dt>
+<dd><p>Reads frame bytes into a passed Python bytearray/buffer. </p>
+<p>Read bytes from frame into a passed bytearray, starting from offset. Python version.</p>
+<p>Exposed as <code class="docutils literal notranslate"><span class="pre">read()</span></code> to Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p</strong> – Python object containing writable byte storage. </p></li>
+<li><p><strong>offset</strong> – Byte offset in frame payload to start copying from. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream5Frame14getBytearrayPyE8uint32_t8uint32_t">
+<span id="_CPPv3N5rogue10interfaces6stream5Frame14getBytearrayPyE8uint32_t8uint32_t"></span><span id="_CPPv2N5rogue10interfaces6stream5Frame14getBytearrayPyE8uint32_t8uint32_t"></span><span id="rogue::interfaces::stream::Frame::getBytearrayPy__uint32_t.uint32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a50cb994e97bb6ed6a1c0aa62b3571c5b"></span><span class="n"><span class="pre">boost</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">python</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">object</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getBytearrayPy</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">offset</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">count</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Frame14getBytearrayPyE8uint32_t8uint32_t" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8h_source.html#l00503"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8cpp_source.html#l00379"><span class="pre">[impl]</span></a></dt>
+<dd><p>Reads frame bytes into a newly allocated Python bytearray. </p>
+<p>Allocate a bytearray and read bytes from frame into it starting at offset, return array.</p>
+<p>Exposed as <code class="docutils literal notranslate"><span class="pre">getBa()</span></code> to Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>offset</strong> – Byte offset in frame payload to start reading from. </p></li>
+<li><p><strong>count</strong> – Number of bytes to read. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Python <code class="docutils literal notranslate"><span class="pre">bytearray</span></code> containing the copied bytes. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream5Frame15getMemoryviewPyEv">
+<span id="_CPPv3N5rogue10interfaces6stream5Frame15getMemoryviewPyEv"></span><span id="_CPPv2N5rogue10interfaces6stream5Frame15getMemoryviewPyEv"></span><span id="rogue::interfaces::stream::Frame::getMemoryviewPy"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1afd93e35b34ef525eaa51a4a9e489247d"></span><span class="n"><span class="pre">boost</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">python</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">object</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getMemoryviewPy</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Frame15getMemoryviewPyEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8h_source.html#l00513"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8cpp_source.html#l00397"><span class="pre">[impl]</span></a></dt>
+<dd><p>Returns a Python <code class="docutils literal notranslate"><span class="pre">memoryview</span></code> of frame payload data. </p>
+<p>Allocate a bytearray and from frame into it starting at offset, return memoryview to array.</p>
+<p>Exposed as <code class="docutils literal notranslate"><span class="pre">getMemoryview()</span></code> to Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Python memoryview object for frame payload. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream5Frame7writePyEN5boost6python6objectE8uint32_t">
+<span id="_CPPv3N5rogue10interfaces6stream5Frame7writePyEN5boost6python6objectE8uint32_t"></span><span id="_CPPv2N5rogue10interfaces6stream5Frame7writePyEN5boost6python6objectE8uint32_t"></span><span id="rogue::interfaces::stream::Frame::writePy__boost::python::object.uint32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a2d8dc04f70a9e8cc0274bd3763209604"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">writePy</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">boost</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">python</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">object</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">p</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">offset</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Frame7writePyEN5boost6python6objectE8uint32_t" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8h_source.html#l00524"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8cpp_source.html#l00417"><span class="pre">[impl]</span></a></dt>
+<dd><p>Writes bytes from a Python bytearray/buffer into the frame. </p>
+<p>Write python buffer to frame, starting at offset. Python <a class="reference internal" href="../../version.html#classrogue_1_1Version"><span class="std std-ref">Version</span></a>.</p>
+<p>Exposed as <code class="docutils literal notranslate"><span class="pre">write()</span></code> to Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p</strong> – Python object containing source byte storage. </p></li>
+<li><p><strong>offset</strong> – Byte offset in frame payload to start writing to. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream5Frame8getNumpyE8uint32_t8uint32_t">
+<span id="_CPPv3N5rogue10interfaces6stream5Frame8getNumpyE8uint32_t8uint32_t"></span><span id="_CPPv2N5rogue10interfaces6stream5Frame8getNumpyE8uint32_t8uint32_t"></span><span id="rogue::interfaces::stream::Frame::getNumpy__uint32_t.uint32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1aef093f746f8ba1219e689bdf47a1d9f0"></span><span class="n"><span class="pre">boost</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">python</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">object</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getNumpy</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">offset</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">count</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Frame8getNumpyE8uint32_t8uint32_t" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8h_source.html#l00533"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8cpp_source.html#l00446"><span class="pre">[impl]</span></a></dt>
+<dd><p>Reads frame data and returns it as a NumPy <code class="docutils literal notranslate"><span class="pre">uint8</span></code> array. </p>
+<p>Read the specified number of bytes at the specified offset of frame data into a numpy array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>offset</strong> – Byte offset in frame payload to start reading from. </p></li>
+<li><p><strong>count</strong> – Number of bytes to read. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>One-dimensional NumPy array of <code class="docutils literal notranslate"><span class="pre">uint8</span></code>. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream5Frame8putNumpyEN5boost6python6objectE8uint32_t">
+<span id="_CPPv3N5rogue10interfaces6stream5Frame8putNumpyEN5boost6python6objectE8uint32_t"></span><span id="_CPPv2N5rogue10interfaces6stream5Frame8putNumpyEN5boost6python6objectE8uint32_t"></span><span id="rogue::interfaces::stream::Frame::putNumpy__boost::python::object.uint32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a8ff1ea661b1659ba36c1bbbec012c25e"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">putNumpy</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">boost</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">python</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">object</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">np</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">offset</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Frame8putNumpyEN5boost6python6objectE8uint32_t" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8h_source.html#l00541"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8cpp_source.html#l00492"><span class="pre">[impl]</span></a></dt>
+<dd><p>Writes NumPy array data into the frame payload. </p>
+<p>Write the all the data associated with the input numpy array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>np</strong> – NumPy array containing source bytes. </p></li>
+<li><p><strong>offset</strong> – Byte offset in frame payload to start writing to. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream5Frame5debugEv">
+<span id="_CPPv3N5rogue10interfaces6stream5Frame5debugEv"></span><span id="_CPPv2N5rogue10interfaces6stream5Frame5debugEv"></span><span id="rogue::interfaces::stream::Frame::debug"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1af031fdee7784958fb1bf7b8f35dde7b7"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">debug</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Frame5debugEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8h_source.html#l00545"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8cpp_source.html#l00584"><span class="pre">[impl]</span></a></dt>
+<dd><p>Prints debug information for this frame. </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-static-functions">Public Static Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream5Frame12setup_pythonEv">
+<span id="_CPPv3N5rogue10interfaces6stream5Frame12setup_pythonEv"></span><span id="_CPPv2N5rogue10interfaces6stream5Frame12setup_pythonEv"></span><span id="rogue::interfaces::stream::Frame::setup_python"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a7a913eb8cda8c7641dfe46415840ab2e"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setup_python</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Frame12setup_pythonEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8h_source.html#l00096"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8cpp_source.html#l00544"><span class="pre">[impl]</span></a></dt>
+<dd><p>Registers Python bindings for this class. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream5Frame6createEv">
+<span id="_CPPv3N5rogue10interfaces6stream5Frame6createEv"></span><span id="_CPPv2N5rogue10interfaces6stream5Frame6createEv"></span><span id="rogue::interfaces::stream::Frame::create"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a91634f18880c4d2ec19410bac81ea655"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream5FrameE" title="rogue::interfaces::stream::Frame"><span class="n"><span class="pre">Frame</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">create</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Frame6createEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8h_source.html#l00109"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/Frame_8cpp_source.html#l00046"><span class="pre">[impl]</span></a></dt>
+<dd><p>Creates an empty frame. </p>
+<p>Create an empty frame.</p>
+<p>This static factory is the preferred construction path when the object is shared across Rogue graph connections or exposed to Python. It returns <code class="docutils literal notranslate"><span class="pre">std::shared_ptr</span></code> ownership compatible with Rogue pointer typedefs. Not exposed to Python.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Shared pointer to the created frame. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="rogue::interfaces::stream" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="frameLock.html" class="btn btn-neutral float-right" title="Frame Lock" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

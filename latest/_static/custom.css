@@ -1,0 +1,69 @@
+/* Force Python attributes/properties to render as full-width blocks. */
+.rst-content dl.py.property,
+.rst-content dl.py.attribute {
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  float: none !important;
+  clear: both;
+}
+
+.rst-content dl.py.property + dl.py.property,
+.rst-content dl.py.attribute + dl.py.attribute,
+.rst-content dl.py.property + dl.py.attribute,
+.rst-content dl.py.attribute + dl.py.property {
+  margin-top: 1rem;
+}
+
+.rst-content .sig .rogue-source-link {
+  margin-left: 0.5rem;
+  font-size: 0.875em;
+}
+
+.rogue-docs-switcher {
+  display: grid;
+  gap: 0.4rem;
+  margin: 0.75rem 0 1rem;
+  padding: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 0.4rem;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.rogue-docs-switcher__label,
+.rogue-docs-switcher__all {
+  font-size: 0.85rem;
+}
+
+.rogue-docs-switcher__label {
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.rogue-docs-switcher__select {
+  width: 100%;
+  min-height: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 0.35rem;
+  color: #1f2933;
+  background: #ffffff;
+}
+
+.rogue-docs-switcher__all {
+  color: #8cc7ff;
+}
+
+.rogue-docs-banner {
+  margin-bottom: 1rem;
+  padding: 0.85rem 1rem;
+  border-left: 4px solid #1e88e5;
+  background: #eaf4ff;
+  color: #17324d;
+  font-size: 0.95rem;
+}
+
+.rogue-docs-banner a {
+  color: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+}

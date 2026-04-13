@@ -1,0 +1,325 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Memory Master Patterns &mdash; Rogue v6.10.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=8b50afe1" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=dc21db2b"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script src="../_static/custom.js?v=7b5dfb0b"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Memory Slave Patterns" href="slave.html" />
+    <link rel="prev" title="Connecting Memory Elements" href="connecting.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Memory Interface</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="connecting.html">Connecting Memory Elements</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Memory Master Patterns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="slave.html">Memory Slave Patterns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hub.html">Memory Hub Patterns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tcp_bridge.html">Memory TCP Bridge</a></li>
+<li class="toctree-l2"><a class="reference internal" href="transactions.html">Memory Transactions and Lifecycle</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API Reference</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Memory Interface</a></li>
+      <li class="breadcrumb-item active">Memory Master Patterns</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/memory_interface/master.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="memory-master-patterns">
+<span id="memory-interface-master"></span><span id="interfaces-memory-master-ex"></span><h1>Memory Master Patterns<a class="headerlink" href="#memory-master-patterns" title="Link to this heading"></a></h1>
+<p>In most applications, higher-level PyRogue interfaces such as
+<code class="docutils literal notranslate"><span class="pre">RemoteVariable</span></code>, <code class="docutils literal notranslate"><span class="pre">Device</span></code>, and <code class="docutils literal notranslate"><span class="pre">RemoteCommand</span></code> hide direct <code class="docutils literal notranslate"><span class="pre">Master</span></code>
+usage. Custom memory <code class="docutils literal notranslate"><span class="pre">Master</span></code> objects become useful when software needs to
+issue explicit transaction sequences at the bus level.</p>
+<p>Typical cases include test utilities, low-level initialization flows, protocol
+adaptors, or software components that must perform a read-modify-write sequence
+without going through a higher-level PyRogue object model.</p>
+<p>Python and C++ subclasses of <code class="docutils literal notranslate"><span class="pre">Master</span></code> can be mixed freely with downstream
+<code class="docutils literal notranslate"><span class="pre">Slave</span></code> implementations in either language. That makes it practical to
+prototype a transaction source in Python and move it into C++ later if needed.</p>
+<section id="typical-master-flow">
+<h2>Typical Master Flow<a class="headerlink" href="#typical-master-flow" title="Link to this heading"></a></h2>
+<p>Most custom <code class="docutils literal notranslate"><span class="pre">Master</span></code> code follows the same basic pattern:</p>
+<ol class="arabic simple">
+<li><p>Clear any previous error state.</p></li>
+<li><p>Request one or more transactions at a given address, size, and type.</p></li>
+<li><p>Wait for each transaction to complete.</p></li>
+<li><p>Check for error state before continuing.</p></li>
+</ol>
+<p>The transaction type passed to <code class="docutils literal notranslate"><span class="pre">reqTransaction</span></code> or <code class="docutils literal notranslate"><span class="pre">_reqTransaction</span></code> is one
+of the key choices in custom <code class="docutils literal notranslate"><span class="pre">Master</span></code> code. <code class="docutils literal notranslate"><span class="pre">Read</span></code> and <code class="docutils literal notranslate"><span class="pre">Write</span></code> are the
+most common, but <code class="docutils literal notranslate"><span class="pre">Post</span></code> is also available as a distinct posted-write
+transaction type. In the code, that means the downstream path can see
+<code class="docutils literal notranslate"><span class="pre">Post</span></code> instead of <code class="docutils literal notranslate"><span class="pre">Write</span></code> and apply different behavior. Some
+implementations handle <code class="docutils literal notranslate"><span class="pre">Post</span></code> exactly like <code class="docutils literal notranslate"><span class="pre">Write</span></code>. Others use it for
+write paths that should not wait for a normal downstream response.</p>
+</section>
+<section id="python-example">
+<h2>Python Example<a class="headerlink" href="#python-example" title="Link to this heading"></a></h2>
+<p>The example below issues a read, increments the 32-bit value at the target
+address, and then writes the updated value back.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">rogue.interfaces.memory</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">rim</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyMemMaster</span><span class="p">(</span><span class="n">rim</span><span class="o">.</span><span class="n">Master</span><span class="p">):</span>
+
+    <span class="c1"># Init method must call the parent class init</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+    <span class="c1"># Increment the 32-bit value stored at the target address</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">inc_at_address</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">address</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">delta</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+
+        <span class="c1"># Local buffer for the read transaction</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+
+        <span class="c1"># Clear any existing error state</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_clearError</span><span class="p">()</span>
+
+        <span class="c1"># Start the read transaction and wait for completion</span>
+        <span class="n">tid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqTransaction</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">rim</span><span class="o">.</span><span class="n">Read</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_waitTransaction</span><span class="p">(</span><span class="n">tid</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getError</span><span class="p">()</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="c1"># Modify the returned data locally</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s1">&#39;little&#39;</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">value</span> <span class="o">+=</span> <span class="n">delta</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;little&#39;</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="c1"># Write the updated value back to the same address</span>
+        <span class="n">tid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqTransaction</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">rim</span><span class="o">.</span><span class="n">Write</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_waitTransaction</span><span class="p">(</span><span class="n">tid</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getError</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span>
+</pre></div>
+</div>
+<p>This example is intentionally simple. It shows the mechanics of issuing and
+waiting on transactions, but it does not make the read-modify-write sequence
+atomic with respect to other actors on the bus.</p>
+</section>
+<section id="c-example">
+<h2>C++ Example<a class="headerlink" href="#c-example" title="Link to this heading"></a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;rogue/interfaces/memory/Constants.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;rogue/interfaces/memory/Master.h&quot;</span>
+
+<span class="k">namespace</span><span class="w"> </span><span class="nn">rim</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nn">rogue</span><span class="o">::</span><span class="nn">interfaces</span><span class="o">::</span><span class="nn">memory</span><span class="p">;</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyMemMaster</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">rim</span><span class="o">::</span><span class="n">Master</span><span class="w"> </span><span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+<span class="w">   </span><span class="k">using</span><span class="w"> </span><span class="n">Ptr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">MyMemMaster</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">   </span><span class="k">static</span><span class="w"> </span><span class="n">Ptr</span><span class="w"> </span><span class="nf">create</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">MyMemMaster</span><span class="o">&gt;</span><span class="p">();</span><span class="w"> </span><span class="p">}</span>
+
+<span class="w">   </span><span class="kt">bool</span><span class="w"> </span><span class="nf">incAtAddress</span><span class="p">(</span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">address</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">delta</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+
+<span class="w">      </span><span class="c1">// Clear any existing error state</span>
+<span class="w">      </span><span class="n">clearError</span><span class="p">();</span>
+
+<span class="w">      </span><span class="c1">// Read the current 32-bit value</span>
+<span class="w">      </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">tid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">reqTransaction</span><span class="p">(</span><span class="n">address</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">value</span><span class="p">,</span><span class="w"> </span><span class="n">rim</span><span class="o">::</span><span class="n">Read</span><span class="p">);</span>
+<span class="w">      </span><span class="n">waitTransaction</span><span class="p">(</span><span class="n">tid</span><span class="p">);</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">getError</span><span class="p">()</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+
+<span class="w">      </span><span class="c1">// Update it locally</span>
+<span class="w">      </span><span class="n">value</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">delta</span><span class="p">;</span>
+
+<span class="w">      </span><span class="c1">// Write the updated value back</span>
+<span class="w">      </span><span class="n">tid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">reqTransaction</span><span class="p">(</span><span class="n">address</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">value</span><span class="p">,</span><span class="w"> </span><span class="n">rim</span><span class="o">::</span><span class="n">Write</span><span class="p">);</span>
+<span class="w">      </span><span class="n">waitTransaction</span><span class="p">(</span><span class="n">tid</span><span class="p">);</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">getError</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">;</span>
+<span class="w">   </span><span class="p">}</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+</section>
+<section id="posted-write-example">
+<h2>Posted Write Example<a class="headerlink" href="#posted-write-example" title="Link to this heading"></a></h2>
+<p>When a target register or command path should be driven using a posted write,
+the only code change may be the transaction type itself.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">rogue.interfaces.memory</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">rim</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyMemMaster</span><span class="p">(</span><span class="n">rim</span><span class="o">.</span><span class="n">Master</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">trigger</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">address</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_clearError</span><span class="p">()</span>
+        <span class="n">tid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqTransaction</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">rim</span><span class="o">.</span><span class="n">Post</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_waitTransaction</span><span class="p">(</span><span class="n">tid</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getError</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span>
+</pre></div>
+</div>
+<p>At the memory-interface layer, <code class="docutils literal notranslate"><span class="pre">Post</span></code> is a first-class transaction type. A
+downstream <code class="docutils literal notranslate"><span class="pre">Slave</span></code> or <code class="docutils literal notranslate"><span class="pre">Hub</span></code> may handle it the same way as <code class="docutils literal notranslate"><span class="pre">Write</span></code> or may
+apply different policy depending on the protocol or hardware design.</p>
+</section>
+<section id="design-notes">
+<h2>Design Notes<a class="headerlink" href="#design-notes" title="Link to this heading"></a></h2>
+<p>Read-modify-write sequences are not automatically atomic across external actors.
+If other software or hardware can touch the same address in the middle of the
+sequence, higher-level locking or coordination is required. In many PyRogue
+applications that coordination is handled at the device-tree level rather than
+inside the raw <code class="docutils literal notranslate"><span class="pre">Master</span></code> implementation.</p>
+</section>
+<section id="logging">
+<h2>Logging<a class="headerlink" href="#logging" title="Link to this heading"></a></h2>
+<p>The base Rogue memory <code class="docutils literal notranslate"><span class="pre">Master</span></code> uses Rogue C++ logging with the logger name
+<code class="docutils literal notranslate"><span class="pre">pyrogue.memory.Master</span></code>.</p>
+<ul class="simple">
+<li><p>Logger name: <code class="docutils literal notranslate"><span class="pre">pyrogue.memory.Master</span></code></p></li>
+<li><p>Unified Logging API:
+<code class="docutils literal notranslate"><span class="pre">pyrogue.setLogLevel('pyrogue.memory.Master',</span> <span class="pre">'DEBUG')</span></code></p></li>
+<li><p>Legacy Logging API:
+<code class="docutils literal notranslate"><span class="pre">rogue.Logging.setFilter('pyrogue.memory.Master',</span> <span class="pre">rogue.Logging.Debug)</span></code></p></li>
+</ul>
+<p>You can enable that logger before or after constructing the object. Enable it
+before construction only if you want constructor or early startup messages from
+the base implementation:</p>
+<p><code class="docutils literal notranslate"><span class="pre">Master</span></code> does not expose a separate runtime debug helper. For more detailed
+custom logging, add subclass-specific logging around transaction sequencing and
+error handling.</p>
+</section>
+<section id="what-to-explore-next">
+<h2>What To Explore Next<a class="headerlink" href="#what-to-explore-next" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Transaction lifecycle details: <a class="reference internal" href="transactions.html"><span class="doc">Memory Transactions and Lifecycle</span></a></p></li>
+<li><p>Custom <code class="docutils literal notranslate"><span class="pre">Slave</span></code> patterns: <a class="reference internal" href="slave.html"><span class="doc">Memory Slave Patterns</span></a></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Hub</span></code> translation patterns: <a class="reference internal" href="hub.html"><span class="doc">Memory Hub Patterns</span></a></p></li>
+</ul>
+</section>
+<section id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Python:</p>
+<ul>
+<li><p><a class="reference internal" href="../api/python/rogue/interfaces/memory/master.html"><span class="doc">Master</span></a></p></li>
+</ul>
+</li>
+<li><p>C++:</p>
+<ul>
+<li><p><a class="reference internal" href="../api/cpp/interfaces/memory/master.html"><span class="doc">Master</span></a></p></li>
+</ul>
+</li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="connecting.html" class="btn btn-neutral float-left" title="Connecting Memory Elements" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="slave.html" class="btn btn-neutral float-right" title="Memory Slave Patterns" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,628 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pyrogue.protocols.epicsV4 &mdash; Rogue v6.10.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=8b50afe1" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=dc21db2b"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../_static/custom.js?v=7b5dfb0b"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">API Reference</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">pyrogue.protocols.epicsV4</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pyrogue.protocols.epicsV4</h1><div class="highlight"><pre>
+<span></span><span class="c1">#-----------------------------------------------------------------------------</span>
+<span class="c1"># Company    : SLAC National Accelerator Laboratory</span>
+<span class="c1">#-----------------------------------------------------------------------------</span>
+<span class="c1"># Description:</span>
+<span class="c1"># Module containing epics support classes and routines</span>
+<span class="c1"># TODO:</span>
+<span class="c1">#   Not clear on to force a read on get</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="c1"># This file is part of the rogue software platform. It is subject to</span>
+<span class="c1"># the license terms in the LICENSE.txt file found in the top-level directory</span>
+<span class="c1"># of this distribution and at:</span>
+<span class="c1">#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.</span>
+<span class="c1"># No part of the rogue software platform, including this file, may be</span>
+<span class="c1"># copied, modified, propagated, or distributed except according to the terms</span>
+<span class="c1"># contained in the LICENSE.txt file.</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">p4p.server.thread</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">p4p.nt</span>
+<span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+        <span class="s2">&quot;P4P is not installed.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+        <span class="s2">&quot;To install with Conda (preferred in Conda environments):</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="s2">&quot;    conda install -c conda-forge p4p</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+        <span class="s2">&quot;To install with pip in a Conda environment:</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="s2">&quot;    python -m pip install p4p</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="s2">&quot;(Using &#39;python -m pip&#39; ensures pip installs into the currently active Conda env.)</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+        <span class="s2">&quot;To install in a Python 3 virtualenv:</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="s2">&quot;    pip install p4p</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+        <span class="s2">&quot;Note: You may also need to ensure EPICS is set up on your system for P4P to work properly.&quot;</span>
+    <span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">EpicsConvStatus</span><span class="p">(</span><span class="n">varValue</span><span class="p">:</span> <span class="n">pyrogue</span><span class="o">.</span><span class="n">VariableValue</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert PyRogue variable status to EPICS alarm status code.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    varValue : object</span>
+<span class="sd">        PyRogue variable value with ``status`` attribute.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    int</span>
+<span class="sd">        EPICS alarm status code (0=no alarm, 3=HiHi, 4=High, 5=LoLo, 6=Low).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">varValue</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="s2">&quot;AlarmLoLo&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">5</span>  <span class="c1"># epicsAlarmLoLo</span>
+    <span class="k">elif</span> <span class="n">varValue</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="s2">&quot;AlarmLow&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">6</span>  <span class="c1"># epicsAlarmLow</span>
+    <span class="k">elif</span> <span class="n">varValue</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="s2">&quot;AlarmHiHi&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">3</span>  <span class="c1"># epicsAlarmHiHi</span>
+    <span class="k">elif</span> <span class="n">varValue</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="s2">&quot;AlarmHigh&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">4</span>  <span class="c1"># epicsAlarmHigh</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">0</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">EpicsConvSeverity</span><span class="p">(</span><span class="n">varValue</span><span class="p">:</span> <span class="n">pyrogue</span><span class="o">.</span><span class="n">VariableValue</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert PyRogue variable severity to EPICS alarm severity code.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    varValue : object</span>
+<span class="sd">        PyRogue variable value with ``severity`` attribute.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    int</span>
+<span class="sd">        EPICS alarm severity code (0=no alarm, 1=minor, 2=major).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">varValue</span><span class="o">.</span><span class="n">severity</span> <span class="o">==</span> <span class="s2">&quot;AlarmMinor&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">1</span>  <span class="c1"># epicsSevMinor</span>
+    <span class="k">elif</span> <span class="n">varValue</span><span class="o">.</span><span class="n">severity</span> <span class="o">==</span> <span class="s2">&quot;AlarmMajor&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">2</span>  <span class="c1"># epicsSevMajor</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">0</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">EpicsPvHandler</span><span class="p">(</span><span class="n">p4p</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">thread</span><span class="o">.</span><span class="n">Handler</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Handler for EPICS PV put/get and RPC operations.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    valType : str</span>
+<span class="sd">        EPICS value type string (for example ``&#39;i&#39;``, ``&#39;f&#39;``, ``&#39;enum&#39;``).</span>
+<span class="sd">    var : pyrogue.BaseVariable</span>
+<span class="sd">        PyRogue variable/command bound to the PV.</span>
+<span class="sd">    log : object</span>
+<span class="sd">        Logger instance.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">valType</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">var</span><span class="p">:</span> <span class="n">pyrogue</span><span class="o">.</span><span class="n">BaseVariable</span><span class="p">,</span> <span class="n">log</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_valType</span> <span class="o">=</span> <span class="n">valType</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_var</span> <span class="o">=</span> <span class="n">var</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span> <span class="o">=</span> <span class="n">log</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">put</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pv</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">op</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle EPICS put requests for writable variables and commands.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_var</span><span class="o">.</span><span class="n">isVariable</span> <span class="ow">and</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_var</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;RW&#39;</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_var</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;WO&#39;</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_valType</span> <span class="o">==</span> <span class="s1">&#39;enum&#39;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_var</span><span class="o">.</span><span class="n">setDisp</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">value</span><span class="p">()))</span>
+                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_valType</span> <span class="o">==</span> <span class="s1">&#39;s&#39;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_var</span><span class="o">.</span><span class="n">setDisp</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">value</span><span class="p">()</span><span class="o">.</span><span class="n">raw</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_valType</span> <span class="o">==</span> <span class="s1">&#39;ndarray&#39;</span><span class="p">:</span>
+                    <span class="c1"># This seems wrong!</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_var</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">_op</span><span class="o">.</span><span class="n">value</span><span class="p">()</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_var</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">value</span><span class="p">()</span><span class="o">.</span><span class="n">raw</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+
+                <span class="c1"># Need enum processing</span>
+                <span class="n">op</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
+
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">msg</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Got error on put: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
+                <span class="n">op</span><span class="o">.</span><span class="n">done</span><span class="p">(</span><span class="n">error</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">msg</span><span class="p">))</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">op</span><span class="o">.</span><span class="n">done</span><span class="p">(</span><span class="n">error</span><span class="o">=</span><span class="s1">&#39;Put Not Supported On This Variable&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">rpc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pv</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">op</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle EPICS RPC requests for command-backed PVs.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_var</span><span class="o">.</span><span class="n">isCommand</span><span class="p">:</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="n">op</span><span class="o">.</span><span class="n">value</span><span class="p">()</span><span class="o">.</span><span class="n">query</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="s1">&#39;arg&#39;</span> <span class="ow">in</span> <span class="n">val</span><span class="p">:</span>
+                    <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_var</span><span class="p">(</span><span class="n">val</span><span class="o">.</span><span class="n">arg</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_var</span><span class="p">()</span>
+
+                <span class="k">if</span> <span class="n">ret</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">ret</span> <span class="o">=</span> <span class="s1">&#39;None&#39;</span>
+
+                <span class="n">v</span> <span class="o">=</span> <span class="n">p4p</span><span class="o">.</span><span class="n">Value</span><span class="p">(</span>
+                    <span class="n">p4p</span><span class="o">.</span><span class="n">Type</span><span class="p">([(</span><span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_valType</span><span class="p">)]),</span> <span class="p">{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">ret</span><span class="p">})</span>
+                <span class="n">op</span><span class="o">.</span><span class="n">done</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">msg</span><span class="p">:</span>
+                <span class="n">op</span><span class="o">.</span><span class="n">done</span><span class="p">(</span><span class="n">error</span><span class="o">=</span><span class="n">msg</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">op</span><span class="o">.</span><span class="n">done</span><span class="p">(</span><span class="n">error</span><span class="o">=</span><span class="s1">&#39;Rpc Not Supported On Variables&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">onFirstConnect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pv</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># may be omitted</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Called when the first client connects to the PV.&quot;&quot;&quot;</span>
+        <span class="c1"># print(f&quot;PV First connect called pv={pv}&quot;)</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">onLastDisconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pv</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># may be omitted</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Called when the last client disconnects from the PV.&quot;&quot;&quot;</span>
+        <span class="c1"># print(f&quot;PV Last Disconnect called pv={pv}&quot;)</span>
+        <span class="k">pass</span>
+
+
+<div class="viewcode-block" id="EpicsPvHolder">
+<a class="viewcode-back" href="../../../api/python/pyrogue/protocols/epicsv4/epicspvholder.html#pyrogue.protocols.epicsV4.EpicsPvHolder">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">EpicsPvHolder</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Holds and manages a single EPICS PV backed by a PyRogue variable.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    provider : object</span>
+<span class="sd">        P4P static provider to add the PV to.</span>
+<span class="sd">    name : str</span>
+<span class="sd">        EPICS PV name.</span>
+<span class="sd">    var : object</span>
+<span class="sd">        PyRogue variable/command to expose.</span>
+<span class="sd">    log : object</span>
+<span class="sd">        Logger instance.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">provider</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">var</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">log</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_var</span> <span class="o">=</span> <span class="n">var</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span> <span class="o">=</span> <span class="n">log</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pv</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_var</span><span class="o">.</span><span class="n">isCommand</span><span class="p">:</span>
+            <span class="n">typeStr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_var</span><span class="o">.</span><span class="n">retTypeStr</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">typeStr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_var</span><span class="o">.</span><span class="n">typeStr</span>
+
+        <span class="c1"># Convert valType</span>
+        <span class="k">if</span> <span class="n">var</span><span class="o">.</span><span class="n">nativeType</span> <span class="ow">is</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_valType</span> <span class="o">=</span> <span class="s1">&#39;ndarray&#39;</span>
+            <span class="c1"># self._valType = &#39;s&#39;</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_var</span><span class="o">.</span><span class="n">disp</span> <span class="o">==</span> <span class="s1">&#39;enum&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_valType</span> <span class="o">=</span> <span class="s1">&#39;enum&#39;</span>
+        <span class="k">elif</span> <span class="n">typeStr</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">var</span><span class="o">.</span><span class="n">nativeType</span> <span class="ow">is</span> <span class="nb">list</span> <span class="ow">or</span> <span class="n">var</span><span class="o">.</span><span class="n">nativeType</span> <span class="ow">is</span> <span class="nb">dict</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_valType</span> <span class="o">=</span> <span class="s1">&#39;s&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="c1"># Unsigned</span>
+            <span class="k">if</span> <span class="s1">&#39;UInt&#39;</span> <span class="ow">in</span> <span class="n">typeStr</span><span class="p">:</span>
+                <span class="n">m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">&#39;^UInt(</span><span class="se">\\</span><span class="s1">d+)</span><span class="se">\\</span><span class="s1">.*&#39;</span><span class="p">,</span> <span class="n">typeStr</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">m</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">m</span><span class="o">.</span><span class="n">lastindex</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">bits</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">m</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+                    <span class="k">if</span> <span class="n">bits</span> <span class="o">&lt;=</span> <span class="mi">8</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_valType</span> <span class="o">=</span> <span class="s1">&#39;B&#39;</span>
+                    <span class="k">elif</span> <span class="n">bits</span> <span class="o">&lt;=</span> <span class="mi">16</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_valType</span> <span class="o">=</span> <span class="s1">&#39;H&#39;</span>
+                    <span class="k">elif</span> <span class="n">bits</span> <span class="o">&lt;=</span> <span class="mi">32</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_valType</span> <span class="o">=</span> <span class="s1">&#39;I&#39;</span>
+                    <span class="k">elif</span> <span class="n">bits</span> <span class="o">&lt;=</span> <span class="mi">64</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_valType</span> <span class="o">=</span> <span class="s1">&#39;L&#39;</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_valType</span> <span class="o">=</span> <span class="s1">&#39;s&#39;</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_valType</span> <span class="o">=</span> <span class="s1">&#39;L&#39;</span>
+
+            <span class="c1"># Signed</span>
+            <span class="k">elif</span> <span class="s1">&#39;int&#39;</span> <span class="ow">in</span> <span class="n">typeStr</span> <span class="ow">or</span> <span class="s1">&#39;Int&#39;</span> <span class="ow">in</span> <span class="n">typeStr</span><span class="p">:</span>
+                <span class="n">m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">&#39;^Int(</span><span class="se">\\</span><span class="s1">d+)</span><span class="se">\\</span><span class="s1">.*&#39;</span><span class="p">,</span> <span class="n">typeStr</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">m</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">m</span><span class="o">.</span><span class="n">lastindex</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">bits</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">m</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+                    <span class="k">if</span> <span class="n">bits</span> <span class="o">&lt;=</span> <span class="mi">8</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_valType</span> <span class="o">=</span> <span class="s1">&#39;b&#39;</span>
+                    <span class="k">elif</span> <span class="n">bits</span> <span class="o">&lt;=</span> <span class="mi">16</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_valType</span> <span class="o">=</span> <span class="s1">&#39;h&#39;</span>
+                    <span class="k">elif</span> <span class="n">bits</span> <span class="o">&lt;=</span> <span class="mi">32</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_valType</span> <span class="o">=</span> <span class="s1">&#39;i&#39;</span>
+                    <span class="k">elif</span> <span class="n">bits</span> <span class="o">&lt;=</span> <span class="mi">64</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_valType</span> <span class="o">=</span> <span class="s1">&#39;l&#39;</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_valType</span> <span class="o">=</span> <span class="s1">&#39;s&#39;</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_valType</span> <span class="o">=</span> <span class="s1">&#39;l&#39;</span>
+
+            <span class="c1"># Float</span>
+            <span class="k">elif</span> <span class="s1">&#39;float&#39;</span> <span class="ow">in</span> <span class="n">typeStr</span> <span class="ow">or</span> <span class="s1">&#39;Float32&#39;</span> <span class="ow">in</span> <span class="n">typeStr</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_valType</span> <span class="o">=</span> <span class="s1">&#39;f&#39;</span>
+
+            <span class="c1"># Double</span>
+            <span class="k">elif</span> <span class="s1">&#39;Double64&#39;</span> <span class="ow">in</span> <span class="n">typeStr</span> <span class="ow">or</span> <span class="s1">&#39;Float64&#39;</span> <span class="ow">in</span> <span class="n">typeStr</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_valType</span> <span class="o">=</span> <span class="s1">&#39;d&#39;</span>
+
+            <span class="c1"># Default to string</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_valType</span> <span class="o">=</span> <span class="s1">&#39;s&#39;</span>
+
+        <span class="c1"># Get initial value</span>
+        <span class="n">varVal</span> <span class="o">=</span> <span class="n">var</span><span class="o">.</span><span class="n">getVariableValue</span><span class="p">(</span><span class="n">read</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="c1"># Override LinkerVariables with init=None</span>
+        <span class="k">if</span> <span class="n">varVal</span><span class="o">.</span><span class="n">valueDisp</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">varVal</span><span class="o">.</span><span class="n">valueDisp</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="s2">&quot;Adding </span><span class="si">{}</span><span class="s2"> with type </span><span class="si">{}</span><span class="s2"> init=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_valType</span><span class="p">,</span>
+                <span class="n">varVal</span><span class="o">.</span><span class="n">valueDisp</span><span class="p">))</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_valType</span> <span class="o">==</span> <span class="s1">&#39;ndarray&#39;</span><span class="p">:</span>
+                <span class="c1"># If a 1D array is encountered, use a NTScalar.  Note, if an</span>
+                <span class="c1"># NTScalar is used, the values will be automatically converted</span>
+                <span class="c1"># to doubles.</span>
+                <span class="k">if</span> <span class="n">varVal</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">nt</span> <span class="o">=</span> <span class="n">p4p</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">NTScalar</span><span class="p">(</span><span class="s1">&#39;ad&#39;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">nt</span> <span class="o">=</span> <span class="n">p4p</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">NTNDArray</span><span class="p">()</span>
+                <span class="n">iv</span> <span class="o">=</span> <span class="n">varVal</span><span class="o">.</span><span class="n">value</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_valType</span> <span class="o">==</span> <span class="s1">&#39;enum&#39;</span><span class="p">:</span>
+                <span class="n">nt</span> <span class="o">=</span> <span class="n">p4p</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">NTEnum</span><span class="p">(</span>
+                    <span class="n">display</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                    <span class="n">control</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                    <span class="n">valueAlarm</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                <span class="n">enum</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_var</span><span class="o">.</span><span class="n">enum</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+                <span class="n">iv</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;choices&#39;</span><span class="p">:</span> <span class="n">enum</span><span class="p">,</span> <span class="s1">&#39;index&#39;</span><span class="p">:</span> <span class="n">enum</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">varVal</span><span class="o">.</span><span class="n">valueDisp</span><span class="p">)}</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_valType</span> <span class="o">==</span> <span class="s1">&#39;s&#39;</span><span class="p">:</span>
+                <span class="n">nt</span> <span class="o">=</span> <span class="n">p4p</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">NTScalar</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_valType</span><span class="p">,</span>
+                    <span class="n">display</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                    <span class="n">control</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                    <span class="n">valueAlarm</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                <span class="n">iv</span> <span class="o">=</span> <span class="n">nt</span><span class="o">.</span><span class="n">wrap</span><span class="p">(</span><span class="n">varVal</span><span class="o">.</span><span class="n">valueDisp</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">nt</span> <span class="o">=</span> <span class="n">p4p</span><span class="o">.</span><span class="n">nt</span><span class="o">.</span><span class="n">NTScalar</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_valType</span><span class="p">,</span>
+                    <span class="n">display</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                    <span class="n">control</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                    <span class="n">valueAlarm</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="c1"># print(f&quot;Setting value {varVal.value} to {self._name}&quot;)</span>
+                <span class="n">iv</span> <span class="o">=</span> <span class="n">nt</span><span class="o">.</span><span class="n">wrap</span><span class="p">(</span><span class="n">varVal</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+                <span class="s2">&quot;Failed to add </span><span class="si">{}</span><span class="s2"> with type </span><span class="si">{}</span><span class="s2"> ndtype=</span><span class="si">{}</span><span class="s2"> init=</span><span class="si">{}</span><span class="s2">. Error=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_valType</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_var</span><span class="o">.</span><span class="n">ndType</span><span class="p">,</span>
+                    <span class="n">varVal</span><span class="o">.</span><span class="n">valueDisp</span><span class="p">,</span>
+                    <span class="n">e</span><span class="p">))</span>
+
+        <span class="c1"># Setup variable</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_pv</span> <span class="o">=</span> <span class="n">p4p</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">thread</span><span class="o">.</span><span class="n">SharedPV</span><span class="p">(</span><span class="n">queue</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">handler</span><span class="o">=</span><span class="n">EpicsPvHandler</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_valType</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_var</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">),</span> <span class="n">initial</span><span class="o">=</span><span class="n">iv</span><span class="p">,</span> <span class="n">nt</span><span class="o">=</span><span class="n">nt</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">{})</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+                <span class="s2">&quot;Failed to start </span><span class="si">{}</span><span class="s2"> with type </span><span class="si">{}</span><span class="s2"> ndtype=</span><span class="si">{}</span><span class="s2"> init=</span><span class="si">{}</span><span class="s2">. Error=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_valType</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_var</span><span class="o">.</span><span class="n">ndType</span><span class="p">,</span>
+                    <span class="n">varVal</span><span class="o">.</span><span class="n">valueDisp</span><span class="p">,</span>
+                    <span class="n">e</span><span class="p">))</span>
+
+        <span class="n">provider</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pv</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_var</span><span class="o">.</span><span class="n">addListener</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_varUpdated</span><span class="p">)</span>
+
+        <span class="c1"># Update fields in numeric types</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_valType</span> <span class="o">!=</span> <span class="s1">&#39;enum&#39;</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_valType</span> <span class="o">!=</span> <span class="s1">&#39;s&#39;</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_valType</span> <span class="o">!=</span> <span class="s1">&#39;ndarray&#39;</span><span class="p">:</span>
+            <span class="n">curr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pv</span><span class="o">.</span><span class="n">current</span><span class="p">()</span>
+            <span class="n">curr</span><span class="o">.</span><span class="n">raw</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">varVal</span><span class="o">.</span><span class="n">value</span>
+            <span class="n">curr</span><span class="o">.</span><span class="n">raw</span><span class="o">.</span><span class="n">alarm</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">EpicsConvStatus</span><span class="p">(</span><span class="n">varVal</span><span class="p">)</span>
+            <span class="n">curr</span><span class="o">.</span><span class="n">raw</span><span class="o">.</span><span class="n">alarm</span><span class="o">.</span><span class="n">severity</span> <span class="o">=</span> <span class="n">EpicsConvSeverity</span><span class="p">(</span><span class="n">varVal</span><span class="p">)</span>
+            <span class="n">curr</span><span class="o">.</span><span class="n">raw</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_var</span><span class="o">.</span><span class="n">description</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_var</span><span class="o">.</span><span class="n">units</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">curr</span><span class="o">.</span><span class="n">raw</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_var</span><span class="o">.</span><span class="n">units</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_var</span><span class="o">.</span><span class="n">maximum</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">curr</span><span class="o">.</span><span class="n">raw</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">limitHigh</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_var</span><span class="o">.</span><span class="n">maximum</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_var</span><span class="o">.</span><span class="n">minimum</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">curr</span><span class="o">.</span><span class="n">raw</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">limitLow</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_var</span><span class="o">.</span><span class="n">minimum</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_var</span><span class="o">.</span><span class="n">lowWarning</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">curr</span><span class="o">.</span><span class="n">raw</span><span class="o">.</span><span class="n">valueAlarm</span><span class="o">.</span><span class="n">lowWarningLimit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_var</span><span class="o">.</span><span class="n">lowWarning</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_var</span><span class="o">.</span><span class="n">lowAlarm</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">curr</span><span class="o">.</span><span class="n">raw</span><span class="o">.</span><span class="n">valueAlarm</span><span class="o">.</span><span class="n">lowAlarmLimit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_var</span><span class="o">.</span><span class="n">lowAlarm</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_var</span><span class="o">.</span><span class="n">highWarning</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">curr</span><span class="o">.</span><span class="n">raw</span><span class="o">.</span><span class="n">valueAlarm</span><span class="o">.</span><span class="n">highWarningLimit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_var</span><span class="o">.</span><span class="n">highWarning</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_var</span><span class="o">.</span><span class="n">highAlarm</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">curr</span><span class="o">.</span><span class="n">raw</span><span class="o">.</span><span class="n">valueAlarm</span><span class="o">.</span><span class="n">highAlarmLimit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_var</span><span class="o">.</span><span class="n">highAlarm</span>
+
+            <span class="c1"># Precision ?</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_pv</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">curr</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_varUpdated</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Post updated variable values into the backing EPICS PV.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_valType</span> <span class="o">==</span> <span class="s1">&#39;enum&#39;</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_valType</span> <span class="o">==</span> <span class="s1">&#39;s&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_pv</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">valueDisp</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_valType</span> <span class="o">==</span> <span class="s1">&#39;ndarray&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_pv</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">curr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pv</span><span class="o">.</span><span class="n">current</span><span class="p">()</span>
+            <span class="n">curr</span><span class="o">.</span><span class="n">raw</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">value</span>
+            <span class="n">curr</span><span class="o">.</span><span class="n">raw</span><span class="o">.</span><span class="n">alarm</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">EpicsConvStatus</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="n">curr</span><span class="o">.</span><span class="n">raw</span><span class="o">.</span><span class="n">alarm</span><span class="o">.</span><span class="n">severity</span> <span class="o">=</span> <span class="n">EpicsConvSeverity</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="n">curr</span><span class="o">.</span><span class="n">raw</span><span class="p">[</span><span class="s1">&#39;timeStamp.secondsPastEpoch&#39;</span><span class="p">],</span> <span class="n">curr</span><span class="o">.</span><span class="n">raw</span><span class="p">[</span><span class="s1">&#39;timeStamp.nanoseconds&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">divmod</span><span class="p">(</span>
+                <span class="nb">float</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time_ns</span><span class="p">()),</span> <span class="mf">1.0e9</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_pv</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">curr</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="EpicsPvServer">
+<a class="viewcode-back" href="../../../api/python/pyrogue/protocols/epicsv4/epicspvserver.html#pyrogue.protocols.epicsV4.EpicsPvServer">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">EpicsPvServer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    EPICS PV server that exposes PyRogue variables as EPICS process variables.</span>
+
+<span class="sd">    Uses P4P to serve variables from a PyRogue tree over the EPICS protocol.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    base : str</span>
+<span class="sd">        Base string prepended to PV names.</span>
+<span class="sd">    root : pyrogue.Root</span>
+<span class="sd">        PyRogue root node containing variables to expose.</span>
+<span class="sd">    incGroups : str | list[str] | None, optional</span>
+<span class="sd">        Include only variables in these groups.</span>
+<span class="sd">    excGroups : str | list[str] | None, optional</span>
+<span class="sd">        Exclude variables in these groups.</span>
+<span class="sd">    pvMap : dict[str, str] | None, optional</span>
+<span class="sd">        Explicit path-to-PV-name mapping.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">base</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">root</span><span class="p">:</span> <span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="p">,</span>
+        <span class="n">incGroups</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">excGroups</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">pvMap</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">excGroups</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">excGroups</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;NoServe&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_root</span> <span class="o">=</span> <span class="n">root</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_base</span> <span class="o">=</span> <span class="n">base</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span> <span class="o">=</span> <span class="n">pyrogue</span><span class="o">.</span><span class="n">logInit</span><span class="p">(</span><span class="bp">cls</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_server</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_incGroups</span> <span class="o">=</span> <span class="n">incGroups</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_excGroups</span> <span class="o">=</span> <span class="n">excGroups</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pvMap</span> <span class="o">=</span> <span class="n">pvMap</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_started</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_provider</span> <span class="o">=</span> <span class="n">p4p</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">StaticProvider</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Stop the EPICS PV server.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_server</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_start</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Start the EPICS PV server and register all variables.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_started</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_started</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_stop</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_list</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_root</span><span class="o">.</span><span class="n">running</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+                <span class="s2">&quot;Epics can not be setup on a tree which is not started&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Figure out mapping mode</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pvMap</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">doAll</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_pvMap</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">doAll</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1"># Create PVs</span>
+        <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_root</span><span class="o">.</span><span class="n">variableList</span><span class="p">:</span>
+            <span class="n">eName</span> <span class="o">=</span> <span class="kc">None</span>
+
+            <span class="k">if</span> <span class="n">doAll</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">filterByGroup</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_incGroups</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_excGroups</span><span class="p">):</span>
+                    <span class="n">eName</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_base</span> <span class="o">+</span> <span class="s1">&#39;:&#39;</span> <span class="o">+</span> <span class="n">v</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;:&#39;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_pvMap</span><span class="p">[</span><span class="n">v</span><span class="o">.</span><span class="n">path</span><span class="p">]</span> <span class="o">=</span> <span class="n">eName</span>
+            <span class="k">elif</span> <span class="n">v</span><span class="o">.</span><span class="n">path</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pvMap</span><span class="p">:</span>
+                <span class="n">eName</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pvMap</span><span class="p">[</span><span class="n">v</span><span class="o">.</span><span class="n">path</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">eName</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">pvh</span> <span class="o">=</span> <span class="n">EpicsPvHolder</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_provider</span><span class="p">,</span> <span class="n">eName</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_list</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="n">pvh</span>
+
+        <span class="c1"># Check for missing map entries</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pvMap</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_list</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pvMap</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_list</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Failed to find </span><span class="si">%s</span><span class="s2"> from P4P mapping in Rogue tree&quot;</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_server</span> <span class="o">=</span> <span class="n">p4p</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">Server</span><span class="p">(</span><span class="n">providers</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_provider</span><span class="p">])</span>
+
+<div class="viewcode-block" id="EpicsPvServer.list">
+<a class="viewcode-back" href="../../../api/python/pyrogue/protocols/epicsv4/epicspvserver.html#pyrogue.protocols.epicsV4.EpicsPvServer.list">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the PyRogue path to EPICS PV name mapping.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dict</span>
+<span class="sd">            Mapping of variable paths to EPICS PV names.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pvMap</span></div>
+
+
+<div class="viewcode-block" id="EpicsPvServer.dump">
+<a class="viewcode-back" href="../../../api/python/pyrogue/protocols/epicsv4/epicspvserver.html#pyrogue.protocols.epicsV4.EpicsPvServer.dump">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">dump</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Print or write the PV mapping to file.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        fname : str, optional</span>
+<span class="sd">            If provided, write mapping to this file; otherwise print to stdout.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">fname</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pvMap</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> -&gt; </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">k</span><span class="p">),</span> <span class="n">file</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Failed to dump epics map to </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fname</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pvMap</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> -&gt; </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">k</span><span class="p">))</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

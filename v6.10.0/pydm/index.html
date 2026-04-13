@@ -1,0 +1,221 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Using The PyDM GUI &mdash; Rogue v6.10.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=8b50afe1" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=dc21db2b"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script src="../_static/custom.js?v=7b5dfb0b"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Starting The Rogue PyDM GUI" href="starting_gui.html" />
+    <link rel="prev" title="Logger Names" href="../logging/logger_names.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Using The PyDM GUI</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="starting_gui.html">Starting The Rogue PyDM GUI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="timeplot_gui.html">Starting The Rogue PyDM Timeplot GUI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="channel_urls.html">Channel URLs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rogue_widgets.html">Rogue Widgets</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API Reference</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Using The PyDM GUI</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/pydm/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="using-the-pydm-gui">
+<span id="pydm"></span><h1>Using The PyDM GUI<a class="headerlink" href="#using-the-pydm-gui" title="Link to this heading"></a></h1>
+<p>Rogue integrates with the PyDM platform for GUI-based monitoring and control of
+a running PyRogue tree.</p>
+<p>Rogue includes a default debug GUI and supports custom PyDM screens. The stock
+GUI is useful during bring-up because it can browse an entire tree without any
+screen-design work. Custom screens become more useful once the operator
+workflow is known and only a smaller set of <code class="docutils literal notranslate"><span class="pre">Variable</span></code> and <code class="docutils literal notranslate"><span class="pre">Command</span></code>
+interactions should be exposed.</p>
+<p>Documentation for the PyDM platform:</p>
+<p><a class="reference external" href="http://slaclab.github.io/pydm/">http://slaclab.github.io/pydm/</a></p>
+<p>Rogue provides several Rogue-specific pieces on top of base PyDM. The most
+important are a dedicated channel driver URL prefix:</p>
+<p>rogue://</p>
+<p>and a set of widgets that understand common PyRogue structures such as a Root,
+<code class="docutils literal notranslate"><span class="pre">RunControl</span></code> device, process node, or debug tree.</p>
+<p>In practice, Rogue PyDM support is the operator-facing layer on top of the same
+client interface used by other remote tools. A typical workflow is:</p>
+<ol class="arabic simple">
+<li><p>Start a <code class="docutils literal notranslate"><span class="pre">Root</span></code> and expose it through a Rogue client interface, usually a
+ZMQ server.</p></li>
+<li><p>Launch either the stock debug GUI, the timeplot GUI, or a custom PyDM
+screen.</p></li>
+<li><p>Bind widgets to Rogue nodes with <code class="docutils literal notranslate"><span class="pre">rogue://</span></code> channel URLs.</p></li>
+<li><p>Use Rogue-specific widgets where the generic PyDM widgets do not capture the
+right behavior.</p></li>
+</ol>
+<p>PyDM support in Rogue is therefore not just about launching a GUI. It also
+defines how PyDM addresses Rogue nodes, how a multi-server session is named,
+and which widgets are available when building custom displays.</p>
+<section id="choosing-between-the-stock-gui-and-custom-screens">
+<h2>Choosing Between The Stock GUI And Custom Screens<a class="headerlink" href="#choosing-between-the-stock-gui-and-custom-screens" title="Link to this heading"></a></h2>
+<p>Use the default debug GUI during bring-up, integration, and debugging when you
+need broad visibility into the tree. It exposes the system summary widgets and
+the debug-tree browser without any additional UI work.</p>
+<p>Use a custom screen when the important task is no longer “browse everything”
+but instead “guide the operator through a small number of controls and status
+points”. That usually means a <code class="docutils literal notranslate"><span class="pre">.ui</span></code> file or a Python <code class="docutils literal notranslate"><span class="pre">pydm.Display</span></code> subclass
+that binds directly to the specific paths your system cares about.</p>
+<p>Use the timeplot GUI when the main task is trend visualization of changing
+values rather than full-tree browsing.</p>
+</section>
+<section id="relationship-to-client-interfaces">
+<h2>Relationship To Client Interfaces<a class="headerlink" href="#relationship-to-client-interfaces" title="Link to this heading"></a></h2>
+<p>PyDM connects through the same client/server model used by other remote tools.
+In the current implementation, the Rogue PyDM plugin resolves channels through
+the <code class="docutils literal notranslate"><span class="pre">ROGUE_SERVERS</span></code> environment variable populated by the launcher. That
+usually means:</p>
+<ul class="simple">
+<li><p>A running <a class="reference internal" href="../pyrogue_tree/client_interfaces/zmq_server.html"><span class="doc">Python ZMQServer</span></a></p></li>
+<li><p>One or more GUI sessions using Rogue channel URLs</p></li>
+<li><p>Optional coexistence with scripts, notebooks, or other clients attached to
+the same <code class="docutils literal notranslate"><span class="pre">Root</span></code></p></li>
+</ul>
+</section>
+<section id="what-to-explore-next">
+<h2>What To Explore Next<a class="headerlink" href="#what-to-explore-next" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="starting_gui.html"><span class="doc">Starting The Rogue PyDM GUI</span></a> for launching the standard debug GUI or a custom UI file</p></li>
+<li><p><a class="reference internal" href="timeplot_gui.html"><span class="doc">Starting The Rogue PyDM Timeplot GUI</span></a> for time-series plotting workflows</p></li>
+<li><p><a class="reference internal" href="channel_urls.html"><span class="doc">Channel URLs</span></a> for the Rogue-specific PyDM channel syntax</p></li>
+<li><p><a class="reference internal" href="rogue_widgets.html"><span class="doc">Rogue Widgets</span></a> for the widget set used in custom screens</p></li>
+</ul>
+</section>
+<section id="related-topics">
+<h2>Related Topics<a class="headerlink" href="#related-topics" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>CLI launch and remote target selection: <a class="reference internal" href="../pyrogue_tree/client_interfaces/commandline.html"><span class="doc">Using the Command Line Client</span></a></p></li>
+<li><p>ZMQ server setup used by GUIs and remote clients: <a class="reference internal" href="../pyrogue_tree/client_interfaces/zmq_server.html"><span class="doc">Python ZMQServer</span></a></p></li>
+</ul>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Rogue PyDM Features:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="starting_gui.html">Starting The Rogue PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="timeplot_gui.html">Starting The Rogue PyDM Timeplot GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="channel_urls.html">Channel URLs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rogue_widgets.html">Rogue Widgets</a></li>
+</ul>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../logging/logger_names.html" class="btn btn-neutral float-left" title="Logger Names" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="starting_gui.html" class="btn btn-neutral float-right" title="Starting The Rogue PyDM GUI" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,28 @@
+.. _protocols_batcher_classes:
+
+==========================
+rogue::protocols::batcher
+==========================
+
+These pages provide the C++ API reference for
+``rogue::protocols::batcher`` classes.
+
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Batcher Classes:
+
+   combinerV1
+   combinerV2
+   coreV1
+   coreV2
+   data
+   inverterV1
+   inverterV2
+   splitterV1
+   splitterV2
+
+
+.. rubric:: Related Topics
+
+- :doc:`/built_in_modules/protocols/batcher/index`

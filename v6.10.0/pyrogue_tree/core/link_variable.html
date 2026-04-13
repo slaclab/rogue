@@ -1,0 +1,532 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LinkVariable &mdash; Rogue v6.10.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=8b50afe1" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc21db2b"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/custom.js?v=7b5dfb0b"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Command" href="command.html" />
+    <link rel="prev" title="RemoteVariable" href="remote_variable.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">PyRogue Tree</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Components And Concepts</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="root.html">Root</a></li>
+<li class="toctree-l3"><a class="reference internal" href="device.html">Device</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="variable.html">Variable</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="local_variable.html">LocalVariable</a></li>
+<li class="toctree-l4"><a class="reference internal" href="remote_variable.html">RemoteVariable</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">LinkVariable</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="command.html">Command</a></li>
+<li class="toctree-l3"><a class="reference internal" href="block.html">Blocks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="block_operations.html">Device Block Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="model.html">Model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fixed_point_models.html">Fixed-Point Models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="float_types_summary.html">Floating Point Types Summary</a></li>
+<li class="toctree-l3"><a class="reference internal" href="poll_queue.html">PollQueue</a></li>
+<li class="toctree-l3"><a class="reference internal" href="yaml_configuration.html">YAML Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="memory_variable_stream.html">Variable Update Stream</a></li>
+<li class="toctree-l3"><a class="reference internal" href="groups.html">Groups</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../builtin_devices/index.html">Built-in Devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../client_interfaces/index.html">Client Interfaces</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">API Reference</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">PyRogue Tree</a></li>
+          <li class="breadcrumb-item"><a href="index.html">PyRogue Tree Components And Concepts</a></li>
+          <li class="breadcrumb-item"><a href="variable.html">Variable</a></li>
+      <li class="breadcrumb-item active">LinkVariable</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/pyrogue_tree/core/link_variable.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="linkvariable">
+<span id="pyrogue-tree-node-variable-link-variable"></span><h1>LinkVariable<a class="headerlink" href="#linkvariable" title="Link to this heading"></a></h1>
+<p><a class="reference internal" href="../../api/python/pyrogue/linkvariable.html#pyrogue.LinkVariable" title="pyrogue.LinkVariable"><code class="xref py py-class docutils literal notranslate"><span class="pre">LinkVariable</span></code></a> exposes a derived value backed by one or more
+dependency Variables. It is useful for unit conversion, bit-field composition,
+and user-friendly computed views.</p>
+<p>The most common application use case is converting raw ADC or DAC register
+values into real engineering units while still preserving direct access to the
+underlying raw Variables.</p>
+<section id="when-to-use-linkvariable">
+<h2>When To Use LinkVariable<a class="headerlink" href="#when-to-use-linkvariable" title="Link to this heading"></a></h2>
+<p>Use <code class="docutils literal notranslate"><span class="pre">LinkVariable</span></code> when the important user-facing value is derived from one
+or more other Variables rather than owned directly by software or mapped
+directly to hardware.</p>
+<p>That makes it the presentation-oriented counterpart to the other Variable
+types:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">LocalVariable</span></code> owns software state</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">RemoteVariable</span></code> maps hardware state</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">LinkVariable</span></code> computes or transforms a value from dependencies</p></li>
+</ul>
+<p>This is often the best way to expose engineering units, calibrated views,
+composite bit fields, or operator-friendly abstractions without hiding the raw
+registers that developers may still need.</p>
+</section>
+<section id="what-you-usually-set">
+<h2>What You Usually Set<a class="headerlink" href="#what-you-usually-set" title="Link to this heading"></a></h2>
+<p>Most <code class="docutils literal notranslate"><span class="pre">LinkVariable</span></code> definitions use the shared Variable parameters from
+<a class="reference internal" href="variable.html"><span class="doc">Variable</span></a>, plus the linked-logic parameters that make
+the node derived rather than directly stored:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dependencies</span></code> for the source Variables.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">linkedGet</span></code> for read-side conversion.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">linkedSet</span></code> for write-side conversion.</p></li>
+</ul>
+<p>Some code also uses the <code class="docutils literal notranslate"><span class="pre">variable=...</span></code> shortcut to mirror another Variable
+directly and then override only selected presentation properties or callback
+behavior.</p>
+<p>When you pass <code class="docutils literal notranslate"><span class="pre">variable=some_var</span></code>, PyRogue automatically uses that
+Variable’s <code class="docutils literal notranslate"><span class="pre">get()</span></code> and <code class="docutils literal notranslate"><span class="pre">set()</span></code> methods as the linked access behavior and
+adds it as a dependency. In other words, this is the quick way to build a
+single-source <code class="docutils literal notranslate"><span class="pre">LinkVariable</span></code> without spelling out both <code class="docutils literal notranslate"><span class="pre">dependencies</span></code> and
+the default callbacks yourself.</p>
+<p>This is most useful when you want a second view of one Variable that differs
+mainly in presentation, naming, grouping, or a small override to the default
+linked behavior.</p>
+</section>
+<section id="callbacks-and-dependencies">
+<h2>Callbacks And Dependencies<a class="headerlink" href="#callbacks-and-dependencies" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">LinkVariable</span></code> typically uses:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dependencies</span></code>: source Variables used by linked logic</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">linkedGet</span></code>: compute displayed value from dependencies</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">linkedSet</span></code>: convert user value back to dependency writes</p></li>
+</ul>
+<p>In the current implementation, the callback wrappers support keyword arguments
+matching:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">linkedGet(dev=None,</span> <span class="pre">var=None,</span> <span class="pre">read=True,</span> <span class="pre">index=-1,</span> <span class="pre">check=True)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">linkedSet(dev=None,</span> <span class="pre">var=None,</span> <span class="pre">value=...,</span> <span class="pre">write=True,</span> <span class="pre">index=-1,</span> <span class="pre">verify=True,</span> <span class="pre">check=True)</span></code></p></li>
+</ul>
+<p>The callback may accept any subset of those parameters. This gives the linked logic
+access to the surrounding <code class="docutils literal notranslate"><span class="pre">Device</span></code>, the <code class="docutils literal notranslate"><span class="pre">LinkVariable</span></code> itself, and the
+normal read/write control flags when needed.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">read</span></code> and <code class="docutils literal notranslate"><span class="pre">write</span></code> controls are especially important:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">read</span></code> tells <code class="docutils literal notranslate"><span class="pre">linkedGet</span></code> whether the caller wants fresh data from the
+dependencies or only the currently cached values.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">write</span></code> tells <code class="docutils literal notranslate"><span class="pre">linkedSet</span></code> whether dependency updates should actually be
+committed or only staged locally.</p></li>
+</ul>
+<p>That means a good <code class="docutils literal notranslate"><span class="pre">LinkVariable</span></code> implementation usually preserves the
+caller’s intent. If a caller requests <code class="docutils literal notranslate"><span class="pre">get(read=False)</span></code>, the linked logic
+should usually avoid forcing extra hardware reads. If a caller requests
+<code class="docutils literal notranslate"><span class="pre">set(write=False)</span></code>, the linked logic should usually avoid committing the
+dependency writes immediately.</p>
+<p>This is one of the most important design points for <code class="docutils literal notranslate"><span class="pre">LinkVariable</span></code> callbacks:
+they should usually forward <code class="docutils literal notranslate"><span class="pre">read</span></code> and <code class="docutils literal notranslate"><span class="pre">write</span></code> into dependency accesses
+rather than hard-code <code class="docutils literal notranslate"><span class="pre">read=True</span></code> or <code class="docutils literal notranslate"><span class="pre">write=True</span></code>.</p>
+</section>
+<section id="linkvariable-chaining">
+<h2>LinkVariable Chaining<a class="headerlink" href="#linkvariable-chaining" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">LinkVariable</span></code> dependencies can include other <code class="docutils literal notranslate"><span class="pre">LinkVariable</span></code> instances, so
+you can build layered conversions (for example raw ADC counts -&gt; volts -&gt;
+engineering quantity such as power, temperature, or calibrated sensor units).</p>
+<p>This is useful when:</p>
+<ul class="simple">
+<li><p>One conversion step is reused by multiple higher-level views</p></li>
+<li><p>You want to separate low-level scaling from calibration or application logic</p></li>
+<li><p>Derived values should remain readable and testable as independent Nodes</p></li>
+</ul>
+</section>
+<section id="design-guidance">
+<h2>Design Guidance<a class="headerlink" href="#design-guidance" title="Link to this heading"></a></h2>
+<p>Good <code class="docutils literal notranslate"><span class="pre">LinkVariable</span></code> usage usually follows a simple rule: keep the raw
+Variables visible, and use <code class="docutils literal notranslate"><span class="pre">LinkVariable</span></code> to add a clearer operational view
+rather than to hide the hardware interface entirely.</p>
+<p>In practice:</p>
+<ul class="simple">
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">RemoteVariable</span></code> for the raw register surface</p></li>
+<li><p>Add one or more <code class="docutils literal notranslate"><span class="pre">LinkVariable</span></code> Nodes for engineering units or derived views</p></li>
+<li><p>Keep the conversion logic small, readable, and easy to test</p></li>
+<li><p>Prefer helper functions over dense lambdas once the math or policy becomes
+non-trivial</p></li>
+<li><p>Preserve caller intent by forwarding <code class="docutils literal notranslate"><span class="pre">read</span></code> and <code class="docutils literal notranslate"><span class="pre">write</span></code> into dependency
+accesses unless the linked behavior intentionally overrides that policy</p></li>
+<li><p>Consider subclassing <code class="docutils literal notranslate"><span class="pre">LinkVariable</span></code> when the same linked-access pattern is
+reused across many nodes</p></li>
+</ul>
+</section>
+<section id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Link to this heading"></a></h2>
+<section id="mirroring-a-single-variable-with-variable">
+<h3>Mirroring A Single Variable With <code class="docutils literal notranslate"><span class="pre">variable=</span></code><a class="headerlink" href="#mirroring-a-single-variable-with-variable" title="Link to this heading"></a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">variable=...</span></code> shortcut is useful when you want a second tree-facing
+view of one Variable without writing explicit <code class="docutils literal notranslate"><span class="pre">dependencies</span></code>,
+<code class="docutils literal notranslate"><span class="pre">linkedGet</span></code>, and <code class="docutils literal notranslate"><span class="pre">linkedSet</span></code> boilerplate.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">PowerMonitor</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;VoltageRaw&#39;</span><span class="p">,</span>
+            <span class="n">offset</span><span class="o">=</span><span class="mh">0x00</span><span class="p">,</span>
+            <span class="n">bitSize</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">base</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
+            <span class="n">hidden</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LinkVariable</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;VoltageCounts&#39;</span><span class="p">,</span>
+            <span class="n">variable</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">VoltageRaw</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">disp</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">{:#06x}</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Mirror of VoltageRaw with operator-facing formatting&#39;</span><span class="p">,</span>
+        <span class="p">))</span>
+</pre></div>
+</div>
+<p>In this pattern, <code class="docutils literal notranslate"><span class="pre">VoltageCounts</span></code> reuses <code class="docutils literal notranslate"><span class="pre">VoltageRaw</span></code> for storage and read
+behavior, but presents it as a separate node with its own name, description,
+and formatting. This is a good fit when you want an alternate tree-facing view
+without introducing any new conversion logic.</p>
+</section>
+<section id="engineering-unit-view-of-a-raw-register">
+<h3>Engineering-Unit View Of A Raw Register<a class="headerlink" href="#engineering-unit-view-of-a-raw-register" title="Link to this heading"></a></h3>
+<p>One common pattern is to pair a hidden raw <code class="docutils literal notranslate"><span class="pre">RemoteVariable</span></code> with a
+user-facing <code class="docutils literal notranslate"><span class="pre">LinkVariable</span></code> that converts the raw count into engineering
+units.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">TempMonitor</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;TempRaw&#39;</span><span class="p">,</span>
+            <span class="n">offset</span><span class="o">=</span><span class="mh">0x100</span><span class="p">,</span>
+            <span class="n">bitSize</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">base</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
+        <span class="p">))</span>
+
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LinkVariable</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Temperature&#39;</span><span class="p">,</span>
+            <span class="n">units</span><span class="o">=</span><span class="s1">&#39;degC&#39;</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">dependencies</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">TempRaw</span><span class="p">],</span> <span class="c1"># add()ed Nodes can be accessed as attributes</span>
+            <span class="n">linkedGet</span><span class="o">=</span><span class="k">lambda</span> <span class="n">var</span><span class="p">,</span> <span class="n">read</span><span class="o">=</span><span class="kc">True</span><span class="p">:</span> <span class="p">(</span><span class="n">var</span><span class="o">.</span><span class="n">dependencies</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">read</span><span class="o">=</span><span class="n">read</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.1</span><span class="p">)</span> <span class="o">-</span> <span class="mf">40.0</span><span class="p">,</span>
+        <span class="p">))</span>
+</pre></div>
+</div>
+<p>The important detail is that <code class="docutils literal notranslate"><span class="pre">linkedGet</span></code> forwards the caller’s <code class="docutils literal notranslate"><span class="pre">read</span></code>
+choice to the dependency. That preserves the normal Variable behavior: callers
+can choose between a fresh read and the currently cached value.</p>
+</section>
+<section id="composite-value-built-from-multiple-register-fields">
+<h3>Composite Value Built From Multiple Register Fields<a class="headerlink" href="#composite-value-built-from-multiple-register-fields" title="Link to this heading"></a></h3>
+<p>Another common pattern is assembling one logical value from several underlying
+register fields.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyAdc</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;MaskLow&#39;</span><span class="p">,</span>  <span class="n">offset</span><span class="o">=</span><span class="mh">0x10</span><span class="p">,</span> <span class="n">bitSize</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RW&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;MaskHigh&#39;</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mh">0x14</span><span class="p">,</span> <span class="n">bitSize</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RW&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;MaskDf&#39;</span><span class="p">,</span>   <span class="n">offset</span><span class="o">=</span><span class="mh">0x14</span><span class="p">,</span> <span class="n">bitSize</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">bitOffset</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RW&#39;</span><span class="p">))</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">_get_mask</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">read</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+            <span class="n">low</span>  <span class="o">=</span> <span class="n">var</span><span class="o">.</span><span class="n">dependencies</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">read</span><span class="o">=</span><span class="n">read</span><span class="p">)</span>
+            <span class="n">high</span> <span class="o">=</span> <span class="n">var</span><span class="o">.</span><span class="n">dependencies</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">read</span><span class="o">=</span><span class="n">read</span><span class="p">)</span>
+            <span class="n">df</span>   <span class="o">=</span> <span class="n">var</span><span class="o">.</span><span class="n">dependencies</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">read</span><span class="o">=</span><span class="n">read</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">df</span> <span class="o">&lt;&lt;</span> <span class="mi">8</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">high</span> <span class="o">&lt;&lt;</span> <span class="mi">4</span><span class="p">)</span> <span class="o">|</span> <span class="n">low</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">_set_mask</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">write</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+            <span class="n">var</span><span class="o">.</span><span class="n">dependencies</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">value</span> <span class="o">&amp;</span> <span class="mh">0xF</span><span class="p">,</span> <span class="n">write</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">var</span><span class="o">.</span><span class="n">dependencies</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">((</span><span class="n">value</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xF</span><span class="p">,</span> <span class="n">write</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">var</span><span class="o">.</span><span class="n">dependencies</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">((</span><span class="n">value</span> <span class="o">&gt;&gt;</span> <span class="mi">8</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0x3</span><span class="p">,</span> <span class="n">write</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">write</span><span class="p">:</span>
+                <span class="n">var</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">writeBlocks</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LinkVariable</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;DeviceMask&#39;</span><span class="p">,</span>
+            <span class="n">disp</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">{:#b}</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="n">dependencies</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">MaskLow</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">MaskHigh</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">MaskDf</span><span class="p">],</span>
+            <span class="n">linkedGet</span><span class="o">=</span><span class="n">_get_mask</span><span class="p">,</span>
+            <span class="n">linkedSet</span><span class="o">=</span><span class="n">_set_mask</span><span class="p">,</span>
+        <span class="p">))</span>
+</pre></div>
+</div>
+<p>This pattern is useful when the hardware register map is fragmented but the
+user-facing control should look like one coherent value.</p>
+</section>
+<section id="adc-counts-to-input-voltage-read-only">
+<h3>ADC Counts to Input Voltage (Read-Only)<a class="headerlink" href="#adc-counts-to-input-voltage-read-only" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">AdcMonitor</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;AdcRaw&#39;</span><span class="p">,</span>
+            <span class="n">offset</span><span class="o">=</span><span class="mh">0x200</span><span class="p">,</span>
+            <span class="n">bitSize</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">base</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
+        <span class="p">))</span>
+
+        <span class="c1"># 16-bit ADC, 2.5 V full-scale, no offset</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LinkVariable</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;InputVoltage&#39;</span><span class="p">,</span>
+            <span class="n">units</span><span class="o">=</span><span class="s1">&#39;V&#39;</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">disp</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">{:.6f}</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="n">dependencies</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">AdcRaw</span><span class="p">],</span>
+            <span class="n">linkedGet</span><span class="o">=</span><span class="k">lambda</span> <span class="n">var</span><span class="p">,</span> <span class="n">read</span><span class="o">=</span><span class="kc">True</span><span class="p">:</span> <span class="p">(</span>
+                <span class="n">var</span><span class="o">.</span><span class="n">dependencies</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">read</span><span class="o">=</span><span class="n">read</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mf">2.5</span> <span class="o">/</span> <span class="mf">65535.0</span><span class="p">)</span>
+            <span class="p">),</span>
+        <span class="p">))</span>
+</pre></div>
+</div>
+</section>
+<section id="dac-voltage-setpoint-to-raw-code-read-write">
+<h3>DAC Voltage Setpoint to Raw Code (Read/Write)<a class="headerlink" href="#dac-voltage-setpoint-to-raw-code-read-write" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">DacControl</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;DacRaw&#39;</span><span class="p">,</span>
+            <span class="n">offset</span><span class="o">=</span><span class="mh">0x300</span><span class="p">,</span>
+            <span class="n">bitSize</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span>
+            <span class="n">base</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
+        <span class="p">))</span>
+
+        <span class="n">full_scale</span> <span class="o">=</span> <span class="mf">1.8</span>
+        <span class="n">max_code</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">14</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LinkVariable</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;DacSetpoint&#39;</span><span class="p">,</span>
+            <span class="n">units</span><span class="o">=</span><span class="s1">&#39;V&#39;</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span>
+            <span class="n">disp</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">{:.5f}</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="n">dependencies</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">DacRaw</span><span class="p">],</span>
+            <span class="n">linkedGet</span><span class="o">=</span><span class="k">lambda</span> <span class="n">var</span><span class="p">,</span> <span class="n">read</span><span class="o">=</span><span class="kc">True</span><span class="p">:</span> <span class="p">(</span>
+                <span class="n">var</span><span class="o">.</span><span class="n">dependencies</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">read</span><span class="o">=</span><span class="n">read</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">full_scale</span> <span class="o">/</span> <span class="n">max_code</span><span class="p">)</span>
+            <span class="p">),</span>
+            <span class="n">linkedSet</span><span class="o">=</span><span class="k">lambda</span> <span class="n">var</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">write</span><span class="o">=</span><span class="kc">True</span><span class="p">:</span> <span class="p">(</span>
+                <span class="n">var</span><span class="o">.</span><span class="n">dependencies</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>
+                    <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">max_code</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">((</span><span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">/</span> <span class="n">full_scale</span><span class="p">)</span> <span class="o">*</span> <span class="n">max_code</span><span class="p">)))),</span>
+                    <span class="n">write</span><span class="o">=</span><span class="n">write</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">),</span>
+        <span class="p">))</span>
+</pre></div>
+</div>
+</section>
+<section id="adc-conversion-with-multiple-dependencies-read-only">
+<h3>ADC Conversion with Multiple Dependencies (Read-Only)<a class="headerlink" href="#adc-conversion-with-multiple-dependencies-read-only" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">AdcWithGain</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;AdcRaw&#39;</span><span class="p">,</span>
+            <span class="n">offset</span><span class="o">=</span><span class="mh">0x400</span><span class="p">,</span>
+            <span class="n">bitSize</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">base</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
+        <span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;GainRaw&#39;</span><span class="p">,</span>
+            <span class="n">offset</span><span class="o">=</span><span class="mh">0x404</span><span class="p">,</span>
+            <span class="n">bitSize</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">base</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
+        <span class="p">))</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">_scaled_input</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">read</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+            <span class="n">adc_raw</span> <span class="o">=</span> <span class="n">var</span><span class="o">.</span><span class="n">dependencies</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">read</span><span class="o">=</span><span class="n">read</span><span class="p">)</span>
+            <span class="n">gain_raw</span> <span class="o">=</span> <span class="n">var</span><span class="o">.</span><span class="n">dependencies</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">read</span><span class="o">=</span><span class="n">read</span><span class="p">)</span>
+            <span class="n">adc_volts</span> <span class="o">=</span> <span class="n">adc_raw</span> <span class="o">*</span> <span class="p">(</span><span class="mf">2.5</span> <span class="o">/</span> <span class="mf">65535.0</span><span class="p">)</span>
+            <span class="n">gain</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">gain_raw</span>  <span class="c1"># 0-&gt;1x, 1-&gt;2x, 2-&gt;4x, ...</span>
+            <span class="k">return</span> <span class="n">adc_volts</span> <span class="o">/</span> <span class="n">gain</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LinkVariable</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;InputVoltageScaled&#39;</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">units</span><span class="o">=</span><span class="s1">&#39;V&#39;</span><span class="p">,</span>
+            <span class="n">disp</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">{:.6f}</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="n">dependencies</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">AdcRaw</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">GainRaw</span><span class="p">],</span>
+            <span class="n">linkedGet</span><span class="o">=</span><span class="n">_scaled_input</span><span class="p">,</span>
+        <span class="p">))</span>
+</pre></div>
+</div>
+</section>
+<section id="subclassing-linkvariable">
+<h3>Subclassing LinkVariable<a class="headerlink" href="#subclassing-linkvariable" title="Link to this heading"></a></h3>
+<p>An occasional pattern is to subclass <code class="docutils literal notranslate"><span class="pre">LinkVariable</span></code> when the same
+linked-access behavior needs to be reused many times. This is useful when the
+linked logic is more like a reusable Variable type than a one-off callback.</p>
+<p>Two common examples are:</p>
+<ul class="simple">
+<li><p>An indexed view into one element of an array-like dependency</p></li>
+<li><p>A grouped Variable that reads or writes a coordinated set of dependencies</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">IndexedLinkVariable</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LinkVariable</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dep</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">linkedGet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">,</span> <span class="n">linkedSet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dep</span> <span class="o">=</span> <span class="n">dep</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">index</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">read</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dep</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">read</span><span class="o">=</span><span class="n">read</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">write</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dep</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">write</span><span class="o">=</span><span class="n">write</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This pattern is a good fit when many nodes should expose the same linked
+behavior with different dependencies or indices. It keeps the tree definition
+cleaner and avoids large repeated lambdas.</p>
+</section>
+</section>
+<section id="what-to-explore-next">
+<h2>What To Explore Next<a class="headerlink" href="#what-to-explore-next" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Software-owned Variables: <a class="reference internal" href="local_variable.html"><span class="doc">LocalVariable</span></a></p></li>
+<li><p>Hardware-backed Variables: <a class="reference internal" href="remote_variable.html"><span class="doc">RemoteVariable</span></a></p></li>
+<li><p>Shared Variable behavior: <a class="reference internal" href="variable.html"><span class="doc">Variable</span></a></p></li>
+</ul>
+</section>
+<section id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<p>See <a class="reference internal" href="../../api/python/pyrogue/linkvariable.html"><span class="doc">LinkVariable</span></a> for generated API details.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="remote_variable.html" class="btn btn-neutral float-left" title="RemoteVariable" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="command.html" class="btn btn-neutral float-right" title="Command" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

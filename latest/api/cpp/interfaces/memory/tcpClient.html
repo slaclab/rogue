@@ -1,0 +1,312 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TcpClient &mdash; Rogue v6.10.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css?v=8b50afe1" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=dc21db2b"></script>
+      <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../../_static/custom.js?v=7b5dfb0b"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link rel="next" title="TcpServer" href="tcpServer.html" />
+    <link rel="prev" title="Emulate" href="emulate.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../../python/index.html">Python API</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../../index.html">C++ API</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../../rogue_index.html">rogue</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../../interfaces_index.html">rogue::interfaces</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../api/index.html">rogue::interfaces::api</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="index.html">rogue::interfaces::memory</a><ul class="current">
+<li class="toctree-l5"><a class="reference internal" href="constants.html">Constants</a></li>
+<li class="toctree-l5"><a class="reference internal" href="transaction.html">Transaction</a></li>
+<li class="toctree-l5"><a class="reference internal" href="transactionLock.html">TransactionLock</a></li>
+<li class="toctree-l5"><a class="reference internal" href="master.html">Master</a></li>
+<li class="toctree-l5"><a class="reference internal" href="slave.html">Slave</a></li>
+<li class="toctree-l5"><a class="reference internal" href="block.html">Block</a></li>
+<li class="toctree-l5"><a class="reference internal" href="model.html">Model</a></li>
+<li class="toctree-l5"><a class="reference internal" href="hub.html">Hub</a></li>
+<li class="toctree-l5"><a class="reference internal" href="emulate.html">Emulate</a></li>
+<li class="toctree-l5 current"><a class="current reference internal" href="#">TcpClient</a></li>
+<li class="toctree-l5"><a class="reference internal" href="tcpServer.html">TcpServer</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../stream/index.html">rogue::interfaces::stream</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../zmqClient.html">rogue::interfaces::ZmqClient</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../protocols_index.html">rogue::protocols</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../hardware_index.html">rogue::hardware</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../utilities_index.html">rogue::utilities</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">API Reference</a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">C++ API</a></li>
+          <li class="breadcrumb-item"><a href="../../interfaces_index.html">rogue::interfaces</a></li>
+          <li class="breadcrumb-item"><a href="index.html">rogue::interfaces::memory</a></li>
+      <li class="breadcrumb-item active">TcpClient</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../_sources/api/cpp/interfaces/memory/tcpClient.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="tcpclient">
+<span id="interfaces-memory-tcp-client"></span><h1>TcpClient<a class="headerlink" href="#tcpclient" title="Link to this heading"></a></h1>
+<p>For conceptual guidance on memory transport usage, see:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../../../../memory_interface/index.html"><span class="doc">Memory Interface</span></a></p></li>
+<li><p><a class="reference internal" href="../../../../memory_interface/tcp_bridge.html"><span class="doc">Memory TCP Bridge</span></a></p></li>
+</ul>
+<section id="python-binding">
+<h2>Python binding<a class="headerlink" href="#python-binding" title="Link to this heading"></a></h2>
+<p>This C++ class is also exported into Python as <code class="docutils literal notranslate"><span class="pre">rogue.interfaces.memory.TcpClient</span></code>.</p>
+<p>Python API page:
+- <a class="reference internal" href="../../../python/rogue/interfaces/memory/tcpclient.html"><span class="doc">TcpClient</span></a></p>
+<p>objects in C++ are referenced by the following shared pointer typedef:</p>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory12TcpClientPtrE">
+<span id="_CPPv3N5rogue10interfaces6memory12TcpClientPtrE"></span><span id="_CPPv2N5rogue10interfaces6memory12TcpClientPtrE"></span><span id="rogue::interfaces::memory::TcpClientPtr"></span><span class="target" id="namespacerogue_1_1interfaces_1_1memory_1ae3b8248977242815af0b5a036d65d637"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue10interfaces6memory9TcpClientE" title="rogue::interfaces::memory::TcpClient"><span class="n"><span class="pre">TcpClient</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">TcpClientPtr</span></span></span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory12TcpClientPtrE" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/memory_2TcpClient_8h_source.html#l00190"><span class="pre">[header]</span></a></dt>
+<dd><p>Shared pointer alias for <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1TcpClient"><span class="std std-ref"><span class="pre">TcpClient</span></span></a></code>. </p>
+</dd></dl>
+
+<p>The class description is shown below:</p>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory9TcpClientE">
+<span id="_CPPv3N5rogue10interfaces6memory9TcpClientE"></span><span id="_CPPv2N5rogue10interfaces6memory9TcpClientE"></span><span id="rogue::interfaces::memory::TcpClient"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1TcpClient"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">TcpClient</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="slave.html#_CPPv4N5rogue10interfaces6memory5SlaveE" title="rogue::interfaces::memory::Slave"><span class="n"><span class="pre">Slave</span></span></a><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory9TcpClientE" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/memory_2TcpClient_8h_source.html#l00053"><span class="pre">[header]</span></a></dt>
+<dd><p>Memory TCP bridge client. </p>
+<p>Bridges a local memory transaction source to a remote <code class="docutils literal notranslate"><a class="reference internal" href="tcpServer.html#classrogue_1_1interfaces_1_1memory_1_1TcpServer"><span class="std std-ref"><span class="pre">TcpServer</span></span></a></code>.</p>
+<p>The client accepts transactions through its <code class="docutils literal notranslate"><a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref"><span class="pre">Slave</span></span></a></code> interface and sends them over a two-socket request/response transport (base port and base port + 1). Non-posted transactions are tracked by transaction ID until a response is received by the background thread.</p>
+<p>Operational behavior:<ul class="simple">
+<li><p>Write/Post transactions include payload bytes in the outbound message.</p></li>
+<li><p>Read/Verify transactions send metadata and receive payload bytes in the response.</p></li>
+<li><p>Posted writes are completed locally after send (no response wait).</p></li>
+<li><p>If the remote side is unavailable or send path is backpressured, sends may fail and in-flight transactions can time out at higher layers. </p></li>
+</ul>
+</p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory9TcpClient9TcpClientENSt6stringE8uint16_tb">
+<span id="_CPPv3N5rogue10interfaces6memory9TcpClient9TcpClientENSt6stringE8uint16_tb"></span><span id="_CPPv2N5rogue10interfaces6memory9TcpClient9TcpClientENSt6stringE8uint16_tb"></span><span id="rogue::interfaces::memory::TcpClient::TcpClient__ss.uint16_t.b"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1TcpClient_1a3479bed0e11c2b613fa2a232481b584c"></span><span class="sig-name descname"><span class="n"><span class="pre">TcpClient</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">addr</span></span>, <span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">port</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">waitReady</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory9TcpClient9TcpClientENSt6stringE8uint16_tb" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/memory_2TcpClient_8h_source.html#l00135"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/memory_2TcpClient_8cpp_source.html#l00055"><span class="pre">[impl]</span></a></dt>
+<dd><p>Constructs a TCP memory bridge client. </p>
+<p>Creator.</p>
+<p>The address is the remote <code class="docutils literal notranslate"><a class="reference internal" href="tcpServer.html#classrogue_1_1interfaces_1_1memory_1_1TcpServer"><span class="std std-ref"><span class="pre">TcpServer</span></span></a></code> host (IP or hostname). The bridge uses two consecutive TCP ports starting at <code class="docutils literal notranslate"><span class="pre">port</span></code>; for example, <code class="docutils literal notranslate"><span class="pre">port=8000</span></code> uses ports <code class="docutils literal notranslate"><span class="pre">8000</span></code> and <code class="docutils literal notranslate"><span class="pre">8001</span></code>.</p>
+<p>This constructor is a low-level C++ allocation path. Prefer <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1TcpClient_1a20ef25d26bdf0cd478069c19abc79090"><span class="std std-ref"><span class="pre">create()</span></span></a></code> when shared ownership or Python exposure is required. <code class="docutils literal notranslate"><span class="pre">waitReady</span></code> does not block in the constructor itself; it configures whether <code class="docutils literal notranslate"><span class="pre">_start()</span></code> should perform readiness probing later.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>addr</strong> – Remote server address. </p></li>
+<li><p><strong>port</strong> – Base TCP port number. </p></li>
+<li><p><strong>waitReady</strong> – If <code class="docutils literal notranslate"><span class="pre">true</span></code>, record that <code class="docutils literal notranslate"><span class="pre">_start()</span></code> should block until the bridge request/response path responds to a readiness probe. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory9TcpClientD0Ev">
+<span id="_CPPv3N5rogue10interfaces6memory9TcpClientD0Ev"></span><span id="_CPPv2N5rogue10interfaces6memory9TcpClientD0Ev"></span><span id="rogue::interfaces::memory::TcpClient::~TcpClient"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1TcpClient_1a320e732a8c2796339534be197817e790"></span><span class="sig-name descname"><span class="n"><span class="pre">~TcpClient</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory9TcpClientD0Ev" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/memory_2TcpClient_8h_source.html#l00140"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/memory_2TcpClient_8cpp_source.html#l00127"><span class="pre">[impl]</span></a></dt>
+<dd><p>Destroys the TCP client and releases transport resources. </p>
+<p>Destructor. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory9TcpClient5closeEv">
+<span id="_CPPv3N5rogue10interfaces6memory9TcpClient5closeEv"></span><span id="_CPPv2N5rogue10interfaces6memory9TcpClient5closeEv"></span><span id="rogue::interfaces::memory::TcpClient::close"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1TcpClient_1a0a805790fe809ddd17d55b3837370a03"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">close</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory9TcpClient5closeEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/memory_2TcpClient_8h_source.html#l00147"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/memory_2TcpClient_8cpp_source.html#l00132"><span class="pre">[impl]</span></a></dt>
+<dd><p>Closes bridge connections. </p>
+<p>Deprecated; use <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1TcpClient_1a9dfc1a3b42872a8aacbb8fe4ee067123"><span class="std std-ref"><span class="pre">stop()</span></span></a></code>. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory9TcpClient4stopEv">
+<span id="_CPPv3N5rogue10interfaces6memory9TcpClient4stopEv"></span><span id="_CPPv2N5rogue10interfaces6memory9TcpClient4stopEv"></span><span id="rogue::interfaces::memory::TcpClient::stop"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1TcpClient_1a9dfc1a3b42872a8aacbb8fe4ee067123"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">stop</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory9TcpClient4stopEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/memory_2TcpClient_8h_source.html#l00152"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/memory_2TcpClient_8cpp_source.html#l00136"><span class="pre">[impl]</span></a></dt>
+<dd><p>Stops the bridge interface and worker thread. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory9TcpClient9waitReadyEdd">
+<span id="_CPPv3N5rogue10interfaces6memory9TcpClient9waitReadyEdd"></span><span id="_CPPv2N5rogue10interfaces6memory9TcpClient9waitReadyEdd"></span><span id="rogue::interfaces::memory::TcpClient::waitReady__double.double"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1TcpClient_1a67ede27755b094717b8d9ebd6fcf609a"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">waitReady</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">timeout</span></span>, <span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">period</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory9TcpClient9waitReadyEdd" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/memory_2TcpClient_8h_source.html#l00167"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/memory_2TcpClient_8cpp_source.html#l00147"><span class="pre">[impl]</span></a></dt>
+<dd><p>Wait for the remote <a class="reference internal" href="tcpServer.html#classrogue_1_1interfaces_1_1memory_1_1TcpServer"><span class="std std-ref">TcpServer</span></a> path to respond to a bridge probe. </p>
+<p>This sends a lightweight internal control transaction through the bridge and waits for the remote <code class="docutils literal notranslate"><a class="reference internal" href="tcpServer.html#classrogue_1_1interfaces_1_1memory_1_1TcpServer"><span class="std std-ref"><span class="pre">TcpServer</span></span></a></code> to acknowledge it. It verifies that the request/response path is usable, which is stronger than a local socket-connect state.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>timeout</strong> – Maximum wait time in seconds. </p></li>
+<li><p><strong>period</strong> – Retry period in seconds. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">true</span></code> if the probe succeeds before timeout, otherwise <code class="docutils literal notranslate"><span class="pre">false</span></code>. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory9TcpClient5startEv">
+<span id="_CPPv3N5rogue10interfaces6memory9TcpClient5startEv"></span><span id="_CPPv2N5rogue10interfaces6memory9TcpClient5startEv"></span><span id="rogue::interfaces::memory::TcpClient::start"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1TcpClient_1ad5805e29a05403004cf1de749f7faf59"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">start</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory9TcpClient5startEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/memory_2TcpClient_8h_source.html#l00177"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/memory_2TcpClient_8cpp_source.html#l00211"><span class="pre">[impl]</span></a></dt>
+<dd><p>Managed-lifecycle startup hook. </p>
+<p>If this instance was constructed with <code class="docutils literal notranslate"><span class="pre">waitReady=true</span></code>, <code class="docutils literal notranslate"><span class="pre">_start()</span></code> blocks until the bridge request/response path responds to a readiness probe. Otherwise it is a no-op. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory9TcpClient13doTransactionENSt10shared_ptrIN5rogue10interfaces6memory11TransactionEEE">
+<span id="_CPPv3N5rogue10interfaces6memory9TcpClient13doTransactionENSt10shared_ptrIN5rogue10interfaces6memory11TransactionEEE"></span><span id="_CPPv2N5rogue10interfaces6memory9TcpClient13doTransactionENSt10shared_ptrIN5rogue10interfaces6memory11TransactionEEE"></span><span id="rogue::interfaces::memory::TcpClient::doTransaction__std::shared_ptr:rogue::interfaces::memory::Transaction:"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1TcpClient_1ae75a51930d7e3772ee39125a0ee4d30f"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">doTransaction</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="transaction.html#_CPPv4N5rogue10interfaces6memory11TransactionE" title="rogue::interfaces::memory::Transaction"><span class="n"><span class="pre">Transaction</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">tran</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory9TcpClient13doTransactionENSt10shared_ptrIN5rogue10interfaces6memory11TransactionEEE" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/memory_2TcpClient_8h_source.html#l00184"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/memory_2TcpClient_8cpp_source.html#l00222"><span class="pre">[impl]</span></a></dt>
+<dd><p>Processes a transaction received from the upstream master. </p>
+<p>Post a transaction.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>tran</strong> – <a class="reference internal" href="transaction.html#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> to forward to the remote server. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-static-functions">Public Static Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory9TcpClient6createENSt6stringE8uint16_tb">
+<span id="_CPPv3N5rogue10interfaces6memory9TcpClient6createENSt6stringE8uint16_tb"></span><span id="_CPPv2N5rogue10interfaces6memory9TcpClient6createENSt6stringE8uint16_tb"></span><span id="rogue::interfaces::memory::TcpClient::create__ss.uint16_t.b"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1TcpClient_1a20ef25d26bdf0cd478069c19abc79090"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue10interfaces6memory9TcpClientE" title="rogue::interfaces::memory::TcpClient"><span class="n"><span class="pre">TcpClient</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">create</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">addr</span></span>, <span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">port</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">waitReady</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="k"><span class="pre">false</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory9TcpClient6createENSt6stringE8uint16_tb" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/memory_2TcpClient_8h_source.html#l00109"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/memory_2TcpClient_8cpp_source.html#l00049"><span class="pre">[impl]</span></a></dt>
+<dd><p>Creates a TCP memory bridge client. </p>
+<p>Class creation.</p>
+<p>Parameter semantics are identical to the constructor; see <code class="docutils literal notranslate"><span class="pre">TcpClient()</span></code> for address and port behavior details. Exposed as <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1TcpClient"><span class="std std-ref"><span class="pre">rogue.interfaces.memory.TcpClient()</span></span></a></code> in Python. This static factory is the preferred construction path when the object is shared across Rogue graph connections or exposed to Python. It returns <code class="docutils literal notranslate"><span class="pre">std::shared_ptr</span></code> ownership compatible with Rogue pointer typedefs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>addr</strong> – Remote server address. </p></li>
+<li><p><strong>port</strong> – Base TCP port number. </p></li>
+<li><p><strong>waitReady</strong> – If <code class="docutils literal notranslate"><span class="pre">true</span></code>, configure the instance so <code class="docutils literal notranslate"><span class="pre">_start()</span></code> waits for bridge readiness before returning. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Shared pointer to the created client. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory9TcpClient12setup_pythonEv">
+<span id="_CPPv3N5rogue10interfaces6memory9TcpClient12setup_pythonEv"></span><span id="_CPPv2N5rogue10interfaces6memory9TcpClient12setup_pythonEv"></span><span id="rogue::interfaces::memory::TcpClient::setup_python"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1TcpClient_1adde0a21c1d282cf857df7b081461fecb"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setup_python</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory9TcpClient12setup_pythonEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/memory_2TcpClient_8h_source.html#l00114"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/memory_2TcpClient_8cpp_source.html#l00420"><span class="pre">[impl]</span></a></dt>
+<dd><p>Registers this type with Python bindings. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="emulate.html" class="btn btn-neutral float-left" title="Emulate" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tcpServer.html" class="btn btn-neutral float-right" title="TcpServer" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

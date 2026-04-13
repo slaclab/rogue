@@ -1,0 +1,387 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LocalVariable &mdash; Rogue v6.10.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=8b50afe1" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc21db2b"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/custom.js?v=7b5dfb0b"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="RemoteVariable" href="remote_variable.html" />
+    <link rel="prev" title="Variable" href="variable.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">PyRogue Tree</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Components And Concepts</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="root.html">Root</a></li>
+<li class="toctree-l3"><a class="reference internal" href="device.html">Device</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="variable.html">Variable</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">LocalVariable</a></li>
+<li class="toctree-l4"><a class="reference internal" href="remote_variable.html">RemoteVariable</a></li>
+<li class="toctree-l4"><a class="reference internal" href="link_variable.html">LinkVariable</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="command.html">Command</a></li>
+<li class="toctree-l3"><a class="reference internal" href="block.html">Blocks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="block_operations.html">Device Block Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="model.html">Model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fixed_point_models.html">Fixed-Point Models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="float_types_summary.html">Floating Point Types Summary</a></li>
+<li class="toctree-l3"><a class="reference internal" href="poll_queue.html">PollQueue</a></li>
+<li class="toctree-l3"><a class="reference internal" href="yaml_configuration.html">YAML Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="memory_variable_stream.html">Variable Update Stream</a></li>
+<li class="toctree-l3"><a class="reference internal" href="groups.html">Groups</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../builtin_devices/index.html">Built-in Devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../client_interfaces/index.html">Client Interfaces</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">API Reference</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">PyRogue Tree</a></li>
+          <li class="breadcrumb-item"><a href="index.html">PyRogue Tree Components And Concepts</a></li>
+          <li class="breadcrumb-item"><a href="variable.html">Variable</a></li>
+      <li class="breadcrumb-item active">LocalVariable</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/pyrogue_tree/core/local_variable.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="localvariable">
+<span id="pyrogue-tree-node-variable-local-variable"></span><h1>LocalVariable<a class="headerlink" href="#localvariable" title="Link to this heading"></a></h1>
+<p><a class="reference internal" href="../../api/python/pyrogue/localvariable.html#pyrogue.LocalVariable" title="pyrogue.LocalVariable"><code class="xref py py-class docutils literal notranslate"><span class="pre">LocalVariable</span></code></a> is the right choice when the value belongs
+to Python logic rather than to a hardware register. It is still a normal
+<code class="docutils literal notranslate"><span class="pre">Variable</span></code> in the tree, so it can participate in GUIs, polling, formatting,
+limits, and remote access, but its storage and behavior stay local to the
+application.</p>
+<p>Typical use cases:</p>
+<ul class="simple">
+<li><p>Software state or configuration values</p></li>
+<li><p>Values produced by helper libraries or external APIs</p></li>
+<li><p>GUI-facing controls that should update Python-owned state</p></li>
+<li><p>Operator-visible status derived from software components rather than from
+memory-mapped hardware</p></li>
+</ul>
+<section id="when-to-use-localvariable">
+<h2>When To Use LocalVariable<a class="headerlink" href="#when-to-use-localvariable" title="Link to this heading"></a></h2>
+<p>Use <code class="docutils literal notranslate"><span class="pre">LocalVariable</span></code> when the tree should expose a value, but there is no
+hardware address that should be read or written for that value.</p>
+<p>That makes it the natural companion to <code class="docutils literal notranslate"><span class="pre">RemoteVariable</span></code>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">RemoteVariable</span></code> exposes memory-mapped hardware state</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">LocalVariable</span></code> exposes software-owned state</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">LinkVariable</span></code> exposes a derived view layered on top of other Variables</p></li>
+</ul>
+<p>Examples of good <code class="docutils literal notranslate"><span class="pre">LocalVariable</span></code> candidates include run-state flags, file
+paths, software counters, cached measurements from another library, and tuning
+values that are meaningful to the application even though they are not direct
+register fields.</p>
+</section>
+<section id="what-you-usually-set">
+<h2>What You Usually Set<a class="headerlink" href="#what-you-usually-set" title="Link to this heading"></a></h2>
+<p>Most <code class="docutils literal notranslate"><span class="pre">LocalVariable</span></code> definitions use the shared Variable parameters from
+<a class="reference internal" href="variable.html"><span class="doc">Variable</span></a>, plus a small set of local-specific ones:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">value</span></code> for a directly stored Python-owned value.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">localGet</span></code> to fetch the current value from application state.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">localSet</span></code> to push a new value into application state.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pollInterval</span></code> when the local value should be refreshed periodically.</p></li>
+</ul>
+<p>For simple access, <code class="docutils literal notranslate"><span class="pre">localGet</span></code> and <code class="docutils literal notranslate"><span class="pre">localSet</span></code> are not required. If the
+Variable should just store a Python-owned value directly, <code class="docutils literal notranslate"><span class="pre">value=...</span></code> is
+enough on its own.</p>
+</section>
+<section id="how-typing-works">
+<h2>How Typing Works<a class="headerlink" href="#how-typing-works" title="Link to this heading"></a></h2>
+<p>For <code class="docutils literal notranslate"><span class="pre">LocalVariable</span></code>, the <code class="docutils literal notranslate"><span class="pre">value=</span></code> argument does two jobs:</p>
+<ul class="simple">
+<li><p>It provides the initial stored value.</p></li>
+<li><p>It establishes the Variable’s native Python type.</p></li>
+</ul>
+<p>In the current implementation, <code class="docutils literal notranslate"><span class="pre">BaseVariable</span></code> records <code class="docutils literal notranslate"><span class="pre">type(value)</span></code> as the
+native type when <code class="docutils literal notranslate"><span class="pre">value</span></code> is provided. That means the seed value is the main
+type anchor for normal <code class="docutils literal notranslate"><span class="pre">LocalVariable</span></code> usage.</p>
+<p>Examples:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">value=False</span></code> makes the Variable behave like a boolean-backed value.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">value=0</span></code> makes it integer-backed.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">value=''</span></code> makes it string-backed.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">value=np.array([...])</span></code> makes it array-backed and also captures the array
+dtype and shape for <code class="docutils literal notranslate"><span class="pre">typeStr</span></code>.</p></li>
+</ul>
+<p>Important implications:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">LocalVariable</span></code> does not automatically coerce later writes to match the
+seed type.</p></li>
+<li><p>With the default <code class="docutils literal notranslate"><span class="pre">typeCheck=True</span></code>, a type mismatch during <code class="docutils literal notranslate"><span class="pre">set()</span></code> raises
+an exception.</p></li>
+<li><p>Set <code class="docutils literal notranslate"><span class="pre">typeCheck=False</span></code> when a <code class="docutils literal notranslate"><span class="pre">LocalVariable</span></code> intentionally needs to
+accept multiple Python value types over its lifetime.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">typeStr</span></code> is display metadata; it does not enforce conversion by itself.</p></li>
+</ul>
+<p>If you define a callback-only <code class="docutils literal notranslate"><span class="pre">LocalVariable</span></code> with <code class="docutils literal notranslate"><span class="pre">localGet</span></code> and no
+<code class="docutils literal notranslate"><span class="pre">value</span></code>, the Variable can still work, but PyRogue does not have a seed value
+to infer the native type from up front. In that case, providing a sensible
+<code class="docutils literal notranslate"><span class="pre">value=</span></code> is usually the clearest choice unless you intentionally want the
+type to be discovered lazily.</p>
+<p>For boolean values, there is one extra convenience: when <code class="docutils literal notranslate"><span class="pre">value</span></code> is a
+<code class="docutils literal notranslate"><span class="pre">bool</span></code> and no explicit <code class="docutils literal notranslate"><span class="pre">enum</span></code> is supplied, PyRogue automatically creates a
+<code class="docutils literal notranslate"><span class="pre">{False:</span> <span class="pre">'False',</span> <span class="pre">True:</span> <span class="pre">'True'}</span></code> enum for display.</p>
+</section>
+<section id="callbacks-and-value-ownership">
+<h2>Callbacks And Value Ownership<a class="headerlink" href="#callbacks-and-value-ownership" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">LocalVariable</span></code> can either hold a value directly or act as a live view over
+some other Python object through callbacks.</p>
+<p>If you only need direct stored access, skip the callbacks and provide
+<code class="docutils literal notranslate"><span class="pre">value=...</span></code>. Add <code class="docutils literal notranslate"><span class="pre">localGet</span></code> and <code class="docutils literal notranslate"><span class="pre">localSet</span></code> only when the Variable should
+proxy some other application state or behavior.</p>
+<p>The optional callbacks are:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">localGet</span></code> to produce the current value when the Variable is read</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">localSet</span></code> to apply a new value when the Variable is written</p></li>
+</ul>
+<p>In the current implementation, the callback wrappers support keyword arguments
+matching:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">localGet(dev=None,</span> <span class="pre">var=None)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">localSet(value,</span> <span class="pre">dev=None,</span> <span class="pre">var=None,</span> <span class="pre">changed=None)</span></code></p></li>
+</ul>
+<p>The callback may accept any subset of those names. In practice, many
+<code class="docutils literal notranslate"><span class="pre">LocalVariable</span></code> instances use simple callables that only take <code class="docutils literal notranslate"><span class="pre">value</span></code> or
+no explicit arguments at all.</p>
+<p>This makes <code class="docutils literal notranslate"><span class="pre">LocalVariable</span></code> useful for two common patterns:</p>
+<ul class="simple">
+<li><p>A stored software value that PyRogue owns directly</p></li>
+<li><p>A thin tree-facing wrapper around application state owned elsewhere</p></li>
+</ul>
+<p>Design guidance:</p>
+<ul class="simple">
+<li><p>Keep callbacks deterministic and low-latency</p></li>
+<li><p>Avoid long blocking operations in <code class="docutils literal notranslate"><span class="pre">localGet</span></code> when the Variable is polled</p></li>
+<li><p>Make side effects in <code class="docutils literal notranslate"><span class="pre">localSet</span></code> explicit and idempotent when possible</p></li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">LocalCommand</span></code> instead when the interaction is really an action rather
+than a persistent value</p></li>
+</ul>
+</section>
+<section id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Link to this heading"></a></h2>
+<section id="software-owned-state">
+<h3>Software-Owned State<a class="headerlink" href="#software-owned-state" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyDevice</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_running</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;IsRunning&#39;</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span>
+            <span class="n">value</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_is_running</span><span class="p">,</span>
+            <span class="n">localGet</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_running</span><span class="p">,</span>
+            <span class="n">localSet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_set_is_running</span><span class="p">,</span>
+        <span class="p">))</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_set_is_running</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_running</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In this pattern, the tree shows one stable <code class="docutils literal notranslate"><span class="pre">Variable</span></code> interface while the
+actual value is still owned by Python application state.</p>
+</section>
+<section id="string-backed-application-setting">
+<h3>String-Backed Application Setting<a class="headerlink" href="#string-backed-application-setting" title="Link to this heading"></a></h3>
+<p>This is a common pattern for software configuration such as file paths,
+hostnames, or operator-entered labels.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">FileWriter</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;OutputPath&#39;</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span>
+            <span class="n">value</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Destination path for captured data&#39;</span><span class="p">,</span>
+        <span class="p">))</span>
+</pre></div>
+</div>
+<p>Here, <code class="docutils literal notranslate"><span class="pre">value=''</span></code> makes the Variable string-backed from the start.</p>
+</section>
+<section id="polled-status-from-a-helper-library">
+<h3>Polled Status From A Helper Library<a class="headerlink" href="#polled-status-from-a-helper-library" title="Link to this heading"></a></h3>
+<p>This pattern is common in PyRogue applications: a local counter or status
+value is exposed read-only, refreshed by <code class="docutils literal notranslate"><span class="pre">localGet</span></code>, and polled on an
+interval.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Stats</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">helper</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_helper</span> <span class="o">=</span> <span class="n">helper</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;FrameCount&#39;</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">typeStr</span><span class="o">=</span><span class="s1">&#39;UInt64&#39;</span><span class="p">,</span>
+            <span class="n">pollInterval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">localGet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_helper</span><span class="o">.</span><span class="n">get_frame_count</span><span class="p">,</span>
+        <span class="p">))</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">value=0</span></code> seed makes the Variable integer-backed, while <code class="docutils literal notranslate"><span class="pre">typeStr</span></code> lets
+the tree present a more specific label to users.</p>
+</section>
+<section id="read-write-wrapper-over-external-application-state">
+<h3>Read-Write Wrapper Over External Application State<a class="headerlink" href="#read-write-wrapper-over-external-application-state" title="Link to this heading"></a></h3>
+<p>This is the pattern to use when the tree should expose a live control surface
+for an object owned by another Python library.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Processor</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">engine</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_engine</span> <span class="o">=</span> <span class="n">engine</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Disable&#39;</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span>
+            <span class="n">value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">localSet</span><span class="o">=</span><span class="k">lambda</span> <span class="n">value</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_engine</span><span class="o">.</span><span class="n">set_disable</span><span class="p">(</span><span class="n">value</span><span class="p">),</span>
+            <span class="n">localGet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_engine</span><span class="o">.</span><span class="n">get_disable</span><span class="p">,</span>
+        <span class="p">))</span>
+</pre></div>
+</div>
+<p>This is also a common real-world pattern: the Variable gives GUIs and
+scripts a normal tree-facing boolean while the actual state lives in another
+software object.</p>
+</section>
+</section>
+<section id="what-to-explore-next">
+<h2>What To Explore Next<a class="headerlink" href="#what-to-explore-next" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Hardware-backed Variables: <a class="reference internal" href="remote_variable.html"><span class="doc">RemoteVariable</span></a></p></li>
+<li><p>Linked Variables: <a class="reference internal" href="link_variable.html"><span class="doc">LinkVariable</span></a></p></li>
+<li><p>General Variable behavior: <a class="reference internal" href="variable.html"><span class="doc">Variable</span></a></p></li>
+</ul>
+</section>
+<section id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<p>See <a class="reference internal" href="../../api/python/pyrogue/localvariable.html"><span class="doc">LocalVariable</span></a> for generated API details.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="variable.html" class="btn btn-neutral float-left" title="Variable" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="remote_variable.html" class="btn btn-neutral float-right" title="RemoteVariable" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

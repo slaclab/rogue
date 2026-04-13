@@ -1,0 +1,417 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>rogue::interfaces::api::Bsp &mdash; Rogue v6.10.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css?v=8b50afe1" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=dc21db2b"></script>
+      <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../../_static/custom.js?v=7b5dfb0b"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link rel="next" title="rogue::interfaces::memory" href="../memory/index.html" />
+    <link rel="prev" title="rogue::interfaces::api" href="index.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../../python/index.html">Python API</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../../index.html">C++ API</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../../rogue_index.html">rogue</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../../interfaces_index.html">rogue::interfaces</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="index.html">rogue::interfaces::api</a><ul class="current">
+<li class="toctree-l5 current"><a class="current reference internal" href="#">rogue::interfaces::api::Bsp</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../memory/index.html">rogue::interfaces::memory</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../stream/index.html">rogue::interfaces::stream</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../zmqClient.html">rogue::interfaces::ZmqClient</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../protocols_index.html">rogue::protocols</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../hardware_index.html">rogue::hardware</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../utilities_index.html">rogue::utilities</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">API Reference</a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">C++ API</a></li>
+          <li class="breadcrumb-item"><a href="../../interfaces_index.html">rogue::interfaces</a></li>
+          <li class="breadcrumb-item"><a href="index.html">rogue::interfaces::api</a></li>
+      <li class="breadcrumb-item active">rogue::interfaces::api::Bsp</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../_sources/api/cpp/interfaces/api/bsp.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="rogue-interfaces-api-bsp">
+<span id="interfaces-api-bsp"></span><h1>rogue::interfaces::api::Bsp<a class="headerlink" href="#rogue-interfaces-api-bsp" title="Link to this heading"></a></h1>
+<p>For conceptual usage, see:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../../../../built_in_modules/interfaces/cpp_api_wrapper.html"><span class="doc">Wrapping Rogue In C++</span></a></p></li>
+</ul>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces3api3BspE">
+<span id="_CPPv3N5rogue10interfaces3api3BspE"></span><span id="_CPPv2N5rogue10interfaces3api3BspE"></span><span id="rogue::interfaces::api::Bsp"></span><span class="target" id="classrogue_1_1interfaces_1_1api_1_1Bsp"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Bsp</span></span></span><a class="headerlink" href="#_CPPv4N5rogue10interfaces3api3BspE" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Bsp_8h_source.html#l00044"><span class="pre">[header]</span></a></dt>
+<dd><p>C++ convenience wrapper around a PyRogue node object. </p>
+<p><code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1api_1_1Bsp"><span class="std std-ref"><span class="pre">Bsp</span></span></a></code> provides a small C++ API that forwards operations to underlying Python PyRogue objects through Boost.Python. It supports:<ul class="simple">
+<li><p>constructing from an existing Python object</p></li>
+<li><p>constructing and starting a root class by module/class name</p></li>
+<li><p>node traversal (<code class="docutils literal notranslate"><span class="pre">operator[]</span></code>, <code class="docutils literal notranslate"><span class="pre">getNode</span></code>)</p></li>
+<li><p>command execution and variable set/get helper calls</p></li>
+<li><p>root-only variable listener registration</p></li>
+</ul>
+</p>
+<p>If constructed as a root wrapper (<code class="docutils literal notranslate"><span class="pre">create(modName,</span> <span class="pre">rootClass)</span></code>), destructor stops the root automatically. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces3api3Bsp3BspEN5boost6python6objectE">
+<span id="_CPPv3N5rogue10interfaces3api3Bsp3BspEN5boost6python6objectE"></span><span id="_CPPv2N5rogue10interfaces3api3Bsp3BspEN5boost6python6objectE"></span><span id="rogue::interfaces::api::Bsp::Bsp__boost::python::object"></span><span class="target" id="classrogue_1_1interfaces_1_1api_1_1Bsp_1a01eb65cff025855a36161ff54d5a3798"></span><span class="k"><span class="pre">explicit</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Bsp</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">boost</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">python</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">object</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">obj</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces3api3Bsp3BspEN5boost6python6objectE" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Bsp_8h_source.html#l00091"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/Bsp_8cpp_source.html#l00040"><span class="pre">[impl]</span></a></dt>
+<dd><p>Constructs wrapper from existing Python object. </p>
+<p>This constructor is a low-level C++ allocation path. Prefer <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1api_1_1Bsp_1a50f5a9d6e7d311f9dad1c0ed6e291cba"><span class="std std-ref"><span class="pre">create()</span></span></a></code> when shared ownership or Python exposure is required.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>obj</strong> – Python object representing a PyRogue node/root. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces3api3Bsp3BspENSt6stringENSt6stringE">
+<span id="_CPPv3N5rogue10interfaces3api3Bsp3BspENSt6stringENSt6stringE"></span><span id="_CPPv2N5rogue10interfaces3api3Bsp3BspENSt6stringENSt6stringE"></span><span id="rogue::interfaces::api::Bsp::Bsp__ss.ss"></span><span class="target" id="classrogue_1_1interfaces_1_1api_1_1Bsp_1ae83f98a3882fbc837f0e0165d70f7092"></span><span class="sig-name descname"><span class="n"><span class="pre">Bsp</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">modName</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">rootClass</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces3api3Bsp3BspENSt6stringENSt6stringE" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Bsp_8h_source.html#l00105"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/Bsp_8cpp_source.html#l00046"><span class="pre">[impl]</span></a></dt>
+<dd><p>Constructs wrapper by importing module and instantiating root class. </p>
+<p>This constructor is a low-level C++ allocation path. Prefer <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1api_1_1Bsp_1a50f5a9d6e7d311f9dad1c0ed6e291cba"><span class="std std-ref"><span class="pre">create()</span></span></a></code> when shared ownership or Python exposure is required. Initializes Python, imports <code class="docutils literal notranslate"><span class="pre">modName</span></code>, constructs <code class="docutils literal notranslate"><span class="pre">rootClass</span></code>, starts it, and waits until the Python root reports running state.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>modName</strong> – Python module name containing root class. </p></li>
+<li><p><strong>rootClass</strong> – Python root class name to instantiate. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces3api3BspD0Ev">
+<span id="_CPPv3N5rogue10interfaces3api3BspD0Ev"></span><span id="_CPPv2N5rogue10interfaces3api3BspD0Ev"></span><span id="rogue::interfaces::api::Bsp::~Bsp"></span><span class="target" id="classrogue_1_1interfaces_1_1api_1_1Bsp_1a42ed571042e0cd59a35d8b04683907b1"></span><span class="sig-name descname"><span class="n"><span class="pre">~Bsp</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces3api3BspD0Ev" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Bsp_8h_source.html#l00108"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/Bsp_8cpp_source.html#l00058"><span class="pre">[impl]</span></a></dt>
+<dd><p>Destroys wrapper (stops root when wrapper owns root instance). </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces3api3Bsp14addVarListenerEPFvNSt6stringENSt6stringEEPFvvE">
+<span id="_CPPv3N5rogue10interfaces3api3Bsp14addVarListenerEPFvNSt6stringENSt6stringEEPFvvE"></span><span id="_CPPv2N5rogue10interfaces3api3Bsp14addVarListenerEPFvNSt6stringENSt6stringEEPFvvE"></span><span class="target" id="classrogue_1_1interfaces_1_1api_1_1Bsp_1ad225489fee0825f37c8ac5a45359d804"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">addVarListener</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">func</span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="p"><span class="pre">)</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">done</span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">)</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces3api3Bsp14addVarListenerEPFvNSt6stringENSt6stringEEPFvvE" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Bsp_8h_source.html#l00119"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/Bsp_8cpp_source.html#l00064"><span class="pre">[impl]</span></a></dt>
+<dd><p>Registers variable listener callbacks on wrapped root. </p>
+<p>Valid only when wrapper owns a root object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>func</strong> – Callback invoked per variable update. </p></li>
+<li><p><strong>done</strong> – Callback invoked when listener terminates. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces3api3Bsp12getAttributeENSt6stringE">
+<span id="_CPPv3N5rogue10interfaces3api3Bsp12getAttributeENSt6stringE"></span><span id="_CPPv2N5rogue10interfaces3api3Bsp12getAttributeENSt6stringE"></span><span id="rogue::interfaces::api::Bsp::getAttribute__ss"></span><span class="target" id="classrogue_1_1interfaces_1_1api_1_1Bsp_1a3564544e179dbfbb8f8dc3f5d83a9655"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getAttribute</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">attribute</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces3api3Bsp12getAttributeENSt6stringE" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Bsp_8h_source.html#l00127"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/Bsp_8cpp_source.html#l00074"><span class="pre">[impl]</span></a></dt>
+<dd><p>Returns string form of named attribute from wrapped object. </p>
+<p>Get Attribute.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>attribute</strong> – Attribute name. </p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Attribute value string. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces3api3BspixENSt6stringE">
+<span id="_CPPv3N5rogue10interfaces3api3BspixENSt6stringE"></span><span id="_CPPv2N5rogue10interfaces3api3BspixENSt6stringE"></span><span id="rogue::interfaces::api::Bsp::subscript-operator__ss"></span><span class="target" id="classrogue_1_1interfaces_1_1api_1_1Bsp_1a5a60450ccee0c116d686bf4b92260b2d"></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">api</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue10interfaces3api3BspE" title="rogue::interfaces::api::Bsp"><span class="n"><span class="pre">Bsp</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="k"><span class="pre">operator</span></span><span class="o"><span class="pre">[]</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">name</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces3api3BspixENSt6stringE" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Bsp_8h_source.html#l00135"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/Bsp_8cpp_source.html#l00086"><span class="pre">[impl]</span></a></dt>
+<dd><p>Returns wrapper for child node using <code class="docutils literal notranslate"><span class="pre">node(name)</span></code> lookup. </p>
+<p>Return a sub-node operator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> – Child node name/path. </p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Wrapper for child node. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces3api3Bsp7getNodeENSt6stringE">
+<span id="_CPPv3N5rogue10interfaces3api3Bsp7getNodeENSt6stringE"></span><span id="_CPPv2N5rogue10interfaces3api3Bsp7getNodeENSt6stringE"></span><span id="rogue::interfaces::api::Bsp::getNode__ss"></span><span class="target" id="classrogue_1_1interfaces_1_1api_1_1Bsp_1a49f09920949089bb0d2ea16f58c24313"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">api</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue10interfaces3api3BspE" title="rogue::interfaces::api::Bsp"><span class="n"><span class="pre">Bsp</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getNode</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">name</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces3api3Bsp7getNodeENSt6stringE" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Bsp_8h_source.html#l00143"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/Bsp_8cpp_source.html#l00099"><span class="pre">[impl]</span></a></dt>
+<dd><p>Returns shared wrapper for child node using <code class="docutils literal notranslate"><span class="pre">getNode(name)</span></code>. </p>
+<p>Return a sub-node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> – Child node path. </p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Shared pointer to child-node wrapper. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces3api3BspclENSt6stringE">
+<span id="_CPPv3N5rogue10interfaces3api3BspclENSt6stringE"></span><span id="_CPPv2N5rogue10interfaces3api3BspclENSt6stringE"></span><span id="rogue::interfaces::api::Bsp::call-operator__ss"></span><span class="target" id="classrogue_1_1interfaces_1_1api_1_1Bsp_1adb09e4da56587a2b3055dfc83d766b86"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="k"><span class="pre">operator</span></span><span class="o"><span class="pre">()</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">arg</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces3api3BspclENSt6stringE" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Bsp_8h_source.html#l00151"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/Bsp_8cpp_source.html#l00112"><span class="pre">[impl]</span></a></dt>
+<dd><p>Executes wrapped command node with string argument. </p>
+<p>Execute command operator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>arg</strong> – Command argument string. </p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Command result string. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces3api3BspclEv">
+<span id="_CPPv3N5rogue10interfaces3api3BspclEv"></span><span id="_CPPv2N5rogue10interfaces3api3BspclEv"></span><span id="rogue::interfaces::api::Bsp::call-operator"></span><span class="target" id="classrogue_1_1interfaces_1_1api_1_1Bsp_1afccd0990c47b7ed1b68d426943af1a06"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="k"><span class="pre">operator</span></span><span class="o"><span class="pre">()</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces3api3BspclEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Bsp_8h_source.html#l00158"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/Bsp_8cpp_source.html#l00121"><span class="pre">[impl]</span></a></dt>
+<dd><p>Executes wrapped command node without argument. </p>
+<p>Execute command operator without arg.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Command result string. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces3api3Bsp7executeENSt6stringE">
+<span id="_CPPv3N5rogue10interfaces3api3Bsp7executeENSt6stringE"></span><span id="_CPPv2N5rogue10interfaces3api3Bsp7executeENSt6stringE"></span><span id="rogue::interfaces::api::Bsp::execute__ss"></span><span class="target" id="classrogue_1_1interfaces_1_1api_1_1Bsp_1a5821802162324716743f8c0898bce5b4"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">execute</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">arg</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces3api3Bsp7executeENSt6stringE" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Bsp_8h_source.html#l00166"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/Bsp_8cpp_source.html#l00130"><span class="pre">[impl]</span></a></dt>
+<dd><p>Executes wrapped command node with string argument. </p>
+<p>Execute command.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>arg</strong> – Command argument string. </p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Command result string. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces3api3Bsp7executeEv">
+<span id="_CPPv3N5rogue10interfaces3api3Bsp7executeEv"></span><span id="_CPPv2N5rogue10interfaces3api3Bsp7executeEv"></span><span id="rogue::interfaces::api::Bsp::execute"></span><span class="target" id="classrogue_1_1interfaces_1_1api_1_1Bsp_1a15ddf3038f7102f3bedff0b801e44891"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">execute</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces3api3Bsp7executeEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Bsp_8h_source.html#l00173"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/Bsp_8cpp_source.html#l00139"><span class="pre">[impl]</span></a></dt>
+<dd><p>Executes wrapped command node without argument. </p>
+<p>Execute command without arg.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Command result string. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces3api3Bsp3setENSt6stringE">
+<span id="_CPPv3N5rogue10interfaces3api3Bsp3setENSt6stringE"></span><span id="_CPPv2N5rogue10interfaces3api3Bsp3setENSt6stringE"></span><span id="rogue::interfaces::api::Bsp::set__ss"></span><span class="target" id="classrogue_1_1interfaces_1_1api_1_1Bsp_1afd17428679f0428065e3ec36365b94c6"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">set</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces3api3Bsp3setENSt6stringE" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Bsp_8h_source.html#l00180"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/Bsp_8cpp_source.html#l00148"><span class="pre">[impl]</span></a></dt>
+<dd><p>Sets wrapped variable value without forcing write transaction. </p>
+<p>Set value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>value</strong> – Value string passed to Python <code class="docutils literal notranslate"><span class="pre">setDisp</span></code>. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces3api3Bsp8setWriteENSt6stringE">
+<span id="_CPPv3N5rogue10interfaces3api3Bsp8setWriteENSt6stringE"></span><span id="_CPPv2N5rogue10interfaces3api3Bsp8setWriteENSt6stringE"></span><span id="rogue::interfaces::api::Bsp::setWrite__ss"></span><span class="target" id="classrogue_1_1interfaces_1_1api_1_1Bsp_1a64d16a57a77ad84a5d00c77db9d63617"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setWrite</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces3api3Bsp8setWriteENSt6stringE" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Bsp_8h_source.html#l00187"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/Bsp_8cpp_source.html#l00160"><span class="pre">[impl]</span></a></dt>
+<dd><p>Sets wrapped variable value and forces write transaction. </p>
+<p>Set value withe write.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>value</strong> – Value string passed to Python <code class="docutils literal notranslate"><span class="pre">setDisp</span></code>. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces3api3Bsp3getEv">
+<span id="_CPPv3N5rogue10interfaces3api3Bsp3getEv"></span><span id="_CPPv2N5rogue10interfaces3api3Bsp3getEv"></span><span id="rogue::interfaces::api::Bsp::get"></span><span class="target" id="classrogue_1_1interfaces_1_1api_1_1Bsp_1ae31731762009c39b49dee85151905500"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">get</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces3api3Bsp3getEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Bsp_8h_source.html#l00194"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/Bsp_8cpp_source.html#l00172"><span class="pre">[impl]</span></a></dt>
+<dd><p>Gets wrapped variable value without forcing read transaction. </p>
+<p>Get value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Current value string from Python <code class="docutils literal notranslate"><span class="pre">getDisp</span></code>. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces3api3Bsp7readGetEv">
+<span id="_CPPv3N5rogue10interfaces3api3Bsp7readGetEv"></span><span id="_CPPv2N5rogue10interfaces3api3Bsp7readGetEv"></span><span id="rogue::interfaces::api::Bsp::readGet"></span><span class="target" id="classrogue_1_1interfaces_1_1api_1_1Bsp_1ae269e4c45992fa611abf487f62551bcc"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">readGet</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces3api3Bsp7readGetEv" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Bsp_8h_source.html#l00201"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/Bsp_8cpp_source.html#l00181"><span class="pre">[impl]</span></a></dt>
+<dd><p>Performs read transaction then gets wrapped variable value. </p>
+<p>Get value with read.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Read-back value string from Python <code class="docutils literal notranslate"><span class="pre">getDisp</span></code>. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-static-functions">Public Static Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces3api3Bsp6createEN5boost6python6objectE">
+<span id="_CPPv3N5rogue10interfaces3api3Bsp6createEN5boost6python6objectE"></span><span id="_CPPv2N5rogue10interfaces3api3Bsp6createEN5boost6python6objectE"></span><span id="rogue::interfaces::api::Bsp::create__boost::python::object"></span><span class="target" id="classrogue_1_1interfaces_1_1api_1_1Bsp_1a50f5a9d6e7d311f9dad1c0ed6e291cba"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">api</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue10interfaces3api3BspE" title="rogue::interfaces::api::Bsp"><span class="n"><span class="pre">Bsp</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">create</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">boost</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">python</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">object</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">obj</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces3api3Bsp6createEN5boost6python6objectE" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Bsp_8h_source.html#l00064"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/Bsp_8cpp_source.html#l00029"><span class="pre">[impl]</span></a></dt>
+<dd><p>Creates a wrapper from an existing Python object. </p>
+<p>Parameter semantics are identical to the constructor; see <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1api_1_1Bsp_1a01eb65cff025855a36161ff54d5a3798"><span class="std std-ref"><span class="pre">Bsp(boost::python::object)</span></span></a></code> for wrapping behavior details. This static factory is the preferred construction path when the object is shared across Rogue graph connections or exposed to Python. It returns <code class="docutils literal notranslate"><span class="pre">std::shared_ptr</span></code> ownership compatible with Rogue pointer typedefs.</p>
+<p><em>Company : SLAC National Accelerator Laboratory </em></p>
+<p>Description: <em>C++ API BSP (Board Support Package) </em></p>
+<p>This file is part of the rogue software platform. It is subject to the license terms in the LICENSE.txt file found in the top-level directory of this distribution and at: <a class="reference external" href="https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html">https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html</a>. No part of the rogue software platform, including this file, may be copied, modified, propagated, or distributed except according to the terms <em>contained in the LICENSE.txt file. </em></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>obj</strong> – Python object representing a PyRogue node/root. </p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Shared pointer to created wrapper.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces3api3Bsp6createENSt6stringENSt6stringE">
+<span id="_CPPv3N5rogue10interfaces3api3Bsp6createENSt6stringENSt6stringE"></span><span id="_CPPv2N5rogue10interfaces3api3Bsp6createENSt6stringENSt6stringE"></span><span id="rogue::interfaces::api::Bsp::create__ss.ss"></span><span class="target" id="classrogue_1_1interfaces_1_1api_1_1Bsp_1a862a58e3f9dbcb41966039f6810e27aa"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">api</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue10interfaces3api3BspE" title="rogue::interfaces::api::Bsp"><span class="n"><span class="pre">Bsp</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">create</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">modName</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">rootClass</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces3api3Bsp6createENSt6stringENSt6stringE" title="Link to this definition"></a><br /> <a class="rogue-source-link reference external" href="../../../../_doxygen/Bsp_8h_source.html#l00080"><span class="pre">[header]</span></a> <a class="rogue-source-link reference external" href="../../../../_doxygen/Bsp_8cpp_source.html#l00035"><span class="pre">[impl]</span></a></dt>
+<dd><p>Creates a wrapper by importing module and instantiating root class. </p>
+<p>Parameter semantics are identical to the constructor; see <code class="docutils literal notranslate"><a class="reference internal" href="#classrogue_1_1interfaces_1_1api_1_1Bsp_1ae83f98a3882fbc837f0e0165d70f7092"><span class="std std-ref"><span class="pre">Bsp(std::string,</span> <span class="pre">std::string)</span></span></a></code> for module/root startup behavior details. This static factory is the preferred construction path when the object is shared across Rogue graph connections or exposed to Python. It returns <code class="docutils literal notranslate"><span class="pre">std::shared_ptr</span></code> ownership compatible with Rogue pointer typedefs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>modName</strong> – Python module name containing root class. </p></li>
+<li><p><strong>rootClass</strong> – Python root class name to instantiate. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Shared pointer to created wrapper. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="rogue::interfaces::api" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../memory/index.html" class="btn btn-neutral float-right" title="rogue::interfaces::memory" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

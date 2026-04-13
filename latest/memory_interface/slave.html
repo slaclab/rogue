@@ -1,0 +1,340 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Memory Slave Patterns &mdash; Rogue v6.10.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=8b50afe1" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=dc21db2b"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script src="../_static/custom.js?v=7b5dfb0b"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Memory Hub Patterns" href="hub.html" />
+    <link rel="prev" title="Memory Master Patterns" href="master.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Memory Interface</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="connecting.html">Connecting Memory Elements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="master.html">Memory Master Patterns</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Memory Slave Patterns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hub.html">Memory Hub Patterns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tcp_bridge.html">Memory TCP Bridge</a></li>
+<li class="toctree-l2"><a class="reference internal" href="transactions.html">Memory Transactions and Lifecycle</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API Reference</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Memory Interface</a></li>
+      <li class="breadcrumb-item active">Memory Slave Patterns</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/memory_interface/slave.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="memory-slave-patterns">
+<span id="memory-interface-slave"></span><span id="interfaces-memory-slave-ex"></span><h1>Memory Slave Patterns<a class="headerlink" href="#memory-slave-patterns" title="Link to this heading"></a></h1>
+<p>Custom memory <code class="docutils literal notranslate"><span class="pre">Slave</span></code> objects are common when Rogue needs to adapt a
+proprietary hardware or protocol engine to the Rogue transaction model.</p>
+<p>Unlike custom <code class="docutils literal notranslate"><span class="pre">Master</span></code> implementations, custom <code class="docutils literal notranslate"><span class="pre">Slave</span></code> implementations are
+fairly common because they often provide the hardware-facing side of the bus.
+They are the place where incoming Rogue <code class="docutils literal notranslate"><span class="pre">Transaction</span></code> objects are translated
+into the real protocol operations required by a device or transport.</p>
+<p>Python and C++ subclasses of <code class="docutils literal notranslate"><span class="pre">Slave</span></code> can be mixed freely with upstream
+<code class="docutils literal notranslate"><span class="pre">Master</span></code> implementations in either language.</p>
+<section id="typical-slave-flow">
+<h2>Typical Slave Flow<a class="headerlink" href="#typical-slave-flow" title="Link to this heading"></a></h2>
+<p>Most custom <code class="docutils literal notranslate"><span class="pre">Slave</span></code> code follows this pattern:</p>
+<ol class="arabic simple">
+<li><p>Receive a <code class="docutils literal notranslate"><span class="pre">Transaction</span></code> in <code class="docutils literal notranslate"><span class="pre">_doTransaction</span></code> or <code class="docutils literal notranslate"><span class="pre">doTransaction</span></code>.</p></li>
+<li><p>Store the <code class="docutils literal notranslate"><span class="pre">Transaction</span></code> if completion will be asynchronous.</p></li>
+<li><p>Dispatch the actual protocol read or write.</p></li>
+<li><p>On callback, recover the stored <code class="docutils literal notranslate"><span class="pre">Transaction</span></code>.</p></li>
+<li><p>Check whether it is still valid, then set data, report error, or call
+<code class="docutils literal notranslate"><span class="pre">done()</span></code>.</p></li>
+</ol>
+<p>Assume, for example, that the underlying protocol provides calls such as
+<code class="docutils literal notranslate"><span class="pre">protocolRead(id,</span> <span class="pre">address,</span> <span class="pre">size)</span></code> and <code class="docutils literal notranslate"><span class="pre">protocolWrite(id,</span> <span class="pre">address,</span> <span class="pre">size,</span>
+<span class="pre">data)</span></code>, with callbacks when the operation completes.</p>
+<p>At the <code class="docutils literal notranslate"><span class="pre">Slave</span></code> boundary, <code class="docutils literal notranslate"><span class="pre">Write</span></code> and <code class="docutils literal notranslate"><span class="pre">Post</span></code> often arrive with the same
+basic shape: both carry outbound write data. That is why many implementations
+branch on them together. The distinction is that <code class="docutils literal notranslate"><span class="pre">Post</span></code> is still a different
+transaction type, so a <code class="docutils literal notranslate"><span class="pre">Slave</span></code> can choose to give it different treatment if
+the downstream protocol cares about posted-write semantics.</p>
+</section>
+<section id="python-example">
+<h2>Python Example<a class="headerlink" href="#python-example" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">rogue.interfaces.memory</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">rim</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyMemSlave</span><span class="p">(</span><span class="n">rim</span><span class="o">.</span><span class="n">Slave</span><span class="p">):</span>
+
+    <span class="c1"># Assume our minimum size is 4 bytes and our maximum size is 1024 bytes</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1024</span><span class="p">)</span>
+
+    <span class="c1"># Entry point for incoming transactions</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_doTransaction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tran</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">tran</span><span class="o">.</span><span class="n">lock</span><span class="p">():</span>
+            <span class="c1"># Store the Transaction so it can be recovered on callback</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_addTransaction</span><span class="p">(</span><span class="n">tran</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">tran</span><span class="o">.</span><span class="n">type</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="n">rim</span><span class="o">.</span><span class="n">Write</span><span class="p">,</span> <span class="n">rim</span><span class="o">.</span><span class="n">Post</span><span class="p">):</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(</span><span class="n">tran</span><span class="o">.</span><span class="n">size</span><span class="p">())</span>
+                <span class="n">tran</span><span class="o">.</span><span class="n">getData</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+                <span class="n">protocolWrite</span><span class="p">(</span><span class="n">tran</span><span class="o">.</span><span class="n">id</span><span class="p">(),</span> <span class="n">tran</span><span class="o">.</span><span class="n">address</span><span class="p">(),</span> <span class="n">tran</span><span class="o">.</span><span class="n">size</span><span class="p">(),</span> <span class="n">data</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">protocolRead</span><span class="p">(</span><span class="n">tran</span><span class="o">.</span><span class="n">id</span><span class="p">(),</span> <span class="n">tran</span><span class="o">.</span><span class="n">address</span><span class="p">(),</span> <span class="n">tran</span><span class="o">.</span><span class="n">size</span><span class="p">())</span>
+
+    <span class="c1"># Protocol callback for write completion</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">protocolWriteDone</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tid</span><span class="p">,</span> <span class="n">ok</span><span class="p">):</span>
+        <span class="n">tran</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getTransaction</span><span class="p">(</span><span class="n">tid</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">tran</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="k">with</span> <span class="n">tran</span><span class="o">.</span><span class="n">lock</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">tran</span><span class="o">.</span><span class="n">expired</span><span class="p">():</span>
+                <span class="k">return</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">ok</span><span class="p">:</span>
+                <span class="n">tran</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;protocol write failed&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">tran</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
+
+    <span class="c1"># Protocol callback for read completion</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">protocolReadDone</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tid</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">ok</span><span class="p">):</span>
+        <span class="n">tran</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getTransaction</span><span class="p">(</span><span class="n">tid</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">tran</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="k">with</span> <span class="n">tran</span><span class="o">.</span><span class="n">lock</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">tran</span><span class="o">.</span><span class="n">expired</span><span class="p">():</span>
+                <span class="k">return</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">ok</span><span class="p">:</span>
+                <span class="n">tran</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;protocol read failed&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">tran</span><span class="o">.</span><span class="n">setData</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+                <span class="n">tran</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>The important part of this pattern is that the incoming <code class="docutils literal notranslate"><span class="pre">Transaction</span></code> is kept
+alive until the underlying protocol completes. That is why <code class="docutils literal notranslate"><span class="pre">_addTransaction()</span></code>
+and <code class="docutils literal notranslate"><span class="pre">_getTransaction()</span></code> are used here.</p>
+<p>This example intentionally handles <code class="docutils literal notranslate"><span class="pre">Write</span></code> and <code class="docutils literal notranslate"><span class="pre">Post</span></code> the same way. That is
+common. A different protocol could instead inspect <code class="docutils literal notranslate"><span class="pre">tran.type()</span></code> and apply a
+special posted-write policy.</p>
+</section>
+<section id="c-example">
+<h2>C++ Example<a class="headerlink" href="#c-example" title="Link to this heading"></a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;algorithm&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;rogue/interfaces/memory/Constants.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;rogue/interfaces/memory/Slave.h&quot;</span>
+
+<span class="k">namespace</span><span class="w"> </span><span class="nn">rim</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nn">rogue</span><span class="o">::</span><span class="nn">interfaces</span><span class="o">::</span><span class="nn">memory</span><span class="p">;</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyMemSlave</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">rim</span><span class="o">::</span><span class="n">Slave</span><span class="w"> </span><span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+<span class="w">   </span><span class="k">using</span><span class="w"> </span><span class="n">Ptr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">MyMemSlave</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">   </span><span class="k">static</span><span class="w"> </span><span class="n">Ptr</span><span class="w"> </span><span class="nf">create</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">MyMemSlave</span><span class="o">&gt;</span><span class="p">();</span><span class="w"> </span><span class="p">}</span>
+
+<span class="w">   </span><span class="n">MyMemSlave</span><span class="p">()</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">rim</span><span class="o">::</span><span class="n">Slave</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">1024</span><span class="p">)</span><span class="w"> </span><span class="p">{}</span>
+
+<span class="w">   </span><span class="kt">void</span><span class="w"> </span><span class="n">doTransaction</span><span class="p">(</span><span class="n">rim</span><span class="o">::</span><span class="n">TransactionPtr</span><span class="w"> </span><span class="n">tran</span><span class="p">)</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">auto</span><span class="w"> </span><span class="n">lock</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">();</span>
+<span class="w">      </span><span class="n">addTransaction</span><span class="p">(</span><span class="n">tran</span><span class="p">);</span>
+
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">type</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">rim</span><span class="o">::</span><span class="n">Write</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">type</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">rim</span><span class="o">::</span><span class="n">Post</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="n">protocolWrite</span><span class="p">(</span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">id</span><span class="p">(),</span><span class="w"> </span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">address</span><span class="p">(),</span><span class="w"> </span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">(),</span><span class="w"> </span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">begin</span><span class="p">());</span>
+<span class="w">      </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="n">protocolRead</span><span class="p">(</span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">id</span><span class="p">(),</span><span class="w"> </span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">address</span><span class="p">(),</span><span class="w"> </span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">());</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">   </span><span class="p">}</span>
+
+<span class="w">   </span><span class="kt">void</span><span class="w"> </span><span class="n">protocolWriteDone</span><span class="p">(</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">ok</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">auto</span><span class="w"> </span><span class="n">tran</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">getTransaction</span><span class="p">(</span><span class="n">id</span><span class="p">);</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">tran</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">nullptr</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="p">;</span>
+
+<span class="w">      </span><span class="k">auto</span><span class="w"> </span><span class="n">lock</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">();</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">expired</span><span class="p">())</span><span class="w"> </span><span class="k">return</span><span class="p">;</span>
+
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">ok</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">error</span><span class="p">(</span><span class="s">&quot;protocol write failed&quot;</span><span class="p">);</span>
+<span class="w">      </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">done</span><span class="p">();</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">   </span><span class="p">}</span>
+
+<span class="w">   </span><span class="kt">void</span><span class="w"> </span><span class="n">protocolReadDone</span><span class="p">(</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="kt">uint8_t</span><span class="o">*</span><span class="w"> </span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">ok</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">auto</span><span class="w"> </span><span class="n">tran</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">getTransaction</span><span class="p">(</span><span class="n">id</span><span class="p">);</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">tran</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">nullptr</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="p">;</span>
+
+<span class="w">      </span><span class="k">auto</span><span class="w"> </span><span class="n">lock</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">();</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">expired</span><span class="p">())</span><span class="w"> </span><span class="k">return</span><span class="p">;</span>
+
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">ok</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">error</span><span class="p">(</span><span class="s">&quot;protocol read failed&quot;</span><span class="p">);</span>
+<span class="w">      </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="n">std</span><span class="o">::</span><span class="n">copy</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">(),</span><span class="w"> </span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">begin</span><span class="p">());</span>
+<span class="w">         </span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">done</span><span class="p">();</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">   </span><span class="p">}</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+</section>
+<section id="design-notes">
+<h2>Design Notes<a class="headerlink" href="#design-notes" title="Link to this heading"></a></h2>
+<p>Asynchronous completion is the central design issue for custom <code class="docutils literal notranslate"><span class="pre">Slave</span></code>
+implementations. If the underlying protocol does not complete immediately, the
+<code class="docutils literal notranslate"><span class="pre">Transaction</span></code> must be stored and recovered later. Before completing it, always
+check whether it has expired.</p>
+<p>This is also why lock scope matters. A lock should protect access to the shared
+<code class="docutils literal notranslate"><span class="pre">Transaction</span></code> state, but it should not accidentally serialize unrelated work
+longer than necessary.</p>
+</section>
+<section id="logging">
+<h2>Logging<a class="headerlink" href="#logging" title="Link to this heading"></a></h2>
+<p>The base Rogue memory <code class="docutils literal notranslate"><span class="pre">Slave</span></code> does not define a dedicated logger name of its
+own. In practice, logging is usually added by concrete subclasses or protocol
+layers built on top of <code class="docutils literal notranslate"><span class="pre">Slave</span></code>.</p>
+<p>For custom implementations, the recommended pattern is:</p>
+<ul class="simple">
+<li><p>Python: add a logger with <code class="docutils literal notranslate"><span class="pre">pyrogue.logInit(...)</span></code></p></li>
+<li><p>C++: add a logger with <code class="docutils literal notranslate"><span class="pre">rogue::Logging::create(&quot;...&quot;)</span></code></p></li>
+</ul>
+<p>That gives users a stable logger name they can filter while debugging the
+protocol-specific behavior of the <code class="docutils literal notranslate"><span class="pre">Slave</span></code>.</p>
+</section>
+<section id="what-to-explore-next">
+<h2>What To Explore Next<a class="headerlink" href="#what-to-explore-next" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Transaction internals and locking: <a class="reference internal" href="transactions.html"><span class="doc">Memory Transactions and Lifecycle</span></a></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Hub</span></code> translation patterns: <a class="reference internal" href="hub.html"><span class="doc">Memory Hub Patterns</span></a></p></li>
+<li><p>Bus connection patterns: <a class="reference internal" href="connecting.html"><span class="doc">Connecting Memory Elements</span></a></p></li>
+</ul>
+</section>
+<section id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Python:</p>
+<ul>
+<li><p><a class="reference internal" href="../api/python/rogue/interfaces/memory/slave.html"><span class="doc">Slave</span></a></p></li>
+</ul>
+</li>
+<li><p>C++:</p>
+<ul>
+<li><p><a class="reference internal" href="../api/cpp/interfaces/memory/slave.html"><span class="doc">Slave</span></a></p></li>
+</ul>
+</li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="master.html" class="btn btn-neutral float-left" title="Memory Master Patterns" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="hub.html" class="btn btn-neutral float-right" title="Memory Hub Patterns" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,281 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SQL Logging &mdash; Rogue v6.10.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=8b50afe1" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc21db2b"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/custom.js?v=7b5dfb0b"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Rogue Version Helper" href="version.html" />
+    <link rel="prev" title="Interfaces" href="index.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Built-in Modules</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Interfaces</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">SQL Logging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="version.html">Rogue Version Helper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cpp_api_wrapper.html">Wrapping Rogue In C++</a></li>
+<li class="toctree-l3"><a class="reference internal" href="os_memory_bridge.html">OS Memory Bridge</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../simulation/index.html">Simulation Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../protocols/index.html">Protocols</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../hardware/index.html">Hardware</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../utilities/index.html">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">API Reference</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Built-in Modules</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Interfaces</a></li>
+      <li class="breadcrumb-item active">SQL Logging</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/built_in_modules/interfaces/sql.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="sql-logging">
+<span id="interfaces-sql"></span><h1>SQL Logging<a class="headerlink" href="#sql-logging" title="Link to this heading"></a></h1>
+<p>For persistent logging of a running PyRogue tree, <code class="docutils literal notranslate"><span class="pre">pyrogue.interfaces.SqlLogger</span></code>
+attaches to a <code class="docutils literal notranslate"><span class="pre">pyrogue.Root</span></code> and writes variable updates plus system-log
+events into a SQL database through SQLAlchemy.</p>
+<p>This helper lives in the <code class="docutils literal notranslate"><span class="pre">pyrogue.interfaces</span></code> namespace because it is a
+host-side integration layer, not a stream or memory transport. It is useful
+when a system needs a durable run record, offline trend analysis, or a
+database-backed audit trail alongside the live tree.</p>
+<p>Typical uses:</p>
+<ul class="simple">
+<li><p>Variable history during hardware tests and commissioning runs.</p></li>
+<li><p>Alarm and status changes for post-run analysis.</p></li>
+<li><p>System-log messages from long-running control processes.</p></li>
+</ul>
+<section id="sqllogger-workflow">
+<h2>SqlLogger Workflow<a class="headerlink" href="#sqllogger-workflow" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">SqlLogger</span></code> is added as a managed interface on the <code class="docutils literal notranslate"><span class="pre">Root</span></code>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">addInterface()</span></code> makes it part of the <code class="docutils literal notranslate"><span class="pre">Root</span></code> lifecycle.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">root.addVarListener(...)</span></code> subscribes it to variable updates.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">root.SystemLogLast</span></code> is watched so system-log events are written into the
+same database as variable changes.</p></li>
+<li><p>A background worker thread dequeues updates and commits them in batches.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Root.stop()</span></code> drives <code class="docutils literal notranslate"><span class="pre">SqlLogger._stop()</span></code> so queued entries are flushed
+before the worker exits.</p></li>
+</ul>
+<p>This keeps SQL logging in the host-side integration layer without changing the
+stream topology or the structure of the device tree.</p>
+</section>
+<section id="configuration-example">
+<h2>Configuration Example<a class="headerlink" href="#configuration-example" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyRoot</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;MyRoot&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Attach SQL logger as a root interface.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addInterface</span><span class="p">(</span>
+            <span class="n">pyrogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">SqlLogger</span><span class="p">(</span>
+                <span class="n">root</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
+                <span class="c1"># SQLAlchemy URL: sqlite:///..., postgresql://..., etc.</span>
+                <span class="n">url</span><span class="o">=</span><span class="s1">&#39;sqlite:///rogue_run.db&#39;</span><span class="p">,</span>
+                <span class="c1"># Optional include filter for variable groups.</span>
+                <span class="n">incGroups</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="c1"># Exclude groups tagged as NoSql.</span>
+                <span class="n">excGroups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;NoSql&#39;</span><span class="p">],</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="key-constructor-arguments">
+<h2>Key Constructor Arguments<a class="headerlink" href="#key-constructor-arguments" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">root</span></code> selects the running <code class="docutils literal notranslate"><span class="pre">Root</span></code> whose variables and syslog updates will
+be monitored.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">url</span></code> is the SQLAlchemy connection URL, such as <code class="docutils literal notranslate"><span class="pre">sqlite:///rogue_run.db</span></code>
+for a local SQLite file or a PostgreSQL-style URL for a network database.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">incGroups</span></code> limits logging to variables in selected groups.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">excGroups</span></code> excludes groups from logging. It defaults to <code class="docutils literal notranslate"><span class="pre">['NoSql']</span></code>, so
+variables tagged <code class="docutils literal notranslate"><span class="pre">NoSql</span></code> are skipped unless the filter is changed.</p></li>
+</ul>
+<p>Group filtering matters most on large trees. It lets a deployment keep the
+database focused on operationally relevant variables instead of logging every
+polled or internal node.</p>
+</section>
+<section id="recorded-tables">
+<h2>Recorded Tables<a class="headerlink" href="#recorded-tables" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">SqlLogger</span></code> creates two tables when they are not already present:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">variables</span></code> stores each update path together with enum, display,
+raw/display value, severity, and status information.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">syslog</span></code> stores mirrored system-log fields such as logger name, message
+text, exception text, and level metadata.</p></li>
+</ul>
+<p>Because the logger listens to the tree rather than to a data stream, both
+tables reflect the same variable-update and system-log activity that PyRogue
+exposes to other host-side interfaces.</p>
+</section>
+<section id="operational-notes">
+<h2>Operational Notes<a class="headerlink" href="#operational-notes" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Writes are queued and committed by a worker thread.</p></li>
+<li><p>Multiple queued entries are grouped into one transaction when possible.</p></li>
+<li><p>If the database connection fails during operation, the logger reports the
+error, drops the active engine, and stops committing new entries.</p></li>
+<li><p>Very large integers are stored through their display representation when they
+do not fit cleanly into a native 64-bit integer field.</p></li>
+<li><p>Tuple values are stringified before insertion.</p></li>
+</ul>
+</section>
+<section id="sqlreader-access">
+<h2>SqlReader Access<a class="headerlink" href="#sqlreader-access" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">pyrogue.interfaces.SqlReader</span></code> opens the same database schema and reflects
+the <code class="docutils literal notranslate"><span class="pre">variables</span></code> and <code class="docutils literal notranslate"><span class="pre">syslog</span></code> tables for host-side inspection workflows.</p>
+<p>The current implementation is minimal compared with <code class="docutils literal notranslate"><span class="pre">SqlLogger</span></code>. It is best
+treated as a lightweight helper around the logged schema rather than as a
+full-featured query interface. In most deployments the practical workflow is to
+log data with <code class="docutils literal notranslate"><span class="pre">SqlLogger</span></code> during the run, then inspect the resulting tables
+with standard SQLAlchemy or database tooling suited to the deployment.</p>
+</section>
+<section id="logging">
+<h2>Logging<a class="headerlink" href="#logging" title="Link to this heading"></a></h2>
+<p>Both SQL helpers use Python logging.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">SqlLogger</span></code> logger name: <code class="docutils literal notranslate"><span class="pre">pyrogue.SqlLogger</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SqlReader</span></code> logger name: <code class="docutils literal notranslate"><span class="pre">pyrogue.SqlReader</span></code></p></li>
+<li><p>Logging API:
+<code class="docutils literal notranslate"><span class="pre">pyrogue.setLogLevel('pyrogue.SqlLogger',</span> <span class="pre">'DEBUG')</span></code></p></li>
+</ul>
+<p><code class="docutils literal notranslate"><span class="pre">SqlLogger</span></code> logs database open failures, connection success, and worker-side
+database write failures.</p>
+</section>
+<section id="related-topics">
+<h2>Related Topics<a class="headerlink" href="#related-topics" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Tree variable concepts: <a class="reference internal" href="../../pyrogue_tree/core/variable.html"><span class="doc">Variable</span></a></p></li>
+<li><p>Logging subsystem overview: <a class="reference internal" href="../../logging/index.html"><span class="doc">Logging In Rogue</span></a></p></li>
+<li><p>GUI and client access patterns for live trees: <a class="reference internal" href="../../pyrogue_tree/client_interfaces/index.html"><span class="doc">Client Interfaces</span></a></p></li>
+</ul>
+</section>
+<section id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Python:
+<a class="reference internal" href="../../api/python/pyrogue/interfaces/sqllogger.html"><span class="doc">pyrogue.interfaces.SqlLogger</span></a>
+<a class="reference internal" href="../../api/python/pyrogue/interfaces/sqlreader.html"><span class="doc">pyrogue.interfaces.SqlReader</span></a></p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Interfaces" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="version.html" class="btn btn-neutral float-right" title="Rogue Version Helper" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,329 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Groups &mdash; Rogue v6.10.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=8b50afe1" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc21db2b"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/custom.js?v=7b5dfb0b"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Built-in Devices" href="../builtin_devices/index.html" />
+    <link rel="prev" title="Variable Update Stream" href="memory_variable_stream.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">PyRogue Tree</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Components And Concepts</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="root.html">Root</a></li>
+<li class="toctree-l3"><a class="reference internal" href="device.html">Device</a></li>
+<li class="toctree-l3"><a class="reference internal" href="variable.html">Variable</a></li>
+<li class="toctree-l3"><a class="reference internal" href="command.html">Command</a></li>
+<li class="toctree-l3"><a class="reference internal" href="block.html">Blocks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="block_operations.html">Device Block Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="model.html">Model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fixed_point_models.html">Fixed-Point Models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="float_types_summary.html">Floating Point Types Summary</a></li>
+<li class="toctree-l3"><a class="reference internal" href="poll_queue.html">PollQueue</a></li>
+<li class="toctree-l3"><a class="reference internal" href="yaml_configuration.html">YAML Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="memory_variable_stream.html">Variable Update Stream</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Groups</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../builtin_devices/index.html">Built-in Devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../client_interfaces/index.html">Client Interfaces</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">API Reference</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">PyRogue Tree</a></li>
+          <li class="breadcrumb-item"><a href="index.html">PyRogue Tree Components And Concepts</a></li>
+      <li class="breadcrumb-item active">Groups</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/pyrogue_tree/core/groups.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="groups">
+<span id="pyrogue-tree-node-groups"></span><h1>Groups<a class="headerlink" href="#groups" title="Link to this heading"></a></h1>
+<p>PyRogue groups are string tags attached to <code class="docutils literal notranslate"><span class="pre">Node</span></code> objects such as
+<code class="docutils literal notranslate"><span class="pre">Device</span></code>, <code class="docutils literal notranslate"><span class="pre">Variable</span></code>, and <code class="docutils literal notranslate"><span class="pre">Command</span></code>. They are used to filter bulk
+operations, logging, streaming, remote exposure, and other workflows that need
+to act on one subset of the tree but not another.</p>
+<p>The group model is intentionally open-ended. PyRogue defines a few names with
+framework meaning, but applications are free to add project-specific group
+names for their own workflows.</p>
+<section id="what-groups-are-for">
+<h2>What Groups Are For<a class="headerlink" href="#what-groups-are-for" title="Link to this heading"></a></h2>
+<p>Groups let a tree carry workflow policy directly on the Nodes it exposes.</p>
+<p>That is useful when the same tree needs to support different views or actions,
+for example:</p>
+<ul class="simple">
+<li><p>Configuration save and load versus live runtime state</p></li>
+<li><p>Stream or SQL logging versus local-only values</p></li>
+<li><p>Operator-facing views versus internal helper Nodes</p></li>
+<li><p>Project-specific subsets such as commissioning-only or debug-only controls</p></li>
+</ul>
+<p>This is why groups appear throughout PyRogue APIs as <code class="docutils literal notranslate"><span class="pre">incGroups</span></code> and
+<code class="docutils literal notranslate"><span class="pre">excGroups</span></code> filters. Instead of hard-coding per-Node rules in every bulk
+operation, the operation can ask the tree which Nodes belong in the requested
+workflow.</p>
+</section>
+<section id="how-group-filtering-works">
+<h2>How Group Filtering Works<a class="headerlink" href="#how-group-filtering-works" title="Link to this heading"></a></h2>
+<p>Most tree APIs that accept <code class="docutils literal notranslate"><span class="pre">incGroups</span></code> and <code class="docutils literal notranslate"><span class="pre">excGroups</span></code> use the same basic
+rule:</p>
+<ul class="simple">
+<li><p>If <code class="docutils literal notranslate"><span class="pre">incGroups</span></code> is empty, the include check passes by default.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">incGroups</span></code> is set, the Node must be in at least one of those groups.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">excGroups</span></code> is empty, the exclude check passes by default.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">excGroups</span></code> is set, the Node must be in none of those groups.</p></li>
+</ul>
+<p>A Node is processed only if both checks pass.</p>
+<p>In the implementation, group membership is simple set-style string matching.
+There is no special hierarchy inside the group names themselves.</p>
+</section>
+<section id="built-in-group-names">
+<h2>Built-In Group Names<a class="headerlink" href="#built-in-group-names" title="Link to this heading"></a></h2>
+<p>A small set of group names have established framework meaning in the current
+implementation.</p>
+<section id="hidden">
+<h3><code class="docutils literal notranslate"><span class="pre">Hidden</span></code><a class="headerlink" href="#hidden" title="Link to this heading"></a></h3>
+<p>Added automatically when a Node is constructed with <code class="docutils literal notranslate"><span class="pre">hidden=True</span></code>.</p>
+<p>This is the main presentation-oriented group. GUI and helper defaults commonly
+exclude <code class="docutils literal notranslate"><span class="pre">Hidden</span></code> Nodes unless the user explicitly asks to include them.</p>
+</section>
+<section id="noconfig">
+<h3><code class="docutils literal notranslate"><span class="pre">NoConfig</span></code><a class="headerlink" href="#noconfig" title="Link to this heading"></a></h3>
+<p>Used for Nodes that should be excluded from configuration save and load
+workflows.</p>
+<p>In practice, Root-level configuration commands such as <code class="docutils literal notranslate"><span class="pre">SaveConfig</span></code>,
+<code class="docutils literal notranslate"><span class="pre">LoadConfig</span></code>, <code class="docutils literal notranslate"><span class="pre">SetYamlConfig</span></code>, and <code class="docutils literal notranslate"><span class="pre">GetYamlConfig</span></code> exclude this group by
+default. Use it for runtime-only or status-oriented values that should not be
+persisted as configuration.</p>
+</section>
+<section id="nostate">
+<h3><code class="docutils literal notranslate"><span class="pre">NoState</span></code><a class="headerlink" href="#nostate" title="Link to this heading"></a></h3>
+<p>Used for Nodes that should be excluded from state snapshots or state-export
+workflows.</p>
+<p>In practice, Root-level state-export commands such as <code class="docutils literal notranslate"><span class="pre">SaveState</span></code> and
+<code class="docutils literal notranslate"><span class="pre">GetYamlState</span></code> exclude this group by default. Use it for values that are
+transient, local-only, or otherwise not meaningful to capture in a saved state
+image.</p>
+</section>
+<section id="nostream">
+<h3><code class="docutils literal notranslate"><span class="pre">NoStream</span></code><a class="headerlink" href="#nostream" title="Link to this heading"></a></h3>
+<p>Used by Variable streaming workflows to suppress Nodes from the default stream
+output.</p>
+<p>In practice, Variable streaming interfaces exclude this group by default. Use
+it when a Node should remain in the tree but should not be emitted through the
+normal Variable stream path.</p>
+<p>This is commonly used to prevent internal or low-value Variables from being
+sent to stream-based logging or recording paths.</p>
+</section>
+<section id="nosql">
+<h3><code class="docutils literal notranslate"><span class="pre">NoSql</span></code><a class="headerlink" href="#nosql" title="Link to this heading"></a></h3>
+<p>Used by SQL logging workflows to suppress Nodes from default SQL logging.</p>
+<p>Use it for values that would add noise, have little long-term value, or should
+not be recorded in that logging path.</p>
+</section>
+<section id="noserve">
+<h3><code class="docutils literal notranslate"><span class="pre">NoServe</span></code><a class="headerlink" href="#noserve" title="Link to this heading"></a></h3>
+<p>Used for Nodes that should not be exposed through served remote views such as
+ZMQ or virtual-tree interfaces.</p>
+<p>In practice, served remote-node lists exclude this group by default. Use it for
+local-only controls or internal Nodes that should remain present in the process
+but not be published outward.</p>
+</section>
+<section id="enable">
+<h3><code class="docutils literal notranslate"><span class="pre">Enable</span></code><a class="headerlink" href="#enable" title="Link to this heading"></a></h3>
+<p>Used by the built-in enable-variable pattern as a semantic label. It is better
+treated as a framework convention than as a general-purpose workflow filter,
+and it should not be reused for unrelated meanings.</p>
+<p>This is a convention used by framework components, not a hard filter category
+by itself.</p>
+</section>
+</section>
+<section id="custom-groups-in-practice">
+<h2>Custom Groups In Practice<a class="headerlink" href="#custom-groups-in-practice" title="Link to this heading"></a></h2>
+<p>Application-specific groups are often the most useful ones day to day.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyDevice</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;BiasTrim&#39;</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span>
+            <span class="n">offset</span><span class="o">=</span><span class="mh">0x00</span><span class="p">,</span>
+            <span class="n">bitSize</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span>
+            <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Commissioning&#39;</span><span class="p">],</span>
+        <span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;DebugCounter&#39;</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">offset</span><span class="o">=</span><span class="mh">0x04</span><span class="p">,</span>
+            <span class="n">bitSize</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span>
+            <span class="n">groups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Debug&#39;</span><span class="p">,</span> <span class="s1">&#39;NoConfig&#39;</span><span class="p">,</span> <span class="s1">&#39;NoState&#39;</span><span class="p">],</span>
+        <span class="p">))</span>
+</pre></div>
+</div>
+<p>With that structure, bulk workflows can include or exclude those Nodes without
+hard-coding special cases into every command or script.</p>
+</section>
+<section id="group-assignment-notes">
+<h2>Group Assignment Notes<a class="headerlink" href="#group-assignment-notes" title="Link to this heading"></a></h2>
+<p>Groups are stored directly on each <code class="docutils literal notranslate"><span class="pre">Node</span></code> as strings.</p>
+<p>Two practical details matter:</p>
+<ul class="simple">
+<li><p>Passing <code class="docutils literal notranslate"><span class="pre">groups=...</span></code> during construction assigns the initial group list.</p></li>
+<li><p>Calling <code class="docutils literal notranslate"><span class="pre">addToGroup()</span></code> on a Node propagates that group to its children.</p></li>
+</ul>
+<p>That propagation behavior is useful when an entire subtree should participate
+in one workflow policy.</p>
+</section>
+<section id="other-names-you-may-see">
+<h2>Other Names You May See<a class="headerlink" href="#other-names-you-may-see" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">NoAlarm</span></code> appears in some examples and project code, but there is no core
+framework behavior tied to that name in this repository. Treat it as a
+project-level convention unless your application defines logic for it.</p>
+</section>
+<section id="design-guidance">
+<h2>Design Guidance<a class="headerlink" href="#design-guidance" title="Link to this heading"></a></h2>
+<p>Good group usage is usually straightforward:</p>
+<ul class="simple">
+<li><p>Keep the built-in names aligned with their established semantics.</p></li>
+<li><p>Add project-specific groups when they clearly represent a real workflow or
+view.</p></li>
+<li><p>Document custom groups near the <code class="docutils literal notranslate"><span class="pre">Root</span></code> or <code class="docutils literal notranslate"><span class="pre">Device</span></code> definitions that rely
+on them.</p></li>
+<li><p>Prefer <code class="docutils literal notranslate"><span class="pre">incGroups</span></code> and <code class="docutils literal notranslate"><span class="pre">excGroups</span></code> over ad hoc per-Node conditionals in
+bulk operations.</p></li>
+</ul>
+</section>
+<section id="what-to-explore-next">
+<h2>What To Explore Next<a class="headerlink" href="#what-to-explore-next" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Root workflows that use group filters: <a class="reference internal" href="root.html"><span class="doc">Root</span></a></p></li>
+<li><p>Variable presentation and group metadata: <a class="reference internal" href="variable.html"><span class="doc">Variable</span></a></p></li>
+<li><p>YAML configuration and state export filters: <a class="reference internal" href="yaml_configuration.html"><span class="doc">YAML Configuration</span></a></p></li>
+</ul>
+</section>
+<section id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<p>See <a class="reference internal" href="../../api/python/pyrogue/node.html"><span class="doc">Node</span></a> for generated API details on <code class="docutils literal notranslate"><span class="pre">Node</span></code>
+group properties and helpers.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="memory_variable_stream.html" class="btn btn-neutral float-left" title="Variable Update Stream" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../builtin_devices/index.html" class="btn btn-neutral float-right" title="Built-in Devices" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

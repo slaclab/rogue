@@ -1,0 +1,432 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AxiStreamDma &mdash; Rogue v6.10.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=8b50afe1" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=dc21db2b"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../_static/custom.js?v=7b5dfb0b"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="AxiMemMap" href="memory.html" />
+    <link rel="prev" title="AXI DMA Driver Wrappers" href="index.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Built-in Modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../interfaces/index.html">Interfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../simulation/index.html">Simulation Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../protocols/index.html">Protocols</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">Hardware</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">AXI DMA Driver Wrappers</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">AxiStreamDma</a></li>
+<li class="toctree-l4"><a class="reference internal" href="memory.html">AxiMemMap</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../raw/index.html">Raw Hardware Interface</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../utilities/index.html">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">API Reference</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Built-in Modules</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Hardware</a></li>
+          <li class="breadcrumb-item"><a href="index.html">AXI DMA Driver Wrappers</a></li>
+      <li class="breadcrumb-item active">AxiStreamDma</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/built_in_modules/hardware/dma/stream.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="axistreamdma">
+<span id="hardware-axi-features"></span><span id="hardware-axi-stream"></span><h1>AxiStreamDma<a class="headerlink" href="#axistreamdma" title="Link to this heading"></a></h1>
+<p>For connecting Rogue stream graphs directly to FPGA DMA channels, Rogue
+provides <code class="docutils literal notranslate"><span class="pre">rogue.hardware.axi.AxiStreamDma</span></code>. This class wraps
+<code class="docutils literal notranslate"><span class="pre">aes-stream-drivers</span></code> DMA channels as Rogue stream interfaces, so hardware
+channels can participate in ordinary Rogue stream topologies with the usual
+<code class="docutils literal notranslate"><span class="pre">&gt;&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;&lt;</span></code>, and <code class="docutils literal notranslate"><span class="pre">==</span></code> connection semantics.</p>
+<p>The underlying driver stack is:
+<a class="reference external" href="https://github.com/slaclab/aes-stream-drivers">slaclab/aes-stream-drivers</a>.
+That repository is useful reference material when you need to understand the
+driver-visible DMA buffer model, channel reservation mask, or lower-level AXI
+stream helper APIs.</p>
+<p>The common use case is a PCIe or SoC-backed design where one firmware stream
+destination needs to appear in software as a Rogue transport endpoint. Hardware
+that commonly uses this pattern includes PCIe cards, Zynq-based platforms, and
+other designs built around the AXI DMA driver stack.</p>
+<p>A single <code class="docutils literal notranslate"><span class="pre">AxiStreamDma</span></code> instance is typically used for one firmware data
+channel or destination path. In many designs:</p>
+<ul class="simple">
+<li><p>One destination carries a register protocol such as SRPv3.</p></li>
+<li><p>One or more other destinations carry waveform, event, or diagnostic traffic.</p></li>
+</ul>
+<p>That makes <code class="docutils literal notranslate"><span class="pre">AxiStreamDma</span></code> the normal host-side boundary between the Linux
+driver and the rest of the Rogue stream graph.</p>
+<section id="key-constructor-arguments">
+<h2>Key Constructor Arguments<a class="headerlink" href="#key-constructor-arguments" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">AxiStreamDma(path,</span> <span class="pre">dest,</span> <span class="pre">ssiEnable)</span></code></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">path</span></code> is the Linux device path, commonly <code class="docutils literal notranslate"><span class="pre">/dev/datadev_0</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dest</span></code> selects the destination or channel value used by the driver and
+firmware path.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ssiEnable</span></code> enables SSI SOF and EOFE handling in the user fields.</p></li>
+</ul>
+</section>
+<section id="destination-mapping">
+<h2>Destination Mapping<a class="headerlink" href="#destination-mapping" title="Link to this heading"></a></h2>
+<p>From the software side, <code class="docutils literal notranslate"><span class="pre">dest</span></code> is the value used to select which firmware DMA
+path you want to open. The important practical rule is to match the value that
+the firmware and driver stack expect for that stream endpoint.</p>
+<p>In the common <code class="docutils literal notranslate"><span class="pre">aes-stream-drivers</span></code> convention used by Rogue:</p>
+<ul class="simple">
+<li><p>The low 8 bits of <code class="docutils literal notranslate"><span class="pre">dest</span></code> correspond to the AXI stream <code class="docutils literal notranslate"><span class="pre">tDest</span></code> value</p></li>
+<li><p>The upper bits select the lane or higher-level DMA channel path implemented
+in firmware</p></li>
+</ul>
+<p>That means software normally treats <code class="docutils literal notranslate"><span class="pre">dest</span></code> as one combined routing number,
+even if the firmware designer thinks of it as <code class="docutils literal notranslate"><span class="pre">lane</span></code> plus <code class="docutils literal notranslate"><span class="pre">tDest</span></code>.</p>
+<p>Examples:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">0x000</span></code> means lane 0, destination 0.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">0x001</span></code> means lane 0, destination 1.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">0x100</span></code> means lane 1, destination 0.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">0x102</span></code> means lane 1, destination 2.</p></li>
+</ul>
+<p>You do not need a deep understanding of lanes to use <code class="docutils literal notranslate"><span class="pre">AxiStreamDma</span></code>
+correctly. The main requirement is to know which combined <code class="docutils literal notranslate"><span class="pre">dest</span></code> values the
+firmware exports for register access, data, diagnostics, or protocol
+endpoints.</p>
+</section>
+<section id="typical-uses">
+<h2>Typical Uses<a class="headerlink" href="#typical-uses" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Attach a data-producing or data-consuming firmware channel to a Rogue stream
+graph.</p></li>
+<li><p>Carry SRP traffic over a DMA stream destination.</p></li>
+<li><p>Serve as the lower transport under packetizer or other protocol layers.</p></li>
+<li><p>Connect a Root-managed DAQ path to file I/O, PRBS, filters, or custom stream
+endpoints.</p></li>
+</ul>
+</section>
+<section id="example-root-with-control-and-data-dma-paths">
+<h2>Example: Root With Control And Data DMA Paths<a class="headerlink" href="#example-root-with-control-and-data-dma-paths" title="Link to this heading"></a></h2>
+<p>This is a common PyRogue pattern: one DMA destination carries SRPv3 register
+traffic, and another carries a framed data stream that is written to disk.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">rogue.hardware.axi</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">rha</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">rogue.protocols.srp</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">rps</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue.utilities.fileio</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">puf</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyRegs</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="c1"># Example register block reached through the SRPv3 control channel.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;ScratchPad&#39;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Example RW register&#39;</span><span class="p">,</span>
+            <span class="n">offset</span><span class="o">=</span><span class="mh">0x0000</span><span class="p">,</span>
+            <span class="n">bitSize</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span>
+            <span class="n">base</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
+        <span class="p">))</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">BoardRoot</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="s1">&#39;/dev/datadev_0&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="c1"># Destination 0 is reserved for register access.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">regStream</span> <span class="o">=</span> <span class="n">rha</span><span class="o">.</span><span class="n">AxiStreamDma</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">srp</span> <span class="o">=</span> <span class="n">rps</span><span class="o">.</span><span class="n">SrpV3</span><span class="p">()</span>
+
+        <span class="c1"># Bidirectional stream connection: DMA transport &lt;-&gt; SRPv3 bridge.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">regStream</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">srp</span>
+
+        <span class="c1"># Optional SRPv3 protocol timeout encoded into the outbound header.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">srp</span><span class="o">.</span><span class="n">_setHardwareTimeout</span><span class="p">(</span><span class="mh">0x0A</span><span class="p">)</span>
+
+        <span class="c1"># The top-level register tree talks to hardware through SRPv3.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">MyRegs</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Regs&#39;</span><span class="p">,</span>
+            <span class="n">offset</span><span class="o">=</span><span class="mh">0x00000000</span><span class="p">,</span>
+            <span class="n">memBase</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">srp</span><span class="p">,</span>
+            <span class="n">expand</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">))</span>
+
+        <span class="c1"># Destination 1 carries framed acquisition data.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataStream</span> <span class="o">=</span> <span class="n">rha</span><span class="o">.</span><span class="n">AxiStreamDma</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># Tree-managed file writer for captured data.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">writer</span> <span class="o">=</span> <span class="n">puf</span><span class="o">.</span><span class="n">StreamWriter</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Writer&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">writer</span><span class="p">)</span>
+
+        <span class="c1"># Route the DMA data stream into channel 0 of the file writer.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataStream</span> <span class="o">&gt;&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">writer</span><span class="o">.</span><span class="n">getChannel</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="c1"># Register both DMA interfaces so Root owns their lifecycle.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addInterface</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">regStream</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataStream</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="example-root-owned-dma-processing-chain">
+<h2>Example: Root-Owned DMA Processing Chain<a class="headerlink" href="#example-root-owned-dma-processing-chain" title="Link to this heading"></a></h2>
+<p>This pattern keeps the DMA object in the <code class="docutils literal notranslate"><span class="pre">Root</span></code> and inserts ordinary Rogue
+stream stages between the hardware channel and the final sink.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">rogue.hardware.axi</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">rha</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">rogue.interfaces.stream</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ris</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue.utilities.fileio</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">puf</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">CaptureRoot</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="s1">&#39;/dev/datadev_0&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="c1"># Open the hardware data channel at destination 1.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataDma</span> <span class="o">=</span> <span class="n">rha</span><span class="o">.</span><span class="n">AxiStreamDma</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># Buffer short bursts from hardware before writing to disk.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fifo</span> <span class="o">=</span> <span class="n">ris</span><span class="o">.</span><span class="n">Fifo</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+
+        <span class="c1"># Optional debug tap. Attach it after the primary path so frame</span>
+        <span class="c1"># allocation still follows the main processing chain.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">debug</span> <span class="o">=</span> <span class="n">ris</span><span class="o">.</span><span class="n">Slave</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="o">.</span><span class="n">setDebug</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="s1">&#39;DMA Debug&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Tree-managed file writer.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">writer</span> <span class="o">=</span> <span class="n">puf</span><span class="o">.</span><span class="n">StreamWriter</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Writer&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">writer</span><span class="p">)</span>
+
+        <span class="c1"># Primary capture path: DMA -&gt; FIFO -&gt; file writer.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataDma</span> <span class="o">&gt;&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">fifo</span> <span class="o">&gt;&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">writer</span><span class="o">.</span><span class="n">getChannel</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="c1"># Secondary branch for console debugging.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataDma</span> <span class="o">&gt;&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">debug</span>
+
+        <span class="c1"># Root manages the DMA lifecycle.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addInterface</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataDma</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="example-transport-tuning">
+<h2>Example: Transport Tuning<a class="headerlink" href="#example-transport-tuning" title="Link to this heading"></a></h2>
+<p>These controls are usually added after the basic path is working and you need
+to diagnose driver behavior or tune a platform-specific setup.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">rogue.hardware.axi</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">rha</span>
+
+<span class="c1"># Disable zero-copy before constructing any DMA object for this device path.</span>
+<span class="n">rha</span><span class="o">.</span><span class="n">AxiStreamDma</span><span class="o">.</span><span class="n">zeroCopyDisable</span><span class="p">(</span><span class="s1">&#39;/dev/datadev_0&#39;</span><span class="p">)</span>
+
+<span class="n">dma</span> <span class="o">=</span> <span class="n">rha</span><span class="o">.</span><span class="n">AxiStreamDma</span><span class="p">(</span><span class="s1">&#39;/dev/datadev_0&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Enable kernel-driver debug messages. These usually appear in dmesg.</span>
+<span class="n">dma</span><span class="o">.</span><span class="n">setDriverDebug</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># Emit timeout warnings if TX or frame allocation blocks too long.</span>
+<span class="n">dma</span><span class="o">.</span><span class="n">setTimeout</span><span class="p">(</span><span class="mi">1500</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="threading-and-lifecycle">
+<h2>Threading And Lifecycle<a class="headerlink" href="#threading-and-lifecycle" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">AxiStreamDma</span></code> does create background activity:</p>
+<ul class="simple">
+<li><p>A background RX thread starts in the constructor.</p></li>
+<li><p>Transmit happens synchronously in <code class="docutils literal notranslate"><span class="pre">acceptFrame()</span></code>.</p></li>
+<li><p>Destruction or <code class="docutils literal notranslate"><span class="pre">_stop()</span></code> shuts down the RX thread and closes descriptors.</p></li>
+</ul>
+<p>In a PyRogue application, treat it as a managed interface when the Root is
+responsible for startup and shutdown. In a standalone script, explicitly stop
+it when the transport is no longer needed.</p>
+</section>
+<section id="common-controls">
+<h2>Common Controls<a class="headerlink" href="#common-controls" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">setTimeout(timeout)</span></code>
+Sets the TX and allocation wait timeout in microseconds.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">setDriverDebug(level)</span></code>
+Enables lower-level driver diagnostics, typically visible in <code class="docutils literal notranslate"><span class="pre">dmesg</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dmaAck()</span></code>
+Sends a driver-specific DMA acknowledge pulse when the hardware design uses
+that mechanism.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">zeroCopyDisable(path)</span></code>
+Disables zero-copy for a device path before any instance is created on that
+path.</p></li>
+</ul>
+</section>
+<section id="zero-copy-notes">
+<h2>Zero-Copy Notes<a class="headerlink" href="#zero-copy-notes" title="Link to this heading"></a></h2>
+<p>Zero-copy is enabled by default when the driver and device path support it.</p>
+<p>In this mode, <code class="docutils literal notranslate"><span class="pre">AxiStreamDma</span></code> asks <code class="docutils literal notranslate"><span class="pre">aes-stream-drivers</span></code> to map the driver’s
+DMA buffers into user space, then uses those mapped buffers directly as Rogue
+frame storage. That avoids an extra copy between a driver-owned DMA buffer and
+a separately allocated software buffer.</p>
+<p>The practical effect is:</p>
+<ul class="simple">
+<li><p>Received DMA data can be exposed to Rogue as frames without first copying
+into a second payload buffer.</p></li>
+<li><p>Outbound frame allocation can use DMA-backed buffers directly when the caller
+allows zero-copy allocation.</p></li>
+<li><p>CPU overhead and memory bandwidth are lower than in the copied path.</p></li>
+</ul>
+<p>When zero-copy is disabled or unavailable, Rogue falls back to locally allocated
+frame buffers and copies data across the DMA boundary as needed.</p>
+<p>Disable zero-copy only when debugging, when a platform-specific constraint
+requires it, or when you deliberately want to rule out buffer-mapping behavior
+while isolating a problem.</p>
+<p>If you do disable it, call <code class="docutils literal notranslate"><span class="pre">zeroCopyDisable(path)</span></code> before creating any
+<code class="docutils literal notranslate"><span class="pre">AxiStreamDma</span></code> object for that path.</p>
+</section>
+<section id="logging">
+<h2>Logging<a class="headerlink" href="#logging" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">AxiStreamDma</span></code> uses Rogue C++ logging and also exposes a separate driver debug
+path.</p>
+<ul class="simple">
+<li><p>Logger name: <code class="docutils literal notranslate"><span class="pre">pyrogue.axi.AxiStreamDma</span></code></p></li>
+<li><p>Unified Logging API:
+<code class="docutils literal notranslate"><span class="pre">pyrogue.setLogLevel('pyrogue.axi.AxiStreamDma',</span> <span class="pre">'DEBUG')</span></code></p></li>
+<li><p>Legacy Logging API:
+<code class="docutils literal notranslate"><span class="pre">rogue.Logging.setFilter('pyrogue.axi.AxiStreamDma',</span> <span class="pre">rogue.Logging.Debug)</span></code></p></li>
+<li><p>Typical Rogue messages: DMA channel creation, send/receive timeouts, and
+errored-frame handling</p></li>
+<li><p>Driver debug helper: <code class="docutils literal notranslate"><span class="pre">setDriverDebug(level)</span></code></p></li>
+</ul>
+<p>You can enable Rogue logging before or after construction. Enable it before
+construction only if you want constructor or initial startup messages:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">rogue</span>
+
+<span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">setFilter</span><span class="p">(</span><span class="s1">&#39;pyrogue.axi.AxiStreamDma&#39;</span><span class="p">,</span> <span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">Debug</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Driver debug usually appears in <code class="docutils literal notranslate"><span class="pre">dmesg</span></code> rather than in Rogue’s own logger
+output.</p>
+</section>
+<section id="related-topics">
+<h2>Related Topics<a class="headerlink" href="#related-topics" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="index.html"><span class="doc">AXI DMA Driver Wrappers</span></a></p></li>
+<li><p><a class="reference internal" href="memory.html"><span class="doc">AxiMemMap</span></a></p></li>
+<li><p><a class="reference internal" href="../../protocols/srp/index.html"><span class="doc">SRP Protocol</span></a></p></li>
+<li><p><a class="reference internal" href="../../protocols/packetizer/index.html"><span class="doc">Packetizer Protocol</span></a></p></li>
+<li><p><a class="reference internal" href="../../../stream_interface/index.html"><span class="doc">Stream Interface</span></a></p></li>
+</ul>
+</section>
+<section id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Python: <a class="reference internal" href="../../../api/python/rogue/hardware/axi/axistreamdma.html"><span class="doc">AxiStreamDma</span></a></p></li>
+<li><p>C++: <a class="reference internal" href="../../../api/cpp/hardware/axi/axiStreamDma.html"><span class="doc">AxiStreamDma</span></a></p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="AXI DMA Driver Wrappers" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="memory.html" class="btn btn-neutral float-right" title="AxiMemMap" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

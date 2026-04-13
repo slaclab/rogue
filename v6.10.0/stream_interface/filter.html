@@ -1,0 +1,313 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Channel Filtering &mdash; Rogue v6.10.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=8b50afe1" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=dc21db2b"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script src="../_static/custom.js?v=7b5dfb0b"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Rate Limiting With RateDrop" href="rate_drop.html" />
+    <link rel="prev" title="FIFO Buffering" href="fifo.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Stream Interface</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="connecting.html">Connecting Streams</a></li>
+<li class="toctree-l2"><a class="reference internal" href="frame_model.html">Frame Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sending.html">Sending Frames</a></li>
+<li class="toctree-l2"><a class="reference internal" href="receiving.html">Receiving Frames</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="built_in_modules.html">Built-in Stream Modules</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="fifo.html">FIFO Buffering</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Channel Filtering</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rate_drop.html">Rate Limiting With RateDrop</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tcp_bridge.html">Stream TCP Bridge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="debugStreams.html">Debugging Streams</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../custom_module/index.html">Creating Custom Modules</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API Reference</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Stream Interface</a></li>
+          <li class="breadcrumb-item"><a href="built_in_modules.html">Built-in Stream Modules</a></li>
+      <li class="breadcrumb-item active">Channel Filtering</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/stream_interface/filter.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="channel-filtering">
+<span id="stream-interface-using-filter"></span><span id="interfaces-stream-using-filter"></span><h1>Channel Filtering<a class="headerlink" href="#channel-filtering" title="Link to this heading"></a></h1>
+<p>A <a class="reference internal" href="../api/cpp/interfaces/stream/filter.html#interfaces-stream-filter"><span class="std std-ref">Filter</span></a> object forwards only those <code class="docutils literal notranslate"><span class="pre">Frame</span></code> objects
+whose metadata matches the configured selection rules.</p>
+<p>You typically add a <code class="docutils literal notranslate"><span class="pre">Filter</span></code> when a stream carries multiple logical channels
+but a downstream path only wants one of them. That situation commonly arises
+when reading data from a file source, a channelized capture stream, or a
+splitter that emits distinct channel numbers. A <code class="docutils literal notranslate"><span class="pre">Filter</span></code> can also be useful on
+non-channelized data when the main need is to drop <code class="docutils literal notranslate"><span class="pre">Frame</span></code> objects whose error
+field is non-zero.</p>
+<p>At a high level, the <code class="docutils literal notranslate"><span class="pre">Filter</span></code> checks two pieces of <code class="docutils literal notranslate"><span class="pre">Frame</span></code> metadata:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">channel</span></code> selects the channel number that should be forwarded.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dropErrors</span></code> controls whether <code class="docutils literal notranslate"><span class="pre">Frame</span></code> objects with a non-zero error code
+are discarded.</p></li>
+</ul>
+<section id="constructor">
+<h2>Constructor<a class="headerlink" href="#constructor" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Python: <code class="docutils literal notranslate"><span class="pre">ris.Filter(dropErrors,</span> <span class="pre">channel)</span></code></p></li>
+<li><p>C++: <code class="docutils literal notranslate"><span class="pre">ris::Filter::create(dropErrors,</span> <span class="pre">channel)</span></code></p></li>
+</ul>
+</section>
+<section id="filtering-behavior">
+<h2>Filtering Behavior<a class="headerlink" href="#filtering-behavior" title="Link to this heading"></a></h2>
+<p>The forwarding logic is simple:</p>
+<ol class="arabic simple">
+<li><p>Drop <code class="docutils literal notranslate"><span class="pre">Frame</span></code> objects whose <code class="docutils literal notranslate"><span class="pre">getChannel()</span></code> does not match the configured
+channel.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">dropErrors=True</span></code>, drop <code class="docutils literal notranslate"><span class="pre">Frame</span></code> objects whose <code class="docutils literal notranslate"><span class="pre">getError()</span></code> is
+non-zero.</p></li>
+<li><p>Forward the remaining <code class="docutils literal notranslate"><span class="pre">Frame</span></code> objects unchanged.</p></li>
+</ol>
+<p>Because the <code class="docutils literal notranslate"><span class="pre">Filter</span></code> operates on metadata rather than payload content, it is
+often one of the cheapest ways to reduce traffic before it reaches more
+expensive processing stages.</p>
+</section>
+<section id="python-file-example">
+<h2>Python File Example<a class="headerlink" href="#python-file-example" title="Link to this heading"></a></h2>
+<p>The most common example is reading one channel from a recorded file stream.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">rogue.interfaces.stream</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ris</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue.utilities.fileio</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">puf</span>
+
+<span class="c1"># File source</span>
+<span class="n">src</span> <span class="o">=</span> <span class="n">puf</span><span class="o">.</span><span class="n">StreamReader</span><span class="p">()</span>
+
+<span class="c1"># Keep only channel 1 Frames and drop errored Frames</span>
+<span class="n">filt</span> <span class="o">=</span> <span class="n">ris</span><span class="o">.</span><span class="n">Filter</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># Data destination</span>
+<span class="n">dst</span> <span class="o">=</span> <span class="n">MyCustomSlave</span><span class="p">()</span>
+
+<span class="c1"># Connect the source to the Filter and then to the destination</span>
+<span class="n">src</span> <span class="o">&gt;&gt;</span> <span class="n">filt</span> <span class="o">&gt;&gt;</span> <span class="n">dst</span>
+
+<span class="n">src</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;MyDataFile.bin&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This arrangement is useful when a file contains multiple interleaved channels
+but the downstream analysis only needs one of them.</p>
+</section>
+<section id="c-file-example">
+<h2>C++ File Example<a class="headerlink" href="#c-file-example" title="Link to this heading"></a></h2>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;rogue/Helpers.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;rogue/interfaces/stream/Filter.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;rogue/utilities/fileio/StreamReader.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;MyCustomSlave.h&quot;</span>
+
+<span class="k">namespace</span><span class="w"> </span><span class="nn">ris</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nn">rogue</span><span class="o">::</span><span class="nn">interfaces</span><span class="o">::</span><span class="nn">stream</span><span class="p">;</span>
+<span class="k">namespace</span><span class="w"> </span><span class="nn">ruf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nn">rogue</span><span class="o">::</span><span class="nn">utilities</span><span class="o">::</span><span class="nn">fileio</span><span class="p">;</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">   </span><span class="c1">// File source</span>
+<span class="w">   </span><span class="k">auto</span><span class="w"> </span><span class="n">src</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ruf</span><span class="o">::</span><span class="n">StreamReader</span><span class="o">::</span><span class="n">create</span><span class="p">();</span>
+
+<span class="w">   </span><span class="c1">// Keep only channel 1 Frames and drop errored Frames</span>
+<span class="w">   </span><span class="k">auto</span><span class="w"> </span><span class="n">filt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ris</span><span class="o">::</span><span class="n">Filter</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="nb">true</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+
+<span class="w">   </span><span class="c1">// Data destination</span>
+<span class="w">   </span><span class="k">auto</span><span class="w"> </span><span class="n">dst</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MyCustomSlave</span><span class="o">::</span><span class="n">create</span><span class="p">();</span>
+
+<span class="w">   </span><span class="c1">// Connect the source to the Filter and then to the destination</span>
+<span class="w">   </span><span class="n">rogueStreamConnect</span><span class="p">(</span><span class="n">src</span><span class="p">,</span><span class="w"> </span><span class="n">filt</span><span class="p">);</span>
+<span class="w">   </span><span class="n">rogueStreamConnect</span><span class="p">(</span><span class="n">filt</span><span class="p">,</span><span class="w"> </span><span class="n">dst</span><span class="p">);</span>
+
+<span class="w">   </span><span class="n">src</span><span class="o">-&gt;</span><span class="n">open</span><span class="p">(</span><span class="s">&quot;MyDataFile.bin&quot;</span><span class="p">);</span>
+<span class="w">   </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="python-diagnostic-example">
+<h2>Python Diagnostic Example<a class="headerlink" href="#python-diagnostic-example" title="Link to this heading"></a></h2>
+<p>Another useful pattern is to branch a diagnostic stream and keep only one
+channel for inspection.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">rogue.hardware.axi</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">rha</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">rogue.interfaces.stream</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ris</span>
+
+<span class="n">dma</span> <span class="o">=</span> <span class="n">rha</span><span class="o">.</span><span class="n">AxiStreamDma</span><span class="p">(</span><span class="s1">&#39;/dev/datadev_0&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Keep only channel 3 Frames and drop errored Frames</span>
+<span class="n">filt</span> <span class="o">=</span> <span class="n">ris</span><span class="o">.</span><span class="n">Filter</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="n">mon</span> <span class="o">=</span> <span class="n">ris</span><span class="o">.</span><span class="n">Slave</span><span class="p">()</span>
+<span class="n">mon</span><span class="o">.</span><span class="n">setDebug</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="s1">&#39;chan3&#39;</span><span class="p">)</span>
+
+<span class="n">dma</span> <span class="o">&gt;&gt;</span> <span class="n">filt</span> <span class="o">&gt;&gt;</span> <span class="n">mon</span>
+</pre></div>
+</div>
+<p>This is a common bring-up pattern when one logical stream is embedded in a
+larger channelized data source and you want quick visibility into just that
+substream.</p>
+</section>
+<section id="logging">
+<h2>Logging<a class="headerlink" href="#logging" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">Filter</span></code> uses Rogue C++ logging with the static logger name
+<code class="docutils literal notranslate"><span class="pre">pyrogue.stream.Filter</span></code>.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pyrogue.stream.Filter</span></code></p></li>
+<li><p>Unified Logging API:
+<code class="docutils literal notranslate"><span class="pre">pyrogue.setLogLevel('pyrogue.stream.Filter',</span> <span class="pre">'DEBUG')</span></code></p></li>
+<li><p>Legacy Logging API:
+<code class="docutils literal notranslate"><span class="pre">rogue.Logging.setFilter('pyrogue.stream.Filter',</span> <span class="pre">rogue.Logging.Debug)</span></code></p></li>
+</ul>
+<p>You can enable that logger before or after constructing the object. Enable it
+before construction only if you want constructor or early implementation
+messages from the <code class="docutils literal notranslate"><span class="pre">Filter</span></code> itself:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">rogue</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">rogue.interfaces.stream</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ris</span>
+
+<span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">setFilter</span><span class="p">(</span><span class="s1">&#39;pyrogue.stream.Filter&#39;</span><span class="p">,</span> <span class="n">rogue</span><span class="o">.</span><span class="n">Logging</span><span class="o">.</span><span class="n">Debug</span><span class="p">)</span>
+<span class="n">filt</span> <span class="o">=</span> <span class="n">ris</span><span class="o">.</span><span class="n">Filter</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">Filter</span></code> does not provide a separate runtime <code class="docutils literal notranslate"><span class="pre">setDebug(...)</span></code> helper. If you
+want to inspect the forwarded payload bytes, attach a debug <code class="docutils literal notranslate"><span class="pre">Slave</span></code>
+downstream and use <code class="docutils literal notranslate"><span class="pre">setDebug(maxBytes,</span> <span class="pre">name)</span></code> there.</p>
+</section>
+<section id="what-to-explore-next">
+<h2>What To Explore Next<a class="headerlink" href="#what-to-explore-next" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Connection topology rules: <a class="reference internal" href="connecting.html"><span class="doc">Connecting Streams</span></a></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Fifo</span></code> usage: <a class="reference internal" href="fifo.html"><span class="doc">FIFO Buffering</span></a></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">RateDrop</span></code> usage: <a class="reference internal" href="rate_drop.html"><span class="doc">Rate Limiting With RateDrop</span></a></p></li>
+<li><p>Receive-side metadata handling: <a class="reference internal" href="receiving.html"><span class="doc">Receiving Frames</span></a></p></li>
+</ul>
+</section>
+<section id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Python:</p>
+<ul>
+<li><p><a class="reference internal" href="../api/python/rogue/interfaces/stream/filter.html"><span class="doc">Filter</span></a></p></li>
+</ul>
+</li>
+<li><p>C++:</p>
+<ul>
+<li><p><a class="reference internal" href="../api/cpp/interfaces/stream/filter.html"><span class="doc">Filter</span></a></p></li>
+</ul>
+</li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="fifo.html" class="btn btn-neutral float-left" title="FIFO Buffering" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="rate_drop.html" class="btn btn-neutral float-right" title="Rate Limiting With RateDrop" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

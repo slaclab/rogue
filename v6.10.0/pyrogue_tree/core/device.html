@@ -1,0 +1,495 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Device &mdash; Rogue v6.10.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=8b50afe1" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc21db2b"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/custom.js?v=7b5dfb0b"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Variable" href="variable.html" />
+    <link rel="prev" title="Root" href="root.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">PyRogue Tree</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Components And Concepts</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="root.html">Root</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Device</a></li>
+<li class="toctree-l3"><a class="reference internal" href="variable.html">Variable</a></li>
+<li class="toctree-l3"><a class="reference internal" href="command.html">Command</a></li>
+<li class="toctree-l3"><a class="reference internal" href="block.html">Blocks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="block_operations.html">Device Block Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="model.html">Model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fixed_point_models.html">Fixed-Point Models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="float_types_summary.html">Floating Point Types Summary</a></li>
+<li class="toctree-l3"><a class="reference internal" href="poll_queue.html">PollQueue</a></li>
+<li class="toctree-l3"><a class="reference internal" href="yaml_configuration.html">YAML Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="memory_variable_stream.html">Variable Update Stream</a></li>
+<li class="toctree-l3"><a class="reference internal" href="groups.html">Groups</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../builtin_devices/index.html">Built-in Devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../client_interfaces/index.html">Client Interfaces</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">API Reference</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">PyRogue Tree</a></li>
+          <li class="breadcrumb-item"><a href="index.html">PyRogue Tree Components And Concepts</a></li>
+      <li class="breadcrumb-item active">Device</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/pyrogue_tree/core/device.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="device">
+<span id="pyrogue-tree-node-device"></span><h1>Device<a class="headerlink" href="#device" title="Link to this heading"></a></h1>
+<p>A <a class="reference internal" href="../../api/python/pyrogue/device.html#pyrogue.Device" title="pyrogue.Device"><code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code></a> is the primary composition unit in a PyRogue
+tree. <code class="docutils literal notranslate"><span class="pre">Device</span></code> is where most hardware abstractions and subsystem boundaries
+are expressed: devices hold child Devices, Variables, and Commands, and they
+also participate in the memory-routing and block-traversal behavior that backs
+hardware access.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">Root</span></code> is the application owner, <code class="docutils literal notranslate"><span class="pre">Device</span></code> is the structural unit that
+turns the application into an organized tree.</p>
+<p>That relationship is literal in the implementation: <a class="reference internal" href="../../api/python/pyrogue/root.html#pyrogue.Root" title="pyrogue.Root"><code class="xref py py-class docutils literal notranslate"><span class="pre">Root</span></code></a>
+inherits from <a class="reference internal" href="../../api/python/pyrogue/device.html#pyrogue.Device" title="pyrogue.Device"><code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code></a>. This matters because the top of the
+tree uses the same composition and traversal model as every other Device, while
+adding the extra lifecycle and application-level behavior described on the
+<code class="docutils literal notranslate"><span class="pre">Root</span></code> page.</p>
+<section id="what-a-device-does">
+<h2>What A Device Does<a class="headerlink" href="#what-a-device-does" title="Link to this heading"></a></h2>
+<p>A <code class="docutils literal notranslate"><span class="pre">Device</span></code> usually serves two roles at once:</p>
+<ul class="simple">
+<li><p>It groups related Nodes into a coherent modular subtree.</p></li>
+<li><p>It provides the address and transaction context that hardware-backed
+Variables use for block operations.</p></li>
+</ul>
+<p>That means a Device is not just a folder-like container. It is also part of the
+runtime path for reads, writes, resets, and startup behavior.</p>
+<p>Typical contents of a Device:</p>
+<ul class="simple">
+<li><p>Child <code class="docutils literal notranslate"><span class="pre">Device</span></code> instances for hierarchical composition.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Variable</span></code> Nodes for telemetry and configuration.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Command</span></code> Nodes for actions and procedures.</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyDevice</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">&#39;Example device&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Mode&#39;</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span>
+            <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalCommand</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Reset&#39;</span><span class="p">,</span>
+            <span class="n">function</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_reset</span><span class="p">,</span>
+        <span class="p">))</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+</pre></div>
+</div>
+<p>The important design question at Device scope is usually, “What belongs in one
+subtree?” Good Device boundaries often follow hardware blocks, functional
+subsystems, or operator-facing units of control.</p>
+</section>
+<section id="key-device-properties">
+<h2>Key Device Properties<a class="headerlink" href="#key-device-properties" title="Link to this heading"></a></h2>
+<p>Common Device-level properties include:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">offset</span></code> for placing the Device within the parent memory address space.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">memBase</span></code> for the memory interface used by hardware-backed children.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">enable</span></code> for controlling whether the subtree participates in hardware
+access behavior.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">forceCheckEach</span></code> for forcing block reads, writes, and verifies to check
+each transaction immediately rather than deferring completion checks.</p></li>
+</ul>
+<p>The built-in <code class="docutils literal notranslate"><span class="pre">enable</span></code> Variable is especially important because it lets a tree
+keep its full structure visible while disabling hardware interaction for one
+subtree.</p>
+</section>
+<section id="composition-and-tree-structure">
+<h2>Composition And Tree Structure<a class="headerlink" href="#composition-and-tree-structure" title="Link to this heading"></a></h2>
+<p>Most PyRogue trees are built by defining Device subclasses and nesting them.
+That makes <code class="docutils literal notranslate"><span class="pre">Device.add(...)</span></code> one of the central APIs in day-to-day PyRogue
+work.</p>
+<p>In practice:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Root</span></code> defines the top of the hierarchy.</p></li>
+<li><p>Top-level Devices partition the design into major subsystems.</p></li>
+<li><p>Child Devices refine that structure until Variables and Commands sit at the
+right operational boundary.</p></li>
+</ul>
+<p>That pattern is why the readability of the tree matters. A good Device layout
+is not only easier to maintain in code; it also produces clearer paths, clearer
+PyDM navigation, and better remote-client ergonomics.</p>
+<p>For repeated register layouts, <a class="reference internal" href="../../api/python/pyrogue/device.html#pyrogue.Device.addRemoteVariables" title="pyrogue.Device.addRemoteVariables"><code class="xref py py-meth docutils literal notranslate"><span class="pre">addRemoteVariables()</span></code></a>
+can define an indexed set of <code class="docutils literal notranslate"><span class="pre">RemoteVariable</span></code> entries from one call. When
+used with <code class="docutils literal notranslate"><span class="pre">pack=True</span></code>, PyRogue keeps the indexed array container at the base
+name and also adds a packed <a class="reference internal" href="../../api/python/pyrogue/linkvariable.html#pyrogue.LinkVariable" title="pyrogue.LinkVariable"><code class="xref py py-class docutils literal notranslate"><span class="pre">LinkVariable</span></code></a> at
+<code class="docutils literal notranslate"><span class="pre">&lt;name&gt;_All</span></code>. That packed alias joins element display values with
+underscores in reverse index order, which is useful when several orthogonal
+fields also need to be exposed as one combined value.</p>
+</section>
+<section id="managed-interfaces-and-protocol-ownership">
+<h2>Managed Interfaces And Protocol Ownership<a class="headerlink" href="#managed-interfaces-and-protocol-ownership" title="Link to this heading"></a></h2>
+<p>Devices can also own helper objects that need coordinated runtime startup and
+shutdown. The standard way to register those objects is
+<a class="reference internal" href="../../api/python/pyrogue/device.html#pyrogue.Device.addInterface" title="pyrogue.Device.addInterface"><code class="xref py py-meth docutils literal notranslate"><span class="pre">addInterface()</span></code></a>, which also has the alias
+<a class="reference internal" href="../../api/python/pyrogue/device.html#pyrogue.Device.addProtocol" title="pyrogue.Device.addProtocol"><code class="xref py py-meth docutils literal notranslate"><span class="pre">addProtocol()</span></code></a>.</p>
+<p>Typical managed objects include:</p>
+<ul class="simple">
+<li><p>Rogue memory or stream interfaces.</p></li>
+<li><p>Protocol servers or clients.</p></li>
+<li><p>Custom helpers that implement <code class="docutils literal notranslate"><span class="pre">_start()</span></code> and/or <code class="docutils literal notranslate"><span class="pre">_stop()</span></code>.</p></li>
+</ul>
+<p>At runtime:</p>
+<ul class="simple">
+<li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">_start()</span></code> calls <code class="docutils literal notranslate"><span class="pre">_start()</span></code> on registered objects if
+the method exists.</p></li>
+<li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">_stop()</span></code> calls <code class="docutils literal notranslate"><span class="pre">_stop()</span></code> on registered objects if
+the method exists.</p></li>
+<li><p>Both methods then recurse into child Devices.</p></li>
+</ul>
+<p>This is why top-level interfaces are commonly registered on <code class="docutils literal notranslate"><span class="pre">Root</span></code>:
+<code class="docutils literal notranslate"><span class="pre">Root</span></code> is itself a <code class="docutils literal notranslate"><span class="pre">Device</span></code>, so it participates in the same managed
+interface lifecycle.</p>
+<p>There is not yet a separate page dedicated to this lifecycle. For the Root side
+of the same startup and shutdown behavior, see <a class="reference internal" href="root.html"><span class="doc">Root</span></a>.</p>
+</section>
+<section id="device-lifecycle-hooks">
+<h2>Device Lifecycle Hooks<a class="headerlink" href="#device-lifecycle-hooks" title="Link to this heading"></a></h2>
+<p>Most Device subclasses are created entirely in <code class="docutils literal notranslate"><span class="pre">__init__</span></code>, but there are a
+few important lifecycle hooks for behavior that depends on tree attachment or a
+running system context.</p>
+<section id="attachment-and-startup-order">
+<h3>Attachment And Startup Order<a class="headerlink" href="#attachment-and-startup-order" title="Link to this heading"></a></h3>
+<p>During <a class="reference internal" href="../../api/python/pyrogue/root.html#pyrogue.Root.start" title="pyrogue.Root.start"><code class="xref py py-meth docutils literal notranslate"><span class="pre">start()</span></code></a>, Device lifecycle progresses in this
+order:</p>
+<ol class="arabic simple">
+<li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">_rootAttached()</span></code></p></li>
+<li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">_finishInit()</span></code></p></li>
+<li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">_start()</span></code></p></li>
+</ol>
+<p>During <a class="reference internal" href="../../api/python/pyrogue/root.html#pyrogue.Root.stop" title="pyrogue.Root.stop"><code class="xref py py-meth docutils literal notranslate"><span class="pre">stop()</span></code></a>, Root calls
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">_stop()</span></code> recursively.</p>
+</section>
+<section id="what-each-hook-is-for">
+<h3>What Each Hook Is For<a class="headerlink" href="#what-each-hook-is-for" title="Link to this heading"></a></h3>
+<ul>
+<li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">_rootAttached()</span></code></p>
+<p>Use this for structure-dependent setup that requires valid <code class="docutils literal notranslate"><span class="pre">root</span></code>,
+<code class="docutils literal notranslate"><span class="pre">parent</span></code>, or path context. This is also when Device Block (memory) layout is built.
+During this step, the Device walks its Variables, groups compatible
+hardware-backed Variables into <code class="docutils literal notranslate"><span class="pre">Block</span></code> objects, attaches any pre-created
+custom Blocks, and records the Block structure that later bulk operations
+traverse.</p>
+</li>
+<li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">_finishInit()</span></code></p>
+<p>Use this sparingly for final initialization that depends on the attached
+hierarchy. Most Device subclasses do not need to override it.</p>
+</li>
+<li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">_start()</span></code></p>
+<p>Use this for runtime startup work such as enabling subscriptions, opening
+services, or starting Device-owned threads.</p>
+</li>
+<li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">_stop()</span></code></p>
+<p>Use this for runtime teardown and resource cleanup.</p>
+</li>
+</ul>
+<p>The practical rule is simple: use <code class="docutils literal notranslate"><span class="pre">__init__</span></code> for static tree construction,
+use <code class="docutils literal notranslate"><span class="pre">_rootAttached</span></code> for attach-time structure work, and use <code class="docutils literal notranslate"><span class="pre">_start</span></code> and
+<code class="docutils literal notranslate"><span class="pre">_stop</span></code> for live runtime behavior.</p>
+</section>
+<section id="example-runtime-work-in-start-and-stop">
+<span id="pyrogue-tree-node-device-managed-interfaces"></span><h3>Example: Runtime Work In <code class="docutils literal notranslate"><span class="pre">_start()</span></code> And <code class="docutils literal notranslate"><span class="pre">_stop()</span></code><a class="headerlink" href="#example-runtime-work-in-start-and-stop" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">threading</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">WorkerDevice</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_runWorker</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_workerThread</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_start</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_runWorker</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_workerThread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_worker</span><span class="p">,</span> <span class="n">daemon</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_workerThread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_runWorker</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_workerThread</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_workerThread</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_stop</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_worker</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">_runWorker</span><span class="p">:</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="foundational-transaction-operations">
+<h2>Foundational Transaction Operations<a class="headerlink" href="#foundational-transaction-operations" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">Device</span></code> is where the PyRogue tree’s foundational hardware transaction
+operations come together. At this level, four ideas matter:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">write</span></code> sends staged values from the tree toward hardware.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">verify</span></code> checks that hardware matches the expected value after a write.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">read</span></code> fetches current hardware state back into the tree.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">check</span></code> waits for initiated transactions to complete and surfaces errors.</p></li>
+</ul>
+<p>Those operations are foundational because they are reused throughout the tree:
+bulk configuration, per-Variable access, YAML apply paths, and many custom
+hardware procedures all build on the same model.</p>
+<p>One PyRogue design choice is especially important here: transaction initiation
+is intentionally separated from completion. <code class="docutils literal notranslate"><span class="pre">write</span></code>, <code class="docutils literal notranslate"><span class="pre">verify</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">read</span></code> start work, while <code class="docutils literal notranslate"><span class="pre">check</span></code> is the step that waits for the
+responses. That separation lets a <code class="docutils literal notranslate"><span class="pre">Device</span></code> issue many operations first and
+then retire them as a group.</p>
+<p>Posted writes also exist in PyRogue, but they are usually exposed through
+per-Variable <code class="docutils literal notranslate"><span class="pre">post()</span></code> methods and posted <code class="docutils literal notranslate"><span class="pre">RemoteCommand</span></code> helpers rather
+than as a foundational full-Device traversal API.</p>
+</section>
+<section id="device-level-block-apis">
+<h2>Device-Level Block APIs<a class="headerlink" href="#device-level-block-apis" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">Device</span></code> is where those operations become tree traversal methods. Device-level
+block APIs traverse the tree and issue transactions for the <code class="docutils literal notranslate"><span class="pre">Block</span></code> objects
+attached to that Device and, optionally, its children.</p>
+<p>The main methods are:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../../api/python/pyrogue/device.html#pyrogue.Device.writeBlocks" title="pyrogue.Device.writeBlocks"><code class="xref py py-meth docutils literal notranslate"><span class="pre">writeBlocks()</span></code></a></p></li>
+<li><p><a class="reference internal" href="../../api/python/pyrogue/device.html#pyrogue.Device.verifyBlocks" title="pyrogue.Device.verifyBlocks"><code class="xref py py-meth docutils literal notranslate"><span class="pre">verifyBlocks()</span></code></a></p></li>
+<li><p><a class="reference internal" href="../../api/python/pyrogue/device.html#pyrogue.Device.readBlocks" title="pyrogue.Device.readBlocks"><code class="xref py py-meth docutils literal notranslate"><span class="pre">readBlocks()</span></code></a></p></li>
+<li><p><a class="reference internal" href="../../api/python/pyrogue/device.html#pyrogue.Device.checkBlocks" title="pyrogue.Device.checkBlocks"><code class="xref py py-meth docutils literal notranslate"><span class="pre">checkBlocks()</span></code></a></p></li>
+</ul>
+<p>At a high level:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">writeBlocks</span></code> initiates write transactions.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">verifyBlocks</span></code> initiates verify transactions.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">readBlocks</span></code> initiates read transactions.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">checkBlocks</span></code> waits for previously initiated transactions to complete.</p></li>
+</ul>
+<p>All four methods can operate on the full Device subtree or on the Block backing
+one specific Variable, and they are the normal override points when hardware
+requires custom sequencing.</p>
+<p>If a Device should always use stricter transaction-by-transaction completion
+checking, set <code class="docutils literal notranslate"><span class="pre">self.forceCheckEach</span> <span class="pre">=</span> <span class="pre">True</span></code> in the subclass. That causes the
+Device-level block methods to behave as though <code class="docutils literal notranslate"><span class="pre">checkEach=True</span></code> had been
+requested on each call.</p>
+<p>For the detailed traversal model, ordering rules, and single-Variable versus
+full-subtree behavior, see <a class="reference internal" href="block_operations.html"><span class="doc">Device Block Operations</span></a>.</p>
+<section id="where-these-methods-fit">
+<h3>Where These Methods Fit<a class="headerlink" href="#where-these-methods-fit" title="Link to this heading"></a></h3>
+<p>These methods are often used indirectly rather than called manually.</p>
+<p>Common examples:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../../api/python/pyrogue/remotevariable.html#pyrogue.RemoteVariable.set" title="pyrogue.RemoteVariable.set"><code class="xref py py-meth docutils literal notranslate"><span class="pre">set()</span></code></a> uses Device block-write paths for
+hardware-backed writes.</p></li>
+<li><p><a class="reference internal" href="../../api/python/pyrogue/remotevariable.html#pyrogue.RemoteVariable.get" title="pyrogue.RemoteVariable.get"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get()</span></code></a> uses Device block-read paths for
+hardware-backed reads.</p></li>
+<li><p>Root-level YAML and bulk commands call recursive Device block operations
+across the tree.</p></li>
+</ul>
+<p>That is why Device block methods are the normal extension point when hardware
+requires custom sequencing.</p>
+</section>
+<section id="custom-sequencing">
+<h3>Custom Sequencing<a class="headerlink" href="#custom-sequencing" title="Link to this heading"></a></h3>
+<p>Override the block APIs when hardware access requires more than the default
+tree traversal. Common reasons include:</p>
+<ul class="simple">
+<li><p>Required pre- or post-register writes.</p></li>
+<li><p>Paged or banked register windows.</p></li>
+<li><p>Commit or strobe registers that must be pulsed around updates.</p></li>
+<li><p>Custom ordering across child Devices.</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">SequencedDevice</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">writeBlocks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">checkEach</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">index</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="c1"># Pre-transaction behavior.</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">writeBlocks</span><span class="p">(</span>
+            <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">,</span>
+            <span class="n">recurse</span><span class="o">=</span><span class="n">recurse</span><span class="p">,</span>
+            <span class="n">variable</span><span class="o">=</span><span class="n">variable</span><span class="p">,</span>
+            <span class="n">checkEach</span><span class="o">=</span><span class="n">checkEach</span><span class="p">,</span>
+            <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="c1"># Post-transaction behavior.</span>
+</pre></div>
+</div>
+<p>For the lower-level transaction and grouping model behind those APIs, see
+<a class="reference internal" href="block.html"><span class="doc">Blocks</span></a> and
+<a class="reference internal" href="block_operations.html"><span class="doc">Device Block Operations</span></a>.</p>
+</section>
+</section>
+<section id="relationship-to-the-memory-hub-model">
+<h2>Relationship To The Memory Hub Model<a class="headerlink" href="#relationship-to-the-memory-hub-model" title="Link to this heading"></a></h2>
+<p>Under the hood, <code class="docutils literal notranslate"><span class="pre">pyrogue.Device</span></code> participates in the Rogue memory hub stack.
+Conceptually, a Device behaves like a Hub:</p>
+<ul class="simple">
+<li><p>Block transactions are addressed relative to the Device base.</p></li>
+<li><p>Child Devices can inherit the parent’s routing context.</p></li>
+<li><p>A child Device can also be attached to a different memory path when needed.</p></li>
+</ul>
+<p>That is the reason Device composition and transaction behavior are so closely
+linked in PyRogue. Tree structure and hardware-access structure are related,
+even though they are not always identical.</p>
+<p>For deeper memory-stack behavior, see:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="block.html"><span class="doc">Blocks</span></a></p></li>
+<li><p><a class="reference internal" href="../../memory_interface/index.html"><span class="doc">Memory Interface</span></a></p></li>
+</ul>
+</section>
+<section id="operational-hooks-and-decorators">
+<h2>Operational Hooks And Decorators<a class="headerlink" href="#operational-hooks-and-decorators" title="Link to this heading"></a></h2>
+<p>In addition to startup and block sequencing hooks, Device subclasses commonly
+override operational hooks such as:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../../api/python/pyrogue/device.html#pyrogue.Device.initialize" title="pyrogue.Device.initialize"><code class="xref py py-meth docutils literal notranslate"><span class="pre">initialize()</span></code></a></p></li>
+<li><p><a class="reference internal" href="../../api/python/pyrogue/device.html#pyrogue.Device.hardReset" title="pyrogue.Device.hardReset"><code class="xref py py-meth docutils literal notranslate"><span class="pre">hardReset()</span></code></a></p></li>
+<li><p><a class="reference internal" href="../../api/python/pyrogue/device.html#pyrogue.Device.countReset" title="pyrogue.Device.countReset"><code class="xref py py-meth docutils literal notranslate"><span class="pre">countReset()</span></code></a></p></li>
+<li><p><a class="reference internal" href="../../api/python/pyrogue/device.html#pyrogue.Device.enableChanged" title="pyrogue.Device.enableChanged"><code class="xref py py-meth docutils literal notranslate"><span class="pre">enableChanged()</span></code></a></p></li>
+</ul>
+<p>These support system-level workflows invoked from Root commands or from custom
+application logic.</p>
+<p>Device also supports decorators that create <code class="xref py py-class docutils literal notranslate"><span class="pre">LocalCommand</span></code>
+Nodes from local functions.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@pyrogue</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;ReadConfig&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Load config file&#39;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_readConfig</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">loadYaml</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">arg</span><span class="p">,</span> <span class="n">writeEach</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">modes</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span> <span class="s1">&#39;WO&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</section>
+<section id="what-to-explore-next">
+<h2>What To Explore Next<a class="headerlink" href="#what-to-explore-next" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Variable behavior and type choices: <a class="reference internal" href="variable.html"><span class="doc">Variable</span></a></p></li>
+<li><p>Command behavior and invocation: <a class="reference internal" href="command.html"><span class="doc">Command</span></a></p></li>
+<li><p>Block transaction behavior: <a class="reference internal" href="block.html"><span class="doc">Blocks</span></a></p></li>
+<li><p>Built-in Device catalog: <a class="reference internal" href="../builtin_devices/index.html"><span class="doc">Built-in Devices</span></a></p></li>
+</ul>
+</section>
+<section id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<p>See <a class="reference internal" href="../../api/python/pyrogue/device.html"><span class="doc">Device</span></a> for generated API details.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="root.html" class="btn btn-neutral float-left" title="Root" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="variable.html" class="btn btn-neutral float-right" title="Variable" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,266 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DataReceiver Device Class &mdash; Rogue v6.10.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=8b50afe1" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=dc21db2b"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/custom.js?v=7b5dfb0b"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Process Device Class" href="process.html" />
+    <link rel="prev" title="DataWriter Device Class" href="data_writer.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">PyRogue Tree</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../core/index.html">Components And Concepts</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Built-in Devices</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="run_control.html">RunControl Device Class</a></li>
+<li class="toctree-l3"><a class="reference internal" href="data_writer.html">DataWriter Device Class</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">DataReceiver Device Class</a></li>
+<li class="toctree-l3"><a class="reference internal" href="process.html">Process Device Class</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../client_interfaces/index.html">Client Interfaces</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">API Reference</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">PyRogue Tree</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Built-in Devices</a></li>
+      <li class="breadcrumb-item active">DataReceiver Device Class</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/pyrogue_tree/builtin_devices/data_receiver.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="datareceiver-device-class">
+<span id="pyrogue-tree-node-device-datareceiver"></span><h1>DataReceiver Device Class<a class="headerlink" href="#datareceiver-device-class" title="Link to this heading"></a></h1>
+<p><a class="reference internal" href="../../api/python/pyrogue/datareceiver.html#pyrogue.DataReceiver" title="pyrogue.DataReceiver"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataReceiver</span></code></a> is a device/stream-slave hybrid used to
+accept incoming frames and expose them through PyRogue variables. It combines
+a normal tree-facing <code class="docutils literal notranslate"><span class="pre">Device</span></code> with a Rogue stream <code class="docutils literal notranslate"><span class="pre">Slave</span></code> endpoint. In the
+current implementation it:</p>
+<ul class="simple">
+<li><p>Counts frames, bytes, and frame errors</p></li>
+<li><p>Stores latest payload in <code class="docutils literal notranslate"><span class="pre">Data</span></code></p></li>
+<li><p>Toggles <code class="docutils literal notranslate"><span class="pre">Updated</span></code> when new data arrives</p></li>
+<li><p>Supports <code class="docutils literal notranslate"><span class="pre">RxEnable</span></code> gating</p></li>
+</ul>
+<p>That makes it a useful bridge when stream traffic should update Variables,
+status fields, or application-specific decoded results in the tree.</p>
+<section id="when-to-use-datareceiver">
+<h2>When To Use DataReceiver<a class="headerlink" href="#when-to-use-datareceiver" title="Link to this heading"></a></h2>
+<p>Use <code class="docutils literal notranslate"><span class="pre">DataReceiver</span></code> when incoming stream frames should be decoded or reflected
+into PyRogue Variables.</p>
+<p>Common fits include:</p>
+<ul class="simple">
+<li><p>Debug or monitoring receivers that expose the latest payload</p></li>
+<li><p>Protocol-specific decoder devices that unpack frame contents into multiple
+Variables</p></li>
+<li><p>Small live-analysis nodes that update status or derived values as frames
+arrive</p></li>
+</ul>
+</section>
+<section id="what-you-usually-set">
+<h2>What You Usually Set<a class="headerlink" href="#what-you-usually-set" title="Link to this heading"></a></h2>
+<p>Most <code class="docutils literal notranslate"><span class="pre">DataReceiver</span></code> definitions revolve around:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">typeStr</span></code> for the exposed <code class="docutils literal notranslate"><span class="pre">Data</span></code> Variable type</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hideData</span></code> when the raw payload Variable should stay hidden</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">value</span></code> for the initial payload container</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">enableOnStart</span></code> for whether <code class="docutils literal notranslate"><span class="pre">RxEnable</span></code> should come up enabled at start</p></li>
+</ul>
+<p>The built-in <code class="docutils literal notranslate"><span class="pre">Data</span></code> <code class="docutils literal notranslate"><span class="pre">LocalVariable</span></code> is created with <code class="docutils literal notranslate"><span class="pre">typeCheck=False</span></code> so
+subclasses can publish decoded objects without triggering <code class="docutils literal notranslate"><span class="pre">LocalVariable</span></code>
+type errors.</p>
+<p>In many practical subclasses, the main customization is not the constructor
+arguments but the <code class="docutils literal notranslate"><span class="pre">process(frame)</span></code> override.</p>
+</section>
+<section id="subclassing-and-override-points">
+<h2>Subclassing And Override Points<a class="headerlink" href="#subclassing-and-override-points" title="Link to this heading"></a></h2>
+<p>In practice, subclassing is the normal way to use <code class="docutils literal notranslate"><span class="pre">DataReceiver</span></code>.</p>
+<p>The default <code class="docutils literal notranslate"><span class="pre">process(frame)</span></code> implementation copies the payload into the
+<code class="docutils literal notranslate"><span class="pre">Data</span></code> Variable and sets <code class="docutils literal notranslate"><span class="pre">Updated=True</span></code>. Real applications often override
+that method to parse the payload into more meaningful Variables.</p>
+<p>Important behaviors to keep in mind:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">_acceptFrame()</span></code> ignores frames when the device is not running or when
+<code class="docutils literal notranslate"><span class="pre">RxEnable</span></code> is false.</p></li>
+<li><p>Frame, byte, and error counters are maintained before <code class="docutils literal notranslate"><span class="pre">process(frame)</span></code> is
+called.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">process(frame)</span></code> runs while the frame lock is held.</p></li>
+<li><p>The default class also supports <code class="docutils literal notranslate"><span class="pre">source</span> <span class="pre">&gt;&gt;</span> <span class="pre">receiver</span></code> and
+<code class="docutils literal notranslate"><span class="pre">receiver</span> <span class="pre">&lt;&lt;</span> <span class="pre">source</span></code> stream connection syntax.</p></li>
+</ul>
+</section>
+<section id="concrete-example">
+<h2>Concrete Example<a class="headerlink" href="#concrete-example" title="Link to this heading"></a></h2>
+<p>One common pattern is to subclass <code class="docutils literal notranslate"><span class="pre">DataReceiver</span></code>, add decoded result
+Variables, and unpack specific fields from the incoming payload.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">HeaderPayloadRx</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">DataReceiver</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">hideData</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Header&#39;</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span>
+            <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Decoded 32-bit header word&#39;</span><span class="p">,</span>
+        <span class="p">))</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
+        <span class="c1"># DataReceiver calls this with the frame lock already held.</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">getNumpy</span><span class="p">()</span>
+
+        <span class="c1"># Example protocol: first 4 bytes are a header, rest is payload.</span>
+        <span class="n">header</span> <span class="o">=</span> <span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="nb">bytearray</span><span class="p">(</span><span class="n">data</span><span class="p">[:</span><span class="mi">4</span><span class="p">]),</span> <span class="n">byteorder</span><span class="o">=</span><span class="s1">&#39;little&#39;</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">payload</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">4</span><span class="p">:],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+
+        <span class="c1"># Publish both the decoded header and the latest payload view.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Header</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">header</span><span class="p">,</span> <span class="n">write</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">payload</span><span class="p">,</span> <span class="n">write</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Updated</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">write</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This matches the way many real <code class="docutils literal notranslate"><span class="pre">DataReceiver</span></code> subclasses are used: the raw
+frame arrives on the stream side, but the tree exposes a more structured view
+for GUIs, scripts, or live monitoring tools.</p>
+<p>The base class creates these built-in Variables:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">RxEnable</span></code> for gating frame acceptance</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">FrameCount</span></code>, <code class="docutils literal notranslate"><span class="pre">ErrorCount</span></code>, and <code class="docutils literal notranslate"><span class="pre">ByteCount</span></code> for stream statistics</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Updated</span></code> as a tree-visible “new data arrived” flag</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Data</span></code> as the latest payload container</p></li>
+</ul>
+<p>The <code class="docutils literal notranslate"><span class="pre">Data</span></code> Variable is excluded from <code class="docutils literal notranslate"><span class="pre">NoState</span></code>, <code class="docutils literal notranslate"><span class="pre">NoStream</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">NoConfig</span></code> by default, which is usually what you want for rapidly changing
+payload data that should not behave like configuration or normal state export.</p>
+</section>
+<section id="related-topics">
+<h2>Related Topics<a class="headerlink" href="#related-topics" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Stream replay source: <a class="reference internal" href="../../built_in_modules/utilities/fileio/reading.html"><span class="doc">Reading Frames From A File</span></a></p></li>
+<li><p>Stream capture to file: <a class="reference internal" href="../../built_in_modules/utilities/fileio/writing.html"><span class="doc">Writing Frames To A File</span></a></p></li>
+<li><p>Stream receiving model: <a class="reference internal" href="../../stream_interface/receiving.html"><span class="doc">Receiving Frames</span></a></p></li>
+<li><p>Built-in module catalog beyond top-level <code class="docutils literal notranslate"><span class="pre">pyrogue</span></code> Devices: <a class="reference internal" href="../../built_in_modules/index.html"><span class="doc">Built-in Modules</span></a></p></li>
+</ul>
+</section>
+<section id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<p>See <a class="reference internal" href="../../api/python/pyrogue/datareceiver.html"><span class="doc">DataReceiver</span></a> for generated API details.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="data_writer.html" class="btn btn-neutral float-left" title="DataWriter Device Class" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="process.html" class="btn btn-neutral float-right" title="Process Device Class" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,391 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Epics PV Server (V7 Protocol) &mdash; Rogue v6.10.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=8b50afe1" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=dc21db2b"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../_static/custom.js?v=7b5dfb0b"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Epics PV Holder (V7 Protocol)" href="epicspvholder.html" />
+    <link rel="prev" title="EPICS V7 Access" href="index.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Built-in Modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../interfaces/index.html">Interfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../simulation/index.html">Simulation Utilities</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">Protocols</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../udp/index.html">UDP Protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../rssi/index.html">RSSI Protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../packetizer/index.html">Packetizer Protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../network.html">Network Wrapper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../batcher/index.html">Batcher Protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../epicsV4/index.html">EPICS V4 Access</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">EPICS V7 Access</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Epics PV Server (V7 Protocol)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="epicspvholder.html">Epics PV Holder (V7 Protocol)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../srp/index.html">SRP Protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../xilinx/index.html">Xilinx Protocols</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../uart.html">UART Memory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gpib.html">GPIB Control</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../hardware/index.html">Hardware</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utilities/index.html">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">API Reference</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Built-in Modules</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Protocols</a></li>
+          <li class="breadcrumb-item"><a href="index.html">EPICS V7 Access</a></li>
+      <li class="breadcrumb-item active">Epics PV Server (V7 Protocol)</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/built_in_modules/protocols/epicsV7/epicspvserver.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="epics-pv-server-v7-protocol">
+<span id="protocols-epicsv7-epicspvserver"></span><span id="pyrogue-protocol-epicsv7-epicspvserver"></span><h1>Epics PV Server (V7 Protocol)<a class="headerlink" href="#epics-pv-server-v7-protocol" title="Link to this heading"></a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">EpicsPvServer</span></code> is the EPICS V7 server-side bridge for exposing PyRogue tree
+variables as EPICS records using softIocPVA (pythonSoftIOC).</p>
+<section id="what-it-does">
+<h2>What It Does<a class="headerlink" href="#what-it-does" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">EpicsPvServer</span></code> builds and runs a softIocPVA instance in a background thread,
+creating real EPICS records for each served PyRogue Variable or Command.</p>
+</section>
+<section id="server-behavior">
+<h2>Server Behavior<a class="headerlink" href="#server-behavior" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">EpicsPvServer</span></code>:</p>
+<ul class="simple">
+<li><p>Requires a running <code class="docutils literal notranslate"><span class="pre">Root</span></code> before startup.</p></li>
+<li><p>Builds PV mappings either automatically (<code class="docutils literal notranslate"><span class="pre">base:path</span></code>) or from <code class="docutils literal notranslate"><span class="pre">pvMap</span></code>.</p></li>
+<li><p>Supports include and exclude group filtering (default excludes <code class="docutils literal notranslate"><span class="pre">NoServe</span></code>).</p></li>
+<li><p>Creates one <code class="docutils literal notranslate"><span class="pre">EpicsPvHolder</span></code> per served variable and exposes <code class="docutils literal notranslate"><span class="pre">list()</span></code> and
+<code class="docutils literal notranslate"><span class="pre">dump()</span></code> helpers for mapping inspection.</p></li>
+<li><p>Starts softIocPVA once via <code class="docutils literal notranslate"><span class="pre">iocInit()</span></code> — the IOC is a process-wide
+singleton; multiple <code class="docutils literal notranslate"><span class="pre">EpicsPvServer</span></code> instances share the same running IOC.</p></li>
+<li><p>Serves both CA and PVA protocols; any standard EPICS client can access
+the published records.</p></li>
+</ul>
+</section>
+<section id="constructor-and-mapping-overview">
+<h2>Constructor and Mapping Overview<a class="headerlink" href="#constructor-and-mapping-overview" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">EpicsPvServer(base=...,</span> <span class="pre">root=...,</span> <span class="pre">incGroups=...,</span> <span class="pre">excGroups=...,</span> <span class="pre">pvMap=...)</span></code>
+uses two mapping modes:</p>
+<ul class="simple">
+<li><p>Automatic mode (<code class="docutils literal notranslate"><span class="pre">pvMap=None</span></code>): serves variables that pass group filters
+using <code class="docutils literal notranslate"><span class="pre">&lt;base&gt;:&lt;path.with.colons&gt;</span></code> naming.</p></li>
+<li><p>Explicit mode (<code class="docutils literal notranslate"><span class="pre">pvMap</span></code> dict): serves only mapped variable paths with
+user-defined PV names.</p></li>
+</ul>
+<p>Default exclusion is <code class="docutils literal notranslate"><span class="pre">['NoServe']</span></code> when <code class="docutils literal notranslate"><span class="pre">excGroups</span></code> is not provided.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Passing <code class="docutils literal notranslate"><span class="pre">root=self</span></code> to the constructor automatically registers the server
+with the Root lifecycle via <code class="docutils literal notranslate"><span class="pre">addProtocol</span></code>. Do <strong>not</strong> call
+<code class="docutils literal notranslate"><span class="pre">self.addProtocol(self.epics)</span></code> afterwards — doing so registers the server
+twice and raises <code class="docutils literal notranslate"><span class="pre">Exception:</span> <span class="pre">epicsV7:</span> <span class="pre">Duplicate</span> <span class="pre">_start()</span> <span class="pre">call</span></code> at startup.</p>
+<p>This differs from the EPICS V4 integration, where <code class="docutils literal notranslate"><span class="pre">addProtocol</span></code> must be
+called explicitly. If you are migrating from V4, remove the
+<code class="docutils literal notranslate"><span class="pre">self.addProtocol(...)</span></code> call.</p>
+</div>
+</section>
+<section id="setup-example">
+<h2>Setup Example<a class="headerlink" href="#setup-example" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue.protocols.epicsV7</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pep7</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyRoot</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;MyRoot&#39;</span><span class="p">)</span>
+        <span class="c1"># Add variables/devices here as usual.</span>
+
+        <span class="c1"># Passing root=self auto-registers with the Root lifecycle.</span>
+        <span class="c1"># Do NOT also call self.addProtocol(self.epics).</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">epics</span> <span class="o">=</span> <span class="n">pep7</span><span class="o">.</span><span class="n">EpicsPvServer</span><span class="p">(</span>
+            <span class="n">base</span><span class="o">=</span><span class="s1">&#39;MyIoc&#39;</span><span class="p">,</span>
+            <span class="n">root</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
+            <span class="n">incGroups</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">excGroups</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;NoServe&#39;</span><span class="p">],</span>
+            <span class="n">pvMap</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="p">)</span>
+
+<span class="k">with</span> <span class="n">MyRoot</span><span class="p">()</span> <span class="k">as</span> <span class="n">root</span><span class="p">:</span>
+    <span class="c1"># Inspect active mapping.</span>
+    <span class="n">root</span><span class="o">.</span><span class="n">epics</span><span class="o">.</span><span class="n">dump</span><span class="p">()</span>
+    <span class="c1"># Optionally write mapping to file for IOC/client integration.</span>
+    <span class="n">root</span><span class="o">.</span><span class="n">epics</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="s1">&#39;epics_map.txt&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="typical-usage-pattern">
+<h2>Typical Usage Pattern<a class="headerlink" href="#typical-usage-pattern" title="Link to this heading"></a></h2>
+<p>The common setup follows this pattern:</p>
+<ol class="arabic simple">
+<li><p>Create and start a <code class="docutils literal notranslate"><span class="pre">Root</span></code> with Local and Remote variables.</p></li>
+<li><p>Construct <code class="docutils literal notranslate"><span class="pre">EpicsPvServer(base=...,</span> <span class="pre">root=...,</span> <span class="pre">pvMap=...)</span></code> — this
+automatically registers the server with the Root lifecycle.</p></li>
+<li><p>Do <strong>not</strong> call <code class="docutils literal notranslate"><span class="pre">root.addProtocol(...)</span></code> — it is handled internally.</p></li>
+<li><p>Use any EPICS client (CA or PVA) to put and get values.</p></li>
+<li><p>Invoke PyRogue Commands using a plain put to the command’s PV.</p></li>
+</ol>
+</section>
+<section id="pv-name-length-handling">
+<h2>PV Name Length Handling<a class="headerlink" href="#pv-name-length-handling" title="Link to this heading"></a></h2>
+<p>EPICS CA enforces a 60-character limit on PV names (<code class="docutils literal notranslate"><span class="pre">PVNAME_STRINGSZ</span> <span class="pre">=</span> <span class="pre">61</span></code>
+in EPICS Base). When the full name <code class="docutils literal notranslate"><span class="pre">base:path</span></code> would exceed 60 characters,
+<code class="docutils literal notranslate"><span class="pre">EpicsPvServer</span></code> automatically shortens the softioc record name to a
+deterministic hash of the form <code class="docutils literal notranslate"><span class="pre">tail_XXXXXXXXXX</span></code> (10 lowercase hex digits
+derived from SHA-1 of the full name). CA clients use this hashed short name;
+PVA clients can use the full human-readable name via a PVA alias — they never
+need to know about the hash.</p>
+<ul class="simple">
+<li><p>Names at or below 60 characters are published unchanged. Existing deployments
+are completely unaffected.</p></li>
+<li><p>Two distinct variable paths that hash to the same short name cause
+<code class="docutils literal notranslate"><span class="pre">_start()</span></code> to raise <code class="docutils literal notranslate"><span class="pre">RuntimeError</span></code> immediately before any record is
+created.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">list()</span></code> always returns full long names regardless of whether a PV was
+hashed.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dump()</span></code> annotates each hashed PV with its CA short name in the form
+<code class="docutils literal notranslate"><span class="pre">(CA:</span> <span class="pre">base:tail_XXXXXXXXXX)</span></code>.</p></li>
+</ul>
+<p>Example output from <code class="docutils literal notranslate"><span class="pre">dump()</span></code> for a hashed PV:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">MyIoc</span><span class="p">:</span><span class="n">LocalRoot</span><span class="p">:</span><span class="n">MyDevice</span><span class="p">:</span><span class="n">ThisIsAVeryLongVariableNameThatExceedsSixtyCharacterLimit</span>  <span class="p">(</span><span class="n">CA</span><span class="p">:</span> <span class="n">MyIoc</span><span class="p">:</span><span class="n">tail_3f9a1b2c4d</span><span class="p">)</span>
+</pre></div>
+</div>
+<section id="pva-transparency-for-long-names">
+<h3>PVA Transparency for Long Names<a class="headerlink" href="#pva-transparency-for-long-names" title="Link to this heading"></a></h3>
+<p>For every PV whose CA record name was hashed, <code class="docutils literal notranslate"><span class="pre">EpicsPvServer</span></code> additionally
+registers the full long name as a PVA-only channel backed by a
+<code class="docutils literal notranslate"><span class="pre">p4p.server.SharedPV</span></code>. This means:</p>
+<ul class="simple">
+<li><p>PVA clients connect using the full, human-readable name.</p></li>
+<li><p>Reads on the long PVA name return the current PyRogue variable value.</p></li>
+<li><p>Writes on the long PVA name update the same PyRogue variable as a CA write
+via the short name.</p></li>
+<li><p>A CA write via the short name is immediately visible to PVA clients on the
+long name, and vice versa — with no feedback loops.</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">p4p.client.thread</span><span class="w"> </span><span class="kn">import</span> <span class="n">Context</span>
+
+<span class="n">ctxt</span> <span class="o">=</span> <span class="n">Context</span><span class="p">(</span><span class="s1">&#39;pva&#39;</span><span class="p">)</span>
+
+<span class="c1"># PVA clients always use the full name — no knowledge of the hash required.</span>
+<span class="n">full_name</span> <span class="o">=</span> <span class="s1">&#39;MyIoc:LocalRoot:MyDevice:ThisIsAVeryLongVariableNameThatExceedsSixtyCharacterLimit&#39;</span>
+<span class="n">value</span> <span class="o">=</span> <span class="n">ctxt</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">full_name</span><span class="p">)</span>
+<span class="n">ctxt</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">full_name</span><span class="p">,</span> <span class="mi">42</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="live-hardware-values">
+<h2>Live Hardware Values<a class="headerlink" href="#live-hardware-values" title="Link to this heading"></a></h2>
+<p>softioc does not expose a Python callback that fires when a CA or PVA client
+issues a <code class="docutils literal notranslate"><span class="pre">caget</span></code> / <code class="docutils literal notranslate"><span class="pre">ctxt.get()</span></code>. Both EPICS V4 and V7 integrations serve
+the most recently pushed value from the EPICS record buffer. To ensure clients
+receive up-to-date hardware values, the Rogue server process must execute
+hardware reads itself — either via PyRogue auto-polling (<code class="docutils literal notranslate"><span class="pre">pollInterval</span></code> on
+variables or <code class="docutils literal notranslate"><span class="pre">pollEn=True</span></code> on the Root) or by calling device-level read
+commands explicitly.</p>
+</section>
+<section id="commands-via-caput">
+<h2>Commands via caput<a class="headerlink" href="#commands-via-caput" title="Link to this heading"></a></h2>
+<p>PyRogue Commands (<code class="docutils literal notranslate"><span class="pre">LocalCommand</span></code> and <code class="docutils literal notranslate"><span class="pre">RemoteCommand</span></code>) are exposed as
+longOut EPICS records. Clients invoke them with a plain put:</p>
+<section id="invoking-a-no-arg-command">
+<h3>Invoking a No-Arg Command<a class="headerlink" href="#invoking-a-no-arg-command" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">p4p.client.thread</span><span class="w"> </span><span class="kn">import</span> <span class="n">Context</span>
+
+<span class="n">ctxt</span> <span class="o">=</span> <span class="n">Context</span><span class="p">(</span><span class="s1">&#39;pva&#39;</span><span class="p">)</span>
+
+<span class="n">pv_name</span> <span class="o">=</span> <span class="s1">&#39;MyIoc:MyRoot:MyDevice:ResetCounter&#39;</span>
+<span class="n">ctxt</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">pv_name</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>   <span class="c1"># value=0 triggers no-arg command call</span>
+</pre></div>
+</div>
+</section>
+<section id="invoking-a-command-with-an-argument">
+<h3>Invoking a Command With an Argument<a class="headerlink" href="#invoking-a-command-with-an-argument" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">p4p.client.thread</span><span class="w"> </span><span class="kn">import</span> <span class="n">Context</span>
+
+<span class="n">ctxt</span> <span class="o">=</span> <span class="n">Context</span><span class="p">(</span><span class="s1">&#39;pva&#39;</span><span class="p">)</span>
+
+<span class="n">pv_name</span> <span class="o">=</span> <span class="s1">&#39;MyIoc:MyRoot:MyDevice:SetThreshold&#39;</span>
+<span class="n">ctxt</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">pv_name</span><span class="p">,</span> <span class="mi">42</span><span class="p">)</span>   <span class="c1"># value is forwarded to command as arg</span>
+</pre></div>
+</div>
+<p>The put value is forwarded directly to the PyRogue command as its argument.
+This is different from the V4 integration, which uses <code class="docutils literal notranslate"><span class="pre">ctxt.rpc()</span></code> with
+an NTURI wrapper.</p>
+</section>
+</section>
+<section id="migration-from-epics-v4">
+<h2>Migration from EPICS V4<a class="headerlink" href="#migration-from-epics-v4" title="Link to this heading"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">EpicsPvServer</span></code> constructor signature is identical in V4 and V7.
+The key differences when migrating:</p>
+<ol class="arabic simple">
+<li><p>Replace <code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">pyrogue.protocols.epicsV4</span> <span class="pre">as</span> <span class="pre">pep</span></code> with
+<code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">pyrogue.protocols.epicsV7</span> <span class="pre">as</span> <span class="pre">pep7</span></code> and update the class reference.</p></li>
+<li><p>Replace <code class="docutils literal notranslate"><span class="pre">ctxt.rpc()</span></code> command invocations with <code class="docutils literal notranslate"><span class="pre">ctxt.put(pv_name,</span> <span class="pre">value)</span></code>.</p></li>
+<li><p>Install <code class="docutils literal notranslate"><span class="pre">softioc</span></code> (<code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">softioc</span></code>) instead of or alongside <code class="docutils literal notranslate"><span class="pre">p4p</span></code>.
+If you use <code class="docutils literal notranslate"><span class="pre">p4p</span></code> as a PVA client (for <code class="docutils literal notranslate"><span class="pre">ctxt.get()</span></code> / <code class="docutils literal notranslate"><span class="pre">ctxt.put()</span></code>),
+keep it — only the server-side dependency changes.</p></li>
+<li><p><strong>Remove any</strong> <code class="docutils literal notranslate"><span class="pre">self.addProtocol(self.epics)</span></code> <strong>call.</strong> In V4 this was
+required; in V7 the constructor calls <code class="docutils literal notranslate"><span class="pre">addProtocol</span></code> automatically when
+<code class="docutils literal notranslate"><span class="pre">root=self</span></code> is passed. Keeping the explicit call registers the server
+twice and raises <code class="docutils literal notranslate"><span class="pre">Exception:</span> <span class="pre">epicsV7:</span> <span class="pre">Duplicate</span> <span class="pre">_start()</span> <span class="pre">call</span></code> at startup.</p></li>
+</ol>
+</section>
+<section id="when-to-use-it">
+<h2>When To Use It<a class="headerlink" href="#when-to-use-it" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Your deployment requires CA compatibility alongside PVA.</p></li>
+<li><p>You want to avoid the p4p SharedPV server in favor of standard softIocPVA.</p></li>
+</ul>
+</section>
+<section id="logging">
+<h2>Logging<a class="headerlink" href="#logging" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">EpicsPvServer</span></code> uses Python logging.</p>
+<ul class="simple">
+<li><p>Logger name: <code class="docutils literal notranslate"><span class="pre">pyrogue.EpicsPvServer</span></code></p></li>
+<li><p>Configuration API:
+<code class="docutils literal notranslate"><span class="pre">logging.getLogger('pyrogue.EpicsPvServer').setLevel(logging.DEBUG)</span></code></p></li>
+</ul>
+</section>
+<section id="what-to-explore-next">
+<h2>What To Explore Next<a class="headerlink" href="#what-to-explore-next" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Per-variable EPICS record behavior: <a class="reference internal" href="epicspvholder.html"><span class="doc">Epics PV Holder (V7 Protocol)</span></a></p></li>
+</ul>
+</section>
+<section id="related-topics">
+<h2>Related Topics<a class="headerlink" href="#related-topics" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>EPICS V7 overview: <a class="reference internal" href="index.html"><span class="doc">EPICS V7 Access</span></a></p></li>
+<li><p>EPICS V4 server (p4p-based): <a class="reference internal" href="../epicsV4/epicspvserver.html"><span class="doc">Epics PV Server Protocol</span></a></p></li>
+<li><p>Tree group filtering: <a class="reference internal" href="../../../pyrogue_tree/core/groups.html"><span class="doc">Groups</span></a></p></li>
+<li><p>Logging behavior in PyRogue: <a class="reference internal" href="../../../logging/index.html"><span class="doc">Logging In Rogue</span></a></p></li>
+</ul>
+</section>
+<section id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Generated API page: <a class="reference internal" href="../../../api/python/pyrogue/protocols/epicsv7/epicspvserver.html"><span class="doc">EpicsPvServer</span></a></p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="EPICS V7 Access" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="epicspvholder.html" class="btn btn-neutral float-right" title="Epics PV Holder (V7 Protocol)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
