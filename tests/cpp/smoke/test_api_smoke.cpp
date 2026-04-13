@@ -75,11 +75,11 @@ sys.modules["rogue_cpp_api_smoke"] = module
 
         bsp["WriteAll"]();
         bsp["ReadAll"]();
-    } catch (...) {
+    } catch (const boost::python::error_already_set&) {
         if (PyErr_Occurred()) {
             PyErr_Print();
             PyErr_Clear();
         }
-        REQUIRE(false);
+        FAIL("Python exception occurred during C++ API smoke test");
     }
 }
