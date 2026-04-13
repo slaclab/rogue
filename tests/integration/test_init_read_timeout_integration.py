@@ -157,10 +157,10 @@ def test_concurrent_root_start_with_timeouts():
     for t in threads:
         t.join(timeout=30)
 
-    for t in threads:
-        assert not t.is_alive(), f"Thread {t.name} did not finish within 30 s"
-
     try:
+        for t in threads:
+            assert not t.is_alive(), f"Thread {t.name} did not finish within 30 s"
+
         assert len(errors) == 0, f"Root start failures: {errors}"
         assert len(roots) == num_roots
     finally:
@@ -168,9 +168,36 @@ def test_concurrent_root_start_with_timeouts():
             r.stop()
 
 
+def test_init_write_timeout_does_not_crash():
+    """Root.start() must survive a transaction timeout during the initial
+    write (initWrite=True).  The GeneralError is caught and logged so
+    startup continues."""
+
+    class WriteTimeoutRoot(pr.Root):
+        def __init__(self):
+            super().__init__(
+                name='writeTimeoutRoot',
+                description='Root for init-write timeout test',
+                timeout=0.01,
+                initRead=False,
+                initWrite=True,
+                pollEn=False,
+            )
+            sim = TimeoutMemEmulate(dropCount=1)
+            self.addInterface(sim)
+            self.add(TimeoutDevice(
+                name='Dev', offset=0x0, memBase=sim,
+            ))
+
+    root = WriteTimeoutRoot()
+    with root:
+        assert root.running is True
+
+
 if __name__ == "__main__":
     test_init_read_timeout_does_not_crash()
     test_read_raises_on_timeout()
     test_init_read_succeeds_without_timeout()
     test_concurrent_root_start_with_timeouts()
+    test_init_write_timeout_does_not_crash()
     print("All tests passed.")
