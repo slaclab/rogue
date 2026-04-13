@@ -102,18 +102,25 @@ def validate_safe_slug(value: str, field_name: str) -> str:
     return slug
 
 
+def find_gh_pages_worktree_root(path: Path) -> Path | None:
+    for candidate in (path, *path.parents):
+        if candidate.name != "gh-pages":
+            continue
+        if (candidate / ".git").exists():
+            return candidate
+    return None
+
+
 def validate_output_root(path: Path) -> Path:
     resolved = path.resolve()
 
-    if resolved == resolved.anchor:
+    if resolved == Path(resolved.anchor):
         raise ValueError("--output-root must not be the filesystem root")
 
-    if resolved.name != "gh-pages":
-        raise ValueError("--output-root must point at the prepared gh-pages worktree root")
-
-    git_marker = resolved / ".git"
-    if not git_marker.exists():
-        raise ValueError("--output-root must point at a git worktree containing a .git marker")
+    if find_gh_pages_worktree_root(resolved) is None:
+        raise ValueError(
+            "--output-root must point at the prepared gh-pages worktree root or a subdirectory inside it"
+        )
 
     return resolved
 

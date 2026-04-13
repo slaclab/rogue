@@ -80,6 +80,14 @@ jobs:
           validate_segment "version_label" "${{ inputs.version_label }}"
           validate_segment "staging_prefix" "${{ inputs.staging_prefix }}"
 
+      - name: Validate release tag
+        if: github.event_name != 'workflow_dispatch'
+        run: |
+          if [[ ! "${GITHUB_REF_NAME}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Error: release tags must match vX.Y.Z"
+            exit 1
+          fi
+
       - name: Set publish variables
         run: |
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
@@ -121,7 +129,7 @@ jobs:
         env:
           ROGUE_DOCS_SITE_ROOT: ${{ env.ROGUE_DOCS_SITE_ROOT }}
         run: |
-          source setup_rogue.sh
+          source build/setup_rogue.sh
           cd docs
           make html
 

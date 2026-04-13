@@ -62,7 +62,7 @@ jobs:
         env:
           ROGUE_DOCS_SITE_ROOT: ${{ env.ROGUE_DOCS_SITE_ROOT }}
         run: |
-          source setup_rogue.sh
+          source build/setup_rogue.sh
           cd docs
           make html
 
