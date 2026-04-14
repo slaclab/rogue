@@ -41,6 +41,7 @@ jobs:
         with:
           fetch-depth: 0
           ref: ${{ github.event.workflow_run.head_sha }}
+          token: ${{ secrets.GH_TOKEN }}
 
       - name: Download perf artifact
         id: perf_artifact
