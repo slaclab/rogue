@@ -1,0 +1,124 @@
+# ----------------------------------------------------------------------------
+# Title      : ROGUE Performance Publish Workflow
+# ----------------------------------------------------------------------------
+# This file is part of the rogue software package. It is subject to
+# the license terms in the LICENSE.txt file found in the top-level directory
+# of this distribution and at:
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+# No part of the rogue software package, including this file, may be
+# copied, modified, propagated, or distributed except according to the terms
+# contained in the LICENSE.txt file.
+# ----------------------------------------------------------------------------
+
+name: Performance Publish
+
+on:
+  workflow_run:
+    workflows:
+      - Rogue Integration
+    types:
+      - completed
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: gh-pages-publish
+  cancel-in-progress: false
+
+jobs:
+  publish_perf:
+    name: Publish Performance Data
+    if: ${{ vars.ROGUE_ENABLE_PERF_PUBLISH == 'true' && github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch != '' }}
+    runs-on: ubuntu-24.04
+    env:
+      REPO_NAME: ${{ github.event.repository.name }}
+      ROGUE_SITE_ROOT: /${{ github.event.repository.name }}
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.workflow_run.head_sha }}
+
+      - name: Download perf artifact
+        id: perf_artifact
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          name: perf-results
+          path: perf-results
+          run-id: ${{ github.event.workflow_run.id }}
+          repository: ${{ github.repository }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check artifact availability
+        id: artifact_check
+        run: |
+          if ls perf-results/*.json >/dev/null 2>&1; then
+            echo "available=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "available=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Prepare gh-pages worktree
+        if: steps.artifact_check.outputs.available == 'true'
+        run: |
+          rm -rf .tmp/gh-pages
+          mkdir -p .tmp
+          git fetch origin gh-pages || true
+          if git show-ref --verify --quiet refs/remotes/origin/gh-pages; then
+            git worktree add .tmp/gh-pages origin/gh-pages
+          else
+            git worktree add --detach .tmp/gh-pages
+            cd .tmp/gh-pages
+            git checkout --orphan gh-pages
+            git rm -rf . >/dev/null 2>&1 || true
+          fi
+          touch .tmp/gh-pages/.nojekyll
+
+      - name: Collect active and stale refs
+        if: steps.artifact_check.outputs.available == 'true'
+        run: |
+          mkdir -p .tmp
+          git fetch --prune origin '+refs/heads/*:refs/remotes/origin/*'
+          git for-each-ref --format='%(refname:lstrip=3)' refs/remotes/origin | grep -v '^HEAD$' > .tmp/perf-active-refs.txt
+          : > .tmp/perf-stale-refs.txt
+          if git show-ref --verify --quiet refs/remotes/origin/pre-release; then
+            git for-each-ref --merged=refs/remotes/origin/pre-release --format='%(refname:lstrip=3)' refs/remotes/origin | grep -v '^HEAD$' >> .tmp/perf-stale-refs.txt
+          fi
+          if git show-ref --verify --quiet refs/remotes/origin/main; then
+            git for-each-ref --merged=refs/remotes/origin/main --format='%(refname:lstrip=3)' refs/remotes/origin | grep -v '^HEAD$' >> .tmp/perf-stale-refs.txt
+          fi
+          sort -u .tmp/perf-stale-refs.txt -o .tmp/perf-stale-refs.txt
+
+      - name: Publish perf data
+        if: steps.artifact_check.outputs.available == 'true'
+        env:
+          PERF_RUN_URL: ${{ github.event.workflow_run.html_url }}
+        run: |
+          python3 scripts/perf_publish.py \
+            --results-dir perf-results \
+            --output-root .tmp/gh-pages \
+            --site-root "${ROGUE_SITE_ROOT}" \
+            --ref-name "${{ github.event.workflow_run.head_branch }}" \
+            --sha "${{ github.event.workflow_run.head_sha }}" \
+            --run-id "${{ github.event.workflow_run.id }}" \
+            --run-url "${PERF_RUN_URL}" \
+            --active-refs-file .tmp/perf-active-refs.txt \
+            --stale-refs-file .tmp/perf-stale-refs.txt
+
+      - name: Commit and push
+        if: steps.artifact_check.outputs.available == 'true'
+        run: |
+          cd .tmp/gh-pages
+          git add .
+          if git diff --cached --quiet; then
+            echo "No gh-pages changes to publish."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Publish perf data for ${{ github.event.workflow_run.head_branch }} @ ${{ github.event.workflow_run.head_sha }}"
+          git push origin HEAD:gh-pages
