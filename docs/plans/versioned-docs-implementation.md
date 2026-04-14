@@ -9,8 +9,14 @@ This plan intentionally excludes per-PR preview publishing.
 
 ## Current State
 
-The repository currently publishes docs only on tag pushes, and the deployment
-overwrites the root of `gh-pages`.
+Before this branch is merged, the deployed repository behavior is:
+
+- `main` uses `.github/workflows/rogue_ci.yml` for CI
+- docs publish only on release tag pushes
+- the legacy tag-based publish overwrites the root of `gh-pages`
+
+This branch changes that by moving docs publishing into dedicated workflows and
+retaining released documentation under versioned paths.
 
 Relevant repo locations:
 
@@ -58,7 +64,7 @@ Behavior:
 - publish to `/vX.Y.Z/`
 - update `/latest/` to the same content
 - refresh shared metadata and versions index
-- refresh the root redirect to `/latest/`
+- refresh the root redirect to `/latest/` only when the explicit rollout flag is enabled
 
 Release directories are immutable in normal operation. A release may be rebuilt
 only by explicit maintainer action.
@@ -175,24 +181,29 @@ Recommended workflows:
 - `.github/workflows/docs_pre_release.yml`
 
 The existing `.github/workflows/rogue_ci.yml` should remain responsible for CI
-validation, not long-term documentation branch management.
+validation, not long-term documentation branch management. Any legacy docs
+deployment from `rogue_ci.yml` should be removed so only the dedicated docs
+workflows can publish to `gh-pages`.
 
-## Expected Repository Additions
+## Repository Changes In This Branch
 
-Likely new files:
+Added files:
 
-- `scripts/docs_publish_metadata.py`
-- `scripts/docs_generate_versions_page.py`
-- optional helper script for root redirect generation
+- `scripts/docs_publish.py`
+- `.github/workflows/docs_release.yml`
+- `.github/workflows/docs_pre_release.yml`
+- `docs/plans/versioned-docs-rollout.md`
+- `docs/plans/versioned-docs-implementation.md`
+- `docs/plans/README.md`
 
-Likely edited files:
+Edited files:
 
 - `.github/workflows/rogue_ci.yml`
 - `docs/src/_templates/layout.html`
 - `docs/src/_static/custom.js`
 - `docs/src/_static/custom.css`
 - `docs/src/conf.py`
-- `pip_requirements.txt` if any new doc-side dependency is introduced
+- `docs/README.md`
 
 ## Acceptance Criteria
 
@@ -201,7 +212,7 @@ Likely edited files:
 - `/pre-release/` reflects the current `pre-release` branch.
 - Users can switch versions from within the docs UI.
 - Historical release docs remain directly accessible by URL.
-- Root `/` resolves users to `/latest/`.
+- Root `/` resolves users to `/latest/` once the explicit rollout flag is enabled.
 - Development docs never overwrite release snapshots.
 
 ## Out Of Scope

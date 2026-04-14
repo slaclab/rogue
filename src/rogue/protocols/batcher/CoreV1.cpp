@@ -26,7 +26,7 @@
  *       bits  7:0  = Destination
  *       bits 15:8  = First user
  *       bits 23:16 = Last user
- *       bits 31:24 = Valid bytes in last field
+ *       bits 31:24 = Width (bits 3:0 = width encoding, bits 7:4 = 0)
  *
  *-----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to
@@ -241,6 +241,9 @@ bool rpb::CoreV1::processFrame(ris::FramePtr frame) {
         reset();
         return false;
     }
+
+    // Store frame reference now that validation has passed
+    frame_ = frame;
 
     // Skip the rest of the header, compute remaining frame size
     beg += (headerSize_ - 2);  // Already read 2 bytes from frame

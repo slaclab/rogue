@@ -28,10 +28,12 @@
 #include "rogue/protocols/batcher/CoreV1.h"
 #include "rogue/protocols/batcher/InverterV1.h"
 #include "rogue/protocols/batcher/SplitterV1.h"
+#include "rogue/protocols/batcher/CombinerV1.h"
 
 #include "rogue/protocols/batcher/CoreV2.h"
 #include "rogue/protocols/batcher/InverterV2.h"
 #include "rogue/protocols/batcher/SplitterV2.h"
+#include "rogue/protocols/batcher/CombinerV2.h"
 
 namespace bp = boost::python;
 
@@ -50,8 +52,10 @@ void rogue::protocols::batcher::setup_module() {
     rogue::protocols::batcher::CoreV1::setup_python();
     rogue::protocols::batcher::SplitterV1::setup_python();
     rogue::protocols::batcher::InverterV1::setup_python();
+    rogue::protocols::batcher::CombinerV1::setup_python();
 
     rogue::protocols::batcher::CoreV2::setup_python();
     rogue::protocols::batcher::SplitterV2::setup_python();
     rogue::protocols::batcher::InverterV2::setup_python();
+    rogue::protocols::batcher::CombinerV2::setup_python();
 }

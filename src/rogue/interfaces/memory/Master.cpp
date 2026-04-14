@@ -270,6 +270,8 @@ void rim::Master::copyBits(uint8_t* dstData, uint32_t dstLsb, uint8_t* srcData, 
     dstBit  = dstLsb % 8;
     rem     = size;
 
+    if (rem == 0) return;
+
     do {
         bytes = rem / 8;
 
@@ -352,6 +354,8 @@ void rim::Master::setBits(uint8_t* dstData, uint32_t lsb, uint32_t size) {
     dstBit  = lsb % 8;
     rem     = size;
 
+    if (rem == 0) return;
+
     do {
         bytes = rem / 8;
 
@@ -409,6 +413,8 @@ bool rim::Master::anyBits(uint8_t* dstData, uint32_t lsb, uint32_t size) {
     dstBit  = lsb % 8;
     rem     = size;
     ret     = false;
+
+    if (rem == 0) return false;
 
     do {
         bytes = rem / 8;

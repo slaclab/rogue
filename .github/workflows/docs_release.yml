@@ -12,6 +12,10 @@
 
 name: Release Documentation
 
+concurrency:
+  group: gh-pages-publish
+  cancel-in-progress: false
+
 on:
   push:
     tags:
@@ -52,6 +56,42 @@ jobs:
         with:
           fetch-depth: 0
           ref: ${{ inputs.target_ref || github.ref }}
+          token: ${{ secrets.GH_TOKEN }}
+
+      - name: Validate workflow inputs
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          validate_segment() {
+            local name="$1"
+            local value="$2"
+            if [[ -z "$value" ]]; then
+              echo "Error: $name cannot be empty"
+              exit 1
+            fi
+            if [[ "$value" == "." || "$value" == ".." ]]; then
+              echo "Error: $name must be a single safe path segment"
+              exit 1
+            fi
+            if [[ "$value" == *"/"* || "$value" == *"\\"* || "$value" == *".."* ]]; then
+              echo "Error: $name must not contain path separators or '..'"
+              exit 1
+            fi
+            if [[ ! "$value" =~ ^[A-Za-z0-9]([A-Za-z0-9._-]*[A-Za-z0-9])?$ ]]; then
+              echo "Error: $name contains unsupported characters"
+              exit 1
+            fi
+          }
+
+          validate_segment "version_label" "${{ inputs.version_label }}"
+          validate_segment "staging_prefix" "${{ inputs.staging_prefix }}"
+
+      - name: Validate release tag
+        if: github.event_name != 'workflow_dispatch'
+        run: |
+          if [[ ! "${GITHUB_REF_NAME}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Error: release tags must match vX.Y.Z"
+            exit 1
+          fi
 
       - name: Set publish variables
         run: |
@@ -60,11 +100,13 @@ jobs:
             echo "DOCS_VERSION=${{ inputs.version_label }}" >> "$GITHUB_ENV"
             echo "DOCS_OUTPUT_ROOT=.tmp/gh-pages/${{ inputs.staging_prefix }}" >> "$GITHUB_ENV"
             echo "ROGUE_DOCS_SITE_ROOT=/${REPO_NAME}/${{ inputs.staging_prefix }}" >> "$GITHUB_ENV"
+            echo "DOCS_WRITE_ROOT_REDIRECT=0" >> "$GITHUB_ENV"
           else
             echo "DOCS_MODE=release" >> "$GITHUB_ENV"
             echo "DOCS_VERSION=${GITHUB_REF_NAME}" >> "$GITHUB_ENV"
             echo "DOCS_OUTPUT_ROOT=.tmp/gh-pages" >> "$GITHUB_ENV"
             echo "ROGUE_DOCS_SITE_ROOT=/${REPO_NAME}" >> "$GITHUB_ENV"
+            echo "DOCS_WRITE_ROOT_REDIRECT=${{ vars.ROGUE_DOCS_WRITE_ROOT_REDIRECT || '0' }}" >> "$GITHUB_ENV"
           fi
 
       - name: Setup Python
@@ -92,7 +134,7 @@ jobs:
         env:
           ROGUE_DOCS_SITE_ROOT: ${{ env.ROGUE_DOCS_SITE_ROOT }}
         run: |
-          source setup_rogue.sh
+          source build/setup_rogue.sh
           cd docs
           make html
 
@@ -113,13 +155,18 @@ jobs:
 
       - name: Update published docs tree
         run: |
-          python3 scripts/docs_publish.py \
-            --site-dir docs/build/html \
-            --output-root "${DOCS_OUTPUT_ROOT}" \
-            --site-root "${ROGUE_DOCS_SITE_ROOT}" \
-            --mode "${DOCS_MODE}" \
-            --version "${DOCS_VERSION}" \
-            --write-root-redirect
+          publish_args=(
+            python3 scripts/docs_publish.py
+            --site-dir docs/build/html
+            --output-root "${DOCS_OUTPUT_ROOT}"
+            --site-root "${ROGUE_DOCS_SITE_ROOT}"
+            --mode "${DOCS_MODE}"
+            --version "${DOCS_VERSION}"
+          )
+          if [ "${DOCS_WRITE_ROOT_REDIRECT}" = "1" ]; then
+            publish_args+=(--write-root-redirect)
+          fi
+          "${publish_args[@]}"
 
       - name: Commit and push
         run: |

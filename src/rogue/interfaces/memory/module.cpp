@@ -62,7 +62,15 @@ void rim::setup_module() {
     bp::scope().attr("Float")  = rim::Float;
     bp::scope().attr("Double") = rim::Double;
     bp::scope().attr("Fixed")  = rim::Fixed;
-    bp::scope().attr("Custom") = rim::Custom;
+    bp::scope().attr("UFixed") = rim::UFixed;
+    bp::scope().attr("Fixed")   = rim::Fixed;
+    bp::scope().attr("Float16") = rim::Float16;
+    bp::scope().attr("Float8")   = rim::Float8;
+    bp::scope().attr("BFloat16")      = rim::BFloat16;
+    bp::scope().attr("TensorFloat32") = rim::TensorFloat32;
+    bp::scope().attr("Float6")        = rim::Float6;
+    bp::scope().attr("Float4")        = rim::Float4;
+    bp::scope().attr("Custom")        = rim::Custom;
 
     rim::Master::setup_python();
     rim::Slave::setup_python();

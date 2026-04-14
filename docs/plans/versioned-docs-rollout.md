@@ -35,7 +35,9 @@ Merge the workflow and scripting changes with:
 
 Expected production impact:
 
-- none on merge, unless there is also a push to `pre-release`
+- no impact on release snapshots or root on merge
+- if these changes are merged into `pre-release`, that merge push will publish
+  `/pre-release/`
 
 ### Stage 2: Add Manual Staging Deploy
 
@@ -78,6 +80,10 @@ This stage should still leave:
 - `/latest/` untouched
 - root `/` untouched
 - historical root docs intact
+
+In practice, if this branch is merged directly into `pre-release`, Stage 1 and
+Stage 3 happen together on that merge because the new `pre-release` workflow
+becomes active immediately on the merge push.
 
 ### Stage 4: Validate Production Release Publish
 
@@ -151,7 +157,7 @@ Behavior:
 
 - publish release snapshot to `/vX.Y.Z/`
 - update `/latest/`
-- update root `/` redirect once rollout gates are satisfied
+- update root `/` redirect only after an explicit rollout gate is enabled
 
 Result:
 
@@ -165,7 +171,10 @@ Recommended controls:
 
 - separate workflows for release and `pre-release`
 - explicit publish destination variables
+- explicit validation for manual workflow inputs that affect publish paths
 - explicit `if:` conditions by event type and ref
+- keep production root redirect generation behind an explicit rollout flag until
+  staging has been reviewed and accepted
 - branch-scoped or event-scoped permissions where possible
 
 ## Validation Checklist
@@ -184,7 +193,8 @@ Before enabling full production cutover:
 ## Cutover Decision
 
 Do not switch production root `/` to a generated redirect until staging has
-been reviewed and accepted.
+been reviewed and accepted, and keep that behavior behind an explicit rollout
+flag until then.
 
 That keeps the current site behavior intact while the new machinery is proven.
 

@@ -12,6 +12,10 @@
 
 name: Pre-release Documentation
 
+concurrency:
+  group: gh-pages-publish
+  cancel-in-progress: false
+
 on:
   push:
     branches:
@@ -36,6 +40,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          token: ${{ secrets.GH_TOKEN }}
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -62,7 +67,7 @@ jobs:
         env:
           ROGUE_DOCS_SITE_ROOT: ${{ env.ROGUE_DOCS_SITE_ROOT }}
         run: |
-          source setup_rogue.sh
+          source build/setup_rogue.sh
           cd docs
           make html
 
