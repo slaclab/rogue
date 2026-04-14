@@ -1,0 +1,23 @@
+{
+  "ref_name": "fix-zmq-port-fixture",
+  "ref_slug": "fix-zmq-port-fixture",
+  "latest_url": "/rogue/perf/branches/fix-zmq-port-fixture/latest.json",
+  "history": [
+    {
+      "ref_name": "fix-zmq-port-fixture",
+      "sha": "269b81e774d97afa1fea6afacc3ef320f005d229",
+      "short_sha": "269b81e",
+      "published_at": "2026-04-14T19:14:17Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/24417928190",
+      "summary_url": "/rogue/perf/branches/fix-zmq-port-fixture/history/269b81e774d97afa1fea6afacc3ef320f005d229.json"
+    }
+  ],
+  "latest": {
+    "ref_name": "fix-zmq-port-fixture",
+    "sha": "269b81e774d97afa1fea6afacc3ef320f005d229",
+    "short_sha": "269b81e",
+    "published_at": "2026-04-14T19:14:17Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/24417928190",
+    "summary_url": "/rogue/perf/branches/fix-zmq-port-fixture/latest.json"
+  }
+}
