@@ -3,21 +3,16 @@
   "versions": [
     {
       "slug": "latest",
-      "title": "Latest Release",
+      "title": "v6.10.0 - Latest Release",
       "kind": "alias",
-      "url": "/rogue/latest/"
+      "url": "/rogue/latest/",
+      "target_slug": "v6.10.0"
     },
     {
       "slug": "pre-release",
       "title": "Pre-release",
       "kind": "branch",
       "url": "/rogue/pre-release/"
-    },
-    {
-      "slug": "v6.10.0",
-      "title": "v6.10.0",
-      "kind": "release",
-      "url": "/rogue/v6.10.0/"
     }
   ]
 }
