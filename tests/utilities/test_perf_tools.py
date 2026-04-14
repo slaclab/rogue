@@ -12,6 +12,7 @@
 
 from __future__ import annotations
 
+import importlib
 import json
 import sys
 from pathlib import Path
@@ -21,9 +22,9 @@ SCRIPTS_DIR = Path(__file__).resolve().parents[2] / "scripts"
 if str(SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPTS_DIR))
 
-import ci_perf_summary
-import perf_data
-import perf_publish
+ci_perf_summary = importlib.import_module("ci_perf_summary")
+perf_data = importlib.import_module("perf_data")
+perf_publish = importlib.import_module("perf_publish")
 
 
 def _write_result(result_dir: Path, name: str, **payload) -> None:
