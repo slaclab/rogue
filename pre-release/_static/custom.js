@@ -109,6 +109,16 @@ function getVersionsUrl(siteRoot) {
   return siteRoot ? `${siteRoot}/versions.json` : '/versions.json';
 }
 
+function initPerfDashboardLink() {
+  const siteRoot = normalizeSiteRoot(getDocsConfig().siteRoot || '');
+  const perfLink = document.querySelector('[data-rogue-perf-dashboard]');
+  if (!perfLink) {
+    return;
+  }
+
+  perfLink.href = joinUrl(siteRoot, 'perf');
+}
+
 function latestTargetSlug(metadata) {
   return entryForSlug(metadata, 'latest')?.target_slug || null;
 }
@@ -318,5 +328,6 @@ async function initVersionUi() {
 
 document.addEventListener('DOMContentLoaded', () => {
   pruneApiAnchorLinks();
+  initPerfDashboardLink();
   void initVersionUi();
 });
