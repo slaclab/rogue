@@ -231,10 +231,15 @@ jobs:
           export PERF_RESULTS_DIR="${PWD}/perf-results"
           python -m pytest tests/perf -q -s
 
+      - name: Fetch Published Perf Baselines
+        if: always()
+        run: |
+          git fetch --depth=1 origin gh-pages || true
+
       - name: Perf Summary
         if: always()
         run: |
-          python scripts/ci_perf_summary.py perf-results >> "$GITHUB_STEP_SUMMARY"
+          python scripts/ci_perf_summary.py perf-results --ref-name "${GITHUB_REF_NAME}" --gh-pages-ref origin/gh-pages >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload Perf Results
         if: always()
