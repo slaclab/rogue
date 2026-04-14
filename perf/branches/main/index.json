@@ -1,0 +1,23 @@
+{
+  "ref_name": "main",
+  "ref_slug": "main",
+  "latest_url": "/rogue/perf/branches/main/latest.json",
+  "history": [
+    {
+      "ref_name": "main",
+      "sha": "1c76af6a4e6be0a47371eb77c9042143e02c994e",
+      "short_sha": "1c76af6",
+      "published_at": "2026-04-14T19:06:15Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/24417575733",
+      "summary_url": "/rogue/perf/branches/main/history/1c76af6a4e6be0a47371eb77c9042143e02c994e.json"
+    }
+  ],
+  "latest": {
+    "ref_name": "main",
+    "sha": "1c76af6a4e6be0a47371eb77c9042143e02c994e",
+    "short_sha": "1c76af6",
+    "published_at": "2026-04-14T19:06:15Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/24417575733",
+    "summary_url": "/rogue/perf/branches/main/latest.json"
+  }
+}
