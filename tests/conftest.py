@@ -19,8 +19,8 @@ import rogue.interfaces.memory
 
 
 def wait_for(predicate, timeout=2.0, interval=0.01):
-    deadline = time.time() + timeout
-    while time.time() < deadline:
+    deadline = time.monotonic() + timeout
+    while time.monotonic() < deadline:
         if predicate():
             return True
         time.sleep(interval)
