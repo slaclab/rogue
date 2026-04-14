@@ -79,6 +79,9 @@ The publisher currently generates:
 - `perf/branches/<branch-slug>/index.json`
 - `perf/branches/<branch-slug>/history/<sha>.json`
 
+The docs sidebar now includes a direct link to `/perf/` so maintainers can
+reach the published dashboard from any docs page without guessing the URL.
+
 ### `gh-pages` Serialization Safety
 
 The docs publishers and perf publisher now share the same concurrency group:
@@ -164,7 +167,7 @@ Confirm:
 
 ### Possible Follow-Up Work
 
-- add a Sphinx docs page or docs navigation link to `/perf/`
+- add a dedicated Sphinx explainer page for interpreting `/perf/` comparisons
 - add release-tag perf snapshots under `perf/releases/`
 - add richer charts once the baseline publishing flow is stable
 - add cleanup logic for stale branch directories if needed later

@@ -109,6 +109,16 @@ function getVersionsUrl(siteRoot) {
   return siteRoot ? `${siteRoot}/versions.json` : '/versions.json';
 }
 
+function initPerfDashboardLink() {
+  const siteRoot = normalizeSiteRoot(getDocsConfig().siteRoot || '');
+  const perfLink = document.querySelector('[data-rogue-perf-dashboard]');
+  if (!perfLink) {
+    return;
+  }
+
+  perfLink.href = joinUrl(siteRoot, 'perf');
+}
+
 function detectCurrentVersion(pathname, siteRoot, versions) {
   const entries = new Set(versions.map((entry) => entry.slug));
   const parts = splitRelativePath(pathname, siteRoot);
@@ -299,5 +309,6 @@ async function initVersionUi() {
 
 document.addEventListener('DOMContentLoaded', () => {
   pruneApiAnchorLinks();
+  initPerfDashboardLink();
   void initVersionUi();
 });
