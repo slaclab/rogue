@@ -119,23 +119,37 @@ function initPerfDashboardLink() {
   perfLink.href = joinUrl(siteRoot, 'perf');
 }
 
-function detectCurrentVersion(pathname, siteRoot, versions) {
+function latestTargetSlug(metadata) {
+  return entryForSlug(metadata, 'latest')?.target_slug || null;
+}
+
+function detectCurrentVersionInfo(pathname, siteRoot, metadata) {
+  const versions = metadata.versions || [];
   const entries = new Set(versions.map((entry) => entry.slug));
   const parts = splitRelativePath(pathname, siteRoot);
   if (!parts.length) {
-    return null;
+    return { selectedSlug: null, pathVersion: null };
   }
 
-  return entries.has(parts[0]) ? parts[0] : null;
+  const pathVersion = parts[0];
+  if (entries.has(pathVersion)) {
+    return { selectedSlug: pathVersion, pathVersion };
+  }
+
+  if (pathVersion === latestTargetSlug(metadata)) {
+    return { selectedSlug: 'latest', pathVersion };
+  }
+
+  return { selectedSlug: null, pathVersion };
 }
 
-function relativePagePath(pathname, siteRoot, currentVersion) {
-  if (!currentVersion) {
+function relativePagePath(pathname, siteRoot, pathVersion) {
+  if (!pathVersion) {
     return '';
   }
 
   const parts = splitRelativePath(pathname, siteRoot);
-  if (!parts.length || parts[0] !== currentVersion) {
+  if (!parts.length || parts[0] !== pathVersion) {
     return '';
   }
 
@@ -171,11 +185,12 @@ function createBanner(text, href, linkText) {
 }
 
 function renderBanner(metadata, currentVersion, siteRoot) {
-  if (!currentVersion) {
+  const currentPathVersion = currentVersion?.pathVersion || null;
+  if (!currentPathVersion) {
     return;
   }
 
-  if (currentVersion === 'pre-release') {
+  if (currentPathVersion === 'pre-release') {
     const latestEntry = latestReleaseEntry(metadata);
     if (latestEntry) {
       createBanner(
@@ -189,20 +204,24 @@ function renderBanner(metadata, currentVersion, siteRoot) {
     return;
   }
 
-  const currentEntry = entryForSlug(metadata, currentVersion);
+  if (currentPathVersion === latestTargetSlug(metadata)) {
+    return;
+  }
+
+  const currentEntry = entryForSlug(metadata, currentPathVersion);
   if (!currentEntry || currentEntry.kind !== 'release') {
     return;
   }
 
-  const newestRelease = metadata.versions.find((entry) => entry.kind === 'release');
-  if (newestRelease && newestRelease.slug === currentVersion) {
+  const newestReleaseSlug = latestTargetSlug(metadata) || metadata.versions.find((entry) => entry.kind === 'release')?.slug;
+  if (newestReleaseSlug && newestReleaseSlug === currentPathVersion) {
     return;
   }
 
   const latestEntry = latestReleaseEntry(metadata);
   createBanner(
-    `You are viewing archived documentation for ${currentVersion}.`,
-    latestEntry?.url || joinUrl(siteRoot, currentVersion),
+    `You are viewing archived documentation for ${currentPathVersion}.`,
+    latestEntry?.url || joinUrl(siteRoot, currentPathVersion),
     latestEntry ? 'Open latest release.' : null,
   );
 }
@@ -238,11 +257,11 @@ function renderVersionSelector(metadata, currentVersion, siteRoot) {
     const option = document.createElement('option');
     option.value = entry.slug;
     option.textContent = entry.title;
-    option.selected = entry.slug === currentVersion;
+    option.selected = entry.slug === currentVersion?.selectedSlug;
     select.appendChild(option);
   }
 
-  if (!currentVersion && metadata.versions.length > 0) {
+  if (!currentVersion?.selectedSlug && metadata.versions.length > 0) {
     select.selectedIndex = 0;
   }
 
@@ -259,7 +278,7 @@ async function handleVersionChange(event, metadata, currentVersion, siteRoot) {
     return;
   }
 
-  const relativePath = relativePagePath(window.location.pathname, siteRoot, currentVersion);
+  const relativePath = relativePagePath(window.location.pathname, siteRoot, currentVersion?.pathVersion);
   let targetUrl = targetEntry.url;
 
   if (relativePath) {
@@ -290,7 +309,7 @@ async function initVersionUi() {
       return;
     }
 
-    const currentVersion = detectCurrentVersion(window.location.pathname, siteRoot, metadata.versions);
+    const currentVersion = detectCurrentVersionInfo(window.location.pathname, siteRoot, metadata);
     renderBanner(metadata, currentVersion, siteRoot);
 
     const select = renderVersionSelector(metadata, currentVersion, siteRoot);

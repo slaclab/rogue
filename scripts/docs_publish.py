@@ -19,10 +19,24 @@ import json
 import re
 import shutil
 from pathlib import Path
+from typing import Literal, NotRequired, TypedDict
 
 
 RELEASE_DIR_RE = re.compile(r"^v(\d+)\.(\d+)\.(\d+)$")
 SAFE_SLUG_RE = re.compile(r"^[A-Za-z0-9](?:[A-Za-z0-9._-]*[A-Za-z0-9])?$")
+
+
+class VersionEntry(TypedDict):
+    slug: str
+    title: str
+    kind: Literal["alias", "branch", "release"]
+    url: str
+    target_slug: NotRequired[str | None]
+
+
+class VersionsMetadata(TypedDict):
+    default: str | None
+    versions: list[VersionEntry]
 
 
 def parse_args() -> argparse.Namespace:
@@ -45,6 +59,10 @@ def parse_args() -> argparse.Namespace:
         "--write-root-redirect",
         action="store_true",
         help="Write index.html at the output root redirecting to latest/",
+    )
+    parser.add_argument(
+        "--latest-target-version",
+        help="Release slug that should be labeled as the latest release in metadata",
     )
     return parser.parse_args()
 
@@ -78,6 +96,31 @@ def ensure_parent(path: Path) -> None:
 def write_text(path: Path, content: str) -> None:
     ensure_parent(path)
     path.write_text(content, encoding="utf-8")
+
+
+def read_versions_metadata(path: Path) -> VersionsMetadata | None:
+    if not path.is_file():
+        return None
+
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return None
+
+    if not isinstance(data, dict):
+        return None
+    versions = data.get("versions")
+    if not isinstance(versions, list):
+        return None
+
+    default_slug = data.get("default")
+    if default_slug is not None and not isinstance(default_slug, str):
+        default_slug = None
+
+    return {
+        "default": default_slug,
+        "versions": [entry for entry in versions if isinstance(entry, dict)],
+    }
 
 
 def release_sort_key(slug: str) -> tuple[int, int, int]:
@@ -125,7 +168,7 @@ def validate_output_root(path: Path) -> Path:
     return resolved
 
 
-def choose_default_slug(versions: list[dict[str, str]]) -> str | None:
+def choose_default_slug(versions: list[VersionEntry]) -> str | None:
     for preferred_slug in ("latest", "pre-release"):
         if any(entry["slug"] == preferred_slug for entry in versions):
             return preferred_slug
@@ -137,16 +180,51 @@ def choose_default_slug(versions: list[dict[str, str]]) -> str | None:
     return versions[0]["slug"] if versions else None
 
 
-def collect_versions(output_root: Path, site_root: str) -> dict[str, object]:
-    versions: list[dict[str, str]] = []
+def existing_latest_target_slug(output_root: Path) -> str | None:
+    metadata = read_versions_metadata(output_root / "versions.json")
+    if metadata is None:
+        return None
+
+    latest_entry = next((entry for entry in metadata["versions"] if entry.get("slug") == "latest"), None)
+    if latest_entry is None:
+        return None
+
+    target_slug = latest_entry.get("target_slug")
+    if isinstance(target_slug, str) and RELEASE_DIR_RE.match(target_slug):
+        return target_slug
+    return None
+
+
+def collect_versions(
+    output_root: Path, site_root: str, latest_target_slug: str | None = None
+) -> VersionsMetadata:
+    versions: list[VersionEntry] = []
+
+    release_slugs = sorted(
+        (
+            path.name
+            for path in output_root.iterdir()
+            if path.is_dir() and RELEASE_DIR_RE.match(path.name)
+        ),
+        key=release_sort_key,
+        reverse=True,
+    )
+    if latest_target_slug is None:
+        latest_target_slug = existing_latest_target_slug(output_root)
+    if latest_target_slug is None and release_slugs:
+        latest_target_slug = release_slugs[0]
 
     if (output_root / "latest").is_dir():
+        latest_title = "Latest Release"
+        if latest_target_slug is not None:
+            latest_title = f"{latest_target_slug} - Latest Release"
         versions.append(
             {
                 "slug": "latest",
-                "title": "Latest Release",
+                "title": latest_title,
                 "kind": "alias",
                 "url": url_join(site_root, "latest"),
+                "target_slug": latest_target_slug,
             }
         )
 
@@ -160,17 +238,9 @@ def collect_versions(output_root: Path, site_root: str) -> dict[str, object]:
             }
         )
 
-    release_slugs = sorted(
-        (
-            path.name
-            for path in output_root.iterdir()
-            if path.is_dir() and RELEASE_DIR_RE.match(path.name)
-        ),
-        key=release_sort_key,
-        reverse=True,
-    )
-
     for slug in release_slugs:
+        if slug == latest_target_slug and any(entry["slug"] == "latest" for entry in versions):
+            continue
         versions.append(
             {
                 "slug": slug,
@@ -183,7 +253,7 @@ def collect_versions(output_root: Path, site_root: str) -> dict[str, object]:
     return {"default": choose_default_slug(versions), "versions": versions}
 
 
-def render_versions_page(metadata: dict[str, object]) -> str:
+def render_versions_page(metadata: VersionsMetadata) -> str:
     versions = metadata["versions"]
     default_slug = metadata["default"]
     latest = next((entry for entry in versions if entry["slug"] == "latest"), None)
@@ -191,7 +261,7 @@ def render_versions_page(metadata: dict[str, object]) -> str:
     releases = [entry for entry in versions if entry["kind"] == "release"]
     default_entry = next((entry for entry in versions if entry["slug"] == default_slug), None)
 
-    def render_entry(entry: dict[str, str]) -> str:
+    def render_entry(entry: VersionEntry) -> str:
         return f'<li><a href="{entry["url"]}">{entry["title"]}</a></li>'
 
     latest_html = render_entry(latest) if latest else "<li>Not published yet.</li>"
@@ -312,6 +382,11 @@ def main() -> int:
     site_dir = Path(args.site_dir).resolve()
     output_root = validate_output_root(Path(args.output_root))
     site_root = normalize_site_root(args.site_root)
+    latest_target_slug = (
+        validate_safe_slug(args.latest_target_version, "--latest-target-version")
+        if args.latest_target_version
+        else None
+    )
 
     if not site_dir.is_dir():
         raise FileNotFoundError(f"Built site directory not found: {site_dir}")
@@ -323,11 +398,12 @@ def main() -> int:
             raise ValueError("--version is required in release mode")
         version_slug = validate_safe_slug(args.version, "--version")
         sync_tree(site_dir, output_root / version_slug)
-        sync_tree(site_dir, output_root / "latest")
+        if latest_target_slug is None or latest_target_slug == version_slug:
+            sync_tree(site_dir, output_root / "latest")
     else:
         sync_tree(site_dir, output_root / "pre-release")
 
-    metadata = collect_versions(output_root, site_root)
+    metadata = collect_versions(output_root, site_root, latest_target_slug=latest_target_slug)
     write_text(output_root / "versions.json", json.dumps(metadata, indent=2, sort_keys=False) + "\n")
     write_text(output_root / "versions" / "index.html", render_versions_page(metadata))
 
