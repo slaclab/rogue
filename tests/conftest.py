@@ -85,11 +85,34 @@ def _find_free_port_block(host="127.0.0.1", count=3, start=20000, stop=60000):
     raise RuntimeError(f"Unable to find {count} consecutive free ports on {host}")
 
 
+def _worker_port_search_range(worker_id, *, start=20000, stop=60000, span=256):
+    # xdist workers probe ports in parallel. Give each worker a disjoint slice
+    # so they do not race on the same consecutive port block.
+    if not worker_id or worker_id == "master":
+        return start, stop
+
+    if worker_id.startswith("gw") and worker_id[2:].isdigit():
+        worker_index = int(worker_id[2:])
+        worker_start = start + (worker_index * span)
+        worker_stop = min(worker_start + span, stop)
+        if worker_start < worker_stop:
+            return worker_start, worker_stop
+
+    return start, stop
+
+
 @pytest.fixture
-def free_zmq_port():
+def free_zmq_port(pytestconfig):
     # Rogue's ZMQ server uses a base port plus adjacent ports, so integration
     # tests need a free consecutive block rather than a single ephemeral port.
-    return _find_free_port_block()
+    #
+    # When pytest-xdist is active, multiple workers may probe ports at the same
+    # time. Searching within worker-specific slices avoids collisions between
+    # concurrent integration tests on the same host.
+    worker_input = getattr(pytestconfig, "workerinput", None)
+    worker_id = None if worker_input is None else worker_input.get("workerid")
+    start, stop = _worker_port_search_range(worker_id)
+    return _find_free_port_block(start=start, stop=stop)
 
 
 @pytest.fixture
