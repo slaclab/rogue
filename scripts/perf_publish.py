@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import argparse
 import html
+import shutil
 from pathlib import Path
 from typing import Any
 
@@ -52,11 +53,32 @@ def parse_args() -> argparse.Namespace:
         default=20,
         help="Maximum number of branch history entries to retain",
     )
+    parser.add_argument(
+        "--active-refs-file",
+        help="Optional newline-delimited file listing currently active Git refs",
+    )
+    parser.add_argument(
+        "--stale-refs-file",
+        help="Optional newline-delimited file listing refs whose branch perf data should be removed",
+    )
     return parser.parse_args()
 
 
 def _load_summary(path: Path) -> dict[str, Any]:
     return read_json(path)
+
+
+def _load_ref_names(path: Path | None) -> set[str]:
+    if path is None or not path.is_file():
+        return set()
+
+    refs = set()
+    for line in path.read_text(encoding="utf-8").splitlines():
+        ref_name = line.strip()
+        if not ref_name or ref_name == "HEAD":
+            continue
+        refs.add(ref_name)
+    return refs
 
 
 def _summary_link(site_root: str, relative_path: Path) -> str:
@@ -122,6 +144,33 @@ def _load_tracked_refs(output_root: Path) -> dict[str, dict[str, Any]]:
         if path.is_file():
             refs[ref_name] = _load_summary(path)
     return refs
+
+
+def _prune_stale_branch_dirs(
+    output_root: Path,
+    active_refs: set[str],
+    stale_refs: set[str],
+    keep_refs: set[str],
+) -> None:
+    branches_root = output_root / "perf" / "branches"
+    if not branches_root.is_dir():
+        return
+
+    for branch_dir in branches_root.iterdir():
+        if not branch_dir.is_dir():
+            continue
+
+        latest_path = branch_dir / "latest.json"
+        if not latest_path.is_file():
+            continue
+
+        summary = _load_summary(latest_path)
+        ref_name = summary.get("ref_name", "")
+        if not ref_name or ref_name in keep_refs:
+            continue
+
+        if ref_name in stale_refs or (active_refs and ref_name not in active_refs):
+            shutil.rmtree(branch_dir)
 
 
 def _collect_branch_manifests(site_root: str, output_root: Path) -> list[dict[str, Any]]:
@@ -379,6 +428,8 @@ def publish_perf_data(
     run_id: str | None = None,
     run_url: str | None = None,
     max_branch_history: int = 20,
+    active_refs: set[str] | None = None,
+    stale_refs: set[str] | None = None,
 ) -> dict[str, Any]:
     if not results_dir.is_dir():
         raise FileNotFoundError(f"Perf results directory not found: {results_dir}")
@@ -396,6 +447,13 @@ def publish_perf_data(
 
     history_entries = _prune_branch_history(branch_dir, max_branch_history)
     _write_branch_index(site_root, ref_name, branch_dir, history_entries)
+
+    _prune_stale_branch_dirs(
+        output_root,
+        active_refs=active_refs or set(),
+        stale_refs=stale_refs or set(),
+        keep_refs={ref_name, *TRACKED_BASELINE_REFS},
+    )
 
     refs = _load_tracked_refs(output_root)
     branches = _collect_branch_manifests(site_root, output_root)
@@ -429,6 +487,8 @@ def main() -> int:
         run_id=args.run_id,
         run_url=args.run_url,
         max_branch_history=args.max_branch_history,
+        active_refs=_load_ref_names(Path(args.active_refs_file)) if args.active_refs_file else None,
+        stale_refs=_load_ref_names(Path(args.stale_refs_file)) if args.stale_refs_file else None,
     )
     return 0
 

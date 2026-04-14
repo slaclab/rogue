@@ -199,3 +199,65 @@ def test_ci_perf_summary_renders_branch_and_baseline_comparisons(tmp_path):
     assert "previous `feature/perf` run" in markdown
     assert "Vs Main" in markdown
     assert "improved" in markdown
+
+
+def test_perf_publish_prunes_deleted_branch_data(tmp_path):
+    output_root = tmp_path / "gh-pages"
+
+    feature_results = tmp_path / "feature-results"
+    _write_result(feature_results, "stream_bridge_perf", throughput_mb_s=450.0, frames_sent=10, frames_received=10)
+    perf_publish.publish_perf_data(
+        results_dir=feature_results,
+        output_root=output_root,
+        site_root="/rogue",
+        ref_name="feature/perf",
+        sha="9999999abcdef",
+    )
+
+    main_results = tmp_path / "main-results"
+    _write_result(main_results, "stream_bridge_perf", throughput_mb_s=500.0, frames_sent=10, frames_received=10)
+    perf_publish.publish_perf_data(
+        results_dir=main_results,
+        output_root=output_root,
+        site_root="/rogue",
+        ref_name="main",
+        sha="aaaaaaaabcdef",
+        active_refs={"main", "pre-release"},
+    )
+
+    assert not (output_root / "perf" / "branches" / "feature_perf").exists()
+
+    perf_index = json.loads((output_root / "perf" / "index.json").read_text(encoding="utf-8"))
+    assert [entry["ref_name"] for entry in perf_index["branches"]] == ["main"]
+
+
+def test_perf_publish_prunes_branch_data_marked_stale_after_merge(tmp_path):
+    output_root = tmp_path / "gh-pages"
+
+    feature_results = tmp_path / "feature-results"
+    _write_result(feature_results, "stream_bridge_perf", throughput_mb_s=450.0, frames_sent=10, frames_received=10)
+    perf_publish.publish_perf_data(
+        results_dir=feature_results,
+        output_root=output_root,
+        site_root="/rogue",
+        ref_name="feature/perf",
+        sha="bbbbbbbabcdef",
+    )
+
+    pre_results = tmp_path / "pre-results"
+    _write_result(pre_results, "stream_bridge_perf", throughput_mb_s=520.0, frames_sent=10, frames_received=10)
+    perf_publish.publish_perf_data(
+        results_dir=pre_results,
+        output_root=output_root,
+        site_root="/rogue",
+        ref_name="pre-release",
+        sha="cccccccabcdef",
+        active_refs={"main", "pre-release", "feature/perf"},
+        stale_refs={"feature/perf"},
+    )
+
+    assert not (output_root / "perf" / "branches" / "feature_perf").exists()
+
+    dashboard = (output_root / "perf" / "index.html").read_text(encoding="utf-8")
+    assert "feature/perf" not in dashboard
+    assert "pre-release" in dashboard

@@ -82,6 +82,17 @@ The publisher currently generates:
 The docs sidebar now includes a direct link to `/perf/` so maintainers can
 reach the published dashboard from any docs page without guessing the URL.
 
+### Stale Branch Cleanup
+
+The perf publisher now removes stale branch directories from `gh-pages/perf/branches/`
+when a later publish determines that a branch is no longer active on the remote
+or has already been merged into `main` or `pre-release`.
+
+This cleanup runs during perf publication and preserves:
+
+- the branch currently being published
+- the tracked baseline refs `main` and `pre-release`
+
 ### `gh-pages` Serialization Safety
 
 The docs publishers and perf publisher now share the same concurrency group:
@@ -170,7 +181,8 @@ Confirm:
 - add a dedicated Sphinx explainer page for interpreting `/perf/` comparisons
 - add release-tag perf snapshots under `perf/releases/`
 - add richer charts once the baseline publishing flow is stable
-- add cleanup logic for stale branch directories if needed later
+- refine stale-branch cleanup if the repository later needs exceptions for
+  long-lived integration branches
 
 ## Risks / Unknowns
 
