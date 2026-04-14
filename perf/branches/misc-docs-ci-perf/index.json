@@ -5,6 +5,14 @@
   "history": [
     {
       "ref_name": "misc-docs-ci-perf",
+      "sha": "28e9f7db0011253d22ac9d652896174eb229f1f8",
+      "short_sha": "28e9f7d",
+      "published_at": "2026-04-14T20:54:53Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/24422261000",
+      "summary_url": "/rogue/perf/branches/misc-docs-ci-perf/history/28e9f7db0011253d22ac9d652896174eb229f1f8.json"
+    },
+    {
+      "ref_name": "misc-docs-ci-perf",
       "sha": "5e940db40f1ae402f3918724c2fccf37f49ea939",
       "short_sha": "5e940db",
       "published_at": "2026-04-14T20:25:57Z",
@@ -22,10 +30,10 @@
   ],
   "latest": {
     "ref_name": "misc-docs-ci-perf",
-    "sha": "5e940db40f1ae402f3918724c2fccf37f49ea939",
-    "short_sha": "5e940db",
-    "published_at": "2026-04-14T20:25:57Z",
-    "run_url": "https://github.com/slaclab/rogue/actions/runs/24421028955",
+    "sha": "28e9f7db0011253d22ac9d652896174eb229f1f8",
+    "short_sha": "28e9f7d",
+    "published_at": "2026-04-14T20:54:53Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/24422261000",
     "summary_url": "/rogue/perf/branches/misc-docs-ci-perf/latest.json"
   }
 }
