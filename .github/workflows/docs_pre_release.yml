@@ -24,10 +24,6 @@ on:
 permissions:
   contents: write
 
-concurrency:
-  group: gh-pages-publish
-  cancel-in-progress: false
-
 jobs:
   publish_docs:
     name: Publish Pre-release Docs
