@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-14T20:58:35Z",
+  "generated_at": "2026-04-14T21:23:51Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -73,6 +73,14 @@
       "history": [
         {
           "ref_name": "EmuFpgaXvc",
+          "sha": "c58404dbc4430f4d7e2e3b1bfba13ae5cd547851",
+          "short_sha": "c58404d",
+          "published_at": "2026-04-14T21:23:51Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/24423209314",
+          "summary_url": "/rogue/perf/branches/EmuFpgaXvc/history/c58404dbc4430f4d7e2e3b1bfba13ae5cd547851.json"
+        },
+        {
+          "ref_name": "EmuFpgaXvc",
           "sha": "1dfabbbb803123c8966a52b0fef82a3b1443c1d7",
           "short_sha": "1dfabbb",
           "published_at": "2026-04-14T20:58:35Z",
@@ -82,10 +90,10 @@
       ],
       "latest": {
         "ref_name": "EmuFpgaXvc",
-        "sha": "1dfabbbb803123c8966a52b0fef82a3b1443c1d7",
-        "short_sha": "1dfabbb",
-        "published_at": "2026-04-14T20:58:35Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/24422442081",
+        "sha": "c58404dbc4430f4d7e2e3b1bfba13ae5cd547851",
+        "short_sha": "c58404d",
+        "published_at": "2026-04-14T21:23:51Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/24423209314",
         "summary_url": "/rogue/perf/branches/EmuFpgaXvc/latest.json"
       }
     },
@@ -126,37 +134,6 @@
         "published_at": "2026-04-14T20:54:53Z",
         "run_url": "https://github.com/slaclab/rogue/actions/runs/24422261000",
         "summary_url": "/rogue/perf/branches/misc-docs-ci-perf/latest.json"
-      }
-    },
-    {
-      "ref_name": "fix-zmq-port-fixture",
-      "ref_slug": "fix-zmq-port-fixture",
-      "latest_url": "/rogue/perf/branches/fix-zmq-port-fixture/latest.json",
-      "history": [
-        {
-          "ref_name": "fix-zmq-port-fixture",
-          "sha": "7018a95aa60af7d6d5e2546992b9e14010e06169",
-          "short_sha": "7018a95",
-          "published_at": "2026-04-14T19:19:16Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/24418158429",
-          "summary_url": "/rogue/perf/branches/fix-zmq-port-fixture/history/7018a95aa60af7d6d5e2546992b9e14010e06169.json"
-        },
-        {
-          "ref_name": "fix-zmq-port-fixture",
-          "sha": "269b81e774d97afa1fea6afacc3ef320f005d229",
-          "short_sha": "269b81e",
-          "published_at": "2026-04-14T19:14:17Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/24417928190",
-          "summary_url": "/rogue/perf/branches/fix-zmq-port-fixture/history/269b81e774d97afa1fea6afacc3ef320f005d229.json"
-        }
-      ],
-      "latest": {
-        "ref_name": "fix-zmq-port-fixture",
-        "sha": "7018a95aa60af7d6d5e2546992b9e14010e06169",
-        "short_sha": "7018a95",
-        "published_at": "2026-04-14T19:19:16Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/24418158429",
-        "summary_url": "/rogue/perf/branches/fix-zmq-port-fixture/latest.json"
       }
     }
   ]
