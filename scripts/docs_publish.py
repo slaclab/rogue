@@ -140,13 +140,28 @@ def choose_default_slug(versions: list[dict[str, str]]) -> str | None:
 def collect_versions(output_root: Path, site_root: str) -> dict[str, object]:
     versions: list[dict[str, str]] = []
 
+    release_slugs = sorted(
+        (
+            path.name
+            for path in output_root.iterdir()
+            if path.is_dir() and RELEASE_DIR_RE.match(path.name)
+        ),
+        key=release_sort_key,
+        reverse=True,
+    )
+    newest_release_slug = release_slugs[0] if release_slugs else None
+
     if (output_root / "latest").is_dir():
+        latest_title = "Latest Release"
+        if newest_release_slug is not None:
+            latest_title = f"{newest_release_slug} - Latest Release"
         versions.append(
             {
                 "slug": "latest",
-                "title": "Latest Release",
+                "title": latest_title,
                 "kind": "alias",
                 "url": url_join(site_root, "latest"),
+                "target_slug": newest_release_slug,
             }
         )
 
@@ -160,17 +175,9 @@ def collect_versions(output_root: Path, site_root: str) -> dict[str, object]:
             }
         )
 
-    release_slugs = sorted(
-        (
-            path.name
-            for path in output_root.iterdir()
-            if path.is_dir() and RELEASE_DIR_RE.match(path.name)
-        ),
-        key=release_sort_key,
-        reverse=True,
-    )
-
     for slug in release_slugs:
+        if slug == newest_release_slug and any(entry["slug"] == "latest" for entry in versions):
+            continue
         versions.append(
             {
                 "slug": slug,
