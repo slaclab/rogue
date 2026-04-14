@@ -102,7 +102,11 @@ def read_versions_metadata(path: Path) -> VersionsMetadata | None:
     if not path.is_file():
         return None
 
-    data = json.loads(path.read_text(encoding="utf-8"))
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return None
+
     if not isinstance(data, dict):
         return None
     versions = data.get("versions")
@@ -394,7 +398,8 @@ def main() -> int:
             raise ValueError("--version is required in release mode")
         version_slug = validate_safe_slug(args.version, "--version")
         sync_tree(site_dir, output_root / version_slug)
-        sync_tree(site_dir, output_root / "latest")
+        if latest_target_slug is None or latest_target_slug == version_slug:
+            sync_tree(site_dir, output_root / "latest")
     else:
         sync_tree(site_dir, output_root / "pre-release")
 
