@@ -85,8 +85,12 @@ reach the published dashboard from any docs page without guessing the URL.
 ### Stale Branch Cleanup
 
 The perf publisher now removes stale branch directories from `gh-pages/perf/branches/`
-when a later publish determines that a branch is no longer active on the remote
-or has already been merged into `main` or `pre-release`.
+when a later publish determines that a branch is no longer active on the remote.
+
+Merged-branch detection is still collected, but active remote branches are
+preserved even if they are already reachable from `main` or `pre-release`.
+This avoids deleting long-lived integration branches that happen to be merged
+periodically.
 
 This cleanup runs during perf publication and preserves:
 

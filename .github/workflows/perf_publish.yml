@@ -30,7 +30,7 @@ concurrency:
 jobs:
   publish_perf:
     name: Publish Performance Data
-    if: ${{ vars.ROGUE_ENABLE_PERF_PUBLISH == 'true' && github.event.workflow_run.head_branch != '' }}
+    if: ${{ vars.ROGUE_ENABLE_PERF_PUBLISH == 'true' && github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch != '' }}
     runs-on: ubuntu-24.04
     env:
       REPO_NAME: ${{ github.event.repository.name }}

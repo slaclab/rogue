@@ -234,7 +234,7 @@ def test_perf_publish_prunes_deleted_branch_data(tmp_path):
     assert [entry["ref_name"] for entry in perf_index["branches"]] == ["main"]
 
 
-def test_perf_publish_prunes_branch_data_marked_stale_after_merge(tmp_path):
+def test_perf_publish_keeps_active_branch_data_even_if_marked_stale(tmp_path):
     output_root = tmp_path / "gh-pages"
 
     feature_results = tmp_path / "feature-results"
@@ -259,8 +259,8 @@ def test_perf_publish_prunes_branch_data_marked_stale_after_merge(tmp_path):
         stale_refs={"feature/perf"},
     )
 
-    assert not (output_root / "perf" / "branches" / "feature_perf").exists()
+    assert (output_root / "perf" / "branches" / "feature_perf").exists()
 
     dashboard = (output_root / "perf" / "index.html").read_text(encoding="utf-8")
-    assert "feature/perf" not in dashboard
+    assert "feature/perf" in dashboard
     assert "pre-release" in dashboard

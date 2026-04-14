@@ -169,6 +169,9 @@ def _prune_stale_branch_dirs(
         if not ref_name or ref_name in keep_refs:
             continue
 
+        if active_refs and ref_name in active_refs:
+            continue
+
         if ref_name in stale_refs or (active_refs and ref_name not in active_refs):
             shutil.rmtree(branch_dir)
 
