@@ -133,6 +133,8 @@ def test_perf_publish_creates_branch_history_refs_and_dashboard(tmp_path):
         (output_root / "perf" / "branches" / "feature_perf" / "index.json").read_text(encoding="utf-8")
     )
     assert [entry["short_sha"] for entry in branch_index["history"][:2]] == ["4444444", "3333333"]
+    assert branch_index["latest_url"] == "/rogue/perf/branches/feature_perf/latest.json"
+    assert branch_index["history"][0]["summary_url"] == "/rogue/perf/branches/feature_perf/history/4444444abcdef.json"
 
     assert (output_root / "perf" / "refs" / "main" / "latest.json").is_file()
     assert (output_root / "perf" / "refs" / "pre-release" / "latest.json").is_file()

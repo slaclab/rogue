@@ -82,7 +82,7 @@ def _load_ref_names(path: Path | None) -> set[str]:
 
 
 def _summary_link(site_root: str, relative_path: Path) -> str:
-    return url_join(site_root, *relative_path.parts)
+    return url_join(site_root, *relative_path.parts, trailing_slash=False)
 
 
 def _summary_entry(site_root: str, relative_path: Path, summary: dict[str, Any]) -> dict[str, str]:

@@ -37,11 +37,13 @@ def normalize_site_root(site_root: str) -> str:
     return site_root.rstrip("/")
 
 
-def url_join(site_root: str, *parts: str) -> str:
+def url_join(site_root: str, *parts: str, trailing_slash: bool = True) -> str:
     pieces = [normalize_site_root(site_root).strip("/")] if site_root else [""]
     pieces.extend(part.strip("/") for part in parts if part)
     path = "/".join(piece for piece in pieces if piece)
-    return f"/{path}/" if path else "/"
+    if not path:
+        return "/"
+    return f"/{path}/" if trailing_slash else f"/{path}"
 
 
 def slugify_ref_name(ref_name: str) -> str:
