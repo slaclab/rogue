@@ -94,6 +94,7 @@ jobs:
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             echo "DOCS_MODE=release" >> "$GITHUB_ENV"
             echo "DOCS_VERSION=${{ inputs.version_label }}" >> "$GITHUB_ENV"
+            echo "DOCS_LATEST_TARGET_VERSION=${{ inputs.version_label }}" >> "$GITHUB_ENV"
             echo "DOCS_OUTPUT_ROOT=.tmp/gh-pages/${{ inputs.staging_prefix }}" >> "$GITHUB_ENV"
             echo "ROGUE_DOCS_SITE_ROOT=/${REPO_NAME}/${{ inputs.staging_prefix }}" >> "$GITHUB_ENV"
             echo "DOCS_WRITE_ROOT_REDIRECT=0" >> "$GITHUB_ENV"
@@ -104,6 +105,17 @@ jobs:
             echo "ROGUE_DOCS_SITE_ROOT=/${REPO_NAME}" >> "$GITHUB_ENV"
             echo "DOCS_WRITE_ROOT_REDIRECT=${{ vars.ROGUE_DOCS_WRITE_ROOT_REDIRECT || '0' }}" >> "$GITHUB_ENV"
           fi
+
+      - name: Determine latest release tag from main
+        if: github.event_name != 'workflow_dispatch'
+        run: |
+          git fetch origin main --tags
+          latest_tag="$(git tag --merged origin/main --list 'v*' | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -n1)"
+          if [ -z "$latest_tag" ]; then
+            echo "Error: unable to determine latest release tag reachable from origin/main"
+            exit 1
+          fi
+          echo "DOCS_LATEST_TARGET_VERSION=$latest_tag" >> "$GITHUB_ENV"
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -158,6 +170,7 @@ jobs:
             --site-root "${ROGUE_DOCS_SITE_ROOT}"
             --mode "${DOCS_MODE}"
             --version "${DOCS_VERSION}"
+            --latest-target-version "${DOCS_LATEST_TARGET_VERSION}"
           )
           if [ "${DOCS_WRITE_ROOT_REDIRECT}" = "1" ]; then
             publish_args+=(--write-root-redirect)
