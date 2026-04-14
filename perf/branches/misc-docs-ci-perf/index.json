@@ -1,0 +1,23 @@
+{
+  "ref_name": "misc-docs-ci-perf",
+  "ref_slug": "misc-docs-ci-perf",
+  "latest_url": "/rogue/perf/branches/misc-docs-ci-perf/latest.json",
+  "history": [
+    {
+      "ref_name": "misc-docs-ci-perf",
+      "sha": "5758586bd5a0b7196c2b94f74c6670c1eaad9f32",
+      "short_sha": "5758586",
+      "published_at": "2026-04-14T20:15:08Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/24420575580",
+      "summary_url": "/rogue/perf/branches/misc-docs-ci-perf/history/5758586bd5a0b7196c2b94f74c6670c1eaad9f32.json"
+    }
+  ],
+  "latest": {
+    "ref_name": "misc-docs-ci-perf",
+    "sha": "5758586bd5a0b7196c2b94f74c6670c1eaad9f32",
+    "short_sha": "5758586",
+    "published_at": "2026-04-14T20:15:08Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/24420575580",
+    "summary_url": "/rogue/perf/branches/misc-docs-ci-perf/latest.json"
+  }
+}
