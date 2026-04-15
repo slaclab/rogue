@@ -2,69 +2,69 @@
   "schema_version": 1,
   "ref_name": "EmuFpgaXvc",
   "ref_slug": "EmuFpgaXvc",
-  "sha": "6d125e13110a0487d37850ed4cfb9f1f40dc5a90",
-  "short_sha": "6d125e1",
-  "run_id": "24432724193",
-  "run_url": "https://github.com/slaclab/rogue/actions/runs/24432724193",
-  "published_at": "2026-04-15T02:12:18Z",
+  "sha": "d3d2deac9f96def5d176eb195a380242ae3b0389",
+  "short_sha": "d3d2dea",
+  "run_id": "24432835636",
+  "run_url": "https://github.com/slaclab/rogue/actions/runs/24432835636",
+  "published_at": "2026-04-15T02:16:03Z",
   "benchmarks": [
     {
       "name": "stream_bridge_perf",
       "complete": true,
       "rx_errors": 0,
-      "rate_display": "31.934 MB/s",
+      "rate_display": "30.737 MB/s",
       "notes": [
         "frames=10000/10000",
-        "elapsed=2.986 s"
+        "elapsed=3.103 s"
       ],
       "primary_metric": {
         "key": "throughput_mb_s",
-        "value": 31.933776841390927,
+        "value": 30.73723294232507,
         "unit": "MB/s",
         "better": "higher",
-        "display": "31.934 MB/s"
+        "display": "30.737 MB/s"
       },
       "raw": {
         "drain_complete": true,
-        "elapsed_sec": 2.986412540999993,
+        "elapsed_sec": 3.102668083999987,
         "frame_size": 10000,
         "frames_received": 10000,
         "frames_sent": 10000,
         "name": "stream_bridge_perf",
         "rx_errors": 0,
-        "throughput_mb_s": 31.933776841390927,
-        "timestamp": 1776219055.6369634
+        "throughput_mb_s": 30.73723294232507,
+        "timestamp": 1776219298.3228488
       }
     },
     {
       "name": "udp_packetizer_perf_v1_jumbo",
       "complete": true,
       "rx_errors": 0,
-      "rate_display": "27.684 MB/s",
+      "rate_display": "26.954 MB/s",
       "notes": [
         "frames=10000/10000",
-        "elapsed=3.445 s",
+        "elapsed=3.538 s",
         "ver=1",
         "jumbo=yes"
       ],
       "primary_metric": {
         "key": "throughput_mb_s",
-        "value": 27.683938116958792,
+        "value": 26.95362317386203,
         "unit": "MB/s",
         "better": "higher",
-        "display": "27.684 MB/s"
+        "display": "26.954 MB/s"
       },
       "raw": {
         "drain_complete": true,
-        "elapsed_sec": 3.4448650780000207,
+        "elapsed_sec": 3.538204530999991,
         "frame_size": 10000,
         "frames_received": 10000,
         "frames_sent": 10000,
         "jumbo": true,
         "name": "udp_packetizer_perf_v1_jumbo",
         "rx_errors": 0,
-        "throughput_mb_s": 27.683938116958792,
-        "timestamp": 1776219060.102416,
+        "throughput_mb_s": 26.95362317386203,
+        "timestamp": 1776219302.8662267,
         "version": 1
       }
     },
@@ -72,31 +72,31 @@
       "name": "udp_packetizer_perf_v1_std",
       "complete": true,
       "rx_errors": 0,
-      "rate_display": "22.332 MB/s",
+      "rate_display": "22.083 MB/s",
       "notes": [
         "frames=10000/10000",
-        "elapsed=4.270 s",
+        "elapsed=4.319 s",
         "ver=1",
         "jumbo=no"
       ],
       "primary_metric": {
         "key": "throughput_mb_s",
-        "value": 22.33238605879016,
+        "value": 22.083148279665767,
         "unit": "MB/s",
         "better": "higher",
-        "display": "22.332 MB/s"
+        "display": "22.083 MB/s"
       },
       "raw": {
         "drain_complete": true,
-        "elapsed_sec": 4.270364635000021,
+        "elapsed_sec": 4.318561394999989,
         "frame_size": 10000,
         "frames_received": 10000,
         "frames_sent": 10000,
         "jumbo": false,
         "name": "udp_packetizer_perf_v1_std",
         "rx_errors": 0,
-        "throughput_mb_s": 22.33238605879016,
-        "timestamp": 1776219069.8548393,
+        "throughput_mb_s": 22.083148279665767,
+        "timestamp": 1776219312.758478,
         "version": 1
       }
     },
@@ -104,31 +104,31 @@
       "name": "udp_packetizer_perf_v2_jumbo",
       "complete": true,
       "rx_errors": 0,
-      "rate_display": "27.411 MB/s",
+      "rate_display": "26.709 MB/s",
       "notes": [
         "frames=10000/10000",
-        "elapsed=3.479 s",
+        "elapsed=3.571 s",
         "ver=2",
         "jumbo=yes"
       ],
       "primary_metric": {
         "key": "throughput_mb_s",
-        "value": 27.41072960799349,
+        "value": 26.70918087779937,
         "unit": "MB/s",
         "better": "higher",
-        "display": "27.411 MB/s"
+        "display": "26.709 MB/s"
       },
       "raw": {
         "drain_complete": true,
-        "elapsed_sec": 3.4792007730000023,
+        "elapsed_sec": 3.5705861619999837,
         "frame_size": 10000,
         "frames_received": 10000,
         "frames_sent": 10000,
         "jumbo": true,
         "name": "udp_packetizer_perf_v2_jumbo",
         "rx_errors": 0,
-        "throughput_mb_s": 27.41072960799349,
-        "timestamp": 1776219064.5830138,
+        "throughput_mb_s": 26.70918087779937,
+        "timestamp": 1776219307.4383514,
         "version": 2
       }
     },
@@ -136,31 +136,31 @@
       "name": "udp_packetizer_perf_v2_std",
       "complete": true,
       "rx_errors": 0,
-      "rate_display": "21.016 MB/s",
+      "rate_display": "21.646 MB/s",
       "notes": [
         "frames=10000/10000",
-        "elapsed=4.538 s",
+        "elapsed=4.406 s",
         "ver=2",
         "jumbo=no"
       ],
       "primary_metric": {
         "key": "throughput_mb_s",
-        "value": 21.016463882550628,
+        "value": 21.645675714566263,
         "unit": "MB/s",
         "better": "higher",
-        "display": "21.016 MB/s"
+        "display": "21.646 MB/s"
       },
       "raw": {
         "drain_complete": true,
-        "elapsed_sec": 4.537748699000019,
+        "elapsed_sec": 4.405842205999988,
         "frame_size": 10000,
         "frames_received": 10000,
         "frames_sent": 10000,
         "jumbo": false,
         "name": "udp_packetizer_perf_v2_std",
         "rx_errors": 0,
-        "throughput_mb_s": 21.016463882550628,
-        "timestamp": 1776219075.3939042,
+        "throughput_mb_s": 21.645675714566263,
+        "timestamp": 1776219318.1657267,
         "version": 2
       }
     },
@@ -168,196 +168,196 @@
       "name": "variable_rate_perf_linkedGetRate",
       "complete": true,
       "rx_errors": "n/a",
-      "rate_display": "7666.814 ns/op, 130432 ops/s",
+      "rate_display": "7258.737 ns/op, 137765 ops/s",
       "notes": [
-        "cycles=1874866445.000",
+        "cycles=1775016915.000",
         "threshold_pass=yes"
       ],
       "primary_metric": {
         "key": "avg_ns",
-        "value": 7666.81438,
+        "value": 7258.73721,
         "unit": "ns/op",
         "better": "lower",
-        "display": "7666.814 ns/op"
+        "display": "7258.737 ns/op"
       },
       "raw": {
-        "avg_ns": 7666.81438,
+        "avg_ns": 7258.73721,
         "benchmark": "linkedGetRate",
-        "cycles": 1874866445.0,
+        "cycles": 1775016915.0,
         "max_avg_ns": 26666.666666666668,
         "max_cycles": 8000000000.0,
         "name": "variable_rate_perf_linkedGetRate",
-        "rate_hz": 130432,
+        "rate_hz": 137765,
         "threshold_pass": true,
-        "timestamp": 1776219080.1582744
+        "timestamp": 1776219322.819329
       }
     },
     {
       "name": "variable_rate_perf_linkedSetRate",
       "complete": true,
       "rx_errors": "n/a",
-      "rate_display": "10685.730 ns/op, 93582 ops/s",
+      "rate_display": "10319.582 ns/op, 96903 ops/s",
       "notes": [
-        "cycles=2613119236.000",
+        "cycles=2523591091.000",
         "threshold_pass=yes"
       ],
       "primary_metric": {
         "key": "avg_ns",
-        "value": 10685.7297,
+        "value": 10319.58178,
         "unit": "ns/op",
         "better": "lower",
-        "display": "10685.730 ns/op"
+        "display": "10319.582 ns/op"
       },
       "raw": {
-        "avg_ns": 10685.7297,
+        "avg_ns": 10319.58178,
         "benchmark": "linkedSetRate",
-        "cycles": 2613119236.0,
+        "cycles": 2523591091.0,
         "max_avg_ns": 30000.0,
         "max_cycles": 9000000000.0,
         "name": "variable_rate_perf_linkedSetRate",
-        "rate_hz": 93582,
+        "rate_hz": 96903,
         "threshold_pass": true,
-        "timestamp": 1776219079.3911014
+        "timestamp": 1776219322.0929134
       }
     },
     {
       "name": "variable_rate_perf_localGetRate",
       "complete": true,
       "rx_errors": "n/a",
-      "rate_display": "1869.754 ns/op, 534829 ops/s",
+      "rate_display": "1811.628 ns/op, 551989 ops/s",
       "notes": [
-        "cycles=457239310.000",
+        "cycles=443033206.000",
         "threshold_pass=yes"
       ],
       "primary_metric": {
         "key": "avg_ns",
-        "value": 1869.75371,
+        "value": 1811.62796,
         "unit": "ns/op",
         "better": "lower",
-        "display": "1869.754 ns/op"
+        "display": "1811.628 ns/op"
       },
       "raw": {
-        "avg_ns": 1869.75371,
+        "avg_ns": 1811.62796,
         "benchmark": "localGetRate",
-        "cycles": 457239310.0,
+        "cycles": 443033206.0,
         "max_avg_ns": 20000.0,
         "max_cycles": 6000000000.0,
         "name": "variable_rate_perf_localGetRate",
-        "rate_hz": 534829,
+        "rate_hz": 551989,
         "threshold_pass": true,
-        "timestamp": 1776219078.322148
+        "timestamp": 1776219321.0604665
       }
     },
     {
       "name": "variable_rate_perf_localSetRate",
       "complete": true,
       "rx_errors": "n/a",
-      "rate_display": "2553.513 ns/op, 391617 ops/s",
+      "rate_display": "2482.098 ns/op, 402884 ops/s",
       "notes": [
-        "cycles=624449973.000",
+        "cycles=606989190.000",
         "threshold_pass=yes"
       ],
       "primary_metric": {
         "key": "avg_ns",
-        "value": 2553.51306,
+        "value": 2482.0984,
         "unit": "ns/op",
         "better": "lower",
-        "display": "2553.513 ns/op"
+        "display": "2482.098 ns/op"
       },
       "raw": {
-        "avg_ns": 2553.51306,
+        "avg_ns": 2482.0984,
         "benchmark": "localSetRate",
-        "cycles": 624449973.0,
+        "cycles": 606989190.0,
         "max_avg_ns": 26666.666666666668,
         "max_cycles": 8000000000.0,
         "name": "variable_rate_perf_localSetRate",
-        "rate_hz": 391617,
+        "rate_hz": 402884,
         "threshold_pass": true,
-        "timestamp": 1776219078.1347864
+        "timestamp": 1776219320.8788433
       }
     },
     {
       "name": "variable_rate_perf_remoteGetRate",
       "complete": true,
       "rx_errors": "n/a",
-      "rate_display": "6774.931 ns/op, 147602 ops/s",
+      "rate_display": "6669.079 ns/op, 149945 ops/s",
       "notes": [
-        "cycles=1656749314.000",
+        "cycles=1630888364.000",
         "threshold_pass=yes"
       ],
       "primary_metric": {
         "key": "avg_ns",
-        "value": 6774.93102,
+        "value": 6669.0791,
         "unit": "ns/op",
         "better": "lower",
-        "display": "6774.931 ns/op"
+        "display": "6669.079 ns/op"
       },
       "raw": {
-        "avg_ns": 6774.93102,
+        "avg_ns": 6669.0791,
         "benchmark": "remoteGetRate",
-        "cycles": 1656749314.0,
+        "cycles": 1630888364.0,
         "max_avg_ns": 20000.0,
         "max_cycles": 6000000000.0,
         "name": "variable_rate_perf_remoteGetRate",
-        "rate_hz": 147602,
+        "rate_hz": 149945,
         "threshold_pass": true,
-        "timestamp": 1776219077.8790016
+        "timestamp": 1776219320.6301587
       }
     },
     {
       "name": "variable_rate_perf_remoteSetNvRate",
       "complete": true,
       "rx_errors": "n/a",
-      "rate_display": "8166.700 ns/op, 122448 ops/s",
+      "rate_display": "8235.423 ns/op, 121426 ops/s",
       "notes": [
-        "cycles=1997112380.000",
+        "cycles=2013925455.000",
         "threshold_pass=yes"
       ],
       "primary_metric": {
         "key": "avg_ns",
-        "value": 8166.7003,
+        "value": 8235.42326,
         "unit": "ns/op",
         "better": "lower",
-        "display": "8166.700 ns/op"
+        "display": "8235.423 ns/op"
       },
       "raw": {
-        "avg_ns": 8166.7003,
+        "avg_ns": 8235.42326,
         "benchmark": "remoteSetNvRate",
-        "cycles": 1997112380.0,
+        "cycles": 2013925455.0,
         "max_avg_ns": 23333.333333333332,
         "max_cycles": 7000000000.0,
         "name": "variable_rate_perf_remoteSetNvRate",
-        "rate_hz": 122448,
+        "rate_hz": 121426,
         "threshold_pass": true,
-        "timestamp": 1776219077.201092
+        "timestamp": 1776219319.9627707
       }
     },
     {
       "name": "variable_rate_perf_remoteSetRate",
       "complete": true,
       "rx_errors": "n/a",
-      "rate_display": "9793.980 ns/op, 102103 ops/s",
+      "rate_display": "9626.923 ns/op, 103875 ops/s",
       "notes": [
-        "cycles=2395043320.000",
+        "cycles=2354201466.000",
         "threshold_pass=yes"
       ],
       "primary_metric": {
         "key": "avg_ns",
-        "value": 9793.97957,
+        "value": 9626.9228,
         "unit": "ns/op",
         "better": "lower",
-        "display": "9793.980 ns/op"
+        "display": "9626.923 ns/op"
       },
       "raw": {
-        "avg_ns": 9793.97957,
+        "avg_ns": 9626.9228,
         "benchmark": "remoteSetRate",
-        "cycles": 2395043320.0,
+        "cycles": 2354201466.0,
         "max_avg_ns": 26666.666666666668,
         "max_cycles": 8000000000.0,
         "name": "variable_rate_perf_remoteSetRate",
-        "rate_hz": 102103,
+        "rate_hz": 103875,
         "threshold_pass": true,
-        "timestamp": 1776219076.3839655
+        "timestamp": 1776219319.1387556
       }
     }
   ]
