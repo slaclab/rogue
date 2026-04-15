@@ -85,11 +85,32 @@ def _find_free_port_block(host="127.0.0.1", count=3, start=20000, stop=60000):
     raise RuntimeError(f"Unable to find {count} consecutive free ports on {host}")
 
 
+def _worker_port_search_range(worker_id, *, start=20000, stop=60000, span=256):
+    # xdist workers probe ports in parallel. Give each worker a disjoint slice
+    # so they do not race on the same consecutive port block.
+    if not worker_id or worker_id == "master":
+        return start, stop
+
+    if worker_id.startswith("gw") and worker_id[2:].isdigit():
+        worker_index = int(worker_id[2:])
+        worker_start = start + (worker_index * span)
+        worker_stop = min(worker_start + span, stop)
+        if worker_start < worker_stop:
+            return worker_start, worker_stop
+
+    return start, stop
+
+
 @pytest.fixture
-def free_zmq_port():
+def free_zmq_port(worker_id):
     # Rogue's ZMQ server uses a base port plus adjacent ports, so integration
     # tests need a free consecutive block rather than a single ephemeral port.
-    return _find_free_port_block()
+    #
+    # When pytest-xdist is active, multiple workers may probe ports at the same
+    # time. Searching within worker-specific slices avoids collisions between
+    # concurrent integration tests on the same host.
+    start, stop = _worker_port_search_range(worker_id)
+    return _find_free_port_block(start=start, stop=stop)
 
 
 @pytest.fixture
@@ -103,3 +124,42 @@ def memory_root():
     root = MemoryRoot(name="root")
     with root:
         yield root
+
+
+# ---- XVC fixtures ----
+@pytest.fixture
+def xvc_server():
+    """Construct an Xvc server on kernel-assigned port (0) + start/stop.
+
+    Wires a FakeJtag responder so ``init()`` (which calls ``query()`` →
+    ``xfer()`` → ``queue_.pop()``) completes and the server thread reaches
+    ``XvcServer::run()`` / ``select()``.  Without this, the thread blocks
+    forever in ``queue_.pop()`` and never exercises the event-driven path.
+
+    Yields the started Xvc instance; test code uses ``xvc_server.getPort()``.
+    Teardown asserts ``_stop()`` returns quickly (event-driven shutdown);
+    the harder timing check lives in the gtest suite.
+    """
+    import os
+    import sys
+    xilinx_path = os.path.join(os.path.dirname(__file__),
+                               "protocols", "xilinx")
+    if xilinx_path not in sys.path:
+        sys.path.insert(0, xilinx_path)
+    from fake_jtag import FakeJtag
+
+    import rogue.protocols.xilinx as _xvc_mod
+    xvc = _xvc_mod.Xvc(0)
+    fake = FakeJtag()
+
+    pr.streamConnect(xvc, fake)
+    pr.streamConnect(fake, xvc)
+
+    xvc._start()
+    try:
+        yield xvc
+    finally:
+        t0 = time.monotonic()
+        xvc._stop()
+        elapsed = time.monotonic() - t0
+        assert elapsed < 0.5, f"xvc._stop() took {elapsed:.3f}s (>0.5s budget)"
