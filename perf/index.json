@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-15T02:16:03Z",
+  "generated_at": "2026-04-15T02:36:49Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -71,6 +71,14 @@
       "ref_slug": "EmuFpgaXvc",
       "latest_url": "/rogue/perf/branches/EmuFpgaXvc/latest.json",
       "history": [
+        {
+          "ref_name": "EmuFpgaXvc",
+          "sha": "2b14941eb879ab8e09eea041cc8438084aa08cc5",
+          "short_sha": "2b14941",
+          "published_at": "2026-04-15T02:36:49Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/24433378848",
+          "summary_url": "/rogue/perf/branches/EmuFpgaXvc/history/2b14941eb879ab8e09eea041cc8438084aa08cc5.json"
+        },
         {
           "ref_name": "EmuFpgaXvc",
           "sha": "d3d2deac9f96def5d176eb195a380242ae3b0389",
@@ -222,22 +230,14 @@
           "published_at": "2026-04-14T21:43:12Z",
           "run_url": "https://github.com/slaclab/rogue/actions/runs/24424245156",
           "summary_url": "/rogue/perf/branches/EmuFpgaXvc/history/e98f8b01adcf8f4346c1c09a8ef2e20f12080584.json"
-        },
-        {
-          "ref_name": "EmuFpgaXvc",
-          "sha": "c58404dbc4430f4d7e2e3b1bfba13ae5cd547851",
-          "short_sha": "c58404d",
-          "published_at": "2026-04-14T21:23:51Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/24423209314",
-          "summary_url": "/rogue/perf/branches/EmuFpgaXvc/history/c58404dbc4430f4d7e2e3b1bfba13ae5cd547851.json"
         }
       ],
       "latest": {
         "ref_name": "EmuFpgaXvc",
-        "sha": "d3d2deac9f96def5d176eb195a380242ae3b0389",
-        "short_sha": "d3d2dea",
-        "published_at": "2026-04-15T02:16:03Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/24432835636",
+        "sha": "2b14941eb879ab8e09eea041cc8438084aa08cc5",
+        "short_sha": "2b14941",
+        "published_at": "2026-04-15T02:36:49Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/24433378848",
         "summary_url": "/rogue/perf/branches/EmuFpgaXvc/latest.json"
       }
     },
