@@ -5,6 +5,14 @@
   "history": [
     {
       "ref_name": "adding-more-unit-tests",
+      "sha": "02daab3750289ab06e873bdbf4ae5e8d453f8a36",
+      "short_sha": "02daab3",
+      "published_at": "2026-04-15T16:05:46Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/24464724886",
+      "summary_url": "/rogue/perf/branches/adding-more-unit-tests/history/02daab3750289ab06e873bdbf4ae5e8d453f8a36.json"
+    },
+    {
+      "ref_name": "adding-more-unit-tests",
       "sha": "ee6b60fa5a0f500e90dbbd5998a637f92d4fbf2d",
       "short_sha": "ee6b60f",
       "published_at": "2026-04-15T15:54:02Z",
@@ -46,10 +54,10 @@
   ],
   "latest": {
     "ref_name": "adding-more-unit-tests",
-    "sha": "ee6b60fa5a0f500e90dbbd5998a637f92d4fbf2d",
-    "short_sha": "ee6b60f",
-    "published_at": "2026-04-15T15:54:02Z",
-    "run_url": "https://github.com/slaclab/rogue/actions/runs/24464191608",
+    "sha": "02daab3750289ab06e873bdbf4ae5e8d453f8a36",
+    "short_sha": "02daab3",
+    "published_at": "2026-04-15T16:05:46Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/24464724886",
     "summary_url": "/rogue/perf/branches/adding-more-unit-tests/latest.json"
   }
 }
