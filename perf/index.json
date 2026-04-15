@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-15T01:29:06Z",
+  "generated_at": "2026-04-15T01:40:05Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -71,6 +71,14 @@
       "ref_slug": "EmuFpgaXvc",
       "latest_url": "/rogue/perf/branches/EmuFpgaXvc/latest.json",
       "history": [
+        {
+          "ref_name": "EmuFpgaXvc",
+          "sha": "d9e21689296544a3112bf45ac908073e287383da",
+          "short_sha": "d9e2168",
+          "published_at": "2026-04-15T01:40:05Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/24431847544",
+          "summary_url": "/rogue/perf/branches/EmuFpgaXvc/history/d9e21689296544a3112bf45ac908073e287383da.json"
+        },
         {
           "ref_name": "EmuFpgaXvc",
           "sha": "a89389cff7722739495069a2fc3160ae6df3a159",
@@ -210,10 +218,10 @@
       ],
       "latest": {
         "ref_name": "EmuFpgaXvc",
-        "sha": "a89389cff7722739495069a2fc3160ae6df3a159",
-        "short_sha": "a89389c",
-        "published_at": "2026-04-15T01:29:06Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/24431547113",
+        "sha": "d9e21689296544a3112bf45ac908073e287383da",
+        "short_sha": "d9e2168",
+        "published_at": "2026-04-15T01:40:05Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/24431847544",
         "summary_url": "/rogue/perf/branches/EmuFpgaXvc/latest.json"
       }
     },
