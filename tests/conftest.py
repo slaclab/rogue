@@ -166,3 +166,36 @@ def xvc_server():
         xvc._stop()
         elapsed = time.monotonic() - t0
         assert elapsed < 0.5, f"xvc._stop() took {elapsed:.3f}s (>0.5s budget)"
+
+
+@pytest.fixture
+def xvc_session():
+    """Composed Xvc + FakeJtag fixture for E2E tests.
+
+    Yields (xvc, fake, port).
+    """
+    import os
+    import sys
+    xilinx_path = os.path.join(os.path.dirname(__file__),
+                               "protocols", "xilinx")
+    if xilinx_path not in sys.path:
+        sys.path.insert(0, xilinx_path)
+    from fake_jtag import FakeJtag
+
+    import rogue.protocols.xilinx as _xvc_mod
+    xvc = _xvc_mod.Xvc(0)
+    fake = FakeJtag()
+
+    pr.streamConnect(xvc, fake)
+    pr.streamConnect(fake, xvc)
+
+    xvc._start()
+    try:
+        port = xvc.getPort()
+        assert 0 < port < 65536, f"xvc.getPort() returned implausible port {port}"
+        yield xvc, fake, port
+    finally:
+        t0 = time.monotonic()
+        xvc._stop()
+        elapsed = time.monotonic() - t0
+        assert elapsed < 0.5, f"xvc._stop() took {elapsed:.3f}s (>0.5s budget)"
