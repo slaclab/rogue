@@ -14,6 +14,7 @@
 from __future__ import annotations
 
 import argparse
+import html
 import json
 import os
 import subprocess
@@ -24,8 +25,10 @@ from perf_data import (
     benchmarks_by_name,
     branch_relative_json_path,
     build_run_summary,
+    comparison_highlight,
     compare_rows,
     format_comparison,
+    row_highlight,
     summary_metadata,
     tracked_ref_relative_json_path,
 )
@@ -88,32 +91,88 @@ def _render_reference_line(label: str, summary: dict[str, Any] | None) -> str:
     return f"- {label}: `{metadata['short_sha']}`{suffix}"
 
 
+def _table_columns(ref_name: str) -> list[tuple[str, str]]:
+    columns = [("previous", "Vs Previous Branch")]
+    if ref_name != "main":
+        columns.append(("main", "Vs Main"))
+    if ref_name != "pre-release":
+        columns.append(("pre_release", "Vs Pre-release"))
+    return columns
+
+
+def _comparison_class(comparison: dict[str, Any] | None) -> str:
+    highlight = comparison_highlight(comparison)
+    if highlight is None:
+        return ""
+    return f' class="cell-{highlight}"'
+
+
+def _row_class(comparisons: list[dict[str, Any] | None]) -> str:
+    highlight = row_highlight(comparisons)
+    if highlight is None:
+        return ""
+    return f' class="row-{highlight}"'
+
+
+def _render_summary_table(
+    current_summary: dict[str, Any],
+    previous_branch_summary: dict[str, Any] | None,
+    main_summary: dict[str, Any] | None,
+    pre_release_summary: dict[str, Any] | None,
+) -> str:
+    current_ref_name = current_summary.get("ref_name", "")
+    columns = _table_columns(current_ref_name)
+    previous_rows = benchmarks_by_name(previous_branch_summary)
+    main_rows = benchmarks_by_name(main_summary)
+    pre_release_rows = benchmarks_by_name(pre_release_summary)
+    comparison_sources = {
+        "previous": previous_rows,
+        "main": main_rows,
+        "pre_release": pre_release_rows,
+    }
+
+    header_cells = ["<th>Benchmark</th>", "<th>Current</th>"]
+    header_cells.extend(f"<th>{html.escape(label)}</th>" for _key, label in columns)
+
+    rows = []
+    for row in current_summary.get("benchmarks", []):
+        comparisons = {
+            key: compare_rows(row, comparison_sources[key].get(row["name"]))
+            for key, _label in columns
+        }
+        cells = [
+            f"<td><code>{html.escape(row['name'])}</code></td>",
+            f"<td>{html.escape(row.get('rate_display', ''))}</td>",
+        ]
+        for key, _label in columns:
+            cells.append(
+                f"<td{_comparison_class(comparisons[key])}>{html.escape(format_comparison(comparisons[key]))}</td>"
+            )
+        rows.append(f"<tr{_row_class(list(comparisons.values()))}>{''.join(cells)}</tr>")
+
+    return (
+        "<style>"
+        ".perf-table { border-collapse: collapse; width: 100%; margin-top: 0.75rem; }"
+        ".perf-table th, .perf-table td { border: 1px solid #d0d7de; padding: 0.45rem 0.6rem; text-align: left; }"
+        ".perf-table code { background: #f6f8fa; padding: 0.1rem 0.25rem; border-radius: 0.2rem; }"
+        ".perf-table tbody tr.row-regressed td { background: #fdecec; }"
+        ".perf-table tbody tr.row-improved td { background: #edf8ef; }"
+        ".perf-table td.cell-regressed { background: #f7c9c9 !important; }"
+        ".perf-table td.cell-improved { background: #cfeeda !important; }"
+        "</style>"
+        "<table class=\"perf-table\">"
+        f"<thead><tr>{''.join(header_cells)}</tr></thead>"
+        f"<tbody>{''.join(rows)}</tbody>"
+        "</table>"
+    )
+
+
 def render_summary_markdown(
     current_summary: dict[str, Any],
     previous_branch_summary: dict[str, Any] | None,
     main_summary: dict[str, Any] | None,
     pre_release_summary: dict[str, Any] | None,
 ) -> str:
-    rows = []
-    previous_rows = benchmarks_by_name(previous_branch_summary)
-    main_rows = benchmarks_by_name(main_summary)
-    pre_release_rows = benchmarks_by_name(pre_release_summary)
-
-    for row in current_summary.get("benchmarks", []):
-        notes = "; ".join(row.get("notes", []))
-        rows.append(
-            "| {name} | {current} | {previous} | {main} | {pre_release} | {complete} | {rx_errors} | {notes} |".format(
-                name=row["name"],
-                current=row.get("rate_display", ""),
-                previous=format_comparison(compare_rows(row, previous_rows.get(row["name"]))),
-                main=format_comparison(compare_rows(row, main_rows.get(row["name"]))),
-                pre_release=format_comparison(compare_rows(row, pre_release_rows.get(row["name"]))),
-                complete=row.get("complete"),
-                rx_errors=row.get("rx_errors"),
-                notes=notes,
-            )
-        )
-
     current_meta = summary_metadata(current_summary)
     branch_label = current_meta["ref_name"] or "current branch"
 
@@ -127,9 +186,12 @@ def render_summary_markdown(
         _render_reference_line("`main` baseline", main_summary),
         _render_reference_line("`pre-release` baseline", pre_release_summary),
         "",
-        "| Benchmark | Current | Vs Previous Branch | Vs Main | Vs Pre-release | Complete | Rx Errors | Notes |",
-        "| --- | --- | --- | --- | --- | --- | --- | --- |",
-        *rows,
+        _render_summary_table(
+            current_summary=current_summary,
+            previous_branch_summary=previous_branch_summary,
+            main_summary=main_summary,
+            pre_release_summary=pre_release_summary,
+        ),
     ]
 
     return "\n".join(lines) + "\n"

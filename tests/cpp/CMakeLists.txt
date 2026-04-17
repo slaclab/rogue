@@ -55,6 +55,7 @@ endfunction()
 add_subdirectory(core)
 add_subdirectory(memory)
 add_subdirectory(stream)
+add_subdirectory(protocols)
 
 if (NOT NO_PYTHON)
    add_subdirectory(smoke)

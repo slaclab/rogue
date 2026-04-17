@@ -13,11 +13,18 @@
 import rogue.interfaces.stream
 import rogue
 import time
+import pytest
+
+pytestmark = pytest.mark.integration
 
 #rogue.Logging.setLevel(rogue.Logging.Debug)
 
-FrameCount = 10000
-FrameSize  = 10000
+# Keep the default interfaces test focused on FIFO correctness rather than
+# throughput. The larger soak workload now lives in tests/perf/test_fifo_perf.py.
+FRAME_COUNT = 200
+FRAME_SIZE = 2048
+FRAME_DRAIN_POLLS = 200
+FRAME_DRAIN_INTERVAL = 0.1
 
 def fifo_path():
 
@@ -34,20 +41,20 @@ def fifo_path():
     prbsRx.checkPayload(True)
 
     print("Generating Frames")
-    for _ in range(FrameCount):
-        prbsTx.genFrame(FrameSize)
+    for _ in range(FRAME_COUNT):
+        prbsTx.genFrame(FRAME_SIZE)
 
-    # Wait at least 30 seconds for frames to go through
-    for i in range(300):
-        if prbsRx.getRxCount() == FrameCount:
+    # Allow time for the FIFO path to drain without turning this into a soak.
+    for _ in range(FRAME_DRAIN_POLLS):
+        if prbsRx.getRxCount() == FRAME_COUNT:
             break
-        time.sleep(.1)
+        time.sleep(FRAME_DRAIN_INTERVAL)
 
     if prbsRx.getRxErrors() != 0:
         raise AssertionError('PRBS Frame errors detected! Errors = {}'.format(prbsRx.getRxErrors()))
 
-    if prbsRx.getRxCount() != FrameCount:
-        raise AssertionError('Frame count error. Got = {} expected = {}'.format(prbsRx.getRxCount(),FrameCount))
+    if prbsRx.getRxCount() != FRAME_COUNT:
+        raise AssertionError('Frame count error. Got = {} expected = {}'.format(prbsRx.getRxCount(),FRAME_COUNT))
 
     print("Done testing")
 

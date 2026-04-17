@@ -41,7 +41,9 @@ if sys.platform == 'darwin' and platform.machine() == 'arm64':
                 allow_module_level=True)
 
 epics_prefix = 'test_ioc_v7'
-PropagateTimeout = 10.0
+PV_DISCOVERY_TIMEOUT = 10.0
+PropagateTimeout = 5.0
+POLL_INTERVAL = 0.05
 _local_ro_int = [0]  # backing storage for LocalRoInt (mode='RO') poll test
 
 
@@ -347,7 +349,7 @@ class LocalRootWithEpics(LocalRoot):
 
 # TEST-01: convergence helper
 def wait_pv_value(ctxt, pv_name, expected, timeout=PropagateTimeout, transform=None):
-    start = time.time()
+    start = time.monotonic()
 
     while True:
         try:
@@ -359,13 +361,13 @@ def wait_pv_value(ctxt, pv_name, expected, timeout=PropagateTimeout, transform=N
         except Exception:
             pass
 
-        if (time.time() - start) > timeout:
+        if (time.monotonic() - start) > timeout:
             raise AssertionError('Timed out waiting for pv_name={} expected={} last={}'.format(
                 pv_name,
                 expected,
                 value if 'value' in locals() else 'unavailable'))
 
-        time.sleep(0.1)
+        time.sleep(POLL_INTERVAL)
 
 
 def test_pv_name_hash():
@@ -557,7 +559,7 @@ def test_local_root():
         root.epics.list()
 
         # TEST-02: Wait for PVs to become visible through the EPICS server (TEST-01 coverage)
-        wait_pv_value(ctxt, device_epics_prefix + ':LocalRwInt', 0)
+        wait_pv_value(ctxt, device_epics_prefix + ':LocalRwInt', 0, timeout=PV_DISCOVERY_TIMEOUT)
 
         # TEST-03: RW a variable holding a scalar int value
         pv_name = device_epics_prefix + ':LocalRwInt'
@@ -760,7 +762,12 @@ def test_local_root():
         pv_name = device_epics_prefix + ':LocalRwArray'
         test_value = np.array([10.0, 20.0, 30.0, 40.0, 50.0])
         ctxt.put(pv_name, test_value)
-        time.sleep(0.5)  # Give time for propagation
+        wait_pv_value(
+            ctxt,
+            pv_name,
+            tuple(test_value.tolist()),
+            transform=lambda value: tuple(value.tolist()),
+        )
         test_result = ctxt.get(pv_name)
         if not np.array_equal(test_result, test_value):
             raise AssertionError('Array: pv_name={}: test_value={}; test_result={}'.format(
@@ -998,7 +1005,12 @@ def test_local_root():
 
         # TEST-42: Value within normal range → no alarm (severity=0, status=0)
         root.LongNameSubDev.AlarmTestFloatWithUnitsAndThresholds.set(5.0)
-        time.sleep(0.5)
+        wait_pv_value(
+            ctxt_raw,
+            alarm_long_pv,
+            (0, 0),
+            transform=lambda value: (value.alarm.severity, value.alarm.status),
+        )
         raw_val = ctxt_raw.get(alarm_long_pv)
         assert raw_val.alarm.severity == 0, \
             'Expected severity=0 for value=5.0, got: {}'.format(raw_val.alarm.severity)
@@ -1007,7 +1019,12 @@ def test_local_root():
 
         # TEST-43: Value above highAlarm → major alarm (severity=2, status=3 AlarmHiHi)
         root.LongNameSubDev.AlarmTestFloatWithUnitsAndThresholds.set(9.5)
-        time.sleep(0.5)
+        wait_pv_value(
+            ctxt_raw,
+            alarm_long_pv,
+            (2, 3),
+            transform=lambda value: (value.alarm.severity, value.alarm.status),
+        )
         raw_val = ctxt_raw.get(alarm_long_pv)
         assert raw_val.alarm.severity == 2, \
             'Expected severity=2 (major) for value=9.5 > highAlarm=9.0, got: {}'.format(
@@ -1017,7 +1034,12 @@ def test_local_root():
 
         # TEST-44: Value below lowAlarm → major alarm (severity=2, status=5 AlarmLoLo)
         root.LongNameSubDev.AlarmTestFloatWithUnitsAndThresholds.set(0.5)
-        time.sleep(0.5)
+        wait_pv_value(
+            ctxt_raw,
+            alarm_long_pv,
+            (2, 5),
+            transform=lambda value: (value.alarm.severity, value.alarm.status),
+        )
         raw_val = ctxt_raw.get(alarm_long_pv)
         assert raw_val.alarm.severity == 2, \
             'Expected severity=2 (major) for value=0.5 < lowAlarm=1.0, got: {}'.format(
@@ -1027,7 +1049,12 @@ def test_local_root():
 
         # TEST-45: Value between lowAlarm and lowWarning → minor alarm (severity=1, status=6)
         root.LongNameSubDev.AlarmTestFloatWithUnitsAndThresholds.set(1.5)
-        time.sleep(0.5)
+        wait_pv_value(
+            ctxt_raw,
+            alarm_long_pv,
+            (1, 6),
+            transform=lambda value: (value.alarm.severity, value.alarm.status),
+        )
         raw_val = ctxt_raw.get(alarm_long_pv)
         assert raw_val.alarm.severity == 1, \
             'Expected severity=1 (minor) for value=1.5 in (lowAlarm=1.0, lowWarning=2.0), got: {}'.format(

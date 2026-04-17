@@ -25,10 +25,12 @@ from perf_data import (
     branch_history_relative_json_path,
     branch_relative_json_path,
     build_run_summary,
+    comparison_highlight,
     compare_rows,
     format_comparison,
     perf_index_relative_json_path,
     read_json,
+    row_highlight,
     slugify_ref_name,
     summary_metadata,
     tracked_ref_relative_json_path,
@@ -236,45 +238,63 @@ def _render_history_list(history: list[dict[str, Any]]) -> str:
     return "<ul>" + "".join(items) + "</ul>"
 
 
+def _table_columns(ref_name: str) -> list[tuple[str, str]]:
+    columns = [("previous", "Vs Previous")]
+    if ref_name != "main":
+        columns.append(("main", "Vs Main"))
+    if ref_name != "pre-release":
+        columns.append(("pre_release", "Vs Pre-release"))
+    return columns
+
+
+def _comparison_class(comparison: dict[str, Any] | None) -> str:
+    highlight = comparison_highlight(comparison)
+    if highlight is None:
+        return ""
+    return f' class="cell-{highlight}"'
+
+
+def _row_class(comparisons: list[dict[str, Any] | None]) -> str:
+    highlight = row_highlight(comparisons)
+    if highlight is None:
+        return ""
+    return f' class="row-{highlight}"'
+
+
 def _render_branch_table(current: dict[str, Any], previous: dict[str, Any] | None, refs: dict[str, dict[str, Any]]) -> str:
     current_rows = current.get("benchmarks", [])
     previous_rows = benchmarks_by_name(previous)
     main_rows = benchmarks_by_name(refs.get("main"))
     pre_release_rows = benchmarks_by_name(refs.get("pre-release"))
     ref_name = current.get("ref_name", "")
+    columns = _table_columns(ref_name)
+    comparison_sources = {
+        "previous": previous_rows,
+        "main": main_rows,
+        "pre_release": pre_release_rows,
+    }
 
     rows = []
     for row in current_rows:
-        previous_text = format_comparison(compare_rows(row, previous_rows.get(row["name"])))
-        if ref_name == "main":
-            main_text = "current ref"
-        else:
-            main_text = format_comparison(compare_rows(row, main_rows.get(row["name"])))
-
-        if ref_name == "pre-release":
-            pre_release_text = "current ref"
-        else:
-            pre_release_text = format_comparison(compare_rows(row, pre_release_rows.get(row["name"])))
-
-        notes = "; ".join(row.get("notes", []))
-        rows.append(
-            "<tr>"
-            f"<td><code>{html.escape(row['name'])}</code></td>"
-            f"<td>{html.escape(row.get('rate_display', ''))}</td>"
-            f"<td>{html.escape(previous_text)}</td>"
-            f"<td>{html.escape(main_text)}</td>"
-            f"<td>{html.escape(pre_release_text)}</td>"
-            f"<td>{html.escape(str(row.get('complete')))}</td>"
-            f"<td>{html.escape(str(row.get('rx_errors')))}</td>"
-            f"<td>{html.escape(notes)}</td>"
-            "</tr>"
-        )
+        comparisons = {
+            key: compare_rows(row, comparison_sources[key].get(row["name"]))
+            for key, _label in columns
+        }
+        cells = [
+            f"<td><code>{html.escape(row['name'])}</code></td>",
+            f"<td>{html.escape(row.get('rate_display', ''))}</td>",
+        ]
+        for key, _label in columns:
+            cells.append(
+                f"<td{_comparison_class(comparisons[key])}>{html.escape(format_comparison(comparisons[key]))}</td>"
+            )
+        rows.append(f"<tr{_row_class(list(comparisons.values()))}>{''.join(cells)}</tr>")
 
     return (
         "<table>"
         "<thead><tr>"
-        "<th>Benchmark</th><th>Current</th><th>Vs Previous</th><th>Vs Main</th>"
-        "<th>Vs Pre-release</th><th>Complete</th><th>Rx Errors</th><th>Notes</th>"
+        "<th>Benchmark</th><th>Current</th>"
+        f"{''.join(f'<th>{html.escape(label)}</th>' for _key, label in columns)}"
         "</tr></thead>"
         f"<tbody>{''.join(rows)}</tbody></table>"
     )
@@ -338,6 +358,10 @@ def render_dashboard(site_root: str, refs: dict[str, dict[str, Any]], branches: 
       --muted: #5c6b80;
       --link: #005a9c;
       --code: #eef3fb;
+      --row-regressed: #fdecec;
+      --row-improved: #edf8ef;
+      --cell-regressed: #f7c9c9;
+      --cell-improved: #cfeeda;
     }}
     * {{
       box-sizing: border-box;
@@ -388,6 +412,18 @@ def render_dashboard(site_root: str, refs: dict[str, dict[str, Any]], branches: 
       letter-spacing: 0.02em;
       text-transform: uppercase;
       color: var(--muted);
+    }}
+    tbody tr.row-regressed td {{
+      background: var(--row-regressed);
+    }}
+    tbody tr.row-improved td {{
+      background: var(--row-improved);
+    }}
+    td.cell-regressed {{
+      background: var(--cell-regressed);
+    }}
+    td.cell-improved {{
+      background: var(--cell-improved);
     }}
     a {{
       color: var(--link);
