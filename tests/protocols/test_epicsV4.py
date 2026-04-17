@@ -21,7 +21,9 @@ from p4p.nt import NTURI
 pytestmark = [pytest.mark.integration, pytest.mark.epics]
 
 epics_prefix='test_ioc'
-PropagateTimeout = 10.0
+PV_DISCOVERY_TIMEOUT = 10.0
+PropagateTimeout = 5.0
+POLL_INTERVAL = 0.05
 
 class SimpleDev(pr.Device):
 
@@ -132,7 +134,7 @@ class LocalRootWithEpics(LocalRoot):
 
 
 def wait_pv_value(ctxt, pv_name, expected, timeout=PropagateTimeout, transform=None):
-    start = time.time()
+    start = time.monotonic()
 
     while True:
         try:
@@ -144,13 +146,13 @@ def wait_pv_value(ctxt, pv_name, expected, timeout=PropagateTimeout, transform=N
         except Exception:
             pass
 
-        if (time.time() - start) > timeout:
+        if (time.monotonic() - start) > timeout:
             raise AssertionError('Timed out waiting for pv_name={} expected={} last={}'.format(
                 pv_name,
                 expected,
                 value if 'value' in locals() else 'unavailable'))
 
-        time.sleep(0.1)
+        time.sleep(POLL_INTERVAL)
 
 def test_local_root():
     """
@@ -179,7 +181,7 @@ def test_local_root():
             root.epics.list()
 
             # Wait for PVs to become visible through the EPICS server.
-            wait_pv_value(ctxt, device_epics_prefix+':LocalRwInt', 0)
+            wait_pv_value(ctxt, device_epics_prefix+':LocalRwInt', 0, timeout=PV_DISCOVERY_TIMEOUT)
 
             # Test RW a variable holding an scalar value
             pv_name=device_epics_prefix+':LocalRwInt'

@@ -15,6 +15,8 @@ import pytest
 
 pytestmark = pytest.mark.integration
 
+ZMQ_UPDATE_TIMEOUT = 2.0
+
 
 class ZmqIntegrationDevice(pr.Device):
     def __init__(self, **kwargs):
@@ -91,7 +93,7 @@ def test_virtual_client_over_zmq(wait_until, free_zmq_port):
             # subscription path rather than local method calls.
             remote_value.addListener(lambda path, value: updates.append((path, value.value)))
             root.Dev.Value.set(9)
-            assert wait_until(lambda: ("Top.Dev.Value", 9) in updates, timeout=5.0)
+            assert wait_until(lambda: ("Top.Dev.Value", 9) in updates, timeout=ZMQ_UPDATE_TIMEOUT)
         finally:
             client.stop()
             pr_interfaces.VirtualClient.ClientCache.clear()
@@ -116,7 +118,7 @@ def test_virtual_client_respects_noserve_update_filter(wait_until, free_zmq_port
             root.Dev.Value.set(11)
             root.Dev.HiddenValue.set(17)
 
-            assert wait_until(lambda: ("Top.Dev.Value", 11) in visible_updates, timeout=5.0)
+            assert wait_until(lambda: ("Top.Dev.Value", 11) in visible_updates, timeout=ZMQ_UPDATE_TIMEOUT)
         finally:
             client.stop()
             pr_interfaces.VirtualClient.ClientCache.clear()

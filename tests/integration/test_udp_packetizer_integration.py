@@ -32,13 +32,15 @@ FRAME_SIZE = 2048
 # We only bail out if the counter stops advancing for STALL_WINDOW seconds,
 # which is a reliable indicator that the pipeline is genuinely stuck rather
 # than merely slow.
-STALL_WINDOW = 5.0
+STALL_WINDOW = 3.0
 POLL_INTERVAL = 0.01
 
 # RSSI open is a one-shot handshake with no incremental progress, so it still
-# uses a plain bound. This has never been the flake source, but 30s gives
-# plenty of headroom on loaded runners.
-CONNECTION_TIMEOUT = 30.0
+# uses a plain bound. On loopback this should complete quickly; keep enough
+# headroom for loaded CI workers without letting a bad run sit for 30 seconds.
+CONNECTION_TIMEOUT = 10.0
+CONNECTION_POLL_INTERVAL = 0.05
+TEARDOWN_SETTLE_DELAY = 0.05
 
 
 def wait_for_progress(get_value, target, label):
@@ -180,7 +182,7 @@ def run_udp_packetizer_path(version, jumbo):
         while not client_rssi.getOpen():
             if time.monotonic() > open_deadline:
                 raise AssertionError(f"RSSI timeout error. Ver={version} Jumbo={jumbo}")
-            time.sleep(0.1)
+            time.sleep(CONNECTION_POLL_INTERVAL)
 
         out_of_order.period = 10
 
@@ -237,7 +239,7 @@ def run_udp_packetizer_path(version, jumbo):
                 server_rssi._stop()
             except Exception:
                 pass
-        time.sleep(0.1)
+        time.sleep(TEARDOWN_SETTLE_DELAY)
 
         prbs_tx = None
         prbs_rx = None

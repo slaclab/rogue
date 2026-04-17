@@ -19,8 +19,8 @@ import rogue.interfaces.memory
 
 
 def wait_for(predicate, timeout=2.0, interval=0.01):
-    deadline = time.time() + timeout
-    while time.time() < deadline:
+    deadline = time.monotonic() + timeout
+    while time.monotonic() < deadline:
         if predicate():
             return True
         time.sleep(interval)
@@ -102,13 +102,15 @@ def _worker_port_search_range(worker_id, *, start=20000, stop=60000, span=256):
 
 
 @pytest.fixture
-def free_zmq_port(worker_id):
+def free_zmq_port(pytestconfig):
     # Rogue's ZMQ server uses a base port plus adjacent ports, so integration
     # tests need a free consecutive block rather than a single ephemeral port.
     #
     # When pytest-xdist is active, multiple workers may probe ports at the same
     # time. Searching within worker-specific slices avoids collisions between
     # concurrent integration tests on the same host.
+    worker_input = getattr(pytestconfig, "workerinput", None)
+    worker_id = None if worker_input is None else worker_input.get("workerid")
     start, stop = _worker_port_search_range(worker_id)
     return _find_free_port_block(start=start, stop=stop)
 
