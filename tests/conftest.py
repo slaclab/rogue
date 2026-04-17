@@ -116,9 +116,10 @@ def free_zmq_port(pytestconfig):
 
 
 @pytest.fixture
-def free_tcp_port():
-    # Most TCP-backed integration tests only need one caller-selected port.
-    return _find_free_port_block(count=1)
+def free_tcp_port(worker_id):
+    # TcpServer/TcpClient use two consecutive ports (base and base+1).
+    start, stop = _worker_port_search_range(worker_id)
+    return _find_free_port_block(count=2, start=start, stop=stop)
 
 
 @pytest.fixture
