@@ -5,6 +5,14 @@
   "history": [
     {
       "ref_name": "RoCEv2-dev",
+      "sha": "64343dc140393f924966378da4feac314d8e9771",
+      "short_sha": "64343dc",
+      "published_at": "2026-04-18T20:40:37Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/24613382863",
+      "summary_url": "/rogue/perf/branches/RoCEv2-dev/history/64343dc140393f924966378da4feac314d8e9771.json"
+    },
+    {
+      "ref_name": "RoCEv2-dev",
       "sha": "e982fc7dbd9aa11c210c3718862d16cc5c118abd",
       "short_sha": "e982fc7",
       "published_at": "2026-04-18T20:13:45Z",
@@ -126,10 +134,10 @@
   ],
   "latest": {
     "ref_name": "RoCEv2-dev",
-    "sha": "e982fc7dbd9aa11c210c3718862d16cc5c118abd",
-    "short_sha": "e982fc7",
-    "published_at": "2026-04-18T20:13:45Z",
-    "run_url": "https://github.com/slaclab/rogue/actions/runs/24612884765",
+    "sha": "64343dc140393f924966378da4feac314d8e9771",
+    "short_sha": "64343dc",
+    "published_at": "2026-04-18T20:40:37Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/24613382863",
     "summary_url": "/rogue/perf/branches/RoCEv2-dev/latest.json"
   }
 }
