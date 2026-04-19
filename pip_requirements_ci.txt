@@ -5,6 +5,7 @@ parse
 click
 coverage
 codecov
+gcovr>=7.2
 pytest>=3.6
 pytest-cov
 pytest-xdist

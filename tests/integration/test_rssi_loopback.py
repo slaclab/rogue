@@ -116,6 +116,17 @@ def test_rssi_retransmit_counter_zero_clean_path():
     rssiSrv = rogue.protocols.rssi.Server(1400)
     rssiCli = rogue.protocols.rssi.Client(1400)
 
+    # The default RSSI retransmit timeout is 20 ms (Controller.cpp's
+    # locRetranTout_ init with TimeoutUnit=3 => ms).  Under pytest-xdist
+    # (3 workers on macOS arm64 runners) the 20 ms window is tight enough
+    # that ACK delivery jitter routinely exceeds it and RSSI retransmits
+    # even though every frame arrived intact — observed as 14/50 spurious
+    # retransmits in CI.  Bump to 200 ms so the timer tolerates scheduler
+    # jitter on busy runners.  Both sides negotiate this in the SYN
+    # handshake, so setting it on both ends pins the on-the-wire value.
+    rssiSrv.setLocRetranTout(200)
+    rssiCli.setLocRetranTout(200)
+
     udpSrv == rssiSrv.transport()
     udpCli == rssiCli.transport()
 

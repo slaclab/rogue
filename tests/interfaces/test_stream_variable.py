@@ -93,6 +93,13 @@ def test_variable_stream_no_update_no_frame():
     sv >> capture
 
     with root:
+        # Startup emits `enable: True` frames from Root + StreamVarDevice.
+        # On slow CI those can arrive after the old initial_count snapshot,
+        # racing the final assertion. Wait for the burst to land, then sleep
+        # a short settle window so any stragglers are counted BEFORE we
+        # snapshot initial_count. _varDone() itself must not add frames.
+        assert wait_for(lambda: len(capture.frames) >= 2, timeout=5.0)
+        time.sleep(0.1)
         initial_count = len(capture.frames)
         sv._varDone()
         time.sleep(0.1)
