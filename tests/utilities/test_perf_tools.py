@@ -143,6 +143,9 @@ def test_perf_publish_creates_branch_history_refs_and_dashboard(tmp_path):
     assert "feature/perf" in dashboard
     assert "Vs Main" in dashboard
     assert "Vs Pre-release" in dashboard
+    assert "Notes" not in dashboard
+    assert "Complete" not in dashboard
+    assert "Rx Errors" not in dashboard
 
 
 def test_ci_perf_summary_renders_branch_and_baseline_comparisons(tmp_path):
@@ -202,6 +205,93 @@ def test_ci_perf_summary_renders_branch_and_baseline_comparisons(tmp_path):
     assert "previous `feature/perf` run" in markdown
     assert "Vs Main" in markdown
     assert "improved" in markdown
+    assert "Notes" not in markdown
+    assert "Complete" not in markdown
+    assert "Rx Errors" not in markdown
+
+
+def test_perf_tables_omit_redundant_baseline_columns_and_highlight_threshold_crossings(tmp_path):
+    output_root = tmp_path / "gh-pages"
+
+    main_results = tmp_path / "main-results"
+    _write_result(main_results, "stream_bridge_perf", throughput_mb_s=100.0, frames_sent=10, frames_received=10)
+    perf_publish.publish_perf_data(
+        results_dir=main_results,
+        output_root=output_root,
+        site_root="/rogue",
+        ref_name="main",
+        sha="1111111abcdef",
+    )
+
+    pre_results = tmp_path / "pre-results"
+    _write_result(pre_results, "stream_bridge_perf", throughput_mb_s=100.0, frames_sent=10, frames_received=10)
+    perf_publish.publish_perf_data(
+        results_dir=pre_results,
+        output_root=output_root,
+        site_root="/rogue",
+        ref_name="pre-release",
+        sha="2222222abcdef",
+    )
+
+    main_dashboard = perf_publish.render_dashboard(
+        "/rogue",
+        refs={
+            "main": perf_data.read_json(output_root / "perf" / "refs" / "main" / "latest.json"),
+            "pre-release": perf_data.read_json(output_root / "perf" / "refs" / "pre-release" / "latest.json"),
+        },
+        branches=perf_publish._collect_branch_manifests("/rogue", output_root),
+    )
+    assert "<h2>main</h2>" in main_dashboard
+    main_section = main_dashboard.split("<h2>main</h2>", 1)[1].split("</section>", 1)[0]
+    assert "Vs Main" not in main_section
+    assert "Vs Pre-release" in main_section
+
+    pre_release_section = main_dashboard.split("<h2>pre-release</h2>", 1)[1].split("</section>", 1)[0]
+    assert "Vs Pre-release" not in pre_release_section
+    assert "Vs Main" in pre_release_section
+
+    previous_results = tmp_path / "previous-feature-results"
+    _write_result(previous_results, "stream_bridge_perf", throughput_mb_s=100.0, frames_sent=10, frames_received=10)
+    perf_publish.publish_perf_data(
+        results_dir=previous_results,
+        output_root=output_root,
+        site_root="/rogue",
+        ref_name="feature/perf",
+        sha="3333333abcdef",
+    )
+
+    current_results = tmp_path / "current-feature-results"
+    _write_result(current_results, "stream_bridge_perf", throughput_mb_s=90.0, frames_sent=10, frames_received=10)
+    perf_publish.publish_perf_data(
+        results_dir=current_results,
+        output_root=output_root,
+        site_root="/rogue",
+        ref_name="feature/perf",
+        sha="4444444abcdef",
+    )
+
+    dashboard = (output_root / "perf" / "index.html").read_text(encoding="utf-8")
+    assert 'class="row-regressed"' in dashboard
+    assert 'class="cell-regressed"' in dashboard
+
+    current_summary = perf_data.build_run_summary(current_results, "feature/perf", "4444444abcdef")
+    summary_html = ci_perf_summary.render_summary_markdown(
+        current_summary=current_summary,
+        previous_branch_summary=ci_perf_summary.load_published_summary(
+            perf_data.branch_relative_json_path("feature/perf"),
+            published_root=output_root,
+        ),
+        main_summary=ci_perf_summary.load_published_summary(
+            perf_data.tracked_ref_relative_json_path("main"),
+            published_root=output_root,
+        ),
+        pre_release_summary=ci_perf_summary.load_published_summary(
+            perf_data.tracked_ref_relative_json_path("pre-release"),
+            published_root=output_root,
+        ),
+    )
+    assert 'class="row-regressed"' in summary_html
+    assert 'class="cell-regressed"' in summary_html
 
 
 def test_perf_publish_prunes_deleted_branch_data(tmp_path):

@@ -15,11 +15,14 @@
 # continue starting rather than crashing with an unhandled exception.
 
 import threading
+import time
 import pyrogue as pr
 import pyrogue.interfaces.simulation
 import pytest
 
 pytestmark = pytest.mark.integration
+
+CONCURRENT_START_TIMEOUT = 3.0
 
 
 class TimeoutMemEmulate(pr.interfaces.simulation.MemEmulate):
@@ -154,12 +157,14 @@ def test_concurrent_root_start_with_timeouts():
         threads.append(t)
         t.start()
 
+    deadline = time.monotonic() + CONCURRENT_START_TIMEOUT
     for t in threads:
-        t.join(timeout=30)
+        remaining = max(0.0, deadline - time.monotonic())
+        t.join(timeout=remaining)
 
     try:
         for t in threads:
-            assert not t.is_alive(), f"Thread {t.name} did not finish within 30 s"
+            assert not t.is_alive(), f"Thread {t.name} did not finish within {CONCURRENT_START_TIMEOUT:.1f} s"
 
         assert len(errors) == 0, f"Root start failures: {errors}"
         assert len(roots) == num_roots

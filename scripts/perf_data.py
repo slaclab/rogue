@@ -22,6 +22,7 @@ from typing import Any
 
 SCHEMA_VERSION = 1
 TRACKED_BASELINE_REFS = ("main", "pre-release")
+COMPARISON_HIGHLIGHT_THRESHOLD_PERCENT = 5.0
 
 
 def utc_now_iso() -> str:
@@ -260,3 +261,27 @@ def format_comparison(comparison: dict[str, Any] | None) -> str:
         delta_text = f"{delta_text} {unit}"
 
     return f"{percent_text} ({delta_text}, {comparison['verdict']})"
+
+
+def comparison_highlight(comparison: dict[str, Any] | None) -> str | None:
+    if comparison is None:
+        return None
+
+    verdict = comparison.get("verdict")
+    if verdict not in {"improved", "regressed"}:
+        return None
+
+    percent = _coerce_float(comparison.get("percent"))
+    if percent is None or abs(percent) <= COMPARISON_HIGHLIGHT_THRESHOLD_PERCENT:
+        return None
+
+    return verdict
+
+
+def row_highlight(comparisons: list[dict[str, Any] | None]) -> str | None:
+    highlights = [comparison_highlight(comparison) for comparison in comparisons]
+    if "regressed" in highlights:
+        return "regressed"
+    if "improved" in highlights:
+        return "improved"
+    return None

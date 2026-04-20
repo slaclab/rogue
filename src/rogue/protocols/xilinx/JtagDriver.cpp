@@ -20,16 +20,13 @@
 #include "rogue/protocols/xilinx/JtagDriver.h"
 
 #include <arpa/inet.h>
-#include <dlfcn.h>
-#include <netinet/in.h>
-#include <pthread.h>
-#include <sys/socket.h>
 
 #include <cinttypes>
+#include <climits>
 #include <cmath>
 #include <cstdio>
+#include <cstring>
 #include <memory>
-#include <string>
 
 namespace rpx = rogue::protocols::xilinx;
 
@@ -47,20 +44,20 @@ rpx::JtagDriverPtr rpx::JtagDriver::create(uint16_t port) {
 
 rpx::JtagDriver::JtagDriver(uint16_t port)
     : port_(port),
-      drop_(0),
-      done_(false),
       drEn_(false),
+      done_{false},
+      drop_(0),
+      log_(nullptr),
       wordSize_(sizeof(Header)),
       memDepth_(1),
+      bufSz_(2048),
       retry_(10),
-      log_(nullptr),
+      xid_(0),
       periodNs_(UNKNOWN_PERIOD) {
     // start out with an initial header size; it might be increased
     // once we contacted the server...
-    bufSz_ = 2048;
-    txBuf_.reserve(bufSz_);
-    hdBuf_.reserve(hdBufMax());
-    hdBuf_.resize(hdBufMax());  // fill with zeros
+    txBuf_.resize(bufSz_);
+    hdBuf_.resize(hdBufMax());
 
     // Create logger
     log_ = rogue::Logging::create("xilinx.jtag");
@@ -69,11 +66,11 @@ rpx::JtagDriver::JtagDriver(uint16_t port)
 rpx::JtagDriver::Header rpx::JtagDriver::newXid() {
     if (XID_ANY == ++xid_) ++xid_;
 
-    return ((Header)(xid_)) << XID_SHIFT;
+    return (static_cast<Header>(xid_)) << XID_SHIFT;
 }
 
 rpx::JtagDriver::Xid rpx::JtagDriver::getXid(Header x) {
-    return (x >> 20) & 0xff;
+    return static_cast<Xid>((x >> 20) & 0xff);
 }
 
 uint32_t rpx::JtagDriver::getCmd(Header x) {
@@ -103,13 +100,13 @@ const char* rpx::JtagDriver::getMsg(unsigned e) {
         case ERR_BAD_COMMAND:
             return "Unsupported Command";
         case ERR_TRUNCATED:
-            return "Unsupported Command";
+            return "Truncated Message";
         case ERR_NOT_PRESENT:
             return "XVC Support not Instantiated in Firmware";
         default:
             break;
     }
-    return NULL;
+    return nullptr;
 }
 
 rpx::JtagDriver::Header rpx::JtagDriver::mkQuery() {
@@ -117,8 +114,10 @@ rpx::JtagDriver::Header rpx::JtagDriver::mkQuery() {
 }
 
 rpx::JtagDriver::Header rpx::JtagDriver::mkShift(unsigned len) {
+    if (len == 0)
+        throw(rogue::GeneralError::create("JtagDriver::mkShift()", "shift length must be > 0"));
     len = len - 1;
-    return PVERS | CMD_S | newXid() | (len << LEN_SHIFT);
+    return PVERS | CMD_S | newXid() | ((len & LEN_MASK) << LEN_SHIFT);
 }
 
 unsigned rpx::JtagDriver::wordSize(Header reply) {
@@ -131,15 +130,14 @@ unsigned rpx::JtagDriver::memDepth(Header reply) {
 
 uint32_t rpx::JtagDriver::cvtPerNs(Header reply) {
     unsigned rawVal = (reply >> XID_SHIFT) & 0xff;
-    double tmp;
 
     if (0 == rawVal) {
         return UNKNOWN_PERIOD;
     }
 
-    tmp = static_cast<double>(rawVal) * 4.0 / 256.0;
+    double tmp = static_cast<double>(rawVal) * 4.0 / 256.0;
 
-    return static_cast<uint32_t>(round(pow(10.0, tmp) * 1.0E9 / REF_FREQ_HZ()));
+    return static_cast<uint32_t>(std::round(std::pow(10.0, tmp) * 1.0E9 / REF_FREQ_HZ()));
 }
 
 unsigned rpx::JtagDriver::getWordSize() {
@@ -150,8 +148,8 @@ unsigned rpx::JtagDriver::getMemDepth() {
     return memDepth_;
 }
 
-rpx::JtagDriver::Header rpx::JtagDriver::getHdr(uint8_t* buf) {
-    Header hdr;
+rpx::JtagDriver::Header rpx::JtagDriver::getHdr(const uint8_t* buf) {
+    Header hdr{};
     memcpy(&hdr, buf, sizeof(hdr));
     if (!isLE()) {
         hdr = ntohl(hdr);
@@ -160,7 +158,10 @@ rpx::JtagDriver::Header rpx::JtagDriver::getHdr(uint8_t* buf) {
 }
 
 void rpx::JtagDriver::setHdr(uint8_t* buf, Header hdr) {
-    unsigned empty = getWordSize() - sizeof(hdr);
+    unsigned ws = getWordSize();
+    if (static_cast<size_t>(ws) < sizeof(hdr))
+        throw(rogue::GeneralError::create("JtagDriver::setHdr()", "wordSize %u < header size %zu", ws, sizeof(hdr)));
+    unsigned empty = ws - static_cast<unsigned>(sizeof(hdr));
 
     if (!isLE()) {
         hdr = ntohl(hdr);  // just use for byte-swap
@@ -176,33 +177,34 @@ void rpx::JtagDriver::init() {
 
 int rpx::JtagDriver::xferRel(uint8_t* txb, unsigned txBytes, Header* phdr, uint8_t* rxb, unsigned sizeBytes) {
     Xid xid = getXid(getHdr(txb));
-    unsigned attempt;
-    unsigned e;
-    int got;
+    int got = 0;
 
-    for (attempt = 0; attempt <= retry_; attempt++) {
+    for (unsigned attempt = 0; attempt <= retry_; attempt++) {
         // Check if thread should exit
-        if (this->done_) break;
+        if (this->done_.load(std::memory_order_acquire)) break;
 
         // Start data transfer with retry and timeout
-        Header hdr;
+        Header hdr{};
         try {
             got = xfer(txb, txBytes, &hdBuf_[0], getWordSize(), rxb, sizeBytes);
             hdr = getHdr(&hdBuf_[0]);
 
-            if ((e = getErr(hdr))) {
+            unsigned e = getErr(hdr);
+            if (e) {
                 char errb[256];
                 const char* msg = getMsg(e);
-                int pos;
 
-                pos = snprintf(errb, sizeof(errb), "Got error response from server -- ");
+                int pos = snprintf(errb, sizeof(errb), "Got error response from server -- ");
+                if (pos < 0) pos = 0;
+                if (static_cast<size_t>(pos) >= sizeof(errb)) pos = static_cast<int>(sizeof(errb) - 1);
+                size_t remaining = sizeof(errb) - static_cast<size_t>(pos);
 
                 if (msg)
-                    snprintf(errb + pos, sizeof(errb) - pos, "%s", msg);
+                    snprintf(errb + pos, remaining, "%s", msg);
                 else
-                    snprintf(errb + pos, sizeof(errb) - pos, "error %d", e);
+                    snprintf(errb + pos, remaining, "error %u", e);
 
-                throw(rogue::GeneralError::create("JtagDriver::xferRel()", "Protocol error"));
+                throw(rogue::GeneralError::create("JtagDriver::xferRel()", "%s", errb));
             }
             if (xid == XID_ANY || xid == getXid(hdr)) {
                 if (phdr) {
@@ -212,21 +214,21 @@ int rpx::JtagDriver::xferRel(uint8_t* txb, unsigned txBytes, Header* phdr, uint8
             }
         } catch (rogue::GeneralError&) {}
     }
-    if (!this->done_) throw(rogue::GeneralError::create("JtagDriver::xferRel()", "Timeout error"));
+    if (!this->done_.load(std::memory_order_acquire))
+        throw(rogue::GeneralError::create("JtagDriver::xferRel()", "Timeout error"));
 
     return (0);
 }
 
 uint64_t rpx::JtagDriver::query() {
-    Header hdr;
-    unsigned siz;
+    Header hdr{};
 
     setHdr(&txBuf_[0], mkQuery());
 
     xferRel(&txBuf_[0], getWordSize(), &hdr, nullptr, 0);
     wordSize_ = wordSize(hdr);
 
-    if (wordSize_ < sizeof(hdr)) {
+    if (static_cast<size_t>(wordSize_) < sizeof(hdr)) {
         log_->debug("Encountered an error. Please ensure the board is powered up.\n");
         throw(rogue::GeneralError::create("JtagDriver::query()",
                                           "Received invalid word size. Please ensure the board is powered up.\n"));
@@ -235,22 +237,26 @@ uint64_t rpx::JtagDriver::query() {
     memDepth_ = memDepth(hdr);
     periodNs_ = cvtPerNs(hdr);
 
-    log_->debug("Query result: wordSize %" PRId32 ", memDepth %" PRId32 ", period %l" PRId32 "ns\n",
+    log_->debug("Query result: wordSize %u, memDepth %u, period %" PRIu32 " ns\n",
                 wordSize_,
                 memDepth_,
-                static_cast<uint64_t>(periodNs_));
+                periodNs_);
 
     if (0 == memDepth_)
         retry_ = 0;
     else
         retry_ = 10;
 
-    if ((siz = (2 * memDepth_ + 1) * wordSize_) > bufSz_) {
+    uint64_t siz64 = (2ULL * static_cast<uint64_t>(memDepth_) + 1) * static_cast<uint64_t>(wordSize_);
+    if (siz64 > UINT_MAX)
+        throw(rogue::GeneralError::create("JtagDriver::query()", "buffer size overflows unsigned"));
+    unsigned siz = static_cast<unsigned>(siz64);
+    if (siz > bufSz_) {
         bufSz_ = siz;
-        txBuf_.reserve(bufSz_);
+        txBuf_.resize(bufSz_);
     }
 
-    return memDepth_ * wordSize_;
+    return static_cast<uint64_t>(memDepth_) * static_cast<uint64_t>(wordSize_);
 }
 
 uint32_t rpx::JtagDriver::getPeriodNs() {
@@ -266,25 +272,31 @@ uint32_t rpx::JtagDriver::setPeriodNs(uint32_t requestedPeriod) {
 }
 
 void rpx::JtagDriver::sendVectors(uint64_t bits, uint8_t* tms, uint8_t* tdi, uint8_t* tdo) {
+    if (bits == 0 || bits > LEN_MASK + 1)
+        throw(rogue::GeneralError::create("JtagDriver::sendVectors()",
+              "bit count %" PRIu64 " out of range [1, %u]", bits, static_cast<unsigned>(LEN_MASK + 1)));
+
     unsigned wsz            = getWordSize();
-    uint64_t bytesCeil      = (bits + 8 - 1) / 8;
-    unsigned wholeWords     = bytesCeil / wsz;
+    uint64_t bytesCeil      = (bits + 7) / 8;
+    unsigned wholeWords     = static_cast<unsigned>(bytesCeil / wsz);
     unsigned wholeWordBytes = wholeWords * wsz;
-    unsigned wordCeilBytes  = ((bytesCeil + wsz - 1) / wsz) * wsz;
-    unsigned idx;
-    unsigned bytesLeft = bytesCeil - wholeWordBytes;
+    unsigned wordCeilBytes  = static_cast<unsigned>(((bytesCeil + wsz - 1) / wsz) * wsz);
+    unsigned bytesLeft = static_cast<unsigned>(bytesCeil - wholeWordBytes);
     unsigned bytesTot  = wsz + 2 * wordCeilBytes;
 
-    uint8_t* wp;
+    if (bytesTot > bufSz_)
+        throw(rogue::GeneralError::create("JtagDriver::sendVectors()",
+              "bytesTot %u exceeds buffer size %u", bytesTot, bufSz_));
 
-    log_->debug("sendVec -- bits %l" PRId32 ", bytes %l" PRId32 ", bytesTot %" PRId32 "\n", bits, bytesCeil, bytesTot);
+    log_->debug("sendVec -- bits %" PRIu64 ", bytes %" PRIu64 ", bytesTot %u\n", bits, bytesCeil, bytesTot);
 
-    setHdr(&txBuf_[0], mkShift(bits));
+    setHdr(&txBuf_[0], mkShift(static_cast<unsigned>(bits)));
 
     // reformat
-    wp = &txBuf_[0] + wsz;  // past header
+    uint8_t* wp = &txBuf_[0] + wsz;  // past header
 
     // store sequence of TMS/TDI pairs; word-by-word
+    unsigned idx = 0;
     for (idx = 0; idx < wholeWordBytes; idx += wsz) {
         memcpy(wp, &tms[idx], wsz);
         wp += wsz;
@@ -295,7 +307,7 @@ void rpx::JtagDriver::sendVectors(uint64_t bits, uint8_t* tms, uint8_t* tdi, uin
         memcpy(wp, &tms[idx], bytesLeft);
         memcpy(wp + wsz, &tdi[idx], bytesLeft);
     }
-    xferRel(&txBuf_[0], bytesTot, nullptr, tdo, bytesCeil);
+    xferRel(&txBuf_[0], bytesTot, nullptr, tdo, static_cast<unsigned>(bytesCeil));
 }
 
 void rpx::JtagDriver::dumpInfo(FILE* f) {
