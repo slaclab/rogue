@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-20T18:51:09Z",
+  "generated_at": "2026-04-20T20:52:47Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -12,10 +12,10 @@
     },
     "pre-release": {
       "ref_name": "pre-release",
-      "sha": "5719d09407629ee0aaf0d1b59a9c36dc7d60f766",
-      "short_sha": "5719d09",
-      "published_at": "2026-04-20T18:18:56Z",
-      "run_url": "https://github.com/slaclab/rogue/actions/runs/24682779884",
+      "sha": "7a99eb3101d75f841fd1d18284d11c6e4b6c7bfe",
+      "short_sha": "7a99eb3",
+      "published_at": "2026-04-20T20:52:47Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/24689605438",
       "summary_url": "/rogue/perf/refs/pre-release/latest.json"
     }
   },
@@ -48,6 +48,14 @@
       "ref_slug": "pre-release",
       "latest_url": "/rogue/perf/branches/pre-release/latest.json",
       "history": [
+        {
+          "ref_name": "pre-release",
+          "sha": "7a99eb3101d75f841fd1d18284d11c6e4b6c7bfe",
+          "short_sha": "7a99eb3",
+          "published_at": "2026-04-20T20:52:47Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/24689605438",
+          "summary_url": "/rogue/perf/branches/pre-release/history/7a99eb3101d75f841fd1d18284d11c6e4b6c7bfe.json"
+        },
         {
           "ref_name": "pre-release",
           "sha": "5719d09407629ee0aaf0d1b59a9c36dc7d60f766",
@@ -83,34 +91,11 @@
       ],
       "latest": {
         "ref_name": "pre-release",
-        "sha": "5719d09407629ee0aaf0d1b59a9c36dc7d60f766",
-        "short_sha": "5719d09",
-        "published_at": "2026-04-20T18:18:56Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/24682779884",
+        "sha": "7a99eb3101d75f841fd1d18284d11c6e4b6c7bfe",
+        "short_sha": "7a99eb3",
+        "published_at": "2026-04-20T20:52:47Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/24689605438",
         "summary_url": "/rogue/perf/branches/pre-release/latest.json"
-      }
-    },
-    {
-      "ref_name": "test_udp_rssi-patch",
-      "ref_slug": "test_udp_rssi-patch",
-      "latest_url": "/rogue/perf/branches/test_udp_rssi-patch/latest.json",
-      "history": [
-        {
-          "ref_name": "test_udp_rssi-patch",
-          "sha": "f24a939500e137d8c6f5994bc07c0ce4b782facb",
-          "short_sha": "f24a939",
-          "published_at": "2026-04-20T18:51:09Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/24684183999",
-          "summary_url": "/rogue/perf/branches/test_udp_rssi-patch/history/f24a939500e137d8c6f5994bc07c0ce4b782facb.json"
-        }
-      ],
-      "latest": {
-        "ref_name": "test_udp_rssi-patch",
-        "sha": "f24a939500e137d8c6f5994bc07c0ce4b782facb",
-        "short_sha": "f24a939",
-        "published_at": "2026-04-20T18:51:09Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/24684183999",
-        "summary_url": "/rogue/perf/branches/test_udp_rssi-patch/latest.json"
       }
     },
     {
