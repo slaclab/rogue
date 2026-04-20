@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-20T18:18:57Z",
+  "generated_at": "2026-04-20T18:51:09Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -88,6 +88,29 @@
         "published_at": "2026-04-20T18:18:56Z",
         "run_url": "https://github.com/slaclab/rogue/actions/runs/24682779884",
         "summary_url": "/rogue/perf/branches/pre-release/latest.json"
+      }
+    },
+    {
+      "ref_name": "test_udp_rssi-patch",
+      "ref_slug": "test_udp_rssi-patch",
+      "latest_url": "/rogue/perf/branches/test_udp_rssi-patch/latest.json",
+      "history": [
+        {
+          "ref_name": "test_udp_rssi-patch",
+          "sha": "f24a939500e137d8c6f5994bc07c0ce4b782facb",
+          "short_sha": "f24a939",
+          "published_at": "2026-04-20T18:51:09Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/24684183999",
+          "summary_url": "/rogue/perf/branches/test_udp_rssi-patch/history/f24a939500e137d8c6f5994bc07c0ce4b782facb.json"
+        }
+      ],
+      "latest": {
+        "ref_name": "test_udp_rssi-patch",
+        "sha": "f24a939500e137d8c6f5994bc07c0ce4b782facb",
+        "short_sha": "f24a939",
+        "published_at": "2026-04-20T18:51:09Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/24684183999",
+        "summary_url": "/rogue/perf/branches/test_udp_rssi-patch/latest.json"
       }
     },
     {
