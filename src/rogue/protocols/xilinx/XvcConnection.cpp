@@ -17,82 +17,144 @@
 
 #include "rogue/protocols/xilinx/XvcConnection.h"
 
-#include <arpa/inet.h>
+#include "rogue/GilRelease.h"
+
 #include <netinet/tcp.h>
 #include <sys/select.h>
+#include <sys/socket.h>
+#include <unistd.h>
 
+#include <cerrno>
 #include <cinttypes>
 #include <cstdio>
+#include <cstring>
 
 namespace rpx = rogue::protocols::xilinx;
 
-rpx::XvcConnection::XvcConnection(int sd, JtagDriver* drv, uint64_t maxVecLen)
-    : drv_(drv),
+rpx::XvcConnection::XvcConnection(int sd, int wakeFd, JtagDriver* drv, uint64_t maxVecLen)
+    : sd_(-1),
+      wakeFd_(wakeFd),
+      drv_(drv),
       maxVecLen_(maxVecLen),
-      supVecLen_(0) {
-    int got;
+      supVecLen_(0),
+      lastErrno_(0) {
     socklen_t sz = sizeof(peer_);
 
     // RAII for the sd_
-    if ((sd_ = ::accept(sd, (struct sockaddr*)&peer_, &sz)) < 0)
+    if ((sd_ = ::accept(sd, reinterpret_cast<struct sockaddr*>(&peer_), &sz)) < 0)
         throw(rogue::GeneralError::create("XvcConnection::XvcConnection()", "Unable to accept connection"));
 
     // XVC protocol is synchronous / not pipelined :-(
     // use TCP_NODELAY to make sure our messages (many of which
     // are small) are sent ASAP
-    got = 1;
-    if (setsockopt(sd_, IPPROTO_TCP, TCP_NODELAY, &got, sizeof(got)))
-        throw(rogue::GeneralError::create("XvcConnection::XvcConnection()", "Unable to get TCP_NODELAY"));
+    int yes = 1;
+    if (setsockopt(sd_, IPPROTO_TCP, TCP_NODELAY, &yes, sizeof(yes))) {
+        ::close(sd_);
+        sd_ = -1;
+        throw(rogue::GeneralError::create("XvcConnection::XvcConnection()", "Unable to set TCP_NODELAY"));
+    }
+
+#if defined(__APPLE__) && defined(SO_NOSIGPIPE)
+    // macOS fallback: no MSG_NOSIGNAL on BSD send(); use per-socket
+    // SO_NOSIGPIPE instead so writes to a closed peer surface EPIPE rather
+    // than SIGPIPE-ing the process.
+    int nosigpipe = 1;
+    if (setsockopt(sd_, SOL_SOCKET, SO_NOSIGPIPE, &nosigpipe, sizeof(nosigpipe))) {
+        ::close(sd_);
+        sd_ = -1;
+        throw(rogue::GeneralError::create("XvcConnection::XvcConnection()",
+                                          "setsockopt(SO_NOSIGPIPE) failed"));
+    }
+#endif
 }
 
 rpx::XvcConnection::~XvcConnection() {
-    ::close(sd_);
+    if (sd_ >= 0) ::close(sd_);
 }
 
 ssize_t rpx::XvcConnection::readTo(void* buf, size_t count) {
-    fd_set rset;
-    int maxFd;
+    if (sd_ < 0 || sd_ >= FD_SETSIZE || (wakeFd_ >= 0 && wakeFd_ >= FD_SETSIZE)) {
+        lastErrno_ = EBADF;
+        return -2;
+    }
+    int maxFd = sd_ + 1;
+    if (wakeFd_ >= 0 && wakeFd_ >= sd_) maxFd = wakeFd_ + 1;
+
+    // NO timeout — block until data, EOF, or shutdown signal.
+    // Release the GIL across the blocking select() so that the outer
+    // rogue::ScopedGil held by Xvc::runThread does not starve Python worker
+    // threads while this connection is parked waiting for client bytes.
+    // Retry on EINTR (matches XvcServer::run): a benign signal must not tear
+    // down the client connection.
     int nready;
-    struct timeval timeout;
-
-    FD_ZERO(&rset);
-    FD_SET(sd_, &rset);
-
-    // 1 Second Timeout
-    timeout.tv_sec  = 1;
-    timeout.tv_usec = 0;
-
-    nready = ::select(sd_ + 1, &rset, NULL, NULL, &timeout);
-
-    if (nready > 0 && FD_ISSET(sd_, &rset))
-        return ::read(sd_, buf, count);
-    else
-        return 0;
+    fd_set rset;
+    while (true) {
+        FD_ZERO(&rset);
+        FD_SET(sd_, &rset);
+        if (wakeFd_ >= 0) FD_SET(wakeFd_, &rset);
+        {
+            rogue::GilRelease noGil;
+            nready = ::select(maxFd, &rset, nullptr, nullptr, nullptr);
+        }
+        if (nready >= 0) break;
+        if (errno == EINTR) continue;
+        lastErrno_ = errno;
+        return -2;  // unrecoverable select error
+    }
+    if (wakeFd_ >= 0 && FD_ISSET(wakeFd_, &rset)) {
+        return -1;  // shutdown requested via self-pipe
+    }
+    if (FD_ISSET(sd_, &rset)) {
+        ssize_t r;
+        do {
+            r = ::read(sd_, buf, count);
+        } while (r < 0 && errno == EINTR);
+        // >0 = bytes; 0 = peer EOF; <0 = socket error (mapped to -2 so
+        // callers don't confuse it with the -1 shutdown sentinel).
+        if (r < 0) {
+            lastErrno_ = errno;
+            return -2;
+        }
+        return r;
+    }
+    lastErrno_ = ENODATA;
+    return -2;  // unexpected: neither wake-fd nor data-fd ready
 }
 
 // fill rx buffer to 'n' octets
 void rpx::XvcConnection::fill(uint64_t n) {
-    uint8_t* p = rp_ + rl_;
-    int got;
+    uint8_t* p = rp_ + static_cast<ptrdiff_t>(rl_);
     uint64_t k = n;
 
     if (n <= rl_) return;
 
     k -= rl_;
     while (k > 0) {
-        got = readTo(p, k);
+        ssize_t got = readTo(p, static_cast<size_t>(k));
 
-        if (got <= 0) throw(rogue::GeneralError::create("XvcConnection::fill()", "Unable to read from socket"));
-
-        k -= got;
-        p += got;
+        if (got > 0) {
+            k -= static_cast<uint64_t>(got);
+            p += got;
+            continue;
+        }
+        if (got == 0) {
+            throw(rogue::GeneralError::create("XvcConnection::fill()", "peer closed connection"));
+        }
+        // got == -1: shutdown requested via wakeFd.
+        if (got == -1)
+            throw(rogue::GeneralError::create("XvcConnection::fill()", "shutdown requested"));
+        // got <= -2: select() or unexpected error.
+        throw(rogue::GeneralError::create("XvcConnection::fill()",
+              "socket/select error: %s (errno %d)", strerror(lastErrno_), lastErrno_));
     }
     rl_ = n;
 }
 
 // mark 'n' octets as 'consumed'
 void rpx::XvcConnection::bump(uint64_t n) {
-    rp_ += n;
+    if (n > rl_)
+        throw(rogue::GeneralError::create("XvcConnection::bump()", "consuming %" PRIu64 " bytes but only %" PRIu64 " available", n, rl_));
+    rp_ += static_cast<ptrdiff_t>(n);
     rl_ -= n;
     if (rl_ == 0) {
         rp_ = &rxb_[0];
@@ -100,11 +162,10 @@ void rpx::XvcConnection::bump(uint64_t n) {
 }
 
 void rpx::XvcConnection::allocBufs() {
-    uint64_t tgtVecLen;
     uint64_t overhead = 128;  // headers and such;
 
     // Determine the vector size supported by the target
-    tgtVecLen = drv_->query();
+    uint64_t tgtVecLen = drv_->query();
 
     if (0 == tgtVecLen) {
         // target can stream
@@ -123,8 +184,8 @@ void rpx::XvcConnection::allocBufs() {
 
     chunk_ = (2 * maxVecLen_ + overhead);
 
-    rxb_.resize(2 * chunk_);
-    txb_.resize(maxVecLen_ + overhead);
+    rxb_.resize(static_cast<size_t>(2 * chunk_));
+    txb_.resize(static_cast<size_t>(maxVecLen_ + overhead));
 
     rp_ = &rxb_[0];
     rl_ = 0;
@@ -132,35 +193,48 @@ void rpx::XvcConnection::allocBufs() {
 }
 
 void rpx::XvcConnection::flush() {
-    int put;
     uint8_t* p = &txb_[0];
 
     while (tl_ > 0) {
-        put = write(sd_, p, tl_);
-
-        if (put <= 0) throw(rogue::GeneralError::create("XvcConnection::flush()", "Unable to send from socket"));
+        size_t toSend = static_cast<size_t>(tl_);
+        ssize_t put;
+        do {
+#if defined(__APPLE__)
+            put = ::send(sd_, p, toSend, 0);
+#else
+            put = ::send(sd_, p, toSend, MSG_NOSIGNAL);
+#endif
+        } while (put < 0 && errno == EINTR);
+        if (put <= 0) {
+            int e = errno;
+            throw(rogue::GeneralError::create("XvcConnection::flush()",
+                  "send() failed: %s (errno %d)", strerror(e), e));
+        }
 
         p += put;
-        tl_ -= put;
+        tl_ -= static_cast<uint64_t>(put);
     }
 }
 
 void rpx::XvcConnection::run() {
-    int got;
-    uint32_t bits, bitsLeft, bitsSent;
-    uint64_t bytes;
-    uint64_t vecLen;
-    uint64_t off;
+    uint32_t bits = 0;
+    uint64_t bitsLeft = 0, bitsSent = 0;
+    uint64_t bytes = 0;
+    uint64_t vecLen = 0;
+    uint64_t off = 0;
 
     allocBufs();
 
     while (!drv_->isDone()) {
         // read stuff;
-        got = readTo(rp_, chunk_);
+        ssize_t got = readTo(rp_, static_cast<size_t>(chunk_));
 
-        if (got <= 0) throw(rogue::GeneralError::create("XvcConnection::run()", "Unable to read from socket"));
+        if (got == 0) throw(rogue::GeneralError::create("XvcConnection::run()", "peer closed connection"));
+        if (got == -1) throw(rogue::GeneralError::create("XvcConnection::run()", "shutdown requested"));
+        if (got < 0) throw(rogue::GeneralError::create("XvcConnection::run()",
+                     "socket/select error: %s (errno %d)", strerror(lastErrno_), lastErrno_));
 
-        rl_ = got;
+        rl_ = static_cast<uint64_t>(got);
 
         do {
             fill(2);
@@ -170,22 +244,27 @@ void rpx::XvcConnection::run() {
 
                 drv_->query();  // informs the driver that there is a new connection
 
-                tl_ = snprintf(
+                int slen = snprintf(
                     reinterpret_cast<char*>(&txb_[0]), txb_.size(), "xvcServer_v1.0:%" PRIu64 "\n", maxVecLen_);
+                if (slen < 0)
+                    throw(rogue::GeneralError::create("XvcConnection::run()", "snprintf failed for getinfo reply"));
+                tl_ = (static_cast<uint64_t>(slen) < txb_.size())
+                          ? static_cast<uint64_t>(slen)
+                          : txb_.size() - 1;
 
                 bump(8);
             } else if (0 == ::memcmp(rp_, "se", 2)) {
-                uint32_t requestedPeriod;
-                uint32_t newPeriod;
-
                 fill(11);
 
-                requestedPeriod = (rp_[10] << 24) | (rp_[9] << 16) | (rp_[8] << 8) | rp_[7];
+                uint32_t requestedPeriod = (static_cast<uint32_t>(rp_[10]) << 24) |
+                                           (static_cast<uint32_t>(rp_[9])  << 16) |
+                                           (static_cast<uint32_t>(rp_[8])  <<  8) |
+                                            static_cast<uint32_t>(rp_[7]);
 
-                newPeriod = drv_->setPeriodNs(requestedPeriod);
+                uint32_t newPeriod = drv_->setPeriodNs(requestedPeriod);
 
-                for (unsigned u = 0; u < sizeof(newPeriod); u++) {
-                    txb_[u]   = (uint8_t)newPeriod;
+                for (size_t u = 0; u < sizeof(newPeriod); u++) {
+                    txb_[u]   = static_cast<uint8_t>(newPeriod);
                     newPeriod = newPeriod >> 8;
                 }
 
@@ -195,11 +274,11 @@ void rpx::XvcConnection::run() {
             } else if (0 == ::memcmp(rp_, "sh", 2)) {
                 fill(10);
 
-                bits = 0;
-                for (got = 9; got >= 6; got--) {
-                    bits = (bits << 8) | rp_[got];
-                }
-                bytes = (bits + 7) / 8;
+                bits = (static_cast<uint32_t>(rp_[9])  << 24) |
+                       (static_cast<uint32_t>(rp_[8])  << 16) |
+                       (static_cast<uint32_t>(rp_[7])  <<  8) |
+                        static_cast<uint32_t>(rp_[6]);
+                bytes = (static_cast<uint64_t>(bits) + 7) / 8;
 
                 if (bytes > maxVecLen_)
                     throw(rogue::GeneralError::create("XvcConnection::run()", "Requested bit vector length too big"));
@@ -208,6 +287,10 @@ void rpx::XvcConnection::run() {
                 fill(2 * bytes);
 
                 vecLen = bytes > supVecLen_ ? supVecLen_ : bytes;
+
+                if (vecLen == 0)
+                    throw(rogue::GeneralError::create("XvcConnection::run()",
+                          "supported vector length is zero — cannot chunk shift"));
 
                 // break into chunks the driver can handle; due to the xvc layout we can't efficiently
                 // start working on a chunk while still waiting for more data to come in (well - we could
@@ -219,7 +302,10 @@ void rpx::XvcConnection::run() {
                         bitsSent = bitsLeft;
                     }
 
-                    drv_->sendVectors(bitsSent, rp_ + off, rp_ + bytes + off, &txb_[0] + off);
+                    drv_->sendVectors(bitsSent,
+                                      rp_ + static_cast<ptrdiff_t>(off),
+                                      rp_ + static_cast<ptrdiff_t>(bytes + off),
+                                      &txb_[0] + static_cast<ptrdiff_t>(off));
                 }
                 tl_ = bytes;
 
@@ -229,10 +315,10 @@ void rpx::XvcConnection::run() {
             }
             flush();
 
-            /* Repeat until all the characters from the first chunk are exhausted* (most likely the chunk just contained
-             * a vector shift message) and (most likely the chunk just contained a vector shift message) and it is
-             * exhausted during the first iteration. If for some reason it is not then we use the spill-over area for a
-             * second iteration which should then terminate this while loop.
+            /* Repeat until all bytes from the current chunk are exhausted.
+             * Most chunks contain a single vector shift message and are
+             * consumed in the first iteration. If not, the spill-over area
+             * provides room for a second iteration which terminates the loop.
              */
         } while (rl_ > 0);
     }

@@ -20,22 +20,14 @@
 
 #include "rogue/Directives.h"
 
-#include <inttypes.h>
-#include <stdint.h>
-#include <unistd.h>
-
-#include <cerrno>
+#include <atomic>
+#include <cstdint>
 #include <cstdio>
-#include <cstring>
-#include <exception>
 #include <memory>
-#include <stdexcept>
 #include <vector>
 
 #include "rogue/GeneralError.h"
 #include "rogue/Logging.h"
-
-using std::vector;
 
 namespace rogue {
 namespace protocols {
@@ -67,12 +59,12 @@ namespace xilinx {
  */
 class JtagDriver {
   protected:
-    // Remote port number
+    // TCP port number (2542 is the Vivado default; 0 = kernel-assigned)
     uint16_t port_;
 
     // occasionally drop a packet for testing (when enabled)
     bool drEn_;
-    bool done_;
+    std::atomic<bool> done_;
     unsigned drop_;
 
     typedef uint32_t Header;
@@ -87,8 +79,8 @@ class JtagDriver {
     unsigned wordSize_;
     unsigned memDepth_;
 
-    vector<uint8_t> txBuf_;
-    vector<uint8_t> hdBuf_;
+    std::vector<uint8_t> txBuf_;
+    std::vector<uint8_t> hdBuf_;
 
     unsigned bufSz_;
     unsigned retry_;
@@ -105,7 +97,7 @@ class JtagDriver {
     virtual void setHdr(uint8_t* buf, Header hdr);
 
   protected:
-    static Header getHdr(uint8_t* buf);
+    static Header getHdr(const uint8_t* buf);
 
     static const Header PVERS = 0x00000000;
     static const Header CMD_Q = 0x00000000;
@@ -130,7 +122,7 @@ class JtagDriver {
     static unsigned getErr(Header x);
     static uint64_t getLen(Header x);
 
-    // returns error message or NULL (unknown error)
+    // returns error message or nullptr (unknown error)
     static const char* getMsg(unsigned error);
 
     // extract from message header
@@ -169,7 +161,7 @@ class JtagDriver {
      * is shared across Rogue graph connections or exposed to Python.
      * It returns `std::shared_ptr` ownership compatible with Rogue pointer typedefs.
      *
-     * @param port Transport/service port value associated with this driver.
+     * @param port TCP port for the XVC server (2542 is the Vivado default; 0 = kernel-assigned).
      * @return Shared pointer to the created driver.
      */
     static std::shared_ptr<rogue::protocols::xilinx::JtagDriver> create(uint16_t port);
@@ -184,9 +176,12 @@ class JtagDriver {
      * This constructor is a low-level C++ allocation path.
      * Prefer `create()` when shared ownership or Python exposure is required.
      *
-     * @param port Transport/service port value associated with this driver.
+     * @param port TCP port for the XVC server (2542 is the Vivado default; 0 = kernel-assigned).
      */
     explicit JtagDriver(uint16_t port);
+
+    /** @brief Virtual destructor for safe polymorphic deletion. */
+    virtual ~JtagDriver() = default;
 
     /**
      * @brief Performs post-construction initialization.
@@ -212,7 +207,7 @@ class JtagDriver {
      * @return Number of payload bytes received.
      * @throws rogue::GeneralError On transport/protocol timeout or I/O error.
      */
-    virtual int xfer(uint8_t* txb, unsigned txBytes, uint8_t* hdbuf, unsigned hsize, uint8_t* rxb, unsigned size) {
+    virtual int xfer(uint8_t*, unsigned, uint8_t*, unsigned, uint8_t*, unsigned) {
         return 0;
     }
 
@@ -299,12 +294,12 @@ class JtagDriver {
      * @return `true` when driver is marked done; otherwise `false`.
      */
     bool isDone() {
-        return this->done_;
+        return this->done_.load(std::memory_order_acquire);
     }
 };
 
 /** @brief Maximum temporary header buffer size in bytes. */
-static unsigned hdBufMax() {
+inline unsigned hdBufMax() {
     return 16;
 }
 

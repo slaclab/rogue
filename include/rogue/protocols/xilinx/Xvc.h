@@ -18,12 +18,8 @@
 #define __ROGUE_PROTOCOLS_XILINX_XVC_H__
 #include "rogue/Directives.h"
 
-#include <netdb.h>
-#include <netinet/in.h>
-#include <netinet/ip.h>
-#include <stdint.h>
-#include <sys/socket.h>
-
+#include <atomic>
+#include <cstdint>
 #include <memory>
 #include <thread>
 
@@ -33,14 +29,11 @@
 #include "rogue/interfaces/stream/Master.h"
 #include "rogue/interfaces/stream/Slave.h"
 #include "rogue/protocols/xilinx/JtagDriver.h"
-#include "rogue/protocols/xilinx/XvcConnection.h"
 #include "rogue/protocols/xilinx/XvcServer.h"
 
 namespace rogue {
 namespace protocols {
 namespace xilinx {
-/** @brief Maximum supported argument count for XVC command parsing helpers. */
-const unsigned int kMaxArgs = 3;
 
 /**
  * @brief Rogue XVC bridge between TCP XVC clients and Rogue stream transport.
@@ -64,15 +57,34 @@ class Xvc : public rogue::interfaces::stream::Master,
     // Use rogue frames to exchange data with other rogue objects
     rogue::Queue<std::shared_ptr<rogue::interfaces::stream::Frame>> queue_;
 
-    // Log
-    std::shared_ptr<rogue::Logging> log_;
+    // Log (named xvcLog_ to avoid shadowing JtagDriver::log_)
+    std::shared_ptr<rogue::Logging> xvcLog_;
 
     // Background server thread.
-    std::thread* thread_;
-    bool threadEn_;
+    std::unique_ptr<std::thread> thread_;
+    std::atomic<bool> threadEn_;
+
+    // One-shot start guard.  rogue::Queue::stop() is irreversible (see
+    // rogue/Queue.h: stop() sets run_=false with no restart API), so a
+    // restarted Xvc would have a permanently-non-blocking queue and a
+    // dirty wake-fd.  start() asserts this flag is false; once set, it
+    // stays set for the lifetime of the instance.
+    std::atomic<bool> started_;
 
     // Lock
     std::mutex mtx_;
+
+    // Shutdown wake-fd (self-pipe). wakeFd_[0]=read end (consumed by
+    // XvcServer/XvcConnection select()); wakeFd_[1]=write end (one byte
+    // written in Xvc::stop()).
+    int wakeFd_[2] = {-1, -1};
+
+    // Cached bound port (atomic so getPort() is safe during stop()).
+    std::atomic<uint32_t> boundPort_{0};
+
+    // Owned XvcServer: constructed in start() so port is synchronously
+    // known before the server thread races.
+    std::unique_ptr<rogue::protocols::xilinx::XvcServer> server_;
 
     // TCP server thread entry point for Vivado clients.
     void runThread();
@@ -88,7 +100,7 @@ class Xvc : public rogue::interfaces::stream::Master,
      * is shared across Rogue graph connections or exposed to Python.
      * It returns `std::shared_ptr` ownership compatible with Rogue pointer typedefs.
      *
-     * @param port TCP port used for local XVC server listener.
+     * @param port TCP port for local XVC server (2542 is the Vivado default; 0 = kernel-assigned).
      * @return Shared pointer to the created XVC instance.
      */
     static std::shared_ptr<rogue::protocols::xilinx::Xvc> create(uint16_t port);
@@ -103,7 +115,7 @@ class Xvc : public rogue::interfaces::stream::Master,
      * This constructor is a low-level C++ allocation path.
      * Prefer `create()` when shared ownership or Python exposure is required.
      *
-     * @param port TCP port used for local XVC server listener.
+     * @param port TCP port for local XVC server (2542 is the Vivado default; 0 = kernel-assigned).
      */
     explicit Xvc(uint16_t port);
 
@@ -153,7 +165,7 @@ class Xvc : public rogue::interfaces::stream::Master,
      * @param hdBytes Number of header bytes to copy.
      * @param rxBuffer Reply payload destination buffer.
      * @param rxBytes Maximum reply payload bytes accepted.
-     * @return Number of payload bytes received (implementation currently returns `0`).
+     * @return Number of payload bytes received.
      */
     int xfer(uint8_t* txBuffer,
              unsigned txBytes,
@@ -161,6 +173,18 @@ class Xvc : public rogue::interfaces::stream::Master,
              unsigned hdBytes,
              uint8_t* rxBuffer,
              unsigned rxBytes) final;
+
+    /**
+     * @brief Returns the TCP port the XVC server is bound to.
+     *
+     * @details
+     * When port 0 was passed to the constructor, returns the kernel-assigned
+     * port after start(); otherwise returns the configured port (typically
+     * 2542, the Vivado Hardware Manager default).
+     *
+     * @return Port number (0 if called before start() when ctor received 0).
+     */
+    uint32_t getPort() const;
 };
 
 // Convenience
