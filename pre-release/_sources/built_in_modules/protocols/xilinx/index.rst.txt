@@ -57,7 +57,9 @@ Typical Workflow
 
 The normal workflow is straightforward:
 
-1. Create an ``Xvc`` instance on a local TCP port.
+1. Create an ``Xvc`` instance on a local TCP port.  The Vivado Hardware Manager
+   default is **2542**, so that is the conventional choice unless you need a
+   different port.
 2. Connect it bidirectionally to the Rogue stream path that reaches the
    firmware JTAG bridge endpoint.
 3. Let a ``Root`` manage lifecycle, or start and stop the bridge explicitly in
@@ -159,6 +161,24 @@ PyRogue ``Root``:
        xvc->stop();
        return 0;
    }
+
+Dynamic Port Assignment
+=======================
+
+When the exact TCP port does not matter — for example in automated test
+harnesses or multi-instance deployments — pass ``0`` as the port number.
+The operating system assigns an available port, and ``getPort()`` returns the
+actual value after ``_start()`` (Python) or ``start()`` (C++):
+
+.. code-block:: python
+
+   xvc = rpx.Xvc(0)        # kernel picks a free port
+   xvc._start()
+   port = xvc.getPort()     # e.g. 49152
+   print(f"Vivado target: localhost:{port}")
+
+For normal interactive use with Vivado Hardware Manager, pass the standard
+default port ``2542`` instead.
 
 JtagDriver Role
 ===============

@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Xilinx Protocols &mdash; Rogue v6.10.1-19-g7b43b640d documentation</title>
+  <title>Xilinx Protocols &mdash; Rogue v6.10.1-25-g5719d0940 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../../_static/slac-favicon-192.png"/>
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=7fe4745c"></script>
+      <script src="../../../_static/documentation_options.js?v=4c294688"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -176,7 +176,9 @@ listener and client session handling.</p></li>
 <h2>Typical Workflow<a class="headerlink" href="#typical-workflow" title="Link to this heading"></a></h2>
 <p>The normal workflow is straightforward:</p>
 <ol class="arabic simple">
-<li><p>Create an <code class="docutils literal notranslate"><span class="pre">Xvc</span></code> instance on a local TCP port.</p></li>
+<li><p>Create an <code class="docutils literal notranslate"><span class="pre">Xvc</span></code> instance on a local TCP port.  The Vivado Hardware Manager
+default is <strong>2542</strong>, so that is the conventional choice unless you need a
+different port.</p></li>
 <li><p>Connect it bidirectionally to the Rogue stream path that reaches the
 firmware JTAG bridge endpoint.</p></li>
 <li><p>Let a <code class="docutils literal notranslate"><span class="pre">Root</span></code> manage lifecycle, or start and stop the bridge explicitly in
@@ -273,6 +275,21 @@ PyRogue <code class="docutils literal notranslate"><span class="pre">Root</span>
 <span class="p">}</span>
 </pre></div>
 </div>
+</section>
+<section id="dynamic-port-assignment">
+<h2>Dynamic Port Assignment<a class="headerlink" href="#dynamic-port-assignment" title="Link to this heading"></a></h2>
+<p>When the exact TCP port does not matter — for example in automated test
+harnesses or multi-instance deployments — pass <code class="docutils literal notranslate"><span class="pre">0</span></code> as the port number.
+The operating system assigns an available port, and <code class="docutils literal notranslate"><span class="pre">getPort()</span></code> returns the
+actual value after <code class="docutils literal notranslate"><span class="pre">_start()</span></code> (Python) or <code class="docutils literal notranslate"><span class="pre">start()</span></code> (C++):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">xvc</span> <span class="o">=</span> <span class="n">rpx</span><span class="o">.</span><span class="n">Xvc</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>        <span class="c1"># kernel picks a free port</span>
+<span class="n">xvc</span><span class="o">.</span><span class="n">_start</span><span class="p">()</span>
+<span class="n">port</span> <span class="o">=</span> <span class="n">xvc</span><span class="o">.</span><span class="n">getPort</span><span class="p">()</span>     <span class="c1"># e.g. 49152</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Vivado target: localhost:</span><span class="si">{</span><span class="n">port</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>For normal interactive use with Vivado Hardware Manager, pass the standard
+default port <code class="docutils literal notranslate"><span class="pre">2542</span></code> instead.</p>
 </section>
 <section id="jtagdriver-role">
 <h2>JtagDriver Role<a class="headerlink" href="#jtagdriver-role" title="Link to this heading"></a></h2>

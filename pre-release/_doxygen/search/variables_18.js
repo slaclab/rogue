@@ -1,5 +1,7 @@
 var searchData=
 [
-  ['xid_5fany_0',['XID_ANY',['../classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#a065467509698ab00b8f0b0f635b06a0c',1,'rogue::protocols::xilinx::JtagDriver']]],
-  ['xid_5fshift_1',['XID_SHIFT',['../classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#a0b7c1f9f891d76198ffdfaf989de6908',1,'rogue::protocols::xilinx::JtagDriver']]]
+  ['zcopyen_0',['zCopyEn',['../classrogue_1_1hardware_1_1axi_1_1AxiStreamDmaShared.html#a605f1ebb439cabf99774f6461f68c3fe',1,'rogue::hardware::axi::AxiStreamDmaShared']]],
+  ['zmqctx_5f_1',['zmqCtx_',['../classrogue_1_1interfaces_1_1stream_1_1TcpCore.html#aa990bd53656337bcd942e32412da5d80',1,'rogue::interfaces::stream::TcpCore']]],
+  ['zmqpull_5f_2',['zmqPull_',['../classrogue_1_1interfaces_1_1stream_1_1TcpCore.html#ad57f897d469e88b3c2c20ee4f834d2cf',1,'rogue::interfaces::stream::TcpCore']]],
+  ['zmqpush_5f_3',['zmqPush_',['../classrogue_1_1interfaces_1_1stream_1_1TcpCore.html#af7e77441ab738fda309c3e05ec952511',1,'rogue::interfaces::stream::TcpCore']]]
 ];

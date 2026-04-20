@@ -87,12 +87,15 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ac6e2fcb80f8c2c7a81b3a6488bb21130" id="r_ac6e2fcb80f8c2c7a81b3a6488bb21130"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1protocols_1_1xilinx_1_1XvcServer.html#ac6e2fcb80f8c2c7a81b3a6488bb21130">XvcServer</a> (uint16_t port, <a class="el" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html">JtagDriver</a> *drv, unsigned maxMsgSize=32768)</td></tr>
-<tr class="memdesc:ac6e2fcb80f8c2c7a81b3a6488bb21130"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs an XVC TCP server listener.  <br /></td></tr>
-<tr class="separator:ac6e2fcb80f8c2c7a81b3a6488bb21130"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1e36eb09c43d68ddf8688472484b39f2" id="r_a1e36eb09c43d68ddf8688472484b39f2"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1protocols_1_1xilinx_1_1XvcServer.html#a1e36eb09c43d68ddf8688472484b39f2">run</a> (bool &amp;threadEn, <a class="el" href="namespacerogue.html#aad13cbcfd8a084e167b9e417ec56205b">rogue::LoggingPtr</a> log)</td></tr>
-<tr class="memdesc:a1e36eb09c43d68ddf8688472484b39f2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Runs accept loop while thread enable flag is true.  <br /></td></tr>
-<tr class="separator:a1e36eb09c43d68ddf8688472484b39f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2e0e5b4fa2f4ad69193b2ebc6463d032" id="r_a2e0e5b4fa2f4ad69193b2ebc6463d032"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1protocols_1_1xilinx_1_1XvcServer.html#a2e0e5b4fa2f4ad69193b2ebc6463d032">XvcServer</a> (uint16_t port, int wakeFd, <a class="el" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html">JtagDriver</a> *drv, unsigned maxMsgSize=32768)</td></tr>
+<tr class="memdesc:a2e0e5b4fa2f4ad69193b2ebc6463d032"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs an XVC TCP server listener.  <br /></td></tr>
+<tr class="separator:a2e0e5b4fa2f4ad69193b2ebc6463d032"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aae7e3feaae5727ff982dd58e03129ef5" id="r_aae7e3feaae5727ff982dd58e03129ef5"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1protocols_1_1xilinx_1_1XvcServer.html#aae7e3feaae5727ff982dd58e03129ef5">run</a> (std::atomic&lt; bool &gt; &amp;threadEn, <a class="el" href="namespacerogue.html#aad13cbcfd8a084e167b9e417ec56205b">rogue::LoggingPtr</a> log)</td></tr>
+<tr class="memdesc:aae7e3feaae5727ff982dd58e03129ef5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Runs accept loop; blocks in select() until accept-ready or wakeFd readable. Loop continues while threadEn is true.  <br /></td></tr>
+<tr class="separator:aae7e3feaae5727ff982dd58e03129ef5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab46746768da900d41a731b9a22a6be01" id="r_ab46746768da900d41a731b9a22a6be01"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1protocols_1_1xilinx_1_1XvcServer.html#ab46746768da900d41a731b9a22a6be01">getPort</a> () const</td></tr>
+<tr class="memdesc:ab46746768da900d41a731b9a22a6be01"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the TCP port the server is bound to (resolved if port==0 was requested).  <br /></td></tr>
+<tr class="separator:ab46746768da900d41a731b9a22a6be01"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4c44193ef9b68fb7691f0750ee57850e" id="r_a4c44193ef9b68fb7691f0750ee57850e"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1protocols_1_1xilinx_1_1XvcServer.html#a4c44193ef9b68fb7691f0750ee57850e">~XvcServer</a> ()</td></tr>
 <tr class="memdesc:a4c44193ef9b68fb7691f0750ee57850e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Closes the listening socket and destroys server instance.  <br /></td></tr>
 <tr class="separator:a4c44193ef9b68fb7691f0750ee57850e"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -101,10 +104,10 @@ Public Member Functions</h2></td></tr>
 <div class="textblock"><p>TCP listener for XVC client connections. </p>
 <p><code><a class="el" href="classrogue_1_1protocols_1_1xilinx_1_1XvcServer.html" title="TCP listener for XVC client connections.">XvcServer</a></code> owns the listening socket and accepts one sub-connection at a time. Each accepted client is serviced via <code><a class="el" href="classrogue_1_1protocols_1_1xilinx_1_1XvcConnection.html" title="Manages one TCP client connection speaking the XVC protocol.">XvcConnection</a></code>, which performs XVC protocol parsing and delegates JTAG operations to <code><a class="el" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html" title="Base transport driver for the AxisToJtag firmware protocol.">JtagDriver</a></code>. </p>
 
-<p class="definition">Definition at line <a class="el" href="XvcServer_8h_source.html#l00037">37</a> of file <a class="el" href="XvcServer_8h_source.html">XvcServer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="XvcServer_8h_source.html#l00040">40</a> of file <a class="el" href="XvcServer_8h_source.html">XvcServer.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="ac6e2fcb80f8c2c7a81b3a6488bb21130" name="ac6e2fcb80f8c2c7a81b3a6488bb21130"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac6e2fcb80f8c2c7a81b3a6488bb21130">&#9670;&#160;</a></span>XvcServer()</h2>
+<a id="a2e0e5b4fa2f4ad69193b2ebc6463d032" name="a2e0e5b4fa2f4ad69193b2ebc6463d032"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2e0e5b4fa2f4ad69193b2ebc6463d032">&#9670;&#160;</a></span>XvcServer()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -114,6 +117,12 @@ Public Member Functions</h2></td></tr>
           <td>(</td>
           <td class="paramtype">uint16_t&#160;</td>
           <td class="paramname"><em>port</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>wakeFd</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -138,7 +147,8 @@ Public Member Functions</h2></td></tr>
 <p>Constructs an XVC TCP server listener. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">port</td><td>Local TCP port to bind and listen on. </td></tr>
+    <tr><td class="paramname">port</td><td>Local TCP port to bind (2542 is the Vivado default; 0 = kernel-assigned). </td></tr>
+    <tr><td class="paramname">wakeFd</td><td>Read end of the <a class="el" href="classrogue_1_1protocols_1_1xilinx_1_1Xvc.html" title="Rogue XVC bridge between TCP XVC clients and Rogue stream transport.">Xvc</a> self-pipe used to break out of select() on shutdown. </td></tr>
     <tr><td class="paramname">drv</td><td>Driver used by accepted connections. </td></tr>
     <tr><td class="paramname">maxMsgSize</td><td>Maximum protocol message/vector size in bytes.</td></tr>
   </table>
@@ -150,7 +160,7 @@ Public Member Functions</h2></td></tr>
 <hr  />
 <p> This file is part of the rogue software platform. It is subject to the license terms in the LICENSE.txt file found in the top-level directory of this distribution and at: <a href="https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html">https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html</a>. No part of the rogue software platform, including this file, may be copied, modified, propagated, or distributed except according to the terms </p><h2>contained in the LICENSE.txt file. </h2>
 
-<p class="definition">Definition at line <a class="el" href="XvcServer_8cpp_source.html#l00034">34</a> of file <a class="el" href="XvcServer_8cpp_source.html">XvcServer.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="XvcServer_8cpp_source.html#l00037">37</a> of file <a class="el" href="XvcServer_8cpp_source.html">XvcServer.cpp</a>.</p>
 
 </div>
 </div>
@@ -179,13 +189,34 @@ Public Member Functions</h2></td></tr>
 
 <p>Closes the listening socket and destroys server instance. </p>
 
-<p class="definition">Definition at line <a class="el" href="XvcServer_8cpp_source.html#l00054">54</a> of file <a class="el" href="XvcServer_8cpp_source.html">XvcServer.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="XvcServer_8cpp_source.html#l00083">83</a> of file <a class="el" href="XvcServer_8cpp_source.html">XvcServer.cpp</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a1e36eb09c43d68ddf8688472484b39f2" name="a1e36eb09c43d68ddf8688472484b39f2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1e36eb09c43d68ddf8688472484b39f2">&#9670;&#160;</a></span>run()</h2>
+<a id="ab46746768da900d41a731b9a22a6be01" name="ab46746768da900d41a731b9a22a6be01"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab46746768da900d41a731b9a22a6be01">&#9670;&#160;</a></span>getPort()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint32_t rogue::protocols::xilinx::XvcServer::getPort </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns the TCP port the server is bound to (resolved if port==0 was requested). </p>
+
+<p class="definition">Definition at line <a class="el" href="XvcServer_8cpp_source.html#l00087">87</a> of file <a class="el" href="XvcServer_8cpp_source.html">XvcServer.cpp</a>.</p>
+
+</div>
+</div>
+<a id="aae7e3feaae5727ff982dd58e03129ef5" name="aae7e3feaae5727ff982dd58e03129ef5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aae7e3feaae5727ff982dd58e03129ef5">&#9670;&#160;</a></span>run()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -196,7 +227,7 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="memname">void rogue::protocols::xilinx::XvcServer::run </td>
           <td>(</td>
-          <td class="paramtype">bool &amp;&#160;</td>
+          <td class="paramtype">std::atomic&lt; bool &gt; &amp;&#160;</td>
           <td class="paramname"><em>threadEn</em>, </td>
         </tr>
         <tr>
@@ -218,16 +249,16 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Runs accept loop while thread enable flag is true. </p>
+<p>Runs accept loop; blocks in select() until accept-ready or wakeFd readable. Loop continues while threadEn is true. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">threadEn</td><td>Run-control flag checked by loop. </td></tr>
+    <tr><td class="paramname">threadEn</td><td>Atomic run-control flag; loop exits when false. </td></tr>
     <tr><td class="paramname">log</td><td>Logger used for connection-level diagnostics. </td></tr>
   </table>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="XvcServer_8cpp_source.html#l00058">58</a> of file <a class="el" href="XvcServer_8cpp_source.html">XvcServer.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="XvcServer_8cpp_source.html#l00091">91</a> of file <a class="el" href="XvcServer_8cpp_source.html">XvcServer.cpp</a>.</p>
 
 </div>
 </div>

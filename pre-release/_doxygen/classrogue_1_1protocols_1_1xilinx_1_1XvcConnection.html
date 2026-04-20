@@ -74,6 +74,7 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="classrogue_1_1protocols_1_1xilinx_1_1XvcConnection-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">rogue::protocols::xilinx::XvcConnection Class Reference</div></div>
@@ -87,9 +88,9 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:acd0ed94778e94239af20d2bce055f1bf" id="r_acd0ed94778e94239af20d2bce055f1bf"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1protocols_1_1xilinx_1_1XvcConnection.html#acd0ed94778e94239af20d2bce055f1bf">XvcConnection</a> (int sd, <a class="el" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html">JtagDriver</a> *drv, uint64_t maxVecLen_=32768)</td></tr>
-<tr class="memdesc:acd0ed94778e94239af20d2bce055f1bf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Accepts and initializes a new XVC TCP sub-connection.  <br /></td></tr>
-<tr class="separator:acd0ed94778e94239af20d2bce055f1bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9bd07c64bdfa45aa41a81531785ad169" id="r_a9bd07c64bdfa45aa41a81531785ad169"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1protocols_1_1xilinx_1_1XvcConnection.html#a9bd07c64bdfa45aa41a81531785ad169">XvcConnection</a> (int sd, int wakeFd, <a class="el" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html">JtagDriver</a> *drv, uint64_t maxVecLen=32768)</td></tr>
+<tr class="memdesc:a9bd07c64bdfa45aa41a81531785ad169"><td class="mdescLeft">&#160;</td><td class="mdescRight">Accepts and initializes a new XVC TCP sub-connection.  <br /></td></tr>
+<tr class="separator:a9bd07c64bdfa45aa41a81531785ad169"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a53de86d0ef66690fdf7d1195f76b0b6f" id="r_a53de86d0ef66690fdf7d1195f76b0b6f"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1protocols_1_1xilinx_1_1XvcConnection.html#a53de86d0ef66690fdf7d1195f76b0b6f">fill</a> (uint64_t n)</td></tr>
 <tr class="memdesc:a53de86d0ef66690fdf7d1195f76b0b6f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Ensures at least <code>n</code> bytes are available in RX buffer.  <br /></td></tr>
 <tr class="separator:a53de86d0ef66690fdf7d1195f76b0b6f"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -106,8 +107,11 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a790ec5f185e675b58c95355c6e1af078"><td class="mdescLeft">&#160;</td><td class="mdescRight">Runs command processing loop for this connection.  <br /></td></tr>
 <tr class="separator:a790ec5f185e675b58c95355c6e1af078"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a102bd1fcc87c85890997172bf14d76ff" id="r_a102bd1fcc87c85890997172bf14d76ff"><td class="memItemLeft" align="right" valign="top">ssize_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1protocols_1_1xilinx_1_1XvcConnection.html#a102bd1fcc87c85890997172bf14d76ff">readTo</a> (void *buf, size_t count)</td></tr>
-<tr class="memdesc:a102bd1fcc87c85890997172bf14d76ff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads up to <code>count</code> bytes with timeout.  <br /></td></tr>
+<tr class="memdesc:a102bd1fcc87c85890997172bf14d76ff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads up to <code>count</code> bytes, blocking in select() until either data is available on the peer socket OR the shutdown wakeFd becomes readable.  <br /></td></tr>
 <tr class="separator:a102bd1fcc87c85890997172bf14d76ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aae93db0d04f0bdd81f876cfd2c6b7389" id="r_aae93db0d04f0bdd81f876cfd2c6b7389"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1protocols_1_1xilinx_1_1XvcConnection.html#aae93db0d04f0bdd81f876cfd2c6b7389">lastErrno</a> () const</td></tr>
+<tr class="memdesc:aae93db0d04f0bdd81f876cfd2c6b7389"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns errno from the most recent <a class="el" href="classrogue_1_1protocols_1_1xilinx_1_1XvcConnection.html#a102bd1fcc87c85890997172bf14d76ff" title="Reads up to count bytes, blocking in select() until either data is available on the peer socket OR th...">readTo()</a> failure (-2 return).  <br /></td></tr>
+<tr class="separator:aae93db0d04f0bdd81f876cfd2c6b7389"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8d7cfa7d84c4ca7310a194cf2d6cdf71" id="r_a8d7cfa7d84c4ca7310a194cf2d6cdf71"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1protocols_1_1xilinx_1_1XvcConnection.html#a8d7cfa7d84c4ca7310a194cf2d6cdf71">~XvcConnection</a> ()</td></tr>
 <tr class="memdesc:a8d7cfa7d84c4ca7310a194cf2d6cdf71"><td class="mdescLeft">&#160;</td><td class="mdescRight">Closes this XVC TCP sub-connection.  <br /></td></tr>
 <tr class="separator:a8d7cfa7d84c4ca7310a194cf2d6cdf71"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -116,10 +120,10 @@ Public Member Functions</h2></td></tr>
 <div class="textblock"><p>Manages one TCP client connection speaking the XVC protocol. </p>
 <p><code><a class="el" href="classrogue_1_1protocols_1_1xilinx_1_1XvcConnection.html" title="Manages one TCP client connection speaking the XVC protocol.">XvcConnection</a></code> parses XVC commands (<code>getinfo</code>, <code>settck</code>, <code>shift</code>) from a connected socket, dispatches JTAG operations through <code><a class="el" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html" title="Base transport driver for the AxisToJtag firmware protocol.">JtagDriver</a></code>, and sends protocol responses back to the TCP client. </p>
 
-<p class="definition">Definition at line <a class="el" href="XvcConnection_8h_source.html#l00041">41</a> of file <a class="el" href="XvcConnection_8h_source.html">XvcConnection.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="XvcConnection_8h_source.html#l00042">42</a> of file <a class="el" href="XvcConnection_8h_source.html">XvcConnection.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="acd0ed94778e94239af20d2bce055f1bf" name="acd0ed94778e94239af20d2bce055f1bf"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acd0ed94778e94239af20d2bce055f1bf">&#9670;&#160;</a></span>XvcConnection()</h2>
+<a id="a9bd07c64bdfa45aa41a81531785ad169" name="a9bd07c64bdfa45aa41a81531785ad169"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9bd07c64bdfa45aa41a81531785ad169">&#9670;&#160;</a></span>XvcConnection()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -129,6 +133,12 @@ Public Member Functions</h2></td></tr>
           <td>(</td>
           <td class="paramtype">int&#160;</td>
           <td class="paramname"><em>sd</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>wakeFd</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -154,6 +164,7 @@ Public Member Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">sd</td><td>Listening socket descriptor. </td></tr>
+    <tr><td class="paramname">wakeFd</td><td>Shutdown self-pipe read fd; when readable, <a class="el" href="classrogue_1_1protocols_1_1xilinx_1_1XvcConnection.html#a102bd1fcc87c85890997172bf14d76ff" title="Reads up to count bytes, blocking in select() until either data is available on the peer socket OR th...">readTo()</a> returns -1 to break out of the blocking select(). Pass -1 to disable the wake path (non-production). </td></tr>
     <tr><td class="paramname">drv</td><td>Driver used to execute JTAG operations. </td></tr>
     <tr><td class="paramname">maxVecLen</td><td>Maximum vector length in bytes accepted from client.</td></tr>
   </table>
@@ -164,7 +175,7 @@ Public Member Functions</h2></td></tr>
 <p>Description: </p><h2>JTAG support </h2>
 <p>This file is part of the rogue software platform. It is subject to the license terms in the LICENSE.txt file found in the top-level directory of this distribution and at: <a href="https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html">https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html</a>. No part of the rogue software platform, including this file, may be copied, modified, propagated, or distributed except according to the terms </p><h2>contained in the LICENSE.txt file. </h2>
 
-<p class="definition">Definition at line <a class="el" href="XvcConnection_8cpp_source.html#l00029">29</a> of file <a class="el" href="XvcConnection_8cpp_source.html">XvcConnection.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="XvcConnection_8cpp_source.html#l00034">34</a> of file <a class="el" href="XvcConnection_8cpp_source.html">XvcConnection.cpp</a>.</p>
 
 </div>
 </div>
@@ -193,7 +204,7 @@ Public Member Functions</h2></td></tr>
 
 <p>Closes this XVC TCP sub-connection. </p>
 
-<p class="definition">Definition at line <a class="el" href="XvcConnection_8cpp_source.html#l00048">48</a> of file <a class="el" href="XvcConnection_8cpp_source.html">XvcConnection.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="XvcConnection_8cpp_source.html#l00071">71</a> of file <a class="el" href="XvcConnection_8cpp_source.html">XvcConnection.cpp</a>.</p>
 
 </div>
 </div>
@@ -223,7 +234,7 @@ Public Member Functions</h2></td></tr>
 
 <p>Allocates/reinitializes internal RX/TX buffers. </p>
 
-<p class="definition">Definition at line <a class="el" href="XvcConnection_8cpp_source.html#l00102">102</a> of file <a class="el" href="XvcConnection_8cpp_source.html">XvcConnection.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="XvcConnection_8cpp_source.html#l00164">164</a> of file <a class="el" href="XvcConnection_8cpp_source.html">XvcConnection.cpp</a>.</p>
 
 </div>
 </div>
@@ -259,7 +270,7 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="XvcConnection_8cpp_source.html#l00094">94</a> of file <a class="el" href="XvcConnection_8cpp_source.html">XvcConnection.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="XvcConnection_8cpp_source.html#l00154">154</a> of file <a class="el" href="XvcConnection_8cpp_source.html">XvcConnection.cpp</a>.</p>
 
 </div>
 </div>
@@ -295,7 +306,7 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="XvcConnection_8cpp_source.html#l00074">74</a> of file <a class="el" href="XvcConnection_8cpp_source.html">XvcConnection.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="XvcConnection_8cpp_source.html#l00125">125</a> of file <a class="el" href="XvcConnection_8cpp_source.html">XvcConnection.cpp</a>.</p>
 
 </div>
 </div>
@@ -324,7 +335,36 @@ Public Member Functions</h2></td></tr>
 
 <p>Flushes pending TX buffer bytes to socket. </p>
 
-<p class="definition">Definition at line <a class="el" href="XvcConnection_8cpp_source.html#l00134">134</a> of file <a class="el" href="XvcConnection_8cpp_source.html">XvcConnection.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="XvcConnection_8cpp_source.html#l00195">195</a> of file <a class="el" href="XvcConnection_8cpp_source.html">XvcConnection.cpp</a>.</p>
+
+</div>
+</div>
+<a id="aae93db0d04f0bdd81f876cfd2c6b7389" name="aae93db0d04f0bdd81f876cfd2c6b7389"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aae93db0d04f0bdd81f876cfd2c6b7389">&#9670;&#160;</a></span>lastErrno()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int rogue::protocols::xilinx::XvcConnection::lastErrno </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Returns errno from the most recent <a class="el" href="classrogue_1_1protocols_1_1xilinx_1_1XvcConnection.html#a102bd1fcc87c85890997172bf14d76ff" title="Reads up to count bytes, blocking in select() until either data is available on the peer socket OR th...">readTo()</a> failure (-2 return). </p>
+
+<p class="definition">Definition at line <a class="el" href="XvcConnection_8h_source.html#l00118">118</a> of file <a class="el" href="XvcConnection_8h_source.html">XvcConnection.h</a>.</p>
 
 </div>
 </div>
@@ -354,7 +394,7 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Reads up to <code>count</code> bytes with timeout. </p>
+<p>Reads up to <code>count</code> bytes, blocking in select() until either data is available on the peer socket OR the shutdown wakeFd becomes readable. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">buf</td><td>Destination buffer. </td></tr>
@@ -362,9 +402,9 @@ Public Member Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Number of bytes read, or <code>0</code> on timeout/no data. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>&gt;0 on bytes read; 0 on peer EOF; -1 on shutdown; -2 on select/read error (errno captured in <a class="el" href="classrogue_1_1protocols_1_1xilinx_1_1XvcConnection.html#aae93db0d04f0bdd81f876cfd2c6b7389" title="Returns errno from the most recent readTo() failure (-2 return).">lastErrno()</a>). </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="XvcConnection_8cpp_source.html#l00052">52</a> of file <a class="el" href="XvcConnection_8cpp_source.html">XvcConnection.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="XvcConnection_8cpp_source.html#l00075">75</a> of file <a class="el" href="XvcConnection_8cpp_source.html">XvcConnection.cpp</a>.</p>
 
 </div>
 </div>
@@ -393,7 +433,7 @@ Public Member Functions</h2></td></tr>
 
 <p>Runs command processing loop for this connection. </p>
 
-<p class="definition">Definition at line <a class="el" href="XvcConnection_8cpp_source.html#l00148">148</a> of file <a class="el" href="XvcConnection_8cpp_source.html">XvcConnection.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="XvcConnection_8cpp_source.html#l00219">219</a> of file <a class="el" href="XvcConnection_8cpp_source.html">XvcConnection.cpp</a>.</p>
 
 </div>
 </div>

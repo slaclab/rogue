@@ -1,7 +1,6 @@
 var searchData=
 [
-  ['name_5f_0',['name_',['../classrogue_1_1interfaces_1_1memory_1_1Variable.html#a684a93caf2a950c67e30a886e3e7255b',1,'rogue::interfaces::memory::Variable::name_'],['../classrogue_1_1LogFilter.html#aa5b741fc5d7c6a5769531fe534b150bb',1,'rogue::LogFilter::name_']]],
-  ['nul_1',['nul',['../classrogue_1_1protocols_1_1rssi_1_1Header.html#a94714c12f6cf4f5a2357539faf268dd8',1,'rogue::protocols::rssi::Header']]],
-  ['nulltimeout_2',['nullTimeout',['../classrogue_1_1protocols_1_1rssi_1_1Header.html#ab66d9ae56b32ec8cda2e6062f8151565',1,'rogue::protocols::rssi::Header']]],
-  ['numvalues_5f_3',['numValues_',['../classrogue_1_1interfaces_1_1memory_1_1Variable.html#a7d1e7d87b300323a5d56f9a1343653c5',1,'rogue::interfaces::memory::Variable']]]
+  ['offset_5f_0',['offset_',['../classrogue_1_1interfaces_1_1memory_1_1Block.html#afd749f0d002e56271a1c6dd4d274e1b8',1,'rogue::interfaces::memory::Block::offset_'],['../classrogue_1_1interfaces_1_1memory_1_1Variable.html#ad05a532cfd6ad5cb995fd26ab093095f',1,'rogue::interfaces::memory::Variable::offset_']]],
+  ['opencount_1',['openCount',['../classrogue_1_1hardware_1_1axi_1_1AxiStreamDmaShared.html#aa6d5662e25ab47e4f48876eee6416cdc',1,'rogue::hardware::axi::AxiStreamDmaShared']]],
+  ['overlapen_5f_2',['overlapEn_',['../classrogue_1_1interfaces_1_1memory_1_1Variable.html#a134f9f8116707efd63d9717e75cba5fc',1,'rogue::interfaces::memory::Variable']]]
 ];

@@ -1,14 +1,19 @@
 var searchData=
 [
-  ['wait_0',['wait',['../classrogue_1_1interfaces_1_1memory_1_1Transaction.html#a537f6cdff63245d873e75eadf31a85ce',1,'rogue::interfaces::memory::Transaction']]],
-  ['waitframecount_1',['waitframecount',['../classrogue_1_1utilities_1_1fileio_1_1StreamWriter.html#a123d2a3aa007ad0d3f1bccdebfae375b',1,'rogue::utilities::fileio::StreamWriter::waitFrameCount()'],['../classrogue_1_1utilities_1_1fileio_1_1StreamWriterChannel.html#abcb8a54011c08bedb929a05c4b939c89',1,'rogue::utilities::fileio::StreamWriterChannel::waitFrameCount()']]],
-  ['waitready_2',['waitReady',['../classrogue_1_1interfaces_1_1memory_1_1TcpClient.html#a67ede27755b094717b8d9ebd6fcf609a',1,'rogue::interfaces::memory::TcpClient']]],
-  ['waittransaction_3',['waitTransaction',['../classrogue_1_1interfaces_1_1memory_1_1Master.html#aad065c2019c8c9d5e0f7c53b1ea05591',1,'rogue::interfaces::memory::Master']]],
-  ['warning_4',['warning',['../classrogue_1_1Logging.html#aadd1a774af585341899630409c6b8161',1,'rogue::Logging::warning(const char *fmt,...)'],['../classrogue_1_1Logging.html#adba5171ba919a7e011cdb080431f4df2',1,'rogue::Logging::Warning']]],
-  ['warntime_5f_5',['warnTime_',['../classrogue_1_1interfaces_1_1memory_1_1Transaction.html#a0deee61005984f9db783283fbf143ad5',1,'rogue::interfaces::memory::Transaction']]],
-  ['what_6',['what',['../classrogue_1_1GeneralError.html#a721f1249312c1e2c4f536f90cd63b95a',1,'rogue::GeneralError']]],
-  ['wordsize_7',['wordSize',['../classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#ac15c793723a608fc1b84e205acfdc844',1,'rogue::protocols::xilinx::JtagDriver']]],
-  ['write_8',['write',['../classrogue_1_1interfaces_1_1memory_1_1Block.html#a50badeae7759acbdeee458b6ed686ca5',1,'rogue::interfaces::memory::Block::write()'],['../namespacerogue_1_1interfaces_1_1memory.html#a796fe0c4657923682a90289e6693c1c9',1,'rogue::interfaces::memory::Write']]],
-  ['writefile_9',['writeFile',['../classrogue_1_1utilities_1_1fileio_1_1StreamWriter.html#a4f77524e4a25b3c0cecc45b23fdd508a',1,'rogue::utilities::fileio::StreamWriter']]],
-  ['writepy_10',['writePy',['../classrogue_1_1interfaces_1_1stream_1_1Frame.html#a2d8dc04f70a9e8cc0274bd3763209604',1,'rogue::interfaces::stream::Frame']]]
+  ['xfer_0',['xfer',['../classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#af5a00e96bd1e837884ec1f97fe273e78',1,'rogue::protocols::xilinx::JtagDriver::xfer()'],['../classrogue_1_1protocols_1_1xilinx_1_1Xvc.html#a4c92741851b00c6f56ddc4f9e916aabd',1,'rogue::protocols::xilinx::Xvc::xfer()']]],
+  ['xferrel_1',['xferRel',['../classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#ae2cbfd4370480ccde5c043966615b3d2',1,'rogue::protocols::xilinx::JtagDriver']]],
+  ['xid_2',['Xid',['../classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#a66482db9bb278adbe343ae67138ecd06',1,'rogue::protocols::xilinx::JtagDriver']]],
+  ['xid_5fany_3',['XID_ANY',['../classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#a065467509698ab00b8f0b0f635b06a0c',1,'rogue::protocols::xilinx::JtagDriver']]],
+  ['xid_5fshift_4',['XID_SHIFT',['../classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#a0b7c1f9f891d76198ffdfaf989de6908',1,'rogue::protocols::xilinx::JtagDriver']]],
+  ['xvc_5',['xvc',['../classrogue_1_1protocols_1_1xilinx_1_1Xvc.html',1,'rogue::protocols::xilinx::Xvc'],['../classrogue_1_1protocols_1_1xilinx_1_1Xvc.html#a3d2f990fb7430ff0dcfb5fe69fc280de',1,'rogue::protocols::xilinx::Xvc::Xvc()']]],
+  ['xvc_2ecpp_6',['Xvc.cpp',['../Xvc_8cpp.html',1,'']]],
+  ['xvc_2eh_7',['Xvc.h',['../Xvc_8h.html',1,'']]],
+  ['xvcconnection_8',['xvcconnection',['../classrogue_1_1protocols_1_1xilinx_1_1XvcConnection.html',1,'rogue::protocols::xilinx::XvcConnection'],['../classrogue_1_1protocols_1_1xilinx_1_1XvcConnection.html#a9bd07c64bdfa45aa41a81531785ad169',1,'rogue::protocols::xilinx::XvcConnection::XvcConnection()']]],
+  ['xvcconnection_2ecpp_9',['XvcConnection.cpp',['../XvcConnection_8cpp.html',1,'']]],
+  ['xvcconnection_2eh_10',['XvcConnection.h',['../XvcConnection_8h.html',1,'']]],
+  ['xvclog_5f_11',['xvcLog_',['../classrogue_1_1protocols_1_1xilinx_1_1Xvc.html#a9c14cf45abc98f60f1becc51de51542f',1,'rogue::protocols::xilinx::Xvc']]],
+  ['xvcptr_12',['XvcPtr',['../namespacerogue_1_1protocols_1_1xilinx.html#ab9ef52c2fd9aa4cfc1fa408a698a5beb',1,'rogue::protocols::xilinx']]],
+  ['xvcserver_13',['xvcserver',['../classrogue_1_1protocols_1_1xilinx_1_1XvcServer.html',1,'rogue::protocols::xilinx::XvcServer'],['../classrogue_1_1protocols_1_1xilinx_1_1XvcServer.html#a2e0e5b4fa2f4ad69193b2ebc6463d032',1,'rogue::protocols::xilinx::XvcServer::XvcServer()']]],
+  ['xvcserver_2ecpp_14',['XvcServer.cpp',['../XvcServer_8cpp.html',1,'']]],
+  ['xvcserver_2eh_15',['XvcServer.h',['../XvcServer_8h.html',1,'']]]
 ];

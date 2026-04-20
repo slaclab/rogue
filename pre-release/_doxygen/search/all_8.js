@@ -1,12 +1,12 @@
 var searchData=
 [
-  ['hdbufmax_0',['hdBufMax',['../namespacerogue_1_1protocols_1_1xilinx.html#a21ca3c936a265bad27d8dbb825d41272',1,'rogue::protocols::xilinx']]],
+  ['hdbufmax_0',['hdBufMax',['../namespacerogue_1_1protocols_1_1xilinx.html#a49c5a02b8da52b520b03d2a8481fe8af',1,'rogue::protocols::xilinx']]],
   ['hdrsize_1',['HdrSize',['../namespacerogue_1_1protocols_1_1udp.html#a2930a6745cd3ff56f268346efbdc1b1f',1,'rogue::protocols::udp']]],
   ['header_2',['header',['../classrogue_1_1protocols_1_1rssi_1_1Header.html',1,'rogue::protocols::rssi::Header'],['../classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#a69a7aa72c03a5175fc6c9d9dfec43055',1,'rogue::protocols::xilinx::JtagDriver::Header'],['../classrogue_1_1protocols_1_1rssi_1_1Header.html#a803d96b5c5c2950a4fed9c5e1ca39b2d',1,'rogue::protocols::rssi::Header::Header()']]],
   ['header_2ecpp_3',['Header.cpp',['../Header_8cpp.html',1,'']]],
   ['header_2eh_4',['Header.h',['../Header_8h.html',1,'']]],
   ['headerptr_5',['HeaderPtr',['../namespacerogue_1_1protocols_1_1rssi.html#a7c40e2fe0bc2c102751b8ba7d92e061e',1,'rogue::protocols::rssi']]],
-  ['headersize_6',['headersize',['../classrogue_1_1protocols_1_1batcher_1_1CoreV1.html#afb8c395859fdcfbc22e6c40aaac7af81',1,'rogue::protocols::batcher::CoreV1::headerSize()'],['../classrogue_1_1protocols_1_1batcher_1_1CoreV2.html#aabb6a32b1dbb7fd7c213c2406fcf3cf0',1,'rogue::protocols::batcher::CoreV2::headerSize()'],['../classrogue_1_1protocols_1_1rssi_1_1Header.html#ab40b573ae8130e21757e8a40098aee33',1,'rogue::protocols::rssi::Header::HeaderSize']]],
+  ['headersize_6',['headersize',['../classrogue_1_1protocols_1_1rssi_1_1Header.html#ab40b573ae8130e21757e8a40098aee33',1,'rogue::protocols::rssi::Header::HeaderSize'],['../classrogue_1_1protocols_1_1batcher_1_1CoreV1.html#afb8c395859fdcfbc22e6c40aaac7af81',1,'rogue::protocols::batcher::CoreV1::headerSize()'],['../classrogue_1_1protocols_1_1batcher_1_1CoreV2.html#aabb6a32b1dbb7fd7c213c2406fcf3cf0',1,'rogue::protocols::batcher::CoreV2::headerSize()']]],
   ['headsize_5f_7',['headSize_',['../classrogue_1_1protocols_1_1packetizer_1_1Controller.html#a9af27bc7f5382266e3ba618f594f2f1a',1,'rogue::protocols::packetizer::Controller']]],
   ['helpers_2eh_8',['Helpers.h',['../Helpers_8h.html',1,'']]],
   ['hightranbyte_5f_9',['highTranByte_',['../classrogue_1_1interfaces_1_1memory_1_1Variable.html#a3bf57fb9b25898a4b48a64bb61380515',1,'rogue::interfaces::memory::Variable']]],

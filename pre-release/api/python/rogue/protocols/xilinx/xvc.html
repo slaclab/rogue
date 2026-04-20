@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Xvc &mdash; Rogue v6.10.1-19-g7b43b640d documentation</title>
+  <title>Xvc &mdash; Rogue v6.10.1-25-g5719d0940 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../../../../_static/slac-favicon-192.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=7fe4745c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=4c294688"></script>
       <script src="../../../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -170,7 +170,20 @@
 <p>This constructor is a low-level C++ allocation path. Prefer <code class="docutils literal notranslate"><span class="pre">create()</span></code> when shared ownership or Python exposure is required.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>port</strong> – TCP port used for local XVC server listener.</p>
+<dd class="field-odd"><p><strong>port</strong> – TCP port for local XVC server (2542 is the Vivado default; 0 = kernel-assigned).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rogue.protocols.xilinx.Xvc.getPort">
+<span class="sig-name descname"><span class="pre">getPort</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rogue.protocols.xilinx.Xvc.getPort" title="Link to this definition"></a></dt>
+<dd><p>C++: <a class="reference internal" href="../../../../cpp/protocols/xilinx/xvc.html#_CPPv4NK5rogue9protocols6xilinx3Xvc7getPortEv" title="rogue::protocols::xilinx::Xvc::getPort"><code class="xref cpp cpp-func docutils literal notranslate"><span class="pre">rogue::protocols::xilinx::Xvc::getPort()</span></code></a></p>
+<p>Returns the TCP port the XVC server is bound to.</p>
+<p>When port 0 was passed to the constructor, returns the kernel-assigned port after start(); otherwise returns the configured port (typically 2542, the Vivado Hardware Manager default).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Port number (0 if called before start() when ctor received 0).</p>
 </dd>
 </dl>
 </dd></dl>

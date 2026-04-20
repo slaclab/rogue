@@ -76,17 +76,13 @@ $(function() {
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#namespaces">Namespaces</a> &#124;
-<a href="#typedef-members">Typedefs</a> &#124;
-<a href="#var-members">Variables</a>  </div>
+<a href="#typedef-members">Typedefs</a>  </div>
   <div class="headertitle"><div class="title">Xvc.h File Reference</div></div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="Directives_8h_source.html">rogue/Directives.h</a>&quot;</code><br />
-<code>#include &lt;netdb.h&gt;</code><br />
-<code>#include &lt;netinet/in.h&gt;</code><br />
-<code>#include &lt;netinet/ip.h&gt;</code><br />
-<code>#include &lt;stdint.h&gt;</code><br />
-<code>#include &lt;sys/socket.h&gt;</code><br />
+<code>#include &lt;atomic&gt;</code><br />
+<code>#include &lt;cstdint&gt;</code><br />
 <code>#include &lt;memory&gt;</code><br />
 <code>#include &lt;thread&gt;</code><br />
 <code>#include &quot;<a class="el" href="GeneralError_8h_source.html">rogue/GeneralError.h</a>&quot;</code><br />
@@ -95,7 +91,6 @@ $(function() {
 <code>#include &quot;<a class="el" href="stream_2Master_8h_source.html">rogue/interfaces/stream/Master.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="stream_2Slave_8h_source.html">rogue/interfaces/stream/Slave.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="JtagDriver_8h_source.html">rogue/protocols/xilinx/JtagDriver.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="XvcConnection_8h_source.html">rogue/protocols/xilinx/XvcConnection.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="XvcServer_8h_source.html">rogue/protocols/xilinx/XvcServer.h</a>&quot;</code><br />
 </div>
 <p><a href="Xvc_8h_source.html">Go to the source code of this file.</a></p>
@@ -119,12 +114,6 @@ Namespaces</h2></td></tr>
 Typedefs</h2></td></tr>
 <tr class="memitem:ab9ef52c2fd9aa4cfc1fa408a698a5beb" id="r_ab9ef52c2fd9aa4cfc1fa408a698a5beb"><td class="memItemLeft" align="right" valign="top">typedef std::shared_ptr&lt; <a class="el" href="classrogue_1_1protocols_1_1xilinx_1_1Xvc.html">rogue::protocols::xilinx::Xvc</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacerogue_1_1protocols_1_1xilinx.html#ab9ef52c2fd9aa4cfc1fa408a698a5beb">rogue::protocols::xilinx::XvcPtr</a></td></tr>
 <tr class="separator:ab9ef52c2fd9aa4cfc1fa408a698a5beb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
-Variables</h2></td></tr>
-<tr class="memitem:ac1c26bde267cc9a754d599d9f1800653" id="r_ac1c26bde267cc9a754d599d9f1800653"><td class="memItemLeft" align="right" valign="top">const unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacerogue_1_1protocols_1_1xilinx.html#ac1c26bde267cc9a754d599d9f1800653">rogue::protocols::xilinx::kMaxArgs</a> = 3</td></tr>
-<tr class="memdesc:ac1c26bde267cc9a754d599d9f1800653"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maximum supported argument count for XVC command parsing helpers.  <br /></td></tr>
-<tr class="separator:ac1c26bde267cc9a754d599d9f1800653"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 </div><!-- contents -->
 <!-- start footer part -->

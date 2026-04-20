@@ -1,10 +1,18 @@
 var searchData=
 [
-  ['udplog_5f_0',['udpLog_',['../classrogue_1_1protocols_1_1udp_1_1Core.html#aa2ab0415c2a24e6820f25d13b78a960a',1,'rogue::protocols::udp::Core']]],
-  ['udpmtx_5f_1',['udpMtx_',['../classrogue_1_1protocols_1_1udp_1_1Core.html#ae997ac3738d4e878a2035356a48ba69d',1,'rogue::protocols::udp::Core']]],
-  ['ufixed_2',['UFixed',['../namespacerogue_1_1interfaces_1_1memory.html#aaad310d0c54d9976bd6b8b207d197c87',1,'rogue::interfaces::memory']]],
-  ['uint_3',['UInt',['../namespacerogue_1_1interfaces_1_1memory.html#a4cef0a34f59b5ef9757f9dde581cb0cc',1,'rogue::interfaces::memory']]],
-  ['unknown_5fperiod_4',['UNKNOWN_PERIOD',['../classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#a21fd1aa07ba1902e4c41c8d9536acd83',1,'rogue::protocols::xilinx::JtagDriver']]],
-  ['updateen_5f_5',['updateEn_',['../classrogue_1_1interfaces_1_1memory_1_1Block.html#a1f23a409fe8575cf3799672e08dca087',1,'rogue::interfaces::memory::Block']]],
-  ['updatenotify_5f_6',['updateNotify_',['../classrogue_1_1interfaces_1_1memory_1_1Variable.html#a943c35b4dc6a2c41c3b74409993a6cd8',1,'rogue::interfaces::memory::Variable']]]
+  ['valuebits_5f_0',['valueBits_',['../classrogue_1_1interfaces_1_1memory_1_1Variable.html#aa7b083febabd1b2e76e22de001de3b05',1,'rogue::interfaces::memory::Variable']]],
+  ['valuebytes_5f_1',['valueBytes_',['../classrogue_1_1interfaces_1_1memory_1_1Variable.html#a3b292c36c2c04eacd1db66562feab4c1',1,'rogue::interfaces::memory::Variable']]],
+  ['valuestride_5f_2',['valueStride_',['../classrogue_1_1interfaces_1_1memory_1_1Variable.html#a5422ba5ce4eee30c5660bd93fe82c222',1,'rogue::interfaces::memory::Variable']]],
+  ['varbytes_5f_3',['varBytes_',['../classrogue_1_1interfaces_1_1memory_1_1Variable.html#a08ebcf5c2fe12b3172ca1677447f5320',1,'rogue::interfaces::memory::Variable']]],
+  ['variables_5f_4',['variables_',['../classrogue_1_1interfaces_1_1memory_1_1Block.html#a5342e69c62a015daedbd2e91861609db',1,'rogue::interfaces::memory::Block']]],
+  ['verify_5',['Verify',['../namespacerogue_1_1interfaces_1_1memory.html#aa86de079c79f5b478b72cd482fe652e1',1,'rogue::interfaces::memory']]],
+  ['verifybase_5f_6',['verifyBase_',['../classrogue_1_1interfaces_1_1memory_1_1Block.html#ac483b7db37f862fd0decb411b142e1d2',1,'rogue::interfaces::memory::Block']]],
+  ['verifyblock_5f_7',['verifyBlock_',['../classrogue_1_1interfaces_1_1memory_1_1Block.html#a742e588be6a95b970035478005c6126a',1,'rogue::interfaces::memory::Block']]],
+  ['verifydata_5f_8',['verifyData_',['../classrogue_1_1interfaces_1_1memory_1_1Block.html#a385fe499d3a6c3c701e739b8bbdc7239',1,'rogue::interfaces::memory::Block']]],
+  ['verifyen_5f_9',['verifyen_',['../classrogue_1_1interfaces_1_1memory_1_1Block.html#a20e239fef7f83d8ca351a6e550ab0b39',1,'rogue::interfaces::memory::Block::verifyEn_'],['../classrogue_1_1interfaces_1_1memory_1_1Variable.html#ac232bd5b5c62c73f448b42d62d0ea2d8',1,'rogue::interfaces::memory::Variable::verifyEn_']]],
+  ['verifyinp_5f_10',['verifyInp_',['../classrogue_1_1interfaces_1_1memory_1_1Block.html#a6bdf17633b266d8849b8ebd6976e6bfa',1,'rogue::interfaces::memory::Block']]],
+  ['verifymask_5f_11',['verifyMask_',['../classrogue_1_1interfaces_1_1memory_1_1Block.html#ad27860a9442d5d6585d1d9e19b377ee0',1,'rogue::interfaces::memory::Block']]],
+  ['verifyreq_5f_12',['verifyReq_',['../classrogue_1_1interfaces_1_1memory_1_1Block.html#a7a163c7515c3e8b22377f145e8c2402c',1,'rogue::interfaces::memory::Block']]],
+  ['verifysize_5f_13',['verifySize_',['../classrogue_1_1interfaces_1_1memory_1_1Block.html#a1eb26ee43a59717b6b72e94e055af451',1,'rogue::interfaces::memory::Block']]],
+  ['version_14',['version',['../classrogue_1_1protocols_1_1rssi_1_1Header.html#aa272a23979fac48cf39331134c70035f',1,'rogue::protocols::rssi::Header']]]
 ];

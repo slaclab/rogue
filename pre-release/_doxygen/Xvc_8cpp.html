@@ -78,15 +78,21 @@ $(function() {
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="Directives_8h_source.html">rogue/Directives.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Xvc_8h_source.html">rogue/protocols/xilinx/Xvc.h</a>&quot;</code><br />
-<code>#include &lt;dlfcn.h&gt;</code><br />
+<code>#include &lt;fcntl.h&gt;</code><br />
+<code>#include &lt;pthread.h&gt;</code><br />
 <code>#include &lt;unistd.h&gt;</code><br />
 <code>#include &lt;algorithm&gt;</code><br />
-<code>#include &lt;cstdlib&gt;</code><br />
+<code>#include &lt;cerrno&gt;</code><br />
+<code>#include &lt;cinttypes&gt;</code><br />
+<code>#include &lt;climits&gt;</code><br />
+<code>#include &lt;cstddef&gt;</code><br />
 <code>#include &lt;cstring&gt;</code><br />
 <code>#include &lt;memory&gt;</code><br />
+<code>#include &lt;thread&gt;</code><br />
 <code>#include &quot;<a class="el" href="GeneralError_8h_source.html">rogue/GeneralError.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="GilRelease_8h_source.html">rogue/GilRelease.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Logging_8h_source.html">rogue/Logging.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="ScopedGil_8h_source.html">rogue/ScopedGil.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Buffer_8h_source.html">rogue/interfaces/stream/Buffer.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Frame_8h_source.html">rogue/interfaces/stream/Frame.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="FrameIterator_8h_source.html">rogue/interfaces/stream/FrameIterator.h</a>&quot;</code><br />

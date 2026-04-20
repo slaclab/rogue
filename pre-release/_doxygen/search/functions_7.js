@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['hdbufmax_0',['hdBufMax',['../namespacerogue_1_1protocols_1_1xilinx.html#a21ca3c936a265bad27d8dbb825d41272',1,'rogue::protocols::xilinx']]],
+  ['hdbufmax_0',['hdBufMax',['../namespacerogue_1_1protocols_1_1xilinx.html#a49c5a02b8da52b520b03d2a8481fe8af',1,'rogue::protocols::xilinx']]],
   ['header_1',['Header',['../classrogue_1_1protocols_1_1rssi_1_1Header.html#a803d96b5c5c2950a4fed9c5e1ca39b2d',1,'rogue::protocols::rssi::Header']]],
   ['headersize_2',['headersize',['../classrogue_1_1protocols_1_1batcher_1_1CoreV1.html#afb8c395859fdcfbc22e6c40aaac7af81',1,'rogue::protocols::batcher::CoreV1::headerSize()'],['../classrogue_1_1protocols_1_1batcher_1_1CoreV2.html#aabb6a32b1dbb7fd7c213c2406fcf3cf0',1,'rogue::protocols::batcher::CoreV2::headerSize()']]],
   ['hub_3',['Hub',['../classrogue_1_1interfaces_1_1memory_1_1Hub.html#a2f87f8590c4ceaca92176e62cbca1b8e',1,'rogue::interfaces::memory::Hub']]],

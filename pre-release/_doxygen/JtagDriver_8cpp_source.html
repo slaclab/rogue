@@ -87,351 +87,363 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="preprocessor">#include &quot;<a class="code" href="JtagDriver_8h.html">rogue/protocols/xilinx/JtagDriver.h</a>&quot;</span></div>
 <div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span> </div>
 <div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span><span class="preprocessor">#include &lt;arpa/inet.h&gt;</span></div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="preprocessor">#include &lt;dlfcn.h&gt;</span></div>
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="preprocessor">#include &lt;netinet/in.h&gt;</span></div>
-<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span><span class="preprocessor">#include &lt;pthread.h&gt;</span></div>
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="preprocessor">#include &lt;sys/socket.h&gt;</span></div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span> </div>
-<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><span class="preprocessor">#include &lt;cinttypes&gt;</span></div>
-<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span><span class="preprocessor">#include &lt;cmath&gt;</span></div>
-<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span><span class="preprocessor">#include &lt;cstdio&gt;</span></div>
-<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span><span class="preprocessor">#include &lt;memory&gt;</span></div>
-<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span><span class="preprocessor">#include &lt;string&gt;</span></div>
-<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span> </div>
-<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacerogue_1_1protocols_1_1xilinx.html">rpx</a> = <a class="code hl_namespace" href="namespacerogue_1_1protocols_1_1xilinx.html">rogue::protocols::xilinx</a>;</div>
-<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span> </div>
-<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span><span class="preprocessor">#ifndef NO_PYTHON</span></div>
-<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span><span class="preprocessor">    #include &lt;boost/python.hpp&gt;</span></div>
-<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span><span class="keyword">namespace </span>bp = boost::python;</div>
-<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span> </div>
-<div class="foldopen" id="foldopen00042" data-start="{" data-end="}">
-<div class="line"><a id="l00042" name="l00042"></a><span class="lineno"><a class="line" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#ac215192fe358d1cda858846a5e7212b6">   42</a></span><a class="code hl_typedef" href="namespacerogue_1_1protocols_1_1xilinx.html#abd52ab28a47c0d024ec16b21e0f77072">rpx::JtagDriverPtr</a> rpx::JtagDriver::create(uint16_t port) {</div>
-<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>    <span class="comment">// Create shared_ptr</span></div>
-<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>    <a class="code hl_typedef" href="namespacerogue_1_1protocols_1_1xilinx.html#abd52ab28a47c0d024ec16b21e0f77072">rpx::JtagDriverPtr</a> r = std::make_shared&lt;rpx::JtagDriver&gt;(port);</div>
-<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>    <span class="keywordflow">return</span> (r);</div>
-<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>}</div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span> </div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="preprocessor">#include &lt;cinttypes&gt;</span></div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span><span class="preprocessor">#include &lt;climits&gt;</span></div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="preprocessor">#include &lt;cmath&gt;</span></div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="preprocessor">#include &lt;cstdio&gt;</span></div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><span class="preprocessor">#include &lt;cstring&gt;</span></div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span><span class="preprocessor">#include &lt;memory&gt;</span></div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span> </div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacerogue_1_1protocols_1_1xilinx.html">rpx</a> = <a class="code hl_namespace" href="namespacerogue_1_1protocols_1_1xilinx.html">rogue::protocols::xilinx</a>;</div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span> </div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span><span class="preprocessor">#ifndef NO_PYTHON</span></div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span><span class="preprocessor">    #include &lt;boost/python.hpp&gt;</span></div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span><span class="keyword">namespace </span>bp = boost::python;</div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span> </div>
+<div class="foldopen" id="foldopen00039" data-start="{" data-end="}">
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno"><a class="line" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#ac215192fe358d1cda858846a5e7212b6">   39</a></span><a class="code hl_typedef" href="namespacerogue_1_1protocols_1_1xilinx.html#abd52ab28a47c0d024ec16b21e0f77072">rpx::JtagDriverPtr</a> rpx::JtagDriver::create(uint16_t port) {</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>    <span class="comment">// Create shared_ptr</span></div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>    <a class="code hl_typedef" href="namespacerogue_1_1protocols_1_1xilinx.html#abd52ab28a47c0d024ec16b21e0f77072">rpx::JtagDriverPtr</a> r = std::make_shared&lt;rpx::JtagDriver&gt;(port);</div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>    <span class="keywordflow">return</span> (r);</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>}</div>
 </div>
-<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span> </div>
-<div class="foldopen" id="foldopen00048" data-start="{" data-end="}">
-<div class="line"><a id="l00048" name="l00048"></a><span class="lineno"><a class="line" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#af8d414e34906a6b30148beffb5cbd345">   48</a></span>rpx::JtagDriver::JtagDriver(uint16_t port)</div>
-<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>    : port_(port),</div>
-<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>      drop_(0),</div>
-<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>      done_(false),</div>
-<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>      drEn_(false),</div>
-<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>      wordSize_(sizeof(<a class="code hl_typedef" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#a69a7aa72c03a5175fc6c9d9dfec43055">Header</a>)),</div>
-<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>      memDepth_(1),</div>
-<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>      retry_(10),</div>
-<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>      log_(nullptr),</div>
-<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>      periodNs_(UNKNOWN_PERIOD) {</div>
-<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>    <span class="comment">// start out with an initial header size; it might be increased</span></div>
-<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>    <span class="comment">// once we contacted the server...</span></div>
-<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>    bufSz_ = 2048;</div>
-<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>    txBuf_.reserve(bufSz_);</div>
-<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>    hdBuf_.reserve(<a class="code hl_function" href="namespacerogue_1_1protocols_1_1xilinx.html#a21ca3c936a265bad27d8dbb825d41272">hdBufMax</a>());</div>
-<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>    hdBuf_.resize(<a class="code hl_function" href="namespacerogue_1_1protocols_1_1xilinx.html#a21ca3c936a265bad27d8dbb825d41272">hdBufMax</a>());  <span class="comment">// fill with zeros</span></div>
-<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span> </div>
-<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>    <span class="comment">// Create logger</span></div>
-<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>    <a class="code hl_variable" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#a00eb3dbfd105c44cc7a9f80e3b7a165a">log_</a> = <a class="code hl_function" href="classrogue_1_1Logging.html#a8c34b36f657b697d85f9a6c60f85f07c">rogue::Logging::create</a>(<span class="stringliteral">&quot;xilinx.jtag&quot;</span>);</div>
-<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>}</div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span> </div>
+<div class="foldopen" id="foldopen00045" data-start="{" data-end="}">
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno"><a class="line" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#af8d414e34906a6b30148beffb5cbd345">   45</a></span>rpx::JtagDriver::JtagDriver(uint16_t port)</div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>    : port_(port),</div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>      drEn_(false),</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>      done_{false},</div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>      drop_(0),</div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>      log_(nullptr),</div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>      wordSize_(sizeof(<a class="code hl_typedef" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#a69a7aa72c03a5175fc6c9d9dfec43055">Header</a>)),</div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>      memDepth_(1),</div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>      bufSz_(2048),</div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>      retry_(10),</div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>      xid_(0),</div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>      periodNs_(UNKNOWN_PERIOD) {</div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>    <span class="comment">// start out with an initial header size; it might be increased</span></div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>    <span class="comment">// once we contacted the server...</span></div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>    txBuf_.resize(bufSz_);</div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>    hdBuf_.resize(<a class="code hl_function" href="namespacerogue_1_1protocols_1_1xilinx.html#a49c5a02b8da52b520b03d2a8481fe8af">hdBufMax</a>());</div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span> </div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>    <span class="comment">// Create logger</span></div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>    <a class="code hl_variable" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#a00eb3dbfd105c44cc7a9f80e3b7a165a">log_</a> = <a class="code hl_function" href="classrogue_1_1Logging.html#a8c34b36f657b697d85f9a6c60f85f07c">rogue::Logging::create</a>(<span class="stringliteral">&quot;xilinx.jtag&quot;</span>);</div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>}</div>
 </div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span> </div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>rpx::JtagDriver::Header rpx::JtagDriver::newXid() {</div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>    <span class="keywordflow">if</span> (XID_ANY == ++xid_) ++xid_;</div>
 <div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span> </div>
-<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>rpx::JtagDriver::Header rpx::JtagDriver::newXid() {</div>
-<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>    <span class="keywordflow">if</span> (XID_ANY == ++xid_) ++xid_;</div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>    <span class="keywordflow">return</span> (<span class="keyword">static_cast&lt;</span>Header<span class="keyword">&gt;</span>(xid_)) &lt;&lt; XID_SHIFT;</div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>}</div>
 <div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span> </div>
-<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>    <span class="keywordflow">return</span> ((Header)(xid_)) &lt;&lt; XID_SHIFT;</div>
-<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>}</div>
-<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span> </div>
-<div class="foldopen" id="foldopen00075" data-start="{" data-end="}">
-<div class="line"><a id="l00075" name="l00075"></a><span class="lineno"><a class="line" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#a131ed0750b6b53bf12c6653e0b365752">   75</a></span>rpx::JtagDriver::Xid rpx::JtagDriver::getXid(<a class="code hl_typedef" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#a69a7aa72c03a5175fc6c9d9dfec43055">Header</a> x) {</div>
-<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>    <span class="keywordflow">return</span> (x &gt;&gt; 20) &amp; 0xff;</div>
-<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>}</div>
+<div class="foldopen" id="foldopen00072" data-start="{" data-end="}">
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno"><a class="line" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#a131ed0750b6b53bf12c6653e0b365752">   72</a></span>rpx::JtagDriver::Xid rpx::JtagDriver::getXid(<a class="code hl_typedef" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#a69a7aa72c03a5175fc6c9d9dfec43055">Header</a> x) {</div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>    <span class="keywordflow">return</span> <span class="keyword">static_cast&lt;</span><a class="code hl_typedef" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#a66482db9bb278adbe343ae67138ecd06">Xid</a><span class="keyword">&gt;</span>((x &gt;&gt; 20) &amp; 0xff);</div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>}</div>
 </div>
-<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span> </div>
-<div class="foldopen" id="foldopen00079" data-start="{" data-end="}">
-<div class="line"><a id="l00079" name="l00079"></a><span class="lineno"><a class="line" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#aebf5d429c054c879dd66553d937aa578">   79</a></span>uint32_t rpx::JtagDriver::getCmd(<a class="code hl_typedef" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#a69a7aa72c03a5175fc6c9d9dfec43055">Header</a> x) {</div>
-<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>    <span class="keywordflow">return</span> x &amp; CMD_MASK;</div>
-<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>}</div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span> </div>
+<div class="foldopen" id="foldopen00076" data-start="{" data-end="}">
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno"><a class="line" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#aebf5d429c054c879dd66553d937aa578">   76</a></span>uint32_t rpx::JtagDriver::getCmd(<a class="code hl_typedef" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#a69a7aa72c03a5175fc6c9d9dfec43055">Header</a> x) {</div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>    <span class="keywordflow">return</span> x &amp; CMD_MASK;</div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>}</div>
 </div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span> </div>
+<div class="foldopen" id="foldopen00080" data-start="{" data-end="}">
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno"><a class="line" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#af69a2abb6b3a3720348ffeb31677431b">   80</a></span><span class="keywordtype">unsigned</span> rpx::JtagDriver::getErr(<a class="code hl_typedef" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#a69a7aa72c03a5175fc6c9d9dfec43055">Header</a> x) {</div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>    <span class="keywordflow">if</span> (getCmd(x) != CMD_E) <span class="keywordflow">return</span> 0;</div>
 <div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span> </div>
-<div class="foldopen" id="foldopen00083" data-start="{" data-end="}">
-<div class="line"><a id="l00083" name="l00083"></a><span class="lineno"><a class="line" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#af69a2abb6b3a3720348ffeb31677431b">   83</a></span><span class="keywordtype">unsigned</span> rpx::JtagDriver::getErr(<a class="code hl_typedef" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#a69a7aa72c03a5175fc6c9d9dfec43055">Header</a> x) {</div>
-<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>    <span class="keywordflow">if</span> (getCmd(x) != CMD_E) <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>    <span class="keywordflow">return</span> (x &amp; ERR_MASK) &gt;&gt; ERR_SHIFT;</div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>}</div>
+</div>
 <div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span> </div>
-<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>    <span class="keywordflow">return</span> (x &amp; ERR_MASK) &gt;&gt; ERR_SHIFT;</div>
-<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>}</div>
+<div class="foldopen" id="foldopen00086" data-start="{" data-end="}">
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno"><a class="line" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#a818a4f6bc58346049f9b5235a48d2232">   86</a></span>uint64_t rpx::JtagDriver::getLen(<a class="code hl_typedef" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#a69a7aa72c03a5175fc6c9d9dfec43055">Header</a> x) {</div>
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>    <span class="keywordflow">if</span> (getCmd(x) != CMD_S)</div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>        <span class="keywordflow">throw</span>(</div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>            <a class="code hl_function" href="classrogue_1_1GeneralError.html#ad37e9ca32b3afce0e38988b4a65c9e60">rogue::GeneralError::create</a>(<span class="stringliteral">&quot;JtagDriver::getLen()&quot;</span>, <span class="stringliteral">&quot;Cannot extract length from non-shift command header&quot;</span>));</div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span> </div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>    <span class="keywordflow">return</span> ((x &amp; LEN_MASK) &gt;&gt; LEN_SHIFT) + 1;</div>
+<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>}</div>
 </div>
-<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span> </div>
-<div class="foldopen" id="foldopen00089" data-start="{" data-end="}">
-<div class="line"><a id="l00089" name="l00089"></a><span class="lineno"><a class="line" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#a818a4f6bc58346049f9b5235a48d2232">   89</a></span>uint64_t rpx::JtagDriver::getLen(<a class="code hl_typedef" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#a69a7aa72c03a5175fc6c9d9dfec43055">Header</a> x) {</div>
-<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>    <span class="keywordflow">if</span> (getCmd(x) != CMD_S)</div>
-<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>        <span class="keywordflow">throw</span>(</div>
-<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>            <a class="code hl_function" href="classrogue_1_1GeneralError.html#ad37e9ca32b3afce0e38988b4a65c9e60">rogue::GeneralError::create</a>(<span class="stringliteral">&quot;JtagDriver::getLen()&quot;</span>, <span class="stringliteral">&quot;Cannot extract length from non-shift command header&quot;</span>));</div>
 <div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span> </div>
-<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>    <span class="keywordflow">return</span> ((x &amp; LEN_MASK) &gt;&gt; LEN_SHIFT) + 1;</div>
-<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>}</div>
+<div class="foldopen" id="foldopen00094" data-start="{" data-end="}">
+<div class="line"><a id="l00094" name="l00094"></a><span class="lineno"><a class="line" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#a38ea232829d02e2755b8c0ab0cca31f0">   94</a></span><span class="keyword">const</span> <span class="keywordtype">char</span>* rpx::JtagDriver::getMsg(<span class="keywordtype">unsigned</span> e) {</div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>    <span class="keywordflow">switch</span> (e) {</div>
+<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>        <span class="keywordflow">case</span> 0:</div>
+<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>            <span class="keywordflow">return</span> <span class="stringliteral">&quot;NO ERROR&quot;</span>;</div>
+<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span>        <span class="keywordflow">case</span> ERR_BAD_VERSION:</div>
+<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span>            <span class="keywordflow">return</span> <span class="stringliteral">&quot;Unsupported Protocol Version&quot;</span>;</div>
+<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>        <span class="keywordflow">case</span> ERR_BAD_COMMAND:</div>
+<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>            <span class="keywordflow">return</span> <span class="stringliteral">&quot;Unsupported Command&quot;</span>;</div>
+<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>        <span class="keywordflow">case</span> ERR_TRUNCATED:</div>
+<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>            <span class="keywordflow">return</span> <span class="stringliteral">&quot;Truncated Message&quot;</span>;</div>
+<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span>        <span class="keywordflow">case</span> ERR_NOT_PRESENT:</div>
+<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span>            <span class="keywordflow">return</span> <span class="stringliteral">&quot;XVC Support not Instantiated in Firmware&quot;</span>;</div>
+<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>        <span class="keywordflow">default</span>:</div>
+<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span>            <span class="keywordflow">break</span>;</div>
+<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span>    }</div>
+<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span>    <span class="keywordflow">return</span> <span class="keyword">nullptr</span>;</div>
+<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span>}</div>
 </div>
-<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span> </div>
-<div class="foldopen" id="foldopen00097" data-start="{" data-end="}">
-<div class="line"><a id="l00097" name="l00097"></a><span class="lineno"><a class="line" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#a38ea232829d02e2755b8c0ab0cca31f0">   97</a></span><span class="keyword">const</span> <span class="keywordtype">char</span>* rpx::JtagDriver::getMsg(<span class="keywordtype">unsigned</span> e) {</div>
-<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span>    <span class="keywordflow">switch</span> (e) {</div>
-<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span>        <span class="keywordflow">case</span> 0:</div>
-<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>            <span class="keywordflow">return</span> <span class="stringliteral">&quot;NO ERROR&quot;</span>;</div>
-<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>        <span class="keywordflow">case</span> ERR_BAD_VERSION:</div>
-<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>            <span class="keywordflow">return</span> <span class="stringliteral">&quot;Unsupported Protocol Version&quot;</span>;</div>
-<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>        <span class="keywordflow">case</span> ERR_BAD_COMMAND:</div>
-<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span>            <span class="keywordflow">return</span> <span class="stringliteral">&quot;Unsupported Command&quot;</span>;</div>
-<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span>        <span class="keywordflow">case</span> ERR_TRUNCATED:</div>
-<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>            <span class="keywordflow">return</span> <span class="stringliteral">&quot;Unsupported Command&quot;</span>;</div>
-<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span>        <span class="keywordflow">case</span> ERR_NOT_PRESENT:</div>
-<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span>            <span class="keywordflow">return</span> <span class="stringliteral">&quot;XVC Support not Instantiated in Firmware&quot;</span>;</div>
-<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span>        <span class="keywordflow">default</span>:</div>
-<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span>            <span class="keywordflow">break</span>;</div>
-<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span>    }</div>
-<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span>    <span class="keywordflow">return</span> NULL;</div>
-<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span>}</div>
+<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span> </div>
+<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span>rpx::JtagDriver::Header rpx::JtagDriver::mkQuery() {</div>
+<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span>    <span class="keywordflow">return</span> PVERS | CMD_Q | XID_ANY;</div>
+<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span>}</div>
+<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span> </div>
+<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span>rpx::JtagDriver::Header rpx::JtagDriver::mkShift(<span class="keywordtype">unsigned</span> len) {</div>
+<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span>    <span class="keywordflow">if</span> (len == 0)</div>
+<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span>        <span class="keywordflow">throw</span>(<a class="code hl_function" href="classrogue_1_1GeneralError.html#ad37e9ca32b3afce0e38988b4a65c9e60">rogue::GeneralError::create</a>(<span class="stringliteral">&quot;JtagDriver::mkShift()&quot;</span>, <span class="stringliteral">&quot;shift length must be &gt; 0&quot;</span>));</div>
+<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span>    len = len - 1;</div>
+<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span>    <span class="keywordflow">return</span> PVERS | CMD_S | newXid() | ((len &amp; LEN_MASK) &lt;&lt; LEN_SHIFT);</div>
+<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span>}</div>
+<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span> </div>
+<div class="foldopen" id="foldopen00123" data-start="{" data-end="}">
+<div class="line"><a id="l00123" name="l00123"></a><span class="lineno"><a class="line" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#ac15c793723a608fc1b84e205acfdc844">  123</a></span><span class="keywordtype">unsigned</span> rpx::JtagDriver::wordSize(<a class="code hl_typedef" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#a69a7aa72c03a5175fc6c9d9dfec43055">Header</a> reply) {</div>
+<div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span>    <span class="keywordflow">return</span> (reply &amp; 0x0000000f) + 1;</div>
+<div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span>}</div>
 </div>
-<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span> </div>
-<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span>rpx::JtagDriver::Header rpx::JtagDriver::mkQuery() {</div>
-<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span>    <span class="keywordflow">return</span> PVERS | CMD_Q | XID_ANY;</div>
-<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span>}</div>
-<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span> </div>
-<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span>rpx::JtagDriver::Header rpx::JtagDriver::mkShift(<span class="keywordtype">unsigned</span> len) {</div>
-<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span>    len = len - 1;</div>
-<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span>    <span class="keywordflow">return</span> PVERS | CMD_S | newXid() | (len &lt;&lt; LEN_SHIFT);</div>
-<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span>}</div>
-<div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span> </div>
-<div class="foldopen" id="foldopen00124" data-start="{" data-end="}">
-<div class="line"><a id="l00124" name="l00124"></a><span class="lineno"><a class="line" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#ac15c793723a608fc1b84e205acfdc844">  124</a></span><span class="keywordtype">unsigned</span> rpx::JtagDriver::wordSize(<a class="code hl_typedef" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#a69a7aa72c03a5175fc6c9d9dfec43055">Header</a> reply) {</div>
-<div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span>    <span class="keywordflow">return</span> (reply &amp; 0x0000000f) + 1;</div>
-<div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span>}</div>
+<div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span> </div>
+<div class="foldopen" id="foldopen00127" data-start="{" data-end="}">
+<div class="line"><a id="l00127" name="l00127"></a><span class="lineno"><a class="line" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#abd74b9778e3e783febe9545ab7fd2a95">  127</a></span><span class="keywordtype">unsigned</span> rpx::JtagDriver::memDepth(<a class="code hl_typedef" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#a69a7aa72c03a5175fc6c9d9dfec43055">Header</a> reply) {</div>
+<div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span>    <span class="keywordflow">return</span> (reply &gt;&gt; 4) &amp; 0xffff;</div>
+<div class="line"><a id="l00129" name="l00129"></a><span class="lineno">  129</span>}</div>
 </div>
-<div class="line"><a id="l00127" name="l00127"></a><span class="lineno">  127</span> </div>
-<div class="foldopen" id="foldopen00128" data-start="{" data-end="}">
-<div class="line"><a id="l00128" name="l00128"></a><span class="lineno"><a class="line" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#abd74b9778e3e783febe9545ab7fd2a95">  128</a></span><span class="keywordtype">unsigned</span> rpx::JtagDriver::memDepth(<a class="code hl_typedef" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#a69a7aa72c03a5175fc6c9d9dfec43055">Header</a> reply) {</div>
-<div class="line"><a id="l00129" name="l00129"></a><span class="lineno">  129</span>    <span class="keywordflow">return</span> (reply &gt;&gt; 4) &amp; 0xffff;</div>
-<div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span>}</div>
-</div>
-<div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span> </div>
-<div class="foldopen" id="foldopen00132" data-start="{" data-end="}">
-<div class="line"><a id="l00132" name="l00132"></a><span class="lineno"><a class="line" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#ab7d450e6e68744cedfa56b3d817a1445">  132</a></span>uint32_t rpx::JtagDriver::cvtPerNs(<a class="code hl_typedef" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#a69a7aa72c03a5175fc6c9d9dfec43055">Header</a> reply) {</div>
-<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span>    <span class="keywordtype">unsigned</span> rawVal = (reply &gt;&gt; XID_SHIFT) &amp; 0xff;</div>
-<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span>    <span class="keywordtype">double</span> tmp;</div>
-<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span> </div>
-<div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span>    <span class="keywordflow">if</span> (0 == rawVal) {</div>
-<div class="line"><a id="l00137" name="l00137"></a><span class="lineno">  137</span>        <span class="keywordflow">return</span> UNKNOWN_PERIOD;</div>
-<div class="line"><a id="l00138" name="l00138"></a><span class="lineno">  138</span>    }</div>
+<div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span> </div>
+<div class="foldopen" id="foldopen00131" data-start="{" data-end="}">
+<div class="line"><a id="l00131" name="l00131"></a><span class="lineno"><a class="line" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#ab7d450e6e68744cedfa56b3d817a1445">  131</a></span>uint32_t rpx::JtagDriver::cvtPerNs(<a class="code hl_typedef" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#a69a7aa72c03a5175fc6c9d9dfec43055">Header</a> reply) {</div>
+<div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span>    <span class="keywordtype">unsigned</span> rawVal = (reply &gt;&gt; XID_SHIFT) &amp; 0xff;</div>
+<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span> </div>
+<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span>    <span class="keywordflow">if</span> (0 == rawVal) {</div>
+<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span>        <span class="keywordflow">return</span> UNKNOWN_PERIOD;</div>
+<div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span>    }</div>
+<div class="line"><a id="l00137" name="l00137"></a><span class="lineno">  137</span> </div>
+<div class="line"><a id="l00138" name="l00138"></a><span class="lineno">  138</span>    <span class="keywordtype">double</span> tmp = <span class="keyword">static_cast&lt;</span><span class="keywordtype">double</span><span class="keyword">&gt;</span>(rawVal) * 4.0 / 256.0;</div>
 <div class="line"><a id="l00139" name="l00139"></a><span class="lineno">  139</span> </div>
-<div class="line"><a id="l00140" name="l00140"></a><span class="lineno">  140</span>    tmp = <span class="keyword">static_cast&lt;</span><span class="keywordtype">double</span><span class="keyword">&gt;</span>(rawVal) * 4.0 / 256.0;</div>
-<div class="line"><a id="l00141" name="l00141"></a><span class="lineno">  141</span> </div>
-<div class="line"><a id="l00142" name="l00142"></a><span class="lineno">  142</span>    <span class="keywordflow">return</span> <span class="keyword">static_cast&lt;</span>uint32_t<span class="keyword">&gt;</span>(round(pow(10.0, tmp) * 1.0E9 / REF_FREQ_HZ()));</div>
-<div class="line"><a id="l00143" name="l00143"></a><span class="lineno">  143</span>}</div>
+<div class="line"><a id="l00140" name="l00140"></a><span class="lineno">  140</span>    <span class="keywordflow">return</span> <span class="keyword">static_cast&lt;</span>uint32_t<span class="keyword">&gt;</span>(std::round(std::pow(10.0, tmp) * 1.0E9 / REF_FREQ_HZ()));</div>
+<div class="line"><a id="l00141" name="l00141"></a><span class="lineno">  141</span>}</div>
 </div>
-<div class="line"><a id="l00144" name="l00144"></a><span class="lineno">  144</span> </div>
-<div class="foldopen" id="foldopen00145" data-start="{" data-end="}">
-<div class="line"><a id="l00145" name="l00145"></a><span class="lineno"><a class="line" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#a99353b6ebec98b17fc7858e9b4bcb326">  145</a></span><span class="keywordtype">unsigned</span> rpx::JtagDriver::getWordSize() {</div>
-<div class="line"><a id="l00146" name="l00146"></a><span class="lineno">  146</span>    <span class="keywordflow">return</span> wordSize_;</div>
-<div class="line"><a id="l00147" name="l00147"></a><span class="lineno">  147</span>}</div>
+<div class="line"><a id="l00142" name="l00142"></a><span class="lineno">  142</span> </div>
+<div class="foldopen" id="foldopen00143" data-start="{" data-end="}">
+<div class="line"><a id="l00143" name="l00143"></a><span class="lineno"><a class="line" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#a99353b6ebec98b17fc7858e9b4bcb326">  143</a></span><span class="keywordtype">unsigned</span> rpx::JtagDriver::getWordSize() {</div>
+<div class="line"><a id="l00144" name="l00144"></a><span class="lineno">  144</span>    <span class="keywordflow">return</span> wordSize_;</div>
+<div class="line"><a id="l00145" name="l00145"></a><span class="lineno">  145</span>}</div>
 </div>
-<div class="line"><a id="l00148" name="l00148"></a><span class="lineno">  148</span> </div>
-<div class="foldopen" id="foldopen00149" data-start="{" data-end="}">
-<div class="line"><a id="l00149" name="l00149"></a><span class="lineno"><a class="line" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#af37ba35a95ad8b9dbe0bf6048861be71">  149</a></span><span class="keywordtype">unsigned</span> rpx::JtagDriver::getMemDepth() {</div>
-<div class="line"><a id="l00150" name="l00150"></a><span class="lineno">  150</span>    <span class="keywordflow">return</span> memDepth_;</div>
-<div class="line"><a id="l00151" name="l00151"></a><span class="lineno">  151</span>}</div>
+<div class="line"><a id="l00146" name="l00146"></a><span class="lineno">  146</span> </div>
+<div class="foldopen" id="foldopen00147" data-start="{" data-end="}">
+<div class="line"><a id="l00147" name="l00147"></a><span class="lineno"><a class="line" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#af37ba35a95ad8b9dbe0bf6048861be71">  147</a></span><span class="keywordtype">unsigned</span> rpx::JtagDriver::getMemDepth() {</div>
+<div class="line"><a id="l00148" name="l00148"></a><span class="lineno">  148</span>    <span class="keywordflow">return</span> memDepth_;</div>
+<div class="line"><a id="l00149" name="l00149"></a><span class="lineno">  149</span>}</div>
 </div>
-<div class="line"><a id="l00152" name="l00152"></a><span class="lineno">  152</span> </div>
-<div class="foldopen" id="foldopen00153" data-start="{" data-end="}">
-<div class="line"><a id="l00153" name="l00153"></a><span class="lineno"><a class="line" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#a4299327db39100d066a84c2673879beb">  153</a></span>rpx::JtagDriver::Header rpx::JtagDriver::getHdr(uint8_t* buf) {</div>
-<div class="line"><a id="l00154" name="l00154"></a><span class="lineno">  154</span>    <a class="code hl_typedef" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#a69a7aa72c03a5175fc6c9d9dfec43055">Header</a> hdr;</div>
-<div class="line"><a id="l00155" name="l00155"></a><span class="lineno">  155</span>    memcpy(&amp;hdr, buf, <span class="keyword">sizeof</span>(hdr));</div>
-<div class="line"><a id="l00156" name="l00156"></a><span class="lineno">  156</span>    <span class="keywordflow">if</span> (!isLE()) {</div>
-<div class="line"><a id="l00157" name="l00157"></a><span class="lineno">  157</span>        hdr = ntohl(hdr);</div>
-<div class="line"><a id="l00158" name="l00158"></a><span class="lineno">  158</span>    }</div>
-<div class="line"><a id="l00159" name="l00159"></a><span class="lineno">  159</span>    <span class="keywordflow">return</span> hdr;</div>
-<div class="line"><a id="l00160" name="l00160"></a><span class="lineno">  160</span>}</div>
+<div class="line"><a id="l00150" name="l00150"></a><span class="lineno">  150</span> </div>
+<div class="foldopen" id="foldopen00151" data-start="{" data-end="}">
+<div class="line"><a id="l00151" name="l00151"></a><span class="lineno"><a class="line" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#a375c98b1ee3e24b7ba8bc5de38fbdd1a">  151</a></span>rpx::JtagDriver::Header rpx::JtagDriver::getHdr(<span class="keyword">const</span> uint8_t* buf) {</div>
+<div class="line"><a id="l00152" name="l00152"></a><span class="lineno">  152</span>    <a class="code hl_typedef" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#a69a7aa72c03a5175fc6c9d9dfec43055">Header</a> hdr{};</div>
+<div class="line"><a id="l00153" name="l00153"></a><span class="lineno">  153</span>    memcpy(&amp;hdr, buf, <span class="keyword">sizeof</span>(hdr));</div>
+<div class="line"><a id="l00154" name="l00154"></a><span class="lineno">  154</span>    <span class="keywordflow">if</span> (!isLE()) {</div>
+<div class="line"><a id="l00155" name="l00155"></a><span class="lineno">  155</span>        hdr = ntohl(hdr);</div>
+<div class="line"><a id="l00156" name="l00156"></a><span class="lineno">  156</span>    }</div>
+<div class="line"><a id="l00157" name="l00157"></a><span class="lineno">  157</span>    <span class="keywordflow">return</span> hdr;</div>
+<div class="line"><a id="l00158" name="l00158"></a><span class="lineno">  158</span>}</div>
 </div>
-<div class="line"><a id="l00161" name="l00161"></a><span class="lineno">  161</span> </div>
-<div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span><span class="keywordtype">void</span> rpx::JtagDriver::setHdr(uint8_t* buf, Header hdr) {</div>
-<div class="line"><a id="l00163" name="l00163"></a><span class="lineno">  163</span>    <span class="keywordtype">unsigned</span> empty = getWordSize() - <span class="keyword">sizeof</span>(hdr);</div>
-<div class="line"><a id="l00164" name="l00164"></a><span class="lineno">  164</span> </div>
-<div class="line"><a id="l00165" name="l00165"></a><span class="lineno">  165</span>    <span class="keywordflow">if</span> (!isLE()) {</div>
-<div class="line"><a id="l00166" name="l00166"></a><span class="lineno">  166</span>        hdr = ntohl(hdr);  <span class="comment">// just use for byte-swap</span></div>
-<div class="line"><a id="l00167" name="l00167"></a><span class="lineno">  167</span>    }</div>
-<div class="line"><a id="l00168" name="l00168"></a><span class="lineno">  168</span>    memcpy(buf, &amp;hdr, <span class="keyword">sizeof</span>(hdr));</div>
-<div class="line"><a id="l00169" name="l00169"></a><span class="lineno">  169</span>    memset(buf + <span class="keyword">sizeof</span>(hdr), 0, empty);</div>
-<div class="line"><a id="l00170" name="l00170"></a><span class="lineno">  170</span>}</div>
-<div class="line"><a id="l00171" name="l00171"></a><span class="lineno">  171</span> </div>
-<div class="foldopen" id="foldopen00172" data-start="{" data-end="}">
-<div class="line"><a id="l00172" name="l00172"></a><span class="lineno"><a class="line" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#afb701573a89c70a0e9f8419f0f3a2bd4">  172</a></span><span class="keywordtype">void</span> rpx::JtagDriver::init() {</div>
-<div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span>    <span class="comment">// obtain server parameters</span></div>
-<div class="line"><a id="l00174" name="l00174"></a><span class="lineno">  174</span>    query();</div>
-<div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span>}</div>
+<div class="line"><a id="l00159" name="l00159"></a><span class="lineno">  159</span> </div>
+<div class="line"><a id="l00160" name="l00160"></a><span class="lineno">  160</span><span class="keywordtype">void</span> rpx::JtagDriver::setHdr(uint8_t* buf, Header hdr) {</div>
+<div class="line"><a id="l00161" name="l00161"></a><span class="lineno">  161</span>    <span class="keywordtype">unsigned</span> ws = getWordSize();</div>
+<div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span>    <span class="keywordflow">if</span> (<span class="keyword">static_cast&lt;</span><span class="keywordtype">size_t</span><span class="keyword">&gt;</span>(ws) &lt; <span class="keyword">sizeof</span>(hdr))</div>
+<div class="line"><a id="l00163" name="l00163"></a><span class="lineno">  163</span>        <span class="keywordflow">throw</span>(<a class="code hl_function" href="classrogue_1_1GeneralError.html#ad37e9ca32b3afce0e38988b4a65c9e60">rogue::GeneralError::create</a>(<span class="stringliteral">&quot;JtagDriver::setHdr()&quot;</span>, <span class="stringliteral">&quot;wordSize %u &lt; header size %zu&quot;</span>, ws, <span class="keyword">sizeof</span>(hdr)));</div>
+<div class="line"><a id="l00164" name="l00164"></a><span class="lineno">  164</span>    <span class="keywordtype">unsigned</span> empty = ws - <span class="keyword">static_cast&lt;</span><span class="keywordtype">unsigned</span><span class="keyword">&gt;</span>(<span class="keyword">sizeof</span>(hdr));</div>
+<div class="line"><a id="l00165" name="l00165"></a><span class="lineno">  165</span> </div>
+<div class="line"><a id="l00166" name="l00166"></a><span class="lineno">  166</span>    <span class="keywordflow">if</span> (!isLE()) {</div>
+<div class="line"><a id="l00167" name="l00167"></a><span class="lineno">  167</span>        hdr = ntohl(hdr);  <span class="comment">// just use for byte-swap</span></div>
+<div class="line"><a id="l00168" name="l00168"></a><span class="lineno">  168</span>    }</div>
+<div class="line"><a id="l00169" name="l00169"></a><span class="lineno">  169</span>    memcpy(buf, &amp;hdr, <span class="keyword">sizeof</span>(hdr));</div>
+<div class="line"><a id="l00170" name="l00170"></a><span class="lineno">  170</span>    memset(buf + <span class="keyword">sizeof</span>(hdr), 0, empty);</div>
+<div class="line"><a id="l00171" name="l00171"></a><span class="lineno">  171</span>}</div>
+<div class="line"><a id="l00172" name="l00172"></a><span class="lineno">  172</span> </div>
+<div class="foldopen" id="foldopen00173" data-start="{" data-end="}">
+<div class="line"><a id="l00173" name="l00173"></a><span class="lineno"><a class="line" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#afb701573a89c70a0e9f8419f0f3a2bd4">  173</a></span><span class="keywordtype">void</span> rpx::JtagDriver::init() {</div>
+<div class="line"><a id="l00174" name="l00174"></a><span class="lineno">  174</span>    <span class="comment">// obtain server parameters</span></div>
+<div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span>    query();</div>
+<div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span>}</div>
 </div>
-<div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span> </div>
-<div class="foldopen" id="foldopen00177" data-start="{" data-end="}">
-<div class="line"><a id="l00177" name="l00177"></a><span class="lineno"><a class="line" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#ae2cbfd4370480ccde5c043966615b3d2">  177</a></span><span class="keywordtype">int</span> rpx::JtagDriver::xferRel(uint8_t* txb, <span class="keywordtype">unsigned</span> txBytes, <a class="code hl_typedef" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#a69a7aa72c03a5175fc6c9d9dfec43055">Header</a>* phdr, uint8_t* rxb, <span class="keywordtype">unsigned</span> sizeBytes) {</div>
-<div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span>    <a class="code hl_typedef" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#a66482db9bb278adbe343ae67138ecd06">Xid</a> xid = getXid(getHdr(txb));</div>
-<div class="line"><a id="l00179" name="l00179"></a><span class="lineno">  179</span>    <span class="keywordtype">unsigned</span> attempt;</div>
-<div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span>    <span class="keywordtype">unsigned</span> e;</div>
-<div class="line"><a id="l00181" name="l00181"></a><span class="lineno">  181</span>    <span class="keywordtype">int</span> got;</div>
-<div class="line"><a id="l00182" name="l00182"></a><span class="lineno">  182</span> </div>
-<div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span>    <span class="keywordflow">for</span> (attempt = 0; attempt &lt;= retry_; attempt++) {</div>
-<div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span>        <span class="comment">// Check if thread should exit</span></div>
-<div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span>        <span class="keywordflow">if</span> (this-&gt;done_) <span class="keywordflow">break</span>;</div>
-<div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span> </div>
-<div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span>        <span class="comment">// Start data transfer with retry and timeout</span></div>
-<div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span>        <a class="code hl_typedef" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#a69a7aa72c03a5175fc6c9d9dfec43055">Header</a> hdr;</div>
-<div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span>        <span class="keywordflow">try</span> {</div>
-<div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span>            got = xfer(txb, txBytes, &amp;hdBuf_[0], getWordSize(), rxb, sizeBytes);</div>
-<div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span>            hdr = getHdr(&amp;hdBuf_[0]);</div>
-<div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span> </div>
-<div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span>            <span class="keywordflow">if</span> ((e = getErr(hdr))) {</div>
+<div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span> </div>
+<div class="foldopen" id="foldopen00178" data-start="{" data-end="}">
+<div class="line"><a id="l00178" name="l00178"></a><span class="lineno"><a class="line" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#ae2cbfd4370480ccde5c043966615b3d2">  178</a></span><span class="keywordtype">int</span> rpx::JtagDriver::xferRel(uint8_t* txb, <span class="keywordtype">unsigned</span> txBytes, <a class="code hl_typedef" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#a69a7aa72c03a5175fc6c9d9dfec43055">Header</a>* phdr, uint8_t* rxb, <span class="keywordtype">unsigned</span> sizeBytes) {</div>
+<div class="line"><a id="l00179" name="l00179"></a><span class="lineno">  179</span>    <a class="code hl_typedef" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#a66482db9bb278adbe343ae67138ecd06">Xid</a> xid = getXid(getHdr(txb));</div>
+<div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span>    <span class="keywordtype">int</span> got = 0;</div>
+<div class="line"><a id="l00181" name="l00181"></a><span class="lineno">  181</span> </div>
+<div class="line"><a id="l00182" name="l00182"></a><span class="lineno">  182</span>    <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> attempt = 0; attempt &lt;= retry_; attempt++) {</div>
+<div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span>        <span class="comment">// Check if thread should exit</span></div>
+<div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span>        <span class="keywordflow">if</span> (this-&gt;done_.load(std::memory_order_acquire)) <span class="keywordflow">break</span>;</div>
+<div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span> </div>
+<div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span>        <span class="comment">// Start data transfer with retry and timeout</span></div>
+<div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span>        <a class="code hl_typedef" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#a69a7aa72c03a5175fc6c9d9dfec43055">Header</a> hdr{};</div>
+<div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span>        <span class="keywordflow">try</span> {</div>
+<div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span>            got = xfer(txb, txBytes, &amp;hdBuf_[0], getWordSize(), rxb, sizeBytes);</div>
+<div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span>            hdr = getHdr(&amp;hdBuf_[0]);</div>
+<div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span> </div>
+<div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span>            <span class="keywordtype">unsigned</span> e = getErr(hdr);</div>
+<div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span>            <span class="keywordflow">if</span> (e) {</div>
 <div class="line"><a id="l00194" name="l00194"></a><span class="lineno">  194</span>                <span class="keywordtype">char</span> errb[256];</div>
 <div class="line"><a id="l00195" name="l00195"></a><span class="lineno">  195</span>                <span class="keyword">const</span> <span class="keywordtype">char</span>* msg = getMsg(e);</div>
-<div class="line"><a id="l00196" name="l00196"></a><span class="lineno">  196</span>                <span class="keywordtype">int</span> pos;</div>
-<div class="line"><a id="l00197" name="l00197"></a><span class="lineno">  197</span> </div>
-<div class="line"><a id="l00198" name="l00198"></a><span class="lineno">  198</span>                pos = snprintf(errb, <span class="keyword">sizeof</span>(errb), <span class="stringliteral">&quot;Got error response from server -- &quot;</span>);</div>
-<div class="line"><a id="l00199" name="l00199"></a><span class="lineno">  199</span> </div>
-<div class="line"><a id="l00200" name="l00200"></a><span class="lineno">  200</span>                <span class="keywordflow">if</span> (msg)</div>
-<div class="line"><a id="l00201" name="l00201"></a><span class="lineno">  201</span>                    snprintf(errb + pos, <span class="keyword">sizeof</span>(errb) - pos, <span class="stringliteral">&quot;%s&quot;</span>, msg);</div>
-<div class="line"><a id="l00202" name="l00202"></a><span class="lineno">  202</span>                <span class="keywordflow">else</span></div>
-<div class="line"><a id="l00203" name="l00203"></a><span class="lineno">  203</span>                    snprintf(errb + pos, <span class="keyword">sizeof</span>(errb) - pos, <span class="stringliteral">&quot;error %d&quot;</span>, e);</div>
-<div class="line"><a id="l00204" name="l00204"></a><span class="lineno">  204</span> </div>
-<div class="line"><a id="l00205" name="l00205"></a><span class="lineno">  205</span>                <span class="keywordflow">throw</span>(<a class="code hl_function" href="classrogue_1_1GeneralError.html#ad37e9ca32b3afce0e38988b4a65c9e60">rogue::GeneralError::create</a>(<span class="stringliteral">&quot;JtagDriver::xferRel()&quot;</span>, <span class="stringliteral">&quot;Protocol error&quot;</span>));</div>
-<div class="line"><a id="l00206" name="l00206"></a><span class="lineno">  206</span>            }</div>
-<div class="line"><a id="l00207" name="l00207"></a><span class="lineno">  207</span>            <span class="keywordflow">if</span> (xid == XID_ANY || xid == getXid(hdr)) {</div>
-<div class="line"><a id="l00208" name="l00208"></a><span class="lineno">  208</span>                <span class="keywordflow">if</span> (phdr) {</div>
-<div class="line"><a id="l00209" name="l00209"></a><span class="lineno">  209</span>                    *phdr = hdr;</div>
-<div class="line"><a id="l00210" name="l00210"></a><span class="lineno">  210</span>                }</div>
-<div class="line"><a id="l00211" name="l00211"></a><span class="lineno">  211</span>                <span class="keywordflow">return</span> got;</div>
-<div class="line"><a id="l00212" name="l00212"></a><span class="lineno">  212</span>            }</div>
-<div class="line"><a id="l00213" name="l00213"></a><span class="lineno">  213</span>        } <span class="keywordflow">catch</span> (<a class="code hl_class" href="classrogue_1_1GeneralError.html">rogue::GeneralError</a>&amp;) {}</div>
-<div class="line"><a id="l00214" name="l00214"></a><span class="lineno">  214</span>    }</div>
-<div class="line"><a id="l00215" name="l00215"></a><span class="lineno">  215</span>    <span class="keywordflow">if</span> (!this-&gt;done_) <span class="keywordflow">throw</span>(<a class="code hl_function" href="classrogue_1_1GeneralError.html#ad37e9ca32b3afce0e38988b4a65c9e60">rogue::GeneralError::create</a>(<span class="stringliteral">&quot;JtagDriver::xferRel()&quot;</span>, <span class="stringliteral">&quot;Timeout error&quot;</span>));</div>
-<div class="line"><a id="l00216" name="l00216"></a><span class="lineno">  216</span> </div>
-<div class="line"><a id="l00217" name="l00217"></a><span class="lineno">  217</span>    <span class="keywordflow">return</span> (0);</div>
-<div class="line"><a id="l00218" name="l00218"></a><span class="lineno">  218</span>}</div>
-</div>
+<div class="line"><a id="l00196" name="l00196"></a><span class="lineno">  196</span> </div>
+<div class="line"><a id="l00197" name="l00197"></a><span class="lineno">  197</span>                <span class="keywordtype">int</span> pos = snprintf(errb, <span class="keyword">sizeof</span>(errb), <span class="stringliteral">&quot;Got error response from server -- &quot;</span>);</div>
+<div class="line"><a id="l00198" name="l00198"></a><span class="lineno">  198</span>                <span class="keywordflow">if</span> (pos &lt; 0) pos = 0;</div>
+<div class="line"><a id="l00199" name="l00199"></a><span class="lineno">  199</span>                <span class="keywordflow">if</span> (<span class="keyword">static_cast&lt;</span><span class="keywordtype">size_t</span><span class="keyword">&gt;</span>(pos) &gt;= <span class="keyword">sizeof</span>(errb)) pos = <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(<span class="keyword">sizeof</span>(errb) - 1);</div>
+<div class="line"><a id="l00200" name="l00200"></a><span class="lineno">  200</span>                <span class="keywordtype">size_t</span> remaining = <span class="keyword">sizeof</span>(errb) - <span class="keyword">static_cast&lt;</span><span class="keywordtype">size_t</span><span class="keyword">&gt;</span>(pos);</div>
+<div class="line"><a id="l00201" name="l00201"></a><span class="lineno">  201</span> </div>
+<div class="line"><a id="l00202" name="l00202"></a><span class="lineno">  202</span>                <span class="keywordflow">if</span> (msg)</div>
+<div class="line"><a id="l00203" name="l00203"></a><span class="lineno">  203</span>                    snprintf(errb + pos, remaining, <span class="stringliteral">&quot;%s&quot;</span>, msg);</div>
+<div class="line"><a id="l00204" name="l00204"></a><span class="lineno">  204</span>                <span class="keywordflow">else</span></div>
+<div class="line"><a id="l00205" name="l00205"></a><span class="lineno">  205</span>                    snprintf(errb + pos, remaining, <span class="stringliteral">&quot;error %u&quot;</span>, e);</div>
+<div class="line"><a id="l00206" name="l00206"></a><span class="lineno">  206</span> </div>
+<div class="line"><a id="l00207" name="l00207"></a><span class="lineno">  207</span>                <span class="keywordflow">throw</span>(<a class="code hl_function" href="classrogue_1_1GeneralError.html#ad37e9ca32b3afce0e38988b4a65c9e60">rogue::GeneralError::create</a>(<span class="stringliteral">&quot;JtagDriver::xferRel()&quot;</span>, <span class="stringliteral">&quot;%s&quot;</span>, errb));</div>
+<div class="line"><a id="l00208" name="l00208"></a><span class="lineno">  208</span>            }</div>
+<div class="line"><a id="l00209" name="l00209"></a><span class="lineno">  209</span>            <span class="keywordflow">if</span> (xid == XID_ANY || xid == getXid(hdr)) {</div>
+<div class="line"><a id="l00210" name="l00210"></a><span class="lineno">  210</span>                <span class="keywordflow">if</span> (phdr) {</div>
+<div class="line"><a id="l00211" name="l00211"></a><span class="lineno">  211</span>                    *phdr = hdr;</div>
+<div class="line"><a id="l00212" name="l00212"></a><span class="lineno">  212</span>                }</div>
+<div class="line"><a id="l00213" name="l00213"></a><span class="lineno">  213</span>                <span class="keywordflow">return</span> got;</div>
+<div class="line"><a id="l00214" name="l00214"></a><span class="lineno">  214</span>            }</div>
+<div class="line"><a id="l00215" name="l00215"></a><span class="lineno">  215</span>        } <span class="keywordflow">catch</span> (<a class="code hl_class" href="classrogue_1_1GeneralError.html">rogue::GeneralError</a>&amp;) {}</div>
+<div class="line"><a id="l00216" name="l00216"></a><span class="lineno">  216</span>    }</div>
+<div class="line"><a id="l00217" name="l00217"></a><span class="lineno">  217</span>    <span class="keywordflow">if</span> (!this-&gt;done_.load(std::memory_order_acquire))</div>
+<div class="line"><a id="l00218" name="l00218"></a><span class="lineno">  218</span>        <span class="keywordflow">throw</span>(<a class="code hl_function" href="classrogue_1_1GeneralError.html#ad37e9ca32b3afce0e38988b4a65c9e60">rogue::GeneralError::create</a>(<span class="stringliteral">&quot;JtagDriver::xferRel()&quot;</span>, <span class="stringliteral">&quot;Timeout error&quot;</span>));</div>
 <div class="line"><a id="l00219" name="l00219"></a><span class="lineno">  219</span> </div>
-<div class="foldopen" id="foldopen00220" data-start="{" data-end="}">
-<div class="line"><a id="l00220" name="l00220"></a><span class="lineno"><a class="line" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#aabd02a37bb4e00a8930222e3dbc4b849">  220</a></span>uint64_t rpx::JtagDriver::query() {</div>
-<div class="line"><a id="l00221" name="l00221"></a><span class="lineno">  221</span>    <a class="code hl_typedef" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#a69a7aa72c03a5175fc6c9d9dfec43055">Header</a> hdr;</div>
-<div class="line"><a id="l00222" name="l00222"></a><span class="lineno">  222</span>    <span class="keywordtype">unsigned</span> siz;</div>
-<div class="line"><a id="l00223" name="l00223"></a><span class="lineno">  223</span> </div>
-<div class="line"><a id="l00224" name="l00224"></a><span class="lineno">  224</span>    setHdr(&amp;txBuf_[0], mkQuery());</div>
+<div class="line"><a id="l00220" name="l00220"></a><span class="lineno">  220</span>    <span class="keywordflow">return</span> (0);</div>
+<div class="line"><a id="l00221" name="l00221"></a><span class="lineno">  221</span>}</div>
+</div>
+<div class="line"><a id="l00222" name="l00222"></a><span class="lineno">  222</span> </div>
+<div class="foldopen" id="foldopen00223" data-start="{" data-end="}">
+<div class="line"><a id="l00223" name="l00223"></a><span class="lineno"><a class="line" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#aabd02a37bb4e00a8930222e3dbc4b849">  223</a></span>uint64_t rpx::JtagDriver::query() {</div>
+<div class="line"><a id="l00224" name="l00224"></a><span class="lineno">  224</span>    <a class="code hl_typedef" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#a69a7aa72c03a5175fc6c9d9dfec43055">Header</a> hdr{};</div>
 <div class="line"><a id="l00225" name="l00225"></a><span class="lineno">  225</span> </div>
-<div class="line"><a id="l00226" name="l00226"></a><span class="lineno">  226</span>    xferRel(&amp;txBuf_[0], getWordSize(), &amp;hdr, <span class="keyword">nullptr</span>, 0);</div>
-<div class="line"><a id="l00227" name="l00227"></a><span class="lineno">  227</span>    wordSize_ = wordSize(hdr);</div>
-<div class="line"><a id="l00228" name="l00228"></a><span class="lineno">  228</span> </div>
-<div class="line"><a id="l00229" name="l00229"></a><span class="lineno">  229</span>    <span class="keywordflow">if</span> (wordSize_ &lt; <span class="keyword">sizeof</span>(hdr)) {</div>
-<div class="line"><a id="l00230" name="l00230"></a><span class="lineno">  230</span>        log_-&gt;debug(<span class="stringliteral">&quot;Encountered an error. Please ensure the board is powered up.\n&quot;</span>);</div>
-<div class="line"><a id="l00231" name="l00231"></a><span class="lineno">  231</span>        <span class="keywordflow">throw</span>(<a class="code hl_function" href="classrogue_1_1GeneralError.html#ad37e9ca32b3afce0e38988b4a65c9e60">rogue::GeneralError::create</a>(<span class="stringliteral">&quot;JtagDriver::query()&quot;</span>,</div>
-<div class="line"><a id="l00232" name="l00232"></a><span class="lineno">  232</span>                                          <span class="stringliteral">&quot;Received invalid word size. Please ensure the board is powered up.\n&quot;</span>));</div>
-<div class="line"><a id="l00233" name="l00233"></a><span class="lineno">  233</span>    }</div>
-<div class="line"><a id="l00234" name="l00234"></a><span class="lineno">  234</span> </div>
-<div class="line"><a id="l00235" name="l00235"></a><span class="lineno">  235</span>    memDepth_ = memDepth(hdr);</div>
-<div class="line"><a id="l00236" name="l00236"></a><span class="lineno">  236</span>    periodNs_ = cvtPerNs(hdr);</div>
-<div class="line"><a id="l00237" name="l00237"></a><span class="lineno">  237</span> </div>
-<div class="line"><a id="l00238" name="l00238"></a><span class="lineno">  238</span>    log_-&gt;debug(<span class="stringliteral">&quot;Query result: wordSize %&quot;</span> PRId32 <span class="stringliteral">&quot;, memDepth %&quot;</span> PRId32 <span class="stringliteral">&quot;, period %l&quot;</span> PRId32 <span class="stringliteral">&quot;ns\n&quot;</span>,</div>
-<div class="line"><a id="l00239" name="l00239"></a><span class="lineno">  239</span>                wordSize_,</div>
-<div class="line"><a id="l00240" name="l00240"></a><span class="lineno">  240</span>                memDepth_,</div>
-<div class="line"><a id="l00241" name="l00241"></a><span class="lineno">  241</span>                <span class="keyword">static_cast&lt;</span>uint64_t<span class="keyword">&gt;</span>(periodNs_));</div>
-<div class="line"><a id="l00242" name="l00242"></a><span class="lineno">  242</span> </div>
-<div class="line"><a id="l00243" name="l00243"></a><span class="lineno">  243</span>    <span class="keywordflow">if</span> (0 == memDepth_)</div>
-<div class="line"><a id="l00244" name="l00244"></a><span class="lineno">  244</span>        retry_ = 0;</div>
-<div class="line"><a id="l00245" name="l00245"></a><span class="lineno">  245</span>    <span class="keywordflow">else</span></div>
-<div class="line"><a id="l00246" name="l00246"></a><span class="lineno">  246</span>        retry_ = 10;</div>
-<div class="line"><a id="l00247" name="l00247"></a><span class="lineno">  247</span> </div>
-<div class="line"><a id="l00248" name="l00248"></a><span class="lineno">  248</span>    <span class="keywordflow">if</span> ((siz = (2 * memDepth_ + 1) * wordSize_) &gt; bufSz_) {</div>
-<div class="line"><a id="l00249" name="l00249"></a><span class="lineno">  249</span>        bufSz_ = siz;</div>
-<div class="line"><a id="l00250" name="l00250"></a><span class="lineno">  250</span>        txBuf_.reserve(bufSz_);</div>
-<div class="line"><a id="l00251" name="l00251"></a><span class="lineno">  251</span>    }</div>
-<div class="line"><a id="l00252" name="l00252"></a><span class="lineno">  252</span> </div>
-<div class="line"><a id="l00253" name="l00253"></a><span class="lineno">  253</span>    <span class="keywordflow">return</span> memDepth_ * wordSize_;</div>
-<div class="line"><a id="l00254" name="l00254"></a><span class="lineno">  254</span>}</div>
+<div class="line"><a id="l00226" name="l00226"></a><span class="lineno">  226</span>    setHdr(&amp;txBuf_[0], mkQuery());</div>
+<div class="line"><a id="l00227" name="l00227"></a><span class="lineno">  227</span> </div>
+<div class="line"><a id="l00228" name="l00228"></a><span class="lineno">  228</span>    xferRel(&amp;txBuf_[0], getWordSize(), &amp;hdr, <span class="keyword">nullptr</span>, 0);</div>
+<div class="line"><a id="l00229" name="l00229"></a><span class="lineno">  229</span>    wordSize_ = wordSize(hdr);</div>
+<div class="line"><a id="l00230" name="l00230"></a><span class="lineno">  230</span> </div>
+<div class="line"><a id="l00231" name="l00231"></a><span class="lineno">  231</span>    <span class="keywordflow">if</span> (<span class="keyword">static_cast&lt;</span><span class="keywordtype">size_t</span><span class="keyword">&gt;</span>(wordSize_) &lt; <span class="keyword">sizeof</span>(hdr)) {</div>
+<div class="line"><a id="l00232" name="l00232"></a><span class="lineno">  232</span>        log_-&gt;debug(<span class="stringliteral">&quot;Encountered an error. Please ensure the board is powered up.\n&quot;</span>);</div>
+<div class="line"><a id="l00233" name="l00233"></a><span class="lineno">  233</span>        <span class="keywordflow">throw</span>(<a class="code hl_function" href="classrogue_1_1GeneralError.html#ad37e9ca32b3afce0e38988b4a65c9e60">rogue::GeneralError::create</a>(<span class="stringliteral">&quot;JtagDriver::query()&quot;</span>,</div>
+<div class="line"><a id="l00234" name="l00234"></a><span class="lineno">  234</span>                                          <span class="stringliteral">&quot;Received invalid word size. Please ensure the board is powered up.\n&quot;</span>));</div>
+<div class="line"><a id="l00235" name="l00235"></a><span class="lineno">  235</span>    }</div>
+<div class="line"><a id="l00236" name="l00236"></a><span class="lineno">  236</span> </div>
+<div class="line"><a id="l00237" name="l00237"></a><span class="lineno">  237</span>    memDepth_ = memDepth(hdr);</div>
+<div class="line"><a id="l00238" name="l00238"></a><span class="lineno">  238</span>    periodNs_ = cvtPerNs(hdr);</div>
+<div class="line"><a id="l00239" name="l00239"></a><span class="lineno">  239</span> </div>
+<div class="line"><a id="l00240" name="l00240"></a><span class="lineno">  240</span>    log_-&gt;debug(<span class="stringliteral">&quot;Query result: wordSize %u, memDepth %u, period %&quot;</span> PRIu32 <span class="stringliteral">&quot; ns\n&quot;</span>,</div>
+<div class="line"><a id="l00241" name="l00241"></a><span class="lineno">  241</span>                wordSize_,</div>
+<div class="line"><a id="l00242" name="l00242"></a><span class="lineno">  242</span>                memDepth_,</div>
+<div class="line"><a id="l00243" name="l00243"></a><span class="lineno">  243</span>                periodNs_);</div>
+<div class="line"><a id="l00244" name="l00244"></a><span class="lineno">  244</span> </div>
+<div class="line"><a id="l00245" name="l00245"></a><span class="lineno">  245</span>    <span class="keywordflow">if</span> (0 == memDepth_)</div>
+<div class="line"><a id="l00246" name="l00246"></a><span class="lineno">  246</span>        retry_ = 0;</div>
+<div class="line"><a id="l00247" name="l00247"></a><span class="lineno">  247</span>    <span class="keywordflow">else</span></div>
+<div class="line"><a id="l00248" name="l00248"></a><span class="lineno">  248</span>        retry_ = 10;</div>
+<div class="line"><a id="l00249" name="l00249"></a><span class="lineno">  249</span> </div>
+<div class="line"><a id="l00250" name="l00250"></a><span class="lineno">  250</span>    uint64_t siz64 = (2ULL * <span class="keyword">static_cast&lt;</span>uint64_t<span class="keyword">&gt;</span>(memDepth_) + 1) * <span class="keyword">static_cast&lt;</span>uint64_t<span class="keyword">&gt;</span>(wordSize_);</div>
+<div class="line"><a id="l00251" name="l00251"></a><span class="lineno">  251</span>    <span class="keywordflow">if</span> (siz64 &gt; UINT_MAX)</div>
+<div class="line"><a id="l00252" name="l00252"></a><span class="lineno">  252</span>        <span class="keywordflow">throw</span>(<a class="code hl_function" href="classrogue_1_1GeneralError.html#ad37e9ca32b3afce0e38988b4a65c9e60">rogue::GeneralError::create</a>(<span class="stringliteral">&quot;JtagDriver::query()&quot;</span>, <span class="stringliteral">&quot;buffer size overflows unsigned&quot;</span>));</div>
+<div class="line"><a id="l00253" name="l00253"></a><span class="lineno">  253</span>    <span class="keywordtype">unsigned</span> siz = <span class="keyword">static_cast&lt;</span><span class="keywordtype">unsigned</span><span class="keyword">&gt;</span>(siz64);</div>
+<div class="line"><a id="l00254" name="l00254"></a><span class="lineno">  254</span>    <span class="keywordflow">if</span> (siz &gt; bufSz_) {</div>
+<div class="line"><a id="l00255" name="l00255"></a><span class="lineno">  255</span>        bufSz_ = siz;</div>
+<div class="line"><a id="l00256" name="l00256"></a><span class="lineno">  256</span>        txBuf_.resize(bufSz_);</div>
+<div class="line"><a id="l00257" name="l00257"></a><span class="lineno">  257</span>    }</div>
+<div class="line"><a id="l00258" name="l00258"></a><span class="lineno">  258</span> </div>
+<div class="line"><a id="l00259" name="l00259"></a><span class="lineno">  259</span>    <span class="keywordflow">return</span> <span class="keyword">static_cast&lt;</span>uint64_t<span class="keyword">&gt;</span>(memDepth_) * <span class="keyword">static_cast&lt;</span>uint64_t<span class="keyword">&gt;</span>(wordSize_);</div>
+<div class="line"><a id="l00260" name="l00260"></a><span class="lineno">  260</span>}</div>
 </div>
-<div class="line"><a id="l00255" name="l00255"></a><span class="lineno">  255</span> </div>
-<div class="foldopen" id="foldopen00256" data-start="{" data-end="}">
-<div class="line"><a id="l00256" name="l00256"></a><span class="lineno"><a class="line" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#a6999de257d91f36d972ed2894aff190c">  256</a></span>uint32_t rpx::JtagDriver::getPeriodNs() {</div>
-<div class="line"><a id="l00257" name="l00257"></a><span class="lineno">  257</span>    <span class="keywordflow">return</span> periodNs_;</div>
-<div class="line"><a id="l00258" name="l00258"></a><span class="lineno">  258</span>}</div>
+<div class="line"><a id="l00261" name="l00261"></a><span class="lineno">  261</span> </div>
+<div class="foldopen" id="foldopen00262" data-start="{" data-end="}">
+<div class="line"><a id="l00262" name="l00262"></a><span class="lineno"><a class="line" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#a6999de257d91f36d972ed2894aff190c">  262</a></span>uint32_t rpx::JtagDriver::getPeriodNs() {</div>
+<div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span>    <span class="keywordflow">return</span> periodNs_;</div>
+<div class="line"><a id="l00264" name="l00264"></a><span class="lineno">  264</span>}</div>
 </div>
-<div class="line"><a id="l00259" name="l00259"></a><span class="lineno">  259</span> </div>
-<div class="foldopen" id="foldopen00260" data-start="{" data-end="}">
-<div class="line"><a id="l00260" name="l00260"></a><span class="lineno"><a class="line" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#abcece9b9d8c7aa41b8de9cd8ffc2cf6a">  260</a></span>uint32_t rpx::JtagDriver::setPeriodNs(uint32_t requestedPeriod) {</div>
-<div class="line"><a id="l00261" name="l00261"></a><span class="lineno">  261</span>    uint32_t currentPeriod = getPeriodNs();</div>
-<div class="line"><a id="l00262" name="l00262"></a><span class="lineno">  262</span> </div>
-<div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span>    <span class="keywordflow">if</span> (0 == requestedPeriod) <span class="keywordflow">return</span> currentPeriod;</div>
-<div class="line"><a id="l00264" name="l00264"></a><span class="lineno">  264</span> </div>
-<div class="line"><a id="l00265" name="l00265"></a><span class="lineno">  265</span>    <span class="keywordflow">return</span> UNKNOWN_PERIOD == currentPeriod ? requestedPeriod : currentPeriod;</div>
-<div class="line"><a id="l00266" name="l00266"></a><span class="lineno">  266</span>}</div>
+<div class="line"><a id="l00265" name="l00265"></a><span class="lineno">  265</span> </div>
+<div class="foldopen" id="foldopen00266" data-start="{" data-end="}">
+<div class="line"><a id="l00266" name="l00266"></a><span class="lineno"><a class="line" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#abcece9b9d8c7aa41b8de9cd8ffc2cf6a">  266</a></span>uint32_t rpx::JtagDriver::setPeriodNs(uint32_t requestedPeriod) {</div>
+<div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span>    uint32_t currentPeriod = getPeriodNs();</div>
+<div class="line"><a id="l00268" name="l00268"></a><span class="lineno">  268</span> </div>
+<div class="line"><a id="l00269" name="l00269"></a><span class="lineno">  269</span>    <span class="keywordflow">if</span> (0 == requestedPeriod) <span class="keywordflow">return</span> currentPeriod;</div>
+<div class="line"><a id="l00270" name="l00270"></a><span class="lineno">  270</span> </div>
+<div class="line"><a id="l00271" name="l00271"></a><span class="lineno">  271</span>    <span class="keywordflow">return</span> UNKNOWN_PERIOD == currentPeriod ? requestedPeriod : currentPeriod;</div>
+<div class="line"><a id="l00272" name="l00272"></a><span class="lineno">  272</span>}</div>
 </div>
-<div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span> </div>
-<div class="foldopen" id="foldopen00268" data-start="{" data-end="}">
-<div class="line"><a id="l00268" name="l00268"></a><span class="lineno"><a class="line" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#a72c323c45567d4194dcbaadca5a7554a">  268</a></span><span class="keywordtype">void</span> rpx::JtagDriver::sendVectors(uint64_t bits, uint8_t* tms, uint8_t* tdi, uint8_t* tdo) {</div>
-<div class="line"><a id="l00269" name="l00269"></a><span class="lineno">  269</span>    <span class="keywordtype">unsigned</span> wsz            = getWordSize();</div>
-<div class="line"><a id="l00270" name="l00270"></a><span class="lineno">  270</span>    uint64_t bytesCeil      = (bits + 8 - 1) / 8;</div>
-<div class="line"><a id="l00271" name="l00271"></a><span class="lineno">  271</span>    <span class="keywordtype">unsigned</span> wholeWords     = bytesCeil / wsz;</div>
-<div class="line"><a id="l00272" name="l00272"></a><span class="lineno">  272</span>    <span class="keywordtype">unsigned</span> wholeWordBytes = wholeWords * wsz;</div>
-<div class="line"><a id="l00273" name="l00273"></a><span class="lineno">  273</span>    <span class="keywordtype">unsigned</span> wordCeilBytes  = ((bytesCeil + wsz - 1) / wsz) * wsz;</div>
-<div class="line"><a id="l00274" name="l00274"></a><span class="lineno">  274</span>    <span class="keywordtype">unsigned</span> idx;</div>
-<div class="line"><a id="l00275" name="l00275"></a><span class="lineno">  275</span>    <span class="keywordtype">unsigned</span> bytesLeft = bytesCeil - wholeWordBytes;</div>
-<div class="line"><a id="l00276" name="l00276"></a><span class="lineno">  276</span>    <span class="keywordtype">unsigned</span> bytesTot  = wsz + 2 * wordCeilBytes;</div>
-<div class="line"><a id="l00277" name="l00277"></a><span class="lineno">  277</span> </div>
-<div class="line"><a id="l00278" name="l00278"></a><span class="lineno">  278</span>    uint8_t* wp;</div>
-<div class="line"><a id="l00279" name="l00279"></a><span class="lineno">  279</span> </div>
-<div class="line"><a id="l00280" name="l00280"></a><span class="lineno">  280</span>    log_-&gt;debug(<span class="stringliteral">&quot;sendVec -- bits %l&quot;</span> PRId32 <span class="stringliteral">&quot;, bytes %l&quot;</span> PRId32 <span class="stringliteral">&quot;, bytesTot %&quot;</span> PRId32 <span class="stringliteral">&quot;\n&quot;</span>, bits, bytesCeil, bytesTot);</div>
-<div class="line"><a id="l00281" name="l00281"></a><span class="lineno">  281</span> </div>
-<div class="line"><a id="l00282" name="l00282"></a><span class="lineno">  282</span>    setHdr(&amp;txBuf_[0], mkShift(bits));</div>
-<div class="line"><a id="l00283" name="l00283"></a><span class="lineno">  283</span> </div>
-<div class="line"><a id="l00284" name="l00284"></a><span class="lineno">  284</span>    <span class="comment">// reformat</span></div>
-<div class="line"><a id="l00285" name="l00285"></a><span class="lineno">  285</span>    wp = &amp;txBuf_[0] + wsz;  <span class="comment">// past header</span></div>
+<div class="line"><a id="l00273" name="l00273"></a><span class="lineno">  273</span> </div>
+<div class="foldopen" id="foldopen00274" data-start="{" data-end="}">
+<div class="line"><a id="l00274" name="l00274"></a><span class="lineno"><a class="line" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#a72c323c45567d4194dcbaadca5a7554a">  274</a></span><span class="keywordtype">void</span> rpx::JtagDriver::sendVectors(uint64_t bits, uint8_t* tms, uint8_t* tdi, uint8_t* tdo) {</div>
+<div class="line"><a id="l00275" name="l00275"></a><span class="lineno">  275</span>    <span class="keywordflow">if</span> (bits == 0 || bits &gt; LEN_MASK + 1)</div>
+<div class="line"><a id="l00276" name="l00276"></a><span class="lineno">  276</span>        <span class="keywordflow">throw</span>(<a class="code hl_function" href="classrogue_1_1GeneralError.html#ad37e9ca32b3afce0e38988b4a65c9e60">rogue::GeneralError::create</a>(<span class="stringliteral">&quot;JtagDriver::sendVectors()&quot;</span>,</div>
+<div class="line"><a id="l00277" name="l00277"></a><span class="lineno">  277</span>              <span class="stringliteral">&quot;bit count %&quot;</span> PRIu64 <span class="stringliteral">&quot; out of range [1, %u]&quot;</span>, bits, <span class="keyword">static_cast&lt;</span><span class="keywordtype">unsigned</span><span class="keyword">&gt;</span>(LEN_MASK + 1)));</div>
+<div class="line"><a id="l00278" name="l00278"></a><span class="lineno">  278</span> </div>
+<div class="line"><a id="l00279" name="l00279"></a><span class="lineno">  279</span>    <span class="keywordtype">unsigned</span> wsz            = getWordSize();</div>
+<div class="line"><a id="l00280" name="l00280"></a><span class="lineno">  280</span>    uint64_t bytesCeil      = (bits + 7) / 8;</div>
+<div class="line"><a id="l00281" name="l00281"></a><span class="lineno">  281</span>    <span class="keywordtype">unsigned</span> wholeWords     = <span class="keyword">static_cast&lt;</span><span class="keywordtype">unsigned</span><span class="keyword">&gt;</span>(bytesCeil / wsz);</div>
+<div class="line"><a id="l00282" name="l00282"></a><span class="lineno">  282</span>    <span class="keywordtype">unsigned</span> wholeWordBytes = wholeWords * wsz;</div>
+<div class="line"><a id="l00283" name="l00283"></a><span class="lineno">  283</span>    <span class="keywordtype">unsigned</span> wordCeilBytes  = <span class="keyword">static_cast&lt;</span><span class="keywordtype">unsigned</span><span class="keyword">&gt;</span>(((bytesCeil + wsz - 1) / wsz) * wsz);</div>
+<div class="line"><a id="l00284" name="l00284"></a><span class="lineno">  284</span>    <span class="keywordtype">unsigned</span> bytesLeft = <span class="keyword">static_cast&lt;</span><span class="keywordtype">unsigned</span><span class="keyword">&gt;</span>(bytesCeil - wholeWordBytes);</div>
+<div class="line"><a id="l00285" name="l00285"></a><span class="lineno">  285</span>    <span class="keywordtype">unsigned</span> bytesTot  = wsz + 2 * wordCeilBytes;</div>
 <div class="line"><a id="l00286" name="l00286"></a><span class="lineno">  286</span> </div>
-<div class="line"><a id="l00287" name="l00287"></a><span class="lineno">  287</span>    <span class="comment">// store sequence of TMS/TDI pairs; word-by-word</span></div>
-<div class="line"><a id="l00288" name="l00288"></a><span class="lineno">  288</span>    <span class="keywordflow">for</span> (idx = 0; idx &lt; wholeWordBytes; idx += wsz) {</div>
-<div class="line"><a id="l00289" name="l00289"></a><span class="lineno">  289</span>        memcpy(wp, &amp;tms[idx], wsz);</div>
-<div class="line"><a id="l00290" name="l00290"></a><span class="lineno">  290</span>        wp += wsz;</div>
-<div class="line"><a id="l00291" name="l00291"></a><span class="lineno">  291</span>        memcpy(wp, &amp;tdi[idx], wsz);</div>
-<div class="line"><a id="l00292" name="l00292"></a><span class="lineno">  292</span>        wp += wsz;</div>
-<div class="line"><a id="l00293" name="l00293"></a><span class="lineno">  293</span>    }</div>
-<div class="line"><a id="l00294" name="l00294"></a><span class="lineno">  294</span>    <span class="keywordflow">if</span> (bytesLeft) {</div>
-<div class="line"><a id="l00295" name="l00295"></a><span class="lineno">  295</span>        memcpy(wp, &amp;tms[idx], bytesLeft);</div>
-<div class="line"><a id="l00296" name="l00296"></a><span class="lineno">  296</span>        memcpy(wp + wsz, &amp;tdi[idx], bytesLeft);</div>
-<div class="line"><a id="l00297" name="l00297"></a><span class="lineno">  297</span>    }</div>
-<div class="line"><a id="l00298" name="l00298"></a><span class="lineno">  298</span>    xferRel(&amp;txBuf_[0], bytesTot, <span class="keyword">nullptr</span>, tdo, bytesCeil);</div>
-<div class="line"><a id="l00299" name="l00299"></a><span class="lineno">  299</span>}</div>
+<div class="line"><a id="l00287" name="l00287"></a><span class="lineno">  287</span>    <span class="keywordflow">if</span> (bytesTot &gt; bufSz_)</div>
+<div class="line"><a id="l00288" name="l00288"></a><span class="lineno">  288</span>        <span class="keywordflow">throw</span>(<a class="code hl_function" href="classrogue_1_1GeneralError.html#ad37e9ca32b3afce0e38988b4a65c9e60">rogue::GeneralError::create</a>(<span class="stringliteral">&quot;JtagDriver::sendVectors()&quot;</span>,</div>
+<div class="line"><a id="l00289" name="l00289"></a><span class="lineno">  289</span>              <span class="stringliteral">&quot;bytesTot %u exceeds buffer size %u&quot;</span>, bytesTot, bufSz_));</div>
+<div class="line"><a id="l00290" name="l00290"></a><span class="lineno">  290</span> </div>
+<div class="line"><a id="l00291" name="l00291"></a><span class="lineno">  291</span>    log_-&gt;debug(<span class="stringliteral">&quot;sendVec -- bits %&quot;</span> PRIu64 <span class="stringliteral">&quot;, bytes %&quot;</span> PRIu64 <span class="stringliteral">&quot;, bytesTot %u\n&quot;</span>, bits, bytesCeil, bytesTot);</div>
+<div class="line"><a id="l00292" name="l00292"></a><span class="lineno">  292</span> </div>
+<div class="line"><a id="l00293" name="l00293"></a><span class="lineno">  293</span>    setHdr(&amp;txBuf_[0], mkShift(<span class="keyword">static_cast&lt;</span><span class="keywordtype">unsigned</span><span class="keyword">&gt;</span>(bits)));</div>
+<div class="line"><a id="l00294" name="l00294"></a><span class="lineno">  294</span> </div>
+<div class="line"><a id="l00295" name="l00295"></a><span class="lineno">  295</span>    <span class="comment">// reformat</span></div>
+<div class="line"><a id="l00296" name="l00296"></a><span class="lineno">  296</span>    uint8_t* wp = &amp;txBuf_[0] + wsz;  <span class="comment">// past header</span></div>
+<div class="line"><a id="l00297" name="l00297"></a><span class="lineno">  297</span> </div>
+<div class="line"><a id="l00298" name="l00298"></a><span class="lineno">  298</span>    <span class="comment">// store sequence of TMS/TDI pairs; word-by-word</span></div>
+<div class="line"><a id="l00299" name="l00299"></a><span class="lineno">  299</span>    <span class="keywordtype">unsigned</span> idx = 0;</div>
+<div class="line"><a id="l00300" name="l00300"></a><span class="lineno">  300</span>    <span class="keywordflow">for</span> (idx = 0; idx &lt; wholeWordBytes; idx += wsz) {</div>
+<div class="line"><a id="l00301" name="l00301"></a><span class="lineno">  301</span>        memcpy(wp, &amp;tms[idx], wsz);</div>
+<div class="line"><a id="l00302" name="l00302"></a><span class="lineno">  302</span>        wp += wsz;</div>
+<div class="line"><a id="l00303" name="l00303"></a><span class="lineno">  303</span>        memcpy(wp, &amp;tdi[idx], wsz);</div>
+<div class="line"><a id="l00304" name="l00304"></a><span class="lineno">  304</span>        wp += wsz;</div>
+<div class="line"><a id="l00305" name="l00305"></a><span class="lineno">  305</span>    }</div>
+<div class="line"><a id="l00306" name="l00306"></a><span class="lineno">  306</span>    <span class="keywordflow">if</span> (bytesLeft) {</div>
+<div class="line"><a id="l00307" name="l00307"></a><span class="lineno">  307</span>        memcpy(wp, &amp;tms[idx], bytesLeft);</div>
+<div class="line"><a id="l00308" name="l00308"></a><span class="lineno">  308</span>        memcpy(wp + wsz, &amp;tdi[idx], bytesLeft);</div>
+<div class="line"><a id="l00309" name="l00309"></a><span class="lineno">  309</span>    }</div>
+<div class="line"><a id="l00310" name="l00310"></a><span class="lineno">  310</span>    xferRel(&amp;txBuf_[0], bytesTot, <span class="keyword">nullptr</span>, tdo, <span class="keyword">static_cast&lt;</span><span class="keywordtype">unsigned</span><span class="keyword">&gt;</span>(bytesCeil));</div>
+<div class="line"><a id="l00311" name="l00311"></a><span class="lineno">  311</span>}</div>
 </div>
-<div class="line"><a id="l00300" name="l00300"></a><span class="lineno">  300</span> </div>
-<div class="foldopen" id="foldopen00301" data-start="{" data-end="}">
-<div class="line"><a id="l00301" name="l00301"></a><span class="lineno"><a class="line" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#aa9145287dfda99606c9af51c7ef144ac">  301</a></span><span class="keywordtype">void</span> rpx::JtagDriver::dumpInfo(FILE* f) {</div>
-<div class="line"><a id="l00302" name="l00302"></a><span class="lineno">  302</span>    fprintf(f, <span class="stringliteral">&quot;Word size:                  %&quot;</span> PRIu64 <span class="stringliteral">&quot;\n&quot;</span>, <span class="keyword">static_cast&lt;</span>uint64_t<span class="keyword">&gt;</span>(getWordSize()));</div>
-<div class="line"><a id="l00303" name="l00303"></a><span class="lineno">  303</span>    fprintf(f,</div>
-<div class="line"><a id="l00304" name="l00304"></a><span class="lineno">  304</span>            <span class="stringliteral">&quot;Target Memory Depth (bytes) %&quot;</span> PRIu64 <span class="stringliteral">&quot;\n&quot;</span>,</div>
-<div class="line"><a id="l00305" name="l00305"></a><span class="lineno">  305</span>            <span class="keyword">static_cast&lt;</span>uint64_t<span class="keyword">&gt;</span>(getWordSize()) * <span class="keyword">static_cast&lt;</span>uint64_t<span class="keyword">&gt;</span>(getMemDepth()));</div>
-<div class="line"><a id="l00306" name="l00306"></a><span class="lineno">  306</span>    fprintf(f, <span class="stringliteral">&quot;Max. Vector Length  (bytes) %&quot;</span> PRIu64 <span class="stringliteral">&quot;\n&quot;</span>, getMaxVectorSize());</div>
-<div class="line"><a id="l00307" name="l00307"></a><span class="lineno">  307</span>    fprintf(f, <span class="stringliteral">&quot;TCK Period             (ns) %&quot;</span> PRIu64 <span class="stringliteral">&quot;\n&quot;</span>, <span class="keyword">static_cast&lt;</span>uint64_t<span class="keyword">&gt;</span>(getPeriodNs()));</div>
-<div class="line"><a id="l00308" name="l00308"></a><span class="lineno">  308</span>}</div>
-</div>
-<div class="line"><a id="l00309" name="l00309"></a><span class="lineno">  309</span> </div>
-<div class="foldopen" id="foldopen00310" data-start="{" data-end="}">
-<div class="line"><a id="l00310" name="l00310"></a><span class="lineno"><a class="line" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#aade24e3ba44e11b71efe623c060ff61f">  310</a></span><span class="keywordtype">void</span> rpx::JtagDriver::setup_python() {</div>
-<div class="line"><a id="l00311" name="l00311"></a><span class="lineno">  311</span><span class="preprocessor">#ifndef NO_PYTHON</span></div>
 <div class="line"><a id="l00312" name="l00312"></a><span class="lineno">  312</span> </div>
-<div class="line"><a id="l00313" name="l00313"></a><span class="lineno">  313</span>    bp::class_&lt;rpx::JtagDriver, rpx::JtagDriverPtr, boost::noncopyable&gt;(<span class="stringliteral">&quot;JtagDriver&quot;</span>, bp::init&lt;uint16_t&gt;());</div>
-<div class="line"><a id="l00314" name="l00314"></a><span class="lineno">  314</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00315" name="l00315"></a><span class="lineno">  315</span>}</div>
+<div class="foldopen" id="foldopen00313" data-start="{" data-end="}">
+<div class="line"><a id="l00313" name="l00313"></a><span class="lineno"><a class="line" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#aa9145287dfda99606c9af51c7ef144ac">  313</a></span><span class="keywordtype">void</span> rpx::JtagDriver::dumpInfo(FILE* f) {</div>
+<div class="line"><a id="l00314" name="l00314"></a><span class="lineno">  314</span>    fprintf(f, <span class="stringliteral">&quot;Word size:                  %&quot;</span> PRIu64 <span class="stringliteral">&quot;\n&quot;</span>, <span class="keyword">static_cast&lt;</span>uint64_t<span class="keyword">&gt;</span>(getWordSize()));</div>
+<div class="line"><a id="l00315" name="l00315"></a><span class="lineno">  315</span>    fprintf(f,</div>
+<div class="line"><a id="l00316" name="l00316"></a><span class="lineno">  316</span>            <span class="stringliteral">&quot;Target Memory Depth (bytes) %&quot;</span> PRIu64 <span class="stringliteral">&quot;\n&quot;</span>,</div>
+<div class="line"><a id="l00317" name="l00317"></a><span class="lineno">  317</span>            <span class="keyword">static_cast&lt;</span>uint64_t<span class="keyword">&gt;</span>(getWordSize()) * <span class="keyword">static_cast&lt;</span>uint64_t<span class="keyword">&gt;</span>(getMemDepth()));</div>
+<div class="line"><a id="l00318" name="l00318"></a><span class="lineno">  318</span>    fprintf(f, <span class="stringliteral">&quot;Max. Vector Length  (bytes) %&quot;</span> PRIu64 <span class="stringliteral">&quot;\n&quot;</span>, getMaxVectorSize());</div>
+<div class="line"><a id="l00319" name="l00319"></a><span class="lineno">  319</span>    fprintf(f, <span class="stringliteral">&quot;TCK Period             (ns) %&quot;</span> PRIu64 <span class="stringliteral">&quot;\n&quot;</span>, <span class="keyword">static_cast&lt;</span>uint64_t<span class="keyword">&gt;</span>(getPeriodNs()));</div>
+<div class="line"><a id="l00320" name="l00320"></a><span class="lineno">  320</span>}</div>
+</div>
+<div class="line"><a id="l00321" name="l00321"></a><span class="lineno">  321</span> </div>
+<div class="foldopen" id="foldopen00322" data-start="{" data-end="}">
+<div class="line"><a id="l00322" name="l00322"></a><span class="lineno"><a class="line" href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#aade24e3ba44e11b71efe623c060ff61f">  322</a></span><span class="keywordtype">void</span> rpx::JtagDriver::setup_python() {</div>
+<div class="line"><a id="l00323" name="l00323"></a><span class="lineno">  323</span><span class="preprocessor">#ifndef NO_PYTHON</span></div>
+<div class="line"><a id="l00324" name="l00324"></a><span class="lineno">  324</span> </div>
+<div class="line"><a id="l00325" name="l00325"></a><span class="lineno">  325</span>    bp::class_&lt;rpx::JtagDriver, rpx::JtagDriverPtr, boost::noncopyable&gt;(<span class="stringliteral">&quot;JtagDriver&quot;</span>, bp::init&lt;uint16_t&gt;());</div>
+<div class="line"><a id="l00326" name="l00326"></a><span class="lineno">  326</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00327" name="l00327"></a><span class="lineno">  327</span>}</div>
 </div>
 <div class="ttc" id="aDirectives_8h_html"><div class="ttname"><a href="Directives_8h.html">Directives.h</a></div></div>
 <div class="ttc" id="aJtagDriver_8h_html"><div class="ttname"><a href="JtagDriver_8h.html">JtagDriver.h</a></div></div>
 <div class="ttc" id="aclassrogue_1_1GeneralError_html"><div class="ttname"><a href="classrogue_1_1GeneralError.html">rogue::GeneralError</a></div><div class="ttdoc">Generic Rogue exception type.</div><div class="ttdef"><b>Definition</b> <a href="GeneralError_8h_source.html#l00045">GeneralError.h:45</a></div></div>
 <div class="ttc" id="aclassrogue_1_1GeneralError_html_ad37e9ca32b3afce0e38988b4a65c9e60"><div class="ttname"><a href="classrogue_1_1GeneralError.html#ad37e9ca32b3afce0e38988b4a65c9e60">rogue::GeneralError::create</a></div><div class="ttdeci">static GeneralError create(std::string src, const char *fmt,...)</div><div class="ttdoc">Creates a formatted error instance.</div><div class="ttdef"><b>Definition</b> <a href="GeneralError_8cpp_source.html#l00038">GeneralError.cpp:38</a></div></div>
 <div class="ttc" id="aclassrogue_1_1Logging_html_a8c34b36f657b697d85f9a6c60f85f07c"><div class="ttname"><a href="classrogue_1_1Logging.html#a8c34b36f657b697d85f9a6c60f85f07c">rogue::Logging::create</a></div><div class="ttdeci">static std::shared_ptr&lt; rogue::Logging &gt; create(const std::string &amp;name, bool quiet=false)</div><div class="ttdoc">Creates a logger instance.</div><div class="ttdef"><b>Definition</b> <a href="Logging_8cpp_source.html#l00095">Logging.cpp:95</a></div></div>
-<div class="ttc" id="aclassrogue_1_1protocols_1_1xilinx_1_1JtagDriver_html_a00eb3dbfd105c44cc7a9f80e3b7a165a"><div class="ttname"><a href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#a00eb3dbfd105c44cc7a9f80e3b7a165a">rogue::protocols::xilinx::JtagDriver::log_</a></div><div class="ttdeci">std::shared_ptr&lt; rogue::Logging &gt; log_</div><div class="ttdef"><b>Definition</b> <a href="JtagDriver_8h_source.html#l00084">JtagDriver.h:84</a></div></div>
-<div class="ttc" id="aclassrogue_1_1protocols_1_1xilinx_1_1JtagDriver_html_a66482db9bb278adbe343ae67138ecd06"><div class="ttname"><a href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#a66482db9bb278adbe343ae67138ecd06">rogue::protocols::xilinx::JtagDriver::Xid</a></div><div class="ttdeci">uint8_t Xid</div><div class="ttdef"><b>Definition</b> <a href="JtagDriver_8h_source.html#l00079">JtagDriver.h:79</a></div></div>
-<div class="ttc" id="aclassrogue_1_1protocols_1_1xilinx_1_1JtagDriver_html_a69a7aa72c03a5175fc6c9d9dfec43055"><div class="ttname"><a href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#a69a7aa72c03a5175fc6c9d9dfec43055">rogue::protocols::xilinx::JtagDriver::Header</a></div><div class="ttdeci">uint32_t Header</div><div class="ttdef"><b>Definition</b> <a href="JtagDriver_8h_source.html#l00078">JtagDriver.h:78</a></div></div>
-<div class="ttc" id="anamespacerogue_1_1protocols_1_1xilinx_html"><div class="ttname"><a href="namespacerogue_1_1protocols_1_1xilinx.html">rogue::protocols::xilinx</a></div><div class="ttdef"><b>Definition</b> <a href="JtagDriver_8h_source.html#l00042">JtagDriver.h:42</a></div></div>
-<div class="ttc" id="anamespacerogue_1_1protocols_1_1xilinx_html_a21ca3c936a265bad27d8dbb825d41272"><div class="ttname"><a href="namespacerogue_1_1protocols_1_1xilinx.html#a21ca3c936a265bad27d8dbb825d41272">rogue::protocols::xilinx::hdBufMax</a></div><div class="ttdeci">static unsigned hdBufMax()</div><div class="ttdoc">Maximum temporary header buffer size in bytes.</div><div class="ttdef"><b>Definition</b> <a href="JtagDriver_8h_source.html#l00307">JtagDriver.h:307</a></div></div>
-<div class="ttc" id="anamespacerogue_1_1protocols_1_1xilinx_html_abd52ab28a47c0d024ec16b21e0f77072"><div class="ttname"><a href="namespacerogue_1_1protocols_1_1xilinx.html#abd52ab28a47c0d024ec16b21e0f77072">rogue::protocols::xilinx::JtagDriverPtr</a></div><div class="ttdeci">std::shared_ptr&lt; rogue::protocols::xilinx::JtagDriver &gt; JtagDriverPtr</div><div class="ttdef"><b>Definition</b> <a href="JtagDriver_8h_source.html#l00312">JtagDriver.h:312</a></div></div>
+<div class="ttc" id="aclassrogue_1_1protocols_1_1xilinx_1_1JtagDriver_html_a00eb3dbfd105c44cc7a9f80e3b7a165a"><div class="ttname"><a href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#a00eb3dbfd105c44cc7a9f80e3b7a165a">rogue::protocols::xilinx::JtagDriver::log_</a></div><div class="ttdeci">std::shared_ptr&lt; rogue::Logging &gt; log_</div><div class="ttdef"><b>Definition</b> <a href="JtagDriver_8h_source.html#l00076">JtagDriver.h:76</a></div></div>
+<div class="ttc" id="aclassrogue_1_1protocols_1_1xilinx_1_1JtagDriver_html_a66482db9bb278adbe343ae67138ecd06"><div class="ttname"><a href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#a66482db9bb278adbe343ae67138ecd06">rogue::protocols::xilinx::JtagDriver::Xid</a></div><div class="ttdeci">uint8_t Xid</div><div class="ttdef"><b>Definition</b> <a href="JtagDriver_8h_source.html#l00071">JtagDriver.h:71</a></div></div>
+<div class="ttc" id="aclassrogue_1_1protocols_1_1xilinx_1_1JtagDriver_html_a69a7aa72c03a5175fc6c9d9dfec43055"><div class="ttname"><a href="classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#a69a7aa72c03a5175fc6c9d9dfec43055">rogue::protocols::xilinx::JtagDriver::Header</a></div><div class="ttdeci">uint32_t Header</div><div class="ttdef"><b>Definition</b> <a href="JtagDriver_8h_source.html#l00070">JtagDriver.h:70</a></div></div>
+<div class="ttc" id="anamespacerogue_1_1protocols_1_1xilinx_html"><div class="ttname"><a href="namespacerogue_1_1protocols_1_1xilinx.html">rogue::protocols::xilinx</a></div><div class="ttdef"><b>Definition</b> <a href="JtagDriver_8h_source.html#l00034">JtagDriver.h:34</a></div></div>
+<div class="ttc" id="anamespacerogue_1_1protocols_1_1xilinx_html_a49c5a02b8da52b520b03d2a8481fe8af"><div class="ttname"><a href="namespacerogue_1_1protocols_1_1xilinx.html#a49c5a02b8da52b520b03d2a8481fe8af">rogue::protocols::xilinx::hdBufMax</a></div><div class="ttdeci">unsigned hdBufMax()</div><div class="ttdoc">Maximum temporary header buffer size in bytes.</div><div class="ttdef"><b>Definition</b> <a href="JtagDriver_8h_source.html#l00302">JtagDriver.h:302</a></div></div>
+<div class="ttc" id="anamespacerogue_1_1protocols_1_1xilinx_html_abd52ab28a47c0d024ec16b21e0f77072"><div class="ttname"><a href="namespacerogue_1_1protocols_1_1xilinx.html#abd52ab28a47c0d024ec16b21e0f77072">rogue::protocols::xilinx::JtagDriverPtr</a></div><div class="ttdeci">std::shared_ptr&lt; rogue::protocols::xilinx::JtagDriver &gt; JtagDriverPtr</div><div class="ttdef"><b>Definition</b> <a href="JtagDriver_8h_source.html#l00307">JtagDriver.h:307</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
