@@ -219,6 +219,7 @@ std::string rogue::interfaces::ZmqClient::sendString(const std::string& path, co
     snd += "}";
 
     rogue::GilRelease noGil;
+    std::lock_guard<std::mutex> lock(reqLock_);
     zmq_send(this->zmqReq_, snd.c_str(), snd.size(), 0);
 
     while (1) {
@@ -229,6 +230,7 @@ std::string rogue::interfaces::ZmqClient::sendString(const std::string& path, co
                 logWaitRetry(log_, seconds, lastLoggedSeconds);
                 zmq_msg_close(&msg);
             } else {
+                zmq_msg_close(&msg);
                 throw rogue::GeneralError::create("ZmqClient::sendString",
                                                   "Timeout waiting for response after %d Seconds.",
                                                   static_cast<int>(seconds));
@@ -282,6 +284,7 @@ bp::object rogue::interfaces::ZmqClient::send(bp::object value) {
 
     {
         rogue::GilRelease noGil;
+        std::lock_guard<std::mutex> lock(reqLock_);
         zmq_sendmsg(this->zmqReq_, &txMsg, 0);
 
         while (1) {
@@ -292,6 +295,7 @@ bp::object rogue::interfaces::ZmqClient::send(bp::object value) {
                     logWaitRetry(log_, seconds, lastLoggedSeconds);
                     zmq_msg_close(&rxMsg);
                 } else {
+                    zmq_msg_close(&rxMsg);
                     throw rogue::GeneralError::create(
                         "ZmqClient::send",
                         "Timeout waiting for response after %d Seconds, server may be busy!",
