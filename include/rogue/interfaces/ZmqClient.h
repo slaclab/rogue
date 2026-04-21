@@ -19,6 +19,7 @@
 #include "rogue/Directives.h"
 
 #include <memory>
+#include <mutex>
 #include <string>
 #include <thread>
 
@@ -71,6 +72,9 @@ class ZmqClient {
 
     // True when operating in string request mode.
     bool doString_;
+
+    // Mutex serializing the ZMQ_REQ socket's send/recv cycle.
+    std::mutex reqLock_;
 
     void runThread();
 

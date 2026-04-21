@@ -140,6 +140,7 @@ class VirtualNode(pr.Node):
         self._root      = None
         self._client    = None
         self._functions = []
+        self._loadLock  = threading.Lock()
         self._loaded    = False
 
         # Setup logging
@@ -164,14 +165,18 @@ class VirtualNode(pr.Node):
     def __getattr__(self, name: str) -> Any:
         """Lazy-load children on first access, then resolve as a child attribute."""
         if not self._loaded:
-            self._loadNodes()
+            with self._loadLock:
+                if not self._loaded:
+                    self._loadNodes()
         return pr.Node.__getattr__(self,name)
 
     @property
     def nodes(self) -> dict[str, Any]:
         """Child nodes keyed by name."""
         if not self._loaded:
-            self._loadNodes()
+            with self._loadLock:
+                if not self._loaded:
+                    self._loadNodes()
         return self._nodes
 
     def node(self, name: str, load: bool = True) -> "VirtualNode | None":
@@ -190,7 +195,9 @@ class VirtualNode(pr.Node):
             Child node or None if not found.
         """
         if (not self._loaded) and load:
-            self._loadNodes()
+            with self._loadLock:
+                if not self._loaded:
+                    self._loadNodes()
 
         if name in self._nodes:
             return self._nodes[name]
@@ -217,8 +224,6 @@ class VirtualNode(pr.Node):
 
     def _loadNodes(self) -> None:
         """Populate child nodes from remote metadata."""
-        self._loaded = True
-
         for k,node in self._client._remoteAttr(self._path, 'nodes').items():
             if k in self._nodes:
                 node._parent = self
@@ -227,6 +232,8 @@ class VirtualNode(pr.Node):
 
                 self._nodes[k] = node
                 self._addArrayNode(node)
+
+        self._loaded = True
 
     def _getNode(self, path: str, load: bool = True) -> "VirtualNode | None":
         """Resolve a dotted path to a node.
