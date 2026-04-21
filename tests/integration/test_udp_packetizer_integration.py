@@ -148,13 +148,14 @@ def run_udp_packetizer_path(version, jumbo):
     # intentional reordering this test injects.  With RSSI's 32-segment
     # window and 15-retransmit ceiling, a sustained jitter storm can
     # exhaust the retransmit budget and close the session, stranding
-    # the drain at 0 frames delivered.  Bump to 200 ms so the timer
-    # tolerates scheduler jitter; both sides negotiate this in the SYN
-    # handshake, so setting it on both ends pins the on-the-wire value.
-    # Same reasoning as tests/integration/test_rssi_loopback.py's
+    # the drain at 0 frames delivered.  200 ms was not always enough
+    # (observed: version=1 jumbo=False stalling at 0/200), so use
+    # 500 ms — both sides negotiate this in the SYN handshake, so
+    # setting it on both ends pins the on-the-wire value.  Same
+    # reasoning as tests/integration/test_rssi_loopback.py's
     # test_rssi_retransmit_counter_zero_clean_path.
-    server_rssi.setLocRetranTout(200)
-    client_rssi.setLocRetranTout(200)
+    server_rssi.setLocRetranTout(500)
+    client_rssi.setLocRetranTout(500)
 
     server_pack, client_pack = build_packetizer_pair(version)
 

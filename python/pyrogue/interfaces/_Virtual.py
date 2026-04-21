@@ -432,12 +432,9 @@ class VirtualClient(rogue.interfaces.ZmqClient):
         self._vcInitialized = True
         VirtualClient.ClientCache[self._cacheKey] = self
 
-        try:
-            rogue.interfaces.ZmqClient.__init__(self,addr,port,False)
-        except Exception:
-            self._removeFromCache()
-            self._vcInitialized = False
-            raise
+        # Initialize state touched by _doUpdate before ZmqClient.__init__: the
+        # base constructor spawns the SUB receive thread immediately, so a
+        # publish arriving during bootstrap must not race these attributes.
         self._varListeners = []
         self._monitors = []
         self._root  = None
@@ -451,11 +448,17 @@ class VirtualClient(rogue.interfaces.ZmqClient):
 
         self.setTimeoutConfig(linkTimeout=linkTimeout, requestStallTimeout=requestStallTimeout)
 
+        try:
+            rogue.interfaces.ZmqClient.__init__(self,addr,port,False)
+        except Exception:
+            self._removeFromCache()
+            self._vcInitialized = False
+            raise
+
         # Setup logging
         self._log = pr.logInit(cls=self,name="VirtualClient",path=None)
 
         # Get root name as a connection test
-        self._root = None
         self.setTimeout(1000,False)
 
         try:
@@ -552,7 +555,8 @@ class VirtualClient(rogue.interfaces.ZmqClient):
     @property
     def linked(self) -> bool:
         """Whether the client is currently linked to the server."""
-        return self._link
+        with self._reqLock:
+            return self._link
 
     @property
     def linkTimeout(self) -> float:
@@ -599,63 +603,73 @@ class VirtualClient(rogue.interfaces.ZmqClient):
 
     def _requestDone(self, success: bool) -> None:
         """Record request completion and treat successful replies as activity."""
+        notify = False
         with self._reqLock:
             self._reqCount = max(0, self._reqCount - 1)
             if self._reqCount == 0:
                 self._reqSince = None
+            if success:
+                self._ltime = time.time()
+                if not self._link:
+                    self._link = True
+                    notify = True
 
-        if success:
-            self._ltime = time.time()
-            if not self._link:
-                self._link = True
-                self._log.warning(f"I have finally heard from {self._root.name}. All is good!")
-                for mon in self._monitors:
-                    mon(self._link)
-
-    def _requestPending(self) -> bool:
-        """Whether at least one request/reply transaction is in flight."""
-        with self._reqLock:
-            return self._reqCount > 0
-
-    def _requestAge(self) -> float | None:
-        """Return the age of the oldest in-flight request, if any."""
-        with self._reqLock:
-            if self._reqCount == 0 or self._reqSince is None:
-                return None
-            return time.time() - self._reqSince
+        # Suppress the log/notify during the initial handshake: `_root` is only
+        # populated once `_waitForRoot` returns, but the first successful
+        # `_requestDone(True)` fires before that. Dereferencing `self._root.name`
+        # there would raise AttributeError, which `_waitForRoot` silently swallows
+        # and retries, costing an extra round trip on every bootstrap.
+        if notify and self._root is not None:
+            self._log.warning(f"I have finally heard from {self._root.name}. All is good!")
+            for mon in self._monitors:
+                mon(True)
 
     def _checkLinkState(self) -> None:
         """Update link state from recent activity while tolerating busy requests."""
-        delta = time.time() - self._ltime
+        log_message = None
+        notify_link: bool | None = None
 
-        if self._link and delta > self._linkTimeout:
-            if self._requestPending():
-                reqAge = self._requestAge()
-                if self._requestStallTimeout is None or reqAge is None or reqAge <= self._requestStallTimeout:
-                    return
+        with self._reqLock:
+            now = time.time()
+            delta = now - self._ltime
+            link = self._link
+            reqPending = self._reqCount > 0
+            reqAge = (now - self._reqSince) if (reqPending and self._reqSince is not None) else None
 
-                self._link = False
-                self._log.warning(
-                    f"Request has been pending for {reqAge:0.1f} seconds without updates. "
-                    f"Declaring link to {self._root.name} stalled."
-                )
-                for mon in self._monitors:
-                    mon(self._link)
-                return
+            new_link = link
 
-            self._link = False
-            self._log.warning(
-                f"I have not heard from {self._root.name} in {self._linkTimeout:0.1f} seconds. "
-                "It may be busy, continuing to wait..."
-            )
+            if link and delta > self._linkTimeout:
+                if reqPending:
+                    if (self._requestStallTimeout is None
+                            or reqAge is None
+                            or reqAge <= self._requestStallTimeout):
+                        return
+
+                    new_link = False
+                    log_message = (
+                        f"Request has been pending for {reqAge:0.1f} seconds without updates. "
+                        f"Declaring link to {self._root.name} stalled."
+                    )
+                else:
+                    new_link = False
+                    log_message = (
+                        f"I have not heard from {self._root.name} in {self._linkTimeout:0.1f} seconds. "
+                        "It may be busy, continuing to wait..."
+                    )
+
+            elif (not link) and delta < self._linkTimeout:
+                new_link = True
+                log_message = f"I have finally heard from {self._root.name}. All is good!"
+
+            if new_link != link:
+                self._link = new_link
+                notify_link = new_link
+
+        if log_message is not None:
+            self._log.warning(log_message)
+        if notify_link is not None:
             for mon in self._monitors:
-                mon(self._link)
-
-        elif (not self._link) and delta < self._linkTimeout:
-            self._link = True
-            self._log.warning(f"I have finally heard from {self._root.name}. All is good!")
-            for mon in self._monitors:
-                mon(self._link)
+                mon(notify_link)
 
 
     def _remoteAttr(self, path: str, attr: str, *args: Any, **kwargs: Any) -> Any:
@@ -681,7 +695,8 @@ class VirtualClient(rogue.interfaces.ZmqClient):
 
     def _doUpdate(self, data: bytes) -> None:
         """Process variable update data from the server."""
-        self._ltime = time.time()
+        with self._reqLock:
+            self._ltime = time.time()
 
         if self._root is None:
             return
@@ -700,6 +715,14 @@ class VirtualClient(rogue.interfaces.ZmqClient):
     def stop(self) -> None:
         """Stop the monitor thread and release resources."""
         self._monEnable = False
+        thr = self._monThread
+        if thr is None or not hasattr(thr, 'join'):
+            return
+        if threading.current_thread() is thr:
+            return
+        thr.join(timeout=3.0)
+        if hasattr(thr, 'is_alive') and thr.is_alive():
+            self._log.warning("Monitor thread did not stop within timeout")
 
     @property
     def root(self) -> "VirtualNode":
