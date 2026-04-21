@@ -4,7 +4,7 @@ var searchData=
   ['data_2ecpp_1',['Data.cpp',['../Data_8cpp.html',1,'']]],
   ['data_2eh_2',['Data.h',['../Data_8h.html',1,'']]],
   ['dataptr_3',['DataPtr',['../namespacerogue_1_1protocols_1_1batcher.html#af5d07c75e72b9c00310754bcca0bccc2',1,'rogue::protocols::batcher']]],
-  ['debug_4',['debug',['../classrogue_1_1interfaces_1_1stream_1_1Buffer.html#a4270427c65bb0570494adc8c0455fc7e',1,'rogue::interfaces::stream::Buffer::debug()'],['../classrogue_1_1interfaces_1_1stream_1_1Frame.html#af031fdee7784958fb1bf7b8f35dde7b7',1,'rogue::interfaces::stream::Frame::debug()'],['../classrogue_1_1Logging.html#ae11fd0f728b1afe121cc40ec3ac761bd',1,'rogue::Logging::debug(const char *fmt,...)'],['../classrogue_1_1Logging.html#abb614c55e33efefc9c45f2aaefe4633f',1,'rogue::Logging::Debug']]],
+  ['debug_4',['debug',['../classrogue_1_1Logging.html#abb614c55e33efefc9c45f2aaefe4633f',1,'rogue::Logging::Debug'],['../classrogue_1_1interfaces_1_1stream_1_1Buffer.html#a4270427c65bb0570494adc8c0455fc7e',1,'rogue::interfaces::stream::Buffer::debug()'],['../classrogue_1_1interfaces_1_1stream_1_1Frame.html#af031fdee7784958fb1bf7b8f35dde7b7',1,'rogue::interfaces::stream::Frame::debug()'],['../classrogue_1_1Logging.html#ae11fd0f728b1afe121cc40ec3ac761bd',1,'rogue::Logging::debug()']]],
   ['deccounter_5',['decCounter',['../classrogue_1_1interfaces_1_1stream_1_1Pool.html#a01e306fd690bbfcfaec95fd90326564f',1,'rogue::interfaces::stream::Pool']]],
   ['defacceptframe_6',['defAcceptFrame',['../classrogue_1_1interfaces_1_1stream_1_1SlaveWrap.html#a2733364a91652da4781911dac7911d4b',1,'rogue::interfaces::stream::SlaveWrap']]],
   ['defaulttimeout_7',['defaultTimeout',['../namespacerogue.html#ad9c9c8610f0fbf0677311aea1ee0b1b0',1,'rogue']]],

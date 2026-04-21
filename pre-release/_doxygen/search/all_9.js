@@ -3,7 +3,7 @@ var searchData=
   ['id_0',['id',['../classrogue_1_1interfaces_1_1memory_1_1Slave.html#a470bd4cecb4444fd59b553825cd67129',1,'rogue::interfaces::memory::Slave::id()'],['../classrogue_1_1interfaces_1_1memory_1_1Transaction.html#a1f14874141680a7184b8277c61444d5b',1,'rogue::interfaces::memory::Transaction::id()']]],
   ['id_5f_1',['id_',['../classrogue_1_1interfaces_1_1memory_1_1Transaction.html#a253359a7a3f13fdd0af62015b12ddcf4',1,'rogue::interfaces::memory::Transaction']]],
   ['index_2',['index',['../structDmaWriteData.html#aaa897b0165287263ec00e152a9311c88',1,'DmaWriteData::index'],['../structDmaReadData.html#a32d79a66e220cc7f8421c0e045c31f6b',1,'DmaReadData::index']]],
-  ['info_3',['info',['../classrogue_1_1Logging.html#ad5656a7605b2ed9299c8da43f8aea4b9',1,'rogue::Logging::Info'],['../classrogue_1_1Logging.html#a342a215d9d74f30afd747061c977cb0d',1,'rogue::Logging::info(const char *fmt,...)']]],
+  ['info_3',['info',['../classrogue_1_1Logging.html#a342a215d9d74f30afd747061c977cb0d',1,'rogue::Logging::info(const char *fmt,...)'],['../classrogue_1_1Logging.html#ad5656a7605b2ed9299c8da43f8aea4b9',1,'rogue::Logging::Info']]],
   ['init_4',['init',['../classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#afb701573a89c70a0e9f8419f0f3a2bd4',1,'rogue::protocols::xilinx::JtagDriver']]],
   ['initialvalue_5',['initialValue',['../structCRC_1_1Parameters.html#a3438fb5c479f36e4c8df90cd1e143287',1,'CRC::Parameters']]],
   ['initsize_6',['initsize',['../classrogue_1_1protocols_1_1batcher_1_1CoreV2.html#a5ceb0ca10d07e3898ce9dfbcb1066d91',1,'rogue::protocols::batcher::CoreV2::initSize()'],['../classrogue_1_1protocols_1_1batcher_1_1CoreV1.html#ac4e60c17e744ef87837a5343d2be6264',1,'rogue::protocols::batcher::CoreV1::initSize()']]],
