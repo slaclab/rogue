@@ -567,7 +567,10 @@ def _roce_setup_connection(engine, host_qpn, host_rq_psn, host_sq_psn,
     if not ok:
         raise rogue.GeneralError(
             "_roce_setup_connection",
-            "FPGA PD allocation failed")
+            "FPGA PD allocation failed — the FPGA RoCEv2 engine likely has "
+            "stale resources from a previous session that crashed without a "
+            "clean teardown. Reprogram the FPGA bitfile to reset its state."
+        )
     info(f"RoceEngine: PD allocated handler=0x{pd_handler:08x}")
 
     # Past stage 1, every subsequent failure must release the PD (and any
@@ -598,7 +601,10 @@ def _roce_setup_connection(engine, host_qpn, host_rq_psn, host_sq_psn,
         if not ok:
             raise rogue.GeneralError(
                 "_roce_setup_connection",
-                "FPGA MR allocation failed")
+                "FPGA MR allocation failed — the FPGA RoCEv2 engine likely has "
+                "stale resources from a previous session that crashed without a "
+                "clean teardown. Reprogram the FPGA bitfile to reset its state."
+            )
         mr_allocated = True
         info(f"RoceEngine: MR allocated lkey=0x{lkey:08x} rkey=0x{rkey:08x}")
 
@@ -614,7 +620,10 @@ def _roce_setup_connection(engine, host_qpn, host_rq_psn, host_sq_psn,
         if not ok:
             raise rogue.GeneralError(
                 "_roce_setup_connection",
-                "FPGA QP creation failed")
+                "FPGA QP creation failed — the FPGA RoCEv2 engine likely has "
+                "stale resources from a previous session that crashed without a "
+                "clean teardown. Reprogram the FPGA bitfile to reset its state."
+            )
         qp_created = True
         info(f"RoceEngine: QP created fpga_qpn=0x{fpga_qpn:06x}")
 
@@ -934,6 +943,13 @@ class RoCEv2Server(pr.Device):
         host_sq_psn = self._server.getSqPsn()
         mr_addr     = self._server.getMrAddr()
         mr_len      = self._maxPayload * self._rxQueueDepth
+
+        if mr_len >= (1 << 32):
+            raise rogue.GeneralError(
+                f"FPGA MR length {mr_len} bytes ({mr_len / 2**30:.1f} GiB) exceeds "
+                f"the 32-bit field of the metadata bus. "
+                f"Reduce --roceMaxPay ({self._maxPayload}) or --roceQDepth ({self._rxQueueDepth})."
+            )
 
         self._log.info(
             f"RoCEv2 '{self.name}': QPN=0x{host_qpn:06x} "
