@@ -174,6 +174,56 @@ Logger names:
 These loggers are most useful when debugging QP bring-up, metadata-bus
 handshake failures, and RC connection state transitions.
 
+Troubleshooting
+===============
+
+Stale FPGA resources after a crash
+-------------------------------------
+
+If a previous session crashed or was killed without a clean ``Root.stop()``,
+the FPGA RoCEv2 engine may still hold a PD, MR, or QP from that session.
+The next ``_start()`` call will fail with a ``rogue.GeneralError`` whose
+message includes:
+
+.. code-block:: text
+
+   FPGA PD allocation failed — the FPGA RoCEv2 engine likely has stale
+   resources from a previous session that crashed without a clean teardown.
+   Reprogram the FPGA bitfile to reset its state.
+
+The same guidance appears for MR and QP allocation failures. The firmware
+provides no way to enumerate existing resources without knowing the QPN in
+advance, so a reprogram is the only reliable recovery path.
+
+MR length exceeds 32-bit metadata-bus field
+---------------------------------------------
+
+``RoCEv2Server._start()`` computes the FPGA-side Memory Region length as
+``maxPayload * rxQueueDepth``. If this product is >= 2\ :sup:`32` (4 GiB),
+the value cannot be represented in the 32-bit ``length`` field of the
+metadata bus and ``_start()`` raises a ``rogue.GeneralError``:
+
+.. code-block:: text
+
+   FPGA MR length ... bytes (... GiB) exceeds the 32-bit field of the
+   metadata bus. Reduce --roceMaxPay (...) or --roceQDepth (...).
+
+The default configuration (``maxPayload=9000``, ``rxQueueDepth=256``,
+product ~2.3 MB) is four orders of magnitude below this limit. The guard
+protects against accidentally passing very large queue depths.
+
+QP state-machine enforcement
+-------------------------------
+
+The Python metadata-bus encoders (``_encode_modify_qp``,
+``_encode_err_qp``, ``_encode_destroy_qp``) are stateless — they will
+encode and send any QP transition without checking whether it is valid.
+The **FPGA state machine is the single source of truth**: illegal
+transitions return ``success=False``, which is raised as a
+``rogue.GeneralError`` on the setup path and logged as a warning on the
+teardown path. No Python-side state mirror is maintained because it would
+become stale after a crash and block legitimate teardown attempts.
+
 Related Topics
 ==============
 

@@ -355,17 +355,26 @@ def test_partial_setup_rollback_on_mr_failure():
             mr_laddr=0x1000, mr_len=4096, pmtu=5,
         )
     assert "MR allocation failed" in str(excinfo.value)
+    assert "Reprogram the FPGA" in str(excinfo.value)
     # 3 TX writes: PD alloc + MR alloc (failing) + PD dealloc (rollback).
     # No QP-create TX: the MR failure aborts before stage 3.
     assert engine.MetaDataTx.set.call_count == 3
 
 
 # ---------------------------------------------------------------------------
-# Illegal QP state-machine transitions. Python layer is stateless; the FPGA
-# enforces the state machine and replies with success=False. The test drives
-# encoder + _send_meta + _wait_resp + _decode_qp_resp directly (not via
-# _roce_setup_connection) because the illegal-transition scenario exists
-# OUTSIDE the strict 6-step setup flow.
+# Illegal QP state-machine transitions. The Python metadata-bus encoders
+# (_encode_modify_qp, _encode_err_qp, _encode_destroy_qp) are stateless —
+# the FPGA state machine is the single source of truth. Illegal transitions
+# return success=False in the FPGA's response, which is raised as
+# rogue.GeneralError on the setup path and swallowed with a warning on the
+# teardown path. No Python-side state mirror was added: it would become
+# stale after a crash and block legitimate teardown attempts. A startup
+# query is not feasible either — the firmware provides no way to enumerate
+# existing QPs without knowing the QPN in advance.
+#
+# The test drives encoder + _send_meta + _wait_resp + _decode_qp_resp
+# directly (not via _roce_setup_connection) because the illegal-transition
+# scenario exists OUTSIDE the strict 6-step setup flow.
 # ---------------------------------------------------------------------------
 
 def test_illegal_qp_transition_reports_failure():
@@ -448,13 +457,22 @@ def test_double_modify_qp_reports_failure():
 #   Part A: _encode_alloc_mr with zero-length, unit, common, max 32-bit
 #           length — all fit in _META_DATA_TX_BITS.
 #   Part B: _encode_alloc_mr with length > 32-bit silently masks to 0
-#           (_mk_bus masks each field with (1 << width) - 1 where
-#           _MR_LEN_B = 32).
+#           at the encoder level (_mk_bus masks each field with
+#           (1 << width) - 1 where _MR_LEN_B = 32). However,
+#           RoCEv2Server._start() now guards against this: mr_len =
+#           maxPayload * rxQueueDepth >= 2^32 raises rogue.GeneralError
+#           before the encoder is ever called. The encoder-level test
+#           below still pins the _mk_bus masking behaviour for callers
+#           that bypass _start() (e.g. direct _encode_alloc_mr use).
 #   Part C: RoCEv2Server.getChannel with edge channel_ids — in-range
 #           (0..255) ids return rogue.interfaces.stream.Filter; out-of-
 #           range ids raise rogue.GeneralError (bounds enforced by the
 #           Python wrapper, matching the 8-bit channel field in the RDMA
 #           immediate value).
+#   Part D: RoCEv2Server._start() rejects mr_len >= 2^32 before the
+#           metadata-bus encoder is called. Pinned by
+#           test_start_rejects_mr_length_overflow and its parametric
+#           boundary companion.
 #
 # Note: _mk_bus overflow ("Bus type cannot fit") is already covered by the
 # sibling test_mk_bus_overflow_raises at test_rocev2.py:136-140. Not
@@ -476,8 +494,11 @@ def test_encode_alloc_mr_length_bounds_fit(length):
 
 
 def test_encode_alloc_mr_length_overflow_silently_truncated():
-    """Length >= 2**32 is silently masked by _mk_bus to 0. This documents
-    existing encoder behavior (not a bug — FPGA-side protocol is 32-bit).
+    """Length >= 2**32 is silently masked by _mk_bus to 0. This pins the
+    encoder-level masking behaviour for callers that bypass _start().
+    RoCEv2Server._start() now guards against this upstream (raises
+    rogue.GeneralError before the encoder is called), but direct
+    _encode_alloc_mr callers still see the silent truncation.
     Assertion: bus(length=2**32) equals bus(length=0)."""
     bus_overflow = _encode_alloc_mr(
         pd_handler=0x1, laddr=0, length=(1 << 32),
@@ -487,6 +508,63 @@ def test_encode_alloc_mr_length_overflow_silently_truncated():
         pd_handler=0x1, laddr=0, length=0, lkey_part=0, rkey_part=0,
     )
     assert bus_overflow == bus_zero
+
+
+# ---------------------------------------------------------------------------
+# Part D: RoCEv2Server._start() MR-length overflow guard.
+#
+# _start() computes mr_len = maxPayload * rxQueueDepth and raises
+# rogue.GeneralError if mr_len >= 2^32 BEFORE the metadata-bus encoder
+# is called. This catches the overflow at the user-facing boundary rather
+# than silently truncating at the encoder level.
+# ---------------------------------------------------------------------------
+
+def test_start_rejects_mr_length_overflow(mocked_rocev2_cpp):
+    """RoCEv2Server._start() raises rogue.GeneralError when
+    maxPayload * rxQueueDepth >= 2^32. The guard fires before the
+    metadata-bus encoder is called, so no FPGA-side state is touched.
+    Uses maxPayload=65536 * rxQueueDepth=65536 = 2^32 (exact boundary)."""
+    engine = MagicMock()
+    srv = RoCEv2Server(
+        ip='10.0.0.1', deviceName='rxe0',
+        roceEngine=engine, name='srv_mr_overflow',
+        maxPayload=65536, rxQueueDepth=65536,
+    )
+    srv.ConnectionState = MagicMock()
+    with pytest.raises(rogue.GeneralError) as excinfo:
+        srv._start()
+    msg = str(excinfo.value)
+    assert "exceeds" in msg
+    assert "32-bit" in msg
+
+
+@pytest.mark.parametrize(
+    "maxPay,qDepth",
+    [(9000, 256), (65536, 65535)],
+    ids=["default", "just-below-4GiB"],
+)
+def test_start_accepts_mr_length_below_overflow(
+        mocked_rocev2_cpp, monkeypatch, maxPay, qDepth):
+    """mr_len below 2^32 passes the guard. The test patches
+    _roce_setup_connection to avoid the full handshake — we only
+    need to confirm the guard does NOT raise."""
+    engine = MagicMock()
+    srv = RoCEv2Server(
+        ip='10.0.0.1', deviceName='rxe0',
+        roceEngine=engine, name='srv_mr_ok',
+        maxPayload=maxPay, rxQueueDepth=qDepth,
+    )
+    srv.ConnectionState = MagicMock()
+    srv.FpgaQpn  = MagicMock()
+    srv.FpgaLkey = MagicMock()
+
+    def _fake_setup(**kwargs):
+        return (0x123, 0x456, 0x789, 0xABC)
+
+    monkeypatch.setattr(_rce, "_roce_setup_connection", _fake_setup)
+    monkeypatch.setattr(srv._server, "completeConnection", lambda **kw: None)
+    monkeypatch.setattr(RoCEv2Server.__bases__[0], "_start", lambda self: None)
+    srv._start()
 
 
 @pytest.mark.parametrize(
@@ -812,7 +890,8 @@ def test_setup_raises_on_pd_failure_with_no_rollback(monkeypatch):
     """Stage 1 (PD alloc) failure: _roce_setup_connection raises without
     any rollback TX (the try/except wrapper only protects stages 2-6).
     Exactly one MetaDataTx.set call lands (the failed PD alloc itself);
-    no dealloc follows."""
+    no dealloc follows. The error message includes stale-resource
+    guidance directing the user to reprogram the FPGA."""
     _accelerate_time(monkeypatch)
     engine = MagicMock()
     engine.RecvMetaData.get.return_value = 1
@@ -824,6 +903,7 @@ def test_setup_raises_on_pd_failure_with_no_rollback(monkeypatch):
             mr_laddr=0x1000, mr_len=4096, pmtu=5,
         )
     assert "FPGA PD allocation failed" in str(excinfo.value)
+    assert "Reprogram the FPGA" in str(excinfo.value)
     assert engine.MetaDataTx.set.call_count == 1
 
 
@@ -872,6 +952,7 @@ def test_setup_rollback_on_qp_create_failure(monkeypatch):
             mr_laddr=0x1000, mr_len=4096, pmtu=5,
         )
     assert "FPGA QP creation failed" in str(excinfo.value)
+    assert "Reprogram the FPGA" in str(excinfo.value)
     assert engine.MetaDataTx.set.call_count == 5
 
 
