@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-21T04:27:14Z",
+  "generated_at": "2026-04-21T04:35:41Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -121,6 +121,14 @@
       "history": [
         {
           "ref_name": "ESROGUE-740",
+          "sha": "92b51b020c65b5016eb10cc326b754611a5f0218",
+          "short_sha": "92b51b0",
+          "published_at": "2026-04-21T04:35:41Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/24704131184",
+          "summary_url": "/rogue/perf/branches/ESROGUE-740/history/92b51b020c65b5016eb10cc326b754611a5f0218.json"
+        },
+        {
+          "ref_name": "ESROGUE-740",
           "sha": "615d66f836f0c43eb17c89553c25e224df7394a6",
           "short_sha": "615d66f",
           "published_at": "2026-04-21T04:27:14Z",
@@ -162,10 +170,10 @@
       ],
       "latest": {
         "ref_name": "ESROGUE-740",
-        "sha": "615d66f836f0c43eb17c89553c25e224df7394a6",
-        "short_sha": "615d66f",
-        "published_at": "2026-04-21T04:27:14Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/24703897369",
+        "sha": "92b51b020c65b5016eb10cc326b754611a5f0218",
+        "short_sha": "92b51b0",
+        "published_at": "2026-04-21T04:35:41Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/24704131184",
         "summary_url": "/rogue/perf/branches/ESROGUE-740/latest.json"
       }
     },
