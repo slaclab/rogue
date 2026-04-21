@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-21T15:10:01Z",
+  "generated_at": "2026-04-21T16:11:25Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -119,6 +119,14 @@
       "ref_slug": "RoCEv2-dev",
       "latest_url": "/rogue/perf/branches/RoCEv2-dev/latest.json",
       "history": [
+        {
+          "ref_name": "RoCEv2-dev",
+          "sha": "a3f220c168aa383fbd57dca0925d1b1088f53b7e",
+          "short_sha": "a3f220c",
+          "published_at": "2026-04-21T16:11:25Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/24733047170",
+          "summary_url": "/rogue/perf/branches/RoCEv2-dev/history/a3f220c168aa383fbd57dca0925d1b1088f53b7e.json"
+        },
         {
           "ref_name": "RoCEv2-dev",
           "sha": "8a1da551b6b94fd115952adda9962209126b0167",
@@ -270,22 +278,14 @@
           "published_at": "2026-04-18T05:14:01Z",
           "run_url": "https://github.com/slaclab/rogue/actions/runs/24597577393",
           "summary_url": "/rogue/perf/branches/RoCEv2-dev/history/d772cffee7cf104f18b2f5ff42c809c91fbdc9ea.json"
-        },
-        {
-          "ref_name": "RoCEv2-dev",
-          "sha": "699be430629da26deab3e00ed9f74603857d864b",
-          "short_sha": "699be43",
-          "published_at": "2026-04-18T04:53:18Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/24597227670",
-          "summary_url": "/rogue/perf/branches/RoCEv2-dev/history/699be430629da26deab3e00ed9f74603857d864b.json"
         }
       ],
       "latest": {
         "ref_name": "RoCEv2-dev",
-        "sha": "8a1da551b6b94fd115952adda9962209126b0167",
-        "short_sha": "8a1da55",
-        "published_at": "2026-04-21T15:10:01Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/24729953967",
+        "sha": "a3f220c168aa383fbd57dca0925d1b1088f53b7e",
+        "short_sha": "a3f220c",
+        "published_at": "2026-04-21T16:11:25Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/24733047170",
         "summary_url": "/rogue/perf/branches/RoCEv2-dev/latest.json"
       }
     },
