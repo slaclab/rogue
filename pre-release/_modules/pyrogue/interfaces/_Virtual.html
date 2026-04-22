@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue.interfaces._Virtual &mdash; Rogue v6.11.0-3-gc256203e9 documentation</title>
+  <title>pyrogue.interfaces._Virtual &mdash; Rogue v6.11.0-6-gacd6389df documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="../../../_static/slac-favicon-192.png"/>
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=179fb236"></script>
+      <script src="../../../_static/documentation_options.js?v=984a7939"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -537,12 +537,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_vcInitialized</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="n">VirtualClient</span><span class="o">.</span><span class="n">ClientCache</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_cacheKey</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span>
 
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">ZmqClient</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">addr</span><span class="p">,</span><span class="n">port</span><span class="p">,</span><span class="kc">False</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_removeFromCache</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_vcInitialized</span> <span class="o">=</span> <span class="kc">False</span>
-            <span class="k">raise</span>
+        <span class="c1"># Initialize state touched by _doUpdate before ZmqClient.__init__: the</span>
+        <span class="c1"># base constructor spawns the SUB receive thread immediately, so a</span>
+        <span class="c1"># publish arriving during bootstrap must not race these attributes.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_varListeners</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_monitors</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_root</span>  <span class="o">=</span> <span class="kc">None</span>
@@ -556,11 +553,17 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">setTimeoutConfig</span><span class="p">(</span><span class="n">linkTimeout</span><span class="o">=</span><span class="n">linkTimeout</span><span class="p">,</span> <span class="n">requestStallTimeout</span><span class="o">=</span><span class="n">requestStallTimeout</span><span class="p">)</span>
 
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">ZmqClient</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">addr</span><span class="p">,</span><span class="n">port</span><span class="p">,</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_removeFromCache</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_vcInitialized</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">raise</span>
+
         <span class="c1"># Setup logging</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_log</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">logInit</span><span class="p">(</span><span class="bp">cls</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;VirtualClient&quot;</span><span class="p">,</span><span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 
         <span class="c1"># Get root name as a connection test</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_root</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setTimeout</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span><span class="kc">False</span><span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
@@ -663,7 +666,8 @@
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">linked</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Whether the client is currently linked to the server.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_link</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqLock</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_link</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">linkTimeout</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
@@ -713,63 +717,73 @@
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_requestDone</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">success</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Record request completion and treat successful replies as activity.&quot;&quot;&quot;</span>
+        <span class="n">notify</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqLock</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_reqCount</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqCount</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqCount</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_reqSince</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="n">success</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_ltime</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_link</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_link</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="n">notify</span> <span class="o">=</span> <span class="kc">True</span>
 
-        <span class="k">if</span> <span class="n">success</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_ltime</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_link</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_link</span> <span class="o">=</span> <span class="kc">True</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;I have finally heard from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_root</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">. All is good!&quot;</span><span class="p">)</span>
-                <span class="k">for</span> <span class="n">mon</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_monitors</span><span class="p">:</span>
-                    <span class="n">mon</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_link</span><span class="p">)</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">_requestPending</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Whether at least one request/reply transaction is in flight.&quot;&quot;&quot;</span>
-        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqLock</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqCount</span> <span class="o">&gt;</span> <span class="mi">0</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">_requestAge</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the age of the oldest in-flight request, if any.&quot;&quot;&quot;</span>
-        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqLock</span><span class="p">:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqCount</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqSince</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">return</span> <span class="kc">None</span>
-            <span class="k">return</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqSince</span>
+        <span class="c1"># Suppress the log/notify during the initial handshake: `_root` is only</span>
+        <span class="c1"># populated once `_waitForRoot` returns, but the first successful</span>
+        <span class="c1"># `_requestDone(True)` fires before that. Dereferencing `self._root.name`</span>
+        <span class="c1"># there would raise AttributeError, which `_waitForRoot` silently swallows</span>
+        <span class="c1"># and retries, costing an extra round trip on every bootstrap.</span>
+        <span class="k">if</span> <span class="n">notify</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_root</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;I have finally heard from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_root</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">. All is good!&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">mon</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_monitors</span><span class="p">:</span>
+                <span class="n">mon</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_checkLinkState</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Update link state from recent activity while tolerating busy requests.&quot;&quot;&quot;</span>
-        <span class="n">delta</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ltime</span>
+        <span class="n">log_message</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">notify_link</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_link</span> <span class="ow">and</span> <span class="n">delta</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkTimeout</span><span class="p">:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_requestPending</span><span class="p">():</span>
-                <span class="n">reqAge</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_requestAge</span><span class="p">()</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_requestStallTimeout</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">reqAge</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">reqAge</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_requestStallTimeout</span><span class="p">:</span>
-                    <span class="k">return</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqLock</span><span class="p">:</span>
+            <span class="n">now</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+            <span class="n">delta</span> <span class="o">=</span> <span class="n">now</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ltime</span>
+            <span class="n">link</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_link</span>
+            <span class="n">reqPending</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqCount</span> <span class="o">&gt;</span> <span class="mi">0</span>
+            <span class="n">reqAge</span> <span class="o">=</span> <span class="p">(</span><span class="n">now</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqSince</span><span class="p">)</span> <span class="k">if</span> <span class="p">(</span><span class="n">reqPending</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqSince</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
 
-                <span class="bp">self</span><span class="o">.</span><span class="n">_link</span> <span class="o">=</span> <span class="kc">False</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;Request has been pending for </span><span class="si">{</span><span class="n">reqAge</span><span class="si">:</span><span class="s2">0.1f</span><span class="si">}</span><span class="s2"> seconds without updates. &quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;Declaring link to </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_root</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> stalled.&quot;</span>
-                <span class="p">)</span>
-                <span class="k">for</span> <span class="n">mon</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_monitors</span><span class="p">:</span>
-                    <span class="n">mon</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_link</span><span class="p">)</span>
-                <span class="k">return</span>
+            <span class="n">new_link</span> <span class="o">=</span> <span class="n">link</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">_link</span> <span class="o">=</span> <span class="kc">False</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;I have not heard from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_root</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_linkTimeout</span><span class="si">:</span><span class="s2">0.1f</span><span class="si">}</span><span class="s2"> seconds. &quot;</span>
-                <span class="s2">&quot;It may be busy, continuing to wait...&quot;</span>
-            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">link</span> <span class="ow">and</span> <span class="n">delta</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkTimeout</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">reqPending</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_requestStallTimeout</span> <span class="ow">is</span> <span class="kc">None</span>
+                            <span class="ow">or</span> <span class="n">reqAge</span> <span class="ow">is</span> <span class="kc">None</span>
+                            <span class="ow">or</span> <span class="n">reqAge</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_requestStallTimeout</span><span class="p">):</span>
+                        <span class="k">return</span>
+
+                    <span class="n">new_link</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="n">log_message</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Request has been pending for </span><span class="si">{</span><span class="n">reqAge</span><span class="si">:</span><span class="s2">0.1f</span><span class="si">}</span><span class="s2"> seconds without updates. &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;Declaring link to </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_root</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> stalled.&quot;</span>
+                    <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">new_link</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="n">log_message</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;I have not heard from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_root</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_linkTimeout</span><span class="si">:</span><span class="s2">0.1f</span><span class="si">}</span><span class="s2"> seconds. &quot;</span>
+                        <span class="s2">&quot;It may be busy, continuing to wait...&quot;</span>
+                    <span class="p">)</span>
+
+            <span class="k">elif</span> <span class="p">(</span><span class="ow">not</span> <span class="n">link</span><span class="p">)</span> <span class="ow">and</span> <span class="n">delta</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkTimeout</span><span class="p">:</span>
+                <span class="n">new_link</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">log_message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;I have finally heard from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_root</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">. All is good!&quot;</span>
+
+            <span class="k">if</span> <span class="n">new_link</span> <span class="o">!=</span> <span class="n">link</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_link</span> <span class="o">=</span> <span class="n">new_link</span>
+                <span class="n">notify_link</span> <span class="o">=</span> <span class="n">new_link</span>
+
+        <span class="k">if</span> <span class="n">log_message</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">log_message</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">notify_link</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">mon</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_monitors</span><span class="p">:</span>
-                <span class="n">mon</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_link</span><span class="p">)</span>
-
-        <span class="k">elif</span> <span class="p">(</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_link</span><span class="p">)</span> <span class="ow">and</span> <span class="n">delta</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_linkTimeout</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_link</span> <span class="o">=</span> <span class="kc">True</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;I have finally heard from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_root</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">. All is good!&quot;</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">mon</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_monitors</span><span class="p">:</span>
-                <span class="n">mon</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_link</span><span class="p">)</span>
+                <span class="n">mon</span><span class="p">(</span><span class="n">notify_link</span><span class="p">)</span>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_remoteAttr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">attr</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
@@ -795,7 +809,8 @@
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_doUpdate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Process variable update data from the server.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_ltime</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqLock</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ltime</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_root</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
@@ -815,7 +830,15 @@
 <a class="viewcode-back" href="../../../api/python/pyrogue/interfaces/virtualclient.html#pyrogue.interfaces.VirtualClient.stop">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Stop the monitor thread and release resources.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_monEnable</span> <span class="o">=</span> <span class="kc">False</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_monEnable</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">thr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_monThread</span>
+        <span class="k">if</span> <span class="n">thr</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">thr</span><span class="p">,</span> <span class="s1">&#39;join&#39;</span><span class="p">):</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="n">threading</span><span class="o">.</span><span class="n">current_thread</span><span class="p">()</span> <span class="ow">is</span> <span class="n">thr</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">thr</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mf">3.0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">thr</span><span class="p">,</span> <span class="s1">&#39;is_alive&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">thr</span><span class="o">.</span><span class="n">is_alive</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Monitor thread did not stop within timeout&quot;</span><span class="p">)</span></div>
 
 
     <span class="nd">@property</span>
