@@ -5,6 +5,14 @@
   "history": [
     {
       "ref_name": "RoCEv2-dev",
+      "sha": "98a32adff6bbfacb1a4bcdeed154b17ec20f72d6",
+      "short_sha": "98a32ad",
+      "published_at": "2026-04-22T00:33:39Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/24753669586",
+      "summary_url": "/rogue/perf/branches/RoCEv2-dev/history/98a32adff6bbfacb1a4bcdeed154b17ec20f72d6.json"
+    },
+    {
+      "ref_name": "RoCEv2-dev",
       "sha": "a3f220c168aa383fbd57dca0925d1b1088f53b7e",
       "short_sha": "a3f220c",
       "published_at": "2026-04-21T16:11:25Z",
@@ -154,22 +162,14 @@
       "published_at": "2026-04-18T05:56:17Z",
       "run_url": "https://github.com/slaclab/rogue/actions/runs/24598082234",
       "summary_url": "/rogue/perf/branches/RoCEv2-dev/history/f85a547235689caac41b9a09471d6fb265d827f8.json"
-    },
-    {
-      "ref_name": "RoCEv2-dev",
-      "sha": "d772cffee7cf104f18b2f5ff42c809c91fbdc9ea",
-      "short_sha": "d772cff",
-      "published_at": "2026-04-18T05:14:01Z",
-      "run_url": "https://github.com/slaclab/rogue/actions/runs/24597577393",
-      "summary_url": "/rogue/perf/branches/RoCEv2-dev/history/d772cffee7cf104f18b2f5ff42c809c91fbdc9ea.json"
     }
   ],
   "latest": {
     "ref_name": "RoCEv2-dev",
-    "sha": "a3f220c168aa383fbd57dca0925d1b1088f53b7e",
-    "short_sha": "a3f220c",
-    "published_at": "2026-04-21T16:11:25Z",
-    "run_url": "https://github.com/slaclab/rogue/actions/runs/24733047170",
+    "sha": "98a32adff6bbfacb1a4bcdeed154b17ec20f72d6",
+    "short_sha": "98a32ad",
+    "published_at": "2026-04-22T00:33:39Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/24753669586",
     "summary_url": "/rogue/perf/branches/RoCEv2-dev/latest.json"
   }
 }
