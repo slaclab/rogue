@@ -5,6 +5,14 @@
   "history": [
     {
       "ref_name": "improve-thread-safety",
+      "sha": "509e065fd56d8c1c72561eb887385d76dbdc0060",
+      "short_sha": "509e065",
+      "published_at": "2026-04-22T17:41:39Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/24793160703",
+      "summary_url": "/rogue/perf/branches/improve-thread-safety/history/509e065fd56d8c1c72561eb887385d76dbdc0060.json"
+    },
+    {
+      "ref_name": "improve-thread-safety",
       "sha": "d93d8b53bc730fdb42692221c7aad319c66239a2",
       "short_sha": "d93d8b5",
       "published_at": "2026-04-22T16:32:29Z",
@@ -38,10 +46,10 @@
   ],
   "latest": {
     "ref_name": "improve-thread-safety",
-    "sha": "d93d8b53bc730fdb42692221c7aad319c66239a2",
-    "short_sha": "d93d8b5",
-    "published_at": "2026-04-22T16:32:29Z",
-    "run_url": "https://github.com/slaclab/rogue/actions/runs/24790019304",
+    "sha": "509e065fd56d8c1c72561eb887385d76dbdc0060",
+    "short_sha": "509e065",
+    "published_at": "2026-04-22T17:41:39Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/24793160703",
     "summary_url": "/rogue/perf/branches/improve-thread-safety/latest.json"
   }
 }
