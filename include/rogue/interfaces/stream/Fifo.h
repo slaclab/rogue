@@ -20,6 +20,7 @@
 
 #include <stdint.h>
 
+#include <atomic>
 #include <memory>
 #include <thread>
 
@@ -59,13 +60,13 @@ class Fifo : public rogue::interfaces::stream::Master, public rogue::interfaces:
     bool noCopy_;
 
     // Drop frame counter
-    std::size_t dropFrameCnt_;
+    std::atomic<std::size_t> dropFrameCnt_;
 
     // Queue
     rogue::Queue<std::shared_ptr<rogue::interfaces::stream::Frame>> queue_;
 
     // Transmission thread
-    bool threadEn_;
+    std::atomic<bool> threadEn_;
     std::thread* thread_;
 
     // Thread background
