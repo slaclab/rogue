@@ -93,14 +93,29 @@ def test_variable_stream_no_update_no_frame():
     sv >> capture
 
     with root:
-        # Startup emits `enable: True` frames from Root + StreamVarDevice.
-        # On slow CI those can arrive after the old initial_count snapshot,
-        # racing the final assertion. Wait for the burst to land, then sleep
-        # a short settle window so any stragglers are counted BEFORE we
-        # snapshot initial_count. _varDone() itself must not add frames.
-        assert wait_for(lambda: len(capture.frames) >= 2, timeout=5.0)
-        time.sleep(0.1)
+        # Startup emits one or more var-update frames (enable flags on Root and
+        # its devices). On slow CI runners the internal flush lags behind
+        # `with root:` returning, so baseline the count only after the frame
+        # stream has quiesced — otherwise startup frames arrive after
+        # `initial_count` is captured and the "no update emits no frame"
+        # invariant looks violated when it isn't. Require a sustained quiet
+        # period (not just one poll with no new frames) so a bursty startup
+        # that spaces frames >100ms apart cannot slip past the baseline.
+        prev = len(capture.frames)
+        deadline = time.monotonic() + 5.0
+        quiet_period = 0.3
+        last_change = time.monotonic()
+        while time.monotonic() < deadline:
+            n = len(capture.frames)
+            now = time.monotonic()
+            if n != prev:
+                prev = n
+                last_change = now
+            elif now - last_change >= quiet_period:
+                break
+            time.sleep(0.05)
         initial_count = len(capture.frames)
+
         sv._varDone()
         time.sleep(0.1)
         assert len(capture.frames) == initial_count
