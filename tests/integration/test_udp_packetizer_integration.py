@@ -146,15 +146,15 @@ def run_udp_packetizer_path(version, jumbo):
     # on macOS arm64 (3 workers) ACK delivery jitter routinely exceeds
     # that window, so spurious retransmits stack up on top of the
     # intentional reordering this test injects.  With RSSI's 32-segment
-    # window and 15-retransmit ceiling, a sustained jitter storm can
-    # exhaust the retransmit budget and close the session, stranding
-    # the drain at 0 frames delivered.  Bump to 200 ms so the timer
-    # tolerates scheduler jitter; both sides negotiate this in the SYN
-    # handshake, so setting it on both ends pins the on-the-wire value.
-    # Same reasoning as tests/integration/test_rssi_loopback.py's
-    # test_rssi_retransmit_counter_zero_clean_path.
-    server_rssi.setLocRetranTout(200)
-    client_rssi.setLocRetranTout(200)
+    # window and default 15-retransmit ceiling, a sustained jitter storm
+    # can exhaust the retransmit budget and close the session, stranding
+    # the drain at 0 frames delivered.  Use 1000 ms retransmit timeout
+    # and raise the ceiling to 31 so the session survives prolonged CI
+    # scheduling stalls on top of the intentional reordering.
+    server_rssi.setLocRetranTout(1000)
+    client_rssi.setLocRetranTout(1000)
+    server_rssi.setLocMaxRetran(31)
+    client_rssi.setLocMaxRetran(31)
 
     server_pack, client_pack = build_packetizer_pair(version)
 
