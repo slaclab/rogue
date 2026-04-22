@@ -5,6 +5,14 @@
   "history": [
     {
       "ref_name": "so-reported-issue-patching",
+      "sha": "ed78d26ae43bc3eff4533020600d96db524d1e12",
+      "short_sha": "ed78d26",
+      "published_at": "2026-04-22T00:00:25Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/24752650411",
+      "summary_url": "/rogue/perf/branches/so-reported-issue-patching/history/ed78d26ae43bc3eff4533020600d96db524d1e12.json"
+    },
+    {
+      "ref_name": "so-reported-issue-patching",
       "sha": "3ee2b5ed196a012c292dd9cd5e78128f4deb5958",
       "short_sha": "3ee2b5e",
       "published_at": "2026-04-21T22:36:03Z",
@@ -102,10 +110,10 @@
   ],
   "latest": {
     "ref_name": "so-reported-issue-patching",
-    "sha": "3ee2b5ed196a012c292dd9cd5e78128f4deb5958",
-    "short_sha": "3ee2b5e",
-    "published_at": "2026-04-21T22:36:03Z",
-    "run_url": "https://github.com/slaclab/rogue/actions/runs/24749856811",
+    "sha": "ed78d26ae43bc3eff4533020600d96db524d1e12",
+    "short_sha": "ed78d26",
+    "published_at": "2026-04-22T00:00:25Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/24752650411",
     "summary_url": "/rogue/perf/branches/so-reported-issue-patching/latest.json"
   }
 }
