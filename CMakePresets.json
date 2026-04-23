@@ -1,0 +1,41 @@
+{
+  "version": 2,
+  "cmakeMinimumRequired": { "major": 3, "minor": 20, "patch": 0 },
+  "configurePresets": [
+    {
+      "name": "base",
+      "hidden": true,
+      "generator": "Unix Makefiles",
+      "cacheVariables": {
+        "ROGUE_INSTALL": "local",
+        "ROGUE_BUILD_TESTS": "ON"
+      }
+    },
+    {
+      "name": "tsan",
+      "inherits": "base",
+      "binaryDir": "${sourceDir}/build-tsan",
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "gcc-13",
+        "CMAKE_CXX_COMPILER": "g++-13",
+        "CMAKE_CXX_FLAGS_INIT": "-g -O1 -fno-omit-frame-pointer -fsanitize=thread",
+        "CMAKE_EXE_LINKER_FLAGS_INIT": "-fsanitize=thread"
+      }
+    },
+    {
+      "name": "asan",
+      "inherits": "base",
+      "binaryDir": "${sourceDir}/build-asan",
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "gcc-13",
+        "CMAKE_CXX_COMPILER": "g++-13",
+        "CMAKE_CXX_FLAGS_INIT": "-g -O1 -fno-omit-frame-pointer -fsanitize=address -fsanitize=undefined",
+        "CMAKE_EXE_LINKER_FLAGS_INIT": "-fsanitize=address -fsanitize=undefined"
+      }
+    }
+  ],
+  "buildPresets": [
+    { "name": "tsan", "configurePreset": "tsan", "jobs": 0 },
+    { "name": "asan", "configurePreset": "asan", "jobs": 0 }
+  ]
+}
