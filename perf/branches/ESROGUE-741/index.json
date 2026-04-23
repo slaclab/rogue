@@ -1,0 +1,23 @@
+{
+  "ref_name": "ESROGUE-741",
+  "ref_slug": "ESROGUE-741",
+  "latest_url": "/rogue/perf/branches/ESROGUE-741/latest.json",
+  "history": [
+    {
+      "ref_name": "ESROGUE-741",
+      "sha": "1a04b1e1fd0df83c41cd45bc25f194bba91abb2d",
+      "short_sha": "1a04b1e",
+      "published_at": "2026-04-23T19:59:48Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/24855772925",
+      "summary_url": "/rogue/perf/branches/ESROGUE-741/history/1a04b1e1fd0df83c41cd45bc25f194bba91abb2d.json"
+    }
+  ],
+  "latest": {
+    "ref_name": "ESROGUE-741",
+    "sha": "1a04b1e1fd0df83c41cd45bc25f194bba91abb2d",
+    "short_sha": "1a04b1e",
+    "published_at": "2026-04-23T19:59:48Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/24855772925",
+    "summary_url": "/rogue/perf/branches/ESROGUE-741/latest.json"
+  }
+}
