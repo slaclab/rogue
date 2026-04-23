@@ -123,7 +123,7 @@ Public Member Functions</h2></td></tr>
 class rogue::Queue&lt; T &gt;</div><p>Thread-safe bounded queue with optional busy threshold. </p>
 <p><code><a class="el" href="classrogue_1_1Queue.html" title="Thread-safe bounded queue with optional busy threshold.">Queue</a>&lt;T&gt;</code> supports producer/consumer usage with blocking <code><a class="el" href="classrogue_1_1Queue.html#a81dc8688d68a626c4c0d03fa1efd7a0b" title="Pushes one entry, blocking when queue is full.">push()</a></code>/<code><a class="el" href="classrogue_1_1Queue.html#ab330629d0a26b534fc7a11ec9cdbe4ca" title="Pops one entry, blocking until data is available or stopped.">pop()</a></code>. <code><a class="el" href="classrogue_1_1Queue.html#aa33a889cdb12b20589358441325c281f" title="Sets maximum queue depth before push() blocks.">setMax()</a></code> configures the maximum queued depth before <code><a class="el" href="classrogue_1_1Queue.html#a81dc8688d68a626c4c0d03fa1efd7a0b" title="Pushes one entry, blocking when queue is full.">push()</a></code> blocks. <code><a class="el" href="classrogue_1_1Queue.html#aaca337d5fe7decca6446ed17b9576dd9" title="Sets busy-threshold depth used by busy().">setThold()</a></code> configures a busy threshold used by <code><a class="el" href="classrogue_1_1Queue.html#a932318f18b36dc3e8d5ee9c64109ad22" title="Returns busy state based on configured threshold.">busy()</a></code>. <code><a class="el" href="classrogue_1_1Queue.html#aaeaa5f0405eae55066922904054c6abc" title="Stops queue operation and wakes blocked producers/consumers.">stop()</a></code> wakes blocked waiters and causes subsequent blocking calls to exit. </p>
 
-<p class="definition">Definition at line <a class="el" href="Queue_8h_source.html#l00038">38</a> of file <a class="el" href="Queue_8h_source.html">Queue.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Queue_8h_source.html#l00039">39</a> of file <a class="el" href="Queue_8h_source.html">Queue.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a5cce29c46667567969407c4ce8028329" name="a5cce29c46667567969407c4ce8028329"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a5cce29c46667567969407c4ce8028329">&#9670;&#160;</a></span>Queue()</h2>
@@ -152,7 +152,7 @@ template&lt;typename T &gt; </div>
 
 <p>Constructs an empty running queue. </p>
 
-<p class="definition">Definition at line <a class="el" href="Queue_8h_source.html#l00051">51</a> of file <a class="el" href="Queue_8h_source.html">Queue.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Queue_8h_source.html#l00052">52</a> of file <a class="el" href="Queue_8h_source.html">Queue.h</a>.</p>
 
 </div>
 </div>
@@ -185,7 +185,7 @@ template&lt;typename T &gt; </div>
 <p>Returns busy state based on configured threshold. </p>
 <dl class="section return"><dt>Returns</dt><dd><code>true</code> when <code>thold_ &gt; 0</code> and queue depth is at/above threshold. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Queue_8h_source.html#l00123">123</a> of file <a class="el" href="Queue_8h_source.html">Queue.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Queue_8h_source.html#l00124">124</a> of file <a class="el" href="Queue_8h_source.html">Queue.h</a>.</p>
 
 </div>
 </div>
@@ -217,7 +217,7 @@ template&lt;typename T &gt; </div>
 <p>Returns whether queue is currently empty. </p>
 <dl class="section return"><dt>Returns</dt><dd><code>true</code> when no entries are queued. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Queue_8h_source.html#l00106">106</a> of file <a class="el" href="Queue_8h_source.html">Queue.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Queue_8h_source.html#l00107">107</a> of file <a class="el" href="Queue_8h_source.html">Queue.h</a>.</p>
 
 </div>
 </div>
@@ -249,7 +249,7 @@ template&lt;typename T &gt; </div>
 <p>Pops one entry, blocking until data is available or stopped. </p>
 <dl class="section return"><dt>Returns</dt><dd>Popped entry when running; default-initialized <code>T</code> when stopped. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Queue_8h_source.html#l00141">141</a> of file <a class="el" href="Queue_8h_source.html">Queue.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Queue_8h_source.html#l00142">142</a> of file <a class="el" href="Queue_8h_source.html">Queue.h</a>.</p>
 
 </div>
 </div>
@@ -287,7 +287,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="Queue_8h_source.html#l00092">92</a> of file <a class="el" href="Queue_8h_source.html">Queue.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Queue_8h_source.html#l00093">93</a> of file <a class="el" href="Queue_8h_source.html">Queue.h</a>.</p>
 
 </div>
 </div>
@@ -318,7 +318,7 @@ template&lt;typename T &gt; </div>
 
 <p>Clears all queued entries and resets busy state. </p>
 
-<p class="definition">Definition at line <a class="el" href="Queue_8h_source.html#l00130">130</a> of file <a class="el" href="Queue_8h_source.html">Queue.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Queue_8h_source.html#l00131">131</a> of file <a class="el" href="Queue_8h_source.html">Queue.h</a>.</p>
 
 </div>
 </div>
@@ -357,7 +357,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="Queue_8h_source.html#l00076">76</a> of file <a class="el" href="Queue_8h_source.html">Queue.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Queue_8h_source.html#l00077">77</a> of file <a class="el" href="Queue_8h_source.html">Queue.h</a>.</p>
 
 </div>
 </div>
@@ -395,7 +395,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="Queue_8h_source.html#l00084">84</a> of file <a class="el" href="Queue_8h_source.html">Queue.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Queue_8h_source.html#l00085">85</a> of file <a class="el" href="Queue_8h_source.html">Queue.h</a>.</p>
 
 </div>
 </div>
@@ -427,7 +427,7 @@ template&lt;typename T &gt; </div>
 <p>Returns current queue depth. </p>
 <dl class="section return"><dt>Returns</dt><dd>Number of queued entries. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Queue_8h_source.html#l00114">114</a> of file <a class="el" href="Queue_8h_source.html">Queue.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Queue_8h_source.html#l00115">115</a> of file <a class="el" href="Queue_8h_source.html">Queue.h</a>.</p>
 
 </div>
 </div>
@@ -458,7 +458,7 @@ template&lt;typename T &gt; </div>
 
 <p>Stops queue operation and wakes blocked producers/consumers. </p>
 
-<p class="definition">Definition at line <a class="el" href="Queue_8h_source.html#l00061">61</a> of file <a class="el" href="Queue_8h_source.html">Queue.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Queue_8h_source.html#l00062">62</a> of file <a class="el" href="Queue_8h_source.html">Queue.h</a>.</p>
 
 </div>
 </div>

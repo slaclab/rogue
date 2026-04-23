@@ -9,6 +9,6 @@ var searchData=
   ['doupdate_5f_6',['doUpdate_',['../classrogue_1_1interfaces_1_1memory_1_1Block.html#ac7402f31739caa53b0076f9e91d4d1d2',1,'rogue::interfaces::memory::Block']]],
   ['dren_5f_7',['drEn_',['../classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#aec1ce3d56e8f54b5f719cf6ddd889583',1,'rogue::protocols::xilinx::JtagDriver']]],
   ['drop_5f_8',['drop_',['../classrogue_1_1protocols_1_1xilinx_1_1JtagDriver.html#a52826c009d4bb6b04def0f068e45a54b',1,'rogue::protocols::xilinx::JtagDriver']]],
-  ['dropcount_5f_9',['dropCount_',['../classrogue_1_1protocols_1_1packetizer_1_1Controller.html#aec36a2214132ef5957871c9feaef16a4',1,'rogue::protocols::packetizer::Controller']]],
+  ['dropcount_5f_9',['dropCount_',['../classrogue_1_1protocols_1_1packetizer_1_1Controller.html#a2421effaac2aa4ae4d085a4d7ca746ec',1,'rogue::protocols::packetizer::Controller']]],
   ['droperrors_5f_10',['dropErrors_',['../classrogue_1_1utilities_1_1fileio_1_1StreamWriter.html#a6d5bb7ac1320141ca59f8d836c041d21',1,'rogue::utilities::fileio::StreamWriter']]]
 ];

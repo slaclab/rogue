@@ -274,13 +274,13 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00199" name="l00199"></a><span class="lineno">  199</span>    <a class="code hl_typedef" href="namespacerogue_1_1interfaces_1_1stream.html#ad282a6c7aa64c4607580c16125f88308">ris::FrameLockPtr</a> flock = frame-&gt;lock();</div>
 <div class="line"><a id="l00200" name="l00200"></a><span class="lineno">  200</span> </div>
 <div class="line"><a id="l00201" name="l00201"></a><span class="lineno">  201</span>    <span class="keywordflow">if</span> (frame-&gt;getError() || frame-&gt;isEmpty() || !head-&gt;verify()) {</div>
-<div class="line"><a id="l00202" name="l00202"></a><span class="lineno">  202</span>        log_-&gt;warning(<span class="stringliteral">&quot;Dumping bad frame state=%&quot;</span> PRIu32 <span class="stringliteral">&quot; server=%&quot;</span> PRIu32, state_, server_);</div>
+<div class="line"><a id="l00202" name="l00202"></a><span class="lineno">  202</span>        log_-&gt;warning(<span class="stringliteral">&quot;Dumping bad frame state=%&quot;</span> PRIu32 <span class="stringliteral">&quot; server=%d&quot;</span>, state_, server_);</div>
 <div class="line"><a id="l00203" name="l00203"></a><span class="lineno">  203</span>        dropCount_++;</div>
 <div class="line"><a id="l00204" name="l00204"></a><span class="lineno">  204</span>        <span class="keywordflow">return</span>;</div>
 <div class="line"><a id="l00205" name="l00205"></a><span class="lineno">  205</span>    }</div>
 <div class="line"><a id="l00206" name="l00206"></a><span class="lineno">  206</span> </div>
-<div class="line"><a id="l00207" name="l00207"></a><span class="lineno">  207</span>    log_-&gt;debug(<span class="stringliteral">&quot;RX frame: state=%&quot;</span> PRIu32 <span class="stringliteral">&quot; server=%&quot;</span> PRIu32 <span class="stringliteral">&quot; size=%&quot;</span> PRIu32 <span class="stringliteral">&quot; syn=%&quot;</span> PRIu32 <span class="stringliteral">&quot; ack=%&quot;</span> PRIu32</div>
-<div class="line"><a id="l00208" name="l00208"></a><span class="lineno">  208</span>                <span class="stringliteral">&quot; nul=%&quot;</span> PRIu32 <span class="stringliteral">&quot;, bst=%&quot;</span> PRIu32 <span class="stringliteral">&quot;, rst=%&quot;</span> PRIu32 <span class="stringliteral">&quot;, ack#=%&quot;</span> PRIu32 <span class="stringliteral">&quot; seq=%&quot;</span> PRIu32 <span class="stringliteral">&quot;, nxt=%&quot;</span> PRIu32,</div>
+<div class="line"><a id="l00207" name="l00207"></a><span class="lineno">  207</span>    log_-&gt;debug(<span class="stringliteral">&quot;RX frame: state=%&quot;</span> PRIu32 <span class="stringliteral">&quot; server=%d size=%&quot;</span> PRIu32 <span class="stringliteral">&quot; syn=%d ack=%d&quot;</span></div>
+<div class="line"><a id="l00208" name="l00208"></a><span class="lineno">  208</span>                <span class="stringliteral">&quot; nul=%d, bsy=%d, rst=%d, ack#=%&quot;</span> PRIu8 <span class="stringliteral">&quot; seq=%&quot;</span> PRIu8 <span class="stringliteral">&quot;, nxt=%&quot;</span> PRIu8,</div>
 <div class="line"><a id="l00209" name="l00209"></a><span class="lineno">  209</span>                state_,</div>
 <div class="line"><a id="l00210" name="l00210"></a><span class="lineno">  210</span>                server_,</div>
 <div class="line"><a id="l00211" name="l00211"></a><span class="lineno">  211</span>                frame-&gt;getPayload(),</div>
@@ -338,8 +338,8 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span>            <span class="keywordflow">if</span> (!oooQueue_.empty()) {</div>
 <div class="line"><a id="l00264" name="l00264"></a><span class="lineno">  264</span>                <span class="comment">// First remove received sequence number from queue to avoid duplicates</span></div>
 <div class="line"><a id="l00265" name="l00265"></a><span class="lineno">  265</span>                <span class="keywordflow">if</span> ((it = oooQueue_.find(head-&gt;sequence)) != oooQueue_.end()) {</div>
-<div class="line"><a id="l00266" name="l00266"></a><span class="lineno">  266</span>                    log_-&gt;warning(<span class="stringliteral">&quot;Removed duplicate frame. server=%&quot;</span> PRIu8 <span class="stringliteral">&quot;, head-&gt;sequence=%&quot;</span> PRIu32</div>
-<div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span>                                  <span class="stringliteral">&quot;, next sequence=%&quot;</span> PRIu32,</div>
+<div class="line"><a id="l00266" name="l00266"></a><span class="lineno">  266</span>                    log_-&gt;warning(<span class="stringliteral">&quot;Removed duplicate frame. server=%d, head-&gt;sequence=%&quot;</span> PRIu8</div>
+<div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span>                                  <span class="stringliteral">&quot;, next sequence=%&quot;</span> PRIu8,</div>
 <div class="line"><a id="l00268" name="l00268"></a><span class="lineno">  268</span>                                  server_,</div>
 <div class="line"><a id="l00269" name="l00269"></a><span class="lineno">  269</span>                                  head-&gt;sequence,</div>
 <div class="line"><a id="l00270" name="l00270"></a><span class="lineno">  270</span>                                  nextSeqRx_);</div>
@@ -355,7 +355,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00280" name="l00280"></a><span class="lineno">  280</span>                    nextSeqRx_ = nextSeqRx_ + 1;</div>
 <div class="line"><a id="l00281" name="l00281"></a><span class="lineno">  281</span> </div>
 <div class="line"><a id="l00282" name="l00282"></a><span class="lineno">  282</span>                    appQueue_.push(it-&gt;second);</div>
-<div class="line"><a id="l00283" name="l00283"></a><span class="lineno">  283</span>                    log_-&gt;info(<span class="stringliteral">&quot;Using frame from ooo queue. server=%&quot;</span> PRIu8 <span class="stringliteral">&quot;, head-&gt;sequence=%&quot;</span> PRIu32,</div>
+<div class="line"><a id="l00283" name="l00283"></a><span class="lineno">  283</span>                    log_-&gt;info(<span class="stringliteral">&quot;Using frame from ooo queue. server=%d, head-&gt;sequence=%&quot;</span> PRIu8,</div>
 <div class="line"><a id="l00284" name="l00284"></a><span class="lineno">  284</span>                               server_,</div>
 <div class="line"><a id="l00285" name="l00285"></a><span class="lineno">  285</span>                               (it-&gt;second)-&gt;sequence);</div>
 <div class="line"><a id="l00286" name="l00286"></a><span class="lineno">  286</span>                    oooQueue_.erase(it);</div>
@@ -367,8 +367,8 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00292" name="l00292"></a><span class="lineno">  292</span> </div>
 <div class="line"><a id="l00293" name="l00293"></a><span class="lineno">  293</span>            <span class="comment">// Check if received frame is already in out of order queue</span></div>
 <div class="line"><a id="l00294" name="l00294"></a><span class="lineno">  294</span>        } <span class="keywordflow">else</span> <span class="keywordflow">if</span> ((it = oooQueue_.find(head-&gt;sequence)) != oooQueue_.end()) {</div>
-<div class="line"><a id="l00295" name="l00295"></a><span class="lineno">  295</span>            log_-&gt;warning(<span class="stringliteral">&quot;Dropped duplicate frame. server=%&quot;</span> PRIu8 <span class="stringliteral">&quot;, head-&gt;sequence=%&quot;</span> PRIu32</div>
-<div class="line"><a id="l00296" name="l00296"></a><span class="lineno">  296</span>                          <span class="stringliteral">&quot;, next sequence=%&quot;</span> PRIu32,</div>
+<div class="line"><a id="l00295" name="l00295"></a><span class="lineno">  295</span>            log_-&gt;warning(<span class="stringliteral">&quot;Dropped duplicate frame. server=%d, head-&gt;sequence=%&quot;</span> PRIu8</div>
+<div class="line"><a id="l00296" name="l00296"></a><span class="lineno">  296</span>                          <span class="stringliteral">&quot;, next sequence=%&quot;</span> PRIu8,</div>
 <div class="line"><a id="l00297" name="l00297"></a><span class="lineno">  297</span>                          server_,</div>
 <div class="line"><a id="l00298" name="l00298"></a><span class="lineno">  298</span>                          head-&gt;sequence,</div>
 <div class="line"><a id="l00299" name="l00299"></a><span class="lineno">  299</span>                          nextSeqRx_);</div>
@@ -384,8 +384,8 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00309" name="l00309"></a><span class="lineno">  309</span>            <span class="keywordflow">while</span> (++x != windowEnd) {</div>
 <div class="line"><a id="l00310" name="l00310"></a><span class="lineno">  310</span>                <span class="keywordflow">if</span> (head-&gt;sequence == x) {</div>
 <div class="line"><a id="l00311" name="l00311"></a><span class="lineno">  311</span>                    oooQueue_.insert(std::make_pair(head-&gt;sequence, head));</div>
-<div class="line"><a id="l00312" name="l00312"></a><span class="lineno">  312</span>                    log_-&gt;info(<span class="stringliteral">&quot;Adding frame to ooo queue. server=%&quot;</span> PRIu8 <span class="stringliteral">&quot;, head-&gt;sequence=%&quot;</span> PRIu32</div>
-<div class="line"><a id="l00313" name="l00313"></a><span class="lineno">  313</span>                               <span class="stringliteral">&quot;, nextSeqRx_=% &quot;</span> PRIu8 <span class="stringliteral">&quot;, windowsEnd=%&quot;</span> PRIu32,</div>
+<div class="line"><a id="l00312" name="l00312"></a><span class="lineno">  312</span>                    log_-&gt;info(<span class="stringliteral">&quot;Adding frame to ooo queue. server=%d, head-&gt;sequence=%&quot;</span> PRIu8</div>
+<div class="line"><a id="l00313" name="l00313"></a><span class="lineno">  313</span>                               <span class="stringliteral">&quot;, nextSeqRx_=%&quot;</span> PRIu8 <span class="stringliteral">&quot;, windowsEnd=%&quot;</span> PRIu8,</div>
 <div class="line"><a id="l00314" name="l00314"></a><span class="lineno">  314</span>                               server_,</div>
 <div class="line"><a id="l00315" name="l00315"></a><span class="lineno">  315</span>                               head-&gt;sequence,</div>
 <div class="line"><a id="l00316" name="l00316"></a><span class="lineno">  316</span>                               nextSeqRx_,</div>
@@ -395,8 +395,8 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00320" name="l00320"></a><span class="lineno">  320</span>            }</div>
 <div class="line"><a id="l00321" name="l00321"></a><span class="lineno">  321</span> </div>
 <div class="line"><a id="l00322" name="l00322"></a><span class="lineno">  322</span>            <span class="keywordflow">if</span> (x == windowEnd) {</div>
-<div class="line"><a id="l00323" name="l00323"></a><span class="lineno">  323</span>                log_-&gt;warning(<span class="stringliteral">&quot;Dropping out of window frame. server=%&quot;</span> PRIu8 <span class="stringliteral">&quot;, head-&gt;sequence=%&quot;</span> PRIu32</div>
-<div class="line"><a id="l00324" name="l00324"></a><span class="lineno">  324</span>                              <span class="stringliteral">&quot;, nextSeqRx_=%&quot;</span> PRIu8 <span class="stringliteral">&quot;, windowsEnd=%&quot;</span> PRIu32,</div>
+<div class="line"><a id="l00323" name="l00323"></a><span class="lineno">  323</span>                log_-&gt;warning(<span class="stringliteral">&quot;Dropping out of window frame. server=%d, head-&gt;sequence=%&quot;</span> PRIu8</div>
+<div class="line"><a id="l00324" name="l00324"></a><span class="lineno">  324</span>                              <span class="stringliteral">&quot;, nextSeqRx_=%&quot;</span> PRIu8 <span class="stringliteral">&quot;, windowsEnd=%&quot;</span> PRIu8,</div>
 <div class="line"><a id="l00325" name="l00325"></a><span class="lineno">  325</span>                              server_,</div>
 <div class="line"><a id="l00326" name="l00326"></a><span class="lineno">  326</span>                              head-&gt;sequence,</div>
 <div class="line"><a id="l00327" name="l00327"></a><span class="lineno">  327</span>                              nextSeqRx_,</div>
@@ -756,8 +756,8 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00622" name="l00622"></a><span class="lineno">  622</span>    head-&gt;update();</div>
 <div class="line"><a id="l00623" name="l00623"></a><span class="lineno">  623</span> </div>
 <div class="line"><a id="l00624" name="l00624"></a><span class="lineno">  624</span>    log_-&gt;log(<a class="code hl_variable" href="classrogue_1_1Logging.html#abb614c55e33efefc9c45f2aaefe4633f">rogue::Logging::Debug</a>,</div>
-<div class="line"><a id="l00625" name="l00625"></a><span class="lineno">  625</span>              <span class="stringliteral">&quot;TX frame: state=%&quot;</span> PRIu32 <span class="stringliteral">&quot; server=%&quot;</span> PRIu8 <span class="stringliteral">&quot; size=%&quot;</span> PRIu32 <span class="stringliteral">&quot; syn=%&quot;</span> PRIu8 <span class="stringliteral">&quot; ack=%&quot;</span> PRIu8 <span class="stringliteral">&quot; nul=%&quot;</span> PRIu8</div>
-<div class="line"><a id="l00626" name="l00626"></a><span class="lineno">  626</span>              <span class="stringliteral">&quot;, bsy=%&quot;</span> PRIu8 <span class="stringliteral">&quot;, rst=%&quot;</span> PRIu8 <span class="stringliteral">&quot;, ack#=%&quot;</span> PRIu8 <span class="stringliteral">&quot;, seq=%&quot;</span> PRIu8 <span class="stringliteral">&quot;, recount=%&quot;</span> PRIu32 <span class="stringliteral">&quot;, ptr=%&quot;</span> PRIu32,</div>
+<div class="line"><a id="l00625" name="l00625"></a><span class="lineno">  625</span>              <span class="stringliteral">&quot;TX frame: state=%&quot;</span> PRIu32 <span class="stringliteral">&quot; server=%d size=%&quot;</span> PRIu32 <span class="stringliteral">&quot; syn=%d ack=%d nul=%d&quot;</span></div>
+<div class="line"><a id="l00626" name="l00626"></a><span class="lineno">  626</span>              <span class="stringliteral">&quot;, bsy=%d, rst=%d, ack#=%&quot;</span> PRIu8 <span class="stringliteral">&quot;, seq=%&quot;</span> PRIu8 <span class="stringliteral">&quot;, recount=%&quot;</span> PRIu32 <span class="stringliteral">&quot;, ptr=%p&quot;</span>,</div>
 <div class="line"><a id="l00627" name="l00627"></a><span class="lineno">  627</span>              state_,</div>
 <div class="line"><a id="l00628" name="l00628"></a><span class="lineno">  628</span>              server_,</div>
 <div class="line"><a id="l00629" name="l00629"></a><span class="lineno">  629</span>              head-&gt;getFrame()-&gt;getPayload(),</div>
@@ -768,8 +768,8 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00634" name="l00634"></a><span class="lineno">  634</span>              head-&gt;rst,</div>
 <div class="line"><a id="l00635" name="l00635"></a><span class="lineno">  635</span>              head-&gt;acknowledge,</div>
 <div class="line"><a id="l00636" name="l00636"></a><span class="lineno">  636</span>              head-&gt;sequence,</div>
-<div class="line"><a id="l00637" name="l00637"></a><span class="lineno">  637</span>              retranCount_,</div>
-<div class="line"><a id="l00638" name="l00638"></a><span class="lineno">  638</span>              head-&gt;getFrame().get());</div>
+<div class="line"><a id="l00637" name="l00637"></a><span class="lineno">  637</span>              retranCount_.load(),</div>
+<div class="line"><a id="l00638" name="l00638"></a><span class="lineno">  638</span>              <span class="keyword">static_cast&lt;</span><span class="keywordtype">void</span>*<span class="keyword">&gt;</span>(head-&gt;getFrame().get()));</div>
 <div class="line"><a id="l00639" name="l00639"></a><span class="lineno">  639</span> </div>
 <div class="line"><a id="l00640" name="l00640"></a><span class="lineno">  640</span>    flock-&gt;unlock();</div>
 <div class="line"><a id="l00641" name="l00641"></a><span class="lineno">  641</span>    lock.unlock();</div>
@@ -806,8 +806,8 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00672" name="l00672"></a><span class="lineno">  672</span>    gettimeofday(&amp;txTime_, NULL);</div>
 <div class="line"><a id="l00673" name="l00673"></a><span class="lineno">  673</span> </div>
 <div class="line"><a id="l00674" name="l00674"></a><span class="lineno">  674</span>    log_-&gt;log(<a class="code hl_variable" href="classrogue_1_1Logging.html#adba5171ba919a7e011cdb080431f4df2">rogue::Logging::Warning</a>,</div>
-<div class="line"><a id="l00675" name="l00675"></a><span class="lineno">  675</span>              <span class="stringliteral">&quot;Retran frame: state=%&quot;</span> PRIu8 <span class="stringliteral">&quot; server=%&quot;</span> PRIu8 <span class="stringliteral">&quot; size=%&quot;</span> PRIu32 <span class="stringliteral">&quot; syn=%&quot;</span> PRIu8 <span class="stringliteral">&quot; ack=%&quot;</span> PRIu8</div>
-<div class="line"><a id="l00676" name="l00676"></a><span class="lineno">  676</span>              <span class="stringliteral">&quot; nul=%&quot;</span> PRIu8 <span class="stringliteral">&quot;, rst=%&quot;</span> PRIu8 <span class="stringliteral">&quot;, ack#=%&quot;</span> PRIu8 <span class="stringliteral">&quot;, seq=%&quot;</span> PRIu8 <span class="stringliteral">&quot;, recount=%&quot;</span> PRIu32 <span class="stringliteral">&quot;, ptr=%&quot;</span> PRIu8,</div>
+<div class="line"><a id="l00675" name="l00675"></a><span class="lineno">  675</span>              <span class="stringliteral">&quot;Retran frame: state=%&quot;</span> PRIu32 <span class="stringliteral">&quot; server=%d size=%&quot;</span> PRIu32 <span class="stringliteral">&quot; syn=%d ack=%d&quot;</span></div>
+<div class="line"><a id="l00676" name="l00676"></a><span class="lineno">  676</span>              <span class="stringliteral">&quot; nul=%d, rst=%d, ack#=%&quot;</span> PRIu8 <span class="stringliteral">&quot;, seq=%&quot;</span> PRIu8 <span class="stringliteral">&quot;, recount=%&quot;</span> PRIu32 <span class="stringliteral">&quot;, ptr=%p&quot;</span>,</div>
 <div class="line"><a id="l00677" name="l00677"></a><span class="lineno">  677</span>              state_,</div>
 <div class="line"><a id="l00678" name="l00678"></a><span class="lineno">  678</span>              server_,</div>
 <div class="line"><a id="l00679" name="l00679"></a><span class="lineno">  679</span>              head-&gt;getFrame()-&gt;getPayload(),</div>
@@ -817,8 +817,8 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00683" name="l00683"></a><span class="lineno">  683</span>              head-&gt;rst,</div>
 <div class="line"><a id="l00684" name="l00684"></a><span class="lineno">  684</span>              head-&gt;acknowledge,</div>
 <div class="line"><a id="l00685" name="l00685"></a><span class="lineno">  685</span>              head-&gt;sequence,</div>
-<div class="line"><a id="l00686" name="l00686"></a><span class="lineno">  686</span>              retranCount_,</div>
-<div class="line"><a id="l00687" name="l00687"></a><span class="lineno">  687</span>              head-&gt;getFrame().get());</div>
+<div class="line"><a id="l00686" name="l00686"></a><span class="lineno">  686</span>              retranCount_.load(),</div>
+<div class="line"><a id="l00687" name="l00687"></a><span class="lineno">  687</span>              <span class="keyword">static_cast&lt;</span><span class="keywordtype">void</span>*<span class="keyword">&gt;</span>(head-&gt;getFrame().get()));</div>
 <div class="line"><a id="l00688" name="l00688"></a><span class="lineno">  688</span> </div>
 <div class="line"><a id="l00689" name="l00689"></a><span class="lineno">  689</span>    <a class="code hl_typedef" href="namespacerogue_1_1interfaces_1_1stream.html#ad282a6c7aa64c4607580c16125f88308">ris::FrameLockPtr</a> flock = head-&gt;getFrame()-&gt;lock();</div>
 <div class="line"><a id="l00690" name="l00690"></a><span class="lineno">  690</span>    head-&gt;update();</div>
@@ -907,7 +907,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00777" name="l00777"></a><span class="lineno">  777</span>        <span class="comment">// Reset</span></div>
 <div class="line"><a id="l00778" name="l00778"></a><span class="lineno">  778</span>        <span class="keywordflow">if</span> (head-&gt;rst) {</div>
 <div class="line"><a id="l00779" name="l00779"></a><span class="lineno">  779</span>            state_ = StClosed;</div>
-<div class="line"><a id="l00780" name="l00780"></a><span class="lineno">  780</span>            log_-&gt;warning(<span class="stringliteral">&quot;Closing link after reset request. Server=%&quot;</span> PRIu8, server_);</div>
+<div class="line"><a id="l00780" name="l00780"></a><span class="lineno">  780</span>            log_-&gt;warning(<span class="stringliteral">&quot;Closing link after reset request. Server=%d&quot;</span>, server_);</div>
 <div class="line"><a id="l00781" name="l00781"></a><span class="lineno">  781</span> </div>
 <div class="line"><a id="l00782" name="l00782"></a><span class="lineno">  782</span>            <span class="comment">// Syn ack</span></div>
 <div class="line"><a id="l00783" name="l00783"></a><span class="lineno">  783</span>        } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (head-&gt;syn &amp;&amp; (head-&gt;ack || server_)) {</div>
@@ -977,137 +977,132 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00847" name="l00847"></a><span class="lineno">  847</span>}</div>
 <div class="line"><a id="l00848" name="l00848"></a><span class="lineno">  848</span> </div>
 <div class="line"><a id="l00850" name="l00850"></a><span class="lineno">  850</span><span class="keyword">struct </span>timeval&amp; rpr::Controller::stateSendSynAck() {</div>
-<div class="line"><a id="l00851" name="l00851"></a><span class="lineno">  851</span>    uint32_t x;</div>
-<div class="line"><a id="l00852" name="l00852"></a><span class="lineno">  852</span> </div>
-<div class="line"><a id="l00853" name="l00853"></a><span class="lineno">  853</span>    <span class="comment">// Allocate frame</span></div>
-<div class="line"><a id="l00854" name="l00854"></a><span class="lineno">  854</span>    <a class="code hl_typedef" href="namespacerogue_1_1protocols_1_1rssi.html#a7c40e2fe0bc2c102751b8ba7d92e061e">rpr::HeaderPtr</a> head = rpr::Header::create(tran_-&gt;reqFrame(rpr::Header::SynSize, <span class="keyword">false</span>));</div>
-<div class="line"><a id="l00855" name="l00855"></a><span class="lineno">  855</span> </div>
-<div class="line"><a id="l00856" name="l00856"></a><span class="lineno">  856</span>    <span class="comment">// Set frame</span></div>
-<div class="line"><a id="l00857" name="l00857"></a><span class="lineno">  857</span>    head-&gt;syn                    = <span class="keyword">true</span>;</div>
-<div class="line"><a id="l00858" name="l00858"></a><span class="lineno">  858</span>    head-&gt;ack                    = <span class="keyword">true</span>;</div>
-<div class="line"><a id="l00859" name="l00859"></a><span class="lineno">  859</span>    head-&gt;version                = Version;</div>
-<div class="line"><a id="l00860" name="l00860"></a><span class="lineno">  860</span>    head-&gt;chk                    = <span class="keyword">true</span>;</div>
-<div class="line"><a id="l00861" name="l00861"></a><span class="lineno">  861</span>    head-&gt;maxOutstandingSegments = curMaxBuffers_;</div>
-<div class="line"><a id="l00862" name="l00862"></a><span class="lineno">  862</span>    head-&gt;maxSegmentSize         = curMaxSegment_;</div>
-<div class="line"><a id="l00863" name="l00863"></a><span class="lineno">  863</span>    head-&gt;retransmissionTimeout  = curRetranTout_;</div>
-<div class="line"><a id="l00864" name="l00864"></a><span class="lineno">  864</span>    head-&gt;cumulativeAckTimeout   = curCumAckTout_;</div>
-<div class="line"><a id="l00865" name="l00865"></a><span class="lineno">  865</span>    head-&gt;nullTimeout            = curNullTout_;</div>
-<div class="line"><a id="l00866" name="l00866"></a><span class="lineno">  866</span>    head-&gt;maxRetransmissions     = curMaxRetran_;</div>
-<div class="line"><a id="l00867" name="l00867"></a><span class="lineno">  867</span>    head-&gt;maxCumulativeAck       = curMaxCumAck_;</div>
-<div class="line"><a id="l00868" name="l00868"></a><span class="lineno">  868</span>    head-&gt;timeoutUnit            = TimeoutUnit;</div>
-<div class="line"><a id="l00869" name="l00869"></a><span class="lineno">  869</span>    head-&gt;connectionId           = locConnId_;</div>
+<div class="line"><a id="l00851" name="l00851"></a><span class="lineno">  851</span>    <span class="comment">// Allocate frame</span></div>
+<div class="line"><a id="l00852" name="l00852"></a><span class="lineno">  852</span>    <a class="code hl_typedef" href="namespacerogue_1_1protocols_1_1rssi.html#a7c40e2fe0bc2c102751b8ba7d92e061e">rpr::HeaderPtr</a> head = rpr::Header::create(tran_-&gt;reqFrame(rpr::Header::SynSize, <span class="keyword">false</span>));</div>
+<div class="line"><a id="l00853" name="l00853"></a><span class="lineno">  853</span> </div>
+<div class="line"><a id="l00854" name="l00854"></a><span class="lineno">  854</span>    <span class="comment">// Set frame</span></div>
+<div class="line"><a id="l00855" name="l00855"></a><span class="lineno">  855</span>    head-&gt;syn                    = <span class="keyword">true</span>;</div>
+<div class="line"><a id="l00856" name="l00856"></a><span class="lineno">  856</span>    head-&gt;ack                    = <span class="keyword">true</span>;</div>
+<div class="line"><a id="l00857" name="l00857"></a><span class="lineno">  857</span>    head-&gt;version                = Version;</div>
+<div class="line"><a id="l00858" name="l00858"></a><span class="lineno">  858</span>    head-&gt;chk                    = <span class="keyword">true</span>;</div>
+<div class="line"><a id="l00859" name="l00859"></a><span class="lineno">  859</span>    head-&gt;maxOutstandingSegments = curMaxBuffers_;</div>
+<div class="line"><a id="l00860" name="l00860"></a><span class="lineno">  860</span>    head-&gt;maxSegmentSize         = curMaxSegment_;</div>
+<div class="line"><a id="l00861" name="l00861"></a><span class="lineno">  861</span>    head-&gt;retransmissionTimeout  = curRetranTout_;</div>
+<div class="line"><a id="l00862" name="l00862"></a><span class="lineno">  862</span>    head-&gt;cumulativeAckTimeout   = curCumAckTout_;</div>
+<div class="line"><a id="l00863" name="l00863"></a><span class="lineno">  863</span>    head-&gt;nullTimeout            = curNullTout_;</div>
+<div class="line"><a id="l00864" name="l00864"></a><span class="lineno">  864</span>    head-&gt;maxRetransmissions     = curMaxRetran_;</div>
+<div class="line"><a id="l00865" name="l00865"></a><span class="lineno">  865</span>    head-&gt;maxCumulativeAck       = curMaxCumAck_;</div>
+<div class="line"><a id="l00866" name="l00866"></a><span class="lineno">  866</span>    head-&gt;timeoutUnit            = TimeoutUnit;</div>
+<div class="line"><a id="l00867" name="l00867"></a><span class="lineno">  867</span>    head-&gt;connectionId           = locConnId_;</div>
+<div class="line"><a id="l00868" name="l00868"></a><span class="lineno">  868</span> </div>
+<div class="line"><a id="l00869" name="l00869"></a><span class="lineno">  869</span>    transportTx(head, <span class="keyword">true</span>, <span class="keyword">true</span>);</div>
 <div class="line"><a id="l00870" name="l00870"></a><span class="lineno">  870</span> </div>
-<div class="line"><a id="l00871" name="l00871"></a><span class="lineno">  871</span>    transportTx(head, <span class="keyword">true</span>, <span class="keyword">true</span>);</div>
-<div class="line"><a id="l00872" name="l00872"></a><span class="lineno">  872</span> </div>
-<div class="line"><a id="l00873" name="l00873"></a><span class="lineno">  873</span>    <span class="comment">// Update state</span></div>
-<div class="line"><a id="l00874" name="l00874"></a><span class="lineno">  874</span>    log_-&gt;info(<span class="stringliteral">&quot;Link state is open. Server=%&quot;</span> PRIu8, server_);</div>
-<div class="line"><a id="l00875" name="l00875"></a><span class="lineno">  875</span>    state_ = StOpen;</div>
-<div class="line"><a id="l00876" name="l00876"></a><span class="lineno">  876</span>    <span class="keywordflow">return</span> (cumAckToutD2_);</div>
-<div class="line"><a id="l00877" name="l00877"></a><span class="lineno">  877</span>}</div>
-<div class="line"><a id="l00878" name="l00878"></a><span class="lineno">  878</span> </div>
-<div class="line"><a id="l00880" name="l00880"></a><span class="lineno">  880</span><span class="keyword">struct </span>timeval&amp; rpr::Controller::stateSendSeqAck() {</div>
-<div class="line"><a id="l00881" name="l00881"></a><span class="lineno">  881</span>    uint32_t x;</div>
-<div class="line"><a id="l00882" name="l00882"></a><span class="lineno">  882</span> </div>
-<div class="line"><a id="l00883" name="l00883"></a><span class="lineno">  883</span>    <span class="comment">// Allocate frame</span></div>
-<div class="line"><a id="l00884" name="l00884"></a><span class="lineno">  884</span>    <a class="code hl_typedef" href="namespacerogue_1_1protocols_1_1rssi.html#a7c40e2fe0bc2c102751b8ba7d92e061e">rpr::HeaderPtr</a> ack = rpr::Header::create(tran_-&gt;reqFrame(rpr::Header::HeaderSize, <span class="keyword">false</span>));</div>
-<div class="line"><a id="l00885" name="l00885"></a><span class="lineno">  885</span> </div>
-<div class="line"><a id="l00886" name="l00886"></a><span class="lineno">  886</span>    <span class="comment">// Setup frame</span></div>
-<div class="line"><a id="l00887" name="l00887"></a><span class="lineno">  887</span>    ack-&gt;ack  = <span class="keyword">true</span>;</div>
-<div class="line"><a id="l00888" name="l00888"></a><span class="lineno">  888</span>    ack-&gt;nul  = <span class="keyword">false</span>;</div>
-<div class="line"><a id="l00889" name="l00889"></a><span class="lineno">  889</span>    ackSeqRx_ = lastSeqRx_;</div>
-<div class="line"><a id="l00890" name="l00890"></a><span class="lineno">  890</span> </div>
-<div class="line"><a id="l00891" name="l00891"></a><span class="lineno">  891</span>    transportTx(ack, <span class="keyword">false</span>, <span class="keyword">true</span>);</div>
-<div class="line"><a id="l00892" name="l00892"></a><span class="lineno">  892</span> </div>
-<div class="line"><a id="l00893" name="l00893"></a><span class="lineno">  893</span>    <span class="comment">// Update state</span></div>
-<div class="line"><a id="l00894" name="l00894"></a><span class="lineno">  894</span>    state_ = StOpen;</div>
-<div class="line"><a id="l00895" name="l00895"></a><span class="lineno">  895</span>    log_-&gt;info(<span class="stringliteral">&quot;Link state is open. Server=%&quot;</span> PRIu8, server_);</div>
-<div class="line"><a id="l00896" name="l00896"></a><span class="lineno">  896</span>    <span class="keywordflow">return</span> (cumAckToutD2_);</div>
-<div class="line"><a id="l00897" name="l00897"></a><span class="lineno">  897</span>}</div>
-<div class="line"><a id="l00898" name="l00898"></a><span class="lineno">  898</span> </div>
-<div class="line"><a id="l00900" name="l00900"></a><span class="lineno">  900</span><span class="keyword">struct </span>timeval&amp; rpr::Controller::stateOpen() {</div>
-<div class="line"><a id="l00901" name="l00901"></a><span class="lineno">  901</span>    <a class="code hl_typedef" href="namespacerogue_1_1protocols_1_1rssi.html#a7c40e2fe0bc2c102751b8ba7d92e061e">rpr::HeaderPtr</a> head;</div>
-<div class="line"><a id="l00902" name="l00902"></a><span class="lineno">  902</span>    uint8_t idx;</div>
-<div class="line"><a id="l00903" name="l00903"></a><span class="lineno">  903</span>    <span class="keywordtype">bool</span> doNull;</div>
-<div class="line"><a id="l00904" name="l00904"></a><span class="lineno">  904</span>    uint8_t ackPend;</div>
-<div class="line"><a id="l00905" name="l00905"></a><span class="lineno">  905</span>    <span class="keyword">struct </span>timeval locTime;</div>
+<div class="line"><a id="l00871" name="l00871"></a><span class="lineno">  871</span>    <span class="comment">// Update state</span></div>
+<div class="line"><a id="l00872" name="l00872"></a><span class="lineno">  872</span>    log_-&gt;info(<span class="stringliteral">&quot;Link state is open. Server=%d&quot;</span>, server_);</div>
+<div class="line"><a id="l00873" name="l00873"></a><span class="lineno">  873</span>    state_ = StOpen;</div>
+<div class="line"><a id="l00874" name="l00874"></a><span class="lineno">  874</span>    <span class="keywordflow">return</span> (cumAckToutD2_);</div>
+<div class="line"><a id="l00875" name="l00875"></a><span class="lineno">  875</span>}</div>
+<div class="line"><a id="l00876" name="l00876"></a><span class="lineno">  876</span> </div>
+<div class="line"><a id="l00878" name="l00878"></a><span class="lineno">  878</span><span class="keyword">struct </span>timeval&amp; rpr::Controller::stateSendSeqAck() {</div>
+<div class="line"><a id="l00879" name="l00879"></a><span class="lineno">  879</span>    <span class="comment">// Allocate frame</span></div>
+<div class="line"><a id="l00880" name="l00880"></a><span class="lineno">  880</span>    <a class="code hl_typedef" href="namespacerogue_1_1protocols_1_1rssi.html#a7c40e2fe0bc2c102751b8ba7d92e061e">rpr::HeaderPtr</a> ack = rpr::Header::create(tran_-&gt;reqFrame(rpr::Header::HeaderSize, <span class="keyword">false</span>));</div>
+<div class="line"><a id="l00881" name="l00881"></a><span class="lineno">  881</span> </div>
+<div class="line"><a id="l00882" name="l00882"></a><span class="lineno">  882</span>    <span class="comment">// Setup frame</span></div>
+<div class="line"><a id="l00883" name="l00883"></a><span class="lineno">  883</span>    ack-&gt;ack  = <span class="keyword">true</span>;</div>
+<div class="line"><a id="l00884" name="l00884"></a><span class="lineno">  884</span>    ack-&gt;nul  = <span class="keyword">false</span>;</div>
+<div class="line"><a id="l00885" name="l00885"></a><span class="lineno">  885</span>    ackSeqRx_ = lastSeqRx_;</div>
+<div class="line"><a id="l00886" name="l00886"></a><span class="lineno">  886</span> </div>
+<div class="line"><a id="l00887" name="l00887"></a><span class="lineno">  887</span>    transportTx(ack, <span class="keyword">false</span>, <span class="keyword">true</span>);</div>
+<div class="line"><a id="l00888" name="l00888"></a><span class="lineno">  888</span> </div>
+<div class="line"><a id="l00889" name="l00889"></a><span class="lineno">  889</span>    <span class="comment">// Update state</span></div>
+<div class="line"><a id="l00890" name="l00890"></a><span class="lineno">  890</span>    state_ = StOpen;</div>
+<div class="line"><a id="l00891" name="l00891"></a><span class="lineno">  891</span>    log_-&gt;info(<span class="stringliteral">&quot;Link state is open. Server=%d&quot;</span>, server_);</div>
+<div class="line"><a id="l00892" name="l00892"></a><span class="lineno">  892</span>    <span class="keywordflow">return</span> (cumAckToutD2_);</div>
+<div class="line"><a id="l00893" name="l00893"></a><span class="lineno">  893</span>}</div>
+<div class="line"><a id="l00894" name="l00894"></a><span class="lineno">  894</span> </div>
+<div class="line"><a id="l00896" name="l00896"></a><span class="lineno">  896</span><span class="keyword">struct </span>timeval&amp; rpr::Controller::stateOpen() {</div>
+<div class="line"><a id="l00897" name="l00897"></a><span class="lineno">  897</span>    <a class="code hl_typedef" href="namespacerogue_1_1protocols_1_1rssi.html#a7c40e2fe0bc2c102751b8ba7d92e061e">rpr::HeaderPtr</a> head;</div>
+<div class="line"><a id="l00898" name="l00898"></a><span class="lineno">  898</span>    uint8_t idx;</div>
+<div class="line"><a id="l00899" name="l00899"></a><span class="lineno">  899</span>    <span class="keywordtype">bool</span> doNull;</div>
+<div class="line"><a id="l00900" name="l00900"></a><span class="lineno">  900</span>    uint8_t ackPend;</div>
+<div class="line"><a id="l00901" name="l00901"></a><span class="lineno">  901</span>    <span class="keyword">struct </span>timeval locTime;</div>
+<div class="line"><a id="l00902" name="l00902"></a><span class="lineno">  902</span> </div>
+<div class="line"><a id="l00903" name="l00903"></a><span class="lineno">  903</span>    <span class="comment">// Pending frame may be reset</span></div>
+<div class="line"><a id="l00904" name="l00904"></a><span class="lineno">  904</span>    <span class="keywordflow">while</span> (!stQueue_.empty()) {</div>
+<div class="line"><a id="l00905" name="l00905"></a><span class="lineno">  905</span>        head = stQueue_.pop();</div>
 <div class="line"><a id="l00906" name="l00906"></a><span class="lineno">  906</span> </div>
-<div class="line"><a id="l00907" name="l00907"></a><span class="lineno">  907</span>    <span class="comment">// Pending frame may be reset</span></div>
-<div class="line"><a id="l00908" name="l00908"></a><span class="lineno">  908</span>    <span class="keywordflow">while</span> (!stQueue_.empty()) {</div>
-<div class="line"><a id="l00909" name="l00909"></a><span class="lineno">  909</span>        head = stQueue_.pop();</div>
-<div class="line"><a id="l00910" name="l00910"></a><span class="lineno">  910</span> </div>
-<div class="line"><a id="l00911" name="l00911"></a><span class="lineno">  911</span>        <span class="comment">// Reset or syn without ack is an error</span></div>
-<div class="line"><a id="l00912" name="l00912"></a><span class="lineno">  912</span>        <span class="keywordflow">if</span> ((head-&gt;rst) || (head-&gt;syn &amp;&amp; (!head-&gt;ack))) {</div>
-<div class="line"><a id="l00913" name="l00913"></a><span class="lineno">  913</span>            state_ = StError;</div>
-<div class="line"><a id="l00914" name="l00914"></a><span class="lineno">  914</span>            gettimeofday(&amp;stTime_, NULL);</div>
-<div class="line"><a id="l00915" name="l00915"></a><span class="lineno">  915</span>            <span class="keywordflow">return</span> (zeroTme_);</div>
-<div class="line"><a id="l00916" name="l00916"></a><span class="lineno">  916</span>        }</div>
-<div class="line"><a id="l00917" name="l00917"></a><span class="lineno">  917</span>    }</div>
-<div class="line"><a id="l00918" name="l00918"></a><span class="lineno">  918</span> </div>
-<div class="line"><a id="l00919" name="l00919"></a><span class="lineno">  919</span>    <span class="comment">// Sample transmit time and compute pending ack count under lock</span></div>
-<div class="line"><a id="l00920" name="l00920"></a><span class="lineno">  920</span>    {</div>
-<div class="line"><a id="l00921" name="l00921"></a><span class="lineno">  921</span>        std::unique_lock&lt;std::mutex&gt; lock(txMtx_);</div>
-<div class="line"><a id="l00922" name="l00922"></a><span class="lineno">  922</span>        locTime = txTime_;</div>
-<div class="line"><a id="l00923" name="l00923"></a><span class="lineno">  923</span>        ackPend = ackSeqRx_ - lastAckTx_;</div>
-<div class="line"><a id="l00924" name="l00924"></a><span class="lineno">  924</span>    }</div>
-<div class="line"><a id="l00925" name="l00925"></a><span class="lineno">  925</span> </div>
-<div class="line"><a id="l00926" name="l00926"></a><span class="lineno">  926</span>    <span class="comment">// NULL required</span></div>
-<div class="line"><a id="l00927" name="l00927"></a><span class="lineno">  927</span>    <span class="keywordflow">if</span> (timePassed(locTime, nullToutD3_))</div>
-<div class="line"><a id="l00928" name="l00928"></a><span class="lineno">  928</span>        doNull = <span class="keyword">true</span>;</div>
-<div class="line"><a id="l00929" name="l00929"></a><span class="lineno">  929</span>    <span class="keywordflow">else</span></div>
-<div class="line"><a id="l00930" name="l00930"></a><span class="lineno">  930</span>        doNull = <span class="keyword">false</span>;</div>
-<div class="line"><a id="l00931" name="l00931"></a><span class="lineno">  931</span> </div>
-<div class="line"><a id="l00932" name="l00932"></a><span class="lineno">  932</span>    <span class="comment">// Outbound frame required</span></div>
-<div class="line"><a id="l00933" name="l00933"></a><span class="lineno">  933</span>    <span class="keywordflow">if</span> ((doNull || ((!getLocBusy()) &amp;&amp; ackPend &gt;= curMaxCumAck_) ||</div>
-<div class="line"><a id="l00934" name="l00934"></a><span class="lineno">  934</span>         ((ackPend &gt; 0 || getLocBusy()) &amp;&amp; timePassed(locTime, cumAckToutD1_)))) {</div>
-<div class="line"><a id="l00935" name="l00935"></a><span class="lineno">  935</span>        head      = rpr::Header::create(tran_-&gt;reqFrame(rpr::Header::HeaderSize, <span class="keyword">false</span>));</div>
-<div class="line"><a id="l00936" name="l00936"></a><span class="lineno">  936</span>        head-&gt;ack = <span class="keyword">true</span>;</div>
-<div class="line"><a id="l00937" name="l00937"></a><span class="lineno">  937</span>        head-&gt;nul = doNull;</div>
-<div class="line"><a id="l00938" name="l00938"></a><span class="lineno">  938</span>        transportTx(head, doNull, <span class="keyword">false</span>);</div>
-<div class="line"><a id="l00939" name="l00939"></a><span class="lineno">  939</span>    }</div>
-<div class="line"><a id="l00940" name="l00940"></a><span class="lineno">  940</span> </div>
-<div class="line"><a id="l00941" name="l00941"></a><span class="lineno">  941</span>    <span class="comment">// Retransmission processing, don&#39;t process when busy</span></div>
-<div class="line"><a id="l00942" name="l00942"></a><span class="lineno">  942</span>    idx = lastAckRx_;</div>
-<div class="line"><a id="l00943" name="l00943"></a><span class="lineno">  943</span>    <span class="keywordflow">while</span> ((!remBusy_) &amp;&amp; (idx != locSequence_)) {</div>
-<div class="line"><a id="l00944" name="l00944"></a><span class="lineno">  944</span>        <span class="keywordflow">if</span> (retransmit(idx++) &lt; 0) {</div>
-<div class="line"><a id="l00945" name="l00945"></a><span class="lineno">  945</span>            state_ = StError;</div>
-<div class="line"><a id="l00946" name="l00946"></a><span class="lineno">  946</span>            gettimeofday(&amp;stTime_, NULL);</div>
-<div class="line"><a id="l00947" name="l00947"></a><span class="lineno">  947</span>            <span class="keywordflow">return</span> (zeroTme_);</div>
-<div class="line"><a id="l00948" name="l00948"></a><span class="lineno">  948</span>        }</div>
-<div class="line"><a id="l00949" name="l00949"></a><span class="lineno">  949</span>    }</div>
-<div class="line"><a id="l00950" name="l00950"></a><span class="lineno">  950</span> </div>
-<div class="line"><a id="l00951" name="l00951"></a><span class="lineno">  951</span>    <span class="keywordflow">return</span> (cumAckToutD2_);</div>
-<div class="line"><a id="l00952" name="l00952"></a><span class="lineno">  952</span>}</div>
+<div class="line"><a id="l00907" name="l00907"></a><span class="lineno">  907</span>        <span class="comment">// Reset or syn without ack is an error</span></div>
+<div class="line"><a id="l00908" name="l00908"></a><span class="lineno">  908</span>        <span class="keywordflow">if</span> ((head-&gt;rst) || (head-&gt;syn &amp;&amp; (!head-&gt;ack))) {</div>
+<div class="line"><a id="l00909" name="l00909"></a><span class="lineno">  909</span>            state_ = StError;</div>
+<div class="line"><a id="l00910" name="l00910"></a><span class="lineno">  910</span>            gettimeofday(&amp;stTime_, NULL);</div>
+<div class="line"><a id="l00911" name="l00911"></a><span class="lineno">  911</span>            <span class="keywordflow">return</span> (zeroTme_);</div>
+<div class="line"><a id="l00912" name="l00912"></a><span class="lineno">  912</span>        }</div>
+<div class="line"><a id="l00913" name="l00913"></a><span class="lineno">  913</span>    }</div>
+<div class="line"><a id="l00914" name="l00914"></a><span class="lineno">  914</span> </div>
+<div class="line"><a id="l00915" name="l00915"></a><span class="lineno">  915</span>    <span class="comment">// Sample transmit time and compute pending ack count under lock</span></div>
+<div class="line"><a id="l00916" name="l00916"></a><span class="lineno">  916</span>    {</div>
+<div class="line"><a id="l00917" name="l00917"></a><span class="lineno">  917</span>        std::unique_lock&lt;std::mutex&gt; lock(txMtx_);</div>
+<div class="line"><a id="l00918" name="l00918"></a><span class="lineno">  918</span>        locTime = txTime_;</div>
+<div class="line"><a id="l00919" name="l00919"></a><span class="lineno">  919</span>        ackPend = ackSeqRx_ - lastAckTx_;</div>
+<div class="line"><a id="l00920" name="l00920"></a><span class="lineno">  920</span>    }</div>
+<div class="line"><a id="l00921" name="l00921"></a><span class="lineno">  921</span> </div>
+<div class="line"><a id="l00922" name="l00922"></a><span class="lineno">  922</span>    <span class="comment">// NULL required</span></div>
+<div class="line"><a id="l00923" name="l00923"></a><span class="lineno">  923</span>    <span class="keywordflow">if</span> (timePassed(locTime, nullToutD3_))</div>
+<div class="line"><a id="l00924" name="l00924"></a><span class="lineno">  924</span>        doNull = <span class="keyword">true</span>;</div>
+<div class="line"><a id="l00925" name="l00925"></a><span class="lineno">  925</span>    <span class="keywordflow">else</span></div>
+<div class="line"><a id="l00926" name="l00926"></a><span class="lineno">  926</span>        doNull = <span class="keyword">false</span>;</div>
+<div class="line"><a id="l00927" name="l00927"></a><span class="lineno">  927</span> </div>
+<div class="line"><a id="l00928" name="l00928"></a><span class="lineno">  928</span>    <span class="comment">// Outbound frame required</span></div>
+<div class="line"><a id="l00929" name="l00929"></a><span class="lineno">  929</span>    <span class="keywordflow">if</span> ((doNull || ((!getLocBusy()) &amp;&amp; ackPend &gt;= curMaxCumAck_) ||</div>
+<div class="line"><a id="l00930" name="l00930"></a><span class="lineno">  930</span>         ((ackPend &gt; 0 || getLocBusy()) &amp;&amp; timePassed(locTime, cumAckToutD1_)))) {</div>
+<div class="line"><a id="l00931" name="l00931"></a><span class="lineno">  931</span>        head      = rpr::Header::create(tran_-&gt;reqFrame(rpr::Header::HeaderSize, <span class="keyword">false</span>));</div>
+<div class="line"><a id="l00932" name="l00932"></a><span class="lineno">  932</span>        head-&gt;ack = <span class="keyword">true</span>;</div>
+<div class="line"><a id="l00933" name="l00933"></a><span class="lineno">  933</span>        head-&gt;nul = doNull;</div>
+<div class="line"><a id="l00934" name="l00934"></a><span class="lineno">  934</span>        transportTx(head, doNull, <span class="keyword">false</span>);</div>
+<div class="line"><a id="l00935" name="l00935"></a><span class="lineno">  935</span>    }</div>
+<div class="line"><a id="l00936" name="l00936"></a><span class="lineno">  936</span> </div>
+<div class="line"><a id="l00937" name="l00937"></a><span class="lineno">  937</span>    <span class="comment">// Retransmission processing, don&#39;t process when busy</span></div>
+<div class="line"><a id="l00938" name="l00938"></a><span class="lineno">  938</span>    idx = lastAckRx_;</div>
+<div class="line"><a id="l00939" name="l00939"></a><span class="lineno">  939</span>    <span class="keywordflow">while</span> ((!remBusy_) &amp;&amp; (idx != locSequence_)) {</div>
+<div class="line"><a id="l00940" name="l00940"></a><span class="lineno">  940</span>        <span class="keywordflow">if</span> (retransmit(idx++) &lt; 0) {</div>
+<div class="line"><a id="l00941" name="l00941"></a><span class="lineno">  941</span>            state_ = StError;</div>
+<div class="line"><a id="l00942" name="l00942"></a><span class="lineno">  942</span>            gettimeofday(&amp;stTime_, NULL);</div>
+<div class="line"><a id="l00943" name="l00943"></a><span class="lineno">  943</span>            <span class="keywordflow">return</span> (zeroTme_);</div>
+<div class="line"><a id="l00944" name="l00944"></a><span class="lineno">  944</span>        }</div>
+<div class="line"><a id="l00945" name="l00945"></a><span class="lineno">  945</span>    }</div>
+<div class="line"><a id="l00946" name="l00946"></a><span class="lineno">  946</span> </div>
+<div class="line"><a id="l00947" name="l00947"></a><span class="lineno">  947</span>    <span class="keywordflow">return</span> (cumAckToutD2_);</div>
+<div class="line"><a id="l00948" name="l00948"></a><span class="lineno">  948</span>}</div>
+<div class="line"><a id="l00949" name="l00949"></a><span class="lineno">  949</span> </div>
+<div class="line"><a id="l00951" name="l00951"></a><span class="lineno">  951</span><span class="keyword">struct </span>timeval&amp; rpr::Controller::stateError() {</div>
+<div class="line"><a id="l00952" name="l00952"></a><span class="lineno">  952</span>    <a class="code hl_typedef" href="namespacerogue_1_1protocols_1_1rssi.html#a7c40e2fe0bc2c102751b8ba7d92e061e">rpr::HeaderPtr</a> rst;</div>
 <div class="line"><a id="l00953" name="l00953"></a><span class="lineno">  953</span> </div>
-<div class="line"><a id="l00955" name="l00955"></a><span class="lineno">  955</span><span class="keyword">struct </span>timeval&amp; rpr::Controller::stateError() {</div>
-<div class="line"><a id="l00956" name="l00956"></a><span class="lineno">  956</span>    <a class="code hl_typedef" href="namespacerogue_1_1protocols_1_1rssi.html#a7c40e2fe0bc2c102751b8ba7d92e061e">rpr::HeaderPtr</a> rst;</div>
-<div class="line"><a id="l00957" name="l00957"></a><span class="lineno">  957</span>    uint32_t x;</div>
+<div class="line"><a id="l00954" name="l00954"></a><span class="lineno">  954</span>    log_-&gt;warning(<span class="stringliteral">&quot;Entering reset state. Server=%d&quot;</span>, server_);</div>
+<div class="line"><a id="l00955" name="l00955"></a><span class="lineno">  955</span> </div>
+<div class="line"><a id="l00956" name="l00956"></a><span class="lineno">  956</span>    rst      = rpr::Header::create(tran_-&gt;reqFrame(rpr::Header::HeaderSize, <span class="keyword">false</span>));</div>
+<div class="line"><a id="l00957" name="l00957"></a><span class="lineno">  957</span>    rst-&gt;rst = <span class="keyword">true</span>;</div>
 <div class="line"><a id="l00958" name="l00958"></a><span class="lineno">  958</span> </div>
-<div class="line"><a id="l00959" name="l00959"></a><span class="lineno">  959</span>    log_-&gt;warning(<span class="stringliteral">&quot;Entering reset state. Server=%&quot;</span> PRIu8, server_);</div>
+<div class="line"><a id="l00959" name="l00959"></a><span class="lineno">  959</span>    transportTx(rst, <span class="keyword">true</span>, <span class="keyword">true</span>);</div>
 <div class="line"><a id="l00960" name="l00960"></a><span class="lineno">  960</span> </div>
-<div class="line"><a id="l00961" name="l00961"></a><span class="lineno">  961</span>    rst      = rpr::Header::create(tran_-&gt;reqFrame(rpr::Header::HeaderSize, <span class="keyword">false</span>));</div>
-<div class="line"><a id="l00962" name="l00962"></a><span class="lineno">  962</span>    rst-&gt;rst = <span class="keyword">true</span>;</div>
-<div class="line"><a id="l00963" name="l00963"></a><span class="lineno">  963</span> </div>
-<div class="line"><a id="l00964" name="l00964"></a><span class="lineno">  964</span>    transportTx(rst, <span class="keyword">true</span>, <span class="keyword">true</span>);</div>
-<div class="line"><a id="l00965" name="l00965"></a><span class="lineno">  965</span> </div>
-<div class="line"><a id="l00966" name="l00966"></a><span class="lineno">  966</span>    downCount_++;</div>
-<div class="line"><a id="l00967" name="l00967"></a><span class="lineno">  967</span>    log_-&gt;warning(<span class="stringliteral">&quot;Entering closed state after reset. Server=%&quot;</span> PRIu8, server_);</div>
-<div class="line"><a id="l00968" name="l00968"></a><span class="lineno">  968</span>    state_ = StClosed;</div>
+<div class="line"><a id="l00961" name="l00961"></a><span class="lineno">  961</span>    downCount_++;</div>
+<div class="line"><a id="l00962" name="l00962"></a><span class="lineno">  962</span>    log_-&gt;warning(<span class="stringliteral">&quot;Entering closed state after reset. Server=%d&quot;</span>, server_);</div>
+<div class="line"><a id="l00963" name="l00963"></a><span class="lineno">  963</span>    state_ = StClosed;</div>
+<div class="line"><a id="l00964" name="l00964"></a><span class="lineno">  964</span> </div>
+<div class="line"><a id="l00965" name="l00965"></a><span class="lineno">  965</span>    <span class="comment">// Reset queues</span></div>
+<div class="line"><a id="l00966" name="l00966"></a><span class="lineno">  966</span>    appQueue_.reset();</div>
+<div class="line"><a id="l00967" name="l00967"></a><span class="lineno">  967</span>    oooQueue_.clear();</div>
+<div class="line"><a id="l00968" name="l00968"></a><span class="lineno">  968</span>    stQueue_.reset();</div>
 <div class="line"><a id="l00969" name="l00969"></a><span class="lineno">  969</span> </div>
-<div class="line"><a id="l00970" name="l00970"></a><span class="lineno">  970</span>    <span class="comment">// Reset queues</span></div>
-<div class="line"><a id="l00971" name="l00971"></a><span class="lineno">  971</span>    appQueue_.reset();</div>
-<div class="line"><a id="l00972" name="l00972"></a><span class="lineno">  972</span>    oooQueue_.clear();</div>
-<div class="line"><a id="l00973" name="l00973"></a><span class="lineno">  973</span>    stQueue_.reset();</div>
-<div class="line"><a id="l00974" name="l00974"></a><span class="lineno">  974</span> </div>
-<div class="line"><a id="l00975" name="l00975"></a><span class="lineno">  975</span>    gettimeofday(&amp;stTime_, NULL);</div>
-<div class="line"><a id="l00976" name="l00976"></a><span class="lineno">  976</span>    <span class="keywordflow">return</span> (tryPeriodD1_);</div>
-<div class="line"><a id="l00977" name="l00977"></a><span class="lineno">  977</span>}</div>
-<div class="line"><a id="l00978" name="l00978"></a><span class="lineno">  978</span> </div>
-<div class="foldopen" id="foldopen00980" data-start="{" data-end="}">
-<div class="line"><a id="l00980" name="l00980"></a><span class="lineno"><a class="line" href="classrogue_1_1protocols_1_1rssi_1_1Controller.html#a98a4c4adbb72cd59bdf4f5c9e2b38d19">  980</a></span><span class="keywordtype">void</span> rpr::Controller::setTimeout(uint32_t timeout) {</div>
-<div class="line"><a id="l00981" name="l00981"></a><span class="lineno">  981</span>    div_t divResult  = div(timeout, 1000000);</div>
-<div class="line"><a id="l00982" name="l00982"></a><span class="lineno">  982</span>    timeout_.tv_sec  = divResult.quot;</div>
-<div class="line"><a id="l00983" name="l00983"></a><span class="lineno">  983</span>    timeout_.tv_usec = divResult.rem;</div>
-<div class="line"><a id="l00984" name="l00984"></a><span class="lineno">  984</span>}</div>
+<div class="line"><a id="l00970" name="l00970"></a><span class="lineno">  970</span>    gettimeofday(&amp;stTime_, NULL);</div>
+<div class="line"><a id="l00971" name="l00971"></a><span class="lineno">  971</span>    <span class="keywordflow">return</span> (tryPeriodD1_);</div>
+<div class="line"><a id="l00972" name="l00972"></a><span class="lineno">  972</span>}</div>
+<div class="line"><a id="l00973" name="l00973"></a><span class="lineno">  973</span> </div>
+<div class="foldopen" id="foldopen00975" data-start="{" data-end="}">
+<div class="line"><a id="l00975" name="l00975"></a><span class="lineno"><a class="line" href="classrogue_1_1protocols_1_1rssi_1_1Controller.html#a98a4c4adbb72cd59bdf4f5c9e2b38d19">  975</a></span><span class="keywordtype">void</span> rpr::Controller::setTimeout(uint32_t timeout) {</div>
+<div class="line"><a id="l00976" name="l00976"></a><span class="lineno">  976</span>    div_t divResult  = div(timeout, 1000000);</div>
+<div class="line"><a id="l00977" name="l00977"></a><span class="lineno">  977</span>    timeout_.tv_sec  = divResult.quot;</div>
+<div class="line"><a id="l00978" name="l00978"></a><span class="lineno">  978</span>    timeout_.tv_usec = divResult.rem;</div>
+<div class="line"><a id="l00979" name="l00979"></a><span class="lineno">  979</span>}</div>
 </div>
 <div class="ttc" id="aBuffer_8h_html"><div class="ttname"><a href="Buffer_8h.html">Buffer.h</a></div></div>
 <div class="ttc" id="aFrameLock_8h_html"><div class="ttname"><a href="FrameLock_8h.html">FrameLock.h</a></div></div>
@@ -1130,7 +1125,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="ttc" id="anamespacerogue_1_1protocols_1_1rssi_html_a12eea2c159254ef846e6d2ab740ceb02"><div class="ttname"><a href="namespacerogue_1_1protocols_1_1rssi.html#a12eea2c159254ef846e6d2ab740ceb02">rogue::protocols::rssi::TransportPtr</a></div><div class="ttdeci">std::shared_ptr&lt; rogue::protocols::rssi::Transport &gt; TransportPtr</div><div class="ttdef"><b>Definition</b> <a href="rssi_2Transport_8h_source.html#l00091">Transport.h:91</a></div></div>
 <div class="ttc" id="anamespacerogue_1_1protocols_1_1rssi_html_a3f35628c60465892f54a7653844e13ce"><div class="ttname"><a href="namespacerogue_1_1protocols_1_1rssi.html#a3f35628c60465892f54a7653844e13ce">rogue::protocols::rssi::ApplicationPtr</a></div><div class="ttdeci">std::shared_ptr&lt; rogue::protocols::rssi::Application &gt; ApplicationPtr</div><div class="ttdef"><b>Definition</b> <a href="rssi_2Application_8h_source.html#l00119">Application.h:119</a></div></div>
 <div class="ttc" id="anamespacerogue_1_1protocols_1_1rssi_html_a7c40e2fe0bc2c102751b8ba7d92e061e"><div class="ttname"><a href="namespacerogue_1_1protocols_1_1rssi.html#a7c40e2fe0bc2c102751b8ba7d92e061e">rogue::protocols::rssi::HeaderPtr</a></div><div class="ttdeci">std::shared_ptr&lt; rogue::protocols::rssi::Header &gt; HeaderPtr</div><div class="ttdef"><b>Definition</b> <a href="Header_8h_source.html#l00201">Header.h:201</a></div></div>
-<div class="ttc" id="anamespacerogue_1_1protocols_1_1rssi_html_ab9e572ed9e6f11586dbe0029d4c9aaae"><div class="ttname"><a href="namespacerogue_1_1protocols_1_1rssi.html#ab9e572ed9e6f11586dbe0029d4c9aaae">rogue::protocols::rssi::ControllerPtr</a></div><div class="ttdeci">std::shared_ptr&lt; rogue::protocols::rssi::Controller &gt; ControllerPtr</div><div class="ttdef"><b>Definition</b> <a href="rssi_2Controller_8h_source.html#l00448">Controller.h:448</a></div></div>
+<div class="ttc" id="anamespacerogue_1_1protocols_1_1rssi_html_ab9e572ed9e6f11586dbe0029d4c9aaae"><div class="ttname"><a href="namespacerogue_1_1protocols_1_1rssi.html#ab9e572ed9e6f11586dbe0029d4c9aaae">rogue::protocols::rssi::ControllerPtr</a></div><div class="ttdeci">std::shared_ptr&lt; rogue::protocols::rssi::Controller &gt; ControllerPtr</div><div class="ttdef"><b>Definition</b> <a href="rssi_2Controller_8h_source.html#l00449">Controller.h:449</a></div></div>
 <div class="ttc" id="anamespacerogue_html_ad9c9c8610f0fbf0677311aea1ee0b1b0"><div class="ttname"><a href="namespacerogue.html#ad9c9c8610f0fbf0677311aea1ee0b1b0">rogue::defaultTimeout</a></div><div class="ttdeci">void defaultTimeout(struct timeval &amp;tout)</div><div class="ttdoc">Returns Rogue default timeout as a timeval.</div><div class="ttdef"><b>Definition</b> <a href="Helpers_8h_source.html#l00049">Helpers.h:49</a></div></div>
 <div class="ttc" id="arssi_2Application_8h_html"><div class="ttname"><a href="rssi_2Application_8h.html">Application.h</a></div></div>
 <div class="ttc" id="arssi_2Controller_8h_html"><div class="ttname"><a href="rssi_2Controller_8h.html">Controller.h</a></div></div>
