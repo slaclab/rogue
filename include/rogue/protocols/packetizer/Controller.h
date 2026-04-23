@@ -20,6 +20,7 @@
 
 #include <stdint.h>
 
+#include <atomic>
 #include <memory>
 
 #include "rogue/Logging.h"
@@ -52,7 +53,7 @@ class Controller {
     uint32_t tranCount_[256];
     uint32_t crc_[256];
     uint8_t tranDest_;
-    uint32_t dropCount_;
+    std::atomic<uint32_t> dropCount_;
     uint32_t headSize_;
     uint32_t tailSize_;
     uint32_t alignSize_;

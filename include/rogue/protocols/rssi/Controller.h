@@ -20,6 +20,7 @@
 
 #include <stdint.h>
 
+#include <atomic>
 #include <map>
 #include <memory>
 
@@ -99,11 +100,11 @@ class Controller : public rogue::EnableSharedFromThis<rogue::protocols::rssi::Co
     bool server_;
 
     // Receive tracking
-    uint32_t dropCount_;
+    std::atomic<uint32_t> dropCount_;
     uint8_t nextSeqRx_;
     uint8_t lastAckRx_;
-    bool remBusy_;
-    bool locBusy_;
+    std::atomic<bool> remBusy_;
+    std::atomic<bool> locBusy_;
 
     // Application queue
     rogue::Queue<std::shared_ptr<rogue::protocols::rssi::Header>> appQueue_;
@@ -123,10 +124,10 @@ class Controller : public rogue::EnableSharedFromThis<rogue::protocols::rssi::Co
     std::mutex stMtx_;
     uint32_t state_;
     struct timeval stTime_;
-    uint32_t downCount_;
-    uint32_t retranCount_;
-    uint32_t locBusyCnt_;
-    uint32_t remBusyCnt_;
+    std::atomic<uint32_t> downCount_;
+    std::atomic<uint32_t> retranCount_;
+    std::atomic<uint32_t> locBusyCnt_;
+    std::atomic<uint32_t> remBusyCnt_;
     uint32_t locConnId_;
     uint32_t remConnId_;
 
@@ -149,7 +150,7 @@ class Controller : public rogue::EnableSharedFromThis<rogue::protocols::rssi::Co
 
     // State thread
     std::thread* thread_;
-    bool threadEn_;
+    std::atomic<bool> threadEn_;
 
     // Application frame transmit timeout
     struct timeval timeout_;
