@@ -1,0 +1,36 @@
+# TSan Suppression File for rogue
+# ----------------------------------------------------------------------------
+# Referenced by .github/workflows/ci-tsan.yml via TSAN_OPTIONS=suppressions=$GITHUB_WORKSPACE/tsan.supp
+# Format: <match-type>:<frame-or-lib-pattern>
+# Match-types used here: race (symbol-frame suppression), called_from_lib (whole-library suppression)
+#
+# POLICY (per .planning/phases/02-sanitizer-ci-infrastructure/02-CONTEXT.md):
+#   - Only CPython-internal, Boost.Python, libzmq, and glibc frames are pre-suppressed (D-09/D-10/D-11).
+#   - PyRogue-internal frames are NEVER pre-suppressed (D-12) — any PyRogue frame in a race
+#     report is a signal that Phase 3 triages.
+#
+# TODO(phase-3): Expand this seed with noise entries identified in Phase 3 triage of the
+# first ci-tsan.yml run (D-13; tracked in Plan 09).
+# ----------------------------------------------------------------------------
+
+# CPython GIL internals — GIL-protected; not a PyRogue bug (REPRO-03 required)
+race:PyEval_SaveThread
+race:PyGILState_Ensure
+race:Py_INCREF
+race:_PyObject_GC_
+
+# CPython allocator — arena management is GIL-protected; noisy on first run (D-11)
+race:_PyObject_Free
+race:_PyMem_Free
+race:pymalloc_
+
+# Boost.Python thread-state shim — benign wrapper noise (REPRO-03 required)
+race:boost::python::
+
+# glibc allocator and locale internals — benign libc-internal races (D-11)
+race:__libc_free
+race:__libc_malloc
+race:__GI___strftime_l
+
+# ZMQ internal atomics — third-party; not ours to fix (REPRO-03 required)
+called_from_lib:libzmq.so
