@@ -77,6 +77,7 @@ jobs:
           CXX: g++-13
           TSAN_OPTIONS: "suppressions=${{ github.workspace }}/tsan.supp history_size=7"
           ROGUE_STRESS_ITERS: ${{ inputs.stress_iters || '1000' }}
+          LD_PRELOAD: /usr/lib/x86_64-linux-gnu/libtsan.so.2
         run: |
           source build-tsan/setup_rogue.sh
           python -m pytest scripts/repro/ -n0 \
