@@ -61,6 +61,10 @@ rha::AxiMemMap::AxiMemMap(std::string path) : rim::Slave(4, 0xFFFFFFFF) {
 
     // Check driver version ( ApiVersion 0x05 (or less) is the 32-bit address version)
     if (dmaGetApiVersion(fd_) < 0x06) {
+        // fd leak on version-mismatch path: guarded because ci-asan.yml link-time issue
+        // prevented positive ASan evidence (HW-CORE-011; Phase 3 D-24)
+        ::close(fd_);
+        fd_ = -1;
         throw(rogue::GeneralError("AxiMemMap::AxiMemMap",
                                   R"(Bad kernel driver version detected. Please re-compile kernel driver.
           Note that aes-stream-driver (v5.15.2 or earlier) and rogue (v5.11.1 or earlier) are compatible with the 32-bit address API.
