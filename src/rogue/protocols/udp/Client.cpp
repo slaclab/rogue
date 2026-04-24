@@ -118,7 +118,14 @@ rpu::Client::~Client() {
 void rpu::Client::stop() {
     if (threadEn_) {
         threadEn_ = false;
+        // Release GIL before join so the worker can safely enter any Python path; shutdown(SHUT_RDWR)
+        // wakes the blocking recvfrom() in runThread() so join() can observe threadEn_=false and exit
+        // cleanly (PROTO-UDP-001 part 2; mirrors Fifo::~Fifo() precedent, PR #1191 b1a669c96).
+        rogue::GilRelease noGil;
+        ::shutdown(fd_, SHUT_RDWR);
         thread_->join();
+        delete thread_;
+        thread_ = nullptr;
         udpLog_->debug("Stopping UDP client for remote %s:%" PRIu16, address_.c_str(), port_);
 
         ::close(fd_);
