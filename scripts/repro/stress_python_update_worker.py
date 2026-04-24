@@ -51,37 +51,40 @@ class _Probe(pr.Device):
 
 
 @pytest.mark.repro
-def test_stress_virtual_node_list_mutation(memory_root, stress_iters):
+def test_stress_virtual_node_list_mutation(memory_root_unstarted, stress_iters):
     """VirtualNode._doUpdate list-iter vs addListener mutation (PY-003)."""
     errors = []
 
+    # Per 02-REVIEW.md CR-01: add probe to Root BEFORE entering `with`.
+    root = memory_root_unstarted
     probe = _Probe(name="probe")
-    memory_root.add(probe)
+    root.add(probe)
 
     def callback(path, value):
         pass
 
-    def listener_churn():
-        for i in range(stress_iters // 10):
-            try:
-                probe.Value.addListener(callback)
-                probe.Value.delListener(callback)
-            except Exception as e:
-                errors.append(e)
+    with root:
+        def listener_churn():
+            for i in range(stress_iters // 10):
+                try:
+                    probe.Value.addListener(callback)
+                    probe.Value.delListener(callback)
+                except Exception as e:
+                    errors.append(e)
 
-    def updater():
-        for i in range(stress_iters // 10):
-            try:
-                probe.Value.set(i)
-            except Exception as e:
-                errors.append(e)
+        def updater():
+            for i in range(stress_iters // 10):
+                try:
+                    probe.Value.set(i)
+                except Exception as e:
+                    errors.append(e)
 
-    threads = [threading.Thread(target=listener_churn) for _ in range(5)]
-    threads += [threading.Thread(target=updater) for _ in range(5)]
-    for t in threads:
-        t.start()
-    for t in threads:
-        t.join()
+        threads = [threading.Thread(target=listener_churn) for _ in range(5)]
+        threads += [threading.Thread(target=updater) for _ in range(5)]
+        for t in threads:
+            t.start()
+        for t in threads:
+            t.join()
     assert not errors, f"VirtualNode list-mutation stress errors: {errors}"
 
 
@@ -116,35 +119,37 @@ def test_stress_virtual_client_bootstrap_race(stress_iters):
 
 
 @pytest.mark.repro
-def test_stress_zmqserver_update_list(memory_root, stress_iters):
+def test_stress_zmqserver_update_list(memory_root_unstarted, stress_iters):
     """ZmqServer._updateList dict mutation across REP + update-worker (PY-013)."""
     errors = []
 
-    # Attach a ZmqServer to the root; drive variable updates from multiple
-    # threads so the server's _updateList dict is mutated while the C++ REP
-    # thread reads and the update-worker writes.
-    zs = pr.interfaces.ZmqServer(root=memory_root, addr="127.0.0.1", port=19790)
+    # Per 02-REVIEW.md CR-01: build Root + children + ZmqServer BEFORE entering
+    # `with root:`. ZmqServer attaches to the root; once root starts the server
+    # REP thread is live and the update-worker dispatch path is exercised.
+    root = memory_root_unstarted
     probe = _Probe(name="zprobe")
-    memory_root.add(probe)
+    root.add(probe)
+    zs = pr.interfaces.ZmqServer(root=root, addr="127.0.0.1", port=19790)
 
-    def updater(i):
-        for j in range(stress_iters // 10):
-            try:
-                probe.Value.set(i * 1000 + j)
-            except Exception as e:
-                errors.append(e)
+    with root:
+        def updater(i):
+            for j in range(stress_iters // 10):
+                try:
+                    probe.Value.set(i * 1000 + j)
+                except Exception as e:
+                    errors.append(e)
 
-    threads = [threading.Thread(target=updater, args=(i,)) for i in range(5)]
-    for t in threads:
-        t.start()
-    for t in threads:
-        t.join()
-    zs.stop()
+        threads = [threading.Thread(target=updater, args=(i,)) for i in range(5)]
+        for t in threads:
+            t.start()
+        for t in threads:
+            t.join()
+        zs.stop()
     assert not errors, f"ZmqServer update-list stress errors: {errors}"
 
 
 @pytest.mark.repro
-def test_stress_pydm_update_variable_pathway(memory_root, stress_iters):
+def test_stress_pydm_update_variable_pathway(memory_root_unstarted, stress_iters):
     """PyDM RogueConnection._updateVariable emit path (PY-026).
 
     The Qt bridge is not constructible in CI (no QApplication), so this
@@ -155,8 +160,10 @@ def test_stress_pydm_update_variable_pathway(memory_root, stress_iters):
     """
     errors = []
 
+    # Per 02-REVIEW.md CR-01: add probe BEFORE entering `with root:`.
+    root = memory_root_unstarted
     probe = _Probe(name="pydm_probe")
-    memory_root.add(probe)
+    root.add(probe)
 
     # Simulate a PyDM-style listener that re-reads the variable on each tick.
     def listener(path, value):
@@ -165,19 +172,20 @@ def test_stress_pydm_update_variable_pathway(memory_root, stress_iters):
         except Exception as e:
             errors.append(e)
 
-    probe.Value.addListener(listener)
+    with root:
+        probe.Value.addListener(listener)
 
-    def driver(i):
-        for j in range(stress_iters // 10):
-            try:
-                probe.Value.set(i * 7 + j)
-            except Exception as e:
-                errors.append(e)
+        def driver(i):
+            for j in range(stress_iters // 10):
+                try:
+                    probe.Value.set(i * 7 + j)
+                except Exception as e:
+                    errors.append(e)
 
-    threads = [threading.Thread(target=driver, args=(i,)) for i in range(4)]
-    for t in threads:
-        t.start()
-    for t in threads:
-        t.join()
-    probe.Value.delListener(listener)
+        threads = [threading.Thread(target=driver, args=(i,)) for i in range(4)]
+        for t in threads:
+            t.start()
+        for t in threads:
+            t.join()
+        probe.Value.delListener(listener)
     assert not errors, f"PyDM update-variable pathway stress errors: {errors}"

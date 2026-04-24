@@ -82,15 +82,19 @@ def test_stress_zmqserver_threaden(stress_iters):
     """ZmqServer::stop() writes threadEn_ while runThread reads it (STREAM-005)."""
     errors = []
 
-    def cycle():
+    def cycle(thread_idx):
+        # Per 02-REVIEW.md CR-03: each thread owns a disjoint 1000-wide port
+        # range so concurrent bind()s never collide. Base 19290, stride 1000
+        # gives [19290..20289] for thread 0, [20290..21289] for thread 1, etc.
         for i in range(stress_iters // 10):
             try:
-                zs = rogue.interfaces.ZmqServer("127.0.0.1", 19290 + i)
+                zs = rogue.interfaces.ZmqServer(
+                    "127.0.0.1", 19290 + thread_idx * 1000 + i)
                 del zs
             except Exception as e:
                 errors.append(e)
 
-    threads = [threading.Thread(target=cycle) for _ in range(4)]
+    threads = [threading.Thread(target=cycle, args=(t,)) for t in range(4)]
     for t in threads:
         t.start()
     for t in threads:
@@ -104,15 +108,21 @@ def test_stress_tcpclient_threaden(stress_iters):
     """TcpClient::stop() threadEn_ race (MEM-003)."""
     errors = []
 
-    def cycle():
-        for _ in range(stress_iters // 10):
+    def cycle(thread_idx):
+        # Per 02-REVIEW.md CR-03: each thread owns a disjoint 1000-wide port
+        # range. TcpClient binds a local ephemeral socket and connects to the
+        # target — fixing the target port from every thread created lock
+        # contention at the connect() step; separating per-thread eliminates
+        # that and still exercises the threadEn_ race during dtor.
+        for i in range(stress_iters // 10):
             try:
-                tc = rogue.interfaces.memory.TcpClient("127.0.0.1", 19390)
+                tc = rogue.interfaces.memory.TcpClient(
+                    "127.0.0.1", 19390 + thread_idx * 1000 + i)
                 del tc
             except Exception as e:
                 errors.append(e)
 
-    threads = [threading.Thread(target=cycle) for _ in range(4)]
+    threads = [threading.Thread(target=cycle, args=(t,)) for t in range(4)]
     for t in threads:
         t.start()
     for t in threads:
@@ -126,15 +136,18 @@ def test_stress_tcpserver_threaden(stress_iters):
     """TcpServer::stop() threadEn_ race (MEM-004)."""
     errors = []
 
-    def cycle():
+    def cycle(thread_idx):
+        # Per 02-REVIEW.md CR-03: each thread owns a disjoint 1000-wide port
+        # range. Base 19490.
         for i in range(stress_iters // 10):
             try:
-                ts = rogue.interfaces.memory.TcpServer("127.0.0.1", 19490 + i)
+                ts = rogue.interfaces.memory.TcpServer(
+                    "127.0.0.1", 19490 + thread_idx * 1000 + i)
                 del ts
             except Exception as e:
                 errors.append(e)
 
-    threads = [threading.Thread(target=cycle) for _ in range(4)]
+    threads = [threading.Thread(target=cycle, args=(t,)) for t in range(4)]
     for t in threads:
         t.start()
     for t in threads:
@@ -148,17 +161,22 @@ def test_stress_udp_threaden(stress_iters):
     """UDP Client/Server stop() threadEn_ race (PROTO-UDP-001)."""
     errors = []
 
-    def cycle():
+    def cycle(thread_idx):
+        # Per 02-REVIEW.md CR-03: each thread owns a disjoint 1000-wide port
+        # range. Both Server and Client use the SAME per-iteration port so
+        # loopback still works within a single cycle() invocation; cross-thread
+        # collisions are prevented by the thread_idx * 1000 stride.
         for i in range(stress_iters // 10):
+            port = 19590 + thread_idx * 1000 + i
             try:
-                us = rogue.protocols.udp.Server(19590 + i, False)
-                uc = rogue.protocols.udp.Client("127.0.0.1", 19590 + i, False)
+                us = rogue.protocols.udp.Server(port, False)
+                uc = rogue.protocols.udp.Client("127.0.0.1", port, False)
                 del uc
                 del us
             except Exception as e:
                 errors.append(e)
 
-    threads = [threading.Thread(target=cycle) for _ in range(4)]
+    threads = [threading.Thread(target=cycle, args=(t,)) for t in range(4)]
     for t in threads:
         t.start()
     for t in threads:

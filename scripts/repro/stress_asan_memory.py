@@ -85,7 +85,7 @@ def test_stress_hw_ctor_fd_leak(stress_iters):
 
 
 @pytest.mark.repro
-def test_stress_block_setbytes_malloc(memory_root, stress_iters):
+def test_stress_block_setbytes_malloc(memory_root_unstarted, stress_iters):
     """Block setBytes malloc path + memcpy overrun (MEM-005, MEM-006).
 
     MEM-005: if valueBytes_ > stride_bytes, setBytes can memcpy past the
@@ -107,20 +107,24 @@ def test_stress_block_setbytes_malloc(memory_root, stress_iters):
                 mode="RW",
             ))
 
-    memory_root.add(_Dev(name="dev"))
+    # Per 02-REVIEW.md CR-01: Root must be unstarted at .add() time, then
+    # entered via `with` after children are attached. This mirrors the
+    # canonical stress_bsp_gil.py::test_stress_bsp_gilless_attribute pattern.
+    root = memory_root_unstarted
+    root.add(_Dev(name="dev"))
+    with root:
+        def writer(i):
+            for j in range(stress_iters // 10):
+                try:
+                    root.dev.Value.set(i * 1000 + j, write=True)
+                except Exception as e:
+                    errors.append(e)
 
-    def writer(i):
-        for j in range(stress_iters // 10):
-            try:
-                memory_root.dev.Value.set(i * 1000 + j, write=True)
-            except Exception as e:
-                errors.append(e)
-
-    threads = [threading.Thread(target=writer, args=(i,)) for i in range(4)]
-    for t in threads:
-        t.start()
-    for t in threads:
-        t.join()
+        threads = [threading.Thread(target=writer, args=(i,)) for i in range(4)]
+        for t in threads:
+            t.start()
+        for t in threads:
+            t.join()
     assert not errors, f"Block setBytes stress errors: {errors}"
 
 

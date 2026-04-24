@@ -74,3 +74,38 @@ def memory_root():
     root = _MemoryRoot(name="root")
     with root:
         yield root
+
+
+# ---- memory_root_unstarted fixture (CR-01 fix) ----------------------------
+# Tests that need to `.add(Device)` children after fixture injection MUST use
+# this fixture rather than `memory_root` above. pyrogue._Node.add() at
+# python/pyrogue/_Node.py:334-336 raises NodeError when called on a started
+# Root (where `self._root is not None`). This fixture yields an un-started
+# Root; the test drives its own `with root:` block AFTER children are added.
+#
+# Canonical usage (mirrors stress_bsp_gil.py::test_stress_bsp_gilless_attribute):
+#
+#     def test_something(memory_root_unstarted):
+#         root = memory_root_unstarted
+#         root.add(_Probe(name="probe"))  # .add() BEFORE start
+#         with root:                      # now start
+#             # ... threaded stress body against root.probe ...
+
+@pytest.fixture
+def memory_root_unstarted():
+    """Function-scoped un-started _MemoryRoot.
+
+    The fixture does NOT enter `with root:`. Tests receive a fresh Root with
+    the memory Emulate slave attached as an interface but with no children
+    added yet. The test must add children before entering its own
+    `with root:` block. Teardown is implicit: if the test entered `with root:`,
+    Root.__exit__ already ran; if the test body raised before entering, the
+    Root is still unstarted and no cleanup is required.
+
+    See 02-REVIEW.md CR-01 and 02-10-PLAN.md for background on why Option (b)
+    (add-a-new-fixture) was chosen over Option (a) (change memory_root contract):
+    preserving the existing memory_root fixture keeps stress_memory_sub_transaction.py
+    untouched, which is the minimum-surgical-change principle.
+    """
+    root = _MemoryRoot(name="root")
+    yield root
