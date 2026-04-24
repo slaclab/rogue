@@ -24,10 +24,29 @@ Exports:
     memory_root (fixture) — function-scoped _MemoryRoot instance for cluster
         scripts that need a PyRogue Root with a local memory emulator.
 """
+import ctypes
 import os
+import subprocess
 import sys
 
 import pytest
+
+# Preload the TSan runtime with RTLD_GLOBAL before importing pyrogue/rogue.
+# When Python dlopen's a TSan-instrumented rogue.so the dynamic linker must
+# find libtsan.so.2 already resident in the process image so it can reuse the
+# existing TLS block; without this the load fails with "cannot allocate memory
+# in static TLS block".  The try/except makes this a no-op in non-TSan
+# environments (asan builds, developer machines).
+try:
+    _tsan_path = subprocess.check_output(
+        ['gcc-13', '-print-file-name=libtsan.so.2'],
+        stderr=subprocess.DEVNULL,
+    ).strip().decode()
+    if _tsan_path and _tsan_path != 'libtsan.so.2':
+        ctypes.CDLL(_tsan_path, ctypes.RTLD_GLOBAL)
+except Exception:
+    pass
+
 import pyrogue as pr
 import rogue.interfaces.memory
 

@@ -79,15 +79,12 @@ jobs:
           # files rather than stderr, preventing them from being lost when the
           # process aborts mid-run.  halt_on_error=0 lets all tests run rather
           # than stopping on the first race (continue-on-error covers exit code).
+          # conftest.py handles libtsan preload via ctypes (avoids dual-runtime
+          # conflict that LD_PRELOAD causes when Python itself is uninstrumented).
           TSAN_OPTIONS: "suppressions=${{ github.workspace }}/tsan.supp history_size=7 log_path=tsan-report halt_on_error=0"
           ROGUE_STRESS_ITERS: ${{ inputs.stress_iters || '1000' }}
         run: |
           source build-tsan/setup_rogue.sh
-          # TSan-instrumented .so modules loaded via Python's dlopen hit a
-          # static-TLS exhaustion error unless libtsan is preloaded at exec
-          # time.  Locate the runtime via gcc-13 to get the correct ABI path.
-          TSAN_LIB=$(gcc-13 -print-file-name=libtsan.so.2)
-          export LD_PRELOAD="$TSAN_LIB"
           python -m pytest scripts/repro/ -n0 \
             --count=${{ inputs.count || '5' }} \
             -m "repro" \
