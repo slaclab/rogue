@@ -24,6 +24,7 @@
 #include <stdint.h>
 #include <sys/socket.h>
 
+#include <atomic>
 #include <memory>
 
 #include "rogue/Logging.h"
@@ -75,7 +76,8 @@ class Core {
     struct timeval timeout_;
 
     std::thread* thread_;
-    bool threadEn_;
+    // std::atomic: stop() on caller thread vs runThread() read races on teardown (PROTO-UDP-001)
+    std::atomic<bool> threadEn_;
 
     // Synchronizes shared socket/address updates in derived classes.
     std::mutex udpMtx_;
