@@ -664,6 +664,12 @@ void rim::Block::setBytes(const uint8_t* data, rim::Variable* var, uint32_t inde
     // Change byte order, need to make a copy
     if (var->byteReverse_) {
         buff = reinterpret_cast<uint8_t*>(malloc(var->valueBytes_));
+        // guard malloc null-return under pressure to avoid NULL deref in memcpy (MEM-006)
+        if (buff == NULL)
+            throw(rogue::GeneralError::create("Block::setBytes",
+                                              "Failed to allocate %" PRIu32 " bytes for byte-reversed copy of %s",
+                                              var->valueBytes_,
+                                              var->name_.c_str()));
         memcpy(buff, data, var->valueBytes_);
         reverseBytes(buff, var->valueBytes_);
     } else {
