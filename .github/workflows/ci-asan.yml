@@ -93,7 +93,10 @@ jobs:
           PYTHONMALLOC: malloc
           ROGUE_STRESS_ITERS: ${{ inputs.stress_iters || '1000' }}
         run: |
-          source build-asan/setup_rogue.sh
+          # Use the installed setup_rogue.sh (repo root); build-asan/ copy is equivalent
+          # but the install step guarantees the root copy is regenerated.
+          ls -la build-asan/setup_rogue.sh setup_rogue.sh || true
+          source setup_rogue.sh
           python -m pytest scripts/repro/ -n0 \
             --count=${{ inputs.count || '5' }} \
             -m "repro" \
