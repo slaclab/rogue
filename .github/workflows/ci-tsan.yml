@@ -75,22 +75,23 @@ jobs:
         env:
           CC: gcc-13
           CXX: g++-13
-          # log_path prefix causes TSan to write race reports to tsan-report.<pid>
-          # files rather than stderr, preventing them from being lost when the
-          # process aborts mid-run.  halt_on_error=0 lets all tests run rather
-          # than stopping on the first race (continue-on-error covers exit code).
-          # conftest.py handles libtsan preload via ctypes (avoids dual-runtime
-          # conflict that LD_PRELOAD causes when Python itself is uninstrumented).
-          TSAN_OPTIONS: "suppressions=${{ github.workspace }}/tsan.supp history_size=7 log_path=tsan-report halt_on_error=0"
+          # halt_on_error=0 lets all tests run rather than stopping on the
+          # first race detection.  TSan writes to stderr (captured by 2>&1).
+          # conftest.py pre-loads libtsan via LD_PRELOAD to reserve the TLS
+          # block before rogue.so is dlopen'd by Python.
+          TSAN_OPTIONS: "suppressions=${{ github.workspace }}/tsan.supp history_size=7 halt_on_error=0"
           ROGUE_STRESS_ITERS: ${{ inputs.stress_iters || '1000' }}
         run: |
           source build-tsan/setup_rogue.sh
+          # libtsan must be in the initial load set (LD_PRELOAD) so the dynamic
+          # linker reserves its TLS block before Python's TLS is exhausted.
+          # conftest.py also attempts ctypes preload as belt-and-suspenders.
+          TSAN_LIB=$(gcc-13 -print-file-name=libtsan.so.2)
+          export LD_PRELOAD="$TSAN_LIB"
           python -m pytest scripts/repro/ -n0 \
             --count=${{ inputs.count || '5' }} \
             -m "repro" \
             2>&1 | tee tsan-log.txt || true
-          # Merge per-pid TSan report files into tsan-log.txt for the artifact
-          cat tsan-report.* >> tsan-log.txt 2>/dev/null || true
 
       - name: Upload TSan log
         if: always()
