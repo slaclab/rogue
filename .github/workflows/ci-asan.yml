@@ -36,6 +36,12 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 90
     continue-on-error: true
+    # D-06 Tier 1 iter-2: LD_PRELOAD libasan BEFORE Python starts so libasan
+    # loads exactly once. Combined with dropping -fsanitize=address from link
+    # flags (see Configure step below), this avoids pulling libasan as a
+    # DT_NEEDED entry on rogue.so and prevents double __cxa_throw interception.
+    env:
+      LD_PRELOAD_LIBASAN_CMD: "gcc-13 -print-file-name=libasan.so"
 
     steps:
       - uses: actions/checkout@v6
@@ -63,6 +69,13 @@ jobs:
         env:
           CC: gcc-13
           CXX: g++-13
+          # D-06 Tier 1 iter-2: drop -fsanitize=address from link flags so
+          # libasan is NOT pulled as a DT_NEEDED entry on rogue.so. CFLAGS/
+          # CXXFLAGS still carry -fsanitize=address for instrumentation via
+          # the preset's CMAKE_CXX_FLAGS_INIT. libasan is loaded exactly once
+          # via LD_PRELOAD in the Run repro harness step.
+          CMAKE_SHARED_LINKER_FLAGS: "-fsanitize=undefined"
+          CMAKE_EXE_LINKER_FLAGS: "-fsanitize=undefined"
         run: cmake --preset asan
 
       - name: Build (ASan+UBSan)
@@ -71,20 +84,15 @@ jobs:
       - name: Install (ASan+UBSan)
         run: cmake --install build-asan
 
-      - name: Make libasan.so discoverable
-        run: |
-          # Register the gcc-13 runtime directory so the dynamic linker can find
-          # libasan.so when Python dlopen()s rogue.so (linked with -fsanitize=address).
-          # This avoids LD_PRELOAD, which causes a double __cxa_throw interception
-          # that fires an ASan CHECK failure on every C++ exception in rogue.
-          ASAN_LIB_DIR=$(dirname "$(gcc-13 -print-file-name=libasan.so)")
-          echo "$ASAN_LIB_DIR" | sudo tee /etc/ld.so.conf.d/gcc13-asan.conf
-          sudo ldconfig
-
       - name: Run repro harness (ASan+UBSan)
         env:
           CC: gcc-13
           CXX: g++-13
+          # D-06 Tier 1 iter-2: LD_PRELOAD libasan BEFORE Python starts so
+          # libasan loads exactly once. Link flags dropped -fsanitize=address
+          # in the Configure step above so libasan is NOT a DT_NEEDED of
+          # rogue.so. This prevents real___cxa_throw=NULL on the second ASan
+          # init that blocked Phase 3 D-24 Class A evidence capture.
           # log_path writes ASan/UBSan reports to separate files, bypassing the
           # tee pipe.  halt_on_error=0 lets pytest continue past the first error.
           # detect_leaks=0 suppresses LSan (Python interpreter leaks are noise).
@@ -97,6 +105,8 @@ jobs:
           # but the install step guarantees the root copy is regenerated.
           ls -la build-asan/setup_rogue.sh setup_rogue.sh || true
           source setup_rogue.sh
+          # LD_PRELOAD libasan BEFORE pytest starts so libasan loads exactly once.
+          export LD_PRELOAD="$(gcc-13 -print-file-name=libasan.so)"
           python -m pytest scripts/repro/ -n0 \
             --count=${{ inputs.count || '5' }} \
             -m "repro" \
