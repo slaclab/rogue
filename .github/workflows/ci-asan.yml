@@ -63,6 +63,12 @@ jobs:
         env:
           CC: gcc-13
           CXX: g++-13
+          # D-06 Tier 1 iter-1: add -shared-libasan so rogue.so links against the
+          # shared libasan runtime rather than pulling it as a DT_NEEDED static
+          # initializer. This avoids the double __cxa_throw interception that
+          # fires an ASan CHECK failure on every C++ exception in rogue.
+          CMAKE_SHARED_LINKER_FLAGS: "-fsanitize=address -fsanitize=undefined -shared-libasan"
+          CMAKE_EXE_LINKER_FLAGS: "-fsanitize=address -fsanitize=undefined -shared-libasan"
         run: cmake --preset asan
 
       - name: Build (ASan+UBSan)
@@ -73,13 +79,12 @@ jobs:
 
       - name: Make libasan.so discoverable
         run: |
-          # Register the gcc-13 runtime directory so the dynamic linker can find
-          # libasan.so when Python dlopen()s rogue.so (linked with -fsanitize=address).
-          # This avoids LD_PRELOAD, which causes a double __cxa_throw interception
-          # that fires an ASan CHECK failure on every C++ exception in rogue.
+          # With -shared-libasan on rogue.so, the dynamic linker must still be
+          # able to find libasan.so at load time. LD_LIBRARY_PATH puts the gcc-13
+          # asan runtime dir on the search path without mutating /etc/ld.so.conf.d/
+          # (which previously caused a secondary libasan load and real___cxa_throw=NULL).
           ASAN_LIB_DIR=$(dirname "$(gcc-13 -print-file-name=libasan.so)")
-          echo "$ASAN_LIB_DIR" | sudo tee /etc/ld.so.conf.d/gcc13-asan.conf
-          sudo ldconfig
+          echo "LD_LIBRARY_PATH=$ASAN_LIB_DIR${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" >> $GITHUB_ENV
 
       - name: Run repro harness (ASan+UBSan)
         env:
