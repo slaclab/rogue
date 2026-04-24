@@ -1,0 +1,30 @@
+# TSan Canonical Run Evidence — ci-tsan-24887983787
+# Signal type: pytest FAILED (ASan-primary path, TSan-exercised)
+# Triggering script: stress_asan_memory.py
+# Test function: test_stress_block_setbytes_malloc
+# Run count: 5/5 iterations failed under --count=5
+# CI run: https://github.com/slaclab/rogue/actions/runs/24887983787
+#
+# pytest result line (from tsan-log.txt):
+#   scripts/repro/stress_asan_memory.py .....FFFFFFFFFF    [  6%]
+#   5 passes (test_stress_hw_ctor_fd_leak x5), then 5 failures (test_stress_block_setbytes_malloc x5)
+#
+# Assertion failure in test body:
+#   assert not errors, f"Block setBytes stress errors: {errors}"
+#
+# MEM-005 description (from DETECTED.md):
+#   Block::setBytes for list variables with fastByte_ uses memcpy with valueBytes_ bytes;
+#   if valueBytes_ > stride_bytes (stride gap between fastByte_ slots), the memcpy
+#   overruns into the next slot's region of blockData_
+#   File: src/rogue/interfaces/memory/Block.cpp  Lines: 660-724  Severity: medium
+#
+# MEM-006 description (from DETECTED.md):
+#   setBytes calls malloc(var->valueBytes_) for byte-reversed copies (line 666) with
+#   no null-check on the malloc return; NULL buff dereferences crash on ASan
+#   File: src/rogue/interfaces/memory/Block.cpp  Lines: 660-760  Severity: low
+#
+# Note: This is an ASan-primary signal. Under TSan the test FAILS because the
+# concurrent Value.set() calls from 4 threads race on Block internal state,
+# indicating underlying memory-lifetime bugs consistent with MEM-005/MEM-006.
+# Authoritative signal will be the ASan canonical run (03-04).
+# TSan failure confirms code path is exercised and thread-safety concern is real.

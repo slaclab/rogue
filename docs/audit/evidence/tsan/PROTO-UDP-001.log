@@ -1,0 +1,51 @@
+# TSan Canonical Run Evidence — ci-tsan-24887983787
+# Signal type: SIGABRT (Fatal Python error: Aborted)
+# Triggering script: stress_atomic_conversions.py
+# Test function: test_stress_udp_threaden
+# CI run: https://github.com/slaclab/rogue/actions/runs/24887983787
+#
+# pytest result line (from tsan-log.txt):
+#   scripts/repro/stress_atomic_conversions.py FFFFF....................Fatal Python error: Aborted
+#   First 5 (FFFFF) = test_stress_tcpcore_threaden failures
+#   Next 20 (dots) = test_stress_zmqclient_threaden x5, test_stress_zmqserver_threaden x5,
+#                    test_stress_tcpclient_threaden x5, test_stress_tcpserver_threaden x5
+#   SIGABRT during test_stress_udp_threaden (first iteration)
+#
+# PROTO-UDP-001 description (from DETECTED.md):
+#   UDP Client and Server stop() check threadEn_ then join thread, but threadEn_ is
+#   a plain bool (non-atomic) written by main thread and read by runThread without
+#   synchronization
+#   File: src/rogue/protocols/udp/Client.cpp, src/rogue/protocols/udp/Server.cpp
+#   Lines: 113-126, 107-119  Severity: medium  Class: threading
+#
+# Repro hypothesis: TSan race between stop() writing threadEn_=false and
+#   runThread reading threadEn_ in while loop
+#
+# CRASH STACK (from tsan-log.txt — verbatim):
+# ---
+# Fatal Python error: Aborted
+#
+# Thread 0x00007fc4275fe6c0 (most recent call first):
+#   <no Python frame>
+#
+# Thread 0x00007fc4285ff6c0 (most recent call first):
+#   File "scripts/repro/stress_atomic_conversions.py", line 174 in cycle
+#   File ".../threading.py", line 1012 in run
+#   File ".../threading.py", line 1075 in _bootstrap_inner
+#   File ".../threading.py", line 1032 in _bootstrap
+#
+# Thread 0x00007fc45131ff00 (most recent call first):
+#   File ".../threading.py", line 355 in wait
+#   File ".../threading.py", line 655 in wait
+#   File ".../threading.py", line 999 in start
+#   File "scripts/repro/stress_atomic_conversions.py", line 181 in test_stress_udp_threaden
+#   File ".../pytest/python.py", line 166 in pytest_pyfunc_call
+# ---
+#
+# Line 174 in stress_atomic_conversions.py is inside cycle():
+#   del uc  (UDP Client destructor triggers stop() → threadEn_=false write)
+#   del us  (UDP Server destructor path)
+#
+# Line 181 is test_stress_udp_threaden calling thread.start()
+# The abort originates from the C++ UDP destructor path racing with runThread.
+# Fix class: atomic-conversion (threadEn_ → std::atomic<bool> in UDP Client/Server).

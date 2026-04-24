@@ -1,0 +1,30 @@
+# Evidence excerpt: HW-CORE-007
+# Source: ci-asan run 24889708073 (asan-log.txt artifact)
+# DETECTED ID: HW-CORE-007 (AxiStreamDma constructor opens hardware device; fails with
+#               GeneralError("Could not open path...") when device file absent)
+# ASan signal type: CHECK failure (infra artifact — not a genuine memory error detection)
+# Root cause of CHECK failure: double __cxa_throw interception when libasan.so is loaded
+#   via LD_PRELOAD AND as DT_NEEDED of rogue.so (linked with -fsanitize=address).
+#   Second ASan initialization leaves real___cxa_throw==NULL. Any C++ exception throw
+#   triggers CHECK failure regardless of halt_on_error=0.
+# Triggering test: stress_asan_memory.py::test_stress_hw_ctor_fd_leak
+#   The test intentionally exercises the AxiStreamDma error path to probe fd leaks.
+#
+# --- Raw CHECK failure (representative; 4 identical blocks, one per thread) ---
+AddressSanitizer: CHECK failed: asan_interceptors.cpp:458 "((__interception::real___cxa_throw)) != (0)" (0x0, 0x0) (tid=5301)
+    #0 0x7f12ded08a47 in CheckUnwind ../../../../src/libsanitizer/asan/asan_rtl.cpp:69
+    #1 0x7f12ded30875 in __sanitizer::CheckFailed(char const*, int, char const*, unsigned long long, unsigned long long) ../../../../src/libsanitizer/sanitizer_common/sanitizer_termination.cpp:86
+    #2 0x7f12decf5e04 in __cxa_throw ../../../../src/libsanitizer/asan/asan_interceptors.cpp:458
+    #3 0x7f12decf5e04 in __cxa_throw ../../../../src/libsanitizer/asan/asan_interceptors.cpp:457
+    #4 0x7f12d8125dd4 in rogue::hardware::axi::AxiStreamDma::openShared(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::shared_ptr<rogue::Logging>) /home/runner/work/rogue/rogue/src/rogue/hardware/axi/AxiStreamDma.cpp:88
+    #5 0x7f12d821010f in rogue::hardware::axi::AxiStreamDma::AxiStreamDma(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, unsigned int, bool) /home/runner/work/rogue/rogue/src/rogue/hardware/axi/AxiStreamDma.cpp:187
+    ...
+    #32 0x7f12dec5ea41 in asan_thread_start ../../../../src/libsanitizer/asan/asan_interceptors.cpp:234
+
+# --- Assessment ---
+# This is NOT a genuine ASan memory error detection for HW-CORE-007.
+# The fd-leak behavior (the actual bug) was NOT exercised under ASan instrumentation
+# because the process aborted at the first exception throw before any allocations
+# could be checked.
+# ASan-primary status: NO SIGNAL (infra blocked)
+# Genuine ASan coverage: ZERO (CHECK failure prevents any memory checking)

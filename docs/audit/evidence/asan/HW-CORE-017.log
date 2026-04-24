@@ -1,0 +1,10 @@
+# Evidence excerpt: HW-CORE-017
+# Source: ci-asan run 24889708073
+# DETECTED ID: HW-CORE-017 (StreamUnZip.cpp iterator out-of-bounds on truncated bzip2 input)
+# ASan signal: NONE
+# Reason: test_stress_streamunzip_truncated was not reached. pytest process was killed
+#         by ASan CHECK failure during test_stress_hw_ctor_fd_leak (earlier in the run).
+# Coverage: ZERO — infra blocked
+# Note: This is the primary ASan target — a heap-buffer-overflow on StreamUnZip.cpp:98-101.
+#       ASan would be expected to produce a clear ERROR: AddressSanitizer: heap-buffer-overflow
+#       report if the test could run. Requires fixing the CHECK-failure infra issue.

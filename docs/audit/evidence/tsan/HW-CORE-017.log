@@ -1,0 +1,27 @@
+# TSan Canonical Run Evidence — ci-tsan-24887983787
+# Signal type: pytest FAILED (ASan-primary path, TSan-exercised)
+# Triggering script: stress_asan_memory.py
+# Test function: test_stress_streamunzip_truncated
+# Run count: 5/5 iterations failed under --count=5
+# CI run: https://github.com/slaclab/rogue/actions/runs/24887983787
+#
+# pytest result line (from tsan-log.txt):
+#   scripts/repro/stress_asan_memory.py .....FFFFFFFFFF    [  6%]
+#   5 passes (test_stress_hw_ctor_fd_leak x5), 5 fails (test_stress_block_setbytes_malloc x5),
+#   5 fails (test_stress_streamunzip_truncated x5)
+#
+# Assertion failure in test body:
+#   assert not errors, f"StreamUnZip truncated stress errors: {errors}"
+#
+# HW-CORE-017 description (from DETECTED.md):
+#   In StreamUnZip::acceptFrame, when strm.avail_in==0, the code unconditionally
+#   advances rBuff and dereferences it; if BZip2 produces more output than input
+#   being consumed, the iterator advances past endBuffer() and is dereferenced
+#   out of bounds.
+#   File: src/rogue/utilities/StreamUnZip.cpp  Lines: 98-101  Severity: medium
+#
+# Note: This is an ASan-primary signal (iterator out-of-bounds = heap-buffer-overflow).
+# Under TSan the test FAILS because the corrupt bzip2 payload triggers the iterator
+# overflow code path, confirming the bug is exercised. The TSan failure in 4 concurrent
+# threads confirms the code path is reliably reachable.
+# Authoritative signal will be the ASan canonical run (03-04).

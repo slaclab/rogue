@@ -1,0 +1,10 @@
+# Evidence excerpt: MEM-005
+# Source: ci-asan run 24889708073
+# DETECTED ID: MEM-005 (Block.cpp concurrent Value.set() races on Block internal state;
+#               memcpy overrun path)
+# ASan signal: NONE
+# Reason: test_stress_block_setbytes_malloc was not reached. pytest process was killed
+#         by ASan CHECK failure during test_stress_hw_ctor_fd_leak (the preceding test
+#         in stress_asan_memory.py). The CHECK failure fires on the first C++ exception
+#         throw due to double __cxa_throw interception (libasan.so loaded twice).
+# Coverage: ZERO — infra blocked

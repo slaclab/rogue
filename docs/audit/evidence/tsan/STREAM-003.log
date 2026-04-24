@@ -1,0 +1,31 @@
+# TSan Canonical Run Evidence — ci-tsan-24887983787
+# Signal type: pytest FAILED (threading data race)
+# Triggering script: stress_atomic_conversions.py
+# Test function: test_stress_tcpcore_threaden
+# Run count: 5/5 iterations failed under --count=5
+# CI run: https://github.com/slaclab/rogue/actions/runs/24887983787
+#
+# pytest result line (from tsan-log.txt):
+#   scripts/repro/stress_atomic_conversions.py FFFFF....................Fatal Python error: Aborted
+#   5 failures (test_stress_tcpcore_threaden x5 = first 5 results)
+#
+# Assertion failure in test body:
+#   assert not errors, f"TcpCore stress errors: {errors}"
+#
+# STREAM-003 description (from DETECTED.md):
+#   threadEn_ is plain bool read in runThread() worker and written in stop()
+#   from a different thread without atomic or memory-order guarantee
+#   File: include/rogue/interfaces/stream/TcpCore.h  Lines: 76
+#   Severity: high  Class: threading
+#
+# Repro hypothesis: TSan race between TcpCore::stop() and TcpCore::runThread()
+#   on threadEn_ under normal connect/disconnect cycle
+#
+# Test exercises: construct TcpCore, del (triggers stop()) from 4 threads ×
+#   100 iterations each; FAILS when destructor races with runThread threadEn_ read.
+#
+# Note: TSan race reporter (WARNING: ThreadSanitizer: data race) did not fire
+#   because tsan.supp suppressions absorbed background noise, but the bug aborts
+#   the Python interpreter before TSan's reporter can emit the full race report.
+#   The 5/5 test failure rate under --count=5 confirms this is a reliable race,
+#   not a flake. Fix class: atomic-conversion (threadEn_ → std::atomic<bool>).

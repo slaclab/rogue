@@ -1,0 +1,6 @@
+# Evidence excerpt: MEM-006
+# Source: ci-asan run 24889708073
+# DETECTED ID: MEM-006 (Block.cpp malloc null-deref path in setBytes exercised concurrently)
+# ASan signal: NONE
+# Reason: Same as MEM-005 — test not reached due to CHECK failure in preceding test.
+# Coverage: ZERO — infra blocked

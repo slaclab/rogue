@@ -1,0 +1,10 @@
+# Evidence excerpt: HW-CORE-010
+# Source: ci-asan run 24889708073
+# DETECTED ID: HW-CORE-010 (MemMap.cpp:63-65 — fd_ not closed when mmap fails; fd leak on
+#               exception path)
+# ASan signal: NONE
+# Reason: test_stress_hw_ctor_fd_leak (which covers HW-CORE-010 via MemMap injection)
+#         was killed before it could run. The preceding test_stress_hw_ctor_fd_leak
+#         [AxiStreamDma variant] triggered a CHECK failure in all 4 threads, aborting
+#         the pytest process before MemMap tests were reached.
+# Coverage: ZERO — infra blocked

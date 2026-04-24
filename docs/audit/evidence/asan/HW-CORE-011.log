@@ -1,0 +1,8 @@
+# Evidence excerpt: HW-CORE-011
+# Source: ci-asan run 24889708073
+# DETECTED ID: HW-CORE-011 (AxiMemMap.cpp:63-69 — fd_ not closed when version check throws;
+#               fd leak on exception path)
+# ASan signal: NONE
+# Reason: Same as HW-CORE-010 — pytest process killed by ASan CHECK failure before
+#         AxiMemMap variant of test_stress_hw_ctor_fd_leak could run.
+# Coverage: ZERO — infra blocked
