@@ -75,8 +75,11 @@ jobs:
         env:
           CC: gcc-13
           CXX: g++-13
-          ASAN_OPTIONS: "detect_leaks=0:halt_on_error=0"
-          UBSAN_OPTIONS: "print_stacktrace=1"
+          # log_path writes ASan/UBSan reports to separate files, bypassing the
+          # tee pipe.  halt_on_error=0 lets pytest continue past the first error.
+          # detect_leaks=0 suppresses LSan (Python interpreter leaks are noise).
+          ASAN_OPTIONS: "detect_leaks=0:halt_on_error=0:log_path=/tmp/asan-report"
+          UBSAN_OPTIONS: "print_stacktrace=1:log_path=/tmp/ubsan-report"
           PYTHONMALLOC: malloc
           ROGUE_STRESS_ITERS: ${{ inputs.stress_iters || '1000' }}
         run: |
@@ -86,7 +89,19 @@ jobs:
           python -m pytest scripts/repro/ -n0 \
             --count=${{ inputs.count || '5' }} \
             -m "repro" \
-            2>&1 | tee asan-log.txt || true
+            2>&1 | tee pytest-log.txt || true
+          # Merge pytest output + all ASan/UBSan report files into one artifact
+          cat pytest-log.txt > asan-log.txt
+          if ls /tmp/asan-report.* 2>/dev/null; then
+            echo "" >> asan-log.txt
+            echo "=== ASan reports ===" >> asan-log.txt
+            cat /tmp/asan-report.* >> asan-log.txt
+          fi
+          if ls /tmp/ubsan-report.* 2>/dev/null; then
+            echo "" >> asan-log.txt
+            echo "=== UBSan reports ===" >> asan-log.txt
+            cat /tmp/ubsan-report.* >> asan-log.txt
+          fi
 
       - name: Upload ASan log
         if: always()
