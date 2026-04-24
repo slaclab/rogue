@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-24T05:51:19Z",
+  "generated_at": "2026-04-24T06:04:11Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -145,6 +145,14 @@
       "history": [
         {
           "ref_name": "hunt-for-red-october",
+          "sha": "0444c7b9724a6e3f3c204cde0f756df1326983a6",
+          "short_sha": "0444c7b",
+          "published_at": "2026-04-24T06:04:11Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/24874790365",
+          "summary_url": "/rogue/perf/branches/hunt-for-red-october/history/0444c7b9724a6e3f3c204cde0f756df1326983a6.json"
+        },
+        {
+          "ref_name": "hunt-for-red-october",
           "sha": "bb297955f38a4266c432ca672dca98822063c9d9",
           "short_sha": "bb29795",
           "published_at": "2026-04-24T05:51:19Z",
@@ -202,10 +210,10 @@
       ],
       "latest": {
         "ref_name": "hunt-for-red-october",
-        "sha": "bb297955f38a4266c432ca672dca98822063c9d9",
-        "short_sha": "bb29795",
-        "published_at": "2026-04-24T05:51:19Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/24874399269",
+        "sha": "0444c7b9724a6e3f3c204cde0f756df1326983a6",
+        "short_sha": "0444c7b",
+        "published_at": "2026-04-24T06:04:11Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/24874790365",
         "summary_url": "/rogue/perf/branches/hunt-for-red-october/latest.json"
       }
     },
