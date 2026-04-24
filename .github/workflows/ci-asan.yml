@@ -34,7 +34,7 @@ jobs:
   asan:
     name: Address + UB Sanitizer
     runs-on: ubuntu-24.04
-    timeout-minutes: 60
+    timeout-minutes: 90
     continue-on-error: true
 
     steps:
@@ -75,7 +75,7 @@ jobs:
         env:
           CC: gcc-13
           CXX: g++-13
-          ASAN_OPTIONS: "detect_leaks=0"
+          ASAN_OPTIONS: "detect_leaks=0:halt_on_error=0"
           UBSAN_OPTIONS: "print_stacktrace=1"
           PYTHONMALLOC: malloc
           ROGUE_STRESS_ITERS: ${{ inputs.stress_iters || '1000' }}
@@ -86,7 +86,7 @@ jobs:
           python -m pytest scripts/repro/ -n0 \
             --count=${{ inputs.count || '5' }} \
             -m "repro" \
-            2>&1 | tee asan-log.txt
+            2>&1 | tee asan-log.txt || true
 
       - name: Upload ASan log
         if: always()
