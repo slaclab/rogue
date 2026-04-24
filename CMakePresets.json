@@ -35,7 +35,7 @@
     }
   ],
   "buildPresets": [
-    { "name": "tsan", "configurePreset": "tsan", "jobs": 0 },
-    { "name": "asan", "configurePreset": "asan", "jobs": 0 }
+    { "name": "tsan", "configurePreset": "tsan", "jobs": 1 },
+    { "name": "asan", "configurePreset": "asan", "jobs": 2 }
   ]
 }
