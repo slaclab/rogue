@@ -66,6 +66,10 @@ rpu::Server::Server(uint16_t port, bool jumbo) : rpu::Core(jumbo) {
     if ((fd_ = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
         throw(rogue::GeneralError::create("Server::Server", "Failed to create socket for port %" PRIu16, port_));
 
+    // Allow rapid rebind on the same port under stress (PROTO-UDP-001 part 3)
+    val = 1;
+    setsockopt(fd_, SOL_SOCKET, SO_REUSEADDR, reinterpret_cast<const char*>(&val), sizeof(val));
+
     // Setup Remote Address
     memset(&locAddr_, 0, sizeof(struct sockaddr_in));
     locAddr_.sin_family      = AF_INET;
@@ -111,17 +115,17 @@ rpu::Server::~Server() {
 void rpu::Server::stop() {
     if (threadEn_) {
         threadEn_ = false;
-        // Release GIL before join so the worker can safely enter any Python path; shutdown(SHUT_RDWR)
-        // wakes the blocking recvfrom() in runThread() so join() can observe threadEn_=false and exit
-        // cleanly (PROTO-UDP-001 part 2; mirrors Fifo::~Fifo() precedent, PR #1191 b1a669c96).
+        // Release GIL before join; close(fd_) before join unblocks the blocking recvfrom()
+        // in runThread() with EBADF so the while(threadEn_) loop can terminate cleanly
+        // (PROTO-UDP-001 part 3; shutdown(SHUT_RDWR) returns ENOTCONN on unconnected UDP
+        // on Linux and does not unblock recv — close() is the portable unblock primitive).
         rogue::GilRelease noGil;
-        ::shutdown(fd_, SHUT_RDWR);
+        ::close(fd_);
+        fd_ = -1;
         thread_->join();
         delete thread_;
         thread_ = nullptr;
         udpLog_->debug("Stopping UDP server on local port %" PRIu16, port_);
-
-        ::close(fd_);
     }
 }
 
