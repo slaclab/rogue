@@ -680,11 +680,14 @@ void rim::Block::setBytes(const uint8_t* data, rim::Variable* var, uint32_t inde
                                               var->name_.c_str()));
 
         // Fast copy
-        if (var->fastByte_ != NULL)
-            memcpy(blockData_ + var->fastByte_[index], buff, var->valueBytes_);
-
-        else
+        if (var->fastByte_ != NULL) {
+            // cap memcpy to stride to avoid overrunning adjacent slot (MEM-005)
+            uint32_t strideBytes = var->valueStride_ / 8;
+            uint32_t copyBytes   = (var->valueBytes_ < strideBytes) ? var->valueBytes_ : strideBytes;
+            memcpy(blockData_ + var->fastByte_[index], buff, copyBytes);
+        } else {
             copyBits(blockData_, var->bitOffset_[0] + (index * var->valueStride_), buff, 0, var->valueBits_);
+        }
 
         if (var->mode_ != "RO") {
            if (var->stale_) {
