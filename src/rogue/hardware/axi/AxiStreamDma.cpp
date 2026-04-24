@@ -207,7 +207,10 @@ rha::AxiStreamDma::AxiStreamDma(std::string path, uint32_t dest, bool ssiEnable)
 
     if (dmaSetMaskBytes(fd_, mask) < 0) {
         closeShared(desc_);
+        // fd leak on exception path: guarded because ci-asan.yml link-time issue
+        // prevented positive ASan evidence (HW-CORE-007; Phase 3 D-24)
         ::close(fd_);
+        fd_ = -1;
         throw(rogue::GeneralError::create("AxiStreamDma::AxiStreamDma",
                                           "Failed to open device file %s with dest 0x%" PRIx32
                                           "! Another process may already have it open!",
