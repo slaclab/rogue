@@ -1,0 +1,22 @@
+# Evidence excerpt: HW-CORE-010
+# Source: ci-asan run 24916880204 (asan-log.txt artifact)
+# DETECTED ID: HW-CORE-010 (MemMap.cpp:63-65 — fd_ not closed when mmap fails; fd leak on
+#               exception path)
+# ASan signal: NONE
+# Reason: test_stress_hw_ctor_fd_leak (which covers HW-CORE-010 via MemMap injection)
+#         was killed before it could run. In Phase 3 canonical run (24889708073), the
+#         preceding test_stress_hw_ctor_fd_leak [AxiStreamDma variant] triggered a CHECK
+#         failure in all 4 threads, aborting the pytest process before MemMap tests were
+#         reached. In Phase 5 canonical run (24916880204), the empty asan-log.txt indicates
+#         the process crashed before producing any pytest output at all.
+# Coverage: ZERO — infra blocked
+
+# --- Phase 5 disposition (D-01 tier-2-codereview-asan-infra-blocked) ---
+# (a) ci-asan run 24916880204 produced no NEW regression block (grep 'ERROR: AddressSanitizer:' = 0;
+#     empty log consistent with ASan infra still blocked; no new error pattern vs Phase 3 D-08
+#     baseline; D-02 retry budget consumed: 2 of 2 retries, same result).
+# (b) Inline fix-site comment present per Phase 4 D-07:
+#     src/rogue/hardware/MemMap.cpp:66 matches '(HW-CORE-010; Phase 3 D-24)'.
+#     Comment: '// prevented positive ASan evidence (HW-CORE-010; Phase 3 D-24)'
+# (c) Fix commit: 893551b798337bbe98d0d7e26607b65d2af64a7b
+# SC-1 graduates under D-01 'tier-2-codereview-asan-infra-blocked'.
