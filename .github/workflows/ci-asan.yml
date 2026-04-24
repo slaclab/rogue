@@ -71,6 +71,16 @@ jobs:
       - name: Install (ASan+UBSan)
         run: cmake --install build-asan
 
+      - name: Make libasan.so discoverable
+        run: |
+          # Register the gcc-13 runtime directory so the dynamic linker can find
+          # libasan.so when Python dlopen()s rogue.so (linked with -fsanitize=address).
+          # This avoids LD_PRELOAD, which causes a double __cxa_throw interception
+          # that fires an ASan CHECK failure on every C++ exception in rogue.
+          ASAN_LIB_DIR=$(dirname "$(gcc-13 -print-file-name=libasan.so)")
+          echo "$ASAN_LIB_DIR" | sudo tee /etc/ld.so.conf.d/gcc13-asan.conf
+          sudo ldconfig
+
       - name: Run repro harness (ASan+UBSan)
         env:
           CC: gcc-13
@@ -83,13 +93,6 @@ jobs:
           PYTHONMALLOC: malloc
           ROGUE_STRESS_ITERS: ${{ inputs.stress_iters || '1000' }}
         run: |
-          # Add gcc-13 runtime dir to LD_LIBRARY_PATH so the dynamic linker can
-          # find libasan.so when Python dlopen()s rogue.so (which is linked with
-          # -fsanitize=address).  Do NOT use LD_PRELOAD: preloading libasan into
-          # a process that already has C++ exception handling initialized causes a
-          # double-interception of __cxa_throw → ASan CHECK failure on every throw.
-          ASAN_LIB_DIR=$(dirname "$(gcc-13 -print-file-name=libasan.so)")
-          export LD_LIBRARY_PATH="${ASAN_LIB_DIR}:${LD_LIBRARY_PATH}"
           source build-asan/setup_rogue.sh
           python -m pytest scripts/repro/ -n0 \
             --count=${{ inputs.count || '5' }} \
