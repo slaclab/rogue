@@ -9,8 +9,8 @@
 #   - PyRogue-internal frames are NEVER pre-suppressed (D-12) — any PyRogue frame in a race
 #     report is a signal that Phase 3 triages.
 #
-# TODO(phase-3): Expand this seed with noise entries identified in Phase 3 triage of the
-# first ci-tsan.yml run (D-13; tracked in Plan 09).
+# Expanded 2026-04-24 per Phase 3 triage (first run ID: 24875033977); D-11 escape hatch
+#                          permits one follow-up pass if 03-03 produces unexpected noise.
 # ----------------------------------------------------------------------------
 
 # CPython GIL internals — GIL-protected; not a PyRogue bug (REPRO-03 required)
@@ -34,3 +34,5 @@ race:__GI___strftime_l
 
 # ZMQ internal atomics — third-party; not ours to fix (REPRO-03 required)
 called_from_lib:libzmq.so
+
+# -- Expanded 2026-04-24 per Phase 3 D-09 (pass 1/2 max)
