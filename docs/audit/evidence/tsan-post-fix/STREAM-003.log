@@ -1,0 +1,36 @@
+# TSan Canonical Run Evidence — ci-tsan-24916134440
+# Signal type: pytest FAILED (post-fix run; pre-fix was 5/5 FAIL — see ../tsan/STREAM-003.log)
+# Triggering script: stress_atomic_conversions.py
+# Test function: test_stress_tcpcore_threaden
+# Run count: 5/5 iterations FAILED under --count=5 (same rate as Phase 3 pre-fix canonical)
+# CI run: https://github.com/slaclab/rogue/actions/runs/24916134440
+#
+# Phase 5 branch tip SHA: da1f8eaf98b6eedc570e5c0d45a32ac6b57f9f99
+# Post-fix: threadEn_ converted to std::atomic<bool> in commit ad5d184b2acb43b461b76d4636f7324ae13223f9
+#
+# STREAM-003 description (from DETECTED.md):
+#   threadEn_ is plain bool read in runThread() worker and written in stop()
+#   from a different thread without atomic or memory-order guarantee
+#   File: include/rogue/interfaces/stream/TcpCore.h  Lines: 76
+#   Severity: high  Class: threading
+#
+# pytest result line (from tsan-log.txt — Phase 5 run 24916134440):
+#   scripts/repro/stress_atomic_conversions.py FFFFF....................Fatal Python error: Aborted
+#   First 5 (FFFFF) = test_stress_tcpcore_threaden failures (5/5 under --count=5)
+#   Next 20 (dots) = ZMQ/TCP/server tests
+#   SIGABRT = test_stress_udp_threaden (PROTO-UDP-001 partial carve-out — see PROTO-UDP-001.log)
+#
+# D-22 regression check: Phase 4 mid-phase reruns (24909162566, 24909791467) showed
+#   the identical FFFFF pattern post-fix. No new signal vs Phase 4. D-22 NOT triggered.
+#
+# Evidence note: The atomic conversion fix (ad5d184b2) is confirmed present on the
+#   hunt-for-red-october branch tip. However, the test_stress_tcpcore_threaden failure
+#   rate under ci-tsan did not improve from FFFFF to ..... in Phase 4 mid-phase reruns
+#   or in this Phase 5 canonical run. The test failures may reflect a residual race
+#   not addressed by the threadEn_ atomic conversion alone, or an interaction with
+#   the TSan instrumentation environment.
+#
+# Pre-fix: 5/5 FFFFF (see ../tsan/STREAM-003.log — Phase 3 canonical ci-tsan-24887983787)
+# Post-fix (Phase 5 canonical): 5/5 FFFFF (no improvement in pass rate observed)
+# Fix is on branch (ad5d184b2); test signal unchanged relative to Phase 4 mid-phase reruns.
+# SC-1 disposition: deferred to Plan 05-03 per D-01 row-class evaluation.

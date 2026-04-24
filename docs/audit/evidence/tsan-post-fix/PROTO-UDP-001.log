@@ -1,0 +1,89 @@
+# TSan Canonical Run Evidence — ci-tsan-24916134440
+# Signal type: SIGABRT (Fatal Python error: Aborted) — partial-fix carve-out
+# Triggering script: stress_atomic_conversions.py
+# Test function: test_stress_udp_threaden
+# CI run: https://github.com/slaclab/rogue/actions/runs/24916134440
+#
+# Phase 5 branch tip SHA: da1f8eaf98b6eedc570e5c0d45a32ac6b57f9f99
+# Post-fix: 3-commit chain 937d39e61..f841be6a9 (partial — see REPRODUCIBLE.md §Phase 4 Partial Fix Notes)
+#
+# PROTO-UDP-001 description (from DETECTED.md):
+#   UDP Client and Server stop() check threadEn_ then join thread, but threadEn_ is
+#   a plain bool (non-atomic) written by main thread and read by runThread without
+#   synchronization
+#   File: src/rogue/protocols/udp/Client.cpp, src/rogue/protocols/udp/Server.cpp
+#   Lines: 113-126, 107-119  Severity: medium  Class: threading
+#
+# === Partial Fix Notes (from REPRODUCIBLE.md §Phase 4 Partial Fix Notes) ===
+#
+# Phase 4 landed three surgical commits that improve the UDP teardown discipline:
+#
+#   937d39e61 — fix(PROTO-UDP-001): convert UDP Core threadEn_ to std::atomic<bool>
+#   6e79e9afa — fix(PROTO-UDP-001): extend destructor join ordering — shutdown+GilRelease+delete
+#   f841be6a9 — fix(PROTO-UDP-001): use close() not shutdown() to unblock UDP recvfrom, add SO_REUSEADDR
+#
+# The original race the row describes — the UDP worker outliving its owning object
+# on teardown — is closed. Post-fix ci-tsan stack traces show the worker C thread
+# handle as 0x0 (joined / destroyed), not the pre-fix 0x7f98... (alive). That is a
+# real, verifiable improvement to the codebase and to the teardown contract.
+#
+# However, the ci-tsan reproducer stress_atomic_conversions.py::test_stress_udp_threaden
+# still produces a SIGABRT at the same test position with a different proximate cause
+# (two concurrent Python workers in Server constructor + Client destructor, main in
+# threading.py:994 Thread.start()). The new abort fires before any single UDP cycle()
+# iteration completes and is not caused by the teardown race the original row describes.
+# Diagnosing the new abort exceeded the D-02 two-run retry budget for the mid-phase
+# canonical re-run. D-22 escalation triggered automatic pivot to D-24 Class B Path B.
+#
+# Phase 5 VERIFY-01 implications: the "Fixed in commit" cell (f841be6a9) marks the HEAD
+# of the landed improvement chain. Cherry-pick verification MUST pull the full range
+# 937d39e61..f841be6a9 (3 commits). The row MUST NOT be treated as fully closed for
+# SC-1 graduation under D-01 atomic-conversion-strict — it graduates under the
+# original-race-closed-partial-carve-out sub-criterion only.
+#
+# === D-01 original-race-closed-partial-carve-out Evidence ===
+#
+# PRE-FIX worker thread handle (Phase 3 ci-tsan-24887983787):
+#   Thread 0x00007fc4275fe6c0 (most recent call first):  <-- alive, non-zero handle
+#     <no Python frame>
+#
+# POST-FIX worker thread handle (Phase 5 ci-tsan-24916134440):
+#   Thread 0x0000000000000000 (most recent call first):  <-- 0x0 = joined/destroyed
+#     <no Python frame>
+#
+# The 0x0 handle confirms the original teardown race is closed: the worker thread
+# is fully joined before the SIGABRT occurs. D-01 original-race-closed criterion MET.
+#
+# === NEW SIGABRT CRASH STACK (Phase 5 ci-tsan-24916134440 — verbatim) ===
+# ---
+# Fatal Python error: Aborted
+#
+# Thread 0x0000000000000000 (most recent call first):
+#   <no Python frame>
+#
+# Thread 0x00007f5ea60286c0 (most recent call first):
+#   File "/home/runner/work/rogue/rogue/scripts/repro/stress_atomic_conversions.py", line 172 in cycle
+#   File "/opt/hostedtoolcache/Python/3.12.13/x64/lib/python3.12/threading.py", line 1012 in run
+#   File "/opt/hostedtoolcache/Python/3.12.13/x64/lib/python3.12/threading.py", line 1075 in _bootstrap_inner
+#   File "/opt/hostedtoolcache/Python/3.12.13/x64/lib/python3.12/threading.py", line 1032 in _bootstrap
+#
+# Thread 0x00007f5e90dfd6c0 (most recent call first):
+#   File "/home/runner/work/rogue/rogue/scripts/repro/stress_atomic_conversions.py", line 174 in cycle
+#   File "/opt/hostedtoolcache/Python/3.12.13/x64/lib/python3.12/threading.py", line 1012 in run
+#   File "/opt/hostedtoolcache/Python/3.12.13/x64/lib/python3.12/threading.py", line 1075 in _bootstrap_inner
+#   File "/opt/hostedtoolcache/Python/3.12.13/x64/lib/python3.12/threading.py", line 1032 in _bootstrap
+#
+# Thread 0x00007f5ec2ac1f00 (most recent call first):
+#   File "/opt/hostedtoolcache/Python/3.12.13/x64/lib/python3.12/threading.py", line 994 in start
+#   File "/home/runner/work/rogue/rogue/scripts/repro/stress_atomic_conversions.py", line 181 in test_stress_udp_threaden
+#   File "/opt/hostedtoolcache/Python/3.12.13/x64/lib/python3.12/threading.py", line 1012 in run
+#   ...
+# ---
+#
+# Proximate cause: two concurrent Python workers in Server constructor + Client destructor,
+#   main thread at threading.py:994 Thread.start(). Different from pre-fix SIGABRT cause.
+#   This is the documented known limitation under the D-01 partial-carve-out.
+#   Phase 5 does NOT re-diagnose per CONTEXT.md "Out of scope: PROTO-UDP-001 NEW-SIGABRT diagnosis".
+#
+# D-22 regression check: This SIGABRT pattern (worker handle 0x0, same proximate cause)
+#   matches Phase 4 mid-phase reruns 24909162566 and 24909791467 exactly. No new signal.

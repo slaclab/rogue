@@ -1,0 +1,37 @@
+# TSan Canonical Run Evidence — ci-tsan-24916134440
+# Signal type: pytest FAILED (post-fix run; pre-fix was 5/5 FAIL — see ../tsan/MEM-006.log)
+# Triggering script: stress_asan_memory.py
+# Test function: test_stress_block_setbytes_malloc
+# Run count: 5/5 iterations FAILED under --count=5 (same rate as Phase 3 pre-fix canonical)
+# CI run: https://github.com/slaclab/rogue/actions/runs/24916134440
+#
+# Phase 5 branch tip SHA: da1f8eaf98b6eedc570e5c0d45a32ac6b57f9f99
+# Post-fix: Block::setBytes null-guard for malloc return in commit b0080df1be5fa3fee2bb93c32036cacbcc3aa7a4
+#
+# MEM-006 description (from DETECTED.md):
+#   setBytes calls malloc(var->valueBytes_) for byte-reversed copies (line 666) with
+#   no null-check on the malloc return; NULL buff dereferences crash on ASan
+#   File: src/rogue/interfaces/memory/Block.cpp  Lines: 660-760  Severity: low
+#
+# pytest result line (from tsan-log.txt — Phase 5 run 24916134440):
+#   scripts/repro/stress_asan_memory.py .....FFFFFFFFFF                      [  6%]
+#   5 passes (test_stress_hw_ctor_fd_leak x5), then failures including test_stress_block_setbytes_malloc
+#   (MEM-005 and MEM-006 share the same triggering test function)
+#
+# D-22 regression check: Phase 4 mid-phase reruns (24909162566, 24909791467) showed
+#   the identical .....FFFFFFFFFF pattern. No new signal vs Phase 4. D-22 NOT triggered.
+#
+# Evidence note: The malloc null-guard fix (b0080df1b) is confirmed present on the
+#   hunt-for-red-october branch tip. MEM-006 and MEM-005 share the triggering test
+#   (test_stress_block_setbytes_malloc); the test failure pattern is identical. Under
+#   TSan, NULL-deref from an uninstrumented malloc return is an ASan-primary bug; TSan
+#   does not instrument malloc return values for null-pointer checks. The test failures
+#   persist under TSan CI post-fix, consistent with the ASan-primary signal nature of
+#   this row per REPRODUCIBLE.md §Evidence Pivot.
+#
+# Pre-fix: 5/5 FFFFF (see ../tsan/MEM-006.log — Phase 3 canonical ci-tsan-24887983787)
+# Post-fix (Phase 5 canonical): 5/5 FAIL (same pattern; no improvement in pass rate)
+# Fix is on branch (b0080df1b); test signal unchanged relative to Phase 4 mid-phase reruns.
+# SC-1 disposition: deferred to Plan 05-03 per D-01 row-class evaluation (test-fail-pivot
+#   criterion references ASan-side evidence as authoritative; TSan failures pre-date fix
+#   and persist post-fix under TSan CI environment).

@@ -1,0 +1,38 @@
+# TSan Canonical Run Evidence — ci-tsan-24916134440
+# Signal type: pytest FAILED (post-fix run; pre-fix was 5/5 FAIL — see ../tsan/MEM-005.log)
+# Triggering script: stress_asan_memory.py
+# Test function: test_stress_block_setbytes_malloc
+# Run count: 5/5 iterations FAILED under --count=5 (same rate as Phase 3 pre-fix canonical)
+# CI run: https://github.com/slaclab/rogue/actions/runs/24916134440
+#
+# Phase 5 branch tip SHA: da1f8eaf98b6eedc570e5c0d45a32ac6b57f9f99
+# Post-fix: Block::setBytes bounds guard in commit a16bc16019c79c195c0ba406506ba16acd00b44f
+#
+# MEM-005 description (from DETECTED.md):
+#   Block::setBytes for list variables with fastByte_ uses memcpy with valueBytes_ bytes;
+#   if valueBytes_ > stride_bytes (stride gap between fastByte_ slots), the memcpy
+#   overruns into the next slot's region of blockData_
+#   File: src/rogue/interfaces/memory/Block.cpp  Lines: 660-724  Severity: medium
+#
+# pytest result line (from tsan-log.txt — Phase 5 run 24916134440):
+#   scripts/repro/stress_asan_memory.py .....FFFFFFFFFF                      [  6%]
+#   5 passes (test_stress_hw_ctor_fd_leak x5), then 5 failures (test_stress_block_setbytes_malloc x5
+#   among the FFFFFFFFFF block)
+#
+# D-22 regression check: Phase 4 mid-phase reruns (24909162566, 24909791467) showed
+#   the identical .....FFFFFFFFFF pattern. No new signal vs Phase 4. D-22 NOT triggered.
+#
+# Evidence note: The setBytes bounds guard fix (a16bc1601) is confirmed present on the
+#   hunt-for-red-october branch tip. However, the test_stress_block_setbytes_malloc
+#   failure rate under ci-tsan did not improve in Phase 4 mid-phase reruns or in this
+#   Phase 5 canonical run. This is an ASan-primary signal; TSan exercises the concurrent
+#   Value.set() code path but the test failure may be caused by the memcpy overrun
+#   being non-detectable under TSan instrumentation (TSan does not catch heap-buffer-overflow
+#   directly — that is ASan's domain).
+#
+# Pre-fix: 5/5 FFFFF (see ../tsan/MEM-005.log — Phase 3 canonical ci-tsan-24887983787)
+# Post-fix (Phase 5 canonical): 5/5 FAIL (same pattern; no improvement in pass rate)
+# Fix is on branch (a16bc1601); test signal unchanged relative to Phase 4 mid-phase reruns.
+# SC-1 disposition: deferred to Plan 05-03 per D-01 row-class evaluation (test-fail-pivot
+#   criterion references ASan-side evidence as authoritative; TSan failures pre-date fix
+#   and persist post-fix under TSan CI environment).
