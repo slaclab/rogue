@@ -36,7 +36,7 @@ Consequently: three DETECTED IDs (MEM-005, MEM-006, HW-CORE-017) are ratified vi
 | ID | File | Lines | DETECTED Class | Severity | CI Signal | Triggering Script | Log Snippet | Evidence File | Fix Class | Fixed in commit |
 |----|------|-------|----------------|----------|-----------|-------------------|-------------|---------------|-----------|-----------------|
 | STREAM-003 | include/rogue/interfaces/stream/TcpCore.h | 76 | threading | high | TSan test-FAIL (5/5) | stress_atomic_conversions.py | `FFFFF` — test_stress_tcpcore_threaden FAIL × 5; threadEn_ race on TcpCore dtor/runThread | [tsan](./evidence/tsan/STREAM-003.log) | atomic-conversion | |
-| PROTO-UDP-001 | src/rogue/protocols/udp/Client.cpp, src/rogue/protocols/udp/Server.cpp | 113-126, 107-119 | threading | medium | TSan SIGABRT | stress_atomic_conversions.py | `Fatal Python error: Aborted` — test_stress_udp_threaden; UDP dtor threadEn_ race causes SIGABRT | [tsan](./evidence/tsan/PROTO-UDP-001.log) | atomic-conversion | 6e79e9afafc2cc36e5f5f077a0ac9a2980825310 |
+| PROTO-UDP-001 | src/rogue/protocols/udp/Client.cpp, src/rogue/protocols/udp/Server.cpp | 113-126, 107-119 | threading | medium | TSan SIGABRT (still reproducing post-partial-fix, different proximate cause — see §Phase 4 Partial Fix Notes) | stress_atomic_conversions.py | `Fatal Python error: Aborted` — test_stress_udp_threaden; UDP dtor threadEn_ race causes SIGABRT | [tsan](./evidence/tsan/PROTO-UDP-001.log) | atomic-conversion | f841be6a9 (partial — see §Phase 4 Partial Fix Notes) |
 | HW-CORE-017 | src/rogue/utilities/StreamUnZip.cpp | 98-101 | memory | medium | TSan test-FAIL (5/5); ASan infra-blocked (no capture) | stress_asan_memory.py | `FFFFFFFFFF` — test_stress_streamunzip_truncated FAIL × 5; iterator out-of-bounds on truncated bzip2 input | [tsan](./evidence/tsan/HW-CORE-017.log), [asan](./evidence/asan/HW-CORE-017.log) | memory-lifetime | |
 | MEM-005 | src/rogue/interfaces/memory/Block.cpp | 660-724 | memory | medium | TSan test-FAIL (5/5); ASan infra-blocked (no capture) | stress_asan_memory.py | `FFFFFFFFFF` — test_stress_block_setbytes_malloc FAIL × 5; concurrent Value.set() races on Block; memcpy overrun path | [tsan](./evidence/tsan/MEM-005.log), [asan](./evidence/asan/MEM-005.log) | memory-lifetime | |
 | MEM-006 | src/rogue/interfaces/memory/Block.cpp | 660-760 | memory | low | TSan test-FAIL (5/5); ASan infra-blocked (no capture) | stress_asan_memory.py | `FFFFFFFFFF` — test_stress_block_setbytes_malloc FAIL × 5; malloc null-deref path in setBytes exercised concurrently | [tsan](./evidence/tsan/MEM-006.log), [asan](./evidence/asan/MEM-006.log) | memory-lifetime | |
@@ -82,3 +82,24 @@ None in this wave. The three ASan-primary rows that produced zero signal (HW-COR
 - "Fixed in commit" column is populated by Phase 4 as each fix commit lands; Phase 5 verification confirms.
 - PROTO-UDP-001: despite medium severity rating, this is the highest-priority fix in the atomic-conversion class because its SIGABRT blocked 9 downstream cluster scripts from producing any signal this phase.
 - The 58 coverage-gap DETECTED IDs covered by the 9 unreached cluster scripts listed above are carved out of SC-2's `detected-only` requirement by D-24 (ratified 2026-04-24). Their Phase 4 obligations — re-run after PROTO-UDP-001 fix lands or classify via code-review-driven inspection — are recorded in `.planning/phases/03-triage-reproducible-list/03-VERIFICATION.md` "SC-2 Closure via D-24 Carve-Out" section.
+
+## Phase 4 Partial Fix Notes
+
+### PROTO-UDP-001 — partial fix landed this milestone
+
+Phase 4 landed three surgical commits that improve the UDP teardown discipline:
+
+- `937d39e61` — `fix(PROTO-UDP-001): convert UDP Core threadEn_ to std::atomic<bool>` (the original Phase 4 plan shape)
+- `6e79e9afa` — `fix(PROTO-UDP-001): extend destructor join ordering — shutdown+GilRelease+delete` (Path A — adds GilRelease, unblock-before-join, delete thread_, mirrors `Fifo::~Fifo()` precedent PR #1191 `b1a669c96`)
+- `f841be6a9` — `fix(PROTO-UDP-001): use close() not shutdown() to unblock UDP recvfrom, add SO_REUSEADDR` (Path A.1 — switches to portable UDP unblock primitive, adds rebind safety)
+
+**The original race the row describes — the UDP worker outliving its owning object on teardown — is closed.** Post-fix ci-tsan stack traces show the worker C thread handle as `0x0` (joined / destroyed), not the pre-fix `0x7f98…` (alive). That is a real, verifiable improvement to the codebase and to the teardown contract.
+
+**However, the ci-tsan reproducer `stress_atomic_conversions.py::test_stress_udp_threaden` still produces a SIGABRT at the same test position** with a different proximate cause (two concurrent Python workers in Server constructor + Client destructor, main in `threading.py:994 Thread.start()`). The new abort fires before any single UDP `cycle()` iteration completes and is not caused by the teardown race the original row describes. Diagnosing the new abort exceeded the D-02 two-run retry budget for the mid-phase canonical re-run. D-22 escalation (Phase 3) triggered automatic pivot to D-24 Class B Path B: Phase 4 does not claim to fully resolve PROTO-UDP-001 this milestone, and the 9 previously-unreached cluster scripts remain out of reach for SC-2 coverage.
+
+**Phase 5 verification implications:** the "Fixed in commit" cell (`f841be6a9`) marks the HEAD of the landed improvement chain. Cherry-pick verification MUST pull the full range `937d39e61..f841be6a9` (3 commits). The row MUST NOT be treated as fully closed for SC-2 graduation — this limitation is recorded in `04-02-MIDPHASE-RERUN.md` §0 and `04-VERIFICATION.md` (once written).
+
+**Evidence trail:**
+- Pre-fix: `docs/audit/evidence/tsan-full/ci-tsan-24908065882.log.gz` (worker alive, pre-Path-A)
+- Post-Path-A: `docs/audit/evidence/tsan-full/ci-tsan-24909162566.log.gz` (worker joined, new SIGABRT pattern)
+- Post-Path-A.1 final: `docs/audit/evidence/tsan-full/ci-tsan-24909791467.log.gz` (same new SIGABRT pattern, D-02 budget exhausted)
