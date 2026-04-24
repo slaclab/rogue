@@ -34,7 +34,7 @@ jobs:
   tsan:
     name: Thread Sanitizer
     runs-on: ubuntu-24.04
-    timeout-minutes: 60
+    timeout-minutes: 90
     continue-on-error: true
 
     steps:
@@ -67,6 +67,9 @@ jobs:
 
       - name: Build (TSan)
         run: cmake --build --preset tsan
+
+      - name: Install (TSan)
+        run: cmake --install build-tsan
 
       - name: Run repro harness (TSan)
         env:
