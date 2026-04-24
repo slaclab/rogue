@@ -96,6 +96,10 @@ void ru::StreamUnZip::acceptFrame(ris::FramePtr frame) {
 
         // Update read buffer if necessary
         if (strm.avail_in == 0) {
+            // bound iterator advance: decompressor demanded more input than the source frame carries (HW-CORE-017)
+            if ((rBuff + 1) == frame->endBuffer())
+                throw(rogue::GeneralError::create("StreamUnZip::acceptFrame",
+                                                  "Truncated or corrupt bzip2 stream: decompressor needs more input than available"));
             ++rBuff;
             strm.next_in  = reinterpret_cast<char*>((*rBuff)->begin());
             strm.avail_in = (*rBuff)->getPayload();
