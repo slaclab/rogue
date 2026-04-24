@@ -20,6 +20,7 @@
 
 #include <stdint.h>
 
+#include <atomic>
 #include <memory>
 #include <string>
 #include <thread>
@@ -73,7 +74,8 @@ class TcpCore : public rogue::interfaces::stream::Master, public rogue::interfac
 
     // Thread
     std::thread* thread_;
-    bool threadEn_;
+    // std::atomic: stop() on caller thread vs runThread() read races on teardown (STREAM-003)
+    std::atomic<bool> threadEn_;
 
     // Lock
     std::mutex bridgeMtx_;
