@@ -83,8 +83,10 @@ jobs:
           PYTHONMALLOC: malloc
           ROGUE_STRESS_ITERS: ${{ inputs.stress_iters || '1000' }}
         run: |
-          export _LIBASAN=$(gcc-13 -print-file-name=libasan.so)
-          export LD_PRELOAD="${_LIBASAN}"
+          # Do NOT LD_PRELOAD libasan: rogue.so is already linked with -fsanitize=address
+          # so libasan is initialized by the dynamic linker before Python starts.
+          # Preloading again causes double-interception of __cxa_throw, which
+          # triggers ASan CHECK failures on every C++ exception.
           source build-asan/setup_rogue.sh
           python -m pytest scripts/repro/ -n0 \
             --count=${{ inputs.count || '5' }} \
