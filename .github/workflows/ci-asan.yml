@@ -68,6 +68,9 @@ jobs:
       - name: Build (ASan+UBSan)
         run: cmake --build --preset asan
 
+      - name: Install (ASan+UBSan)
+        run: cmake --install build-asan
+
       - name: Run repro harness (ASan+UBSan)
         env:
           CC: gcc-13
