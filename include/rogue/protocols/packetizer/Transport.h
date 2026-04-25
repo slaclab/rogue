@@ -52,9 +52,9 @@ class Transport : public rogue::interfaces::stream::Master, public rogue::interf
     // Packetizer controller endpoint.
     std::shared_ptr<rogue::protocols::packetizer::Controller> cntl_;
 
-    // Outbound transport worker thread.
-    std::thread* thread_;
-    bool threadEn_;
+    // Default-init: dtor before setController() must be a no-op.
+    std::thread* thread_ = nullptr;
+    bool threadEn_ = false;
 
     // Worker thread entry point.
     void runThread();

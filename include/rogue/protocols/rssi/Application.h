@@ -51,9 +51,9 @@ class Application : public rogue::interfaces::stream::Master, public rogue::inte
     // RSSI controller backend.
     std::shared_ptr<rogue::protocols::rssi::Controller> cntl_;
 
-    // Outbound application worker thread.
-    std::thread* thread_;
-    bool threadEn_;
+    // Default-init: dtor before setController() must be a no-op.
+    std::thread* thread_ = nullptr;
+    bool threadEn_ = false;
 
     // Worker thread entry point.
     void runThread();

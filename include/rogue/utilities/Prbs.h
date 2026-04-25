@@ -126,9 +126,9 @@ class Prbs : public rogue::interfaces::stream::Slave, public rogue::interfaces::
     std::shared_ptr<rogue::Logging> rxLog_;
     std::shared_ptr<rogue::Logging> txLog_;
 
-    // TX thread
-    std::thread* txThread_;
-    bool threadEn_;
+    // Default-init: dtor must be safe against partial construction.
+    std::thread* txThread_ = nullptr;
+    bool threadEn_ = false;
 
     // Internal computation
     void flfsr(uint8_t* data);

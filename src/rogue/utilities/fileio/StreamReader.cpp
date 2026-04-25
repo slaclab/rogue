@@ -63,9 +63,7 @@ void ruf::StreamReader::setup_python() {
 
 //! Creator
 ruf::StreamReader::StreamReader() {
-    baseName_   = "";
-    readThread_ = NULL;
-    active_     = false;
+    // Members default-init in header; dtor is safe before open().
 }
 
 //! Deconstructor

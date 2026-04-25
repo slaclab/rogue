@@ -24,6 +24,7 @@
 #include <stdint.h>
 #include <sys/socket.h>
 
+#include <atomic>
 #include <memory>
 
 #include "rogue/Logging.h"
@@ -74,8 +75,10 @@ class Core {
     // Transmit select()/send timeout.
     struct timeval timeout_;
 
-    std::thread* thread_;
-    bool threadEn_;
+    // Default-init: dtor must be safe against partial construction.
+    // threadEn_ is atomic to close the stop()/runThread() teardown race.
+    std::thread* thread_ = nullptr;
+    std::atomic<bool> threadEn_{false};
 
     // Synchronizes shared socket/address updates in derived classes.
     std::mutex udpMtx_;

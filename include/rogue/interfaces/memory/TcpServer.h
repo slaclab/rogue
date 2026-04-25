@@ -56,14 +56,10 @@ class TcpServer : public rogue::interfaces::memory::Master {
     // Outbound Address
     std::string respAddr_;
 
-    // Zeromq Context
-    void* zmqCtx_;
-
-    // Zeromq inbound port
-    void* zmqReq_;
-
-    // Zeromq outbound port
-    void* zmqResp_;
+    // Default-init so dtor is safe before/after a ctor that throws.
+    void* zmqCtx_  = nullptr;
+    void* zmqReq_  = nullptr;
+    void* zmqResp_ = nullptr;
 
     // Thread background
     void runThread();
@@ -71,9 +67,9 @@ class TcpServer : public rogue::interfaces::memory::Master {
     // Log
     std::shared_ptr<rogue::Logging> bridgeLog_;
 
-    // Thread
-    std::thread* thread_;
-    bool threadEn_;
+    // Default-init: dtor must be safe against partial construction.
+    std::thread* thread_ = nullptr;
+    bool threadEn_ = false;
 
   public:
     /**

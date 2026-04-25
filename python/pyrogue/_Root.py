@@ -489,6 +489,15 @@ class Root(pr.Device):
         self._updateQueue.put(None)
         self._updateThread.join()
 
+        # Join the heartbeat (1 s tick) before tree teardown so it cannot
+        # write self.Time after Device._stop().
+        hbeat = getattr(self, "_hbeatThread", None)
+        if (hbeat is not None
+                and hasattr(hbeat, 'is_alive') and hbeat.is_alive()
+                and hasattr(hbeat, 'join')
+                and threading.current_thread() is not hbeat):
+            hbeat.join()
+
         if self._pollQueue:
             self._pollQueue._stop()
 

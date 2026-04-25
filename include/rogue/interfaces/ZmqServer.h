@@ -45,22 +45,16 @@ namespace interfaces {
  * available base port starting at `9099` in increments of 4.
  */
 class ZmqServer {
-    // ZeroMQ context.
-    void* zmqCtx_;
+    // Default-init so dtor is safe before start() opens these.
+    void* zmqCtx_ = nullptr;
+    void* zmqPub_ = nullptr;
+    void* zmqRep_ = nullptr;
+    void* zmqStr_ = nullptr;
 
-    // ZeroMQ publish socket.
-    void* zmqPub_;
-
-    // ZeroMQ binary response socket.
-    void* zmqRep_;
-
-    // ZeroMQ string response socket.
-    void* zmqStr_;
-
-    // Request worker threads.
-    std::thread* rThread_;
-    std::thread* sThread_;
-    bool threadEn_;
+    // Default-init: dtor must be safe against partial construction.
+    std::thread* rThread_ = nullptr;
+    std::thread* sThread_ = nullptr;
+    bool threadEn_ = false;
 
     // Bind address and base port configuration.
     std::string addr_;

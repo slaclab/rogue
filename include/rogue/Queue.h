@@ -20,6 +20,7 @@
 
 #include <stdint.h>
 
+#include <atomic>
 #include <condition_variable>
 #include <mutex>
 #include <queue>
@@ -43,7 +44,7 @@ class Queue {
     std::condition_variable popCond_;
     uint32_t max_;
     uint32_t thold_;
-    bool busy_;
+    std::atomic<bool> busy_;
     bool run_;
 
   public:

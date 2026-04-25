@@ -664,6 +664,11 @@ void rim::Block::setBytes(const uint8_t* data, rim::Variable* var, uint32_t inde
     // Change byte order, need to make a copy
     if (var->byteReverse_) {
         buff = reinterpret_cast<uint8_t*>(malloc(var->valueBytes_));
+        if (buff == NULL)
+            throw(rogue::GeneralError::create("Block::setBytes",
+                                              "Failed to allocate %" PRIu32 " bytes for byte-reversed copy of %s",
+                                              var->valueBytes_,
+                                              var->name_.c_str()));
         memcpy(buff, data, var->valueBytes_);
         reverseBytes(buff, var->valueBytes_);
     } else {
@@ -672,19 +677,24 @@ void rim::Block::setBytes(const uint8_t* data, rim::Variable* var, uint32_t inde
 
     // List variable
     if (var->numValues_ != 0) {
-        // Verify range
-        if (index < 0 || index >= var->numValues_)
+        // index is uint32_t, so the prior "< 0" half of the range check was dead.
+        if (index >= var->numValues_) {
+            if (var->byteReverse_) free(buff);
             throw(rogue::GeneralError::create("Block::setBytes",
                                               "Index %" PRIu32 " is out of range for %s",
                                               index,
                                               var->name_.c_str()));
+        }
 
         // Fast copy
-        if (var->fastByte_ != NULL)
-            memcpy(blockData_ + var->fastByte_[index], buff, var->valueBytes_);
-
-        else
+        if (var->fastByte_ != NULL) {
+            // Cap copy to the stride so adjacent slot data is not overwritten.
+            uint32_t strideBytes = var->valueStride_ / 8;
+            uint32_t copyBytes   = (var->valueBytes_ < strideBytes) ? var->valueBytes_ : strideBytes;
+            memcpy(blockData_ + var->fastByte_[index], buff, copyBytes);
+        } else {
             copyBits(blockData_, var->bitOffset_[0] + (index * var->valueStride_), buff, 0, var->valueBits_);
+        }
 
         if (var->mode_ != "RO") {
            if (var->stale_) {
@@ -733,19 +743,22 @@ void rim::Block::getBytes(uint8_t* data, rim::Variable* var, uint32_t index) {
 
     // List variable
     if (var->numValues_ != 0) {
-        // Verify range
-        if (index < 0 || index >= var->numValues_)
+        // index is uint32_t, so the prior "< 0" half of the range check was dead.
+        if (index >= var->numValues_)
             throw(rogue::GeneralError::create("Block::getBytes",
                                               "Index %" PRIu32 " is out of range for %s",
                                               index,
                                               var->name_.c_str()));
 
         // Fast copy
-        if (var->fastByte_ != NULL)
-            memcpy(data, blockData_ + var->fastByte_[index], var->valueBytes_);
-
-        else
+        if (var->fastByte_ != NULL) {
+            // Same stride cap as setBytes so reads and writes stay symmetric.
+            uint32_t strideBytes = var->valueStride_ / 8;
+            uint32_t copyBytes   = (var->valueBytes_ < strideBytes) ? var->valueBytes_ : strideBytes;
+            memcpy(data, blockData_ + var->fastByte_[index], copyBytes);
+        } else {
             copyBits(data, 0, blockData_, var->bitOffset_[0] + (index * var->valueStride_), var->valueBits_);
+        }
 
     } else {
         // Fast copy

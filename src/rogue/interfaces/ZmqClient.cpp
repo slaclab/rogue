@@ -103,73 +103,91 @@ rogue::interfaces::ZmqClient::ZmqClient(const std::string& addr, uint16_t port, 
 
     log_ = rogue::Logging::create("ZmqClient");
 
-    if (!doString_) {
-        // Setup sub port
+    // running_ is the dtor's cleanup sentinel; it is set last on success, so a
+    // throw in here would otherwise leak the context and sockets.
+    try {
+        if (!doString_) {
+            // Setup sub port
+            temp = "tcp://";
+            temp.append(addr);
+            temp.append(":");
+            temp.append(std::to_string(static_cast<int64_t>(port)));
+
+            if (zmq_setsockopt(this->zmqSub_, ZMQ_SUBSCRIBE, "", 0) != 0)
+                throw(rogue::GeneralError("ZmqClient::ZmqClient", "Failed to set socket subscribe"));
+
+            val = 0;
+            if (zmq_setsockopt(this->zmqSub_, ZMQ_LINGER, &val, sizeof(int32_t)) != 0)
+                throw(rogue::GeneralError("ZmqClient::ZmqClient", "Failed to set socket linger"));
+
+            val = 100;
+            if (zmq_setsockopt(this->zmqSub_, ZMQ_RCVTIMEO, &val, sizeof(int32_t)) != 0)
+                throw(rogue::GeneralError("ZmqClient::ZmqClient", "Failed to set socket timeout"));
+
+            if (zmq_connect(this->zmqSub_, temp.c_str()) < 0)
+                throw(rogue::GeneralError::create("ZmqClient::ZmqClient",
+                                                  "Failed to connect to port %" PRIu16 " at address %s",
+                                                  port,
+                                                  addr.c_str()));
+
+            reqPort = port + 1;
+        } else {
+            reqPort = port + 2;
+        }
+
+        // Setup request port
         temp = "tcp://";
         temp.append(addr);
         temp.append(":");
-        temp.append(std::to_string(static_cast<int64_t>(port)));
+        temp.append(std::to_string(static_cast<int64_t>(reqPort)));
 
-        if (zmq_setsockopt(this->zmqSub_, ZMQ_SUBSCRIBE, "", 0) != 0)
-            throw(rogue::GeneralError("ZmqClient::ZmqClient", "Failed to set socket subscribe"));
-
-        val = 0;
-        if (zmq_setsockopt(this->zmqSub_, ZMQ_LINGER, &val, sizeof(int32_t)) != 0)
-            throw(rogue::GeneralError("ZmqClient::ZmqClient", "Failed to set socket linger"));
-
-        val = 100;
-        if (zmq_setsockopt(this->zmqSub_, ZMQ_RCVTIMEO, &val, sizeof(int32_t)) != 0)
+        waitRetry_ = false;  // Don't keep waiting after timeout
+        timeout_   = 1000;   // 1 second
+        if (zmq_setsockopt(this->zmqReq_, ZMQ_RCVTIMEO, &timeout_, sizeof(int32_t)) != 0)
             throw(rogue::GeneralError("ZmqClient::ZmqClient", "Failed to set socket timeout"));
 
-        if (zmq_connect(this->zmqSub_, temp.c_str()) < 0)
+        val = 1;
+        if (zmq_setsockopt(this->zmqReq_, ZMQ_REQ_CORRELATE, &val, sizeof(int32_t)) != 0)
+            throw(rogue::GeneralError("ZmqClient::ZmqClient", "Failed to set socket correlate"));
+
+        if (zmq_setsockopt(this->zmqReq_, ZMQ_REQ_RELAXED, &val, sizeof(int32_t)) != 0)
+            throw(rogue::GeneralError("ZmqClient::ZmqClient", "Failed to set socket relaxed"));
+
+        val = 0;
+        if (zmq_setsockopt(this->zmqReq_, ZMQ_LINGER, &val, sizeof(int32_t)) != 0)
+            throw(rogue::GeneralError("ZmqClient::ZmqClient", "Failed to set socket linger"));
+
+        if (zmq_connect(this->zmqReq_, temp.c_str()) < 0)
             throw(rogue::GeneralError::create("ZmqClient::ZmqClient",
-                                              "Failed to connect to port %" PRIu16 " at address %s",
-                                              port,
+                                              "Failed to connect to port %" PRIu32 " at address %s",
+                                              reqPort,
                                               addr.c_str()));
 
-        reqPort = port + 1;
-    } else {
-        reqPort = port + 2;
+        if (doString_) {
+            threadEn_ = false;
+            log_->info("Connected to Rogue server at port %" PRIu32, reqPort);
+        } else {
+            log_->info("Connected to Rogue server at ports %" PRIu16 ":%" PRIu32, port, reqPort);
+
+            threadEn_ = true;
+            thread_   = new std::thread(&rogue::interfaces::ZmqClient::runThread, this);
+        }
+        running_ = true;
+    } catch (...) {
+        if (zmqSub_ != nullptr) {
+            zmq_close(zmqSub_);
+            zmqSub_ = nullptr;
+        }
+        if (zmqReq_ != nullptr) {
+            zmq_close(zmqReq_);
+            zmqReq_ = nullptr;
+        }
+        if (zmqCtx_ != nullptr) {
+            zmq_ctx_destroy(zmqCtx_);
+            zmqCtx_ = nullptr;
+        }
+        throw;
     }
-
-    // Setup request port
-    temp = "tcp://";
-    temp.append(addr);
-    temp.append(":");
-    temp.append(std::to_string(static_cast<int64_t>(reqPort)));
-
-    waitRetry_ = false;  // Don't keep waiting after timeout
-    timeout_   = 1000;   // 1 second
-    if (zmq_setsockopt(this->zmqReq_, ZMQ_RCVTIMEO, &timeout_, sizeof(int32_t)) != 0)
-        throw(rogue::GeneralError("ZmqClient::ZmqClient", "Failed to set socket timeout"));
-
-    val = 1;
-    if (zmq_setsockopt(this->zmqReq_, ZMQ_REQ_CORRELATE, &val, sizeof(int32_t)) != 0)
-        throw(rogue::GeneralError("ZmqClient::ZmqClient", "Failed to set socket correlate"));
-
-    if (zmq_setsockopt(this->zmqReq_, ZMQ_REQ_RELAXED, &val, sizeof(int32_t)) != 0)
-        throw(rogue::GeneralError("ZmqClient::ZmqClient", "Failed to set socket relaxed"));
-
-    val = 0;
-    if (zmq_setsockopt(this->zmqReq_, ZMQ_LINGER, &val, sizeof(int32_t)) != 0)
-        throw(rogue::GeneralError("ZmqClient::ZmqClient", "Failed to set socket linger"));
-
-    if (zmq_connect(this->zmqReq_, temp.c_str()) < 0)
-        throw(rogue::GeneralError::create("ZmqClient::ZmqClient",
-                                          "Failed to connect to port %" PRIu32 " at address %s",
-                                          reqPort,
-                                          addr.c_str()));
-
-    if (doString_) {
-        threadEn_ = false;
-        log_->info("Connected to Rogue server at port %" PRIu32, reqPort);
-    } else {
-        log_->info("Connected to Rogue server at ports %" PRIu16 ":%" PRIu32, port, reqPort);
-
-        threadEn_ = true;
-        thread_   = new std::thread(&rogue::interfaces::ZmqClient::runThread, this);
-    }
-    running_ = true;
 }
 
 rogue::interfaces::ZmqClient::~ZmqClient() {
@@ -184,6 +202,8 @@ void rogue::interfaces::ZmqClient::stop() {
             waitRetry_ = false;
             threadEn_  = false;
             thread_->join();
+            delete thread_;
+            thread_ = nullptr;
         }
         if (!doString_) zmq_close(this->zmqSub_);
         zmq_close(this->zmqReq_);
@@ -195,7 +215,8 @@ void rogue::interfaces::ZmqClient::setTimeout(uint32_t msecs, bool waitRetry) {
     waitRetry_ = waitRetry;
     timeout_   = msecs;
 
-    log_->debug("Setting timeout to %" PRIu32 " msecs, waitRetry = %" PRIu8, timeout_, waitRetry_);
+    // %d (not PRIu8): bool promotes to int through varargs.
+    log_->debug("Setting timeout to %" PRIu32 " msecs, waitRetry = %d", timeout_, waitRetry_);
 
     if (zmq_setsockopt(this->zmqReq_, ZMQ_RCVTIMEO, &timeout_, sizeof(int32_t)) != 0)
         throw(rogue::GeneralError("ZmqClient::setTimeout", "Failed to set socket timeout"));
@@ -219,6 +240,7 @@ std::string rogue::interfaces::ZmqClient::sendString(const std::string& path, co
     snd += "}";
 
     rogue::GilRelease noGil;
+    std::lock_guard<std::mutex> lock(reqLock_);
     zmq_send(this->zmqReq_, snd.c_str(), snd.size(), 0);
 
     while (1) {
@@ -229,6 +251,7 @@ std::string rogue::interfaces::ZmqClient::sendString(const std::string& path, co
                 logWaitRetry(log_, seconds, lastLoggedSeconds);
                 zmq_msg_close(&msg);
             } else {
+                zmq_msg_close(&msg);
                 throw rogue::GeneralError::create("ZmqClient::sendString",
                                                   "Timeout waiting for response after %d Seconds.",
                                                   static_cast<int>(seconds));
@@ -282,6 +305,7 @@ bp::object rogue::interfaces::ZmqClient::send(bp::object value) {
 
     {
         rogue::GilRelease noGil;
+        std::lock_guard<std::mutex> lock(reqLock_);
         zmq_sendmsg(this->zmqReq_, &txMsg, 0);
 
         while (1) {
@@ -292,6 +316,7 @@ bp::object rogue::interfaces::ZmqClient::send(bp::object value) {
                     logWaitRetry(log_, seconds, lastLoggedSeconds);
                     zmq_msg_close(&rxMsg);
                 } else {
+                    zmq_msg_close(&rxMsg);
                     throw rogue::GeneralError::create(
                         "ZmqClient::send",
                         "Timeout waiting for response after %d Seconds, server may be busy!",

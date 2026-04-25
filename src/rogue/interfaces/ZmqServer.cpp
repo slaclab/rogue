@@ -66,6 +66,11 @@ rogue::interfaces::ZmqServer::ZmqServer(const std::string& addr, uint16_t port) 
 
 rogue::interfaces::ZmqServer::~ZmqServer() {
     stop();
+    // stop() only frees the context when start() ran; covers construct-without-start.
+    if (zmqCtx_ != nullptr) {
+        zmq_ctx_destroy(zmqCtx_);
+        zmqCtx_ = nullptr;
+    }
 }
 
 void rogue::interfaces::ZmqServer::start() {
@@ -119,16 +124,30 @@ void rogue::interfaces::ZmqServer::stop() {
         rogue::GilRelease noGil;
         threadEn_ = false;
         log_->info("Waiting for server thread to exit");
-        rThread_->join();
-        sThread_->join();
+        // Null-guard: a bad_alloc on the second start()-allocated thread leaves
+        // one pointer valid and the other null.
+        if (rThread_ != nullptr) {
+            rThread_->join();
+            delete rThread_;
+            rThread_ = nullptr;
+        }
+        if (sThread_ != nullptr) {
+            sThread_->join();
+            delete sThread_;
+            sThread_ = nullptr;
+        }
         log_->info("Closing pub socket");
         zmq_close(this->zmqPub_);
+        zmqPub_ = nullptr;
         log_->info("Closing request socket");
         zmq_close(this->zmqRep_);
+        zmqRep_ = nullptr;
         log_->info("Closing string socket");
         zmq_close(this->zmqStr_);
+        zmqStr_ = nullptr;
         log_->info("Destroying Context");
         zmq_ctx_destroy(this->zmqCtx_);
+        zmqCtx_ = nullptr;
         log_->info("Zmq server done. Exiting");
     }
 }
@@ -146,22 +165,35 @@ bool rogue::interfaces::ZmqServer::tryConnect() {
     this->zmqRep_ = zmq_socket(this->zmqCtx_, ZMQ_REP);
     this->zmqStr_ = zmq_socket(this->zmqCtx_, ZMQ_REP);
 
-    opt = 0;
-    if (zmq_setsockopt(this->zmqPub_, ZMQ_LINGER, &opt, sizeof(int32_t)) != 0)
-        throw(rogue::GeneralError("ZmqServer::tryConnect", "Failed to set socket linger"));
+    // The dtor's stop() only closes these when threadEn_ is true (set after a
+    // successful start()), so any throw between zmq_socket() and start()
+    // completing must clean up here.
+    try {
+        opt = 0;
+        if (zmq_setsockopt(this->zmqPub_, ZMQ_LINGER, &opt, sizeof(int32_t)) != 0)
+            throw(rogue::GeneralError("ZmqServer::tryConnect", "Failed to set socket linger"));
 
-    if (zmq_setsockopt(this->zmqRep_, ZMQ_LINGER, &opt, sizeof(int32_t)) != 0)
-        throw(rogue::GeneralError("ZmqServer::tryConnect", "Failed to set socket linger"));
+        if (zmq_setsockopt(this->zmqRep_, ZMQ_LINGER, &opt, sizeof(int32_t)) != 0)
+            throw(rogue::GeneralError("ZmqServer::tryConnect", "Failed to set socket linger"));
 
-    if (zmq_setsockopt(this->zmqStr_, ZMQ_LINGER, &opt, sizeof(int32_t)) != 0)
-        throw(rogue::GeneralError("ZmqServer::tryConnect", "Failed to set socket linger"));
+        if (zmq_setsockopt(this->zmqStr_, ZMQ_LINGER, &opt, sizeof(int32_t)) != 0)
+            throw(rogue::GeneralError("ZmqServer::tryConnect", "Failed to set socket linger"));
 
-    opt = 100;
-    if (zmq_setsockopt(this->zmqRep_, ZMQ_RCVTIMEO, &opt, sizeof(int32_t)) != 0)
-        throw(rogue::GeneralError("ZmqServer::tryConnect", "Failed to set socket receive timeout"));
+        opt = 100;
+        if (zmq_setsockopt(this->zmqRep_, ZMQ_RCVTIMEO, &opt, sizeof(int32_t)) != 0)
+            throw(rogue::GeneralError("ZmqServer::tryConnect", "Failed to set socket receive timeout"));
 
-    if (zmq_setsockopt(this->zmqStr_, ZMQ_RCVTIMEO, &opt, sizeof(int32_t)) != 0)
-        throw(rogue::GeneralError("ZmqServer::tryConnect", "Failed to set socket receive timeout"));
+        if (zmq_setsockopt(this->zmqStr_, ZMQ_RCVTIMEO, &opt, sizeof(int32_t)) != 0)
+            throw(rogue::GeneralError("ZmqServer::tryConnect", "Failed to set socket receive timeout"));
+    } catch (...) {
+        zmq_close(this->zmqPub_);
+        zmqPub_ = nullptr;
+        zmq_close(this->zmqRep_);
+        zmqRep_ = nullptr;
+        zmq_close(this->zmqStr_);
+        zmqStr_ = nullptr;
+        throw;
+    }
 
     // Setup publish port
     temp = "tcp://";
@@ -169,10 +201,14 @@ bool rogue::interfaces::ZmqServer::tryConnect() {
     temp.append(":");
     temp.append(std::to_string(static_cast<int64_t>(this->basePort_)));
 
+    // Null after close so the auto-port retry loop does not double-close stale handles.
     if (zmq_bind(this->zmqPub_, temp.c_str()) < 0) {
         zmq_close(this->zmqPub_);
+        zmqPub_ = nullptr;
         zmq_close(this->zmqRep_);
+        zmqRep_ = nullptr;
         zmq_close(this->zmqStr_);
+        zmqStr_ = nullptr;
         log_->debug("Failed to bind publish socket to %s: %s", temp.c_str(), zmq_strerror(zmq_errno()));
         return false;
     }
@@ -185,8 +221,11 @@ bool rogue::interfaces::ZmqServer::tryConnect() {
 
     if (zmq_bind(this->zmqRep_, temp.c_str()) < 0) {
         zmq_close(this->zmqPub_);
+        zmqPub_ = nullptr;
         zmq_close(this->zmqRep_);
+        zmqRep_ = nullptr;
         zmq_close(this->zmqStr_);
+        zmqStr_ = nullptr;
         log_->debug("Failed to bind request socket to %s: %s", temp.c_str(), zmq_strerror(zmq_errno()));
         return false;
     }
@@ -199,8 +238,11 @@ bool rogue::interfaces::ZmqServer::tryConnect() {
 
     if (zmq_bind(this->zmqStr_, temp.c_str()) < 0) {
         zmq_close(this->zmqPub_);
+        zmqPub_ = nullptr;
         zmq_close(this->zmqRep_);
+        zmqRep_ = nullptr;
         zmq_close(this->zmqStr_);
+        zmqStr_ = nullptr;
         log_->debug("Failed to bind string request socket to %s: %s", temp.c_str(), zmq_strerror(zmq_errno()));
         return false;
     }
@@ -310,9 +352,9 @@ void rogue::interfaces::ZmqServer::runThread() {
 
             zmq_sendmsg(this->zmqRep_, &txMsg, 0);
 #endif
-
-            zmq_msg_close(&rxMsg);
         }
+        // Close even on RCVTIMEO: zmq_recvmsg() initializes rxMsg regardless.
+        zmq_msg_close(&rxMsg);
     }
     log_->info("Stopped Rogue server thread");
 }
@@ -333,8 +375,9 @@ void rogue::interfaces::ZmqServer::strThread() {
             data = std::string((const char*)zmq_msg_data(&msg), zmq_msg_size(&msg));
             ret  = this->doString(data);
             zmq_send(this->zmqStr_, ret.c_str(), ret.size(), 0);
-            zmq_msg_close(&msg);
         }
+        // Close even on RCVTIMEO: zmq_recvmsg() initializes msg regardless.
+        zmq_msg_close(&msg);
     }
     log_->info("Stopped Rogue string server thread");
 }

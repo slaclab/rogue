@@ -45,9 +45,9 @@ class Application : public rogue::interfaces::stream::Master, public rogue::inte
     // ID
     uint8_t id_;
 
-    // Transmission thread
-    std::thread* thread_;
-    bool threadEn_;
+    // Default-init: dtor before setController() must be a no-op.
+    std::thread* thread_ = nullptr;
+    bool threadEn_ = false;
 
     // Thread background
     void runThread();

@@ -20,6 +20,7 @@
 
 #include <stdint.h>
 
+#include <atomic>
 #include <memory>
 #include <string>
 #include <thread>
@@ -56,14 +57,10 @@ class TcpCore : public rogue::interfaces::stream::Master, public rogue::interfac
     // Outbound Address
     std::string pushAddr_;
 
-    // Zeromq Context
-    void* zmqCtx_;
-
-    // Zeromq inbound port
-    void* zmqPull_;
-
-    // Zeromq outbound port
-    void* zmqPush_;
+    // Default-init so dtor is safe before/after a ctor that throws.
+    void* zmqCtx_  = nullptr;
+    void* zmqPull_ = nullptr;
+    void* zmqPush_ = nullptr;
 
     // Thread background
     void runThread();
@@ -71,9 +68,10 @@ class TcpCore : public rogue::interfaces::stream::Master, public rogue::interfac
     // Log
     std::shared_ptr<rogue::Logging> bridgeLog_;
 
-    // Thread
-    std::thread* thread_;
-    bool threadEn_;
+    // Default-init: dtor must be safe against partial construction.
+    // threadEn_ is atomic to close the stop()/runThread() teardown race.
+    std::thread* thread_ = nullptr;
+    std::atomic<bool> threadEn_{false};
 
     // Lock
     std::mutex bridgeMtx_;

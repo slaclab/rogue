@@ -72,79 +72,97 @@ ris::TcpCore::TcpCore(const std::string& addr, uint16_t port, bool server) {
     this->zmqPull_ = zmq_socket(this->zmqCtx_, ZMQ_PULL);
     this->zmqPush_ = zmq_socket(this->zmqCtx_, ZMQ_PUSH);
 
-    // Don't buffer when no connection
-    opt = 1;
-    if (zmq_setsockopt(this->zmqPush_, ZMQ_IMMEDIATE, &opt, sizeof(int32_t)) != 0)
-        throw(rogue::GeneralError("stream::TcpCore::TcpCore", "Failed to set socket immediate"));
+    // dtor's stop() only frees these once threadEn_ is true; a throw in here
+    // would otherwise leak the context and sockets.
+    try {
+        // Don't buffer when no connection
+        opt = 1;
+        if (zmq_setsockopt(this->zmqPush_, ZMQ_IMMEDIATE, &opt, sizeof(int32_t)) != 0)
+            throw(rogue::GeneralError("stream::TcpCore::TcpCore", "Failed to set socket immediate"));
 
-    opt = 0;
-    if (zmq_setsockopt(this->zmqPush_, ZMQ_LINGER, &opt, sizeof(int32_t)) != 0)
-        throw(rogue::GeneralError("stream::TcpCore::TcpCore", "Failed to set socket linger"));
+        opt = 0;
+        if (zmq_setsockopt(this->zmqPush_, ZMQ_LINGER, &opt, sizeof(int32_t)) != 0)
+            throw(rogue::GeneralError("stream::TcpCore::TcpCore", "Failed to set socket linger"));
 
-    if (zmq_setsockopt(this->zmqPull_, ZMQ_LINGER, &opt, sizeof(int32_t)) != 0)
-        throw(rogue::GeneralError("stream::TcpCore::TcpCore", "Failed to set socket linger"));
+        if (zmq_setsockopt(this->zmqPull_, ZMQ_LINGER, &opt, sizeof(int32_t)) != 0)
+            throw(rogue::GeneralError("stream::TcpCore::TcpCore", "Failed to set socket linger"));
 
-    opt = 100;
-    if (zmq_setsockopt(this->zmqPull_, ZMQ_RCVTIMEO, &opt, sizeof(int32_t)) != 0)
-        throw(rogue::GeneralError("stream::TcpCore::TcpCore", "Failed to set socket receive timeout"));
+        opt = 100;
+        if (zmq_setsockopt(this->zmqPull_, ZMQ_RCVTIMEO, &opt, sizeof(int32_t)) != 0)
+            throw(rogue::GeneralError("stream::TcpCore::TcpCore", "Failed to set socket receive timeout"));
 
-    // Server mode
-    if (server) {
-        this->pullAddr_.append(std::to_string(static_cast<int64_t>(port)));
-        this->pushAddr_.append(std::to_string(static_cast<int64_t>(port + 1)));
+        // Server mode
+        if (server) {
+            this->pullAddr_.append(std::to_string(static_cast<int64_t>(port)));
+            this->pushAddr_.append(std::to_string(static_cast<int64_t>(port + 1)));
 
-        this->bridgeLog_->debug("Creating pull server port: %s", this->pullAddr_.c_str());
+            this->bridgeLog_->debug("Creating pull server port: %s", this->pullAddr_.c_str());
 
-        if (zmq_bind(this->zmqPull_, this->pullAddr_.c_str()) < 0)
-            throw(rogue::GeneralError::create("stream::TcpCore::TcpCore",
-                                              "Failed to bind server to port %" PRIu16
-                                              " at address %s, another process may be using this port",
-                                              port,
-                                              addr.c_str()));
+            if (zmq_bind(this->zmqPull_, this->pullAddr_.c_str()) < 0)
+                throw(rogue::GeneralError::create("stream::TcpCore::TcpCore",
+                                                  "Failed to bind server to port %" PRIu16
+                                                  " at address %s, another process may be using this port",
+                                                  port,
+                                                  addr.c_str()));
 
-        this->bridgeLog_->debug("Creating push server port: %s", this->pushAddr_.c_str());
+            this->bridgeLog_->debug("Creating push server port: %s", this->pushAddr_.c_str());
 
-        if (zmq_bind(this->zmqPush_, this->pushAddr_.c_str()) < 0)
-            throw(rogue::GeneralError::create("stream::TcpCore::TcpCore",
-                                              "Failed to bind server to port %" PRIu16
-                                              " at address %s, another process may be using this port",
-                                              port + 1,
-                                              addr.c_str()));
+            if (zmq_bind(this->zmqPush_, this->pushAddr_.c_str()) < 0)
+                throw(rogue::GeneralError::create("stream::TcpCore::TcpCore",
+                                                  "Failed to bind server to port %" PRIu16
+                                                  " at address %s, another process may be using this port",
+                                                  port + 1,
+                                                  addr.c_str()));
 
-        // Client mode
-    } else {
-        this->pullAddr_.append(std::to_string(static_cast<int64_t>(port + 1)));
-        this->pushAddr_.append(std::to_string(static_cast<int64_t>(port)));
+            // Client mode
+        } else {
+            this->pullAddr_.append(std::to_string(static_cast<int64_t>(port + 1)));
+            this->pushAddr_.append(std::to_string(static_cast<int64_t>(port)));
 
-        this->bridgeLog_->debug("Creating pull client port: %s", this->pullAddr_.c_str());
+            this->bridgeLog_->debug("Creating pull client port: %s", this->pullAddr_.c_str());
 
-        if (zmq_connect(this->zmqPull_, this->pullAddr_.c_str()) < 0)
-            throw(rogue::GeneralError::create("stream::TcpCore::TcpCore",
-                                              "Failed to connect to remote port %" PRIu16 " at address %s",
-                                              port + 1,
-                                              addr.c_str()));
+            if (zmq_connect(this->zmqPull_, this->pullAddr_.c_str()) < 0)
+                throw(rogue::GeneralError::create("stream::TcpCore::TcpCore",
+                                                  "Failed to connect to remote port %" PRIu16 " at address %s",
+                                                  port + 1,
+                                                  addr.c_str()));
 
-        this->bridgeLog_->debug("Creating push client port: %s", this->pushAddr_.c_str());
+            this->bridgeLog_->debug("Creating push client port: %s", this->pushAddr_.c_str());
 
-        if (zmq_connect(this->zmqPush_, this->pushAddr_.c_str()) < 0)
-            throw(rogue::GeneralError::create("stream::TcpCore::TcpCore",
-                                              "Failed to connect to remote port %" PRIu16 " at address %s",
-                                              port,
-                                              addr.c_str()));
-    }
+            if (zmq_connect(this->zmqPush_, this->pushAddr_.c_str()) < 0)
+                throw(rogue::GeneralError::create("stream::TcpCore::TcpCore",
+                                                  "Failed to connect to remote port %" PRIu16 " at address %s",
+                                                  port,
+                                                  addr.c_str()));
+        }
 
-    // Start rx thread
-    threadEn_     = true;
-    this->thread_ = new std::thread(&ris::TcpCore::runThread, this);
+        // Start rx thread
+        threadEn_     = true;
+        this->thread_ = new std::thread(&ris::TcpCore::runThread, this);
 
-    this->bridgeLog_->debug("TCP stream bridge ready. pull=%s push=%s",
-                            this->pullAddr_.c_str(),
-                            this->pushAddr_.c_str());
+        this->bridgeLog_->debug("TCP stream bridge ready. pull=%s push=%s",
+                                this->pullAddr_.c_str(),
+                                this->pushAddr_.c_str());
 
-    // Set a thread name
+        // Set a thread name
 #ifndef __MACH__
-    pthread_setname_np(thread_->native_handle(), "TcpCore");
+        pthread_setname_np(thread_->native_handle(), "TcpCore");
 #endif
+    } catch (...) {
+        if (zmqPull_ != nullptr) {
+            zmq_close(zmqPull_);
+            zmqPull_ = nullptr;
+        }
+        if (zmqPush_ != nullptr) {
+            zmq_close(zmqPush_);
+            zmqPush_ = nullptr;
+        }
+        if (zmqCtx_ != nullptr) {
+            zmq_ctx_destroy(zmqCtx_);
+            zmqCtx_ = nullptr;
+        }
+        throw;
+    }
 }
 
 //! Destructor
@@ -162,12 +180,17 @@ void ris::TcpCore::stop() {
         rogue::GilRelease noGil;
         threadEn_ = false;
         thread_->join();
+        delete thread_;
+        thread_ = nullptr;
         this->bridgeLog_->debug("Stopping TCP stream bridge. pull=%s push=%s",
                                 this->pullAddr_.c_str(),
                                 this->pushAddr_.c_str());
         zmq_close(this->zmqPull_);
+        zmqPull_ = nullptr;
         zmq_close(this->zmqPush_);
+        zmqPush_ = nullptr;
         zmq_ctx_destroy(this->zmqCtx_);
+        zmqCtx_ = nullptr;
     }
 }
 

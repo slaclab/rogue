@@ -62,8 +62,9 @@ class AxiMemMap : public rogue::interfaces::memory::Slave {
     // Logging
     std::shared_ptr<rogue::Logging> log_;
 
-    std::thread* thread_;
-    bool threadEn_;
+    // Default-init: dtor must be safe against partial construction.
+    std::thread* thread_ = nullptr;
+    bool threadEn_ = false;
 
     // Background worker thread entry point.
     void runThread();

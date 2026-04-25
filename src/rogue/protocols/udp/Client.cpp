@@ -80,8 +80,13 @@ rpu::Client::Client(std::string host, uint16_t port, bool jumbo) : rpu::Core(jum
     aiHints.ai_socktype = SOCK_DGRAM;
     aiHints.ai_protocol = IPPROTO_UDP;
 
-    if (::getaddrinfo(address_.c_str(), 0, &aiHints, &aiList) || !aiList)
+    // POSIX leaves *aiList undefined on failure; do not freeaddrinfo() it.
+    if (::getaddrinfo(address_.c_str(), 0, &aiHints, &aiList) != 0 || aiList == nullptr) {
+        // ctor throw skips the dtor; close fd here to avoid leak
+        ::close(fd_);
+        fd_ = -1;
         throw(rogue::GeneralError::create("Client::Client", "Failed to resolve address %s", address_.c_str()));
+    }
 
     addr = (const sockaddr_in*)(aiList->ai_addr);
 
@@ -90,6 +95,9 @@ rpu::Client::Client(std::string host, uint16_t port, bool jumbo) : rpu::Core(jum
     ((struct sockaddr_in*)(&remAddr_))->sin_family      = AF_INET;
     ((struct sockaddr_in*)(&remAddr_))->sin_addr.s_addr = addr->sin_addr.s_addr;
     ((struct sockaddr_in*)(&remAddr_))->sin_port        = htons(port_);
+
+    ::freeaddrinfo(aiList);
+    aiList = nullptr;
 
     // Fixed size buffer pool
     setFixedSize(maxPayload());
@@ -118,10 +126,15 @@ rpu::Client::~Client() {
 void rpu::Client::stop() {
     if (threadEn_) {
         threadEn_ = false;
-        thread_->join();
-        udpLog_->debug("Stopping UDP client for remote %s:%" PRIu16, address_.c_str(), port_);
-
+        // close() before join() unblocks the worker's recvfrom(). Defer fd_ = -1
+        // until after join so a final FD_SET(fd_) does not see -1.
+        rogue::GilRelease noGil;
         ::close(fd_);
+        thread_->join();
+        delete thread_;
+        thread_ = nullptr;
+        fd_ = -1;
+        udpLog_->debug("Stopping UDP client for remote %s:%" PRIu16, address_.c_str(), port_);
     }
 }
 

@@ -5,3 +5,11 @@ rogue_add_cpp_test(rogue-cpp-version
       cpp-core
       no-python
 )
+
+rogue_add_cpp_test(rogue-cpp-atomic-thread-flags
+   SOURCES
+      test_atomic_thread_flags.cpp
+   LABELS
+      cpp-core
+      no-python
+)

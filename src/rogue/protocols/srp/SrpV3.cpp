@@ -245,7 +245,11 @@ void rps::SrpV3::acceptFrame(ris::FramePtr frame) {
 
     // Find Transaction
     if ((tran = getTransaction(id)) == NULL) {
-        log_->warning("Failed to find transaction id=%" PRIu32, id);
+        log_->warning("Failed to find transaction id=%" PRIu32
+                      ". ver=%" PRIu32 ", type=%" PRIu32,
+                      id,
+                      static_cast<uint32_t>(header[0] & 0xFF),
+                      static_cast<uint32_t>((header[0] >> 8) & 0x3));
         return;  // Bad id or post, drop frame
     }
 
@@ -268,7 +272,9 @@ void rps::SrpV3::acceptFrame(ris::FramePtr frame) {
     if (((header[0] & 0xFFFFC3FF) != expHeader[0]) || (header[1] != expHeader[1]) || (header[2] != expHeader[2]) ||
         (header[3] != expHeader[3]) || (header[4] != expHeader[4])) {
         log_->warning("Bad header for %" PRIu32, id);
-        tran->error("Received SRPV3 message did not match expected protocol");
+        tran->error("Received SRPV3 message did not match expected protocol. "
+                     "id=%" PRIu32 ", addr=0x%08" PRIx32 "%08" PRIx32,
+                     id, header[3], header[2]);
         return;
     }
 
@@ -293,7 +299,10 @@ void rps::SrpV3::acceptFrame(ris::FramePtr frame) {
                       expFrameLen,
                       tran->size(),
                       header[4] + 1);
-        tran->error("Received SRPV3 message had a header size mismatch");
+        tran->error("Received SRPV3 message had a header size mismatch. "
+                     "id=%" PRIu32 ", frameSize=%" PRIu32 ", expectedSize=%" PRIu32
+                     ", tranSize=%" PRIu32 ", headerSize=%" PRIu32,
+                     id, fSize, expFrameLen, tran->size(), header[4] + 1);
         return;
     }
 
