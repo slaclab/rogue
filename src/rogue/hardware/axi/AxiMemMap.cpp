@@ -82,9 +82,20 @@ rha::AxiMemMap::AxiMemMap(std::string path) : rim::Slave(4, 0xFFFFFFFF) {
             "Rogue DmaDriver.h API Version (DMA_VERSION) does not match the aes-stream-driver API version"));
     }
 
-    // Start read thread
+    // Start read thread last so anything that may throw (e.g. log allocation)
+    // runs before the worker thread is launched. The ctor has no try/catch
+    // and a throw after thread launch would leak the thread and let it run
+    // against a half-destroyed object.
     threadEn_ = true;
-    thread_   = new std::thread(&rha::AxiMemMap::runThread, this);
+    try {
+        thread_ = new std::thread(&rha::AxiMemMap::runThread, this);
+    } catch (...) {
+        // ctor throw skips the dtor; close fd here to avoid leak
+        threadEn_ = false;
+        ::close(fd_);
+        fd_ = -1;
+        throw;
+    }
 }
 
 //! Destructor

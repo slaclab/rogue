@@ -70,9 +70,22 @@ rh::MemMap::MemMap(uint64_t base, uint32_t size) : rim::Slave(4, 0xFFFFFFFF) {
 
     log_->debug("Created map to 0x%" PRIx64 " with size 0x%" PRIx32, base, size);
 
-    // Start read thread
+    // Start read thread last so anything that may throw (e.g. log allocation)
+    // runs before the worker thread is launched. The ctor has no try/catch
+    // and a throw after thread launch would leak the thread and let it run
+    // against a half-destroyed object.
     threadEn_ = true;
-    thread_   = new std::thread(&rh::MemMap::runThread, this);
+    try {
+        thread_ = new std::thread(&rh::MemMap::runThread, this);
+    } catch (...) {
+        // ctor throw skips the dtor; release map_/fd_ here to avoid leak
+        threadEn_ = false;
+        munmap(reinterpret_cast<void*>(const_cast<uint8_t*>(map_)), size_);
+        map_ = nullptr;
+        ::close(fd_);
+        fd_ = -1;
+        throw;
+    }
 }
 
 //! Destructor

@@ -212,6 +212,12 @@ void rogue::interfaces::ZmqClient::stop() {
 }
 
 void rogue::interfaces::ZmqClient::setTimeout(uint32_t msecs, bool waitRetry) {
+    // ZMQ sockets are not thread-safe; serialize against any in-flight
+    // send()/sendString() that is using zmqReq_, and serialize the
+    // timeout_/waitRetry_ writes against the readers in those paths.
+    rogue::GilRelease noGil;
+    std::lock_guard<std::mutex> lock(reqLock_);
+
     waitRetry_ = waitRetry;
     timeout_   = msecs;
 

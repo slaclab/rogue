@@ -113,7 +113,15 @@ rpu::Client::Client(std::string host, uint16_t port, bool jumbo) : rpu::Core(jum
     // and a throw after thread launch would leak the thread and let it run
     // against a half-destroyed object.
     threadEn_ = true;
-    thread_   = new std::thread(&rpu::Client::runThread, this, std::weak_ptr<int>(scopePtr));
+    try {
+        thread_ = new std::thread(&rpu::Client::runThread, this, std::weak_ptr<int>(scopePtr));
+    } catch (...) {
+        // ctor throw skips the dtor; close fd here to avoid leak
+        threadEn_ = false;
+        ::close(fd_);
+        fd_ = -1;
+        throw;
+    }
 
     // Set a thread name
 #ifndef __MACH__

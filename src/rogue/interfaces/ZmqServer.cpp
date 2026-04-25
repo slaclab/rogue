@@ -333,24 +333,34 @@ void rogue::interfaces::ZmqServer::runThread() {
         // Get the message
         if (zmq_recvmsg(this->zmqRep_, &rxMsg, 0) > 0) {
 #ifndef NO_PYTHON
-            Py_buffer valueBuf;
-            rogue::ScopedGil gil;
-            PyObject* val = Py_BuildValue("y#", zmq_msg_data(&rxMsg), zmq_msg_size(&rxMsg));
+            // Wrap the Python-touching path so a misbehaving _doRequest() (or
+            // a Py_BuildValue / PyObject_GetBuffer failure on its return value)
+            // cannot escape this worker and std::terminate() the process.
+            try {
+                Py_buffer valueBuf;
+                rogue::ScopedGil gil;
+                PyObject* val = Py_BuildValue("y#", zmq_msg_data(&rxMsg), zmq_msg_size(&rxMsg));
 
-            if (val == NULL) throw(rogue::GeneralError::create("ZmqServer::runThread", "Failed to generate bytearray"));
+                if (val == NULL)
+                    throw(rogue::GeneralError::create("ZmqServer::runThread", "Failed to generate bytearray"));
 
-            bp::handle<> handle(val);
+                bp::handle<> handle(val);
 
-            bp::object ret = this->doRequest(bp::object(handle));
+                bp::object ret = this->doRequest(bp::object(handle));
 
-            if (PyObject_GetBuffer(ret.ptr(), &(valueBuf), PyBUF_SIMPLE) < 0)
-                throw(rogue::GeneralError::create("ZmqServer::runThread", "Failed to extract object data"));
+                if (PyObject_GetBuffer(ret.ptr(), &(valueBuf), PyBUF_SIMPLE) < 0)
+                    throw(rogue::GeneralError::create("ZmqServer::runThread", "Failed to extract object data"));
 
-            zmq_msg_init_size(&txMsg, valueBuf.len);
-            memcpy(zmq_msg_data(&txMsg), valueBuf.buf, valueBuf.len);
-            PyBuffer_Release(&valueBuf);
+                zmq_msg_init_size(&txMsg, valueBuf.len);
+                memcpy(zmq_msg_data(&txMsg), valueBuf.buf, valueBuf.len);
+                PyBuffer_Release(&valueBuf);
 
-            zmq_sendmsg(this->zmqRep_, &txMsg, 0);
+                zmq_sendmsg(this->zmqRep_, &txMsg, 0);
+            } catch (const std::exception& e) {
+                log_->warning("ZmqServer::runThread: dropping request after exception: %s", e.what());
+            } catch (...) {
+                log_->warning("ZmqServer::runThread: dropping request after unknown exception");
+            }
 #endif
         }
         // Close even on RCVTIMEO: zmq_recvmsg() initializes rxMsg regardless.
