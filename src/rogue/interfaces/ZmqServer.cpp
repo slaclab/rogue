@@ -370,8 +370,6 @@ void rogue::interfaces::ZmqServer::runThread() {
 }
 
 void rogue::interfaces::ZmqServer::strThread() {
-    std::string data;
-    std::string ret;
     zmq_msg_t msg;
 
     log_->logThreadId();
@@ -382,9 +380,19 @@ void rogue::interfaces::ZmqServer::strThread() {
 
         // Get the message
         if (zmq_recvmsg(this->zmqStr_, &msg, 0) > 0) {
-            data = std::string((const char*)zmq_msg_data(&msg), zmq_msg_size(&msg));
-            ret  = this->doString(data);
-            zmq_send(this->zmqStr_, ret.c_str(), ret.size(), 0);
+            // Wrap the Python-touching path so a misbehaving _doString()
+            // override (or a std::string allocation failure on a large
+            // payload) cannot escape this worker and std::terminate() the
+            // process. Mirrors the protection added to runThread().
+            try {
+                std::string data((const char*)zmq_msg_data(&msg), zmq_msg_size(&msg));
+                std::string ret = this->doString(data);
+                zmq_send(this->zmqStr_, ret.c_str(), ret.size(), 0);
+            } catch (const std::exception& e) {
+                log_->warning("ZmqServer::strThread: dropping request after exception: %s", e.what());
+            } catch (...) {
+                log_->warning("ZmqServer::strThread: dropping request after unknown exception");
+            }
         }
         // Close even on RCVTIMEO: zmq_recvmsg() initializes msg regardless.
         zmq_msg_close(&msg);

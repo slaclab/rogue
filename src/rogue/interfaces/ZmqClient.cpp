@@ -380,15 +380,28 @@ void rogue::interfaces::ZmqClient::runThread() {
         // Get the message
         if (zmq_recvmsg(this->zmqSub_, &msg, 0) > 0) {
 #ifndef NO_PYTHON
-            rogue::ScopedGil gil;
-            PyObject* val = Py_BuildValue("y#", zmq_msg_data(&msg), zmq_msg_size(&msg));
-            bp::handle<> handle(val);
-            bp::object dat = bp::object(handle);
-            this->doUpdate(dat);
+            // Wrap the Python-touching path so a misbehaving _doUpdate() (or a
+            // Py_BuildValue / bp::handle failure on the incoming buffer) cannot
+            // escape this worker and std::terminate() the process. Mirrors the
+            // protection added to ZmqServer::runThread().
+            try {
+                rogue::ScopedGil gil;
+                PyObject* val = Py_BuildValue("y#", zmq_msg_data(&msg), zmq_msg_size(&msg));
+
+                if (val == NULL)
+                    throw(rogue::GeneralError::create("ZmqClient::runThread", "Failed to generate bytearray"));
+
+                bp::handle<> handle(val);
+                bp::object dat = bp::object(handle);
+                this->doUpdate(dat);
+            } catch (const std::exception& e) {
+                log_->warning("ZmqClient::runThread: dropping update after exception: %s", e.what());
+            } catch (...) {
+                log_->warning("ZmqClient::runThread: dropping update after unknown exception");
+            }
 #endif
-            zmq_msg_close(&msg);
-        } else {
-            zmq_msg_close(&msg);
         }
+        // Close even on RCVTIMEO: zmq_recvmsg() initializes msg regardless.
+        zmq_msg_close(&msg);
     }
 }
