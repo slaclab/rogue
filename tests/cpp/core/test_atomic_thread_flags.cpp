@@ -3,15 +3,15 @@
  * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
- * Compile-time guard that the worker-thread enable flag in TcpCore and the UDP
- * Core stays declared as ``std::atomic<bool>``. A plain ``bool`` allows the
- * compiler to hoist the read out of ``while (threadEn_) { ... }`` and is a
- * data race against the caller-thread store performed in ``stop()``. The bug
- * is invisible on most x86 builds (single-byte writes are naturally atomic
- * and the work loop's syscalls inhibit hoisting), so a behavioral test
- * cannot reliably catch the regression without ThreadSanitizer. A
- * compile-time check does, by failing the build the moment the type is
- * downgraded.
+ * Compile-time guard that the worker-thread enable flag in TcpCore, the UDP
+ * Core, and AxiStreamDma stays declared as ``std::atomic<bool>``. A plain
+ * ``bool`` allows the compiler to hoist the read out of
+ * ``while (threadEn_) { ... }`` and is a data race against the caller-thread
+ * store performed in ``stop()``. The bug is invisible on most x86 builds
+ * (single-byte writes are naturally atomic and the work loop's syscalls
+ * inhibit hoisting), so a behavioral test cannot reliably catch the
+ * regression without ThreadSanitizer. A compile-time check does, by failing
+ * the build the moment the type is downgraded.
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to
  * the license terms in the LICENSE.txt file found in the top-level directory
@@ -26,6 +26,7 @@
 #include <type_traits>
 
 #include "doctest/doctest.h"
+#include "rogue/hardware/axi/AxiStreamDma.h"
 #include "rogue/interfaces/stream/TcpCore.h"
 #include "rogue/protocols/udp/Core.h"
 
@@ -47,6 +48,12 @@ struct UdpCoreFlagProbe : public rogue::protocols::udp::Core {
                   "rogue::protocols::udp::Core::threadEn_ must be std::atomic<bool>");
 };
 
+struct AxiStreamDmaFlagProbe : public rogue::hardware::axi::AxiStreamDma {
+    using AxiStreamDma::AxiStreamDma;
+    static_assert(std::is_same<decltype(threadEn_), std::atomic<bool>>::value,
+                  "rogue::hardware::axi::AxiStreamDma::threadEn_ must be std::atomic<bool>");
+};
+
 }  // namespace
 
 TEST_CASE("worker-thread enable flags are std::atomic<bool>") {
@@ -55,4 +62,5 @@ TEST_CASE("worker-thread enable flags are std::atomic<bool>") {
     // pass for the test harness.
     CHECK(sizeof(TcpCoreFlagProbe) >= sizeof(std::atomic<bool>));
     CHECK(sizeof(UdpCoreFlagProbe) >= sizeof(std::atomic<bool>));
+    CHECK(sizeof(AxiStreamDmaFlagProbe) >= sizeof(std::atomic<bool>));
 }

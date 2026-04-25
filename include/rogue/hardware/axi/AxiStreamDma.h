@@ -20,6 +20,7 @@
 
 #include <stdint.h>
 
+#include <atomic>
 #include <map>
 #include <memory>
 #include <string>
@@ -112,10 +113,13 @@ class AxiStreamDma : public rogue::interfaces::stream::Master, public rogue::int
     // SSI flag handling enable.
     bool enSsi_;
 
+  protected:
     // Default-init: dtor must be safe against partial construction.
+    // threadEn_ is atomic to close the stop()/runThread() teardown race.
     std::thread* thread_ = nullptr;
-    bool threadEn_ = false;
+    std::atomic<bool> threadEn_{false};
 
+  private:
     // Logger instance.
     std::shared_ptr<rogue::Logging> log_;
 
