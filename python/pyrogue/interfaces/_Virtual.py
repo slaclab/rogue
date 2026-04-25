@@ -140,6 +140,11 @@ class VirtualNode(pr.Node):
         self._root      = None
         self._client    = None
         self._functions = []
+        # _loadLock + _loaded form a double-checked-locking pair. Multiple
+        # threads may race to traverse a freshly-attached subtree (e.g. a GUI
+        # thread and a script thread both walking root.nodes); the lock ensures
+        # _loadNodes() runs exactly once while still allowing the common
+        # already-loaded path to skip the lock entirely.
         self._loadLock  = threading.Lock()
         self._loaded    = False
 
@@ -164,6 +169,9 @@ class VirtualNode(pr.Node):
 
     def __getattr__(self, name: str) -> Any:
         """Lazy-load children on first access, then resolve as a child attribute."""
+        # Outer check is a fast-path for the common already-loaded case; the
+        # inner re-check under the lock prevents two racing callers from both
+        # entering _loadNodes() and populating self._nodes twice.
         if not self._loaded:
             with self._loadLock:
                 if not self._loaded:
@@ -224,6 +232,9 @@ class VirtualNode(pr.Node):
 
     def _loadNodes(self) -> None:
         """Populate child nodes from remote metadata."""
+        # _loaded is set AFTER the dict is fully populated. If it were set
+        # first, a concurrent reader that observed _loaded=True would skip the
+        # double-checked-locking guard above and walk a half-built _nodes dict.
         for k,node in self._client._remoteAttr(self._path, 'nodes').items():
             if k in self._nodes:
                 node._parent = self
@@ -432,7 +443,13 @@ class VirtualClient(rogue.interfaces.ZmqClient):
         self._vcInitialized = True
         VirtualClient.ClientCache[self._cacheKey] = self
 
-        # ZmqClient.__init__ spawns the SUB thread; pre-init state it may touch.
+        # Initialize every attribute the SUB-thread callback chain (_doUpdate,
+        # _requestDone, _checkLinkState) can touch BEFORE calling the C++
+        # ZmqClient.__init__. ZmqClient.__init__ spawns the SUB thread, and
+        # the very first published frame can race the rest of this ctor — if
+        # _reqLock / _root / _ltime / _link / _varListeners are still missing
+        # when that callback fires, we get an AttributeError on a background
+        # thread (no traceback the caller can catch).
         self._varListeners = []
         self._monitors = []
         self._root  = None
@@ -449,6 +466,9 @@ class VirtualClient(rogue.interfaces.ZmqClient):
         try:
             rogue.interfaces.ZmqClient.__init__(self,addr,port,False)
         except Exception:
+            # Roll back cache registration and the initialized flag so a retry
+            # with the same (addr, port) constructs a fresh instance instead
+            # of returning this half-built one.
             self._removeFromCache()
             self._vcInitialized = False
             raise
@@ -553,6 +573,9 @@ class VirtualClient(rogue.interfaces.ZmqClient):
     @property
     def linked(self) -> bool:
         """Whether the client is currently linked to the server."""
+        # _link is mutated by _requestDone() and _checkLinkState() under
+        # _reqLock; read it under the same lock so callers cannot observe a
+        # torn write or stale value cached by the GIL-release boundary.
         with self._reqLock:
             return self._link
 
@@ -601,6 +624,12 @@ class VirtualClient(rogue.interfaces.ZmqClient):
 
     def _requestDone(self, success: bool) -> None:
         """Record request completion and treat successful replies as activity."""
+        # All state mutation (_reqCount, _reqSince, _ltime, _link) is performed
+        # under _reqLock so _checkLinkState sees a consistent snapshot. The
+        # link-up notification is deferred until the lock is released — calling
+        # user-supplied monitors while holding the lock would let a slow
+        # callback stall every other request thread, and a callback that
+        # re-enters the client (e.g. issues a fresh _remoteAttr) would deadlock.
         notify = False
         with self._reqLock:
             self._reqCount = max(0, self._reqCount - 1)
@@ -612,7 +641,9 @@ class VirtualClient(rogue.interfaces.ZmqClient):
                     self._link = True
                     notify = True
 
-        # First success fires inside _waitForRoot before _root is populated.
+        # The very first successful reply happens inside _waitForRoot, before
+        # __init__ has assigned self._root. Suppress the notification in that
+        # window so the log message and monitors don't dereference None.
         if notify and self._root is not None:
             self._log.warning(f"I have finally heard from {self._root.name}. All is good!")
             for mon in self._monitors:
@@ -620,6 +651,14 @@ class VirtualClient(rogue.interfaces.ZmqClient):
 
     def _checkLinkState(self) -> None:
         """Update link state from recent activity while tolerating busy requests."""
+        # Snapshot _ltime, _link, _reqCount, and _reqSince under a single
+        # _reqLock acquisition so the decision below is based on a coherent
+        # view. Without this, the prior code separately called
+        # _requestPending() and _requestAge() and could conclude "no request
+        # pending" after a request had just started — flapping the link
+        # spuriously under load. Logging and monitor callbacks are emitted
+        # AFTER releasing the lock for the same deadlock/stall reasons as
+        # _requestDone above.
         log_message = None
         notify_link: bool | None = None
 
@@ -634,6 +673,9 @@ class VirtualClient(rogue.interfaces.ZmqClient):
 
             if link and delta > self._linkTimeout:
                 if reqPending:
+                    # An in-flight request is the legitimate "I'm busy"
+                    # signal — tolerate it indefinitely unless the optional
+                    # requestStallTimeout policy says otherwise.
                     if (self._requestStallTimeout is None
                             or reqAge is None
                             or reqAge <= self._requestStallTimeout):
@@ -689,6 +731,10 @@ class VirtualClient(rogue.interfaces.ZmqClient):
 
     def _doUpdate(self, data: bytes) -> None:
         """Process variable update data from the server."""
+        # Publish frames count as link activity. _ltime is read by
+        # _checkLinkState under _reqLock, so write it under the same lock
+        # to keep the heartbeat update atomic with respect to the link-state
+        # decision running on the monitor thread.
         with self._reqLock:
             self._ltime = time.time()
 
