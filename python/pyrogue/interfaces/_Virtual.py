@@ -711,11 +711,16 @@ class VirtualClient(rogue.interfaces.ZmqClient):
         self._monEnable = False
         thr = self._monThread
 
+        # is_alive() check matches the discipline used in PollQueue / Process /
+        # Root / SimpleClient / SqlLogger / SideBandSim / Uart / Gpib stop()s
+        # and skips a join() that would otherwise raise RuntimeError if the
+        # Thread() was created but Thread.start() never ran.
         if (thr is not None
+                and hasattr(thr, 'is_alive') and thr.is_alive()
                 and hasattr(thr, 'join')
                 and threading.current_thread() is not thr):
             thr.join(timeout=3.0)
-            if hasattr(thr, 'is_alive') and thr.is_alive():
+            if thr.is_alive():
                 self._log.warning("Monitor thread did not stop within timeout")
 
         # ClientCache pins this instance, so the C++ stop() must run explicitly
