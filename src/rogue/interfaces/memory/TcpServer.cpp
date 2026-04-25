@@ -100,13 +100,14 @@ rim::TcpServer::TcpServer(std::string addr, uint16_t port) {
                                               port,
                                               addr.c_str()));
 
-        // Start rx thread
-        threadEn_     = true;
-        this->thread_ = new std::thread(&rim::TcpServer::runThread, this);
-
         this->bridgeLog_->debug("TCP memory bridge ready. request=%s response=%s",
                                 this->reqAddr_.c_str(),
                                 this->respAddr_.c_str());
+
+        // Start rx thread last so anything that may throw (e.g. log allocation)
+        // runs before the worker thread is launched.
+        threadEn_     = true;
+        this->thread_ = new std::thread(&rim::TcpServer::runThread, this);
 
         // Set a thread name
 #ifndef __MACH__

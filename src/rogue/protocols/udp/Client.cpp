@@ -103,14 +103,17 @@ rpu::Client::Client(std::string host, uint16_t port, bool jumbo) : rpu::Core(jum
     setFixedSize(maxPayload());
     setPoolSize(10000);  // Initial value, 10K frames
 
-    // Start rx thread
-    threadEn_ = true;
-    thread_   = new std::thread(&rpu::Client::runThread, this, std::weak_ptr<int>(scopePtr));
-
     udpLog_->debug("UDP client ready. remote=%s:%" PRIu16 ", maxPayload=%" PRIu32,
                    address_.c_str(),
                    port_,
                    maxPayload());
+
+    // Start rx thread last so anything that may throw (e.g. log allocation)
+    // runs before the worker thread is launched. The ctor has no try/catch
+    // and a throw after thread launch would leak the thread and let it run
+    // against a half-destroyed object.
+    threadEn_ = true;
+    thread_   = new std::thread(&rpu::Client::runThread, this, std::weak_ptr<int>(scopePtr));
 
     // Set a thread name
 #ifndef __MACH__

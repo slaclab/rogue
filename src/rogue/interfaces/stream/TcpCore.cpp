@@ -136,13 +136,14 @@ ris::TcpCore::TcpCore(const std::string& addr, uint16_t port, bool server) {
                                                   addr.c_str()));
         }
 
-        // Start rx thread
-        threadEn_     = true;
-        this->thread_ = new std::thread(&ris::TcpCore::runThread, this);
-
         this->bridgeLog_->debug("TCP stream bridge ready. pull=%s push=%s",
                                 this->pullAddr_.c_str(),
                                 this->pushAddr_.c_str());
+
+        // Start rx thread last so anything that may throw (e.g. log allocation)
+        // runs before the worker thread is launched.
+        threadEn_     = true;
+        this->thread_ = new std::thread(&ris::TcpCore::runThread, this);
 
         // Set a thread name
 #ifndef __MACH__

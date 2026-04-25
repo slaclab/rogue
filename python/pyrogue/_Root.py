@@ -487,7 +487,15 @@ class Root(pr.Device):
         self._log.info("Stopping root lifecycle")
         self._running = False
         self._updateQueue.put(None)
-        self._updateThread.join()
+
+        # Self-thread guard: a variable-update callback can land here via
+        # the update worker, which would otherwise self-deadlock on join.
+        upd = getattr(self, "_updateThread", None)
+        if (upd is not None
+                and hasattr(upd, 'is_alive') and upd.is_alive()
+                and hasattr(upd, 'join')
+                and threading.current_thread() is not upd):
+            upd.join()
 
         # Join the heartbeat (1 s tick) before tree teardown so it cannot
         # write self.Time after Device._stop().
