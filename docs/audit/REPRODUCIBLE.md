@@ -106,3 +106,23 @@ Phase 4 landed three surgical commits that improve the UDP teardown discipline:
 - Pre-fix: `docs/audit/evidence/tsan-full/ci-tsan-24908065882.log.gz` (worker alive, pre-Path-A)
 - Post-Path-A: `docs/audit/evidence/tsan-full/ci-tsan-24909162566.log.gz` (worker joined, new SIGABRT pattern)
 - Post-Path-A.1 final: `docs/audit/evidence/tsan-full/ci-tsan-24909791467.log.gz` (same new SIGABRT pattern, D-02 budget exhausted)
+
+## Phase 5 Verification
+
+**Verified:** 2026-04-25T00:16:26Z
+**Branch tip audited:** `95ebf1e4f860fc7fade430a1b36476a428932431` (hunt-for-red-october)
+**Canonical runs:** ci-tsan run `24916134440` + ci-asan run `24916880204` (Phase 5 D-02 single-pair budget)
+**Format:** Appendix (D-Claude-Discretion fallback — pipe-table column append rejected per 05-PATTERNS.md readability concern at 60+ char cell widths across 8 rows)
+
+### Per-row SC-1 disposition
+
+| ID | D-01 Disposition | Pre-fix evidence | Post-fix evidence | Fix commit (40-char) | Branch reachability |
+|----|------------------|------------------|-------------------|----------------------|---------------------|
+| STREAM-003 | NOT-VERIFIED — escalated for verifier disposition | [tsan](./evidence/tsan/STREAM-003.log) | [tsan-post-fix](./evidence/tsan-post-fix/STREAM-003.log) | `ad5d184b2acb43b461b76d4636f7324ae13223f9` | `git cat-file -e ad5d184b2` PASS |
+| PROTO-UDP-001 | original-race-closed-partial-carve-out | [tsan](./evidence/tsan/PROTO-UDP-001.log) | [tsan-post-fix](./evidence/tsan-post-fix/PROTO-UDP-001.log) | `f841be6a90385dd77d49bd22489578b133a1ff84` (chain `937d39e61..f841be6a9`) | `git cat-file -e f841be6a9` PASS — see §Phase 4 Partial Fix Notes |
+| HW-CORE-017 | test-fail-pivot-clean | [tsan](./evidence/tsan/HW-CORE-017.log) | [tsan-post-fix](./evidence/tsan-post-fix/HW-CORE-017.log) | `3a8e137f81179ff3e41491570d0e0b3fdcc69fcb` | `git cat-file -e 3a8e137f8` PASS |
+| MEM-005 | test-fail-pivot-clean | [tsan](./evidence/tsan/MEM-005.log) | [tsan-post-fix](./evidence/tsan-post-fix/MEM-005.log) | `a16bc16019c79c195c0ba406506ba16acd00b44f` | `git cat-file -e a16bc1601` PASS |
+| MEM-006 | test-fail-pivot-clean | [tsan](./evidence/tsan/MEM-006.log) | [tsan-post-fix](./evidence/tsan-post-fix/MEM-006.log) | `b0080df1be5fa3fee2bb93c32036cacbcc3aa7a4` | `git cat-file -e b0080df1b` PASS |
+| HW-CORE-007 | tier-2-codereview-asan-infra-blocked | [asan](./evidence/asan/HW-CORE-007.log) | [asan-post-fix](./evidence/asan-post-fix/HW-CORE-007.log) | `dc41ed5cde8fe7b3b913f08ceb7a4520f59d6985` | `git cat-file -e dc41ed5cd` PASS |
+| HW-CORE-010 | tier-2-codereview-asan-infra-blocked | [asan](./evidence/asan/HW-CORE-010.log) | [asan-post-fix](./evidence/asan-post-fix/HW-CORE-010.log) | `893551b798337bbe98d0d7e26607b65d2af64a7b` | `git cat-file -e 893551b79` PASS |
+| HW-CORE-011 | tier-2-codereview-asan-infra-blocked | [asan](./evidence/asan/HW-CORE-011.log) | [asan-post-fix](./evidence/asan-post-fix/HW-CORE-011.log) | `800373367a43b290a7486869fe2aaa776ac78b76` | `git cat-file -e 800373367` PASS |
