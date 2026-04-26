@@ -300,8 +300,14 @@ bp::object rogue::interfaces::ZmqClient::send(bp::object value) {
 
     if (doString_) throw rogue::GeneralError::create("ZmqClient::send", "Invalid send call in string mode");
 
-    if (PyObject_GetBuffer(value.ptr(), &(valueBuf), PyBUF_SIMPLE) < 0)
+    // PyErr_Print surfaces the Python-level error (e.g. TypeError from a
+    // non-buffer argument) AND clears the thread's error indicator; without
+    // it boost::python may observe "exception already set" when translating
+    // our throw, masking the original cause.
+    if (PyObject_GetBuffer(value.ptr(), &(valueBuf), PyBUF_SIMPLE) < 0) {
+        PyErr_Print();
         throw(rogue::GeneralError::create("ZmqClient::send", "Failed to extract object data"));
+    }
 
     // zmq_msg_init_size returns -1 on allocation failure; the message is left
     // uninitialized so memcpy/zmq_msg_data must not run, and we still own
@@ -350,7 +356,14 @@ bp::object rogue::interfaces::ZmqClient::send(bp::object value) {
 
     PyObject* val = Py_BuildValue("y#", zmq_msg_data(&rxMsg), zmq_msg_size(&rxMsg));
 
-    if (val == NULL) throw(rogue::GeneralError::create("ZmqClient::send", "Failed to generate bytearray"));
+    // PyErr_Print surfaces the underlying Python error (e.g. MemoryError) AND
+    // clears the thread's error indicator; without it boost::python may
+    // observe "exception already set" when translating our throw.
+    if (val == NULL) {
+        PyErr_Print();
+        zmq_msg_close(&rxMsg);
+        throw(rogue::GeneralError::create("ZmqClient::send", "Failed to generate bytearray"));
+    }
 
     zmq_msg_close(&rxMsg);
 

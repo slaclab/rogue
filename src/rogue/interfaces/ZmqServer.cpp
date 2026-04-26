@@ -264,8 +264,14 @@ void rogue::interfaces::ZmqServer::publish(bp::object value) {
 
     if (!this->threadEn_) return;
 
-    if (PyObject_GetBuffer(value.ptr(), &(valueBuf), PyBUF_SIMPLE) < 0)
+    // PyErr_Print surfaces the Python-level error (e.g. TypeError from a
+    // non-buffer argument) AND clears the thread's error indicator; without
+    // it boost::python may observe "exception already set" when translating
+    // our throw, masking the original cause.
+    if (PyObject_GetBuffer(value.ptr(), &(valueBuf), PyBUF_SIMPLE) < 0) {
+        PyErr_Print();
         throw(rogue::GeneralError::create("ZmqServer::publish", "Failed to extract object data"));
+    }
 
     // zmq_msg_init_size returns -1 on allocation failure; the message is left
     // uninitialized so memcpy/zmq_msg_data must not run, and we still own
@@ -383,8 +389,15 @@ void rogue::interfaces::ZmqServer::runThread() {
 
                 // On success, zmq_sendmsg transfers ownership and zeroes the
                 // message; on failure (-1) we retain ownership and must close.
-                if (zmq_sendmsg(this->zmqRep_, &txMsg, 0) < 0)
+                // Throw so the catch block sends the empty REP keepalive that
+                // clears the FSM -- otherwise the REP socket stays in the
+                // "must send" state and every subsequent zmq_recvmsg returns
+                // EFSM, wedging the worker on failed recvs until shutdown.
+                if (zmq_sendmsg(this->zmqRep_, &txMsg, 0) < 0) {
                     zmq_msg_close(&txMsg);
+                    txInit = false;
+                    throw(rogue::GeneralError::create("ZmqServer::runThread", "zmq_sendmsg failed"));
+                }
                 txInit = false;
             } catch (const std::exception& e) {
                 log_->warning("ZmqServer::runThread: dropping request after exception: %s", e.what());
