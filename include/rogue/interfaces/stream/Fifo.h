@@ -60,15 +60,18 @@ class Fifo : public rogue::interfaces::stream::Master, public rogue::interfaces:
     bool noCopy_;
 
     // Drop frame counter
-    std::atomic<std::size_t> dropFrameCnt_;
+    std::atomic<std::size_t> dropFrameCnt_{0};
 
     // Queue
     rogue::Queue<std::shared_ptr<rogue::interfaces::stream::Frame>> queue_;
 
-    // Transmission thread
-    std::atomic<bool> threadEn_;
-    std::thread* thread_;
+    //! \cond INTERNAL
+  protected:
+    std::thread* thread_ = nullptr;
+    std::atomic<bool> threadEn_{false};
+    //! \endcond
 
+  private:
     // Thread background
     void runThread();
 
