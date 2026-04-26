@@ -69,3 +69,53 @@ def test_setbytes_in_range_be_roundtrip():
             var.set(0x10000 + i, index=i)
         for i in range(8):
             assert var.get(index=i) == 0x10000 + i
+
+
+# ---------------------------------------------------------------------------
+# Pins the new ``copyBytes = min(valueBytes_, strideBytes)`` cap added to
+# Block::setBytes and Block::getBytes for list variables that take the
+# fast-byte memcpy path. With ``valueStride > valueBits`` (gapped slots) the
+# cap must NOT truncate a slot's payload — i.e. the per-slot copy length
+# stays at ``valueBytes_`` because ``strideBytes >= valueBytes_``. Reverting
+# the cap to ``valueBytes_`` keeps this test passing (it is the no-op case),
+# but reverting the underlying ordering of the throw + free in setBytes
+# would still trip test_setbytes_out_of_range_be_raises above. The
+# overlapping-slot regression (``valueStride < valueBits``) cannot be
+# constructed through pyrogue because RemoteVariable raises if
+# ``valueStride < valueBits`` and the fast-byte allocator would not run.
+# ---------------------------------------------------------------------------
+class _GappedRoot(pr.Root):
+    def __init__(self) -> None:
+        super().__init__(name="GappedRoot", description="gapped slot test", pollEn=False)
+        sim = rogue.interfaces.memory.Emulate(4, 0x1000)
+        self.addInterface(sim)
+        self.add(pr.Device(name="Dev", offset=0, memBase=sim))
+        # 32-bit value occupying the first half of a 64-bit slot. The fast-byte
+        # path copies ``min(valueBytes_=4, strideBytes=8) = 4`` bytes, leaving
+        # the upper 32 bits of each slot untouched. Reverting the cap to
+        # ``valueBytes_`` is the same here, so this test is the safety net
+        # that ensures the cap does not truncate the legitimate gapped layout.
+        self.Dev.add(pr.RemoteVariable(
+            name="UInt32ListGapped",
+            offset=0,
+            bitOffset=0,
+            base=pr.UInt,
+            mode="RW",
+            disp="{}",
+            numValues=4,
+            valueBits=32,
+            valueStride=64,
+        ))
+
+
+def test_setbytes_gapped_stride_preserves_full_value():
+    """``valueStride > valueBits`` must round-trip every full ``valueBytes_``."""
+    with _GappedRoot() as root:
+        var = root.Dev.UInt32ListGapped
+        # Distinctive values so a one-byte truncation by an overzealous cap
+        # would surface as a wrong readback.
+        values = [0xDEADBEEF, 0xCAFEBABE, 0x12345678, 0xA5A5A5A5]
+        for i, v in enumerate(values):
+            var.set(v, index=i)
+        for i, v in enumerate(values):
+            assert var.get(index=i) == v

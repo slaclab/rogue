@@ -125,6 +125,92 @@ def test_sideband_sim_context_manager_stops_worker(monkeypatch):
     assert sideband._run is False
 
 
+# Pins the contract that ``SideBandSim._stop()`` joins the rx worker AND
+# closes both ZMQ sockets (linger=0) AND tears down the context. The previous
+# implementation only flipped ``_run`` and relied on Python GC for the rest,
+# which kept the ZMQ context alive for arbitrary time after the simulator
+# went out of scope. Reverting any of the three releases makes the matching
+# assertion below trip.
+class _TrackingZmqSocket:
+    def __init__(self):
+        self.connected = []
+        self.sent = []
+        self.to_recv = []
+        self.close_calls = []
+
+    def connect(self, addr):
+        self.connected.append(addr)
+
+    def send(self, payload):
+        self.sent.append(bytes(payload))
+
+    def recv(self):
+        return self.to_recv.pop(0)
+
+    def close(self, linger=None):
+        self.close_calls.append(linger)
+
+
+class _TrackingZmqContext:
+    def __init__(self):
+        self.sockets = []
+        self.term_calls = 0
+
+    def socket(self, _kind):
+        sock = _TrackingZmqSocket()
+        self.sockets.append(sock)
+        return sock
+
+    def term(self):
+        self.term_calls += 1
+
+
+class _TrackingThread:
+    def __init__(self, target):
+        self.target = target
+        self.started = False
+        self.alive = False
+        self.join_calls = []
+
+    def start(self):
+        self.started = True
+        self.alive = True
+
+    def is_alive(self):
+        return self.alive
+
+    def join(self, timeout=None):
+        self.join_calls.append(timeout)
+        self.alive = False
+
+
+def test_sideband_sim_stop_releases_sockets_thread_and_context(monkeypatch):
+    fake_ctx = _TrackingZmqContext()
+    monkeypatch.setattr(sim_mod.zmq, "Context", lambda: fake_ctx)
+    monkeypatch.setattr(sim_mod.threading, "Thread", _TrackingThread)
+
+    sideband = sim_mod.SideBandSim("127.0.0.1", 9200)
+    assert sideband._recvThread.started is True
+
+    push_sock = sideband._sbPush
+    pull_sock = sideband._sbPull
+
+    sideband._stop()
+
+    # Thread is joined exactly once with a non-zero timeout.
+    assert sideband._recvThread.join_calls and sideband._recvThread.join_calls[0] > 0
+    # Both sockets are closed with linger=0 so the teardown does not block on
+    # un-flushed frames.
+    assert push_sock.close_calls == [0]
+    assert pull_sock.close_calls == [0]
+    # Context is terminated exactly once.
+    assert fake_ctx.term_calls == 1
+    # _stop must remain idempotent: a second call must not double-call term()
+    # or raise even though the sockets/context are now in a torn-down state.
+    sideband._stop()
+    assert fake_ctx.term_calls in (1, 2)
+
+
 def test_pgp2b_sim_connects_virtual_channels(monkeypatch):
     stream_links = []
 
