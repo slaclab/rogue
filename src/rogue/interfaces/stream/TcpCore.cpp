@@ -150,6 +150,15 @@ ris::TcpCore::TcpCore(const std::string& addr, uint16_t port, bool server) {
         pthread_setname_np(thread_->native_handle(), "TcpCore");
 #endif
     } catch (...) {
+        // Defensive symmetry with MemMap / AxiMemMap / AxiStreamDma / udp::Client /
+        // udp::Server: ~TcpCore() does NOT run on a ctor-throw, so leaving
+        // threadEn_=true here is harmless today, but reset it (and the always-null
+        // thread_) so any future maintainer who calls this code from a context
+        // where the dtor CAN run (e.g. a two-phase init pattern) sees consistent
+        // state.
+        threadEn_ = false;
+        delete thread_;
+        thread_ = nullptr;
         if (zmqPull_ != nullptr) {
             zmq_close(zmqPull_);
             zmqPull_ = nullptr;
