@@ -73,6 +73,10 @@ rpu::Server::Server(uint16_t port, bool jumbo) : rpu::Core(jumbo) {
 
     memset(&remAddr_, 0, sizeof(struct sockaddr_in));
 
+    // Intentionally no SO_REUSEADDR / SO_REUSEPORT here: the kernel default
+    // EADDRINUSE on duplicate bind is the contract we want, so two Servers
+    // on the same port can't silently coexist with non-deterministic packet
+    // routing. Drafted then reverted in a7d5bc533 — see PR #1193 "Reverted".
     if (bind(fd_, (struct sockaddr*)&locAddr_, sizeof(locAddr_)) < 0) {
         ::close(fd_);
         fd_ = -1;

@@ -331,6 +331,10 @@ void rogue::interfaces::ZmqServer::runThread() {
         // Get the message
         if (zmq_recvmsg(this->zmqRep_, &rxMsg, 0) > 0) {
 #ifndef NO_PYTHON
+            // ZMQ_REP requires send-after-recv to keep the FSM healthy; the
+            // catch blocks below send an empty reply so a single bad request
+            // cannot wedge the socket into EFSM and drop all later requests.
+            bool txInit = false;
             try {
                 Py_buffer valueBuf;
                 rogue::ScopedGil gil;
@@ -347,14 +351,23 @@ void rogue::interfaces::ZmqServer::runThread() {
                     throw(rogue::GeneralError::create("ZmqServer::runThread", "Failed to extract object data"));
 
                 zmq_msg_init_size(&txMsg, valueBuf.len);
+                txInit = true;
                 memcpy(zmq_msg_data(&txMsg), valueBuf.buf, valueBuf.len);
                 PyBuffer_Release(&valueBuf);
 
-                zmq_sendmsg(this->zmqRep_, &txMsg, 0);
+                // On success, zmq_sendmsg transfers ownership and zeroes the
+                // message; on failure (-1) we retain ownership and must close.
+                if (zmq_sendmsg(this->zmqRep_, &txMsg, 0) < 0)
+                    zmq_msg_close(&txMsg);
+                txInit = false;
             } catch (const std::exception& e) {
                 log_->warning("ZmqServer::runThread: dropping request after exception: %s", e.what());
+                if (txInit) zmq_msg_close(&txMsg);
+                zmq_send(this->zmqRep_, "", 0, 0);
             } catch (...) {
                 log_->warning("ZmqServer::runThread: dropping request after unknown exception");
+                if (txInit) zmq_msg_close(&txMsg);
+                zmq_send(this->zmqRep_, "", 0, 0);
             }
 #endif
         }
@@ -375,14 +388,19 @@ void rogue::interfaces::ZmqServer::strThread() {
 
         // Get the message
         if (zmq_recvmsg(this->zmqStr_, &msg, 0) > 0) {
+            // ZMQ_REP requires send-after-recv to keep the FSM healthy; the
+            // catch blocks below send an empty reply so a single bad request
+            // cannot wedge the socket into EFSM and drop all later requests.
             try {
                 std::string data((const char*)zmq_msg_data(&msg), zmq_msg_size(&msg));
                 std::string ret = this->doString(data);
                 zmq_send(this->zmqStr_, ret.c_str(), ret.size(), 0);
             } catch (const std::exception& e) {
                 log_->warning("ZmqServer::strThread: dropping request after exception: %s", e.what());
+                zmq_send(this->zmqStr_, "", 0, 0);
             } catch (...) {
                 log_->warning("ZmqServer::strThread: dropping request after unknown exception");
+                zmq_send(this->zmqStr_, "", 0, 0);
             }
         }
         // Close even on RCVTIMEO: zmq_recvmsg() initializes msg regardless.
