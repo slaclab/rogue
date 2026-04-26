@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-26T04:44:52Z",
+  "generated_at": "2026-04-26T04:58:53Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -143,6 +143,14 @@
       "ref_slug": "improve-thread-safety-and-memory-lifetime",
       "latest_url": "/rogue/perf/branches/improve-thread-safety-and-memory-lifetime/latest.json",
       "history": [
+        {
+          "ref_name": "improve-thread-safety-and-memory-lifetime",
+          "sha": "1e01d124417e6336401aa4bc879b5d5890c2cd0d",
+          "short_sha": "1e01d12",
+          "published_at": "2026-04-26T04:58:53Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/24948616651",
+          "summary_url": "/rogue/perf/branches/improve-thread-safety-and-memory-lifetime/history/1e01d124417e6336401aa4bc879b5d5890c2cd0d.json"
+        },
         {
           "ref_name": "improve-thread-safety-and-memory-lifetime",
           "sha": "4e9403d5845450fd9574425126fc4f822a447601",
@@ -294,22 +302,14 @@
           "published_at": "2026-04-25T17:09:06Z",
           "run_url": "https://github.com/slaclab/rogue/actions/runs/24936036243",
           "summary_url": "/rogue/perf/branches/improve-thread-safety-and-memory-lifetime/history/998ff1d9235631ad0872e89d7378562ffc5986fc.json"
-        },
-        {
-          "ref_name": "improve-thread-safety-and-memory-lifetime",
-          "sha": "8db3b0a0ae50b6d216fba1acb26d08ec8a396119",
-          "short_sha": "8db3b0a",
-          "published_at": "2026-04-25T16:24:19Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/24935185311",
-          "summary_url": "/rogue/perf/branches/improve-thread-safety-and-memory-lifetime/history/8db3b0a0ae50b6d216fba1acb26d08ec8a396119.json"
         }
       ],
       "latest": {
         "ref_name": "improve-thread-safety-and-memory-lifetime",
-        "sha": "4e9403d5845450fd9574425126fc4f822a447601",
-        "short_sha": "4e9403d",
-        "published_at": "2026-04-26T04:44:52Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/24948400138",
+        "sha": "1e01d124417e6336401aa4bc879b5d5890c2cd0d",
+        "short_sha": "1e01d12",
+        "published_at": "2026-04-26T04:58:53Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/24948616651",
         "summary_url": "/rogue/perf/branches/improve-thread-safety-and-memory-lifetime/latest.json"
       }
     },
