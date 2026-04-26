@@ -188,7 +188,11 @@ TEST_CASE("Block::setBytes byte-reverse path frees its temporary on range throw"
             // expected
         }
     }
-    const auto delta = static_cast<std::size_t>(mallinfo2().uordblks - baseline);
+    // ``mallinfo2().uordblks`` is unsigned (``size_t``); allocator coalescing
+    // can drop it below the baseline, so a naive subtraction would underflow
+    // to a huge value and fail the leak check spuriously. Clamp at 0.
+    const auto current = mallinfo2().uordblks;
+    const std::size_t delta = (current > baseline) ? (current - baseline) : 0;
 
     // Without the free(buff) before throw, delta would be ~kIterations *
     // kValueBytes (= 1 MiB). With the fix, only allocator bookkeeping leaks
