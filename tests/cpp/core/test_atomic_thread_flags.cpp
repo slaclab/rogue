@@ -33,12 +33,15 @@
 #include "rogue/interfaces/ZmqServer.h"
 #include "rogue/interfaces/memory/TcpClient.h"
 #include "rogue/interfaces/memory/TcpServer.h"
+#include "rogue/interfaces/stream/Fifo.h"
 #include "rogue/interfaces/stream/TcpCore.h"
 #include "rogue/protocols/packetizer/Application.h"
 #include "rogue/protocols/packetizer/Transport.h"
 #include "rogue/protocols/rssi/Application.h"
+#include "rogue/protocols/rssi/Controller.h"
 #include "rogue/protocols/srp/SrpV3Emulation.h"
 #include "rogue/protocols/udp/Core.h"
+#include "rogue/protocols/xilinx/Xvc.h"
 #include "rogue/utilities/Prbs.h"
 #include "rogue/utilities/fileio/StreamReader.h"
 
@@ -70,6 +73,9 @@ ROGUE_THREADEN_PROBE(RssiApplicationFlagProbe, rogue::protocols::rssi::Applicati
 ROGUE_THREADEN_PROBE(SrpV3EmulationFlagProbe, rogue::protocols::srp::SrpV3Emulation, SrpV3Emulation);
 ROGUE_THREADEN_PROBE(PrbsFlagProbe, rogue::utilities::Prbs, Prbs);
 ROGUE_THREADEN_PROBE(StreamReaderFlagProbe, rogue::utilities::fileio::StreamReader, StreamReader);
+ROGUE_THREADEN_PROBE(FifoFlagProbe, rogue::interfaces::stream::Fifo, Fifo);
+ROGUE_THREADEN_PROBE(RssiControllerFlagProbe, rogue::protocols::rssi::Controller, Controller);
+ROGUE_THREADEN_PROBE(XvcFlagProbe, rogue::protocols::xilinx::Xvc, Xvc);
 
 #undef ROGUE_THREADEN_PROBE
 
@@ -94,4 +100,7 @@ TEST_CASE("worker-thread enable flags are std::atomic<bool>") {
     CHECK(sizeof(SrpV3EmulationFlagProbe) >= sizeof(std::atomic<bool>));
     CHECK(sizeof(PrbsFlagProbe) >= sizeof(std::atomic<bool>));
     CHECK(sizeof(StreamReaderFlagProbe) >= sizeof(std::atomic<bool>));
+    CHECK(sizeof(FifoFlagProbe) >= sizeof(std::atomic<bool>));
+    CHECK(sizeof(RssiControllerFlagProbe) >= sizeof(std::atomic<bool>));
+    CHECK(sizeof(XvcFlagProbe) >= sizeof(std::atomic<bool>));
 }

@@ -65,9 +65,11 @@ class Fifo : public rogue::interfaces::stream::Master, public rogue::interfaces:
     // Queue
     rogue::Queue<std::shared_ptr<rogue::interfaces::stream::Frame>> queue_;
 
-    std::atomic<bool> threadEn_{false};
+  protected:
     std::thread* thread_ = nullptr;
+    std::atomic<bool> threadEn_{false};
 
+  private:
     // Thread background
     void runThread();
 
