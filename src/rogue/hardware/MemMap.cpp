@@ -61,14 +61,25 @@ rh::MemMap::MemMap(uint64_t base, uint32_t size) : rim::Slave(4, 0xFFFFFFFF) {
     if (fd_ < 0) throw(rogue::GeneralError::create("MemMap::MemMap", "Failed to open device file: %s", MAP_DEVICE));
 
     if ((map_ = reinterpret_cast<uint8_t*>(mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_SHARED, fd_, base))) ==
-        reinterpret_cast<void*>(-1))
+        reinterpret_cast<void*>(-1)) {
+        ::close(fd_);
+        fd_ = -1;
         throw(rogue::GeneralError::create("MemMap::MemMap", "Failed to map memory to user space."));
+    }
 
     log_->debug("Created map to 0x%" PRIx64 " with size 0x%" PRIx32, base, size);
 
-    // Start read thread
     threadEn_ = true;
-    thread_   = new std::thread(&rh::MemMap::runThread, this);
+    try {
+        thread_ = new std::thread(&rh::MemMap::runThread, this);
+    } catch (...) {
+        threadEn_ = false;
+        munmap(reinterpret_cast<void*>(const_cast<uint8_t*>(map_)), size_);
+        map_ = nullptr;
+        ::close(fd_);
+        fd_ = -1;
+        throw;
+    }
 }
 
 //! Destructor
@@ -82,8 +93,11 @@ void rh::MemMap::stop() {
         threadEn_ = false;
         queue_.stop();
         thread_->join();
+        delete thread_;
+        thread_ = nullptr;
         munmap(reinterpret_cast<void*>(const_cast<uint8_t*>(map_)), size_);
         ::close(fd_);
+        fd_ = -1;
     }
 }
 

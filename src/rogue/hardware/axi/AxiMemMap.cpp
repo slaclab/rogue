@@ -61,6 +61,8 @@ rha::AxiMemMap::AxiMemMap(std::string path) : rim::Slave(4, 0xFFFFFFFF) {
 
     // Check driver version ( ApiVersion 0x05 (or less) is the 32-bit address version)
     if (dmaGetApiVersion(fd_) < 0x06) {
+        ::close(fd_);
+        fd_ = -1;
         throw(rogue::GeneralError("AxiMemMap::AxiMemMap",
                                   R"(Bad kernel driver version detected. Please re-compile kernel driver.
           Note that aes-stream-driver (v5.15.2 or earlier) and rogue (v5.11.1 or earlier) are compatible with the 32-bit address API.
@@ -72,14 +74,21 @@ rha::AxiMemMap::AxiMemMap(std::string path) : rim::Slave(4, 0xFFFFFFFF) {
     // Check for mismatch in the rogue/loaded_driver API versions
     if (dmaCheckVersion(fd_) < 0) {
         ::close(fd_);
+        fd_ = -1;
         throw(rogue::GeneralError(
             "AxiMemMap::AxiMemMap",
             "Rogue DmaDriver.h API Version (DMA_VERSION) does not match the aes-stream-driver API version"));
     }
 
-    // Start read thread
     threadEn_ = true;
-    thread_   = new std::thread(&rha::AxiMemMap::runThread, this);
+    try {
+        thread_ = new std::thread(&rha::AxiMemMap::runThread, this);
+    } catch (...) {
+        threadEn_ = false;
+        ::close(fd_);
+        fd_ = -1;
+        throw;
+    }
 }
 
 //! Destructor
@@ -94,7 +103,10 @@ void rha::AxiMemMap::stop() {
         threadEn_ = false;
         queue_.stop();
         thread_->join();
+        delete thread_;
+        thread_ = nullptr;
         ::close(fd_);
+        fd_ = -1;
     }
 }
 
