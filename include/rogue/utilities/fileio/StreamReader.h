@@ -20,6 +20,7 @@
 
 #include <stdint.h>
 
+#include <atomic>
 #include <condition_variable>
 #include <map>
 #include <memory>
@@ -61,10 +62,13 @@ class StreamReader : public rogue::interfaces::stream::Master {
     // True while read thread is actively processing file data.
     bool active_ = false;
 
+  protected:
     // Read worker thread. Default-init: dtor must be safe before open().
+    // threadEn_ is atomic to close the stop()/runThread() teardown race.
     std::thread* readThread_ = nullptr;
-    bool threadEn_ = false;
+    std::atomic<bool> threadEn_{false};
 
+  private:
     // Worker thread entry point.
     void runThread();
 

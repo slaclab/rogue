@@ -20,6 +20,7 @@
 
 #include <stdint.h>
 
+#include <atomic>
 #include <memory>
 
 #include "rogue/Queue.h"
@@ -45,10 +46,13 @@ class Application : public rogue::interfaces::stream::Master, public rogue::inte
     // ID
     uint8_t id_;
 
+  protected:
     // Default-init: dtor before setController() must be a no-op.
+    // threadEn_ is atomic to close the stop()/runThread() teardown race.
     std::thread* thread_ = nullptr;
-    bool threadEn_ = false;
+    std::atomic<bool> threadEn_{false};
 
+  private:
     // Thread background
     void runThread();
 

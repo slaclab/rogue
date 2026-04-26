@@ -20,6 +20,7 @@
 
 #include <stdint.h>
 
+#include <atomic>
 #include <condition_variable>
 #include <map>
 #include <memory>
@@ -100,8 +101,13 @@ class SrpV3Emulation : public rogue::interfaces::stream::Master,
     std::queue<std::shared_ptr<rogue::interfaces::stream::Frame> > queue_;
     std::mutex queMtx_;
     std::condition_variable queCond_;
-    bool threadEn_;
 
+  protected:
+    // threadEn_ is atomic so the unlocked outer ``while (threadEn_)`` poll in
+    // runThread() does not race the locked write in stop().
+    std::atomic<bool> threadEn_{false};
+
+  private:
     //! Worker thread function
     void runThread();
 

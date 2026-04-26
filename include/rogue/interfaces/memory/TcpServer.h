@@ -20,6 +20,7 @@
 
 #include <stdint.h>
 
+#include <atomic>
 #include <memory>
 #include <string>
 #include <thread>
@@ -67,9 +68,11 @@ class TcpServer : public rogue::interfaces::memory::Master {
     // Log
     std::shared_ptr<rogue::Logging> bridgeLog_;
 
+  protected:
     // Default-init: dtor must be safe against partial construction.
+    // threadEn_ is atomic to close the stop()/runThread() teardown race.
     std::thread* thread_ = nullptr;
-    bool threadEn_ = false;
+    std::atomic<bool> threadEn_{false};
 
   public:
     /**

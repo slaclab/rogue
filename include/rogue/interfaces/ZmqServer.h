@@ -18,6 +18,7 @@
 #define __ROGUE_ZMQ_SERVER_H__
 #include "rogue/Directives.h"
 
+#include <atomic>
 #include <memory>
 #include <string>
 #include <thread>
@@ -51,11 +52,14 @@ class ZmqServer {
     void* zmqRep_ = nullptr;
     void* zmqStr_ = nullptr;
 
+  protected:
     // Default-init: dtor must be safe against partial construction.
+    // threadEn_ is atomic to close the stop()/runThread()/strThread() teardown race.
     std::thread* rThread_ = nullptr;
     std::thread* sThread_ = nullptr;
-    bool threadEn_ = false;
+    std::atomic<bool> threadEn_{false};
 
+  private:
     // Bind address and base port configuration.
     std::string addr_;
     uint16_t basePort_;

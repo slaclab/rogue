@@ -20,6 +20,7 @@
 
 #include <stdint.h>
 
+#include <atomic>
 #include <memory>
 
 #include "rogue/interfaces/stream/Master.h"
@@ -51,10 +52,13 @@ class Application : public rogue::interfaces::stream::Master, public rogue::inte
     // RSSI controller backend.
     std::shared_ptr<rogue::protocols::rssi::Controller> cntl_;
 
+  protected:
     // Default-init: dtor before setController() must be a no-op.
+    // threadEn_ is atomic to close the stop()/runThread() teardown race.
     std::thread* thread_ = nullptr;
-    bool threadEn_ = false;
+    std::atomic<bool> threadEn_{false};
 
+  private:
     // Worker thread entry point.
     void runThread();
 

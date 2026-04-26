@@ -18,6 +18,7 @@
 #define __ROGUE_ZMQ_CLIENT_H__
 #include "rogue/Directives.h"
 
+#include <atomic>
 #include <memory>
 #include <mutex>
 #include <string>
@@ -61,9 +62,14 @@ class ZmqClient {
     // Continue retrying after timeout when true.
     bool waitRetry_;
 
+  protected:
     // Default-init: dtor must be safe against partial construction.
+    // threadEn_ is atomic to close the stop()/runThread() teardown race;
+    // running_ is set/cleared only on the user thread and stays a plain bool.
     std::thread* thread_ = nullptr;
-    bool threadEn_ = false;
+    std::atomic<bool> threadEn_{false};
+
+  private:
     bool running_ = false;
 
     // True when operating in string request mode.

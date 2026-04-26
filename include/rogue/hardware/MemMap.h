@@ -20,6 +20,7 @@
 
 #include <stdint.h>
 
+#include <atomic>
 #include <memory>
 #include <mutex>
 #include <thread>
@@ -63,10 +64,13 @@ class MemMap : public rogue::interfaces::memory::Slave {
     // Logging
     std::shared_ptr<rogue::Logging> log_;
 
+  protected:
     // Default-init: dtor must be safe against partial construction.
+    // threadEn_ is atomic to close the stop()/runThread() teardown race.
     std::thread* thread_ = nullptr;
-    bool threadEn_ = false;
+    std::atomic<bool> threadEn_{false};
 
+  private:
     // Background worker thread entry point.
     void runThread();
 
