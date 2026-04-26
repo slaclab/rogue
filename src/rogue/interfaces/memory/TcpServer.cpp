@@ -111,9 +111,15 @@ rim::TcpServer::TcpServer(std::string addr, uint16_t port) {
         pthread_setname_np(thread_->native_handle(), "TcpServer");
 #endif
     } catch (...) {
+        // ~std::thread on a joinable thread calls std::terminate(); join first.
+        // RCVTIMEO=100 was already set on zmqReq_ above so the worker exits
+        // within ~100 ms of threadEn_=false.
         threadEn_ = false;
-        delete thread_;
-        thread_ = nullptr;
+        if (thread_ != nullptr) {
+            thread_->join();
+            delete thread_;
+            thread_ = nullptr;
+        }
         if (zmqResp_ != nullptr) {
             zmq_close(zmqResp_);
             zmqResp_ = nullptr;

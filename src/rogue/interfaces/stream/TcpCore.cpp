@@ -147,9 +147,15 @@ ris::TcpCore::TcpCore(const std::string& addr, uint16_t port, bool server) {
         pthread_setname_np(thread_->native_handle(), "TcpCore");
 #endif
     } catch (...) {
+        // ~std::thread on a joinable thread calls std::terminate(); join first.
+        // RCVTIMEO=100 was already set on zmqPull_ above so the worker exits
+        // within ~100 ms of threadEn_=false.
         threadEn_ = false;
-        delete thread_;
-        thread_ = nullptr;
+        if (thread_ != nullptr) {
+            thread_->join();
+            delete thread_;
+            thread_ = nullptr;
+        }
         if (zmqPull_ != nullptr) {
             zmq_close(zmqPull_);
             zmqPull_ = nullptr;
