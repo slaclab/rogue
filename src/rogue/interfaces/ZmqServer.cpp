@@ -340,15 +340,22 @@ void rogue::interfaces::ZmqServer::runThread() {
                 rogue::ScopedGil gil;
                 PyObject* val = Py_BuildValue("y#", zmq_msg_data(&rxMsg), zmq_msg_size(&rxMsg));
 
-                if (val == NULL)
+                // PyErr_Print surfaces the Python-level error (e.g. MemoryError) AND clears
+                // the thread's error indicator; without this, the pending exception leaks
+                // into the next loop iteration's Py_BuildValue/bp::object calls.
+                if (val == NULL) {
+                    PyErr_Print();
                     throw(rogue::GeneralError::create("ZmqServer::runThread", "Failed to generate bytearray"));
+                }
 
                 bp::handle<> handle(val);
 
                 bp::object ret = this->doRequest(bp::object(handle));
 
-                if (PyObject_GetBuffer(ret.ptr(), &(valueBuf), PyBUF_SIMPLE) < 0)
+                if (PyObject_GetBuffer(ret.ptr(), &(valueBuf), PyBUF_SIMPLE) < 0) {
+                    PyErr_Print();
                     throw(rogue::GeneralError::create("ZmqServer::runThread", "Failed to extract object data"));
+                }
 
                 zmq_msg_init_size(&txMsg, valueBuf.len);
                 txInit = true;

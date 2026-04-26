@@ -382,8 +382,13 @@ void rogue::interfaces::ZmqClient::runThread() {
                 rogue::ScopedGil gil;
                 PyObject* val = Py_BuildValue("y#", zmq_msg_data(&msg), zmq_msg_size(&msg));
 
-                if (val == NULL)
+                // PyErr_Print surfaces the Python-level error (e.g. MemoryError) AND clears
+                // the thread's error indicator; without this, the pending exception leaks
+                // into the next loop iteration's Py_BuildValue/bp::object calls.
+                if (val == NULL) {
+                    PyErr_Print();
                     throw(rogue::GeneralError::create("ZmqClient::runThread", "Failed to generate bytearray"));
+                }
 
                 bp::handle<> handle(val);
                 bp::object dat = bp::object(handle);
