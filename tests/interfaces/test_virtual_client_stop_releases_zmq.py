@@ -164,3 +164,58 @@ def test_virtual_client_stop_then_explicit_stop_is_idempotent():
             client._stop()   # third call still safe
 
     _clear_virtual_client_cache()
+
+
+def test_virtual_client_stop_drops_cache_so_reconnect_returns_fresh_instance():
+    """``stop()`` must remove the instance from ``ClientCache``.
+
+    Pre-fix, ``stop()`` released C++ resources but left ``self`` pinned in
+    ``VirtualClient.ClientCache``; the next ``VirtualClient(addr, port)``
+    therefore returned the now-unusable stopped object via the cache hit
+    in ``__new__``. The fix calls ``_removeFromCache()`` and clears
+    ``_vcInitialized`` inside ``stop()`` so a follow-on construction
+    takes the fresh-bootstrap branch and reconnects from scratch.
+
+    Reverting the ``_removeFromCache()`` line makes ``second is first``
+    return True (the stopped instance is handed back) and the connection
+    test fails because the underlying C++ sockets have been released.
+    """
+    port = _test_port(2)
+    _clear_virtual_client_cache()
+
+    with _StopRoot(name='ReconnectRoot', port=port):
+        first = pyrogue.interfaces.VirtualClient(addr='127.0.0.1', port=port)
+        try:
+            assert first.root is not None
+        finally:
+            first.stop()
+
+        # After stop(), the cache entry for (addr, port) must be gone so
+        # __new__ takes the else branch and constructs a fresh instance.
+        cache_key = hash(('127.0.0.1', port))
+        assert cache_key not in pyrogue.interfaces.VirtualClient.ClientCache, (
+            "VirtualClient.stop() left a torn-down instance pinned in "
+            "ClientCache; subsequent VirtualClient(addr, port) would "
+            "return the unusable object instead of reconnecting."
+        )
+        assert first._vcInitialized is False, (
+            "VirtualClient.stop() must clear _vcInitialized so __init__ "
+            "does not short-circuit on a re-attached instance."
+        )
+
+        second = pyrogue.interfaces.VirtualClient(addr='127.0.0.1', port=port)
+        try:
+            assert second is not first, (
+                "VirtualClient(addr, port) after stop() returned the same "
+                "stopped instance; the new contract requires a fresh "
+                "construction with a working ZMQ context."
+            )
+            assert second.root is not None, (
+                "Reconnected VirtualClient instance does not have a working "
+                "root handshake; the post-stop construction did not "
+                "re-bootstrap the ZMQ transport."
+            )
+        finally:
+            second.stop()
+
+    _clear_virtual_client_cache()

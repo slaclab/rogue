@@ -753,7 +753,13 @@ class VirtualClient(rogue.interfaces.ZmqClient):
                 func(k,val)
 
     def stop(self) -> None:
-        """Stop the monitor thread and release the underlying ZMQ resources."""
+        """Stop the monitor thread and release the underlying ZMQ resources.
+
+        After ``stop()`` returns the C++ sockets and ZMQ context are released
+        and this instance is removed from ``ClientCache``; a subsequent
+        ``VirtualClient(addr, port)`` therefore constructs a fresh, fully
+        connected instance instead of returning the torn-down one.
+        """
         self._monEnable = False
         thr = self._monThread
 
@@ -775,6 +781,13 @@ class VirtualClient(rogue.interfaces.ZmqClient):
             rogue.interfaces.ZmqClient._stop(self)
         except Exception:
             pass
+
+        # Don't pin a torn-down instance — drop the cache entry and clear the
+        # init sentinel so a follow-on VirtualClient(addr, port) takes the
+        # fresh-construction branch in __new__/__init__ instead of returning
+        # this now-unusable object.
+        self._removeFromCache()
+        self._vcInitialized = False
 
     @property
     def root(self) -> "VirtualNode":
