@@ -82,7 +82,7 @@ def _mallinfo2_uordblks() -> int | None:
     return libc.mallinfo2().uordblks
 
 
-def _silent_peer():
+def _silent_peer(port: int):
     """Bind a PUB on `port` and a silent REP on `port+1`.
 
     The REP socket binds but never calls ``recv``, so the ZmqClient's
@@ -90,10 +90,14 @@ def _silent_peer():
     timeout-then-throw recv loop the fix is about. Real binds (rather than
     a closed/unbound port) are required so ``ZmqClient._stop()`` can run
     its socket close + ``zmq_ctx_destroy()`` cleanly during teardown.
+
+    ``port`` is supplied by the ``free_zmq_port`` fixture, which reserves
+    a 3-port consecutive block via ``_find_free_port_block`` so port+1 is
+    guaranteed free at allocation time and xdist workers cannot collide.
     """
     ctx = zmq.Context()
     pub = ctx.socket(zmq.PUB)
-    port = pub.bind_to_random_port("tcp://127.0.0.1")
+    pub.bind(f"tcp://127.0.0.1:{port}")
     rep = ctx.socket(zmq.REP)
     rep.bind(f"tcp://127.0.0.1:{port + 1}")
     return ctx, pub, rep, port
@@ -116,7 +120,7 @@ def _hammer_send_binary_timeouts(port: int, iterations: int) -> None:
         client._stop()
 
 
-def test_zmq_client_send_binary_timeout_does_not_leak() -> None:
+def test_zmq_client_send_binary_timeout_does_not_leak(free_zmq_port) -> None:
     """``send()`` timeout-throw path must not grow heap unboundedly.
 
     Reverting the ``zmq_msg_close(&rxMsg);`` line added before the
@@ -130,7 +134,7 @@ def test_zmq_client_send_binary_timeout_does_not_leak() -> None:
     if _mallinfo2_uordblks() is None:
         pytest.skip("mallinfo2 not available on this libc")
 
-    ctx, pub, rep, port = _silent_peer()
+    ctx, pub, rep, port = _silent_peer(free_zmq_port)
     try:
         # Warm-up so first-cycle internal allocations do not pollute the baseline.
         _hammer_send_binary_timeouts(port, iterations=10)

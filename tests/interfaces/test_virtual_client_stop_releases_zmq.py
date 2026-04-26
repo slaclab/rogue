@@ -26,7 +26,6 @@
 # count assertion fail.
 
 import gc
-import os
 import time
 
 import pytest
@@ -53,10 +52,6 @@ def _native_thread_count() -> int | None:
     return None
 
 
-def _test_port(index: int) -> int:
-    return 23000 + ((os.getpid() % 1000) * 16) + (index * 4)
-
-
 def _clear_virtual_client_cache() -> None:
     for client in list(pyrogue.interfaces.VirtualClient.ClientCache.values()):
         try:
@@ -75,7 +70,7 @@ class _StopRoot(pyrogue.Root):
         self.addInterface(self.zmqServer)
 
 
-def test_virtual_client_stop_releases_native_threads():
+def test_virtual_client_stop_releases_native_threads(free_zmq_port):
     """``VirtualClient.stop()`` must release the C++ subscriber thread.
 
     Drops the native-thread count back to (or below) the post-bootstrap
@@ -89,7 +84,7 @@ def test_virtual_client_stop_releases_native_threads():
     if _native_thread_count() is None:
         pytest.skip("/proc/self/status not available on this platform")
 
-    port = _test_port(0)
+    port = free_zmq_port
     _clear_virtual_client_cache()
 
     with _StopRoot(name='StopRoot', port=port):
@@ -141,7 +136,7 @@ def test_virtual_client_stop_releases_native_threads():
     _clear_virtual_client_cache()
 
 
-def test_virtual_client_stop_then_explicit_stop_is_idempotent():
+def test_virtual_client_stop_then_explicit_stop_is_idempotent(free_zmq_port):
     """Backward compat: callers that already call ``client._stop()`` after
     ``client.stop()`` continue to work.
 
@@ -151,7 +146,7 @@ def test_virtual_client_stop_then_explicit_stop_is_idempotent():
     ``_stop()`` call inside ``stop()`` does not break callers using the
     pre-fix two-call pattern.
     """
-    port = _test_port(1)
+    port = free_zmq_port
     _clear_virtual_client_cache()
 
     with _StopRoot(name='IdempotentRoot', port=port):
@@ -166,7 +161,7 @@ def test_virtual_client_stop_then_explicit_stop_is_idempotent():
     _clear_virtual_client_cache()
 
 
-def test_virtual_client_stop_drops_cache_so_reconnect_returns_fresh_instance():
+def test_virtual_client_stop_drops_cache_so_reconnect_returns_fresh_instance(free_zmq_port):
     """``stop()`` must remove the instance from ``ClientCache``.
 
     Pre-fix, ``stop()`` released C++ resources but left ``self`` pinned in
@@ -180,7 +175,7 @@ def test_virtual_client_stop_drops_cache_so_reconnect_returns_fresh_instance():
     return True (the stopped instance is handed back) and the connection
     test fails because the underlying C++ sockets have been released.
     """
-    port = _test_port(2)
+    port = free_zmq_port
     _clear_virtual_client_cache()
 
     with _StopRoot(name='ReconnectRoot', port=port):
