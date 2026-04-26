@@ -92,11 +92,26 @@ class SqlLogger(object):
         self._engine = engine
 
     def _stop(self) -> None:
-        """Stop the SQL logger worker thread and flush pending entries."""
+        """Stop the worker, flush pending entries, and release the SQLAlchemy engine."""
         if not self._queue.empty():
             print("Waiting for sql logger to finish...")
         self._queue.put(None)
-        self._thread.join()
+
+        # Self-thread guard prevents deadlock if called from inside the worker.
+        thr = self._thread
+        if (thr is not None
+                and hasattr(thr, 'is_alive') and thr.is_alive()
+                and hasattr(thr, 'join')
+                and threading.current_thread() is not thr):
+            thr.join()
+
+        if self._engine is not None:
+            try:
+                self._engine.dispose()
+            except Exception:
+                pass
+            self._engine = None
+
         print('Sql logger stopped')
 
     def insert_from_q(self, entry: tuple[str, pr.VariableValue], conn: sqlalchemy.Connection) -> None:
