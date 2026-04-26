@@ -278,7 +278,13 @@ void rogue::interfaces::ZmqServer::publish(bp::object value) {
     PyBuffer_Release(&valueBuf);
 
     rogue::GilRelease noGil;
-    zmq_sendmsg(this->zmqPub_, &msg, 0);
+    // On success, zmq_sendmsg transfers ownership and zeroes the message;
+    // on failure (-1, e.g. ETERM during shutdown) we retain ownership and
+    // must close to avoid leaking the libzmq message buffer.
+    if (zmq_sendmsg(this->zmqPub_, &msg, 0) < 0) {
+        zmq_msg_close(&msg);
+        throw(rogue::GeneralError::create("ZmqServer::publish", "zmq_sendmsg failed"));
+    }
 }
 
 bp::object rogue::interfaces::ZmqServer::doRequest(bp::object data) {

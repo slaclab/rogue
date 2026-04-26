@@ -316,7 +316,15 @@ bp::object rogue::interfaces::ZmqClient::send(bp::object value) {
     {
         rogue::GilRelease noGil;
         std::lock_guard<std::mutex> lock(reqLock_);
-        zmq_sendmsg(this->zmqReq_, &txMsg, 0);
+        // On success, zmq_sendmsg transfers ownership and zeroes the message;
+        // on failure (-1, e.g. ETERM during shutdown) we retain ownership and
+        // must close to avoid leaking the libzmq message buffer. Throwing here
+        // also prevents the recv loop below from blocking on a request that
+        // was never put on the wire.
+        if (zmq_sendmsg(this->zmqReq_, &txMsg, 0) < 0) {
+            zmq_msg_close(&txMsg);
+            throw rogue::GeneralError::create("ZmqClient::send", "zmq_sendmsg failed");
+        }
 
         while (1) {
             zmq_msg_init(&rxMsg);
