@@ -57,7 +57,6 @@ class TcpCore : public rogue::interfaces::stream::Master, public rogue::interfac
     // Outbound Address
     std::string pushAddr_;
 
-    // Default-init so dtor is safe before/after a ctor that throws.
     void* zmqCtx_  = nullptr;
     void* zmqPull_ = nullptr;
     void* zmqPush_ = nullptr;
@@ -68,8 +67,6 @@ class TcpCore : public rogue::interfaces::stream::Master, public rogue::interfac
     // Log
     std::shared_ptr<rogue::Logging> bridgeLog_;
 
-    // Default-init: dtor must be safe against partial construction.
-    // threadEn_ is atomic to close the stop()/runThread() teardown race.
     std::thread* thread_ = nullptr;
     std::atomic<bool> threadEn_{false};
 

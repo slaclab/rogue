@@ -89,9 +89,6 @@ void ruf::StreamReader::open(std::string file) {
     if ((fd_ = ::open(file.c_str(), O_RDONLY)) < 0)
         throw(rogue::GeneralError::create("StreamReader::open", "Failed to open data file: %s", file.c_str()));
 
-    // Start read thread last so anything that may throw runs first. open() has
-    // no surrounding try/catch and a throw on pthread_create would otherwise
-    // leak fd_ and leave active_/threadEn_ dangling.
     active_   = true;
     threadEn_ = true;
     try {

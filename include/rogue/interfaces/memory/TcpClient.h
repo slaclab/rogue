@@ -58,7 +58,6 @@ class TcpClient : public rogue::interfaces::memory::Slave {
     // Outbound Address
     std::string respAddr_;
 
-    // Default-init so dtor is safe before/after a ctor that throws.
     void* zmqCtx_  = nullptr;
     void* zmqReq_  = nullptr;
     void* zmqResp_ = nullptr;
@@ -70,8 +69,6 @@ class TcpClient : public rogue::interfaces::memory::Slave {
     std::shared_ptr<rogue::Logging> bridgeLog_;
 
   protected:
-    // Default-init: dtor must be safe against partial construction.
-    // threadEn_ is atomic to close the stop()/runThread() teardown race.
     std::thread* thread_ = nullptr;
     std::atomic<bool> threadEn_{false};
 

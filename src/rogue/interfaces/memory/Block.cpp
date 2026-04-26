@@ -677,7 +677,6 @@ void rim::Block::setBytes(const uint8_t* data, rim::Variable* var, uint32_t inde
 
     // List variable
     if (var->numValues_ != 0) {
-        // index is uint32_t, so the prior "< 0" half of the range check was dead.
         if (index >= var->numValues_) {
             if (var->byteReverse_) free(buff);
             throw(rogue::GeneralError::create("Block::setBytes",
@@ -740,7 +739,6 @@ void rim::Block::getBytes(uint8_t* data, rim::Variable* var, uint32_t index) {
 
     // List variable
     if (var->numValues_ != 0) {
-        // index is uint32_t, so the prior "< 0" half of the range check was dead.
         if (index >= var->numValues_)
             throw(rogue::GeneralError::create("Block::getBytes",
                                               "Index %" PRIu32 " is out of range for %s",

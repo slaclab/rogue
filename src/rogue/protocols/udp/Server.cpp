@@ -74,7 +74,6 @@ rpu::Server::Server(uint16_t port, bool jumbo) : rpu::Core(jumbo) {
     memset(&remAddr_, 0, sizeof(struct sockaddr_in));
 
     if (bind(fd_, (struct sockaddr*)&locAddr_, sizeof(locAddr_)) < 0) {
-        // ctor throw skips the dtor; close fd here to avoid leak
         ::close(fd_);
         fd_ = -1;
         throw(rogue::GeneralError::create("Server::Server",
@@ -86,7 +85,6 @@ rpu::Server::Server(uint16_t port, bool jumbo) : rpu::Core(jumbo) {
     if (port_ == 0) {
         len = sizeof(locAddr_);
         if (getsockname(fd_, (struct sockaddr*)&locAddr_, &len) < 0) {
-            // ctor throw skips the dtor; close fd here to avoid leak
             ::close(fd_);
             fd_ = -1;
             throw(rogue::GeneralError::create("Server::Server", "Failed to dynamically assign local port"));
@@ -100,15 +98,10 @@ rpu::Server::Server(uint16_t port, bool jumbo) : rpu::Core(jumbo) {
 
     udpLog_->debug("UDP server ready. localPort=%" PRIu16 ", maxPayload=%" PRIu32, port_, maxPayload());
 
-    // Start rx thread last so anything that may throw (e.g. log allocation)
-    // runs before the worker thread is launched. The ctor has no try/catch
-    // and a throw after thread launch would leak the thread and let it run
-    // against a half-destroyed object.
     threadEn_ = true;
     try {
         thread_ = new std::thread(&rpu::Server::runThread, this, std::weak_ptr<int>(scopePtr));
     } catch (...) {
-        // ctor throw skips the dtor; close fd here to avoid leak
         threadEn_ = false;
         ::close(fd_);
         fd_ = -1;

@@ -82,7 +82,6 @@ rpu::Client::Client(std::string host, uint16_t port, bool jumbo) : rpu::Core(jum
 
     // POSIX leaves *aiList undefined on failure; do not freeaddrinfo() it.
     if (::getaddrinfo(address_.c_str(), 0, &aiHints, &aiList) != 0 || aiList == nullptr) {
-        // ctor throw skips the dtor; close fd here to avoid leak
         ::close(fd_);
         fd_ = -1;
         throw(rogue::GeneralError::create("Client::Client", "Failed to resolve address %s", address_.c_str()));
@@ -108,15 +107,10 @@ rpu::Client::Client(std::string host, uint16_t port, bool jumbo) : rpu::Core(jum
                    port_,
                    maxPayload());
 
-    // Start rx thread last so anything that may throw (e.g. log allocation)
-    // runs before the worker thread is launched. The ctor has no try/catch
-    // and a throw after thread launch would leak the thread and let it run
-    // against a half-destroyed object.
     threadEn_ = true;
     try {
         thread_ = new std::thread(&rpu::Client::runThread, this, std::weak_ptr<int>(scopePtr));
     } catch (...) {
-        // ctor throw skips the dtor; close fd here to avoid leak
         threadEn_ = false;
         ::close(fd_);
         fd_ = -1;

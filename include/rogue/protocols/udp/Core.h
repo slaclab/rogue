@@ -75,8 +75,6 @@ class Core {
     // Transmit select()/send timeout.
     struct timeval timeout_;
 
-    // Default-init: dtor must be safe against partial construction.
-    // threadEn_ is atomic to close the stop()/runThread() teardown race.
     std::thread* thread_ = nullptr;
     std::atomic<bool> threadEn_{false};
 

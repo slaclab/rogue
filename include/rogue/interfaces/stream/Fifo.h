@@ -65,7 +65,6 @@ class Fifo : public rogue::interfaces::stream::Master, public rogue::interfaces:
     // Queue
     rogue::Queue<std::shared_ptr<rogue::interfaces::stream::Frame>> queue_;
 
-    // Default-init: dtor must be safe against partial construction.
     std::atomic<bool> threadEn_{false};
     std::thread* thread_ = nullptr;
 

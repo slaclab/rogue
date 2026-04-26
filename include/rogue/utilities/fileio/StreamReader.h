@@ -53,7 +53,6 @@ class StreamReader : public rogue::interfaces::stream::Master {
     // Base file name for indexed-file mode.
     std::string baseName_;
 
-    // Active file descriptor. Default-init: dtor must be safe before open().
     int32_t fd_ = -1;
 
     // Current file index in indexed-file mode.
@@ -63,8 +62,6 @@ class StreamReader : public rogue::interfaces::stream::Master {
     bool active_ = false;
 
   protected:
-    // Read worker thread. Default-init: dtor must be safe before open().
-    // threadEn_ is atomic to close the stop()/runThread() teardown race.
     std::thread* readThread_ = nullptr;
     std::atomic<bool> threadEn_{false};
 

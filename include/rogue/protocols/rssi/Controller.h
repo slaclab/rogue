@@ -148,8 +148,6 @@ class Controller : public rogue::EnableSharedFromThis<rogue::protocols::rssi::Co
     struct timeval nullToutD3_;    // nullTout_   / 3
     struct timeval zeroTme_;       // 0
 
-    // Default-init: dtor must be safe against partial construction.
-    // threadEn_ is atomic to close the stop()/runThread() teardown race.
     std::thread* thread_ = nullptr;
     std::atomic<bool> threadEn_{false};
 

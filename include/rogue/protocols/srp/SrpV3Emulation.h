@@ -103,8 +103,6 @@ class SrpV3Emulation : public rogue::interfaces::stream::Master,
     std::condition_variable queCond_;
 
   protected:
-    // threadEn_ is atomic so the unlocked outer ``while (threadEn_)`` poll in
-    // runThread() does not race the locked write in stop().
     std::atomic<bool> threadEn_{false};
 
   private:

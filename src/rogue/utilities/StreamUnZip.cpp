@@ -85,8 +85,6 @@ void ru::StreamUnZip::acceptFrame(ris::FramePtr frame) {
     strm.next_out  = reinterpret_cast<char*>((*wBuff)->begin());
     strm.avail_out = (*wBuff)->getAvailable();
 
-    // try/catch + the BZ2_bzDecompressEnd below ensure the decompressor
-    // state is freed on every exit path, including throws.
     try {
         do {
             ret = BZ2_bzDecompress(&strm);

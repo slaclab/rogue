@@ -54,8 +54,6 @@ class Transport : public rogue::interfaces::stream::Master, public rogue::interf
     std::shared_ptr<rogue::protocols::packetizer::Controller> cntl_;
 
   protected:
-    // Default-init: dtor before setController() must be a no-op.
-    // threadEn_ is atomic to close the stop()/runThread() teardown race.
     std::thread* thread_ = nullptr;
     std::atomic<bool> threadEn_{false};
 

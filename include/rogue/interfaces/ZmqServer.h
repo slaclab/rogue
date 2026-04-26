@@ -46,15 +46,12 @@ namespace interfaces {
  * available base port starting at `9099` in increments of 4.
  */
 class ZmqServer {
-    // Default-init so dtor is safe before start() opens these.
     void* zmqCtx_ = nullptr;
     void* zmqPub_ = nullptr;
     void* zmqRep_ = nullptr;
     void* zmqStr_ = nullptr;
 
   protected:
-    // Default-init: dtor must be safe against partial construction.
-    // threadEn_ is atomic to close the stop()/runThread()/strThread() teardown race.
     std::thread* rThread_ = nullptr;
     std::thread* sThread_ = nullptr;
     std::atomic<bool> threadEn_{false};

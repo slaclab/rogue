@@ -53,8 +53,6 @@ class Application : public rogue::interfaces::stream::Master, public rogue::inte
     std::shared_ptr<rogue::protocols::rssi::Controller> cntl_;
 
   protected:
-    // Default-init: dtor before setController() must be a no-op.
-    // threadEn_ is atomic to close the stop()/runThread() teardown race.
     std::thread* thread_ = nullptr;
     std::atomic<bool> threadEn_{false};
 

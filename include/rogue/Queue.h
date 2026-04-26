@@ -44,8 +44,6 @@ class Queue {
     std::condition_variable popCond_;
     uint32_t max_   = 0;
     uint32_t thold_ = 0;
-    // Default-init: atomic<bool> is left in an indeterminate state pre-C++20
-    // without an explicit initializer; brace-init closes that window.
     std::atomic<bool> busy_{false};
     bool run_ = true;
 

@@ -78,8 +78,7 @@ rim::TcpClient::TcpClient(std::string addr, uint16_t port, bool waitReady) : rim
     this->zmqResp_ = zmq_socket(this->zmqCtx_, ZMQ_PULL);
     this->zmqReq_  = zmq_socket(this->zmqCtx_, ZMQ_PUSH);
 
-    // dtor's stop() only frees these once threadEn_ is true; a throw in here
-    // would otherwise leak the context and sockets.
+    // Throws before threadEn_=true skip the dtor's stop(); free the context here.
     try {
         // Don't buffer when no connection
         opt = 1;
@@ -125,12 +124,6 @@ rim::TcpClient::TcpClient(std::string addr, uint16_t port, bool waitReady) : rim
         pthread_setname_np(thread_->native_handle(), "TcpClient");
 #endif
     } catch (...) {
-        // Defensive symmetry with MemMap / AxiMemMap / AxiStreamDma / udp::Client /
-        // udp::Server: ~TcpClient() does NOT run on a ctor-throw, so leaving
-        // threadEn_=true here is harmless today, but reset it (and the always-null
-        // thread_) so any future maintainer who calls this code from a context
-        // where the dtor CAN run (e.g. a two-phase init pattern) sees consistent
-        // state.
         threadEn_ = false;
         delete thread_;
         thread_ = nullptr;

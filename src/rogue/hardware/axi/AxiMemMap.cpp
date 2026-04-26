@@ -61,7 +61,6 @@ rha::AxiMemMap::AxiMemMap(std::string path) : rim::Slave(4, 0xFFFFFFFF) {
 
     // Check driver version ( ApiVersion 0x05 (or less) is the 32-bit address version)
     if (dmaGetApiVersion(fd_) < 0x06) {
-        // ctor throw skips the dtor; close fd here to avoid leak
         ::close(fd_);
         fd_ = -1;
         throw(rogue::GeneralError("AxiMemMap::AxiMemMap",
@@ -74,7 +73,6 @@ rha::AxiMemMap::AxiMemMap(std::string path) : rim::Slave(4, 0xFFFFFFFF) {
 
     // Check for mismatch in the rogue/loaded_driver API versions
     if (dmaCheckVersion(fd_) < 0) {
-        // ctor throw skips the dtor; close fd here to avoid leak
         ::close(fd_);
         fd_ = -1;
         throw(rogue::GeneralError(
@@ -82,15 +80,10 @@ rha::AxiMemMap::AxiMemMap(std::string path) : rim::Slave(4, 0xFFFFFFFF) {
             "Rogue DmaDriver.h API Version (DMA_VERSION) does not match the aes-stream-driver API version"));
     }
 
-    // Start read thread last so anything that may throw (e.g. log allocation)
-    // runs before the worker thread is launched. The ctor has no try/catch
-    // and a throw after thread launch would leak the thread and let it run
-    // against a half-destroyed object.
     threadEn_ = true;
     try {
         thread_ = new std::thread(&rha::AxiMemMap::runThread, this);
     } catch (...) {
-        // ctor throw skips the dtor; close fd here to avoid leak
         threadEn_ = false;
         ::close(fd_);
         fd_ = -1;

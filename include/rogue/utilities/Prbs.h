@@ -128,8 +128,6 @@ class Prbs : public rogue::interfaces::stream::Slave, public rogue::interfaces::
     std::shared_ptr<rogue::Logging> txLog_;
 
   protected:
-    // Default-init: dtor must be safe against partial construction.
-    // threadEn_ is atomic to close the stop()/runThread() teardown race.
     std::thread* txThread_ = nullptr;
     std::atomic<bool> threadEn_{false};
 

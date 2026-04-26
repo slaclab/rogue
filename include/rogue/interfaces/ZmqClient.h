@@ -48,7 +48,6 @@ namespace interfaces {
  * them to `doUpdate()`.
  */
 class ZmqClient {
-    // Default-init so a ctor that throws before opening these still tears down cleanly.
     void* zmqCtx_ = nullptr;
     void* zmqSub_ = nullptr;
     void* zmqReq_ = nullptr;
@@ -63,9 +62,6 @@ class ZmqClient {
     bool waitRetry_;
 
   protected:
-    // Default-init: dtor must be safe against partial construction.
-    // threadEn_ is atomic to close the stop()/runThread() teardown race;
-    // running_ is set/cleared only on the user thread and stays a plain bool.
     std::thread* thread_ = nullptr;
     std::atomic<bool> threadEn_{false};
 

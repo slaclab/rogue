@@ -165,9 +165,7 @@ bool rogue::interfaces::ZmqServer::tryConnect() {
     this->zmqRep_ = zmq_socket(this->zmqCtx_, ZMQ_REP);
     this->zmqStr_ = zmq_socket(this->zmqCtx_, ZMQ_REP);
 
-    // The dtor's stop() only closes these when threadEn_ is true (set after a
-    // successful start()), so any throw between zmq_socket() and start()
-    // completing must clean up here.
+    // Throws before start() skip the dtor's stop(); free the context here.
     try {
         opt = 0;
         if (zmq_setsockopt(this->zmqPub_, ZMQ_LINGER, &opt, sizeof(int32_t)) != 0)
@@ -333,9 +331,6 @@ void rogue::interfaces::ZmqServer::runThread() {
         // Get the message
         if (zmq_recvmsg(this->zmqRep_, &rxMsg, 0) > 0) {
 #ifndef NO_PYTHON
-            // Wrap the Python-touching path so a misbehaving _doRequest() (or
-            // a Py_BuildValue / PyObject_GetBuffer failure on its return value)
-            // cannot escape this worker and std::terminate() the process.
             try {
                 Py_buffer valueBuf;
                 rogue::ScopedGil gil;
@@ -380,10 +375,6 @@ void rogue::interfaces::ZmqServer::strThread() {
 
         // Get the message
         if (zmq_recvmsg(this->zmqStr_, &msg, 0) > 0) {
-            // Wrap the Python-touching path so a misbehaving _doString()
-            // override (or a std::string allocation failure on a large
-            // payload) cannot escape this worker and std::terminate() the
-            // process. Mirrors the protection added to runThread().
             try {
                 std::string data((const char*)zmq_msg_data(&msg), zmq_msg_size(&msg));
                 std::string ret = this->doString(data);

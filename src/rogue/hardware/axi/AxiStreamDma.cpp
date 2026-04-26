@@ -207,7 +207,6 @@ rha::AxiStreamDma::AxiStreamDma(std::string path, uint32_t dest, bool ssiEnable)
 
     if (dmaSetMaskBytes(fd_, mask) < 0) {
         closeShared(desc_);
-        // ctor throw skips the dtor; close fd here to avoid leak
         ::close(fd_);
         fd_ = -1;
         throw(rogue::GeneralError::create("AxiStreamDma::AxiStreamDma",
@@ -217,15 +216,10 @@ rha::AxiStreamDma::AxiStreamDma(std::string path, uint32_t dest, bool ssiEnable)
                                           dest));
     }
 
-    // Start read thread last so anything that may throw (e.g. log allocation)
-    // runs before the worker thread is launched. The ctor has no try/catch
-    // and a throw after thread launch would leak the thread, fd, and the
-    // shared buffer pool against a half-destroyed object.
     threadEn_ = true;
     try {
         thread_ = new std::thread(&rha::AxiStreamDma::runThread, this, std::weak_ptr<int>(scopePtr));
     } catch (...) {
-        // ctor throw skips the dtor; release fd_ and shared buffer entry here
         threadEn_ = false;
         closeShared(desc_);
         ::close(fd_);

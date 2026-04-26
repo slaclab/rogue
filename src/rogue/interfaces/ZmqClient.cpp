@@ -212,9 +212,7 @@ void rogue::interfaces::ZmqClient::stop() {
 }
 
 void rogue::interfaces::ZmqClient::setTimeout(uint32_t msecs, bool waitRetry) {
-    // ZMQ sockets are not thread-safe; serialize against any in-flight
-    // send()/sendString() that is using zmqReq_, and serialize the
-    // timeout_/waitRetry_ writes against the readers in those paths.
+    // ZMQ sockets are not thread-safe; serialize zmqReq_ access.
     rogue::GilRelease noGil;
     std::lock_guard<std::mutex> lock(reqLock_);
 
@@ -380,10 +378,6 @@ void rogue::interfaces::ZmqClient::runThread() {
         // Get the message
         if (zmq_recvmsg(this->zmqSub_, &msg, 0) > 0) {
 #ifndef NO_PYTHON
-            // Wrap the Python-touching path so a misbehaving _doUpdate() (or a
-            // Py_BuildValue / bp::handle failure on the incoming buffer) cannot
-            // escape this worker and std::terminate() the process. Mirrors the
-            // protection added to ZmqServer::runThread().
             try {
                 rogue::ScopedGil gil;
                 PyObject* val = Py_BuildValue("y#", zmq_msg_data(&msg), zmq_msg_size(&msg));
