@@ -65,50 +65,81 @@ rim::TcpServer::TcpServer(std::string addr, uint16_t port) {
     this->zmqResp_ = zmq_socket(this->zmqCtx_, ZMQ_PUSH);
     this->zmqReq_  = zmq_socket(this->zmqCtx_, ZMQ_PULL);
 
-    this->respAddr_.append(std::to_string(static_cast<int64_t>(port + 1)));
-    this->reqAddr_.append(std::to_string(static_cast<int64_t>(port)));
+    // Throws before threadEn_=true skip the dtor's stop(); free the context here.
+    try {
+        this->respAddr_.append(std::to_string(static_cast<int64_t>(port + 1)));
+        this->reqAddr_.append(std::to_string(static_cast<int64_t>(port)));
 
-    this->bridgeLog_->debug("Creating response client port: %s", this->respAddr_.c_str());
+        this->bridgeLog_->debug("Creating response client port: %s", this->respAddr_.c_str());
 
-    opt = 0;
-    if (zmq_setsockopt(this->zmqResp_, ZMQ_LINGER, &opt, sizeof(int32_t)) != 0)
-        throw(rogue::GeneralError("memory::TcpServer::TcpServer", "Failed to set socket linger"));
+        opt = 0;
+        if (zmq_setsockopt(this->zmqResp_, ZMQ_LINGER, &opt, sizeof(int32_t)) != 0)
+            throw(rogue::GeneralError("memory::TcpServer::TcpServer", "Failed to set socket linger"));
 
-    if (zmq_setsockopt(this->zmqReq_, ZMQ_LINGER, &opt, sizeof(int32_t)) != 0)
-        throw(rogue::GeneralError("memory::TcpServer::TcpServer", "Failed to set socket linger"));
+        if (zmq_setsockopt(this->zmqReq_, ZMQ_LINGER, &opt, sizeof(int32_t)) != 0)
+            throw(rogue::GeneralError("memory::TcpServer::TcpServer", "Failed to set socket linger"));
 
-    opt = 100;
-    if (zmq_setsockopt(this->zmqReq_, ZMQ_RCVTIMEO, &opt, sizeof(int32_t)) != 0)
-        throw(rogue::GeneralError("memory::TcpServer::TcpServer", "Failed to set socket receive timeout"));
+        opt = 100;
+        if (zmq_setsockopt(this->zmqReq_, ZMQ_RCVTIMEO, &opt, sizeof(int32_t)) != 0)
+            throw(rogue::GeneralError("memory::TcpServer::TcpServer", "Failed to set socket receive timeout"));
 
-    if (zmq_bind(this->zmqResp_, this->respAddr_.c_str()) < 0)
-        throw(rogue::GeneralError::create("memory::TcpServer::TcpServer",
-                                          "Failed to bind server to port %" PRIu16
-                                          " at address %s, another process may be using this port",
-                                          port + 1,
-                                          addr.c_str()));
+        if (zmq_bind(this->zmqResp_, this->respAddr_.c_str()) < 0)
+            throw(rogue::GeneralError::create("memory::TcpServer::TcpServer",
+                                              "Failed to bind server to port %" PRIu16
+                                              " at address %s, another process may be using this port",
+                                              port + 1,
+                                              addr.c_str()));
 
-    this->bridgeLog_->debug("Creating request client port: %s", this->reqAddr_.c_str());
+        this->bridgeLog_->debug("Creating request client port: %s", this->reqAddr_.c_str());
 
-    if (zmq_bind(this->zmqReq_, this->reqAddr_.c_str()) < 0)
-        throw(rogue::GeneralError::create("memory::TcpServer::TcpServer",
-                                          "Failed to bind server to port %" PRIu16
-                                          " at address %s, another process may be using this port",
-                                          port,
-                                          addr.c_str()));
+        if (zmq_bind(this->zmqReq_, this->reqAddr_.c_str()) < 0)
+            throw(rogue::GeneralError::create("memory::TcpServer::TcpServer",
+                                              "Failed to bind server to port %" PRIu16
+                                              " at address %s, another process may be using this port",
+                                              port,
+                                              addr.c_str()));
 
-    // Start rx thread
-    threadEn_     = true;
-    this->thread_ = new std::thread(&rim::TcpServer::runThread, this);
+        this->bridgeLog_->debug("TCP memory bridge ready. request=%s response=%s",
+                                this->reqAddr_.c_str(),
+                                this->respAddr_.c_str());
 
-    this->bridgeLog_->debug("TCP memory bridge ready. request=%s response=%s",
-                            this->reqAddr_.c_str(),
-                            this->respAddr_.c_str());
+        threadEn_     = true;
+        this->thread_ = new std::thread(&rim::TcpServer::runThread, this);
 
-    // Set a thread name
+        // Set a thread name
 #ifndef __MACH__
-    pthread_setname_np(thread_->native_handle(), "TcpServer");
+        pthread_setname_np(thread_->native_handle(), "TcpServer");
 #endif
+    } catch (...) {
+        // ~std::thread on a joinable thread calls std::terminate(); join first.
+        // RCVTIMEO=100 was already set on zmqReq_ above so the worker exits
+        // within ~100 ms of threadEn_=false. Release the GIL around join() to
+        // match stop(): the worker may be blocked acquiring the GIL to deliver
+        // a transaction into Python, and joining while holding the GIL would
+        // deadlock.
+        threadEn_ = false;
+        if (thread_ != nullptr) {
+            {
+                rogue::GilRelease noGil;
+                thread_->join();
+            }
+            delete thread_;
+            thread_ = nullptr;
+        }
+        if (zmqResp_ != nullptr) {
+            zmq_close(zmqResp_);
+            zmqResp_ = nullptr;
+        }
+        if (zmqReq_ != nullptr) {
+            zmq_close(zmqReq_);
+            zmqReq_ = nullptr;
+        }
+        if (zmqCtx_ != nullptr) {
+            zmq_ctx_destroy(zmqCtx_);
+            zmqCtx_ = nullptr;
+        }
+        throw;
+    }
 }
 
 //! Destructor
@@ -131,12 +162,17 @@ void rim::TcpServer::stop() {
         rogue::GilRelease noGil;
         threadEn_ = false;
         thread_->join();
+        delete thread_;
+        thread_ = nullptr;
         this->bridgeLog_->debug("Stopping TCP memory bridge. request=%s response=%s",
                                 this->reqAddr_.c_str(),
                                 this->respAddr_.c_str());
         zmq_close(this->zmqResp_);
+        zmqResp_ = nullptr;
         zmq_close(this->zmqReq_);
+        zmqReq_ = nullptr;
         zmq_ctx_destroy(this->zmqCtx_);
+        zmqCtx_ = nullptr;
     }
 }
 

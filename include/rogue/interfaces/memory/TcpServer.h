@@ -20,6 +20,7 @@
 
 #include <stdint.h>
 
+#include <atomic>
 #include <memory>
 #include <string>
 #include <thread>
@@ -56,14 +57,9 @@ class TcpServer : public rogue::interfaces::memory::Master {
     // Outbound Address
     std::string respAddr_;
 
-    // Zeromq Context
-    void* zmqCtx_;
-
-    // Zeromq inbound port
-    void* zmqReq_;
-
-    // Zeromq outbound port
-    void* zmqResp_;
+    void* zmqCtx_  = nullptr;
+    void* zmqReq_  = nullptr;
+    void* zmqResp_ = nullptr;
 
     // Thread background
     void runThread();
@@ -71,9 +67,11 @@ class TcpServer : public rogue::interfaces::memory::Master {
     // Log
     std::shared_ptr<rogue::Logging> bridgeLog_;
 
-    // Thread
-    std::thread* thread_;
-    bool threadEn_;
+    //! \cond INTERNAL
+  protected:
+    std::thread* thread_ = nullptr;
+    std::atomic<bool> threadEn_{false};
+    //! \endcond
 
   public:
     /**
