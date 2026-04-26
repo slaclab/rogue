@@ -15,9 +15,12 @@
  *     } catch (...) {
  *         threadEn_ = false;
  *         if (thread_ != nullptr) {
- *             thread_->join();           // <-- mandatory before delete
- *             delete thread_;
- *             thread_ = nullptr;
+ *             {
+ *                 rogue::GilRelease noGil;   // mirror stop(): worker may be
+ *                 thread_->join();           // blocked acquiring the GIL to
+ *             }                              // deliver into Python; joining
+ *             delete thread_;                // while holding the GIL would
+ *             thread_ = nullptr;             // deadlock.
  *         }
  *         ... close sockets / context ...
  *         throw;

@@ -126,10 +126,16 @@ rim::TcpClient::TcpClient(std::string addr, uint16_t port, bool waitReady) : rim
     } catch (...) {
         // ~std::thread on a joinable thread calls std::terminate(); join first.
         // RCVTIMEO=100 was already set on zmqResp_ above so the worker exits
-        // within ~100 ms of threadEn_=false.
+        // within ~100 ms of threadEn_=false. Release the GIL around join() to
+        // match stop(): the worker may be blocked acquiring the GIL to deliver
+        // a transaction into Python, and joining while holding the GIL would
+        // deadlock.
         threadEn_ = false;
         if (thread_ != nullptr) {
-            thread_->join();
+            {
+                rogue::GilRelease noGil;
+                thread_->join();
+            }
             delete thread_;
             thread_ = nullptr;
         }
