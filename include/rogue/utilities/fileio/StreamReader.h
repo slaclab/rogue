@@ -20,6 +20,7 @@
 
 #include <stdint.h>
 
+#include <atomic>
 #include <condition_variable>
 #include <map>
 #include <memory>
@@ -52,19 +53,21 @@ class StreamReader : public rogue::interfaces::stream::Master {
     // Base file name for indexed-file mode.
     std::string baseName_;
 
-    // Active file descriptor.
-    int32_t fd_;
+    int32_t fd_ = -1;
 
     // Current file index in indexed-file mode.
-    uint32_t fdIdx_;
+    uint32_t fdIdx_ = 0;
 
     // True while read thread is actively processing file data.
-    bool active_;
+    bool active_ = false;
 
-    // Read worker thread.
-    std::thread* readThread_;
-    bool threadEn_;
+    //! \cond INTERNAL
+  protected:
+    std::thread* readThread_ = nullptr;
+    std::atomic<bool> threadEn_{false};
+    //! \endcond
 
+  private:
     // Worker thread entry point.
     void runThread();
 

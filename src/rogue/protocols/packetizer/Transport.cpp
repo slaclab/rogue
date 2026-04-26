@@ -57,9 +57,16 @@ rpp::Transport::Transport() {}
 
 //! Destructor
 rpp::Transport::~Transport() {
-    threadEn_ = false;
-    cntl_->stopQueue();
-    thread_->join();
+    // No-op if setController() never ran.
+    if (thread_ != nullptr) {
+        threadEn_ = false;
+        // Release the GIL: worker may be mid-sendFrame to a Python slave.
+        rogue::GilRelease noGil;
+        cntl_->stopQueue();
+        thread_->join();
+        delete thread_;
+        thread_ = nullptr;
+    }
 }
 
 //! Setup links

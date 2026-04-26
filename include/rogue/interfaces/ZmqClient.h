@@ -18,6 +18,7 @@
 #define __ROGUE_ZMQ_CLIENT_H__
 #include "rogue/Directives.h"
 
+#include <atomic>
 #include <memory>
 #include <mutex>
 #include <string>
@@ -47,14 +48,9 @@ namespace interfaces {
  * them to `doUpdate()`.
  */
 class ZmqClient {
-    // ZeroMQ context.
-    void* zmqCtx_;
-
-    // ZeroMQ subscriber socket for async updates.
-    void* zmqSub_;
-
-    // ZeroMQ request socket for RPC.
-    void* zmqReq_;
+    void* zmqCtx_ = nullptr;
+    void* zmqSub_ = nullptr;
+    void* zmqReq_ = nullptr;
 
     // Logger instance.
     std::shared_ptr<rogue::Logging> log_;
@@ -65,10 +61,14 @@ class ZmqClient {
     // Continue retrying after timeout when true.
     bool waitRetry_;
 
-    // Background update thread (binary mode).
-    std::thread* thread_;
-    bool threadEn_;
-    bool running_;
+    //! \cond INTERNAL
+  protected:
+    std::thread* thread_ = nullptr;
+    std::atomic<bool> threadEn_{false};
+    //! \endcond
+
+  private:
+    bool running_ = false;
 
     // True when operating in string request mode.
     bool doString_;

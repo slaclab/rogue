@@ -66,6 +66,11 @@ rogue::interfaces::ZmqServer::ZmqServer(const std::string& addr, uint16_t port) 
 
 rogue::interfaces::ZmqServer::~ZmqServer() {
     stop();
+    // stop() only frees the context when start() ran; covers construct-without-start.
+    if (zmqCtx_ != nullptr) {
+        zmq_ctx_destroy(zmqCtx_);
+        zmqCtx_ = nullptr;
+    }
 }
 
 void rogue::interfaces::ZmqServer::start() {
@@ -119,16 +124,30 @@ void rogue::interfaces::ZmqServer::stop() {
         rogue::GilRelease noGil;
         threadEn_ = false;
         log_->info("Waiting for server thread to exit");
-        rThread_->join();
-        sThread_->join();
+        // Null-guard: a bad_alloc on the second start()-allocated thread leaves
+        // one pointer valid and the other null.
+        if (rThread_ != nullptr) {
+            rThread_->join();
+            delete rThread_;
+            rThread_ = nullptr;
+        }
+        if (sThread_ != nullptr) {
+            sThread_->join();
+            delete sThread_;
+            sThread_ = nullptr;
+        }
         log_->info("Closing pub socket");
         zmq_close(this->zmqPub_);
+        zmqPub_ = nullptr;
         log_->info("Closing request socket");
         zmq_close(this->zmqRep_);
+        zmqRep_ = nullptr;
         log_->info("Closing string socket");
         zmq_close(this->zmqStr_);
+        zmqStr_ = nullptr;
         log_->info("Destroying Context");
         zmq_ctx_destroy(this->zmqCtx_);
+        zmqCtx_ = nullptr;
         log_->info("Zmq server done. Exiting");
     }
 }
@@ -146,22 +165,33 @@ bool rogue::interfaces::ZmqServer::tryConnect() {
     this->zmqRep_ = zmq_socket(this->zmqCtx_, ZMQ_REP);
     this->zmqStr_ = zmq_socket(this->zmqCtx_, ZMQ_REP);
 
-    opt = 0;
-    if (zmq_setsockopt(this->zmqPub_, ZMQ_LINGER, &opt, sizeof(int32_t)) != 0)
-        throw(rogue::GeneralError("ZmqServer::tryConnect", "Failed to set socket linger"));
+    // Throws before start() skip the dtor's stop(); free the context here.
+    try {
+        opt = 0;
+        if (zmq_setsockopt(this->zmqPub_, ZMQ_LINGER, &opt, sizeof(int32_t)) != 0)
+            throw(rogue::GeneralError("ZmqServer::tryConnect", "Failed to set socket linger"));
 
-    if (zmq_setsockopt(this->zmqRep_, ZMQ_LINGER, &opt, sizeof(int32_t)) != 0)
-        throw(rogue::GeneralError("ZmqServer::tryConnect", "Failed to set socket linger"));
+        if (zmq_setsockopt(this->zmqRep_, ZMQ_LINGER, &opt, sizeof(int32_t)) != 0)
+            throw(rogue::GeneralError("ZmqServer::tryConnect", "Failed to set socket linger"));
 
-    if (zmq_setsockopt(this->zmqStr_, ZMQ_LINGER, &opt, sizeof(int32_t)) != 0)
-        throw(rogue::GeneralError("ZmqServer::tryConnect", "Failed to set socket linger"));
+        if (zmq_setsockopt(this->zmqStr_, ZMQ_LINGER, &opt, sizeof(int32_t)) != 0)
+            throw(rogue::GeneralError("ZmqServer::tryConnect", "Failed to set socket linger"));
 
-    opt = 100;
-    if (zmq_setsockopt(this->zmqRep_, ZMQ_RCVTIMEO, &opt, sizeof(int32_t)) != 0)
-        throw(rogue::GeneralError("ZmqServer::tryConnect", "Failed to set socket receive timeout"));
+        opt = 100;
+        if (zmq_setsockopt(this->zmqRep_, ZMQ_RCVTIMEO, &opt, sizeof(int32_t)) != 0)
+            throw(rogue::GeneralError("ZmqServer::tryConnect", "Failed to set socket receive timeout"));
 
-    if (zmq_setsockopt(this->zmqStr_, ZMQ_RCVTIMEO, &opt, sizeof(int32_t)) != 0)
-        throw(rogue::GeneralError("ZmqServer::tryConnect", "Failed to set socket receive timeout"));
+        if (zmq_setsockopt(this->zmqStr_, ZMQ_RCVTIMEO, &opt, sizeof(int32_t)) != 0)
+            throw(rogue::GeneralError("ZmqServer::tryConnect", "Failed to set socket receive timeout"));
+    } catch (...) {
+        zmq_close(this->zmqPub_);
+        zmqPub_ = nullptr;
+        zmq_close(this->zmqRep_);
+        zmqRep_ = nullptr;
+        zmq_close(this->zmqStr_);
+        zmqStr_ = nullptr;
+        throw;
+    }
 
     // Setup publish port
     temp = "tcp://";
@@ -169,10 +199,14 @@ bool rogue::interfaces::ZmqServer::tryConnect() {
     temp.append(":");
     temp.append(std::to_string(static_cast<int64_t>(this->basePort_)));
 
+    // Null after close so the auto-port retry loop does not double-close stale handles.
     if (zmq_bind(this->zmqPub_, temp.c_str()) < 0) {
         zmq_close(this->zmqPub_);
+        zmqPub_ = nullptr;
         zmq_close(this->zmqRep_);
+        zmqRep_ = nullptr;
         zmq_close(this->zmqStr_);
+        zmqStr_ = nullptr;
         log_->debug("Failed to bind publish socket to %s: %s", temp.c_str(), zmq_strerror(zmq_errno()));
         return false;
     }
@@ -185,8 +219,11 @@ bool rogue::interfaces::ZmqServer::tryConnect() {
 
     if (zmq_bind(this->zmqRep_, temp.c_str()) < 0) {
         zmq_close(this->zmqPub_);
+        zmqPub_ = nullptr;
         zmq_close(this->zmqRep_);
+        zmqRep_ = nullptr;
         zmq_close(this->zmqStr_);
+        zmqStr_ = nullptr;
         log_->debug("Failed to bind request socket to %s: %s", temp.c_str(), zmq_strerror(zmq_errno()));
         return false;
     }
@@ -199,8 +236,11 @@ bool rogue::interfaces::ZmqServer::tryConnect() {
 
     if (zmq_bind(this->zmqStr_, temp.c_str()) < 0) {
         zmq_close(this->zmqPub_);
+        zmqPub_ = nullptr;
         zmq_close(this->zmqRep_);
+        zmqRep_ = nullptr;
         zmq_close(this->zmqStr_);
+        zmqStr_ = nullptr;
         log_->debug("Failed to bind string request socket to %s: %s", temp.c_str(), zmq_strerror(zmq_errno()));
         return false;
     }
@@ -224,15 +264,33 @@ void rogue::interfaces::ZmqServer::publish(bp::object value) {
 
     if (!this->threadEn_) return;
 
-    if (PyObject_GetBuffer(value.ptr(), &(valueBuf), PyBUF_SIMPLE) < 0)
+    // PyErr_Print surfaces the Python-level error (e.g. TypeError from a
+    // non-buffer argument) AND clears the thread's error indicator; without
+    // it boost::python may observe "exception already set" when translating
+    // our throw, masking the original cause.
+    if (PyObject_GetBuffer(value.ptr(), &(valueBuf), PyBUF_SIMPLE) < 0) {
+        PyErr_Print();
         throw(rogue::GeneralError::create("ZmqServer::publish", "Failed to extract object data"));
+    }
 
-    zmq_msg_init_size(&msg, valueBuf.len);
+    // zmq_msg_init_size returns -1 on allocation failure; the message is left
+    // uninitialized so memcpy/zmq_msg_data must not run, and we still own
+    // valueBuf and have to release it before propagating the error.
+    if (zmq_msg_init_size(&msg, valueBuf.len) < 0) {
+        PyBuffer_Release(&valueBuf);
+        throw(rogue::GeneralError::create("ZmqServer::publish", "zmq_msg_init_size failed"));
+    }
     memcpy(zmq_msg_data(&msg), valueBuf.buf, valueBuf.len);
     PyBuffer_Release(&valueBuf);
 
     rogue::GilRelease noGil;
-    zmq_sendmsg(this->zmqPub_, &msg, 0);
+    // On success, zmq_sendmsg transfers ownership and zeroes the message;
+    // on failure (-1, e.g. ETERM during shutdown) we retain ownership and
+    // must close to avoid leaking the libzmq message buffer.
+    if (zmq_sendmsg(this->zmqPub_, &msg, 0) < 0) {
+        zmq_msg_close(&msg);
+        throw(rogue::GeneralError::create("ZmqServer::publish", "zmq_sendmsg failed"));
+    }
 }
 
 bp::object rogue::interfaces::ZmqServer::doRequest(bp::object data) {
@@ -291,35 +349,74 @@ void rogue::interfaces::ZmqServer::runThread() {
         // Get the message
         if (zmq_recvmsg(this->zmqRep_, &rxMsg, 0) > 0) {
 #ifndef NO_PYTHON
-            Py_buffer valueBuf;
-            rogue::ScopedGil gil;
-            PyObject* val = Py_BuildValue("y#", zmq_msg_data(&rxMsg), zmq_msg_size(&rxMsg));
+            // ZMQ_REP requires send-after-recv to keep the FSM healthy; the
+            // catch blocks below send an empty reply so a single bad request
+            // cannot wedge the socket into EFSM and drop all later requests.
+            bool txInit = false;
+            try {
+                Py_buffer valueBuf;
+                rogue::ScopedGil gil;
+                PyObject* val = Py_BuildValue("y#", zmq_msg_data(&rxMsg), zmq_msg_size(&rxMsg));
 
-            if (val == NULL) throw(rogue::GeneralError::create("ZmqServer::runThread", "Failed to generate bytearray"));
+                // PyErr_Print surfaces the Python-level error (e.g. MemoryError) AND clears
+                // the thread's error indicator; without this, the pending exception leaks
+                // into the next loop iteration's Py_BuildValue/bp::object calls.
+                if (val == NULL) {
+                    PyErr_Print();
+                    throw(rogue::GeneralError::create("ZmqServer::runThread", "Failed to generate bytearray"));
+                }
 
-            bp::handle<> handle(val);
+                bp::handle<> handle(val);
 
-            bp::object ret = this->doRequest(bp::object(handle));
+                bp::object ret = this->doRequest(bp::object(handle));
 
-            if (PyObject_GetBuffer(ret.ptr(), &(valueBuf), PyBUF_SIMPLE) < 0)
-                throw(rogue::GeneralError::create("ZmqServer::runThread", "Failed to extract object data"));
+                if (PyObject_GetBuffer(ret.ptr(), &(valueBuf), PyBUF_SIMPLE) < 0) {
+                    PyErr_Print();
+                    throw(rogue::GeneralError::create("ZmqServer::runThread", "Failed to extract object data"));
+                }
 
-            zmq_msg_init_size(&txMsg, valueBuf.len);
-            memcpy(zmq_msg_data(&txMsg), valueBuf.buf, valueBuf.len);
-            PyBuffer_Release(&valueBuf);
+                // zmq_msg_init_size returns -1 on allocation failure; the message
+                // stays uninitialized, so memcpy/zmq_msg_data must not run. Release
+                // valueBuf before throwing so the catch block (which sends the
+                // empty-REP keepalive) does not leak the Python buffer.
+                if (zmq_msg_init_size(&txMsg, valueBuf.len) < 0) {
+                    PyBuffer_Release(&valueBuf);
+                    throw(rogue::GeneralError::create("ZmqServer::runThread", "zmq_msg_init_size failed"));
+                }
+                txInit = true;
+                memcpy(zmq_msg_data(&txMsg), valueBuf.buf, valueBuf.len);
+                PyBuffer_Release(&valueBuf);
 
-            zmq_sendmsg(this->zmqRep_, &txMsg, 0);
+                // On success, zmq_sendmsg transfers ownership and zeroes the
+                // message; on failure (-1) we retain ownership and must close.
+                // Throw so the catch block sends the empty REP keepalive that
+                // clears the FSM -- otherwise the REP socket stays in the
+                // "must send" state and every subsequent zmq_recvmsg returns
+                // EFSM, wedging the worker on failed recvs until shutdown.
+                if (zmq_sendmsg(this->zmqRep_, &txMsg, 0) < 0) {
+                    zmq_msg_close(&txMsg);
+                    txInit = false;
+                    throw(rogue::GeneralError::create("ZmqServer::runThread", "zmq_sendmsg failed"));
+                }
+                txInit = false;
+            } catch (const std::exception& e) {
+                log_->warning("ZmqServer::runThread: dropping request after exception: %s", e.what());
+                if (txInit) zmq_msg_close(&txMsg);
+                zmq_send(this->zmqRep_, "", 0, 0);
+            } catch (...) {
+                log_->warning("ZmqServer::runThread: dropping request after unknown exception");
+                if (txInit) zmq_msg_close(&txMsg);
+                zmq_send(this->zmqRep_, "", 0, 0);
+            }
 #endif
-
-            zmq_msg_close(&rxMsg);
         }
+        // Close even on RCVTIMEO: zmq_recvmsg() initializes rxMsg regardless.
+        zmq_msg_close(&rxMsg);
     }
     log_->info("Stopped Rogue server thread");
 }
 
 void rogue::interfaces::ZmqServer::strThread() {
-    std::string data;
-    std::string ret;
     zmq_msg_t msg;
 
     log_->logThreadId();
@@ -330,11 +427,23 @@ void rogue::interfaces::ZmqServer::strThread() {
 
         // Get the message
         if (zmq_recvmsg(this->zmqStr_, &msg, 0) > 0) {
-            data = std::string((const char*)zmq_msg_data(&msg), zmq_msg_size(&msg));
-            ret  = this->doString(data);
-            zmq_send(this->zmqStr_, ret.c_str(), ret.size(), 0);
-            zmq_msg_close(&msg);
+            // ZMQ_REP requires send-after-recv to keep the FSM healthy; the
+            // catch blocks below send an empty reply so a single bad request
+            // cannot wedge the socket into EFSM and drop all later requests.
+            try {
+                std::string data((const char*)zmq_msg_data(&msg), zmq_msg_size(&msg));
+                std::string ret = this->doString(data);
+                zmq_send(this->zmqStr_, ret.c_str(), ret.size(), 0);
+            } catch (const std::exception& e) {
+                log_->warning("ZmqServer::strThread: dropping request after exception: %s", e.what());
+                zmq_send(this->zmqStr_, "", 0, 0);
+            } catch (...) {
+                log_->warning("ZmqServer::strThread: dropping request after unknown exception");
+                zmq_send(this->zmqStr_, "", 0, 0);
+            }
         }
+        // Close even on RCVTIMEO: zmq_recvmsg() initializes msg regardless.
+        zmq_msg_close(&msg);
     }
     log_->info("Stopped Rogue string server thread");
 }

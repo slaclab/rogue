@@ -61,10 +61,15 @@ rpp::Application::Application(uint8_t id) {
 
 //! Destructor
 rpp::Application::~Application() {
-    threadEn_ = false;
-    rogue::GilRelease noGil;
-    queue_.stop();
-    thread_->join();
+    // No-op if setController() never ran.
+    if (thread_ != nullptr) {
+        threadEn_ = false;
+        rogue::GilRelease noGil;
+        queue_.stop();
+        thread_->join();
+        delete thread_;
+        thread_ = nullptr;
+    }
 }
 
 //! Setup links

@@ -100,6 +100,8 @@ ru::Prbs::Prbs() {
 
 //! Deconstructor
 ru::Prbs::~Prbs() {
+    // disable() joins the TX thread; otherwise it would outlive taps_/threadEn_.
+    disable();
     free(taps_);
 }
 

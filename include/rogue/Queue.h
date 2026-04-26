@@ -42,19 +42,14 @@ class Queue {
     mutable std::mutex mtx_;
     std::condition_variable pushCond_;
     std::condition_variable popCond_;
-    uint32_t max_;
-    uint32_t thold_;
-    std::atomic<bool> busy_;
-    bool run_;
+    uint32_t max_   = 0;
+    uint32_t thold_ = 0;
+    std::atomic<bool> busy_{false};
+    bool run_ = true;
 
   public:
     /** @brief Constructs an empty running queue. */
-    Queue() {
-        max_   = 0;
-        thold_ = 0;
-        busy_  = false;
-        run_   = true;
-    }
+    Queue() = default;
 
     /**
      * @brief Stops queue operation and wakes blocked producers/consumers.

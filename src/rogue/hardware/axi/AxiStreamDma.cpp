@@ -208,6 +208,7 @@ rha::AxiStreamDma::AxiStreamDma(std::string path, uint32_t dest, bool ssiEnable)
     if (dmaSetMaskBytes(fd_, mask) < 0) {
         closeShared(desc_);
         ::close(fd_);
+        fd_ = -1;
         throw(rogue::GeneralError::create("AxiStreamDma::AxiStreamDma",
                                           "Failed to open device file %s with dest 0x%" PRIx32
                                           "! Another process may already have it open!",
@@ -215,9 +216,16 @@ rha::AxiStreamDma::AxiStreamDma(std::string path, uint32_t dest, bool ssiEnable)
                                           dest));
     }
 
-    // Start read thread
     threadEn_ = true;
-    thread_   = new std::thread(&rha::AxiStreamDma::runThread, this, std::weak_ptr<int>(scopePtr));
+    try {
+        thread_ = new std::thread(&rha::AxiStreamDma::runThread, this, std::weak_ptr<int>(scopePtr));
+    } catch (...) {
+        threadEn_ = false;
+        closeShared(desc_);
+        ::close(fd_);
+        fd_ = -1;
+        throw;
+    }
 
     // Set a thread name
 #ifndef __MACH__
@@ -237,6 +245,8 @@ void rha::AxiStreamDma::stop() {
         // Stop read thread
         threadEn_ = false;
         thread_->join();
+        delete thread_;
+        thread_ = nullptr;
 
         closeShared(desc_);
         ::close(fd_);

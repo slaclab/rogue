@@ -24,7 +24,10 @@
 #include <stdint.h>
 #include <sys/socket.h>
 
+#include <atomic>
 #include <memory>
+#include <mutex>
+#include <thread>
 
 #include "rogue/Logging.h"
 
@@ -74,8 +77,8 @@ class Core {
     // Transmit select()/send timeout.
     struct timeval timeout_;
 
-    std::thread* thread_;
-    bool threadEn_;
+    std::thread* thread_ = nullptr;
+    std::atomic<bool> threadEn_{false};
 
     // Synchronizes shared socket/address updates in derived classes.
     std::mutex udpMtx_;
