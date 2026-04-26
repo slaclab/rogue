@@ -267,7 +267,13 @@ void rogue::interfaces::ZmqServer::publish(bp::object value) {
     if (PyObject_GetBuffer(value.ptr(), &(valueBuf), PyBUF_SIMPLE) < 0)
         throw(rogue::GeneralError::create("ZmqServer::publish", "Failed to extract object data"));
 
-    zmq_msg_init_size(&msg, valueBuf.len);
+    // zmq_msg_init_size returns -1 on allocation failure; the message is left
+    // uninitialized so memcpy/zmq_msg_data must not run, and we still own
+    // valueBuf and have to release it before propagating the error.
+    if (zmq_msg_init_size(&msg, valueBuf.len) < 0) {
+        PyBuffer_Release(&valueBuf);
+        throw(rogue::GeneralError::create("ZmqServer::publish", "zmq_msg_init_size failed"));
+    }
     memcpy(zmq_msg_data(&msg), valueBuf.buf, valueBuf.len);
     PyBuffer_Release(&valueBuf);
 
@@ -357,7 +363,14 @@ void rogue::interfaces::ZmqServer::runThread() {
                     throw(rogue::GeneralError::create("ZmqServer::runThread", "Failed to extract object data"));
                 }
 
-                zmq_msg_init_size(&txMsg, valueBuf.len);
+                // zmq_msg_init_size returns -1 on allocation failure; the message
+                // stays uninitialized, so memcpy/zmq_msg_data must not run. Release
+                // valueBuf before throwing so the catch block (which sends the
+                // empty-REP keepalive) does not leak the Python buffer.
+                if (zmq_msg_init_size(&txMsg, valueBuf.len) < 0) {
+                    PyBuffer_Release(&valueBuf);
+                    throw(rogue::GeneralError::create("ZmqServer::runThread", "zmq_msg_init_size failed"));
+                }
                 txInit = true;
                 memcpy(zmq_msg_data(&txMsg), valueBuf.buf, valueBuf.len);
                 PyBuffer_Release(&valueBuf);

@@ -26,6 +26,8 @@
 
 #include <atomic>
 #include <memory>
+#include <mutex>
+#include <thread>
 
 #include "rogue/Logging.h"
 

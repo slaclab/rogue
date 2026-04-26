@@ -303,7 +303,13 @@ bp::object rogue::interfaces::ZmqClient::send(bp::object value) {
     if (PyObject_GetBuffer(value.ptr(), &(valueBuf), PyBUF_SIMPLE) < 0)
         throw(rogue::GeneralError::create("ZmqClient::send", "Failed to extract object data"));
 
-    zmq_msg_init_size(&txMsg, valueBuf.len);
+    // zmq_msg_init_size returns -1 on allocation failure; the message is left
+    // uninitialized so memcpy/zmq_msg_data must not run, and we still own
+    // valueBuf and have to release it before propagating the error.
+    if (zmq_msg_init_size(&txMsg, valueBuf.len) < 0) {
+        PyBuffer_Release(&valueBuf);
+        throw(rogue::GeneralError::create("ZmqClient::send", "zmq_msg_init_size failed"));
+    }
     memcpy(zmq_msg_data(&txMsg), valueBuf.buf, valueBuf.len);
     PyBuffer_Release(&valueBuf);
 
