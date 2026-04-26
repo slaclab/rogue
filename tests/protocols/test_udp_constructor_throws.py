@@ -27,7 +27,6 @@
 import os
 import socket
 import sys
-import time
 
 import pytest
 
@@ -94,67 +93,3 @@ def test_udp_client_unresolvable_host_releases_fd():
         with pytest.raises(Exception, match="Failed to resolve"):
             rogue.protocols.udp.Client(bad_host, 12345, False)
     assert _open_fd_count() <= baseline + 4
-
-
-def test_udp_server_so_reuseaddr_coexists_with_python_socket():
-    """The new ``setsockopt(SO_REUSEADDR)`` in Server::Server() must let the
-    rogue Server bind to a port already held by another SO_REUSEADDR socket.
-
-    Reverting the setsockopt() call makes the rogue bind() fail with
-    EADDRINUSE because Linux requires *both* sockets to set SO_REUSEADDR for
-    UDP coexistence on the same address+port. Verified against the
-    pre-release version of Server.cpp: bind() fails with the
-    "Another process may be using it" message.
-    """
-    helper = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    helper.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    helper.bind(("0.0.0.0", 0))
-    port = helper.getsockname()[1]
-    try:
-        # If the rogue Server lacks SO_REUSEADDR this raises EADDRINUSE.
-        serv = rogue.protocols.udp.Server(port, False)
-        assert serv.getPort() == port
-        # Pre-existing crash workaround: rogue Server destruction races with
-        # its rx-thread startup if the object is destroyed too quickly. Give
-        # the thread time to settle before dropping the reference.
-        time.sleep(0.5)
-        serv = None
-    finally:
-        helper.close()
-
-
-def test_udp_server_two_rogue_instances_coexist_on_same_port():
-    """Document the SO_REUSEADDR semantic shift: two ``udp::Server`` instances
-    on the same port now BOTH bind successfully where the pre-release code
-    would have rejected the second with EADDRINUSE.
-
-    This is a deliberate behavior change motivated by rapid-rebind
-    workflows and coexistence with externally-held SO_REUSEADDR sockets.
-    The downside is that an accidental duplicate Server is now silently
-    accepted; incoming UDP packets are then split between the two by the
-    kernel non-deterministically. This test pins the new contract so a
-    future revert (or a guard flag added to opt out) is caught at the test
-    layer rather than as a surprise in production.
-
-    If a constructor option is later added to disable SO_REUSEADDR, this
-    test should be tightened to assert the duplicate raises under the
-    default and only coexists when the option is set.
-    """
-    # Bind the first Server to an arbitrary free port chosen by the kernel.
-    first = rogue.protocols.udp.Server(0, False)
-    port = first.getPort()
-    try:
-        # Pre-fix this would raise "Another process may be using it"; with
-        # SO_REUSEADDR set on both sockets the kernel accepts the second
-        # bind. We tear it down quickly to avoid the rx-thread startup
-        # race noted in the helper-coexistence test above.
-        second = rogue.protocols.udp.Server(port, False)
-        try:
-            assert second.getPort() == port
-            time.sleep(0.5)
-        finally:
-            second = None
-    finally:
-        # Same settle delay before dropping the first reference.
-        time.sleep(0.5)
-        first = None

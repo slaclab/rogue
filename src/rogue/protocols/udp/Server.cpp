@@ -53,7 +53,6 @@ rpu::ServerPtr rpu::Server::create(uint16_t port, bool jumbo) {
 //! Creator
 rpu::Server::Server(uint16_t port, bool jumbo) : rpu::Core(jumbo) {
     uint32_t len;
-    int32_t val;
     uint32_t size;
 
     port_   = port;
@@ -65,11 +64,6 @@ rpu::Server::Server(uint16_t port, bool jumbo) : rpu::Core(jumbo) {
     // Create socket
     if ((fd_ = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
         throw(rogue::GeneralError::create("Server::Server", "Failed to create socket for port %" PRIu16, port_));
-
-    // SO_REUSEADDR for rapid rebind under stress; best-effort, bind() surfaces real errors.
-    val = 1;
-    if (setsockopt(fd_, SOL_SOCKET, SO_REUSEADDR, reinterpret_cast<const char*>(&val), sizeof(val)) < 0)
-        udpLog_->warning("Failed to set SO_REUSEADDR on port %" PRIu16 ": %s", port_, strerror(errno));
 
     // Setup Remote Address
     memset(&locAddr_, 0, sizeof(struct sockaddr_in));
