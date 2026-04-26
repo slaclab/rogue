@@ -26,12 +26,15 @@ from pathlib import Path
 
 
 def _load_virtual_module():
-    """Load _Virtual.py without importing the rogue C++ extension.
+    """Load _Virtual.py directly from its file path.
 
-    ``pyrogue.interfaces._Virtual`` imports ``rogue.interfaces`` to subclass
-    ``ZmqClient`` for VirtualClient. We only want the Python-side
-    VirtualNode class for this race test, so load the module directly via
-    its file path with the C++ ZmqClient stubbed out.
+    ``pyrogue.interfaces._Virtual`` imports ``rogue.interfaces`` at module
+    scope to subclass ``ZmqClient`` for VirtualClient. We do not stub the
+    C++ extension here; the rogue native module is already built and
+    available in the test environment, so the import resolves normally.
+    Loading via ``spec_from_file_location`` only bypasses
+    ``pyrogue.interfaces.__init__``, which star-re-exports several other
+    submodules we do not need for the VirtualNode race test.
     """
     module_path = (
         Path(__file__).resolve().parents[2]

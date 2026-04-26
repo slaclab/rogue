@@ -205,8 +205,11 @@ def test_sideband_sim_stop_releases_sockets_thread_and_context(monkeypatch):
     assert pull_sock.close_calls == [0]
     # Context is terminated exactly once.
     assert fake_ctx.term_calls == 1
-    # _stop must remain idempotent: a second call must not double-call term()
-    # or raise even though the sockets/context are now in a torn-down state.
+    # _stop must remain idempotent: a second call must not raise even though
+    # the sockets/context are now in a torn-down state. The implementation
+    # does not gate term()/close() with an "already-stopped" flag; instead
+    # it tolerates the second teardown via the try/except in _stop(), so a
+    # repeated term() call is allowed but exception-safe.
     sideband._stop()
     assert fake_ctx.term_calls in (1, 2)
 

@@ -685,7 +685,12 @@ void rim::Block::setBytes(const uint8_t* data, rim::Variable* var, uint32_t inde
                                               var->name_.c_str()));
         }
 
-        // Fast copy
+        // Fast copy.
+        // Intentionally writes valueBytes_ (not valueStride_/8): pyrogue
+        // RemoteVariable.add() rejects valueStride < valueBits before any
+        // C++ caller is reachable, so a stride-cap here would silently
+        // truncate writes for misconfigured direct-C++ callers and hide
+        // the bug rather than surface it.
         if (var->fastByte_ != NULL)
             memcpy(blockData_ + var->fastByte_[index], buff, var->valueBytes_);
 
@@ -745,7 +750,9 @@ void rim::Block::getBytes(uint8_t* data, rim::Variable* var, uint32_t index) {
                                               index,
                                               var->name_.c_str()));
 
-        // Fast copy
+        // Fast copy. See setBytes() above for why this reads valueBytes_
+        // and not valueStride_/8 -- the read-side mirrors the write-side
+        // because pyrogue rejects valueStride < valueBits upstream.
         if (var->fastByte_ != NULL)
             memcpy(data, blockData_ + var->fastByte_[index], var->valueBytes_);
 
