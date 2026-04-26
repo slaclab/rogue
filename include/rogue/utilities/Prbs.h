@@ -127,9 +127,11 @@ class Prbs : public rogue::interfaces::stream::Slave, public rogue::interfaces::
     std::shared_ptr<rogue::Logging> rxLog_;
     std::shared_ptr<rogue::Logging> txLog_;
 
+    //! \cond INTERNAL
   protected:
     std::thread* txThread_ = nullptr;
     std::atomic<bool> threadEn_{false};
+    //! \endcond
 
   private:
     // Internal computation

@@ -51,10 +51,12 @@ class ZmqServer {
     void* zmqRep_ = nullptr;
     void* zmqStr_ = nullptr;
 
+    //! \cond INTERNAL
   protected:
     std::thread* rThread_ = nullptr;
     std::thread* sThread_ = nullptr;
     std::atomic<bool> threadEn_{false};
+    //! \endcond
 
   private:
     // Bind address and base port configuration.

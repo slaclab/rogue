@@ -46,9 +46,11 @@ class Application : public rogue::interfaces::stream::Master, public rogue::inte
     // ID
     uint8_t id_;
 
+    //! \cond INTERNAL
   protected:
     std::thread* thread_ = nullptr;
     std::atomic<bool> threadEn_{false};
+    //! \endcond
 
   private:
     // Thread background

@@ -53,9 +53,11 @@ class Transport : public rogue::interfaces::stream::Master, public rogue::interf
     // Packetizer controller endpoint.
     std::shared_ptr<rogue::protocols::packetizer::Controller> cntl_;
 
+    //! \cond INTERNAL
   protected:
     std::thread* thread_ = nullptr;
     std::atomic<bool> threadEn_{false};
+    //! \endcond
 
   private:
     // Worker thread entry point.

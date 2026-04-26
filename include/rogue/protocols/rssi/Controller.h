@@ -148,9 +148,11 @@ class Controller : public rogue::EnableSharedFromThis<rogue::protocols::rssi::Co
     struct timeval nullToutD3_;    // nullTout_   / 3
     struct timeval zeroTme_;       // 0
 
+    //! \cond INTERNAL
   protected:
     std::thread* thread_ = nullptr;
     std::atomic<bool> threadEn_{false};
+    //! \endcond
 
   private:
     // Application frame transmit timeout

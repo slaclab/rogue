@@ -61,9 +61,11 @@ class ZmqClient {
     // Continue retrying after timeout when true.
     bool waitRetry_;
 
+    //! \cond INTERNAL
   protected:
     std::thread* thread_ = nullptr;
     std::atomic<bool> threadEn_{false};
+    //! \endcond
 
   private:
     bool running_ = false;

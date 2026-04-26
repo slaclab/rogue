@@ -102,8 +102,10 @@ class SrpV3Emulation : public rogue::interfaces::stream::Master,
     std::mutex queMtx_;
     std::condition_variable queCond_;
 
+    //! \cond INTERNAL
   protected:
     std::atomic<bool> threadEn_{false};
+    //! \endcond
 
   private:
     //! Worker thread function

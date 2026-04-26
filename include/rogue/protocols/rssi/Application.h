@@ -52,9 +52,11 @@ class Application : public rogue::interfaces::stream::Master, public rogue::inte
     // RSSI controller backend.
     std::shared_ptr<rogue::protocols::rssi::Controller> cntl_;
 
+    //! \cond INTERNAL
   protected:
     std::thread* thread_ = nullptr;
     std::atomic<bool> threadEn_{false};
+    //! \endcond
 
   private:
     // Worker thread entry point.

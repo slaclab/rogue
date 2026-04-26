@@ -68,9 +68,11 @@ class TcpClient : public rogue::interfaces::memory::Slave {
     // Log
     std::shared_ptr<rogue::Logging> bridgeLog_;
 
+    //! \cond INTERNAL
   protected:
     std::thread* thread_ = nullptr;
     std::atomic<bool> threadEn_{false};
+    //! \endcond
 
   private:
     // Lock

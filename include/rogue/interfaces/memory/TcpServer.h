@@ -67,9 +67,11 @@ class TcpServer : public rogue::interfaces::memory::Master {
     // Log
     std::shared_ptr<rogue::Logging> bridgeLog_;
 
+    //! \cond INTERNAL
   protected:
     std::thread* thread_ = nullptr;
     std::atomic<bool> threadEn_{false};
+    //! \endcond
 
   public:
     /**

@@ -61,9 +61,11 @@ class StreamReader : public rogue::interfaces::stream::Master {
     // True while read thread is actively processing file data.
     bool active_ = false;
 
+    //! \cond INTERNAL
   protected:
     std::thread* readThread_ = nullptr;
     std::atomic<bool> threadEn_{false};
+    //! \endcond
 
   private:
     // Worker thread entry point.

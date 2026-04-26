@@ -113,9 +113,11 @@ class AxiStreamDma : public rogue::interfaces::stream::Master, public rogue::int
     // SSI flag handling enable.
     bool enSsi_;
 
+    //! \cond INTERNAL
   protected:
     std::thread* thread_ = nullptr;
     std::atomic<bool> threadEn_{false};
+    //! \endcond
 
   private:
     // Logger instance.
