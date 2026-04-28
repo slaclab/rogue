@@ -10,16 +10,8 @@
 # contained in the LICENSE.txt file.
 # ----------------------------------------------------------------------------
 
-add_subdirectory("packetizer")
-add_subdirectory("rssi")
-add_subdirectory("srp")
-add_subdirectory("udp")
-add_subdirectory("batcher")
-add_subdirectory("xilinx")
-
-if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
-   add_subdirectory("rocev2")
-endif()
+target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/Core.cpp")
+target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/Server.cpp")
 
 if (NOT NO_PYTHON)
    target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/module.cpp")

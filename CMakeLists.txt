@@ -44,10 +44,31 @@ endif()
 project (rogue)
 
 option(ROGUE_BUILD_TESTS "Build Rogue native C++ tests" OFF)
+option(ROGUE_COVERAGE    "Build rogue-core with gcov instrumentation (CI only)" OFF)
 
 # Current Apple support target is arm64 only.
 if (APPLE AND NOT ((CMAKE_SYSTEM_PROCESSOR STREQUAL "arm64") OR (CMAKE_SYSTEM_PROCESSOR STREQUAL "aarch64")))
    message(FATAL_ERROR "macOS builds are only supported on arm64")
+endif()
+
+#####################################
+# RoCEv2 / libibverbs (Linux only, always enabled)
+#####################################
+if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+   find_library(IBVERBS_LIBRARY NAMES ibverbs)
+   find_path(IBVERBS_INCLUDE_DIR NAMES infiniband/verbs.h)
+
+   if ((NOT IBVERBS_LIBRARY) OR (NOT IBVERBS_INCLUDE_DIR))
+      message(FATAL_ERROR
+         "RoCEv2 requires libibverbs which was not found.\n"
+         "Install rdma-core:\n"
+         "  Ubuntu/Debian:  sudo apt-get install libibverbs-dev rdma-core\n"
+         "  Fedora/RHEL:    sudo dnf install rdma-core-devel\n"
+         "  conda-forge:    conda install -c conda-forge rdma-core")
+   endif()
+
+   add_definitions(-DROGUE_LINUX_BUILD)
+   include_directories(${IBVERBS_INCLUDE_DIR})
 endif()
 
 # C/C++
@@ -295,6 +316,23 @@ else()
    TARGET_LINK_LIBRARIES(rogue-core-shared PUBLIC rt)
 endif()
 
+if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+   TARGET_LINK_LIBRARIES(rogue-core-shared PUBLIC ${IBVERBS_LIBRARY})
+endif()
+
+#####################################
+# Coverage instrumentation (CI only)
+#####################################
+if (ROGUE_COVERAGE)
+   if (NOT (CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang"))
+      message(FATAL_ERROR "ROGUE_COVERAGE=ON requires GCC or Clang (got ${CMAKE_CXX_COMPILER_ID})")
+   endif()
+   target_compile_options(rogue-core        PRIVATE --coverage -O0 -g)
+   target_compile_options(rogue-core-shared PRIVATE --coverage -O0 -g)
+   target_link_options   (rogue-core-shared PRIVATE --coverage)
+   message(STATUS "ROGUE_COVERAGE: ENABLED (--coverage -O0 -g on rogue-core targets)")
+endif()
+
 if(STATIC_LIB)
     add_library(rogue-core-static STATIC $<TARGET_OBJECTS:rogue-core> "")
     set_target_properties(rogue-core-static PROPERTIES OUTPUT_NAME librogue-core)
@@ -307,6 +345,15 @@ if(STATIC_LIB)
     TARGET_LINK_LIBRARIES(rogue-core-static PUBLIC ${Python3_LIBRARIES})
     if (NOT APPLE)
        TARGET_LINK_LIBRARIES(rogue-core-static PUBLIC rt)
+    endif()
+
+    if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+       TARGET_LINK_LIBRARIES(rogue-core-static PUBLIC ${IBVERBS_LIBRARY})
+    endif()
+
+    if (ROGUE_COVERAGE)
+       target_compile_options(rogue-core-static PRIVATE --coverage -O0 -g)
+       target_link_options   (rogue-core-static PRIVATE --coverage)
     endif()
 endif()
 
@@ -461,6 +508,14 @@ message("")
 message("-- Found ZeroMq: ${ZeroMQ_INCLUDE_DIR}")
 message("")
 message("-- Found Bzip2: ${BZIP2_INCLUDE_DIR}")
+message("")
+
+if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+   message("-- RoCEv2 support: ENABLED (${IBVERBS_LIBRARY})")
+else()
+   message("-- RoCEv2 support: disabled (Linux only)")
+endif()
+
 message("")
 message("-- Link dynamic rogue library!")
 

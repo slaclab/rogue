@@ -13,6 +13,7 @@ protocol adapters layered on top of the Rogue interfaces.
 
    protocols/batcher/index
    protocols/packetizer/index
+   protocols/rocev2/index
    protocols/rssi/index
    protocols/srp/index
    protocols/udp/index

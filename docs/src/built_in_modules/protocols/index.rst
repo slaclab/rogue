@@ -21,6 +21,8 @@ Subtopics
 
 - Use :doc:`udp/index` for lightweight datagram transport endpoints.
 - Use :doc:`rssi/index` for ordered, reliable delivery over packet links.
+- Use :doc:`rocev2/index` for RDMA-over-Converged-Ethernet v2 receive
+  against a RoCEv2-capable FPGA endpoint.
 - Use :doc:`network` for the common ``pyrogue.protocols.UdpRssiPack`` wrapper
   that assembles a typical UDP/RSSI transport stack.
 - Use :doc:`srp/index` for register and memory transaction transport over
@@ -45,6 +47,7 @@ construction and transaction flow are covered end to end.
 
    udp/index
    rssi/index
+   rocev2/index
    packetizer/index
    network
    batcher/index
