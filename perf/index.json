@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-01T21:59:51Z",
+  "generated_at": "2026-05-01T23:21:21Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -152,6 +152,29 @@
         "published_at": "2026-05-01T21:06:10Z",
         "run_url": "https://github.com/slaclab/rogue/actions/runs/25232882079",
         "summary_url": "/rogue/perf/branches/pre-release/latest.json"
+      }
+    },
+    {
+      "ref_name": "fix-prbs-tx-gen-frame-test-flake",
+      "ref_slug": "fix-prbs-tx-gen-frame-test-flake",
+      "latest_url": "/rogue/perf/branches/fix-prbs-tx-gen-frame-test-flake/latest.json",
+      "history": [
+        {
+          "ref_name": "fix-prbs-tx-gen-frame-test-flake",
+          "sha": "4b11514f3aa285f2536eab061f50ec6d9288bb5c",
+          "short_sha": "4b11514",
+          "published_at": "2026-05-01T23:21:21Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/25237248036",
+          "summary_url": "/rogue/perf/branches/fix-prbs-tx-gen-frame-test-flake/history/4b11514f3aa285f2536eab061f50ec6d9288bb5c.json"
+        }
+      ],
+      "latest": {
+        "ref_name": "fix-prbs-tx-gen-frame-test-flake",
+        "sha": "4b11514f3aa285f2536eab061f50ec6d9288bb5c",
+        "short_sha": "4b11514",
+        "published_at": "2026-05-01T23:21:21Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/25237248036",
+        "summary_url": "/rogue/perf/branches/fix-prbs-tx-gen-frame-test-flake/latest.json"
       }
     },
     {
