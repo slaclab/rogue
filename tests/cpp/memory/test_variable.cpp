@@ -17,6 +17,9 @@
  * ----------------------------------------------------------------------------
  **/
 #include <stdint.h>
+#if defined(__GLIBC__)
+    #include <malloc.h>
+#endif
 
 #include <algorithm>
 #include <memory>
@@ -126,3 +129,75 @@ TEST_CASE("Memory list variables honor stride and range checks") {
 
     CHECK_THROWS_AS(variable->setUInt(badIdx, 4), rogue::GeneralError);
 }
+
+// Block::setBytes mallocs a temporary on the byte-reverse path and must
+// ``free()`` it before throwing on a range-checked index. Reverting the
+// ``free(buff)`` call added in src/rogue/interfaces/memory/Block.cpp leaks
+// ``valueBytes_`` per offending call. Direct C++ invocation (no Python
+// exception machinery) gives a clean signal via ``mallinfo2()``: with the fix
+// the leak is zero; without the fix it is ``iterations * valueBytes_`` bytes.
+// ``mallinfo2`` is glibc-only, so this case is skipped on non-glibc libcs
+// (e.g. macOS, musl); the equivalent Python test handles those at runtime.
+#if defined(__GLIBC__)
+TEST_CASE("Block::setBytes byte-reverse path frees its temporary on range throw") {
+    constexpr std::size_t kIterations = 4096;
+    constexpr std::size_t kValueBytes = 256;  // valueBits=2048
+
+    auto slave    = std::make_shared<RecordingMemorySlave>(kValueBytes * 16);
+    auto block    = rim::Block::create(0, kValueBytes * 4);
+    auto variable = rim::Variable::create("BeList",
+                                          "RW",
+                                          0,
+                                          0,
+                                          0,
+                                          {0},
+                                          {static_cast<uint32_t>(kValueBytes * 4 * 8)},
+                                          false,
+                                          false,
+                                          false,
+                                          false,
+                                          rim::UInt,
+                                          /*byteReverse=*/true,
+                                          false,
+                                          0,
+                                          /*numValues=*/4,
+                                          /*valueBits=*/static_cast<uint32_t>(kValueBytes * 8),
+                                          /*valueStride=*/static_cast<uint32_t>(kValueBytes * 8),
+                                          0);
+
+    variable->updatePath("Root.BeList");
+    block->setSlave(slave);
+    block->addVariables({variable});
+    block->setEnable(true);
+
+    // Warm-up so any first-use allocations don't pollute the baseline.
+    std::vector<uint8_t> payload(kValueBytes, 0xAB);
+    for (std::size_t i = 0; i < 16; ++i) {
+        try {
+            variable->setByteArray(payload.data(), 999);
+        } catch (const rogue::GeneralError&) {
+            // expected
+        }
+    }
+
+    const auto baseline = mallinfo2().uordblks;
+    for (std::size_t i = 0; i < kIterations; ++i) {
+        try {
+            variable->setByteArray(payload.data(), 999);
+        } catch (const rogue::GeneralError&) {
+            // expected
+        }
+    }
+    // ``mallinfo2().uordblks`` is unsigned (``size_t``); allocator coalescing
+    // can drop it below the baseline, so a naive subtraction would underflow
+    // to a huge value and fail the leak check spuriously. Clamp at 0.
+    const auto current = mallinfo2().uordblks;
+    const std::size_t delta = (current > baseline) ? (current - baseline) : 0;
+
+    // Without the free(buff) before throw, delta would be ~kIterations *
+    // kValueBytes (= 1 MiB). With the fix, only allocator bookkeeping leaks
+    // through, which is bounded by a small constant.
+    const std::size_t leakedIfNoFix = kIterations * kValueBytes;
+    CHECK_LT(delta, leakedIfNoFix / 4);
+}
+#endif  // __GLIBC__

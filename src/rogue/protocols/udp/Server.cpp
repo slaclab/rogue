@@ -53,7 +53,6 @@ rpu::ServerPtr rpu::Server::create(uint16_t port, bool jumbo) {
 //! Creator
 rpu::Server::Server(uint16_t port, bool jumbo) : rpu::Core(jumbo) {
     uint32_t len;
-    int32_t val;
     uint32_t size;
 
     port_   = port;
@@ -74,16 +73,26 @@ rpu::Server::Server(uint16_t port, bool jumbo) : rpu::Core(jumbo) {
 
     memset(&remAddr_, 0, sizeof(struct sockaddr_in));
 
-    if (bind(fd_, (struct sockaddr*)&locAddr_, sizeof(locAddr_)) < 0)
+    // Intentionally no SO_REUSEADDR / SO_REUSEPORT here: the kernel default
+    // EADDRINUSE on duplicate bind is the contract we want, so two Servers
+    // on the same port can't silently coexist with non-deterministic packet
+    // routing. Drafted then reverted in a7d5bc533 — see PR #1193 "Reverted".
+    if (bind(fd_, (struct sockaddr*)&locAddr_, sizeof(locAddr_)) < 0) {
+        ::close(fd_);
+        fd_ = -1;
         throw(rogue::GeneralError::create("Server::Server",
                                           "Failed to bind to local port %" PRIu16 ". Another process may be using it",
                                           port_));
+    }
 
     // Kernel assigns port
     if (port_ == 0) {
         len = sizeof(locAddr_);
-        if (getsockname(fd_, (struct sockaddr*)&locAddr_, &len) < 0)
+        if (getsockname(fd_, (struct sockaddr*)&locAddr_, &len) < 0) {
+            ::close(fd_);
+            fd_ = -1;
             throw(rogue::GeneralError::create("Server::Server", "Failed to dynamically assign local port"));
+        }
         port_ = ntohs(locAddr_.sin_port);
     }
 
@@ -91,11 +100,17 @@ rpu::Server::Server(uint16_t port, bool jumbo) : rpu::Core(jumbo) {
     setFixedSize(maxPayload());
     setPoolSize(10000);  // Initial value, 10K frames
 
-    // Start rx thread
-    threadEn_ = true;
-    thread_   = new std::thread(&rpu::Server::runThread, this, std::weak_ptr<int>(scopePtr));
-
     udpLog_->debug("UDP server ready. localPort=%" PRIu16 ", maxPayload=%" PRIu32, port_, maxPayload());
+
+    threadEn_ = true;
+    try {
+        thread_ = new std::thread(&rpu::Server::runThread, this, std::weak_ptr<int>(scopePtr));
+    } catch (...) {
+        threadEn_ = false;
+        ::close(fd_);
+        fd_ = -1;
+        throw;
+    }
 
     // Set a thread name
 #ifndef __MACH__
@@ -111,10 +126,15 @@ rpu::Server::~Server() {
 void rpu::Server::stop() {
     if (threadEn_) {
         threadEn_ = false;
-        thread_->join();
-        udpLog_->debug("Stopping UDP server on local port %" PRIu16, port_);
-
+        // close() before join() unblocks the worker's recvfrom(). Defer fd_ = -1
+        // until after join so a final FD_SET(fd_) does not see -1.
+        rogue::GilRelease noGil;
         ::close(fd_);
+        thread_->join();
+        delete thread_;
+        thread_ = nullptr;
+        fd_ = -1;
+        udpLog_->debug("Stopping UDP server on local port %" PRIu16, port_);
     }
 }
 

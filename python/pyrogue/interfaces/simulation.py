@@ -87,10 +87,29 @@ class SideBandSim():
         self._log.debug("Sent opCode=%s remData=%s", opCode, remData)
 
     def _stop(self) -> None:
-        """Stop the receive thread."""
+        """Stop the receive thread and release ZMQ sockets + context."""
         with self._lock:
             self._log.debug('Stopping receive thread')
             self._run = False
+
+        thr = getattr(self, "_recvThread", None)
+        if (thr is not None
+                and hasattr(thr, 'is_alive') and thr.is_alive()
+                and hasattr(thr, 'join')
+                and threading.current_thread() is not thr):
+            thr.join(timeout=2.0)
+
+        for sock_name in ("_sbPush", "_sbPull"):
+            sock = getattr(self, sock_name, None)
+            if sock is not None:
+                try:
+                    sock.close(linger=0)
+                except Exception:
+                    pass
+        try:
+            self._ctx.term()
+        except Exception:
+            pass
 
     def __enter__(self) -> "SideBandSim":
         """Return self for context-manager use."""

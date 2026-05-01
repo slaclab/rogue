@@ -78,11 +78,15 @@ ris::Fifo::Fifo(uint32_t maxDepth, uint32_t trimSize, bool noCopy)
 
 //! Deconstructor
 ris::Fifo::~Fifo() {
-    threadEn_ = false;
-    rogue::GilRelease noGil;
-    queue_.stop();
-    thread_->join();
-    delete thread_;
+    // No-op if the ctor threw before allocating thread_.
+    if (thread_ != nullptr) {
+        threadEn_ = false;
+        rogue::GilRelease noGil;
+        queue_.stop();
+        thread_->join();
+        delete thread_;
+        thread_ = nullptr;
+    }
 }
 
 //! Return the number of elements in the Fifo

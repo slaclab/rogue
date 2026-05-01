@@ -60,6 +60,17 @@ class UartMemory(rogue.interfaces.memory.Slave):
         """Stop the worker thread and close the serial port."""
         self._workerQueue.put(None)
         self._workerQueue.join()
+
+        # queue.join() only waits for task_done() on the sentinel; thread.join()
+        # ensures the worker has actually exited before serialPort.close().
+        # Self-thread guard prevents deadlock if called from inside the worker.
+        thr = self._workerThread
+        if (thr is not None
+                and hasattr(thr, 'is_alive') and thr.is_alive()
+                and hasattr(thr, 'join')
+                and threading.current_thread() is not thr):
+            thr.join()
+
         self.serialPort.close()
 
     def __enter__(self) -> "UartMemory":

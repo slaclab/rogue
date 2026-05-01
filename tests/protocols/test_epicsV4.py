@@ -9,6 +9,8 @@
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 
+import platform
+import sys
 import time
 import pyrogue as pr
 import pyrogue.protocols.epicsV4
@@ -17,6 +19,14 @@ import pytest
 
 from p4p.client.thread import Context
 from p4p.nt import NTURI
+
+# TODO: p4p cannot discover the EpicsPvServer on macOS ARM64 because
+# macOS does not support UDP broadcast on the loopback interface (lo0).
+# Fix the PVA discovery mechanism and remove this skip.
+if sys.platform == 'darwin' and platform.machine() == 'arm64':
+    pytest.skip('test_epicsV4 skipped on macOS ARM64: PVA discovery does '
+                'not work over loopback on this platform',
+                allow_module_level=True)
 
 pytestmark = [pytest.mark.integration, pytest.mark.epics]
 

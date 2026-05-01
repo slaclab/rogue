@@ -164,6 +164,7 @@ class VirtualNode(pr.Node):
 
     def __getattr__(self, name: str) -> Any:
         """Lazy-load children on first access, then resolve as a child attribute."""
+        # Double-checked locking: outer check skips the lock once loaded.
         if not self._loaded:
             with self._loadLock:
                 if not self._loaded:
@@ -432,9 +433,9 @@ class VirtualClient(rogue.interfaces.ZmqClient):
         self._vcInitialized = True
         VirtualClient.ClientCache[self._cacheKey] = self
 
-        # Initialize state touched by _doUpdate before ZmqClient.__init__: the
-        # base constructor spawns the SUB receive thread immediately, so a
-        # publish arriving during bootstrap must not race these attributes.
+        # ZmqClient.__init__ spawns the SUB thread, so every attribute its
+        # callbacks (_doUpdate / _requestDone / _checkLinkState) can touch must
+        # exist before the base ctor runs.
         self._varListeners = []
         self._monitors = []
         self._root  = None
@@ -603,6 +604,8 @@ class VirtualClient(rogue.interfaces.ZmqClient):
 
     def _requestDone(self, success: bool) -> None:
         """Record request completion and treat successful replies as activity."""
+        # Defer monitor callbacks until after _reqLock is released: a re-entrant
+        # callback would deadlock, and a slow one would stall other requests.
         notify = False
         with self._reqLock:
             self._reqCount = max(0, self._reqCount - 1)
@@ -614,11 +617,8 @@ class VirtualClient(rogue.interfaces.ZmqClient):
                     self._link = True
                     notify = True
 
-        # Suppress the log/notify during the initial handshake: `_root` is only
-        # populated once `_waitForRoot` returns, but the first successful
-        # `_requestDone(True)` fires before that. Dereferencing `self._root.name`
-        # there would raise AttributeError, which `_waitForRoot` silently swallows
-        # and retries, costing an extra round trip on every bootstrap.
+        # _waitForRoot triggers the first _requestDone(True) before __init__
+        # assigns self._root; suppress the notify in that window.
         if notify and self._root is not None:
             self._log.warning(f"I have finally heard from {self._root.name}. All is good!")
             for mon in self._monitors:
@@ -626,6 +626,8 @@ class VirtualClient(rogue.interfaces.ZmqClient):
 
     def _checkLinkState(self) -> None:
         """Update link state from recent activity while tolerating busy requests."""
+        # Snapshot all link state under one lock acquisition so the decision
+        # below is coherent; emit logs and monitor callbacks after releasing.
         log_message = None
         notify_link: bool | None = None
 
@@ -695,6 +697,7 @@ class VirtualClient(rogue.interfaces.ZmqClient):
 
     def _doUpdate(self, data: bytes) -> None:
         """Process variable update data from the server."""
+        # Publishes count as link activity; mutate _ltime under _reqLock.
         with self._reqLock:
             self._ltime = time.time()
 
@@ -713,16 +716,36 @@ class VirtualClient(rogue.interfaces.ZmqClient):
                 func(k,val)
 
     def stop(self) -> None:
-        """Stop the monitor thread and release resources."""
+        """Stop the monitor thread and release the underlying ZMQ resources.
+
+        After ``stop()`` returns the C++ sockets and ZMQ context are released
+        and this instance is removed from ``ClientCache``; a subsequent
+        ``VirtualClient(addr, port)`` therefore constructs a fresh, fully
+        connected instance instead of returning the torn-down one.
+        """
         self._monEnable = False
         thr = self._monThread
-        if thr is None or not hasattr(thr, 'join'):
-            return
-        if threading.current_thread() is thr:
-            return
-        thr.join(timeout=3.0)
-        if hasattr(thr, 'is_alive') and thr.is_alive():
-            self._log.warning("Monitor thread did not stop within timeout")
+
+        # is_alive() guards against join() on a Thread that was never started.
+        if (thr is not None
+                and hasattr(thr, 'is_alive') and thr.is_alive()
+                and hasattr(thr, 'join')
+                and threading.current_thread() is not thr):
+            thr.join(timeout=3.0)
+            if thr.is_alive():
+                self._log.warning("Monitor thread did not stop within timeout")
+
+        # ClientCache pins this instance, so the C++ stop() must run explicitly
+        # to release SUB/REQ sockets and the ZMQ context. _stop() is idempotent.
+        try:
+            rogue.interfaces.ZmqClient._stop(self)
+        except Exception:
+            pass
+
+        # Drop the cache entry so a follow-on VirtualClient(addr, port) gets
+        # a fresh instance instead of this torn-down one.
+        self._removeFromCache()
+        self._vcInitialized = False
 
     @property
     def root(self) -> "VirtualNode":
