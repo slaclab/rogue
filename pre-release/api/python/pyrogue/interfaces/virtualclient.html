@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>VirtualClient &mdash; Rogue v6.11.0-9-g1a04b1e1f documentation</title>
+  <title>VirtualClient &mdash; Rogue v6.11.0-28-g71ff58dce documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../../../_static/slac-favicon-192.png"/>
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=bf9eb4dd"></script>
+      <script src="../../../../_static/documentation_options.js?v=7b383054"></script>
       <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -277,7 +277,11 @@ finite upper bound for legitimate request duration.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pyrogue.interfaces.VirtualClient.stop">
 <span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/pyrogue/interfaces/_Virtual.html#VirtualClient.stop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.VirtualClient.stop" title="Link to this definition"></a></dt>
-<dd><p>Stop the monitor thread and release resources.</p>
+<dd><p>Stop the monitor thread and release the underlying ZMQ resources.</p>
+<p>After <code class="docutils literal notranslate"><span class="pre">stop()</span></code> returns the C++ sockets and ZMQ context are released
+and this instance is removed from <code class="docutils literal notranslate"><span class="pre">ClientCache</span></code>; a subsequent
+<code class="docutils literal notranslate"><span class="pre">VirtualClient(addr,</span> <span class="pre">port)</span></code> therefore constructs a fresh, fully
+connected instance instead of returning the torn-down one.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>

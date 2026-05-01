@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue._Root &mdash; Rogue v6.11.0-9-g1a04b1e1f documentation</title>
+  <title>pyrogue._Root &mdash; Rogue v6.11.0-28-g71ff58dce documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="../../_static/slac-favicon-192.png"/>
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=bf9eb4dd"></script>
+      <script src="../../_static/documentation_options.js?v=7b383054"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -597,7 +597,24 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Stopping root lifecycle&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_running</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_updateQueue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_updateThread</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+
+        <span class="c1"># Self-thread guard: a variable-update callback can land here via</span>
+        <span class="c1"># the update worker, which would otherwise self-deadlock on join.</span>
+        <span class="n">upd</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_updateThread&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">upd</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">upd</span><span class="p">,</span> <span class="s1">&#39;is_alive&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">upd</span><span class="o">.</span><span class="n">is_alive</span><span class="p">()</span>
+                <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">upd</span><span class="p">,</span> <span class="s1">&#39;join&#39;</span><span class="p">)</span>
+                <span class="ow">and</span> <span class="n">threading</span><span class="o">.</span><span class="n">current_thread</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">upd</span><span class="p">):</span>
+            <span class="n">upd</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+
+        <span class="c1"># Join the heartbeat (1 s tick) before tree teardown so it cannot</span>
+        <span class="c1"># write self.Time after Device._stop().</span>
+        <span class="n">hbeat</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_hbeatThread&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">hbeat</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">hbeat</span><span class="p">,</span> <span class="s1">&#39;is_alive&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">hbeat</span><span class="o">.</span><span class="n">is_alive</span><span class="p">()</span>
+                <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">hbeat</span><span class="p">,</span> <span class="s1">&#39;join&#39;</span><span class="p">)</span>
+                <span class="ow">and</span> <span class="n">threading</span><span class="o">.</span><span class="n">current_thread</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">hbeat</span><span class="p">):</span>
+            <span class="n">hbeat</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pollQueue</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_pollQueue</span><span class="o">.</span><span class="n">_stop</span><span class="p">()</span>

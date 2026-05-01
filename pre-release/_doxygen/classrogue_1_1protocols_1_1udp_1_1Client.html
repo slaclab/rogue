@@ -301,10 +301,10 @@ Additional Inherited Members</h2></td></tr>
 <tr class="separator:aa8cb1ee8f95d707ea2b1bbd0e554c2a3 inherit pro_attribs_classrogue_1_1protocols_1_1udp_1_1Core"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9147f859e558b3e46280e452f6fd83db inherit pro_attribs_classrogue_1_1protocols_1_1udp_1_1Core" id="r_a9147f859e558b3e46280e452f6fd83db"><td class="memItemLeft" align="right" valign="top">struct timeval&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1protocols_1_1udp_1_1Core.html#a9147f859e558b3e46280e452f6fd83db">timeout_</a></td></tr>
 <tr class="separator:a9147f859e558b3e46280e452f6fd83db inherit pro_attribs_classrogue_1_1protocols_1_1udp_1_1Core"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adaef29ff08d69d26fe6dd751e27d9553 inherit pro_attribs_classrogue_1_1protocols_1_1udp_1_1Core" id="r_adaef29ff08d69d26fe6dd751e27d9553"><td class="memItemLeft" align="right" valign="top">std::thread *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1protocols_1_1udp_1_1Core.html#adaef29ff08d69d26fe6dd751e27d9553">thread_</a></td></tr>
+<tr class="memitem:adaef29ff08d69d26fe6dd751e27d9553 inherit pro_attribs_classrogue_1_1protocols_1_1udp_1_1Core" id="r_adaef29ff08d69d26fe6dd751e27d9553"><td class="memItemLeft" align="right" valign="top">std::thread *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1protocols_1_1udp_1_1Core.html#adaef29ff08d69d26fe6dd751e27d9553">thread_</a> = nullptr</td></tr>
 <tr class="separator:adaef29ff08d69d26fe6dd751e27d9553 inherit pro_attribs_classrogue_1_1protocols_1_1udp_1_1Core"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aecf746b2c000f31a88af79df59efe7ec inherit pro_attribs_classrogue_1_1protocols_1_1udp_1_1Core" id="r_aecf746b2c000f31a88af79df59efe7ec"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1protocols_1_1udp_1_1Core.html#aecf746b2c000f31a88af79df59efe7ec">threadEn_</a></td></tr>
-<tr class="separator:aecf746b2c000f31a88af79df59efe7ec inherit pro_attribs_classrogue_1_1protocols_1_1udp_1_1Core"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a306e44604b232e629983c31223b11168 inherit pro_attribs_classrogue_1_1protocols_1_1udp_1_1Core" id="r_a306e44604b232e629983c31223b11168"><td class="memItemLeft" align="right" valign="top">std::atomic&lt; bool &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1protocols_1_1udp_1_1Core.html#a306e44604b232e629983c31223b11168">threadEn_</a> {false}</td></tr>
+<tr class="separator:a306e44604b232e629983c31223b11168 inherit pro_attribs_classrogue_1_1protocols_1_1udp_1_1Core"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae997ac3738d4e878a2035356a48ba69d inherit pro_attribs_classrogue_1_1protocols_1_1udp_1_1Core" id="r_ae997ac3738d4e878a2035356a48ba69d"><td class="memItemLeft" align="right" valign="top">std::mutex&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1protocols_1_1udp_1_1Core.html#ae997ac3738d4e878a2035356a48ba69d">udpMtx_</a></td></tr>
 <tr class="separator:ae997ac3738d4e878a2035356a48ba69d inherit pro_attribs_classrogue_1_1protocols_1_1udp_1_1Core"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -385,7 +385,7 @@ Additional Inherited Members</h2></td></tr>
 <p>Destroys the UDP client endpoint. </p>
 <p>Destructor. </p>
 
-<p class="definition">Definition at line <a class="el" href="udp_2Client_8cpp_source.html#l00114">114</a> of file <a class="el" href="udp_2Client_8cpp_source.html">Client.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="udp_2Client_8cpp_source.html#l00127">127</a> of file <a class="el" href="udp_2Client_8cpp_source.html">Client.cpp</a>.</p>
 
 </div>
 </div>
@@ -426,7 +426,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="classrogue_1_1interfaces_1_1stream_1_1Slave.html#ada9c9da8e59d974e991007d1baa547e4">rogue::interfaces::stream::Slave</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="udp_2Client_8cpp_source.html#l00129">129</a> of file <a class="el" href="udp_2Client_8cpp_source.html">Client.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="udp_2Client_8cpp_source.html#l00147">147</a> of file <a class="el" href="udp_2Client_8cpp_source.html">Client.cpp</a>.</p>
 
 </div>
 </div>
@@ -516,7 +516,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Registers Python bindings for this class. </p>
 
-<p class="definition">Definition at line <a class="el" href="udp_2Client_8cpp_source.html#l00245">245</a> of file <a class="el" href="udp_2Client_8cpp_source.html">Client.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="udp_2Client_8cpp_source.html#l00263">263</a> of file <a class="el" href="udp_2Client_8cpp_source.html">Client.cpp</a>.</p>
 
 </div>
 </div>
@@ -548,7 +548,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="classrogue_1_1interfaces_1_1stream_1_1Master.html#a212b04404a6767dddd1e58ba8298cf9e">rogue::interfaces::stream::Master</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="udp_2Client_8cpp_source.html#l00118">118</a> of file <a class="el" href="udp_2Client_8cpp_source.html">Client.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="udp_2Client_8cpp_source.html#l00131">131</a> of file <a class="el" href="udp_2Client_8cpp_source.html">Client.cpp</a>.</p>
 
 </div>
 </div>
