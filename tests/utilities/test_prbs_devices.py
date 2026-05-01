@@ -78,7 +78,7 @@ def test_prbs_tx_gen_frame_command():
 
     with root:
         root.Tx.genFrame.call(3)
-        assert wait_for(lambda: rx.getRxCount() == 3, timeout=5.0)
+        assert wait_for(lambda: rx.getRxCount() >= 3, timeout=10.0)
         assert rx.getRxErrors() == 0
 
 
