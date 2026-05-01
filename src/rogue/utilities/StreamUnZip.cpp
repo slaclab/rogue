@@ -85,42 +85,53 @@ void ru::StreamUnZip::acceptFrame(ris::FramePtr frame) {
     strm.next_out  = reinterpret_cast<char*>((*wBuff)->begin());
     strm.avail_out = (*wBuff)->getAvailable();
 
-    // Use the iterators to move data
-    do {
-        ret = BZ2_bzDecompress(&strm);
+    try {
+        do {
+            ret = BZ2_bzDecompress(&strm);
 
-        if ((ret != BZ_STREAM_END) && (ret != BZ_OK))
-            throw(rogue::GeneralError::create("StreamUnZip::acceptFrame", "Decompression runtime error %" PRIi32, ret));
+            if ((ret != BZ_STREAM_END) && (ret != BZ_OK))
+                throw(rogue::GeneralError::create("StreamUnZip::acceptFrame",
+                                                  "Decompression runtime error %" PRIi32,
+                                                  ret));
 
-        if (ret == BZ_STREAM_END) break;
+            if (ret == BZ_STREAM_END) break;
 
-        // Update read buffer if necessary
-        if (strm.avail_in == 0) {
-            ++rBuff;
-            strm.next_in  = reinterpret_cast<char*>((*rBuff)->begin());
-            strm.avail_in = (*rBuff)->getPayload();
-        }
-
-        // Update write buffer if necessary
-        if (strm.avail_out == 0) {
-            // We ran out of room, double the frame size
-            if ((wBuff + 1) == newFrame->endBuffer()) {
-                ris::FramePtr tmpFrame = this->reqFrame(frame->getPayload(), true);
-                wBuff                  = newFrame->appendFrame(tmpFrame);
-            } else {
-                ++wBuff;
+            // Update read buffer if necessary
+            if (strm.avail_in == 0) {
+                if ((rBuff + 1) == frame->endBuffer())
+                    throw(rogue::GeneralError::create(
+                        "StreamUnZip::acceptFrame",
+                        "Truncated or corrupt bzip2 stream: decompressor needs more input than available"));
+                ++rBuff;
+                strm.next_in  = reinterpret_cast<char*>((*rBuff)->begin());
+                strm.avail_in = (*rBuff)->getPayload();
             }
-            strm.next_out  = reinterpret_cast<char*>((*wBuff)->begin());
-            strm.avail_out = (*wBuff)->getAvailable();
-        }
-    } while (1);
 
-    newFrame->setPayload(strm.total_out_lo32);
+            // Update write buffer if necessary
+            if (strm.avail_out == 0) {
+                // We ran out of room, double the frame size
+                if ((wBuff + 1) == newFrame->endBuffer()) {
+                    ris::FramePtr tmpFrame = this->reqFrame(frame->getPayload(), true);
+                    wBuff                  = newFrame->appendFrame(tmpFrame);
+                } else {
+                    ++wBuff;
+                }
+                strm.next_out  = reinterpret_cast<char*>((*wBuff)->begin());
+                strm.avail_out = (*wBuff)->getAvailable();
+            }
+        } while (1);
+    } catch (...) {
+        BZ2_bzDecompressEnd(&strm);
+        throw;
+    }
+
+    const uint32_t totalOut = strm.total_out_lo32;
+    BZ2_bzDecompressEnd(&strm);
+
+    newFrame->setPayload(totalOut);
     newFrame->setError(frame->getError());
     newFrame->setChannel(frame->getChannel());
     newFrame->setFlags(frame->getFlags());
-
-    BZ2_bzDecompressEnd(&strm);
 
     this->sendFrame(newFrame);
 }

@@ -9,6 +9,7 @@
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 
+import sys
 import time
 
 import rogue
@@ -19,7 +20,13 @@ import pytest
 
 from conftest import wait_for
 
-pytestmark = pytest.mark.integration
+pytestmark = [
+    pytest.mark.integration,
+    pytest.mark.skipif(
+        sys.platform == "darwin",
+        reason="RSSI timing too sensitive for macOS UDP stack"
+    ),
+]
 
 CONNECTION_TIMEOUT = 15.0
 STALL_WINDOW = 5.0

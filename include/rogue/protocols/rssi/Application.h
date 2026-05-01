@@ -20,6 +20,7 @@
 
 #include <stdint.h>
 
+#include <atomic>
 #include <memory>
 
 #include "rogue/interfaces/stream/Master.h"
@@ -51,10 +52,13 @@ class Application : public rogue::interfaces::stream::Master, public rogue::inte
     // RSSI controller backend.
     std::shared_ptr<rogue::protocols::rssi::Controller> cntl_;
 
-    // Outbound application worker thread.
-    std::thread* thread_;
-    bool threadEn_;
+    //! \cond INTERNAL
+  protected:
+    std::thread* thread_ = nullptr;
+    std::atomic<bool> threadEn_{false};
+    //! \endcond
 
+  private:
     // Worker thread entry point.
     void runThread();
 

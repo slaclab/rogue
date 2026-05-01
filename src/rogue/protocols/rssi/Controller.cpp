@@ -199,13 +199,13 @@ void rpr::Controller::transportRx(ris::FramePtr frame) {
     ris::FrameLockPtr flock = frame->lock();
 
     if (frame->getError() || frame->isEmpty() || !head->verify()) {
-        log_->warning("Dumping bad frame state=%" PRIu32 " server=%" PRIu32, state_, server_);
+        log_->warning("Dumping bad frame state=%" PRIu32 " server=%d", state_, server_);
         dropCount_++;
         return;
     }
 
-    log_->debug("RX frame: state=%" PRIu32 " server=%" PRIu32 " size=%" PRIu32 " syn=%" PRIu32 " ack=%" PRIu32
-                " nul=%" PRIu32 ", bst=%" PRIu32 ", rst=%" PRIu32 ", ack#=%" PRIu32 " seq=%" PRIu32 ", nxt=%" PRIu32,
+    log_->debug("RX frame: state=%" PRIu32 " server=%d size=%" PRIu32 " syn=%d ack=%d"
+                " nul=%d, bsy=%d, rst=%d, ack#=%" PRIu8 " seq=%" PRIu8 ", nxt=%" PRIu8,
                 state_,
                 server_,
                 frame->getPayload(),
@@ -263,8 +263,8 @@ void rpr::Controller::transportRx(ris::FramePtr frame) {
             if (!oooQueue_.empty()) {
                 // First remove received sequence number from queue to avoid duplicates
                 if ((it = oooQueue_.find(head->sequence)) != oooQueue_.end()) {
-                    log_->warning("Removed duplicate frame. server=%" PRIu8 ", head->sequence=%" PRIu32
-                                  ", next sequence=%" PRIu32,
+                    log_->warning("Removed duplicate frame. server=%d, head->sequence=%" PRIu8
+                                  ", next sequence=%" PRIu8,
                                   server_,
                                   head->sequence,
                                   nextSeqRx_);
@@ -280,7 +280,7 @@ void rpr::Controller::transportRx(ris::FramePtr frame) {
                     nextSeqRx_ = nextSeqRx_ + 1;
 
                     appQueue_.push(it->second);
-                    log_->info("Using frame from ooo queue. server=%" PRIu8 ", head->sequence=%" PRIu32,
+                    log_->info("Using frame from ooo queue. server=%d, head->sequence=%" PRIu8,
                                server_,
                                (it->second)->sequence);
                     oooQueue_.erase(it);
@@ -292,8 +292,8 @@ void rpr::Controller::transportRx(ris::FramePtr frame) {
 
             // Check if received frame is already in out of order queue
         } else if ((it = oooQueue_.find(head->sequence)) != oooQueue_.end()) {
-            log_->warning("Dropped duplicate frame. server=%" PRIu8 ", head->sequence=%" PRIu32
-                          ", next sequence=%" PRIu32,
+            log_->warning("Dropped duplicate frame. server=%d, head->sequence=%" PRIu8
+                          ", next sequence=%" PRIu8,
                           server_,
                           head->sequence,
                           nextSeqRx_);
@@ -309,8 +309,8 @@ void rpr::Controller::transportRx(ris::FramePtr frame) {
             while (++x != windowEnd) {
                 if (head->sequence == x) {
                     oooQueue_.insert(std::make_pair(head->sequence, head));
-                    log_->info("Adding frame to ooo queue. server=%" PRIu8 ", head->sequence=%" PRIu32
-                               ", nextSeqRx_=% " PRIu8 ", windowsEnd=%" PRIu32,
+                    log_->info("Adding frame to ooo queue. server=%d, head->sequence=%" PRIu8
+                               ", nextSeqRx_=%" PRIu8 ", windowsEnd=%" PRIu8,
                                server_,
                                head->sequence,
                                nextSeqRx_,
@@ -320,8 +320,8 @@ void rpr::Controller::transportRx(ris::FramePtr frame) {
             }
 
             if (x == windowEnd) {
-                log_->warning("Dropping out of window frame. server=%" PRIu8 ", head->sequence=%" PRIu32
-                              ", nextSeqRx_=%" PRIu8 ", windowsEnd=%" PRIu32,
+                log_->warning("Dropping out of window frame. server=%d, head->sequence=%" PRIu8
+                              ", nextSeqRx_=%" PRIu8 ", windowsEnd=%" PRIu8,
                               server_,
                               head->sequence,
                               nextSeqRx_,
@@ -622,8 +622,8 @@ void rpr::Controller::transportTx(rpr::HeaderPtr head, bool seqUpdate, bool txRe
     head->update();
 
     log_->log(rogue::Logging::Debug,
-              "TX frame: state=%" PRIu32 " server=%" PRIu8 " size=%" PRIu32 " syn=%" PRIu8 " ack=%" PRIu8 " nul=%" PRIu8
-              ", bsy=%" PRIu8 ", rst=%" PRIu8 ", ack#=%" PRIu8 ", seq=%" PRIu8 ", recount=%" PRIu32 ", ptr=%" PRIu32,
+              "TX frame: state=%" PRIu32 " server=%d size=%" PRIu32 " syn=%d ack=%d nul=%d"
+              ", bsy=%d, rst=%d, ack#=%" PRIu8 ", seq=%" PRIu8 ", recount=%" PRIu32 ", ptr=%p",
               state_,
               server_,
               head->getFrame()->getPayload(),
@@ -634,8 +634,8 @@ void rpr::Controller::transportTx(rpr::HeaderPtr head, bool seqUpdate, bool txRe
               head->rst,
               head->acknowledge,
               head->sequence,
-              retranCount_,
-              head->getFrame().get());
+              retranCount_.load(),
+              static_cast<void*>(head->getFrame().get()));
 
     flock->unlock();
     lock.unlock();
@@ -672,8 +672,8 @@ int8_t rpr::Controller::retransmit(uint8_t id) {
     gettimeofday(&txTime_, NULL);
 
     log_->log(rogue::Logging::Warning,
-              "Retran frame: state=%" PRIu8 " server=%" PRIu8 " size=%" PRIu32 " syn=%" PRIu8 " ack=%" PRIu8
-              " nul=%" PRIu8 ", rst=%" PRIu8 ", ack#=%" PRIu8 ", seq=%" PRIu8 ", recount=%" PRIu32 ", ptr=%" PRIu8,
+              "Retran frame: state=%" PRIu32 " server=%d size=%" PRIu32 " syn=%d ack=%d"
+              " nul=%d, rst=%d, ack#=%" PRIu8 ", seq=%" PRIu8 ", recount=%" PRIu32 ", ptr=%p",
               state_,
               server_,
               head->getFrame()->getPayload(),
@@ -683,8 +683,8 @@ int8_t rpr::Controller::retransmit(uint8_t id) {
               head->rst,
               head->acknowledge,
               head->sequence,
-              retranCount_,
-              head->getFrame().get());
+              retranCount_.load(),
+              static_cast<void*>(head->getFrame().get()));
 
     ris::FrameLockPtr flock = head->getFrame()->lock();
     head->update();
@@ -777,7 +777,7 @@ struct timeval& rpr::Controller::stateClosedWait() {
         // Reset
         if (head->rst) {
             state_ = StClosed;
-            log_->warning("Closing link after reset request. Server=%" PRIu8, server_);
+            log_->warning("Closing link after reset request. Server=%d", server_);
 
             // Syn ack
         } else if (head->syn && (head->ack || server_)) {
@@ -848,8 +848,6 @@ struct timeval& rpr::Controller::stateClosedWait() {
 
 //! Send Syn ack
 struct timeval& rpr::Controller::stateSendSynAck() {
-    uint32_t x;
-
     // Allocate frame
     rpr::HeaderPtr head = rpr::Header::create(tran_->reqFrame(rpr::Header::SynSize, false));
 
@@ -871,15 +869,13 @@ struct timeval& rpr::Controller::stateSendSynAck() {
     transportTx(head, true, true);
 
     // Update state
-    log_->info("Link state is open. Server=%" PRIu8, server_);
+    log_->info("Link state is open. Server=%d", server_);
     state_ = StOpen;
     return (cumAckToutD2_);
 }
 
 //! Send sequence ack
 struct timeval& rpr::Controller::stateSendSeqAck() {
-    uint32_t x;
-
     // Allocate frame
     rpr::HeaderPtr ack = rpr::Header::create(tran_->reqFrame(rpr::Header::HeaderSize, false));
 
@@ -892,7 +888,7 @@ struct timeval& rpr::Controller::stateSendSeqAck() {
 
     // Update state
     state_ = StOpen;
-    log_->info("Link state is open. Server=%" PRIu8, server_);
+    log_->info("Link state is open. Server=%d", server_);
     return (cumAckToutD2_);
 }
 
@@ -954,9 +950,8 @@ struct timeval& rpr::Controller::stateOpen() {
 //! Error
 struct timeval& rpr::Controller::stateError() {
     rpr::HeaderPtr rst;
-    uint32_t x;
 
-    log_->warning("Entering reset state. Server=%" PRIu8, server_);
+    log_->warning("Entering reset state. Server=%d", server_);
 
     rst      = rpr::Header::create(tran_->reqFrame(rpr::Header::HeaderSize, false));
     rst->rst = true;
@@ -964,7 +959,7 @@ struct timeval& rpr::Controller::stateError() {
     transportTx(rst, true, true);
 
     downCount_++;
-    log_->warning("Entering closed state after reset. Server=%" PRIu8, server_);
+    log_->warning("Entering closed state after reset. Server=%d", server_);
     state_ = StClosed;
 
     // Reset queues

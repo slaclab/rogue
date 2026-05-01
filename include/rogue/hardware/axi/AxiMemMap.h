@@ -20,6 +20,7 @@
 
 #include <stdint.h>
 
+#include <atomic>
 #include <memory>
 #include <mutex>
 #include <string>
@@ -62,9 +63,13 @@ class AxiMemMap : public rogue::interfaces::memory::Slave {
     // Logging
     std::shared_ptr<rogue::Logging> log_;
 
-    std::thread* thread_;
-    bool threadEn_;
+    //! \cond INTERNAL
+  protected:
+    std::thread* thread_ = nullptr;
+    std::atomic<bool> threadEn_{false};
+    //! \endcond
 
+  private:
     // Background worker thread entry point.
     void runThread();
 

@@ -20,6 +20,7 @@
 
 #include <stdint.h>
 
+#include <atomic>
 #include <map>
 #include <memory>
 #include <string>
@@ -112,10 +113,13 @@ class AxiStreamDma : public rogue::interfaces::stream::Master, public rogue::int
     // SSI flag handling enable.
     bool enSsi_;
 
-    // RX worker thread control.
-    std::thread* thread_;
-    bool threadEn_;
+    //! \cond INTERNAL
+  protected:
+    std::thread* thread_ = nullptr;
+    std::atomic<bool> threadEn_{false};
+    //! \endcond
 
+  private:
     // Logger instance.
     std::shared_ptr<rogue::Logging> log_;
 

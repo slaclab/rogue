@@ -247,7 +247,9 @@ void rps::SrpV3::acceptFrame(ris::FramePtr frame) {
     if ((tran = getTransaction(id)) == NULL) {
         log_->warning("Failed to find transaction id=%" PRIu32
                       ". ver=%" PRIu32 ", type=%" PRIu32,
-                      id, header[0] & 0xFF, (header[0] >> 8) & 0x3);
+                      id,
+                      static_cast<uint32_t>(header[0] & 0xFF),
+                      static_cast<uint32_t>((header[0] >> 8) & 0x3));
         return;  // Bad id or post, drop frame
     }
 

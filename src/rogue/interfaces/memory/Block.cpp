@@ -664,6 +664,11 @@ void rim::Block::setBytes(const uint8_t* data, rim::Variable* var, uint32_t inde
     // Change byte order, need to make a copy
     if (var->byteReverse_) {
         buff = reinterpret_cast<uint8_t*>(malloc(var->valueBytes_));
+        if (buff == NULL)
+            throw(rogue::GeneralError::create("Block::setBytes",
+                                              "Failed to allocate %" PRIu32 " bytes for byte-reversed copy of %s",
+                                              var->valueBytes_,
+                                              var->name_.c_str()));
         memcpy(buff, data, var->valueBytes_);
         reverseBytes(buff, var->valueBytes_);
     } else {
@@ -672,14 +677,20 @@ void rim::Block::setBytes(const uint8_t* data, rim::Variable* var, uint32_t inde
 
     // List variable
     if (var->numValues_ != 0) {
-        // Verify range
-        if (index < 0 || index >= var->numValues_)
+        if (index >= var->numValues_) {
+            if (var->byteReverse_) free(buff);
             throw(rogue::GeneralError::create("Block::setBytes",
                                               "Index %" PRIu32 " is out of range for %s",
                                               index,
                                               var->name_.c_str()));
+        }
 
-        // Fast copy
+        // Fast copy.
+        // Intentionally writes valueBytes_ (not valueStride_/8): pyrogue
+        // RemoteVariable.add() rejects valueStride < valueBits before any
+        // C++ caller is reachable, so a stride-cap here would silently
+        // truncate writes for misconfigured direct-C++ callers and hide
+        // the bug rather than surface it.
         if (var->fastByte_ != NULL)
             memcpy(blockData_ + var->fastByte_[index], buff, var->valueBytes_);
 
@@ -733,14 +744,15 @@ void rim::Block::getBytes(uint8_t* data, rim::Variable* var, uint32_t index) {
 
     // List variable
     if (var->numValues_ != 0) {
-        // Verify range
-        if (index < 0 || index >= var->numValues_)
+        if (index >= var->numValues_)
             throw(rogue::GeneralError::create("Block::getBytes",
                                               "Index %" PRIu32 " is out of range for %s",
                                               index,
                                               var->name_.c_str()));
 
-        // Fast copy
+        // Fast copy. See setBytes() above for why this reads valueBytes_
+        // and not valueStride_/8 -- the read-side mirrors the write-side
+        // because pyrogue rejects valueStride < valueBits upstream.
         if (var->fastByte_ != NULL)
             memcpy(data, blockData_ + var->fastByte_[index], var->valueBytes_);
 

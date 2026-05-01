@@ -20,6 +20,7 @@
 
 #include <stdint.h>
 
+#include <atomic>
 #include <memory>
 
 #include "rogue/Queue.h"
@@ -45,10 +46,13 @@ class Application : public rogue::interfaces::stream::Master, public rogue::inte
     // ID
     uint8_t id_;
 
-    // Transmission thread
-    std::thread* thread_;
-    bool threadEn_;
+    //! \cond INTERNAL
+  protected:
+    std::thread* thread_ = nullptr;
+    std::atomic<bool> threadEn_{false};
+    //! \endcond
 
+  private:
     // Thread background
     void runThread();
 
