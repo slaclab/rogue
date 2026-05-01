@@ -87,7 +87,11 @@ void rps::SrpV3Emulation::stop() {
     }
     queCond_.notify_all();
 
-    if (thread_.joinable()) thread_.join();
+    // Release the GIL: worker may be mid-sendFrame to a Python slave.
+    {
+        rogue::GilRelease noGil;
+        if (thread_.joinable()) thread_.join();
+    }
 
     ris::Master::stop();
 }

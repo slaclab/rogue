@@ -258,10 +258,18 @@ class PollQueue(object):
             return len(self._pq)==0
 
     def _stop(self) -> None:
-        """Stop the poll queue stread """
+        """Stop the poll queue thread and wait for it to exit."""
         with self._condLock:
             self._run = False
             self._condLock.notify()
+
+        # Self-thread guard prevents deadlock if called from inside the worker.
+        thr = self._pollThread
+        if (thr is not None
+                and hasattr(thr, 'is_alive') and thr.is_alive()
+                and hasattr(thr, 'join')
+                and threading.current_thread() is not thr):
+            thr.join()
 
     def pause(self, value: bool) -> None:
         """Pause or unpause the poll queue

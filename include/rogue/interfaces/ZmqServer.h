@@ -18,6 +18,7 @@
 #define __ROGUE_ZMQ_SERVER_H__
 #include "rogue/Directives.h"
 
+#include <atomic>
 #include <memory>
 #include <string>
 #include <thread>
@@ -45,23 +46,19 @@ namespace interfaces {
  * available base port starting at `9099` in increments of 4.
  */
 class ZmqServer {
-    // ZeroMQ context.
-    void* zmqCtx_;
+    void* zmqCtx_ = nullptr;
+    void* zmqPub_ = nullptr;
+    void* zmqRep_ = nullptr;
+    void* zmqStr_ = nullptr;
 
-    // ZeroMQ publish socket.
-    void* zmqPub_;
+    //! \cond INTERNAL
+  protected:
+    std::thread* rThread_ = nullptr;
+    std::thread* sThread_ = nullptr;
+    std::atomic<bool> threadEn_{false};
+    //! \endcond
 
-    // ZeroMQ binary response socket.
-    void* zmqRep_;
-
-    // ZeroMQ string response socket.
-    void* zmqStr_;
-
-    // Request worker threads.
-    std::thread* rThread_;
-    std::thread* sThread_;
-    bool threadEn_;
-
+  private:
     // Bind address and base port configuration.
     std::string addr_;
     uint16_t basePort_;

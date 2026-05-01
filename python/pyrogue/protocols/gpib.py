@@ -72,7 +72,14 @@ class GpibController(rogue.interfaces.memory.Slave):
     def _stop(self) -> None:
         """Stop the worker thread."""
         self._workerQueue.put(None)
-        self._workerThread.join()
+
+        # Self-thread guard prevents deadlock if called from inside the worker.
+        thr = self._workerThread
+        if (thr is not None
+                and hasattr(thr, 'is_alive') and thr.is_alive()
+                and hasattr(thr, 'join')
+                and threading.current_thread() is not thr):
+            thr.join()
 
     def _doTransaction(self, transaction: rogue.interfaces.memory.Transaction) -> None:
         """Queue a memory transaction for the worker thread."""

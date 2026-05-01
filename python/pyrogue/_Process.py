@@ -239,9 +239,17 @@ class Process(pr.Device):
                 self._log.warning("Process already running!")
 
     def _stopProcess(self) -> None:
-        """ """
+        """Signal the worker to stop and wait for it to exit."""
         with self._lock:
             self._runEn  = False
+            thr = self._thread
+
+        # Self-thread guard: _run() can land here via setDisp('Stopped').
+        if (thr is not None
+                and hasattr(thr, 'is_alive') and thr.is_alive()
+                and hasattr(thr, 'join')
+                and threading.current_thread() is not thr):
+            thr.join()
 
     def _stop(self) -> None:
         """ """

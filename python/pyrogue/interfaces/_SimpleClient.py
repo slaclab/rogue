@@ -85,18 +85,43 @@ class SimpleClient(object):
             self._subThread.start()
 
     def _stop(self) -> None:
-        """
-        Stop the SimpleClient interface.
-        This must be called if not using the SimpleClient in a context manager.
-        """
+        """Stop the SimpleClient (required when not used as a context manager)."""
         self._runEn = False
+
+        # Close SUB first so the listener's recv_pyobj() exits with ZMQError.
+        sub = getattr(self, "_sub", None)
+        if sub is not None:
+            try:
+                sub.close(linger=0)
+            except Exception:
+                pass
+
+        thr = getattr(self, "_subThread", None)
+        if (thr is not None
+                and hasattr(thr, 'is_alive') and thr.is_alive()
+                and hasattr(thr, 'join')
+                and threading.current_thread() is not thr):
+            thr.join(timeout=1.0)
+
+        try:
+            self._req.close(linger=0)
+        except Exception:
+            pass
+        try:
+            self._ctx.term()
+        except Exception:
+            pass
 
     def _listen(self) -> None:
         """Background subscription loop for variable updates."""
         self._sub.setsockopt(zmq.SUBSCRIBE,"".encode('utf-8'))
 
         while self._runEn:
-            d = self._sub.recv_pyobj()
+            try:
+                d = self._sub.recv_pyobj()
+            except zmq.error.ZMQError:
+                # Socket closed by _stop() to unblock this recv. Exit cleanly.
+                return
 
             for k,val in d.items():
                 self._cb(k,val)
