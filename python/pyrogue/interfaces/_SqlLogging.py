@@ -238,10 +238,42 @@ class SqlReader(object):
 
     def getVariable(self) -> None:
         """Fetch and print all variable entries. Placeholder for future enhancement."""
-        r = self._conn.execute(sqlalchemy.select([self._varTable]))
+        # SQLAlchemy 2.x removed the legacy ``select([table])`` form; pass the
+        # table directly so the call works on both 1.4 and 2.x installs.
+        r = self._conn.execute(sqlalchemy.select(self._varTable))
         print(r.fetchall())
 
     def getSyslog(self, syslogData: Any) -> None:
         """Fetch and print syslog entries. Placeholder for future enhancement."""
-        r = self._conn.execute(sqlalchemy.select([self._logTable]))
+        r = self._conn.execute(sqlalchemy.select(self._logTable))
         print(r.fetchall())
+
+    def _stop(self) -> None:
+        """Release the pooled connection and dispose the engine.
+
+        ``engine.connect()`` checks a connection out of SQLAlchemy's pool
+        permanently; without an explicit close path repeated SqlReader
+        creation leaks pooled connections until the database starts
+        refusing new ones.
+        """
+        if self._conn is not None:
+            try:
+                self._conn.close()
+            except Exception:
+                pass
+            self._conn = None
+
+        if self._engine is not None:
+            try:
+                self._engine.dispose()
+            except Exception:
+                pass
+            self._engine = None
+
+    def __enter__(self) -> "SqlReader":
+        """Return self for context-manager use."""
+        return self
+
+    def __exit__(self, exc_type: Any, exc_value: Any, traceback: Any) -> None:
+        """Release pooled connection on context-manager exit."""
+        self._stop()
