@@ -168,6 +168,20 @@ rim::Variable::Variable(std::string name,
     valueStride_  = valueStride;
     retryCount_   = retryCount;
 
+    // Initialize raw pointer members; the destructor delete[]s these, so
+    // leaving them as nullptr is safe if the constructor throws partway.
+    lowTranByte_  = nullptr;
+    highTranByte_ = nullptr;
+    fastByte_     = nullptr;
+
+    // Stage every uint32_t[] allocation under a unique_ptr so a partial
+    // construction failure (e.g. std::bad_alloc on the second or third
+    // allocation) cannot leak earlier allocations.  ~Variable() does not run
+    // when a constructor throws, so naked new[] members are not safe here.
+    std::unique_ptr<uint32_t[]> lowGuard;
+    std::unique_ptr<uint32_t[]> highGuard;
+    std::unique_ptr<uint32_t[]> fastGuard;
+
     // Not a list variable
     if (numValues_ == 0) {
         // Compute bit total
@@ -177,8 +191,8 @@ rim::Variable::Variable(std::string name,
         // Compute rounded up byte size
         byteSize_ = static_cast<int>(std::ceil(static_cast<float>(bitTotal_) / 8.0));
 
-        lowTranByte_  = new uint32_t[1];
-        highTranByte_ = new uint32_t[1];
+        lowGuard.reset(new uint32_t[1]);
+        highGuard.reset(new uint32_t[1]);
 
         // Init remaining fields
         valueBytes_  = byteSize_;
@@ -197,12 +211,9 @@ rim::Variable::Variable(std::string name,
         valueBytes_ = static_cast<uint32_t>(std::ceil(static_cast<float>(valueBits_) / 8.0));
 
         // High and low byte tracking
-        lowTranByte_  = new uint32_t[numValues_];
-        highTranByte_ = new uint32_t[numValues_];
+        lowGuard.reset(new uint32_t[numValues_]);
+        highGuard.reset(new uint32_t[numValues_]);
     }
-
-    // Byte array for fast copies
-    fastByte_ = NULL;
 
     // Determine if fast byte copies can be utilized
     // Bit offset vector must have one entry, the offset must be byte aligned and the total number of bits must be byte
@@ -210,13 +221,19 @@ rim::Variable::Variable(std::string name,
     if ((bitOffset_.size() == 1) && (bitOffset_[0] % 8 == 0) && (bitSize_[0] % 8 == 0)) {
         // Standard variable
         if (numValues_ == 0) {
-            fastByte_ = new uint32_t[1];
+            fastGuard.reset(new uint32_t[1]);
 
             // List variable
         } else if ((valueBits_ % 8) == 0 && (valueStride_ % 8) == 0) {
-            fastByte_ = new uint32_t[numValues_];
+            fastGuard.reset(new uint32_t[numValues_]);
         }
     }
+
+    // All allocations succeeded; transfer ownership to the raw members the
+    // destructor expects.  No throw can occur between here and end-of-ctor.
+    lowTranByte_  = lowGuard.release();
+    highTranByte_ = highGuard.release();
+    fastByte_     = fastGuard.release();
     stale_ = false;
 
     // Call aligning function to init values
