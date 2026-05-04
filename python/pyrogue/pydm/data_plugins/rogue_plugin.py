@@ -67,7 +67,12 @@ def parseAddress(address: str) -> tuple[str, int, str, str, int]:
     if ":" in data[0]:
         data_server = data[0].split(":")
     else:
-        data_server = alist[int(data[0])].split(":")
+        idx = int(data[0])
+        if idx >= len(alist):
+            raise IndexError(
+                f"parseAddress: server index {idx} is out of bounds "
+                f"(ROGUE_SERVERS has {len(alist)} entr{'y' if len(alist)==1 else 'ies'})")
+        data_server = alist[idx].split(":")
 
     host = data_server[0]
     port = int(data_server[1])
