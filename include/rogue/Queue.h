@@ -100,6 +100,7 @@ class Queue {
      * @return `true` when no entries are queued.
      */
     bool empty() {
+        std::unique_lock<std::mutex> lock(mtx_);
         return queue_.empty();
     }
 
