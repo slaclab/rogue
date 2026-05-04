@@ -460,24 +460,46 @@ def functionWrapper(
     """
 
     if function is None:
-        return eval("lambda " + ", ".join(['function'] + callArgs) + ": None")
+        def _noop(*_args, **_kwargs):
+            return None
+        return _noop
 
     # Find the arg overlaps
     try:
         # Function args
         fargs = inspect.getfullargspec(function).args + inspect.getfullargspec(function).kwonlyargs
 
-        # Build overlapping arg list
-        args = [f'{k}={k}' for k in fargs if k != 'self' and k in callArgs]
+        # Build overlapping arg name set (intersection with callArgs)
+        overlap = [k for k in fargs if k != 'self' and k in callArgs]
 
     # handle c++ functions, no args supported for now
     except Exception:
-        args = []
+        overlap = []
 
-    # Build the function
-    ls = "lambda " + ", ".join(['function'] + callArgs) + ": function(" + ", ".join(args) + ")"
-    #print("Creating Function: " + ls)
-    return eval(ls)
+    # Build the wrapper using a closure to avoid eval().
+    # The wrapper has signature (function, callArgs[0], callArgs[1], ...)
+    # matching the eval-generated lambda.  It accepts positional and keyword
+    # arguments; only the overlapping named args are forwarded to function.
+    _callArgs = list(callArgs)
+    _overlap = list(overlap)
+
+    def _wrapper(*args, **kwargs):
+        # Merge positional args into a named dict using _callArgs order.
+        # args[0] is 'function'; args[1..] map to _callArgs[0..].
+        bound = dict(kwargs)
+        if len(args) > 1:
+            for i, name in enumerate(_callArgs):
+                if i + 1 < len(args) and name not in bound:
+                    bound[name] = args[i + 1]
+
+        # Resolve the callable
+        fn = bound.get('function', args[0] if args else function)
+
+        # Forward only overlapping named args
+        fwd = {k: bound[k] for k in _overlap if k in bound}
+        return fn(**fwd)
+
+    return _wrapper
 
 
 def genDocTableHeader(fields: Sequence[str], indent: int, width: int) -> str:
