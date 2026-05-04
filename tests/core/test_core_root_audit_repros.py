@@ -7,7 +7,7 @@
 # copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
-"""Regression tests for,  in python/pyrogue/_Root.py.
+"""Regression tests in python/pyrogue/_Root.py.
 
 Double assignment `self._pollQueue = self._pollQueue = pr.PollQueue(root=self)`
           at line 243 — a copy-paste artifact; the first assignment is redundant.

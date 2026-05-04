@@ -2,7 +2,7 @@
 # Company    : SLAC National Accelerator Laboratory
 #-----------------------------------------------------------------------------
 # Description:
-#   Regression tests for,.
+#   Regression tests.
 #   Each test calls a yamlToData entry-point with a malicious YAML payload
 #   that uses !!python/object/apply to invoke os.getenv.  Because
 #   PyrogueLoader extends yaml.Loader (a full Loader), the tag executes on

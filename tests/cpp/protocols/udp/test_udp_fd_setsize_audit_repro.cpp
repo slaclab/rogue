@@ -3,7 +3,7 @@
  * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
- * Regression tests for, 
+ * Regression tests.
  * Four FD_SET sites in udp::Client (acceptFrame / runThread) and
  * udp::Server (acceptFrame / runThread) call FD_SET(fd_, &fds) without
  * first checking fd_ < FD_SETSIZE.  On Linux FD_SETSIZE=1024; if fd_

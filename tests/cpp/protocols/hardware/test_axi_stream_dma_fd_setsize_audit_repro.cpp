@@ -3,7 +3,7 @@
  * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
- * Regression tests for, 
+ * Regression tests.
  * Three FD_SET sites in AxiStreamDma.cpp (acceptReq, acceptFrame, runThread)
  * call FD_SET(fd_, &fds) without first checking fd_ < FD_SETSIZE.  On Linux
  * FD_SETSIZE=1024; if the DMA device fd_ reaches >= 1024 the FD_SET macro

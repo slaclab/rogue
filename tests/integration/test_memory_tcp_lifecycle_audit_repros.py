@@ -15,7 +15,7 @@
 #    -- memory::TcpClient ctor uses raw ``new std::thread``; should
 #               use std::unique_ptr<std::thread>
 #    -- memory::TcpServer ctor uses raw ``new std::thread``; same
-#               tech-debt pattern as 
+#               tech-debt pattern
 #
 # These are integration-tier tests (they test transport-bound code paths)
 # and are tagged @pytest.mark.integration per REP-03.  The source-text

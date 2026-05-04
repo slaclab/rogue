@@ -2,7 +2,7 @@
 # Company    : SLAC National Accelerator Laboratory
 #-----------------------------------------------------------------------------
 # Description:
-#   Regression tests for,.
+#   Regression tests.
 #   SqlReader uses sqlalchemy.MetaData(engine) and autoload=True —
 #            both APIs were removed in SQLAlchemy 2.0.
 #   SqlReader.getVariable/getSyslog reference self._conn which is

@@ -15,7 +15,7 @@
 #    -- StreamZip::acceptFrame uses 32-bit total_out_lo32; truncates
 #               compressed output larger than 4 GiB
 #    -- StreamUnZip::acceptFrame reads total_out_lo32 only; same
-#               truncation risk as 
+#               truncation risk
 #    -- StreamZip state machine only handles BZ_SEQUENCE_ERROR;
 #               BZ_PARAM_ERROR is not caught, leaking bzip2 state
 #
