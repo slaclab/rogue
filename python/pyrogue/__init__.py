@@ -11,7 +11,7 @@
 #-----------------------------------------------------------------------------
 import sys
 
-MIN_PYTHON = (3,6)
+MIN_PYTHON = (3,10)
 if sys.version_info < MIN_PYTHON:
     raise Exception("Python %s.%s or later is required.\n" % MIN_PYTHON)
 
