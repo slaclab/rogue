@@ -240,7 +240,7 @@ class Root(pr.Device):
         self._running = False
 
         # Polling worker
-        self._pollQueue = self._pollQueue = pr.PollQueue(root=self)
+        self._pollQueue = pr.PollQueue(root=self)
 
         # List of variable listeners
         self._varListeners  = []
@@ -584,7 +584,7 @@ class Root(pr.Device):
         # At with call
         try:
             self._updateTrack[tid].increment(period)
-        except Exception:
+        except KeyError:
             with self._updateLock:
                 self._updateTrack[tid] = UpdateTracker(self._updateQueue)
                 self._updateTrack[tid].increment(period)
@@ -1198,7 +1198,7 @@ class Root(pr.Device):
 
         try:
             self._updateTrack[tid].update(var)
-        except Exception:
+        except KeyError:
             with self._updateLock:
                 self._updateTrack[tid] = UpdateTracker(self._updateQueue)
                 self._updateTrack[tid].update(var)
