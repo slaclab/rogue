@@ -101,20 +101,29 @@ rim::Block::Block(uint64_t offset, uint32_t size) {
     verifyBase_ = 0;  // Verify Range
     verifySize_ = 0;  // Verify Range
 
-    blockData_ = reinterpret_cast<uint8_t*>(malloc(size_));
-    memset(blockData_, 0, size_);
+    try {
+        blockData_ = reinterpret_cast<uint8_t*>(malloc(size_));
+        memset(blockData_, 0, size_);
 
-    verifyData_ = reinterpret_cast<uint8_t*>(malloc(size_));
-    memset(verifyData_, 0, size_);
+        verifyData_ = reinterpret_cast<uint8_t*>(malloc(size_));
+        memset(verifyData_, 0, size_);
 
-    verifyMask_ = reinterpret_cast<uint8_t*>(malloc(size_));
-    memset(verifyMask_, 0, size_);
+        verifyMask_ = reinterpret_cast<uint8_t*>(malloc(size_));
+        memset(verifyMask_, 0, size_);
 
-    verifyBlock_ = reinterpret_cast<uint8_t*>(malloc(size_));
-    memset(verifyBlock_, 0, size_);
+        verifyBlock_ = reinterpret_cast<uint8_t*>(malloc(size_));
+        memset(verifyBlock_, 0, size_);
 
-    expectedData_ = reinterpret_cast<uint8_t*>(malloc(size_));
-    memset(expectedData_, 0, size_);
+        expectedData_ = reinterpret_cast<uint8_t*>(malloc(size_));
+        memset(expectedData_, 0, size_);
+    } catch (...) {
+        free(blockData_);
+        free(verifyData_);
+        free(verifyMask_);
+        free(verifyBlock_);
+        free(expectedData_);
+        throw;
+    }
 }
 
 // Destroy the Hub
