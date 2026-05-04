@@ -22,7 +22,6 @@
 #include <fstream>
 #include <sstream>
 #include <string>
-#include <vector>
 
 #include "doctest/doctest.h"
 
@@ -38,33 +37,21 @@ static std::string readFile(const std::string& path) {
     return ss.str();
 }
 
-static std::vector<std::string> splitLines(const std::string& src) {
-    std::vector<std::string> lines;
-    std::istringstream ss(src);
-    std::string line;
-    while (std::getline(ss, line)) lines.push_back(line);
-    return lines;
-}
-
-TEST_CASE("PROT-015: rssi::Controller::applicationRx uses condvar instead of usleep busy-loop") {
+TEST_CASE("PROT-015: rssi::Controller has no usleep busy-loop in applicationRx backpressure") {
     const std::string path =
         std::string(ROGUE_SRC_DIR) + "/src/rogue/protocols/rssi/Controller.cpp";
     const std::string src = readFile(path);
     REQUIRE_MESSAGE(!src.empty(), "Controller.cpp not found at " << path);
 
-    // The fix replaces the usleep(10) backpressure spin with a condition
-    // variable wait; verify the condvar primitives are present anywhere in
-    // the file (notify_all/notify_one + wait_for is the fix-pattern).
-    const bool hasNotify =
-        src.find("notify_all") != std::string::npos ||
-        src.find("notify_one") != std::string::npos;
-    const bool hasWaitFor = src.find("wait_for") != std::string::npos;
-    const bool usesCondVar = hasNotify && hasWaitFor;
-
-    CHECK_MESSAGE(usesCondVar,
-        "PROT-015 regression: rssi/Controller.cpp must use a "
-        "std::condition_variable (notify_all/notify_one + wait_for) for "
-        "RSSI transmit-window backpressure; fix(PROT-015) replaced the "
-        "usleep(10) busy-loop with stCond_.wait_for so the application "
-        "thread blocks until a transmit slot is signalled");
+    // The bug was a `while (txListCount_ >= curMaxBuffers_) { usleep(10); ... }`
+    // CPU-burning spin in applicationRx().  The fix replaced it with
+    // stCond_.wait_for under stMtx_.  No other usleep() call exists in this
+    // file, so the absence of `usleep(` is a strict regression guard.
+    const bool hasUsleep = src.find("usleep(") != std::string::npos;
+    CHECK_MESSAGE(!hasUsleep,
+        "PROT-015 regression: usleep() reintroduced in rssi/Controller.cpp; "
+        "the fix replaced the applicationRx() busy-loop with a "
+        "std::condition_variable wait_for under stMtx_, so the application "
+        "thread blocks until a transmit slot is signalled rather than "
+        "spinning every 10 us");
 }
