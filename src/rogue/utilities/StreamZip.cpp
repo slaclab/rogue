@@ -21,6 +21,7 @@
 #include <bzlib.h>
 #include <inttypes.h>
 #include <stdarg.h>
+#include <stdint.h>
 #include <unistd.h>
 
 #include <memory>
@@ -85,8 +86,12 @@ void ru::StreamZip::acceptFrame(ris::FramePtr frame) {
     strm.next_out  = reinterpret_cast<char*>((*wBuff)->begin());
     strm.avail_out = (*wBuff)->getAvailable();
 
-    // Track output bytes manually to avoid relying on 32-bit struct fields.
-    uint32_t outBytes = 0;
+    // Track output bytes manually as uint64_t to keep arithmetic correct
+    // for streams larger than 4 GiB.  The bzip2 32-bit cumulative output
+    // counter silently wraps at 2^32 which is the bug this replaces.
+    // setPayload() itself is 32-bit; we explicitly error out below if the
+    // accumulated output would overflow that interface.
+    uint64_t outBytes = 0;
 
     // Use the iterators to move data
     done = false;
@@ -122,12 +127,20 @@ void ru::StreamZip::acceptFrame(ris::FramePtr frame) {
         }
     } while (ret != BZ_STREAM_END);
 
-    // Update output frame using manually tracked byte count.
-    newFrame->setPayload(outBytes);
+    // Update output frame using manually tracked byte count.  setPayload is
+    // a 32-bit interface; surface a clear error if the compressed output
+    // would exceed UINT32_MAX rather than silently truncate the size.
+    BZ2_bzCompressEnd(&strm);
+    if (outBytes > UINT32_MAX) {
+        throw rogue::GeneralError::create(
+            "StreamZip::acceptFrame",
+            "Compressed output %" PRIu64 " bytes exceeds 32-bit setPayload() limit",
+            outBytes);
+    }
+    newFrame->setPayload(static_cast<uint32_t>(outBytes));
     newFrame->setError(frame->getError());
     newFrame->setChannel(frame->getChannel());
     newFrame->setFlags(frame->getFlags());
-    BZ2_bzCompressEnd(&strm);
 
     this->sendFrame(newFrame);
 }
