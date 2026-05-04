@@ -1,0 +1,23 @@
+{
+  "ref_name": "LoadConfig-device-level",
+  "ref_slug": "LoadConfig-device-level",
+  "latest_url": "/rogue/perf/branches/LoadConfig-device-level/latest.json",
+  "history": [
+    {
+      "ref_name": "LoadConfig-device-level",
+      "sha": "ec7737e90862474a179ad46dffa11d3a6ac52075",
+      "short_sha": "ec7737e",
+      "published_at": "2026-05-04T20:31:59Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/25341713477",
+      "summary_url": "/rogue/perf/branches/LoadConfig-device-level/history/ec7737e90862474a179ad46dffa11d3a6ac52075.json"
+    }
+  ],
+  "latest": {
+    "ref_name": "LoadConfig-device-level",
+    "sha": "ec7737e90862474a179ad46dffa11d3a6ac52075",
+    "short_sha": "ec7737e",
+    "published_at": "2026-05-04T20:31:59Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/25341713477",
+    "summary_url": "/rogue/perf/branches/LoadConfig-device-level/latest.json"
+  }
+}
