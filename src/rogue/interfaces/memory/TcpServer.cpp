@@ -284,12 +284,28 @@ void rim::TcpServer::runThread() {
             zmq_msg_init_size(&(msg[5]), result.length());
             std::memcpy(zmq_msg_data(&(msg[5])), result.c_str(), result.length());
 
-            // Send message; check return value to detect partial-send failures.
+            // Send message; abort the multi-part reply on first failure so
+            // we never ship a torso-only response that the peer must time
+            // out on.  zmq_sendmsg only takes ownership of msg parts on
+            // success, so failed and unsent parts must be released
+            // explicitly via zmq_msg_close.
+            uint32_t sendFailed = 0;
             for (x = 0; x < 6; x++) {
                 if (zmq_sendmsg(this->zmqResp_, &(msg[x]), (x == 5) ? 0 : ZMQ_SNDMORE) < 0) {
                     bridgeLog_->warning("zmq_sendmsg failed on part %" PRIu32 " for id=%" PRIu32 ": %s",
                                         x, id, zmq_strerror(zmq_errno()));
+                    sendFailed = 1;
+                    // Close the part that failed to send (we still own it).
+                    zmq_msg_close(&(msg[x]));
+                    // Close any remaining parts that were never sent.
+                    for (uint32_t y = x + 1; y < 6; y++) zmq_msg_close(&(msg[y]));
+                    break;
                 }
+            }
+            if (sendFailed) {
+                bridgeLog_->error("Aborted multi-part reply for id=%" PRIu32
+                                  "; remote will see no response for this transaction",
+                                  id);
             }
         } else {
             for (x = 0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
