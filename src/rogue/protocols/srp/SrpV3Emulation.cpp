@@ -74,7 +74,7 @@ rps::SrpV3Emulation::~SrpV3Emulation() {
 
     MemoryMap::iterator it = memMap_.begin();
     while (it != memMap_.end()) {
-        free(it->second);
+        delete[] it->second;
         ++it;
     }
 }
@@ -119,22 +119,22 @@ void rps::SrpV3Emulation::runThread() {
 }
 
 //! Allocate a new 4K page filled with random data
+// Previously used raw malloc(0x1000); now uses unique_ptr<uint8_t[]> for RAII.
 uint8_t* rps::SrpV3Emulation::allocatePage(uint64_t addr4k) {
-    uint8_t* page = reinterpret_cast<uint8_t*>(malloc(0x1000));
-    if (page == nullptr) {
-        log_->error("Failed to allocate page at 0x%" PRIx64, addr4k);
-        return nullptr;
-    }
+    // Allocate 4K page with RAII so the memory is freed on any exception path
+    // before the raw pointer is stored in memMap_.
+    std::unique_ptr<uint8_t[]> page = std::make_unique<uint8_t[]>(0x1000);
 
     // Fill with random data to emulate uninitialized hardware memory
     std::mt19937 gen(std::random_device {}());
-    uint32_t* p32 = reinterpret_cast<uint32_t*>(page);
+    uint32_t* p32 = reinterpret_cast<uint32_t*>(page.get());
     for (size_t i = 0; i < 0x1000 / 4; i++) p32[i] = gen();
 
-    memMap_.insert(std::make_pair(addr4k, page));
+    uint8_t* raw = page.release();
+    memMap_.insert(std::make_pair(addr4k, raw));
     totAlloc_++;
     log_->debug("Allocating page at 0x%" PRIx64 ". Total pages %" PRIu32, addr4k, totAlloc_);
-    return page;
+    return raw;
 }
 
 //! Read from internal memory
