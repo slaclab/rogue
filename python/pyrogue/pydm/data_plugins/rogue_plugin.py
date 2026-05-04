@@ -68,7 +68,10 @@ def parseAddress(address: str) -> tuple[str, int, str, str, int]:
         data_server = data[0].split(":")
     else:
         idx = int(data[0])
-        if idx >= len(alist):
+        # Reject negative indexes too: Python's negative indexing would
+        # silently select an arbitrary entry (e.g. -1 -> last server) rather
+        # than report invalid input.
+        if idx < 0 or idx >= len(alist):
             raise IndexError(
                 f"parseAddress: server index {idx} is out of bounds "
                 f"(ROGUE_SERVERS has {len(alist)} entr{'y' if len(alist)==1 else 'ies'})")
@@ -313,7 +316,11 @@ class RogueConnection(PyDMConnection):
         destroying : bool
             Whether removal is part of channel/widget destruction.
         """
-        self._client.remLinkMonitor(self.linkState)
+        # __init__ leaves self._client = None when not running under a PyDM
+        # application; mirror the addLinkMonitor() guard here so teardown
+        # does not crash on those code paths.
+        if self._client is not None:
+            self._client.remLinkMonitor(self.linkState)
         #if channel.value_signal is not None:
         #    #try:
         #    #    channel.value_signal[str].disconnect(self.put_value)
