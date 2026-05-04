@@ -3,13 +3,21 @@
  * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
- * Regression tests
- * ControllerV1::transportRx() line 174 calls
- *   ``if (enSsi_ & (tmpLuser & 0x1)) tranFrame_[tmpDest]->setError(0x80)``
- * after the completed frame is extracted and ``tranFrame_[0]`` is reset to
- * null at line ~171.  For any ``tmpDest != 0`` the shared_ptr in
- * ``tranFrame_[tmpDest]`` was never initialised, so the ``->setError()``
- * call is an immediate null-dereference (UB / segfault).
+ * Regression test for the V1 SSI-error path.
+ *
+ * The original code applied SSI errors after the completed frame had already
+ * been pushed downstream and tranFrame_[0] reset, and on the WRONG index
+ * (tranFrame_[tmpDest], which V1 never populates for tmpDest != 0).  That
+ * produced two distinct bugs:
+ *   1. for tmpDest != 0 the shared_ptr is null and ->setError() was an
+ *      immediate null-dereference (UB / segfault), and
+ *   2. for tmpDest == 0 the slot had already been reset, so the SSI
+ *      indication was silently dropped.
+ *
+ * The fix applies setError(0x80) to the assembled frame (tranFrame_[0])
+ * BEFORE pushing it downstream and BEFORE the reset.  This source-text test
+ * locks that ordering in: setError(0x80) on tranFrame_[0] must precede the
+ * pushFrame() call, and the wrong-index form must not reappear.
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to
  * the license terms in the LICENSE.txt file found in the top-level directory
@@ -68,34 +76,35 @@ static std::string extractLines(const std::string& src, int startLine, int maxLi
     return out.str();
 }
 
-TEST_CASE("ControllerV1::transportRx guards tranFrame_[tmpDest] before setError") {
+TEST_CASE("ControllerV1::transportRx applies SSI error before push and reset") {
     const std::string path =
         std::string(ROGUE_SRC_DIR) + "/src/rogue/protocols/packetizer/ControllerV1.cpp";
     const std::string src = readFile(path);
     REQUIRE_MESSAGE(!src.empty(), "ControllerV1.cpp not found at " << path);
 
-    // setError(0x80) call must remain reachable in the file (it's part of the
-    // SSI flow-control contract). The fix is to guard the call site against
-    // tranFrame_[tmpDest] being a null shared_ptr.
-    const int setErrorLine = findLine(src, "tranFrame_[tmpDest]->setError(0x80)");
+    // The wrong-index form must be gone.  It was both a null deref for
+    // tmpDest != 0 and a no-op (after reset) for tmpDest == 0.
+    const bool hasWrongIndex = src.find("tranFrame_[tmpDest]->setError") != std::string::npos;
+    CHECK_MESSAGE(!hasWrongIndex,
+        " regression: ControllerV1::transportRx still calls "
+        "tranFrame_[tmpDest]->setError(...); V1 only populates tranFrame_[0], "
+        "so this form is a null deref for tmpDest != 0 and a no-op (post-reset) "
+        "for tmpDest == 0.  Apply setError on tranFrame_[0] BEFORE the push.");
+
+    // Locate the setError(0x80) call on tranFrame_[0] and verify it appears
+    // BEFORE the pushFrame() call in the EOF path.
+    const int setErrorLine = findLine(src, "tranFrame_[0]->setError(0x80)");
     REQUIRE_MESSAGE(setErrorLine >= 0,
-        "tranFrame_[tmpDest]->setError(0x80) not found in ControllerV1.cpp");
+        "tranFrame_[0]->setError(0x80) not found in ControllerV1.cpp; "
+        "the SSI error path must mark tranFrame_[0] before push/reset");
 
-    // Search the 10 lines preceding setError AND the setError line itself —
-    // the fix may inline the null check on the same line as the call
-    // (e.g., 'if (tranFrame_[tmpDest]) tranFrame_[tmpDest]->setError(0x80);').
-    const int searchStart = (setErrorLine > 10) ? setErrorLine - 10 : 0;
-    const std::string ctx = extractLines(src, searchStart, setErrorLine - searchStart + 1);
+    const int pushLine = findLine(src, "app_[tranDest_]->pushFrame(tranFrame_[0])");
+    REQUIRE_MESSAGE(pushLine >= 0,
+        "app_[tranDest_]->pushFrame(tranFrame_[0]) not found in ControllerV1.cpp");
 
-    const bool hasNullCheck =
-        ctx.find("if (tranFrame_[tmpDest])") != std::string::npos ||
-        ctx.find("if (tranFrame_[tmpDest] !=") != std::string::npos ||
-        ctx.find("assert(tranFrame_[tmpDest]") != std::string::npos;
-
-    CHECK_MESSAGE(hasNullCheck,
-        " regression: ControllerV1::transportRx calls setError(0x80) "
-        "on tranFrame_[tmpDest] without a null guard; for any V1 frame with "
-        "tmpDest != 0 the shared_ptr is null, causing a segfault. fix "
-        "added an 'if (tranFrame_[tmpDest])' guard; if missing, the fix has "
-        "regressed");
+    CHECK_MESSAGE(setErrorLine < pushLine,
+        " regression: ControllerV1::transportRx applies SSI "
+        "setError(0x80) AFTER pushFrame()/reset; the marked error never "
+        "reaches the application slave.  Move the setError call above the "
+        "pushFrame call so the error indication ships with the frame.");
 }

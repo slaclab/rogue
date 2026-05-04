@@ -165,14 +165,18 @@ void rpp::ControllerV1::transportRx(ris::FramePtr frame) {
     if (tmpEof) {
         tranFrame_[0]->setLastUser(tmpLuser);
         tranCount_[0] = 0;
+
+        // Detect SSI error and apply it to the assembled frame BEFORE it is
+        // pushed downstream and the slot reset.  The original code marked
+        // the error after the reset on the wrong index (tranFrame_[tmpDest]),
+        // which both null-dereferenced for tmpDest != 0 and silently dropped
+        // the SSI indication for tmpDest == 0.
+        if (enSsi_ & (tmpLuser & 0x1)) tranFrame_[0]->setError(0x80);
+
         if (app_[tranDest_]) {
             app_[tranDest_]->pushFrame(tranFrame_[0]);
         }
         tranFrame_[0].reset();
-
-        // Detect SSI error — guard against null shared_ptr when tmpDest != 0
-        if (enSsi_ & (tmpLuser & 0x1))
-            if (tranFrame_[tmpDest]) tranFrame_[tmpDest]->setError(0x80);
     } else {
         tranCount_[0]++;
     }
