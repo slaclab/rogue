@@ -13,13 +13,43 @@
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 
+import io as _io
 import os
+import pickle as _pickle
 import pyrogue as pr
 import rogue.interfaces
-import pickle
 import time
 import threading
 from typing import Any, Callable
+
+
+class _VirtualSafeUnpickler(_pickle.Unpickler):
+    """Restricted Unpickler that only allows built-in and pyrogue types."""
+
+    # Modules from which any class may be deserialized
+    _ALLOWED_MODULES = {
+        'builtins',
+        'pyrogue',
+        'pyrogue.interfaces._Virtual',
+        'pyrogue._Variable',
+        'pyrogue._Node',
+        'rogue.interfaces.memory',
+        'rogue.interfaces.stream',
+        'collections',
+        'collections.abc',
+    }
+
+    def find_class(self, module: str, name: str) -> type:
+        top = module.split('.')[0]
+        if module in self._ALLOWED_MODULES or top in ('builtins', 'pyrogue', 'rogue', 'collections'):
+            return super().find_class(module, name)
+        raise _pickle.UnpicklingError(
+            "Unsafe pickle payload: {}.{}".format(module, name))
+
+
+def _virtual_safe_loads(data: bytes) -> object:
+    """Deserialise pickle bytes using a restricted Unpickler for virtual client responses."""
+    return _VirtualSafeUnpickler(_io.BytesIO(data)).load()
 
 
 class VirtualProperty(object):
@@ -679,7 +709,7 @@ class VirtualClient(rogue.interfaces.ZmqClient):
         self._requestStart()
 
         try:
-            ret = pickle.loads(self._send(pickle.dumps({ 'path':path, 'attr':attr, 'args':args, 'kwargs':kwargs })))
+            ret = _virtual_safe_loads(self._send(_pickle.dumps({ 'path':path, 'attr':attr, 'args':args, 'kwargs':kwargs })))
             self._requestDone(True)
         except Exception as e:
             self._requestDone(False)
@@ -704,7 +734,7 @@ class VirtualClient(rogue.interfaces.ZmqClient):
         if self._root is None:
             return
 
-        d = pickle.loads(data)
+        d = _virtual_safe_loads(data)
 
         for k,val in d.items():
             n = self._root.getNode(k,False)
