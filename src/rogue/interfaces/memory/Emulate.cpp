@@ -93,7 +93,15 @@ void rim::Emulate::doTransaction(rim::TransactionPtr tran) {
                     throw(rogue::GeneralError::create("Emulate::doTransaction",
                                                       "Failed to allocate 4k page at address 0x%" PRIx64,
                                                       addr4k));
-                memMap_.insert(std::make_pair(addr4k, page));
+                // std::map::insert can throw bad_alloc on the new node; release
+                // the raw page back to free() in that case so it is not leaked
+                // (mirrors the SrpV3Emulation::allocatePage RAII pattern).
+                try {
+                    memMap_.insert(std::make_pair(addr4k, page));
+                } catch (...) {
+                    free(page);
+                    throw;
+                }
                 totSize_ += 0x1000;
                 totAlloc_++;
                 log_->debug("Allocating block at 0x%x. Total Blocks %i, Total Size = %i", addr4k, totAlloc_, totSize_);
