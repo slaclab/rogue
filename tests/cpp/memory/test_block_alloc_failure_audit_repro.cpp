@@ -3,7 +3,7 @@
  * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
- * Audit repro for IFCE-001: Block ctor 5x malloc with no exception-safe
+ * Regression tests for Block ctor 5x malloc with no exception-safe
  * cleanup.  If any of the five malloc calls returns NULL and throws, the
  * earlier allocated buffers are leaked because the Block dtor only runs
  * free() on members whose pointers were successfully initialised.
@@ -40,7 +40,7 @@ static std::string readFile(const std::string& path) {
     return ss.str();
 }
 
-TEST_CASE("IFCE-001: Block ctor 5x malloc partial-allocation leak") {
+TEST_CASE("Block ctor 5x malloc partial-allocation leak") {
     const std::string src = readFile(
         ROGUE_SRC_DIR "/src/rogue/interfaces/memory/Block.cpp");
     REQUIRE_MESSAGE(!src.empty(), "Could not read Block.cpp");
@@ -66,7 +66,7 @@ TEST_CASE("IFCE-001: Block ctor 5x malloc partial-allocation leak") {
     const bool isFixed      = !hasMalloc || hasTryCatch;
 
     CHECK_MESSAGE(isFixed,
-                  "IFCE-001: Block ctor 5x malloc; partial-allocation throw "
+                  "Block ctor 5x malloc; partial-allocation throw "
                   "leaks earlier buffers (no RAII / no try-catch wrapper "
                   "around the 5 successive malloc calls)");
 }

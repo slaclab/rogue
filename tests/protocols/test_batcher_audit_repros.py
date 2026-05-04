@@ -3,7 +3,7 @@
 # Company    : SLAC National Accelerator Laboratory
 # -----------------------------------------------------------------------------
 # Description:
-#   Audit repro tests for PROT-013 and PROT-014:
+#   Regression tests
 #   batcher V1/V2 InverterV1/InverterV2 acceptFrame() performs memcpy on
 #   tail region without verifying that at least headerSize() bytes are
 #   available before the copy.
@@ -72,8 +72,8 @@ def _has_tail_payload_guard(src, memcpy_tag):
     )
 
 
-def test_batcher_v1_memcpy_bounds_check_prot_013():
-    """PROT-013: InverterV1::acceptFrame memcpy lacks runtime frame-size guard.
+def test_batcher_v1_memcpy_bounds_check():
+    """InverterV1::acceptFrame memcpy lacks runtime frame-size guard.
 
     The memcpy near line 82 of InverterV1.cpp copies headerSize() bytes from
     core.beginTail(0).ptr() without verifying that the frame payload is long
@@ -85,12 +85,12 @@ def test_batcher_v1_memcpy_bounds_check_prot_013():
     src = _read_source(_INV_V1)
 
     assert "memcpy(core.beginHeader().ptr(), core.beginTail(0).ptr(), core.headerSize())" in src, \
-        "PROT-013: expected memcpy pattern not found in InverterV1.cpp; file may have changed"
+        "expected memcpy pattern not found in InverterV1.cpp; file may have changed"
 
     has_guard = _has_tail_payload_guard(src, "memcpy(core.beginHeader")
 
     assert has_guard, (
-        "PROT-013: V1 batcher memcpy lacks runtime frame-size bounds check — "
+        "V1 batcher memcpy lacks runtime frame-size bounds check — "
         "InverterV1::acceptFrame copies core.headerSize() bytes from tail region "
         "without verifying the frame payload holds at least headerSize()*count() "
         "bytes of tail data (the existing headerSize()!=tailSize() check only "
@@ -98,8 +98,8 @@ def test_batcher_v1_memcpy_bounds_check_prot_013():
     )
 
 
-def test_batcher_v2_memcpy_bounds_check_prot_014():
-    """PROT-014: InverterV2::acceptFrame memcpy lacks runtime frame-size guard.
+def test_batcher_v2_memcpy_bounds_check():
+    """InverterV2::acceptFrame memcpy lacks runtime frame-size guard.
 
     The memcpy near line 82 of InverterV2.cpp copies headerSize() bytes (7 bytes
     for V2) from core.beginTail(0).ptr() without verifying that the frame
@@ -108,12 +108,12 @@ def test_batcher_v2_memcpy_bounds_check_prot_014():
     src = _read_source(_INV_V2)
 
     assert "memcpy(core.beginHeader().ptr(), core.beginTail(0).ptr(), core.headerSize())" in src, \
-        "PROT-014: expected memcpy pattern not found in InverterV2.cpp; file may have changed"
+        "expected memcpy pattern not found in InverterV2.cpp; file may have changed"
 
     has_guard = _has_tail_payload_guard(src, "memcpy(core.beginHeader")
 
     assert has_guard, (
-        "PROT-014: V2 batcher memcpy lacks runtime frame-size bounds check — "
+        "V2 batcher memcpy lacks runtime frame-size bounds check — "
         "InverterV2::acceptFrame copies core.headerSize() bytes from tail region "
         "without verifying at least headerSize() bytes are available there"
     )

@@ -1,4 +1,4 @@
-# Audit repro tests for RSSI protocol candidates (plan 02-03).
+# Regression tests for RSSI protocol candidates (plan 02-03).
 
 rogue_add_cpp_test(rogue-cpp-protocols-rssi-thread-audit-repro
    SOURCES

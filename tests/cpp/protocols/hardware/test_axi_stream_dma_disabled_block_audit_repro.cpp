@@ -3,8 +3,8 @@
  * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
- * Audit repro for HW-010:
- * AxiStreamDma.cpp runThread() contains a ``#if 0 ... #else ... #endif``
+ * Regression tests
+ * AxiStreamDma.cpp runThread() contains a ``#if 0... #else... #endif``
  * block where the disabled branch implements bulk DMA buffer return via
  * dmaReturnIoctl().  The active ``#else`` branch does per-buffer returns.
  * The disabled code is left in-tree with no comment explaining why it was
@@ -38,7 +38,7 @@ static std::string readFile(const std::string& path) {
     return ss.str();
 }
 
-TEST_CASE("HW-010: AxiStreamDma.cpp has no unexplained #if 0 disabled block") {
+TEST_CASE("AxiStreamDma.cpp has no unexplained #if 0 disabled block") {
     const std::string path =
         std::string(ROGUE_SRC_DIR) + "/src/rogue/hardware/axi/AxiStreamDma.cpp";
     const std::string src = readFile(path);
@@ -46,7 +46,7 @@ TEST_CASE("HW-010: AxiStreamDma.cpp has no unexplained #if 0 disabled block") {
 
     const bool hasIf0 = src.find("#if 0") != std::string::npos;
     CHECK_MESSAGE(!hasIf0,
-        "HW-010 regression: '#if 0' is back in AxiStreamDma.cpp; fix(HW-010) "
+        " regression: '#if 0' is back in AxiStreamDma.cpp; fix "
         "removed the disabled bulk-DMA block (dmaReturnIoctl path) that had "
         "no comment explaining why it was disabled. If a #if 0 block is "
         "needed again, replace it with a comment explaining the intent and "

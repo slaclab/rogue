@@ -3,12 +3,12 @@
  * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
- * Audit repros for numeric edge-case UB in Block floating-point/fixed-point
+ * Regression tests for numeric edge-case UB in Block floating-point/fixed-point
  * conversion methods:
- *   IFCE-014: setFloat8 lacks an explicit NaN/Inf early-return guard
- *   IFCE-015: setFixed intermediate round() result can be +INF before
+ *   setFloat8 lacks an explicit NaN/Inf early-return guard
+ *   setFixed intermediate round() result can be +INF before
  *             static_cast<int64_t> -> UB
- *   IFCE-016/017: setUFixed same root cause as IFCE-015 for unsigned path
+ *   setUFixed same root cause as  for unsigned path
  *
  * Each TEST_CASE is a source-text invariant check on Block.cpp.
  * On HEAD the guards are absent -> CHECK_MESSAGE fires.
@@ -52,7 +52,7 @@ static std::string functionRegion(const std::string& src,
     return src.substr(pos, windowBytes);
 }
 
-TEST_CASE("IFCE-014: setFloat8 lacks NaN/Inf early-return guard") {
+TEST_CASE("setFloat8 lacks NaN/Inf early-return guard") {
     const std::string src = readFile(
         ROGUE_SRC_DIR "/src/rogue/interfaces/memory/Block.cpp");
     REQUIRE_MESSAGE(!src.empty(), "Could not read Block.cpp");
@@ -73,12 +73,12 @@ TEST_CASE("IFCE-014: setFloat8 lacks NaN/Inf early-return guard") {
         region.find("std::isinf") != std::string::npos ||
         region.find("std::isfinite") != std::string::npos);
     CHECK_MESSAGE(hasGuard,
-                  "IFCE-014: Block::setFloat8 lacks explicit NaN/Inf early-"
+                  "Block::setFloat8 lacks explicit NaN/Inf early-"
                   "return guard; NaN/Inf inputs silently produce wrong E4M3 "
                   "encoding without alerting the caller");
 }
 
-TEST_CASE("IFCE-015: setFixed round() -> static_cast<int64_t> UB for +INF") {
+TEST_CASE("setFixed round() -> static_cast<int64_t> UB for +INF") {
     const std::string src = readFile(
         ROGUE_SRC_DIR "/src/rogue/interfaces/memory/Block.cpp");
     REQUIRE_MESSAGE(!src.empty(), "Could not read Block.cpp");
@@ -96,12 +96,12 @@ TEST_CASE("IFCE-015: setFixed round() -> static_cast<int64_t> UB for +INF") {
         region.find("std::isfinite") != std::string::npos ||
         region.find("std::isinf") != std::string::npos);
     CHECK_MESSAGE(hasGuard,
-                  "IFCE-015: Block::setFixed round(val*pow(2,binPoint_)) can "
+                  "Block::setFixed round(val*pow(2,binPoint_)) can "
                   "produce +INF before static_cast<int64_t> -> UB; needs "
                   "std::isfinite guard before the round/cast step");
 }
 
-TEST_CASE("IFCE-016/017: setUFixed round() -> static_cast<uint64_t> UB") {
+TEST_CASE("setUFixed round() -> static_cast<uint64_t> UB") {
     const std::string src = readFile(
         ROGUE_SRC_DIR "/src/rogue/interfaces/memory/Block.cpp");
     REQUIRE_MESSAGE(!src.empty(), "Could not read Block.cpp");
@@ -119,7 +119,7 @@ TEST_CASE("IFCE-016/017: setUFixed round() -> static_cast<uint64_t> UB") {
         region.find("std::isfinite") != std::string::npos ||
         region.find("std::isinf") != std::string::npos);
     CHECK_MESSAGE(hasGuard,
-                  "IFCE-016/017: Block::setUFixed round(val*pow(2,binPoint_)) "
+                  "Block::setUFixed round(val*pow(2,binPoint_)) "
                   "can produce +INF before static_cast<uint64_t> -> UB; needs "
                   "std::isfinite guard before the round/cast step");
 }

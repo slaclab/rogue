@@ -3,11 +3,11 @@
  * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
- * Audit repros for two missing/incomplete binding and pointer-safety issues:
- *   IFCE-019: stream::TcpClient setup_python does not expose the _start()
+ * Regression tests for two missing/incomplete binding and pointer-safety issues:
+ *   stream::TcpClient setup_python does not expose the _start()
  *             lifecycle hook or the deprecated close() alias; the binding is
  *             incomplete relative to TcpCore
- *   IFCE-020: Bsp (C++ API wrapper) stores the Python node via
+ *   Bsp (C++ API wrapper) stores the Python node via
  *             boost::python::object _obj but the surrounding C++ code stores
  *             a dangling raw char* via bp::extract<char*> without
  *             keeping the Python object alive; or the semantics rely on the
@@ -45,7 +45,7 @@ static std::string readFile(const std::string& path) {
     return ss.str();
 }
 
-TEST_CASE("IFCE-019: stream::TcpClient setup_python missing _start / close binding") {
+TEST_CASE("stream::TcpClient setup_python missing _start / close binding") {
     const std::string src = readFile(
         ROGUE_SRC_DIR "/src/rogue/interfaces/stream/TcpClient.cpp");
     REQUIRE_MESSAGE(!src.empty(),
@@ -71,18 +71,18 @@ TEST_CASE("IFCE-019: stream::TcpClient setup_python missing _start / close bindi
         region.find("\"stop\"") != std::string::npos);
 
     CHECK_MESSAGE(exposesLifecycle,
-                  "IFCE-019: stream::TcpClient setup_python does not expose "
+                  "stream::TcpClient setup_python does not expose "
                   "the _start() lifecycle hook or the deprecated close() alias; "
                   "Python users cannot manage the stream TcpClient lifecycle "
                   "through the TcpClient class directly");
 }
 
-TEST_CASE("IFCE-020: Bsp uses raw char* extract from bp::object without RAII") {
+TEST_CASE("Bsp uses raw char* extract from bp::object without RAII") {
     const std::string src = readFile(
         ROGUE_SRC_DIR "/src/rogue/interfaces/api/Bsp.cpp");
     REQUIRE_MESSAGE(!src.empty(), "Could not read interfaces/api/Bsp.cpp");
 
-    // IFCE-020: Bsp::operator[] returns a Bsp by value constructed from
+    // Bsp::operator[] returns a Bsp by value constructed from
     // a bp::object obtained via getNode(name).  This means the node object
     // has its reference count managed via the stack-local bp::object inside
     // operator[], not by any persistent owner.  A caller that holds a Bsp
@@ -98,7 +98,7 @@ TEST_CASE("IFCE-020: Bsp uses raw char* extract from bp::object without RAII") {
     const bool hasRawCharExtract =
         (src.find("extract<char*>") != std::string::npos);
     CHECK_MESSAGE(!hasRawCharExtract,
-                  "IFCE-020: Bsp stores _name via bp::extract<char*> which "
+                  "Bsp stores _name via bp::extract<char*> which "
                   "yields a raw char* pointing into a Python string object; "
                   "if the Python string is GC'd the pointer dangles; "
                   "should use bp::extract<std::string> to own the copy");

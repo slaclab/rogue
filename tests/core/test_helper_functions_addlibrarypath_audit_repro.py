@@ -2,7 +2,7 @@
 # Company    : SLAC National Accelerator Laboratory
 #-----------------------------------------------------------------------------
 # Description:
-#   Audit repro for PYR-009.
+#   Regression test.
 #   addLibraryPath() in _HelperFunctions.py contains a duplicated
 #   `if base == '': base = '.'` block (lines 74-79): the same guard appears
 #   twice back-to-back with identical surrounding comments.  On HEAD the
@@ -23,8 +23,8 @@ import inspect
 import pyrogue._HelperFunctions as hf
 
 
-def test_addlibrarypath_no_duplicate_blocks_pyr_009():
-    """PYR-009: addLibraryPath has a duplicated `if base == '':` block."""
+def test_addlibrarypath_no_duplicate_blocks():
+    """addLibraryPath has a duplicated `if base == '':` block."""
     src_lines = inspect.getsource(hf.addLibraryPath).splitlines()
 
     # Count occurrences of the guarded assignment within the function source.
@@ -34,6 +34,6 @@ def test_addlibrarypath_no_duplicate_blocks_pyr_009():
     )
 
     assert count <= 1, (
-        "PYR-009: addLibraryPath has duplicated `if base == '':` block "
+        "addLibraryPath has duplicated `if base == '':` block "
         "(copy-paste artifact); found " + str(count) + " occurrences — expected at most 1"
     )

@@ -3,7 +3,7 @@
  * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
- * Audit repros for PROT-001 and PROT-002:
+ * Regression tests
  * rssi::Application::setController() and rssi::Controller::start() allocate
  * worker threads via ``new std::thread`` without any try/catch guard.  If the
  * thread constructor throws (OOM), the raw thread_ pointer is left dangling
@@ -44,7 +44,7 @@ static bool hasRaiiThread(const std::string& src) {
            src.find("unique_ptr<std::thread>") != std::string::npos;
 }
 
-TEST_CASE("PROT-001: rssi::Application::setController uses RAII thread allocation") {
+TEST_CASE("rssi::Application::setController uses RAII thread allocation") {
     const std::string path =
         std::string(ROGUE_SRC_DIR) + "/src/rogue/protocols/rssi/Application.cpp";
     const std::string src = readFile(path);
@@ -52,15 +52,15 @@ TEST_CASE("PROT-001: rssi::Application::setController uses RAII thread allocatio
 
     const bool hasRaw = src.find("new std::thread") != std::string::npos;
     CHECK_MESSAGE(!hasRaw,
-        "PROT-001 regression: raw 'new std::thread' is back in rssi/Application.cpp; "
-        "fix(PROT-001) replaced it with std::make_unique<std::thread>");
+        " regression: raw 'new std::thread' is back in rssi/Application.cpp; "
+        "fix replaced it with std::make_unique<std::thread>");
 
     CHECK_MESSAGE(hasRaiiThread(src),
-        "PROT-001: rssi/Application.cpp must allocate worker thread via "
+        "rssi/Application.cpp must allocate worker thread via "
         "std::make_unique<std::thread> or std::unique_ptr<std::thread>");
 }
 
-TEST_CASE("PROT-002: rssi::Controller::start uses RAII thread allocation") {
+TEST_CASE("rssi::Controller::start uses RAII thread allocation") {
     const std::string path =
         std::string(ROGUE_SRC_DIR) + "/src/rogue/protocols/rssi/Controller.cpp";
     const std::string src = readFile(path);
@@ -68,10 +68,10 @@ TEST_CASE("PROT-002: rssi::Controller::start uses RAII thread allocation") {
 
     const bool hasRaw = src.find("new std::thread") != std::string::npos;
     CHECK_MESSAGE(!hasRaw,
-        "PROT-002 regression: raw 'new std::thread' is back in rssi/Controller.cpp; "
-        "fix(PROT-002) replaced it with std::make_unique<std::thread>");
+        " regression: raw 'new std::thread' is back in rssi/Controller.cpp; "
+        "fix replaced it with std::make_unique<std::thread>");
 
     CHECK_MESSAGE(hasRaiiThread(src),
-        "PROT-002: rssi/Controller.cpp must allocate worker thread via "
+        "rssi/Controller.cpp must allocate worker thread via "
         "std::make_unique<std::thread> or std::unique_ptr<std::thread>");
 }

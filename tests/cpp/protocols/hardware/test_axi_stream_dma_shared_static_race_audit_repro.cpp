@@ -3,7 +3,7 @@
  * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
- * Audit repro for HW-009:
+ * Regression tests
  * AxiStreamDma.cpp declares ``sharedBuffers_`` as a file-scope static
  * std::map at line ~45.  openShared() (called from the constructor) and
  * closeShared() (called from the destructor) access this map without any
@@ -38,7 +38,7 @@ static std::string readFile(const std::string& path) {
     return ss.str();
 }
 
-TEST_CASE("HW-009: AxiStreamDma sharedBuffers_ static map accessed without mutex") {
+TEST_CASE("AxiStreamDma sharedBuffers_ static map accessed without mutex") {
     const std::string path =
         std::string(ROGUE_SRC_DIR) + "/src/rogue/hardware/axi/AxiStreamDma.cpp";
     const std::string src = readFile(path);
@@ -46,7 +46,7 @@ TEST_CASE("HW-009: AxiStreamDma sharedBuffers_ static map accessed without mutex
 
     // Confirm the static sharedBuffers_ map exists
     REQUIRE_MESSAGE(src.find("sharedBuffers_") != std::string::npos,
-        "HW-009: sharedBuffers_ not found in AxiStreamDma.cpp; file may have changed");
+        "sharedBuffers_ not found in AxiStreamDma.cpp; file may have changed");
 
     // A mutex must guard all accesses to sharedBuffers_.  Look for a mutex
     // declaration adjacent to sharedBuffers_ or a lock_guard in openShared/closeShared.
@@ -58,9 +58,9 @@ TEST_CASE("HW-009: AxiStreamDma sharedBuffers_ static map accessed without mutex
         src.find("static std::mutex") != std::string::npos;
 
     CHECK_MESSAGE(hasMutex,
-        "HW-009 regression: AxiStreamDma must declare a static std::mutex "
+        " regression: AxiStreamDma must declare a static std::mutex "
         "(e.g. sharedBuffersMtx) and lock it around all accesses to "
-        "sharedBuffers_ in openShared/closeShared; fix(HW-009) added "
+        "sharedBuffers_ in openShared/closeShared; fix added "
         "'static std::mutex sharedBuffersMtx;' to prevent concurrent "
         "AxiStreamDma construction from racing on the file-scope static map");
 }

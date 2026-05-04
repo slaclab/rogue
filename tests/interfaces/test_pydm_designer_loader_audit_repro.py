@@ -2,7 +2,7 @@
 # Company    : SLAC National Accelerator Laboratory
 #-----------------------------------------------------------------------------
 # Description:
-#   Audit repro for PYDM-008.
+#   Regression test.
 #   python/pyrogue/pydm/rogue_plugin.py line 17 contains a top-level
 #   `print("Loading Rogue Widgets Designer Plugins")` that executes on every
 #   import of the module, not just in a Qt Designer context.  A library
@@ -23,8 +23,8 @@ import ast
 import pathlib
 
 
-def test_rogue_plugin_no_top_level_print_pydm_008():
-    """PYDM-008: rogue_plugin.py has a top-level print() that runs on every import."""
+def test_rogue_plugin_no_top_level_print():
+    """rogue_plugin.py has a top-level print() that runs on every import."""
     plugin_path = (
         pathlib.Path(__file__).parent.parent.parent
         / "python" / "pyrogue" / "pydm" / "rogue_plugin.py"
@@ -45,7 +45,7 @@ def test_rogue_plugin_no_top_level_print_pydm_008():
             top_level_prints.append(node.lineno)
 
     assert len(top_level_prints) == 0, (
-        "PYDM-008: rogue_plugin.py has top-level print() call(s) at "
+        "rogue_plugin.py has top-level print() call(s) at "
         "line(s) " + str(top_level_prints) + " that execute on every "
         "import of the module; side-effect console output in a library "
         "module is unconventional and noisy"

@@ -2,7 +2,7 @@
 # Company    : SLAC National Accelerator Laboratory
 #-----------------------------------------------------------------------------
 # Description:
-#   Audit repros for PYR-004 and PYR-005.
+#   Regression test.
 #   functionWrapper() builds a lambda source string and calls eval(ls) without
 #   sanitising callArgs.  A caller who controls callArgs can inject arbitrary
 #   Python code into the lambda body via a crafted string entry.
@@ -22,10 +22,10 @@ import pyrogue._HelperFunctions as hf
 
 
 # ---------------------------------------------------------------------------
-# PYR-004 — None-function branch (line 451)
+# None-function branch (line 451)
 # ---------------------------------------------------------------------------
-def test_function_wrapper_eval_injection_pyr_004(monkeypatch):
-    """PYR-004: functionWrapper eval(ls) executes injected code via callArgs (None branch)."""
+def test_function_wrapper_eval_injection(monkeypatch):
+    """functionWrapper eval(ls) executes injected code via callArgs (None branch)."""
     monkeypatch.setenv("AUDIT_PYR_004_SENTINEL", "injected_004")
 
     # The lambda string becomes:
@@ -39,17 +39,17 @@ def test_function_wrapper_eval_injection_pyr_004(monkeypatch):
     outcome = wrapper(None, None)
 
     assert outcome != "injected_004", (
-        "PYR-004: functionWrapper eval(ls) executed injected __import__/getenv "
+        "functionWrapper eval(ls) executed injected __import__/getenv "
         "code via callArgs (None-function branch, line 451); "
         "sentinel value was read"
     )
 
 
 # ---------------------------------------------------------------------------
-# PYR-005 — non-None function branch (line 468)
+# non-None function branch (line 468)
 # ---------------------------------------------------------------------------
-def test_function_wrapper_eval_injection_with_function_pyr_005(monkeypatch):
-    """PYR-005: functionWrapper eval(ls) executes injected code via callArgs (function branch)."""
+def test_function_wrapper_eval_injection_with_function(monkeypatch):
+    """functionWrapper eval(ls) executes injected code via callArgs (function branch)."""
     monkeypatch.setenv("AUDIT_PYR_005_SENTINEL", "injected_005")
 
     def real_func():
@@ -64,7 +64,7 @@ def test_function_wrapper_eval_injection_with_function_pyr_005(monkeypatch):
     outcome = wrapper(real_func, None)
 
     assert outcome != "injected_005", (
-        "PYR-005: functionWrapper eval(ls) executed injected __import__/getenv "
+        "functionWrapper eval(ls) executed injected __import__/getenv "
         "code via callArgs (non-None function branch, line 468); "
         "sentinel value was read"
     )

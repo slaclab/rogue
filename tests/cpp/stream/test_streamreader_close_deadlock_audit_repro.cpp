@@ -3,7 +3,7 @@
  * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
- * Audit repro for UTIL-005: StreamReader::close() acquires mtx_ before
+ * Regression tests for StreamReader::close() acquires mtx_ before
  * calling intClose() -> readThread_->join().  The reader thread's exit path
  * (runThread end, line 241) also acquires mtx_ before clearing active_ and
  * notifying cond_.  This causes a deadlock any time close() is called while
@@ -56,7 +56,7 @@ static std::vector<std::string> splitLines(const std::string& src) {
     return lines;
 }
 
-TEST_CASE("UTIL-005: StreamReader::close() deadlock -- holds mtx_ during join()") {
+TEST_CASE("StreamReader::close() deadlock -- holds mtx_ during join()") {
     const std::string src = readFile(
         ROGUE_SRC_DIR "/src/rogue/utilities/fileio/StreamReader.cpp");
     REQUIRE_MESSAGE(!src.empty(), "Could not read fileio/StreamReader.cpp");
@@ -93,7 +93,7 @@ TEST_CASE("UTIL-005: StreamReader::close() deadlock -- holds mtx_ during join()"
     // Both must be false for the fix to be in place.
     // On HEAD: closeHoldsMtx=true, runThreadAcquiresMtx=true -> deadlock.
     CHECK_MESSAGE(!closeHoldsMtx,
-                  "UTIL-005: StreamReader::close() acquires mtx_ before "
+                  "StreamReader::close() acquires mtx_ before "
                   "calling intClose()/join(); runThread() also acquires mtx_ "
                   "at its exit -- structural deadlock: caller holds mtx_ while "
                   "waiting in join(), worker waits for mtx_");

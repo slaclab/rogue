@@ -3,16 +3,16 @@
  * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
- * CORE-002 and CORE-003 repros: Logging ctor/dtor use raw lock()/unlock()
+ *  and  repros: Logging ctor/dtor use raw lock()/unlock()
  * rather than std::lock_guard.
  *
- * CORE-002 (src/rogue/Logging.cpp:109): Logging::Logging() calls
- *   levelMtx_.lock(); ... levelMtx_.unlock();
+ *  (src/rogue/Logging.cpp:109): Logging::Logging() calls
+ *   levelMtx_.lock();... levelMtx_.unlock();
  * instead of using std::lock_guard<std::mutex>.  If any code between lock
  * and unlock throws (e.g. loggers_.push_back can throw std::bad_alloc),
  * the mutex is held forever → all subsequent log operations deadlock.
  *
- * CORE-003 (src/rogue/Logging.cpp:121): Logging::~Logging() has the same
+ *  (src/rogue/Logging.cpp:121): Logging::~Logging() has the same
  * raw lock/unlock pattern. Destructors are implicitly noexcept; if the
  * iterator erase throws, the mutex is abandoned permanently.
  *
@@ -53,13 +53,13 @@ std::string readFile(const std::string& path) {
 
 }  // namespace
 
-TEST_CASE("CORE-002: Logging constructor uses std::lock_guard instead of raw lock/unlock") {
+TEST_CASE("Logging constructor uses std::lock_guard instead of raw lock/unlock") {
     // Read Logging.cpp and verify the constructor body uses std::lock_guard
     // (or std::unique_lock / std::scoped_lock) rather than raw levelMtx_.lock().
     const std::string src = readFile(std::string(ROGUE_SRC_DIR) + "/src/rogue/Logging.cpp");
 
     REQUIRE_MESSAGE(!src.empty(),
-                    "CORE-002: could not open src/rogue/Logging.cpp (ROGUE_SRC_DIR=",
+                    "could not open src/rogue/Logging.cpp (ROGUE_SRC_DIR=",
                     ROGUE_SRC_DIR, ")");
 
     // On HEAD: levelMtx_.lock() / levelMtx_.unlock() are present in the ctor body.
@@ -70,16 +70,16 @@ TEST_CASE("CORE-002: Logging constructor uses std::lock_guard instead of raw loc
 
     // A properly fixed implementation uses lock_guard and no raw lock/unlock.
     CHECK_MESSAGE(!has_raw_lock,
-                  "CORE-002: Logging::Logging() uses raw levelMtx_.lock(); "
+                  "Logging::Logging() uses raw levelMtx_.lock(); "
                   "if loggers_.push_back() throws, the mutex is held forever. "
                   "Replace with std::lock_guard<std::mutex>.");
 
     CHECK_MESSAGE(has_lock_guard,
-                  "CORE-002: Logging.cpp does not use std::lock_guard / "
+                  "Logging.cpp does not use std::lock_guard / "
                   "std::unique_lock / std::scoped_lock; fix must introduce RAII locking.");
 }
 
-TEST_CASE("CORE-003: Logging destructor uses std::lock_guard instead of raw lock/unlock") {
+TEST_CASE("Logging destructor uses std::lock_guard instead of raw lock/unlock") {
     // Read Logging.cpp and verify the destructor body uses RAII locking.
     // On HEAD the destructor at line 121 calls levelMtx_.lock() / unlock()
     // directly; destructors are noexcept by default, so an exception from
@@ -87,7 +87,7 @@ TEST_CASE("CORE-003: Logging destructor uses std::lock_guard instead of raw lock
     const std::string src = readFile(std::string(ROGUE_SRC_DIR) + "/src/rogue/Logging.cpp");
 
     REQUIRE_MESSAGE(!src.empty(),
-                    "CORE-003: could not open src/rogue/Logging.cpp (ROGUE_SRC_DIR=",
+                    "could not open src/rogue/Logging.cpp (ROGUE_SRC_DIR=",
                     ROGUE_SRC_DIR, ")");
 
     // The simplest discriminator: after the fix, raw levelMtx_.lock() should
@@ -95,7 +95,7 @@ TEST_CASE("CORE-003: Logging destructor uses std::lock_guard instead of raw lock
     bool has_raw_lock = src.find("levelMtx_.lock()") != std::string::npos;
 
     CHECK_MESSAGE(!has_raw_lock,
-                  "CORE-003: Logging::~Logging() uses raw levelMtx_.lock(); "
+                  "Logging::~Logging() uses raw levelMtx_.lock(); "
                   "in a noexcept destructor this abandons the mutex if erase throws. "
                   "Replace with std::lock_guard<std::mutex>.");
 }

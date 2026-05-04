@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #-----------------------------------------------------------------------------
-# Title      : ZmqClient / ZmqServer raw-thread ownership audit repros
+# Title      : ZmqClient / ZmqServer raw-thread ownership regression test
 #-----------------------------------------------------------------------------
 # This file is part of the rogue software platform. It is subject to
 # the license terms in the LICENSE.txt file found in the top-level directory
@@ -12,10 +12,10 @@
 #-----------------------------------------------------------------------------
 #
 # Deterministic source-text repros for:
-#   IFCE-006 -- ZmqClient ctor uses raw ``new std::thread``
-#   IFCE-007 -- ZmqServer::start() allocates threads with raw ``new std::thread``
+#    -- ZmqClient ctor uses raw ``new std::thread``
+#    -- ZmqServer::start() allocates threads with raw ``new std::thread``
 #
-# Pattern: read the production .cpp file and assert a structural property
+# Pattern: read the production.cpp file and assert a structural property
 # that HEAD violates.  Source-text tests are fully deterministic and require
 # no timing or thread synchronisation.
 
@@ -33,24 +33,24 @@ def _read_src(relative_path):
     return (_REPO_ROOT / relative_path).read_text()
 
 
-def test_zmq_client_uses_unique_ptr_thread_ifce_006():
-    # IFCE-006: ZmqClient ctor at src/rogue/interfaces/ZmqClient.cpp line ~173
+def test_zmq_client_uses_unique_ptr_thread():
+    # ZmqClient ctor at src/rogue/interfaces/ZmqClient.cpp line ~173
     # allocates thread_ with raw "new std::thread".  The codebase norm is
     # std::unique_ptr<std::thread>.  Until the fix is applied this fails.
     src = _read_src("src/rogue/interfaces/ZmqClient.cpp")
     assert "new std::thread" not in src, (
-        "IFCE-006: ZmqClient ctor uses raw new std::thread at line ~173; "
+        "ZmqClient ctor uses raw new std::thread at line ~173; "
         "should use std::unique_ptr<std::thread>"
     )
 
 
-def test_zmq_server_uses_unique_ptr_thread_ifce_007():
-    # IFCE-007: ZmqServer::start() at src/rogue/interfaces/ZmqServer.cpp
+def test_zmq_server_uses_unique_ptr_thread():
+    # ZmqServer::start() at src/rogue/interfaces/ZmqServer.cpp
     # lines ~114-115 allocates rThread and sThread with raw "new std::thread".
     # The fix is to use std::unique_ptr<std::thread> for both.
     src = _read_src("src/rogue/interfaces/ZmqServer.cpp")
     assert "new std::thread" not in src, (
-        "IFCE-007: ZmqServer::start() allocates rThread and sThread with "
+        "ZmqServer::start() allocates rThread and sThread with "
         "raw new std::thread; should use std::unique_ptr<std::thread>"
     )
 

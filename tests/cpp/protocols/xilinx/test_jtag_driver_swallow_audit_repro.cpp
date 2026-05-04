@@ -3,7 +3,7 @@
  * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
- * Audit repro for PROT-018:
+ * Regression tests
  * JtagDriver::xferRel() retries a JTAG transfer up to retry_ times.  The
  * inner try/catch block catches ``rogue::GeneralError&`` with an empty body,
  * silently swallowing the original error across all retry attempts.  After
@@ -47,7 +47,7 @@ static std::vector<std::string> splitLines(const std::string& src) {
     return lines;
 }
 
-TEST_CASE("PROT-018: JtagDriver::xferRel logs caught GeneralError instead of swallowing") {
+TEST_CASE("JtagDriver::xferRel logs caught GeneralError instead of swallowing") {
     const std::string path =
         std::string(ROGUE_SRC_DIR) + "/src/rogue/protocols/xilinx/JtagDriver.cpp";
     const std::string src = readFile(path);
@@ -64,7 +64,7 @@ TEST_CASE("PROT-018: JtagDriver::xferRel logs caught GeneralError instead of swa
             break;
         }
     }
-    REQUIRE_MESSAGE(xferRelLine >= 0, "PROT-018: xferRel function not found in JtagDriver.cpp");
+    REQUIRE_MESSAGE(xferRelLine >= 0, "xferRel function not found in JtagDriver.cpp");
 
     // Find the catch(rogue::GeneralError& [name]) block after xferRel.
     // The fix may name the exception parameter (e.g., 'catch (rogue::GeneralError& e)').
@@ -78,7 +78,7 @@ TEST_CASE("PROT-018: JtagDriver::xferRel logs caught GeneralError instead of swa
         }
     }
     REQUIRE_MESSAGE(catchLine >= 0,
-        "PROT-018: catch(rogue::GeneralError&) not found in xferRel");
+        "catch(rogue::GeneralError&) not found in xferRel");
 
     // Capture the catch block body (up to 6 lines after the catch line) and
     // verify it contains a logging or rethrow statement — not just '{}' or '}'.
@@ -108,8 +108,8 @@ TEST_CASE("PROT-018: JtagDriver::xferRel logs caught GeneralError instead of swa
     const bool catchHandlesError = !isEmptyCatch && logsOrRethrows;
 
     CHECK_MESSAGE(catchHandlesError,
-        "PROT-018 regression: catch(rogue::GeneralError&) in xferRel must log "
-        "or rethrow the caught error; fix(PROT-018) added log_->warning(...) "
+        " regression: catch(rogue::GeneralError&) in xferRel must log "
+        "or rethrow the caught error; fix added log_->warning(...) "
         "in the catch body so callers see the root cause across retries "
         "instead of a generic 'Timeout error'");
 }

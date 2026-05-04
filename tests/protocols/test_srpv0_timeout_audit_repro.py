@@ -3,7 +3,7 @@
 # Company    : SLAC National Accelerator Laboratory
 # -----------------------------------------------------------------------------
 # Description:
-#   Audit repro test for PROT-017:
+#   Regression tests
 #   SrpV0::doTransaction expired-transaction branch calls log_->warning()
 #   and continues without calling tran->error(), leaving the Transaction
 #   pending indefinitely instead of completing it with an error.
@@ -27,8 +27,8 @@ _SRPV0 = _REPO_ROOT / "src" / "rogue" / "protocols" / "srp" / "SrpV0.cpp"
 
 
 @pytest.mark.integration
-def test_srpv0_calls_tran_error_on_timeout_prot_017():
-    """PROT-017: SrpV0::doTransaction expired-transaction branch lacks tran->error().
+def test_srpv0_calls_tran_error_on_timeout():
+    """SrpV0::doTransaction expired-transaction branch lacks tran->error().
 
     SrpV0.cpp handles expired transactions in the doTransaction() receive loop.
     The branch at line ~228 detects ``tran->expired()`` and logs a warning but
@@ -48,7 +48,7 @@ def test_srpv0_calls_tran_error_on_timeout_prot_017():
             break
 
     assert expired_lineno is not None, \
-        "PROT-017: tran->expired() check not found in SrpV0.cpp; file may have changed"
+        "tran->expired() check not found in SrpV0.cpp; file may have changed"
 
     # Inspect the block following expired() for a tran->error( call.
     # Search up to 15 lines after the expired() check.
@@ -58,7 +58,7 @@ def test_srpv0_calls_tran_error_on_timeout_prot_017():
     has_error_call = "tran->error(" in following or "->error(" in following
 
     assert has_error_call, (
-        "PROT-017: SrpV0::doTransaction expired-transaction branch lacks tran->error() call "
+        "SrpV0::doTransaction expired-transaction branch lacks tran->error() call "
         "(compare with SrpV3.cpp which calls tran->error(\"Timeout\") on the equivalent path); "
         "Transaction left pending indefinitely — callers waiting on the transaction future hang forever"
     )

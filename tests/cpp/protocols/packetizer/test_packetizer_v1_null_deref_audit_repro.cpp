@@ -3,7 +3,7 @@
  * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
- * Audit repro for PROT-016:
+ * Regression tests
  * ControllerV1::transportRx() line 174 calls
  *   ``if (enSsi_ & (tmpLuser & 0x1)) tranFrame_[tmpDest]->setError(0x80)``
  * after the completed frame is extracted and ``tranFrame_[0]`` is reset to
@@ -68,7 +68,7 @@ static std::string extractLines(const std::string& src, int startLine, int maxLi
     return out.str();
 }
 
-TEST_CASE("PROT-016: ControllerV1::transportRx guards tranFrame_[tmpDest] before setError") {
+TEST_CASE("ControllerV1::transportRx guards tranFrame_[tmpDest] before setError") {
     const std::string path =
         std::string(ROGUE_SRC_DIR) + "/src/rogue/protocols/packetizer/ControllerV1.cpp";
     const std::string src = readFile(path);
@@ -79,7 +79,7 @@ TEST_CASE("PROT-016: ControllerV1::transportRx guards tranFrame_[tmpDest] before
     // tranFrame_[tmpDest] being a null shared_ptr.
     const int setErrorLine = findLine(src, "tranFrame_[tmpDest]->setError(0x80)");
     REQUIRE_MESSAGE(setErrorLine >= 0,
-        "PROT-016: tranFrame_[tmpDest]->setError(0x80) not found in ControllerV1.cpp");
+        "tranFrame_[tmpDest]->setError(0x80) not found in ControllerV1.cpp");
 
     // Search the 10 lines preceding setError AND the setError line itself —
     // the fix may inline the null check on the same line as the call
@@ -93,9 +93,9 @@ TEST_CASE("PROT-016: ControllerV1::transportRx guards tranFrame_[tmpDest] before
         ctx.find("assert(tranFrame_[tmpDest]") != std::string::npos;
 
     CHECK_MESSAGE(hasNullCheck,
-        "PROT-016 regression: ControllerV1::transportRx calls setError(0x80) "
+        " regression: ControllerV1::transportRx calls setError(0x80) "
         "on tranFrame_[tmpDest] without a null guard; for any V1 frame with "
-        "tmpDest != 0 the shared_ptr is null, causing a segfault. fix(PROT-016) "
+        "tmpDest != 0 the shared_ptr is null, causing a segfault. fix "
         "added an 'if (tranFrame_[tmpDest])' guard; if missing, the fix has "
         "regressed");
 }

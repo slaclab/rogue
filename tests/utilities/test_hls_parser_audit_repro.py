@@ -2,7 +2,7 @@
 # Company    : SLAC National Accelerator Laboratory
 #-----------------------------------------------------------------------------
 # Description:
-#   Audit repro for PYR-015.
+#   Regression test.
 #   _RegInterfParser.parse() calls ZipFile.extractall() at line 74-75 without
 #   sanitising zip entry names against path traversal (zip-slip).  The fix
 #   requires iterating over namelist() and rejecting entries whose resolved
@@ -23,8 +23,8 @@ import inspect
 import pyrogue.utilities.hls._RegInterfParser as parser_mod
 
 
-def test_hls_parser_zip_slip_audit_pyr_015():
-    """PYR-015: _RegInterfParser.parse() uses extractall without zip-slip sanitisation."""
+def test_hls_parser_zip_slip_audit():
+    """_RegInterfParser.parse() uses extractall without zip-slip sanitisation."""
     src = inspect.getsource(parser_mod.parse)
 
     # A safe implementation sanitises zip entry paths before extraction:
@@ -38,8 +38,8 @@ def test_hls_parser_zip_slip_audit_pyr_015():
     )
 
     assert has_mitigation, (
-        "PYR-015: _RegInterfParser.parse() calls ZipFile.extractall() "
+        "_RegInterfParser.parse() calls ZipFile.extractall() "
         "at line 74-75 without any zip-slip sanitisation; a zip entry "
-        "containing path-traversal sequences (e.g. ../../evil) can write "
+        "containing path-traversal sequences (e.g.../../evil) can write "
         "files outside the extraction directory"
     )

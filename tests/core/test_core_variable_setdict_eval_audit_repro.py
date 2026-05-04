@@ -7,7 +7,7 @@
 # copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
-"""CORE-010: BaseVariable._setDict eval injection repro.
+"""BaseVariable._setDict eval injection repro.
 
 `BaseVariable._setDict` in python/pyrogue/_Variable.py calls
 eval(f'[i for i in range(self._numValues())][{keys[0]}]') where keys[0]
@@ -47,14 +47,14 @@ class SetDictEvalRoot(pr.Root):
         self.add(ArrayDevice(name='Dev', memBase=self._mem))
 
 
-def test_variable_setdict_eval_injection_core_010(monkeypatch):
+def test_variable_setdict_eval_injection(monkeypatch):
     """Verify that BaseVariable._setDict does NOT execute arbitrary code.
 
     On HEAD, eval(f'[i for i in range(self._numValues())][{keys[0]}]')
     executes user-controlled keys[0]. This test patches os.getenv to track
     calls, then passes a key containing __import__('os').getenv('USER') to
     _setDict. The assertion fires when the injection succeeds (os.getenv
-    was called), confirming the CORE-010 eval injection bug.
+    was called), confirming the  eval injection bug.
     """
     original_getenv = os.getenv
     getenv_calls = []
@@ -74,7 +74,7 @@ def test_variable_setdict_eval_injection_core_010(monkeypatch):
             pass  # TypeError from string-as-index is expected; side-effect is what matters
 
     assert 'USER' not in getenv_calls, (
-        "CORE-010: eval() executed user-controlled code in BaseVariable._setDict; "
+        "eval() executed user-controlled code in BaseVariable._setDict; "
         "expected slice-only parse but os.getenv('USER') was called via "
         f"__import__('os').getenv('USER') expression. Calls: {getenv_calls}"
     )

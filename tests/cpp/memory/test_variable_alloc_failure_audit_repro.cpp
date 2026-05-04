@@ -3,7 +3,7 @@
  * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
- * Audit repro for IFCE-003: Variable ctor allocates lowTranByte_,
+ * Regression tests for Variable ctor allocates lowTranByte_,
  * highTranByte_, and optionally fastByte_ with malloc; if the second or
  * third malloc fails, earlier allocations are silently leaked because the
  * Variable dtor only frees non-NULL members.
@@ -41,7 +41,7 @@ static std::string readFile(const std::string& path) {
     return ss.str();
 }
 
-TEST_CASE("IFCE-003: Variable ctor 3x malloc partial-leak on second/third NULL") {
+TEST_CASE("Variable ctor 3x malloc partial-leak on second/third NULL") {
     const std::string src = readFile(
         ROGUE_SRC_DIR "/src/rogue/interfaces/memory/Variable.cpp");
     REQUIRE_MESSAGE(!src.empty(), "Could not read Variable.cpp");
@@ -60,7 +60,7 @@ TEST_CASE("IFCE-003: Variable ctor 3x malloc partial-leak on second/third NULL")
     // so raw "malloc(" does not appear in this region of the ctor.
     const bool hasMalloc = (window.find("malloc(") != std::string::npos);
     CHECK_MESSAGE(!hasMalloc,
-                  "IFCE-003: Variable ctor 3x malloc; partial-leak on second/"
+                  "Variable ctor 3x malloc; partial-leak on second/"
                   "third NULL return; should use std::unique_ptr or "
                   "std::vector to guarantee exception-safe cleanup");
 }

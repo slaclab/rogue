@@ -7,7 +7,7 @@
 # copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
-"""CORE-016: PollQueue._poll() TOCTOU on stop check repro.
+"""PollQueue._poll() TOCTOU on stop check repro.
 
 `_poll()` in python/pyrogue/_PollQueue.py evaluates `self.empty()` and
 `self.paused()` at line 164 OUTSIDE any lock context. Between the two checks
@@ -30,7 +30,7 @@ This test uses two approaches:
 import pathlib
 
 
-def test_pollqueue_toctou_stop_check_core_016(memory_root, wait_until):
+def test_pollqueue_toctou_stop_check(memory_root, wait_until):
     """Verify PollQueue._poll() checks empty()/paused() inside the condition lock.
 
     On HEAD, _poll() at line 164 evaluates `self.empty() or self.paused()`
@@ -46,7 +46,7 @@ def test_pollqueue_toctou_stop_check_core_016(memory_root, wait_until):
     src_file = pathlib.Path(__file__).parent.parent.parent / 'python' / 'pyrogue' / '_PollQueue.py'
 
     assert src_file.exists(), (
-        "CORE-016: cannot locate python/pyrogue/_PollQueue.py relative to test tree"
+        "cannot locate python/pyrogue/_PollQueue.py relative to test tree"
     )
 
     lines = src_file.read_text().splitlines()
@@ -60,7 +60,7 @@ def test_pollqueue_toctou_stop_check_core_016(memory_root, wait_until):
             break
 
     assert unsafe_line_idx is None, (
-        "CORE-016: PollQueue._poll() evaluates empty()/paused() outside "
+        "PollQueue._poll() evaluates empty()/paused() outside "
         f"_condLock at line {unsafe_line_idx + 1} of _PollQueue.py. "
         "The TOCTOU window between the check and _condLock.wait() allows "
         "_stop() to fire notify() before the thread enters wait(), losing "

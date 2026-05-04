@@ -2,11 +2,11 @@
 # Company    : SLAC National Accelerator Laboratory
 #-----------------------------------------------------------------------------
 # Description:
-#   Audit repro for PYDM-007.
-#   PYDM-007: system_log.py value_changed() calls json.loads(new_val) bare;
+#   Regression test.
+#   system_log.py value_changed() calls json.loads(new_val) bare;
 #             a non-JSON string raises json.JSONDecodeError in a Qt slot.
 #
-#   PYDM-005 and PYDM-006 were dropped during Phase-3 triage
+#    and  were dropped during Phase-3 triage
 #   (DROP-hypothesis-was-wrong): their pre-fix CI repros never demonstrated
 #   a real bug, so the corresponding test cases are not present in this file.
 #-----------------------------------------------------------------------------
@@ -31,14 +31,14 @@ except Exception as exc:
 
 
 # ---------------------------------------------------------------------------
-# PYDM-007 — system_log value_changed bare json.loads
+# system_log value_changed bare json.loads
 # ---------------------------------------------------------------------------
-def test_system_log_value_changed_handles_json_error_pydm_007():
-    """PYDM-007: system_log.value_changed calls json.loads without try/except."""
+def test_system_log_value_changed_handles_json_error():
+    """system_log.value_changed calls json.loads without try/except."""
     src = inspect.getsource(system_log_mod.SystemLog.value_changed)
 
     assert "try:" in src, (
-        "PYDM-007: SystemLog.value_changed() calls json.loads(new_val) "
+        "SystemLog.value_changed() calls json.loads(new_val) "
         "(line 84) without a try/except; a non-JSON string emitted by the "
         "SystemLog variable during startup raises json.JSONDecodeError in a "
         "Qt slot, which is silently swallowed but may corrupt widget state"

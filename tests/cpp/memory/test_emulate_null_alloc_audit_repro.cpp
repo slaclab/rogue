@@ -3,7 +3,7 @@
  * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
- * Audit repro for IFCE-004: Emulate::doTransaction calls malloc(0x1000)
+ * Regression tests for Emulate::doTransaction calls malloc(0x1000)
  * without checking for NULL; a NULL return would silently insert a NULL
  * pointer into memMap_, causing a subsequent memcpy crash.
  *
@@ -40,7 +40,7 @@ static std::string readFile(const std::string& path) {
     return ss.str();
 }
 
-TEST_CASE("IFCE-004: Emulate::doTransaction malloc(0x1000) without NULL check") {
+TEST_CASE("Emulate::doTransaction malloc(0x1000) without NULL check") {
     const std::string src = readFile(
         ROGUE_SRC_DIR "/src/rogue/interfaces/memory/Emulate.cpp");
     REQUIRE_MESSAGE(!src.empty(), "Could not read Emulate.cpp");
@@ -50,7 +50,7 @@ TEST_CASE("IFCE-004: Emulate::doTransaction malloc(0x1000) without NULL check") 
     const std::string sentinel = "malloc(0x1000)";
     const std::size_t pos = src.find(sentinel);
     REQUIRE_MESSAGE(pos != std::string::npos,
-                    "IFCE-004: malloc(0x1000) not found in Emulate.cpp; "
+                    "malloc(0x1000) not found in Emulate.cpp; "
                     "maybe already replaced with RAII?");
 
     // Extract the 10 lines after the malloc call to check for NULL guard
@@ -67,7 +67,7 @@ TEST_CASE("IFCE-004: Emulate::doTransaction malloc(0x1000) without NULL check") 
         window.find("make_unique") != std::string::npos);
 
     CHECK_MESSAGE(hasNullCheck,
-                  "IFCE-004: Emulate::doTransaction malloc(0x1000) result "
+                  "Emulate::doTransaction malloc(0x1000) result "
                   "inserted into memMap_ without NULL check; a NULL page "
                   "pointer would crash on the subsequent memcpy call");
 }

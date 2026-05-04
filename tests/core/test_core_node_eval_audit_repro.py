@@ -7,7 +7,7 @@
 # copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
-"""CORE-009: _iterateDict eval injection repro.
+"""_iterateDict eval injection repro.
 
 `nodeMatch` in python/pyrogue/_Node.py calls _iterateDict which calls
 eval(f'tmpList[{keys[0]}]') where keys[0] comes directly from the
@@ -36,14 +36,14 @@ class NodeEvalRoot(pr.Root):
         self.add(VarDevice(name='Dev'))
 
 
-def test_iterate_dict_eval_injection_core_009(monkeypatch):
+def test_iterate_dict_eval_injection(monkeypatch):
     """Verify that nodeMatch/_iterateDict does NOT execute arbitrary code.
 
     On HEAD, eval(f'tmpList[{keys[0]}]') is called with user-controlled
     content. This test patches os.getenv to track calls, then passes a
     bracket expression containing __import__('os').getenv('USER') to
     nodeMatch. The assertion fires when the injection succeeds (os.getenv
-    was invoked), confirming the CORE-009 eval injection bug.
+    was invoked), confirming the  eval injection bug.
     """
     sentinel = 'AUDIT_REP_CORE_009_SENTINEL'
     monkeypatch.setenv('USER', sentinel)
@@ -65,7 +65,7 @@ def test_iterate_dict_eval_injection_core_009(monkeypatch):
             pass  # TypeError or similar from invalid index is expected
 
     assert 'USER' not in getenv_calls, (
-        "CORE-009: eval() executed user-controlled code in _iterateDict; "
+        "eval() executed user-controlled code in _iterateDict; "
         "expected slice-only parse but os.getenv('USER') was called via "
         f"__import__('os').getenv('USER') expression. Calls: {getenv_calls}"
     )

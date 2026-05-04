@@ -3,7 +3,7 @@
  * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
- * CORE-005 repro: Version::init() mutates static members without a mutex.
+ * Version::init() mutates static members without a mutex.
  *
  * src/rogue/Version.cpp::init() (line 43) writes to the static members
  * `_major`, `_minor`, `_maint`, `_devel` without holding any mutex.
@@ -51,7 +51,7 @@ std::string readFile(const std::string& path) {
 
 }  // namespace
 
-TEST_CASE("CORE-005: Version::init() protects static member writes from concurrent access") {
+TEST_CASE("Version::init() protects static member writes from concurrent access") {
     // Read Version.cpp and Version.h and verify that the static _major/_minor/_maint/_devel
     // are declared std::atomic or that init() is called at most once via std::call_once.
     //
@@ -67,10 +67,10 @@ TEST_CASE("CORE-005: Version::init() protects static member writes from concurre
         readFile(std::string(ROGUE_SRC_DIR) + "/include/rogue/Version.h");
 
     REQUIRE_MESSAGE(!src_cpp.empty(),
-                    "CORE-005: could not open src/rogue/Version.cpp (ROGUE_SRC_DIR=",
+                    "could not open src/rogue/Version.cpp (ROGUE_SRC_DIR=",
                     ROGUE_SRC_DIR, ")");
     REQUIRE_MESSAGE(!src_h.empty(),
-                    "CORE-005: could not open include/rogue/Version.h (ROGUE_SRC_DIR=",
+                    "could not open include/rogue/Version.h (ROGUE_SRC_DIR=",
                     ROGUE_SRC_DIR, ")");
 
     // Check 1: _major should be declared as std::atomic<uint32_t> in the header
@@ -81,7 +81,7 @@ TEST_CASE("CORE-005: Version::init() protects static member writes from concurre
                             src_h.find("_major")           != std::string::npos);
 
     CHECK_MESSAGE(major_is_atomic,
-                  "CORE-005: Version::_major is not declared std::atomic<uint32_t>; "
+                  "Version::_major is not declared std::atomic<uint32_t>; "
                   "concurrent calls to init() introduce a data race on _major/_minor/_maint/_devel. "
                   "Declare the statics as std::atomic<uint32_t> or guard init() with std::call_once.");
 
@@ -91,8 +91,8 @@ TEST_CASE("CORE-005: Version::init() protects static member writes from concurre
     bool has_init_guard = has_call_once || has_once_flag;
 
     CHECK_MESSAGE(has_init_guard,
-                  "CORE-005: Version::init() does not use std::call_once / std::once_flag; "
+                  "Version::init() does not use std::call_once / std::once_flag; "
                   "it unconditionally rewrites _major/_minor/_maint/_devel on every call, "
                   "making every comparison helper subject to a data race. "
-                  "Add `static std::once_flag flag; std::call_once(flag, [](){ ... });`.");
+                  "Add `static std::once_flag flag; std::call_once(flag, [](){... });`.");
 }

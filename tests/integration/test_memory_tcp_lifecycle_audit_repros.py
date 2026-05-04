@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #-----------------------------------------------------------------------------
-# Title      : memory::TcpClient / TcpServer raw-thread ownership audit repros
+# Title      : memory::TcpClient / TcpServer raw-thread ownership regression test
 #-----------------------------------------------------------------------------
 # This file is part of the rogue software platform. It is subject to
 # the license terms in the LICENSE.txt file found in the top-level directory
@@ -12,10 +12,10 @@
 #-----------------------------------------------------------------------------
 #
 # Deterministic source-text repros for:
-#   IFCE-008 -- memory::TcpClient ctor uses raw ``new std::thread``; should
+#    -- memory::TcpClient ctor uses raw ``new std::thread``; should
 #               use std::unique_ptr<std::thread>
-#   IFCE-009 -- memory::TcpServer ctor uses raw ``new std::thread``; same
-#               tech-debt pattern as IFCE-008
+#    -- memory::TcpServer ctor uses raw ``new std::thread``; same
+#               tech-debt pattern as 
 #
 # These are integration-tier tests (they test transport-bound code paths)
 # and are tagged @pytest.mark.integration per REP-03.  The source-text
@@ -37,8 +37,8 @@ def _read_src(relative_path: str) -> str:
     return (_REPO_ROOT / relative_path).read_text()
 
 
-def test_memory_tcpclient_uses_unique_ptr_thread_ifce_008():
-    """IFCE-008: memory::TcpClient ctor must NOT use raw ``new std::thread``.
+def test_memory_tcpclient_uses_unique_ptr_thread():
+    """memory::TcpClient ctor must NOT use raw ``new std::thread``.
 
     src/rogue/interfaces/memory/TcpClient.cpp line ~120 does::
 
@@ -49,13 +49,13 @@ def test_memory_tcpclient_uses_unique_ptr_thread_ifce_008():
     """
     src = _read_src("src/rogue/interfaces/memory/TcpClient.cpp")
     assert "new std::thread" not in src, (
-        "IFCE-008: memory TcpClient ctor uses raw new std::thread at line ~120; "
+        "memory TcpClient ctor uses raw new std::thread at line ~120; "
         "should be std::unique_ptr<std::thread>"
     )
 
 
-def test_memory_tcpserver_uses_unique_ptr_thread_ifce_009():
-    """IFCE-009: memory::TcpServer ctor must NOT use raw ``new std::thread``.
+def test_memory_tcpserver_uses_unique_ptr_thread():
+    """memory::TcpServer ctor must NOT use raw ``new std::thread``.
 
     src/rogue/interfaces/memory/TcpServer.cpp line ~107 does::
 
@@ -66,6 +66,6 @@ def test_memory_tcpserver_uses_unique_ptr_thread_ifce_009():
     """
     src = _read_src("src/rogue/interfaces/memory/TcpServer.cpp")
     assert "new std::thread" not in src, (
-        "IFCE-009: memory TcpServer ctor uses raw new std::thread at line ~107; "
+        "memory TcpServer ctor uses raw new std::thread at line ~107; "
         "should be std::unique_ptr<std::thread>"
     )

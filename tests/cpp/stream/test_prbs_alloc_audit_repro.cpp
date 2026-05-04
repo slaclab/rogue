@@ -3,10 +3,10 @@
  * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
- * Audit repros for Prbs raw-resource ownership bugs:
- *   UTIL-001: Prbs ctor malloc(taps_) result not checked for NULL
- *   UTIL-002: setTaps() free+malloc; no NULL guard before taps_[i] writes
- *   UTIL-003: enable() allocates txThread_ with raw ``new std::thread``
+ * Regression tests for Prbs raw-resource ownership bugs:
+ *   Prbs ctor malloc(taps_) result not checked for NULL
+ *   setTaps() free+malloc; no NULL guard before taps_[i] writes
+ *   enable() allocates txThread_ with raw ``new std::thread``
  *
  * Source-text invariant tests on Prbs.cpp.  On HEAD all three fixes are
  * absent -> CHECK_MESSAGE fires for each.
@@ -40,7 +40,7 @@ static std::string readFile(const std::string& path) {
     return ss.str();
 }
 
-TEST_CASE("UTIL-001: Prbs ctor malloc(taps_) not checked for NULL") {
+TEST_CASE("Prbs ctor malloc(taps_) not checked for NULL") {
     const std::string src = readFile(
         ROGUE_SRC_DIR "/src/rogue/utilities/Prbs.cpp");
     REQUIRE_MESSAGE(!src.empty(), "Could not read Prbs.cpp");
@@ -64,12 +64,12 @@ TEST_CASE("UTIL-001: Prbs ctor malloc(taps_) not checked for NULL") {
         window.find("make_unique") != std::string::npos);
 
     CHECK_MESSAGE(hasNullCheck,
-                  "UTIL-001: Prbs ctor allocates taps_ with malloc but does "
+                  "Prbs ctor allocates taps_ with malloc but does "
                   "not check the return value for NULL; a failed allocation "
                   "is silently followed by taps_[0..3] writes -> crash");
 }
 
-TEST_CASE("UTIL-002: setTaps() free+malloc no NULL guard before taps_[i] write") {
+TEST_CASE("setTaps() free+malloc no NULL guard before taps_[i] write") {
     const std::string src = readFile(
         ROGUE_SRC_DIR "/src/rogue/utilities/Prbs.cpp");
     REQUIRE_MESSAGE(!src.empty(), "Could not read Prbs.cpp");
@@ -100,12 +100,12 @@ TEST_CASE("UTIL-002: setTaps() free+malloc no NULL guard before taps_[i] write")
         afterMalloc.find("nullptr") != std::string::npos);
 
     CHECK_MESSAGE(hasNullCheck,
-                  "UTIL-002: Prbs::setTaps() free(taps_) then malloc with no "
+                  "Prbs::setTaps() free(taps_) then malloc with no "
                   "NULL guard before taps_[i] writes; NULL return -> crash on "
                   "write to taps_[0]");
 }
 
-TEST_CASE("UTIL-003: Prbs::enable() uses raw new std::thread for txThread_") {
+TEST_CASE("Prbs::enable() uses raw new std::thread for txThread_") {
     const std::string src = readFile(
         ROGUE_SRC_DIR "/src/rogue/utilities/Prbs.cpp");
     REQUIRE_MESSAGE(!src.empty(), "Could not read Prbs.cpp");
@@ -122,7 +122,7 @@ TEST_CASE("UTIL-003: Prbs::enable() uses raw new std::thread for txThread_") {
     // raw "new std::thread"
     const bool hasRawNew = (region.find("new std::thread") != std::string::npos);
     CHECK_MESSAGE(!hasRawNew,
-                  "UTIL-003: Prbs::enable() allocates txThread_ with raw "
+                  "Prbs::enable() allocates txThread_ with raw "
                   "new std::thread; disable() does delete txThread_; should "
                   "use std::unique_ptr<std::thread> for automatic cleanup");
 }

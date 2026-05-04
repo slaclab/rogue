@@ -3,7 +3,7 @@
  * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
- * Audit repros for HW-004, HW-005, HW-006:
+ * Regression tests for, 
  * Three FD_SET sites in AxiStreamDma.cpp (acceptReq, acceptFrame, runThread)
  * call FD_SET(fd_, &fds) without first checking fd_ < FD_SETSIZE.  On Linux
  * FD_SETSIZE=1024; if the DMA device fd_ reaches >= 1024 the FD_SET macro
@@ -69,7 +69,7 @@ static bool hasFdGuard(const std::vector<std::string>& lines, int fdSetLine) {
     return false;
 }
 
-/// Return true if `line` is a single-line comment (`// ...` after optional
+/// Return true if `line` is a single-line comment (`//...` after optional
 /// whitespace). Used to skip FD_SET tokens that appear only in comments.
 static bool isCommentLine(const std::string& line) {
     for (char c : line) {
@@ -80,7 +80,7 @@ static bool isCommentLine(const std::string& line) {
     return false;
 }
 
-/// Return true if every active (non-comment) FD_SET(fd_, ...) call in the
+/// Return true if every active (non-comment) FD_SET(fd_,...) call in the
 /// file has an FD_SETSIZE guard within the 8 lines preceding it.
 static bool everyFdSetIsGuarded(const std::vector<std::string>& lines) {
     bool allGuarded = true;
@@ -94,7 +94,7 @@ static bool everyFdSetIsGuarded(const std::vector<std::string>& lines) {
     return any && allGuarded;
 }
 
-TEST_CASE("HW-004/005/006: AxiStreamDma all FD_SET sites guarded by FD_SETSIZE") {
+TEST_CASE("AxiStreamDma all FD_SET sites guarded by FD_SETSIZE") {
     const std::string path =
         std::string(ROGUE_SRC_DIR) + "/src/rogue/hardware/axi/AxiStreamDma.cpp";
     const std::string src = readFile(path);
@@ -102,9 +102,9 @@ TEST_CASE("HW-004/005/006: AxiStreamDma all FD_SET sites guarded by FD_SETSIZE")
 
     const auto lines = splitLines(src);
     CHECK_MESSAGE(everyFdSetIsGuarded(lines),
-        "HW-004/005/006 regression: at least one FD_SET(fd_, ...) site in "
+        " regression: at least one FD_SET(fd_,...) site in "
         "hardware/axi/AxiStreamDma.cpp (acceptReq/acceptFrame/runThread) lacks "
-        "an FD_SETSIZE bounds check within the preceding 8 lines; fix(HW-004..006) "
-        "added 'if (fd_ >= FD_SETSIZE) throw ...' before each FD_SET to prevent "
+        "an FD_SETSIZE bounds check within the preceding 8 lines; fix "
+        "added 'if (fd_ >= FD_SETSIZE) throw...' before each FD_SET to prevent "
         "heap corruption when fd_ >= 1024");
 }

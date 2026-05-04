@@ -3,7 +3,7 @@
  * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
- * Audit repro for IFCE-011: stream::TcpCore::close() is marked "deprecated"
+ * Regression tests for stream::TcpCore::close() is marked "deprecated"
  * in a comment at TcpCore.cpp line ~186 but has no [[deprecated]] attribute
  * in the header; callers cannot detect the deprecation at compile time.
  *
@@ -39,7 +39,7 @@ static std::string readFile(const std::string& path) {
     return ss.str();
 }
 
-TEST_CASE("IFCE-011: stream::TcpCore::close() missing [[deprecated]]") {
+TEST_CASE("stream::TcpCore::close() missing [[deprecated]]") {
     const std::string hdr = readFile(
         ROGUE_SRC_DIR "/include/rogue/interfaces/stream/TcpCore.h");
     REQUIRE_MESSAGE(!hdr.empty(), "Could not read stream/TcpCore.h");
@@ -59,7 +59,7 @@ TEST_CASE("IFCE-011: stream::TcpCore::close() missing [[deprecated]]") {
         region.find("__attribute__((deprecated") != std::string::npos);
 
     CHECK_MESSAGE(hasDeprecated,
-                  "IFCE-011: stream::TcpCore::close() is marked deprecated "
+                  "stream::TcpCore::close() is marked deprecated "
                   "in a comment only; [[deprecated]] attribute is missing from "
                   "the header declaration; callers get no compile-time warning");
 }

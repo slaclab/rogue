@@ -2,14 +2,14 @@
 # Company    : SLAC National Accelerator Laboratory
 #-----------------------------------------------------------------------------
 # Description:
-#   Audit repros for PYR-021 and PYR-022.
-#   PYR-021: VirtualClient sets self._root via _waitForRoot() but the
+#   Regression test.
+#   VirtualClient sets self._root via _waitForRoot() but the
 #            monitoring thread can call _requestDone (which checks
 #            self._root is not None at line 623) before __init__ completes
 #            its post-connection setup.  The test asserts that self._root
 #            is fully initialised (parent/root/client links set) before
 #            the monitoring thread is started.
-#   PYR-022: VirtualClient.stop() calls self._log.warning(...) at line 736
+#   VirtualClient.stop() calls self._log.warning(...) at line 736
 #            but self._log is not set if __init__ raises before line 460;
 #            in that scenario, calling stop() raises AttributeError.
 #            The test asserts that self._log is either the FIRST thing set
@@ -29,8 +29,8 @@ import inspect
 from pyrogue.interfaces._Virtual import VirtualClient
 
 
-def test_virtual_client_root_init_order_pyr_021():
-    """PYR-021: VirtualClient._requestDone may access self._log before it is set."""
+def test_virtual_client_root_init_order():
+    """VirtualClient._requestDone may access self._log before it is set."""
     src = inspect.getsource(VirtualClient.__init__)
     lines = src.splitlines()
 
@@ -57,15 +57,15 @@ def test_virtual_client_root_init_order_pyr_021():
             zmq_init_line = i
 
     assert log_line is not None, (
-        "PYR-021: Could not find `self._log =` in VirtualClient.__init__"
+        "Could not find `self._log =` in VirtualClient.__init__"
     )
     assert zmq_init_line is not None, (
-        "PYR-021: Could not find `ZmqClient.__init__` in VirtualClient.__init__"
+        "Could not find `ZmqClient.__init__` in VirtualClient.__init__"
     )
 
     # Assert self._log is set BEFORE the C++ constructor spawns the SUB thread.
     assert log_line < zmq_init_line, (
-        "PYR-021: VirtualClient sets self._log AFTER ZmqClient.__init__() "
+        "VirtualClient sets self._log AFTER ZmqClient.__init__() "
         "(line " + str(log_line) + " > " + str(zmq_init_line) + " in __init__); "
         "the SUB thread spawned by ZmqClient.__init__() can call "
         "_requestDone() which accesses self._log.warning before self._log "
@@ -73,8 +73,8 @@ def test_virtual_client_root_init_order_pyr_021():
     )
 
 
-def test_virtual_client_log_attribute_set_pyr_022():
-    """PYR-022: VirtualClient.stop() accesses self._log without guard; init failure raises AttributeError."""
+def test_virtual_client_log_attribute_set():
+    """VirtualClient.stop() accesses self._log without guard; init failure raises AttributeError."""
     init_src = inspect.getsource(VirtualClient.__init__)
     stop_src = inspect.getsource(VirtualClient.stop)
 
@@ -109,7 +109,7 @@ def test_virtual_client_log_attribute_set_pyr_022():
     )
 
     assert stop_guards_log or log_set_before_zmq_init, (
-        "PYR-022: VirtualClient.stop() calls self._log.warning(...) but "
+        "VirtualClient.stop() calls self._log.warning(...) but "
         "self._log is set AFTER rogue.interfaces.ZmqClient.__init__() "
         "(line 460 in __init__); if the C++ constructor raises an exception, "
         "self._log is never set and any subsequent call to stop() will raise "

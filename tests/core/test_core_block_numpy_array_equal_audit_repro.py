@@ -7,7 +7,7 @@
 # copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
-"""CORE-014: LocalBlock.set inverted np.array_equal change-detection repro.
+"""LocalBlock.set inverted np.array_equal change-detection repro.
 
 `LocalBlock.set` in python/pyrogue/_Block.py line 380 computes:
     changed = np.array_equal(self._value, value)
@@ -46,7 +46,7 @@ class NpRoot(pr.Root):
         self.add(_make_np_device(localset_calls=localset_calls)(name='Dev'))
 
 
-def test_localblock_set_numpy_array_equal_inversion_core_014():
+def test_localblock_set_numpy_array_equal_inversion():
     """Verify changed flag is True when numpy array value changes.
 
     On HEAD `changed = np.array_equal(self._value, value)` (line 380 of
@@ -65,13 +65,13 @@ def test_localblock_set_numpy_array_equal_inversion_core_014():
         var.set(np.array([10, 20, 30]))
 
         assert len(localset_calls) >= 1, (
-            "CORE-014: localSet was not called at all after setting a different numpy array"
+            "localSet was not called at all after setting a different numpy array"
         )
 
         changed_flag = localset_calls[-1]
 
         assert changed_flag is True, (
-            "CORE-014: LocalBlock.set inverted np.array_equal logic; "
+            "LocalBlock.set inverted np.array_equal logic; "
             "changed flag is False when the numpy array value changes "
             f"(expected True, got {changed_flag}). "
             "Bug: `changed = np.array_equal(...)` should be "

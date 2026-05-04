@@ -3,7 +3,7 @@
  * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
- * Audit repros for PROT-003 and PROT-004:
+ * Regression tests
  * Both packetizer::Application::setController() and
  * packetizer::Transport::setController() allocate their worker thread via
  * ``new std::thread`` without a try/catch guard.  If the thread constructor
@@ -45,7 +45,7 @@ static bool threadIsRAII(const std::string& src) {
            src.find("unique_ptr<std::thread>") != std::string::npos;
 }
 
-TEST_CASE("PROT-003: packetizer::Application::setController uses RAII thread allocation") {
+TEST_CASE("packetizer::Application::setController uses RAII thread allocation") {
     const std::string path =
         std::string(ROGUE_SRC_DIR) + "/src/rogue/protocols/packetizer/Application.cpp";
     const std::string src = readFile(path);
@@ -53,15 +53,15 @@ TEST_CASE("PROT-003: packetizer::Application::setController uses RAII thread all
 
     const bool hasRaw = src.find("new std::thread") != std::string::npos;
     CHECK_MESSAGE(!hasRaw,
-        "PROT-003 regression: raw 'new std::thread' is back in packetizer/Application.cpp; "
-        "fix(PROT-003) replaced it with std::make_unique<std::thread>");
+        " regression: raw 'new std::thread' is back in packetizer/Application.cpp; "
+        "fix replaced it with std::make_unique<std::thread>");
 
     CHECK_MESSAGE(threadIsRAII(src),
-        "PROT-003: Application.cpp must allocate worker thread via "
+        "Application.cpp must allocate worker thread via "
         "std::make_unique<std::thread> or std::unique_ptr<std::thread>");
 }
 
-TEST_CASE("PROT-004: packetizer::Transport::setController uses RAII thread allocation") {
+TEST_CASE("packetizer::Transport::setController uses RAII thread allocation") {
     const std::string path =
         std::string(ROGUE_SRC_DIR) + "/src/rogue/protocols/packetizer/Transport.cpp";
     const std::string src = readFile(path);
@@ -69,10 +69,10 @@ TEST_CASE("PROT-004: packetizer::Transport::setController uses RAII thread alloc
 
     const bool hasRaw = src.find("new std::thread") != std::string::npos;
     CHECK_MESSAGE(!hasRaw,
-        "PROT-004 regression: raw 'new std::thread' is back in packetizer/Transport.cpp; "
-        "fix(PROT-004) replaced it with std::make_unique<std::thread>");
+        " regression: raw 'new std::thread' is back in packetizer/Transport.cpp; "
+        "fix replaced it with std::make_unique<std::thread>");
 
     CHECK_MESSAGE(threadIsRAII(src),
-        "PROT-004: Transport.cpp must allocate worker thread via "
+        "Transport.cpp must allocate worker thread via "
         "std::make_unique<std::thread> or std::unique_ptr<std::thread>");
 }

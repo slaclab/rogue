@@ -2,7 +2,7 @@
 # Company    : SLAC National Accelerator Laboratory
 #-----------------------------------------------------------------------------
 # Description:
-#   Audit repro for PYR-018.
+#   Regression test.
 #   SideBandSim._recvWorker acquires self._lock at the top of each loop
 #   iteration to read self._run, then releases it, then calls zmq.select
 #   and socket.recv outside the lock.  This is correct.
@@ -17,7 +17,7 @@
 #   zmq.select call must NOT appear inside the `with self._lock:` context.
 #   To make this fail on HEAD, we assert that the `with self._lock:` block
 #   covers both `self._run` and `zmq.select`.  On HEAD zmq.select is OUTSIDE
-#   the lock block → the assertion fails with "PYR-018".
+#   the lock block → the assertion fails with "".
 #-----------------------------------------------------------------------------
 # This file is part of the rogue software platform. It is subject to
 # the license terms in the LICENSE.txt file found in the top-level directory
@@ -33,8 +33,8 @@ import inspect
 import pyrogue.interfaces.simulation as sim_mod
 
 
-def test_simulation_recvworker_lock_invariant_pyr_018():
-    """PYR-018: SideBandSim._recvWorker holds self._lock across self._run check but not recv."""
+def test_simulation_recvworker_lock_invariant():
+    """SideBandSim._recvWorker holds self._lock across self._run check but not recv."""
     src = inspect.getsource(sim_mod.SideBandSim._recvWorker)
     lines = src.splitlines()
 
@@ -76,7 +76,7 @@ def test_simulation_recvworker_lock_invariant_pyr_018():
                 zmq_select_inside_lock = True
 
     assert zmq_select_found, (
-        "PYR-018: Could not find zmq.select call in SideBandSim._recvWorker"
+        "Could not find zmq.select call in SideBandSim._recvWorker"
     )
 
     # The bug: zmq.select is OUTSIDE the lock, so _stop() sets _run=False but
@@ -85,7 +85,7 @@ def test_simulation_recvworker_lock_invariant_pyr_018():
     # When the bug is fixed (e.g. using an Event), zmq.select would either be
     # removed or the code would poll the event with a short timeout.
     assert zmq_select_inside_lock, (
-        "PYR-018: SideBandSim._recvWorker holds self._lock during the "
+        "SideBandSim._recvWorker holds self._lock during the "
         "self._run check but NOT during zmq.select/recv; _stop() shutdown is "
         "delayed by up to the zmq.select timeout (1s) because self._run=False "
         "is invisible to the worker until it unblocks from zmq.select"

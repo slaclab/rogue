@@ -2,7 +2,7 @@
 # Company    : SLAC National Accelerator Laboratory
 #-----------------------------------------------------------------------------
 # Description:
-#   Audit repro for PYR-013.
+#   Regression test.
 #   Device.hideVariables() assigns `variables = self.variables.values()` when
 #   the caller passes `variables=None` (line 433).  The function then uses
 #   `isinstance(variables[0], str)` inside the loop (line 438).
@@ -29,8 +29,8 @@ import inspect
 import pyrogue as pr
 
 
-def test_hide_variables_dict_values_index_pyr_013():
-    """PYR-013: Device.hideVariables indexes variables[0] after dict_values assignment."""
+def test_hide_variables_dict_values_index():
+    """Device.hideVariables indexes variables[0] after dict_values assignment."""
     src = inspect.getsource(pr.Device.hideVariables)
 
     # When variables=None, the code sets variables = self.variables.values()
@@ -38,7 +38,7 @@ def test_hide_variables_dict_values_index_pyr_013():
     # A correct implementation would either convert to list first or avoid
     # subscripting.  Assert the subscript is absent from the method body.
     assert "variables[0]" not in src, (
-        "PYR-013: Device.hideVariables references variables[0] after assigning "
+        "Device.hideVariables references variables[0] after assigning "
         "variables = self.variables.values() (dict_values); integer subscripting "
         "on dict_values raises TypeError — use list(variables)[0] or restructure "
         "the type check to not depend on subscripting"

@@ -3,7 +3,7 @@
  * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
- * Audit repro for HW-001:
+ * Regression tests
  * hardware::MemMap constructor allocates its worker thread via
  * ``new std::thread`` stored in a raw ``thread_`` pointer.  A try/catch guard
  * cleans up mmap and fd_ on thread-ctor failure, so the immediate exception
@@ -39,7 +39,7 @@ static std::string readFile(const std::string& path) {
     return ss.str();
 }
 
-TEST_CASE("HW-001: hardware::MemMap uses RAII thread allocation") {
+TEST_CASE("hardware::MemMap uses RAII thread allocation") {
     const std::string path =
         std::string(ROGUE_SRC_DIR) + "/src/rogue/hardware/MemMap.cpp";
     const std::string src = readFile(path);
@@ -47,13 +47,13 @@ TEST_CASE("HW-001: hardware::MemMap uses RAII thread allocation") {
 
     const bool hasRaw = src.find("new std::thread") != std::string::npos;
     CHECK_MESSAGE(!hasRaw,
-        "HW-001 regression: raw 'new std::thread' is back in hardware/MemMap.cpp; "
-        "fix(HW-001) replaced it with std::make_unique<std::thread>");
+        " regression: raw 'new std::thread' is back in hardware/MemMap.cpp; "
+        "fix replaced it with std::make_unique<std::thread>");
 
     const bool hasRaiiThread =
         src.find("make_unique<std::thread>") != std::string::npos ||
         src.find("unique_ptr<std::thread>") != std::string::npos;
     CHECK_MESSAGE(hasRaiiThread,
-        "HW-001: MemMap.cpp must allocate worker thread via "
+        "MemMap.cpp must allocate worker thread via "
         "std::make_unique<std::thread> or std::unique_ptr<std::thread>");
 }

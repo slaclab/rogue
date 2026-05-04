@@ -1,4 +1,4 @@
-# Audit repro tests for hardware bridge candidates (plan 02-03).
+# Regression tests for hardware bridge candidates (plan 02-03).
 
 rogue_add_cpp_test(rogue-cpp-hardware-memmap-raw-thread-audit-repro
    SOURCES

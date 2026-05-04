@@ -3,7 +3,7 @@
  * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
- * CORE-006 repro: Queue::empty() reads queue_.empty() without holding mtx_.
+ * Queue::empty() reads queue_.empty() without holding mtx_.
  *
  * include/rogue/Queue.h::empty() (line 102) returns `queue_.empty()`
  * without taking `mtx_`. All other mutating operations (push, pop, reset)
@@ -80,7 +80,7 @@ std::string extractMethodBody(const std::string& src, const std::string& method_
 
 }  // namespace
 
-TEST_CASE("CORE-006: Queue::empty() acquires mutex before reading queue_") {
+TEST_CASE("Queue::empty() acquires mutex before reading queue_") {
     // Read Queue.h and inspect the empty() method body.
     //
     // On HEAD:
@@ -100,22 +100,22 @@ TEST_CASE("CORE-006: Queue::empty() acquires mutex before reading queue_") {
     const std::string src = readFile(std::string(ROGUE_SRC_DIR) + "/include/rogue/Queue.h");
 
     REQUIRE_MESSAGE(!src.empty(),
-                    "CORE-006: could not open include/rogue/Queue.h (ROGUE_SRC_DIR=",
+                    "could not open include/rogue/Queue.h (ROGUE_SRC_DIR=",
                     ROGUE_SRC_DIR, ")");
 
     // Extract the empty() method body (up to ~200 chars starting at the decl).
     std::string empty_body = extractMethodBody(src, "bool empty()");
-    REQUIRE_MESSAGE(!empty_body.empty(), "CORE-006: could not locate bool empty() in Queue.h");
+    REQUIRE_MESSAGE(!empty_body.empty(), "could not locate bool empty() in Queue.h");
 
     // Extract the size() method body for reference (it is correct).
     std::string size_body = extractMethodBody(src, "uint32_t size()");
-    REQUIRE_MESSAGE(!size_body.empty(), "CORE-006: could not locate uint32_t size() in Queue.h");
+    REQUIRE_MESSAGE(!size_body.empty(), "could not locate uint32_t size() in Queue.h");
 
     // Reference check: size() must use a lock (this is already true on HEAD).
     bool size_has_lock = (size_body.find("unique_lock") != std::string::npos ||
                           size_body.find("lock_guard")  != std::string::npos);
     CHECK_MESSAGE(size_has_lock,
-                  "CORE-006: reference check failed — size() does not take mtx_; "
+                  "reference check failed — size() does not take mtx_; "
                   "the test assumption about the reference implementation is wrong.");
 
     // Primary assertion: empty() must also use a lock.
@@ -123,7 +123,7 @@ TEST_CASE("CORE-006: Queue::empty() acquires mutex before reading queue_") {
                            empty_body.find("lock_guard")  != std::string::npos);
 
     CHECK_MESSAGE(empty_has_lock,
-                  "CORE-006: Queue::empty() body lacks std::unique_lock<std::mutex>; "
+                  "Queue::empty() body lacks std::unique_lock<std::mutex>; "
                   "it reads queue_.empty() without holding mtx_ while push()/pop() "
                   "both take the lock. Concurrent push+empty() can observe an "
                   "inconsistent queue state (not thread-safe).");

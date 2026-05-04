@@ -3,7 +3,7 @@
  * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
- * CORE-007 repro: rogueStreamTap macro has no [[deprecated]] or
+ * rogueStreamTap macro has no [[deprecated]] or
  * __attribute__((deprecated)) annotation in include/rogue/Helpers.h.
  *
  * include/rogue/Helpers.h:27 defines `rogueStreamTap` and documents it
@@ -59,7 +59,7 @@ std::string extractRegion(const std::string& src, const std::string& needle,
 
 }  // namespace
 
-TEST_CASE("CORE-007: rogueStreamTap carries a compiler-visible deprecation attribute") {
+TEST_CASE("rogueStreamTap carries a compiler-visible deprecation attribute") {
     // Read Helpers.h and verify the rogueStreamTap definition line contains
     // either [[deprecated]], __attribute__((deprecated)), or
     // _Pragma("deprecated") so that callers receive a compile-time diagnostic.
@@ -78,19 +78,19 @@ TEST_CASE("CORE-007: rogueStreamTap carries a compiler-visible deprecation attri
     const std::string src = readFile(std::string(ROGUE_SRC_DIR) + "/include/rogue/Helpers.h");
 
     REQUIRE_MESSAGE(!src.empty(),
-                    "CORE-007: could not open include/rogue/Helpers.h (ROGUE_SRC_DIR=",
+                    "could not open include/rogue/Helpers.h (ROGUE_SRC_DIR=",
                     ROGUE_SRC_DIR, ")");
 
     // Secondary: confirm the author's intent comment exists.
     bool has_intent_comment = (src.find("DEPRECATED") != std::string::npos);
     CHECK_MESSAGE(has_intent_comment,
-                  "CORE-007: the DEPRECATED comment is absent from Helpers.h; "
+                  "the DEPRECATED comment is absent from Helpers.h; "
                   "test assumption needs revisiting.");
 
     // Locate the macro definition line.
     std::string tap_region = extractRegion(src, "#define rogueStreamTap");
     REQUIRE_MESSAGE(!tap_region.empty(),
-                    "CORE-007: could not locate #define rogueStreamTap in Helpers.h");
+                    "could not locate #define rogueStreamTap in Helpers.h");
 
     // A compiler-visible deprecation requires one of:
     //   [[deprecated]]              (C++14 standard attribute)
@@ -102,7 +102,7 @@ TEST_CASE("CORE-007: rogueStreamTap carries a compiler-visible deprecation attri
         (tap_region.find("_Pragma(\"deprecated\")")     != std::string::npos);
 
     CHECK_MESSAGE(has_deprecated_attr,
-                  "CORE-007: rogueStreamTap is marked DEPRECATED only in a comment; "
+                  "rogueStreamTap is marked DEPRECATED only in a comment; "
                   "the #define carries no [[deprecated]] or __attribute__((deprecated)) "
                   "so callers receive no compile-time diagnostic. "
                   "Replace the macro with a deprecated inline wrapper function or "

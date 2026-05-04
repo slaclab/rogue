@@ -3,7 +3,7 @@
  * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
- * Audit repro for PROT-007:
+ * Regression tests
  * SrpV3Emulation::allocatePage() allocates each 4 KiB emulated memory page
  * via raw ``malloc(0x1000)`` and stores the raw pointer in the ``memMap_``
  * std::map.  If the map::insert call throws std::bad_alloc after malloc
@@ -58,7 +58,7 @@ static std::string extractContext(const std::string& src,
     return out.str();
 }
 
-TEST_CASE("PROT-007: SrpV3Emulation::allocatePage uses RAII page allocation") {
+TEST_CASE("SrpV3Emulation::allocatePage uses RAII page allocation") {
     const std::string path =
         std::string(ROGUE_SRC_DIR) + "/src/rogue/protocols/srp/SrpV3Emulation.cpp";
     const std::string src = readFile(path);
@@ -69,17 +69,17 @@ TEST_CASE("PROT-007: SrpV3Emulation::allocatePage uses RAII page allocation") {
     // page-allocation leak — the fix must be in allocatePage itself.
     const std::string funcBody = extractContext(src, "allocatePage(uint64_t addr4k)", 30);
     REQUIRE_MESSAGE(!funcBody.empty(),
-        "PROT-007: allocatePage function not found in SrpV3Emulation.cpp");
+        "allocatePage function not found in SrpV3Emulation.cpp");
 
     const bool hasRawMalloc = funcBody.find("malloc(0x1000)") != std::string::npos;
     CHECK_MESSAGE(!hasRawMalloc,
-        "PROT-007 regression: raw 'malloc(0x1000)' is back in allocatePage; "
-        "fix(PROT-007) replaced it with std::make_unique<uint8_t[]>(0x1000)");
+        " regression: raw 'malloc(0x1000)' is back in allocatePage; "
+        "fix replaced it with std::make_unique<uint8_t[]>(0x1000)");
 
     const bool hasRAII =
         funcBody.find("unique_ptr<uint8_t") != std::string::npos ||
         funcBody.find("make_unique<uint8_t") != std::string::npos;
     CHECK_MESSAGE(hasRAII,
-        "PROT-007: allocatePage must use std::make_unique<uint8_t[]>(0x1000) "
+        "allocatePage must use std::make_unique<uint8_t[]>(0x1000) "
         "or std::unique_ptr<uint8_t[]> for RAII ownership of the 4K page");
 }

@@ -7,14 +7,14 @@
 # copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
-"""Audit repros for CORE-011, CORE-012, CORE-013 in python/pyrogue/_Root.py.
+"""Regression tests for,  in python/pyrogue/_Root.py.
 
-CORE-011: Double assignment `self._pollQueue = self._pollQueue = pr.PollQueue(root=self)`
+Double assignment `self._pollQueue = self._pollQueue = pr.PollQueue(root=self)`
           at line 243 — a copy-paste artifact; the first assignment is redundant.
-CORE-012: updateGroup() catches bare `except Exception` around
+updateGroup() catches bare `except Exception` around
           `self._updateTrack[tid].increment(period)`, silently swallowing any
           non-KeyError exception raised by the existing tracker.
-CORE-013: _queueUpdates() uses the same bare `except Exception` pattern,
+_queueUpdates() uses the same bare `except Exception` pattern,
           silently swallowing non-KeyError exceptions from an existing tracker.
 """
 
@@ -24,7 +24,7 @@ import threading
 import pyrogue._Root as _root_module
 
 
-def test_root_double_assignment_pollqueue_core_011():
+def test_root_double_assignment_pollqueue():
     """Verify that the double-assignment bug in _Root.__init__ is absent.
 
     On HEAD, python/pyrogue/_Root.py line 243 contains:
@@ -35,19 +35,19 @@ def test_root_double_assignment_pollqueue_core_011():
     src_file = pathlib.Path(__file__).parent.parent.parent / 'python' / 'pyrogue' / '_Root.py'
 
     assert src_file.exists(), (
-        "CORE-011: cannot locate python/pyrogue/_Root.py relative to test tree"
+        "cannot locate python/pyrogue/_Root.py relative to test tree"
     )
 
     content = src_file.read_text()
 
     assert 'self._pollQueue = self._pollQueue =' not in content, (
-        "CORE-011: double assignment to self._pollQueue present in _Root.py; "
+        "double assignment to self._pollQueue present in _Root.py; "
         "line 243 contains `self._pollQueue = self._pollQueue = pr.PollQueue(root=self)`. "
         "The first assignment is a redundant copy-paste artifact."
     )
 
 
-def test_root_updategroup_swallow_non_keyerror_core_012(memory_root):
+def test_root_updategroup_swallow_non_keyerror(memory_root):
     """Verify that non-KeyError exceptions in updateGroup() are propagated.
 
     On HEAD, python/pyrogue/_Root.py line 585-590 uses a bare
@@ -72,7 +72,7 @@ def test_root_updategroup_swallow_non_keyerror_core_012(memory_root):
     def first_raise_then_ok(self, period):
         call_count[0] += 1
         if call_count[0] == 1:
-            raise RuntimeError('CORE-012-first-call-sentinel')
+            raise RuntimeError('rogue-first-call-sentinel')
         return original_increment(self, period)
 
     _root_module.UpdateTracker.increment = first_raise_then_ok
@@ -82,19 +82,19 @@ def test_root_updategroup_swallow_non_keyerror_core_012(memory_root):
         with memory_root.updateGroup():
             pass
     except RuntimeError as exc:
-        if 'CORE-012-first-call-sentinel' in str(exc):
+        if 'rogue-first-call-sentinel' in str(exc):
             exception_propagated = True
     finally:
         _root_module.UpdateTracker.increment = original_increment
 
     assert exception_propagated, (
-        "CORE-012: bare except swallowed RuntimeError in updateGroup(); "
+        "bare except swallowed RuntimeError in updateGroup(); "
         "RuntimeError from the first increment() call was silently caught "
         "and discarded — only KeyError should be caught in this except clause"
     )
 
 
-def test_root_queueupdates_swallow_non_keyerror_core_013(memory_root):
+def test_root_queueupdates_swallow_non_keyerror(memory_root):
     """Verify that non-KeyError exceptions in _queueUpdates() are propagated.
 
     On HEAD, python/pyrogue/_Root.py line 1199-1204 uses the same bare
@@ -115,7 +115,7 @@ def test_root_queueupdates_swallow_non_keyerror_core_013(memory_root):
     def first_raise_then_ok(self, var):
         call_count[0] += 1
         if call_count[0] == 1:
-            raise RuntimeError('CORE-013-first-call-sentinel')
+            raise RuntimeError('rogue-first-call-sentinel')
         return original_update(self, var)
 
     _root_module.UpdateTracker.update = first_raise_then_ok
@@ -124,13 +124,13 @@ def test_root_queueupdates_swallow_non_keyerror_core_013(memory_root):
     try:
         memory_root._queueUpdates(memory_root.enable)
     except RuntimeError as exc:
-        if 'CORE-013-first-call-sentinel' in str(exc):
+        if 'rogue-first-call-sentinel' in str(exc):
             exception_propagated = True
     finally:
         _root_module.UpdateTracker.update = original_update
 
     assert exception_propagated, (
-        "CORE-013: bare except swallowed RuntimeError in _queueUpdates(); "
+        "bare except swallowed RuntimeError in _queueUpdates(); "
         "RuntimeError from the first update() call was silently caught "
         "and discarded — only KeyError should be caught in this except clause"
     )

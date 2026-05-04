@@ -2,7 +2,7 @@
 # Company    : SLAC National Accelerator Laboratory
 #-----------------------------------------------------------------------------
 # Description:
-#   Audit repro for PYR-019.
+#   Regression test.
 #   pyrogue/__init__.py sets MIN_PYTHON = (3, 6) while CI and conda builds
 #   only support Python 3.10-3.13; CPython 3.6 reached EOL December 2021.
 #   Setting a 3.6 minimum allows users to install on unsupported interpreters
@@ -21,12 +21,12 @@
 import pyrogue
 
 
-def test_min_python_at_least_310_pyr_019():
-    """PYR-019: MIN_PYTHON = (3, 6) but conda matrix is 3.10-3.13; 3.6 EOL Dec 2021."""
+def test_min_python_at_least_310():
+    """MIN_PYTHON = (3, 6) but conda matrix is 3.10-3.13; 3.6 EOL Dec 2021."""
     min_py = pyrogue.MIN_PYTHON
 
     assert min_py >= (3, 10), (
-        "PYR-019: MIN_PYTHON = " + str(min_py) + " but conda build matrix "
+        "MIN_PYTHON = " + str(min_py) + " but conda build matrix "
         "targets 3.10-3.13 and CPython 3.6 reached end-of-life December 2021; "
         "the minimum version should be updated to at least (3, 10)"
     )

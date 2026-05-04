@@ -3,7 +3,7 @@
  * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
- * Audit repro for IFCE-013: memory::TcpServer::runThread send loop calls
+ * Regression tests for memory::TcpServer::runThread send loop calls
  * zmq_sendmsg() six times but ignores the return value on all calls; a
  * partial multi-part message leaves the PUSH socket in an undefined state
  * without any error propagation.
@@ -41,7 +41,7 @@ static std::string readFile(const std::string& path) {
     return ss.str();
 }
 
-TEST_CASE("IFCE-013: TcpServer runThread send loop ignores zmq_sendmsg returns") {
+TEST_CASE("TcpServer runThread send loop ignores zmq_sendmsg returns") {
     const std::string src = readFile(
         ROGUE_SRC_DIR "/src/rogue/interfaces/memory/TcpServer.cpp");
     REQUIRE_MESSAGE(!src.empty(), "Could not read memory/TcpServer.cpp");
@@ -59,7 +59,7 @@ TEST_CASE("IFCE-013: TcpServer runThread send loop ignores zmq_sendmsg returns")
 
     // FIXED state: zmq_sendmsg return value is checked (assigned to a
     // variable or used in an if/while condition).
-    // On HEAD: "for (x ...) zmq_sendmsg(..., ...)" -- return value discarded.
+    // On HEAD: "for (x...) zmq_sendmsg(...,...)" -- return value discarded.
     const bool returnsChecked = (
         region.find("= zmq_sendmsg(") != std::string::npos ||
         region.find("if (zmq_sendmsg(") != std::string::npos ||
@@ -68,7 +68,7 @@ TEST_CASE("IFCE-013: TcpServer runThread send loop ignores zmq_sendmsg returns")
         region.find("ret = zmq_sendmsg") != std::string::npos);
 
     CHECK_MESSAGE(returnsChecked,
-                  "IFCE-013: TcpServer runThread send loop ignores "
+                  "TcpServer runThread send loop ignores "
                   "zmq_sendmsg return code; partial multi-part message "
                   "leaves PUSH socket in undefined state without error "
                   "propagation to caller");

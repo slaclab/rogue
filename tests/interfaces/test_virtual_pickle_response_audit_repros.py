@@ -2,7 +2,7 @@
 # Company    : SLAC National Accelerator Laboratory
 #-----------------------------------------------------------------------------
 # Description:
-#   Audit repros for PYR-007 and PYR-008.
+#   Regression test.
 #   Both pickle.loads() call-sites in _Virtual.py (_remoteAttr line 682 and
 #   _doUpdate line 707) deserialise network bytes without restriction.
 #   These source-text tests assert the pattern is absent; on HEAD both are
@@ -28,29 +28,29 @@ def _get_method_source(cls, method_name):
         return ""
 
 
-def test_virtual_remoteattr_pickle_loads_pyr_007():
-    """PYR-007: VirtualClient._remoteAttr uses raw pickle.loads on server response."""
+def test_virtual_remoteattr_pickle_loads():
+    """VirtualClient._remoteAttr uses raw pickle.loads on server response."""
     from pyrogue.interfaces._Virtual import VirtualClient
 
     src = _get_method_source(VirtualClient, "_remoteAttr")
     assert src, "Could not retrieve source for VirtualClient._remoteAttr"
 
     assert "pickle.loads" not in src, (
-        "PYR-007: VirtualClient._remoteAttr uses raw pickle.loads on "
+        "VirtualClient._remoteAttr uses raw pickle.loads on "
         "attacker-controllable server response bytes (line 682); "
         "a compromised or spoofed server achieves code execution on the client"
     )
 
 
-def test_virtual_doupdate_pickle_loads_pyr_008():
-    """PYR-008: VirtualClient._doUpdate uses raw pickle.loads on ZMQ SUB bytes."""
+def test_virtual_doupdate_pickle_loads():
+    """VirtualClient._doUpdate uses raw pickle.loads on ZMQ SUB bytes."""
     from pyrogue.interfaces._Virtual import VirtualClient
 
     src = _get_method_source(VirtualClient, "_doUpdate")
     assert src, "Could not retrieve source for VirtualClient._doUpdate"
 
     assert "pickle.loads" not in src, (
-        "PYR-008: VirtualClient._doUpdate uses raw pickle.loads on "
+        "VirtualClient._doUpdate uses raw pickle.loads on "
         "attacker-controllable ZMQ publish bytes (line 707); "
         "a publish-channel injection achieves code execution on every subscriber"
     )

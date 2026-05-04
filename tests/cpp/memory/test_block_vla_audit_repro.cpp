@@ -3,7 +3,7 @@
  * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
- * Audit repro for IFCE-012: Block::addVariables uses a C99-style variable-
+ * Regression tests for Block::addVariables uses a C99-style variable-
  * length array "uint8_t excMask[size_]" on the stack.  VLAs are a C++
  * extension (non-standard C++14), can overflow the stack for large blocks,
  * and are forbidden by the project's C++14 standard constraint.
@@ -40,7 +40,7 @@ static std::string readFile(const std::string& path) {
     return ss.str();
 }
 
-TEST_CASE("IFCE-012: Block::addVariables uses VLA uint8_t excMask[size_]") {
+TEST_CASE("Block::addVariables uses VLA uint8_t excMask[size_]") {
     const std::string src = readFile(
         ROGUE_SRC_DIR "/src/rogue/interfaces/memory/Block.cpp");
     REQUIRE_MESSAGE(!src.empty(), "Could not read Block.cpp");
@@ -49,7 +49,7 @@ TEST_CASE("IFCE-012: Block::addVariables uses VLA uint8_t excMask[size_]") {
     // This is non-standard C++14; GCC/Clang accept it as an extension.
     const bool hasVla = (src.find("uint8_t excMask[size_]") != std::string::npos);
     CHECK_MESSAGE(!hasVla,
-                  "IFCE-012: Block::addVariables uses VLA "
+                  "Block::addVariables uses VLA "
                   "uint8_t excMask[size_] (non-standard C++14); should use "
                   "std::vector<uint8_t> excMask(size_, 0) instead");
 }

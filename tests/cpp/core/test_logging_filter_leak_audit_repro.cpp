@@ -3,7 +3,7 @@
  * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
- * CORE-001 repro: Logging::setFilter raw-pointer leak.
+ * Logging::setFilter raw-pointer leak.
  *
  * src/rogue/Logging.cpp::setFilter (line 157) allocates a new LogFilter
  * with `new rogue::LogFilter(...)` and pushes the raw pointer onto the
@@ -55,13 +55,13 @@ int64_t getRssKb() {
 
 }  // namespace
 
-TEST_CASE("CORE-001: Logging::setFilter does not leak LogFilter allocations — source invariant") {
+TEST_CASE("Logging::setFilter does not leak LogFilter allocations — source invariant") {
     // Read the Logging.cpp source and verify that a delete/free/reset path
     // exists for the raw pointer pushed by setFilter.  On HEAD no such path
     // exists → test fails deterministically.
     std::ifstream f(std::string(ROGUE_SRC_DIR) + "/src/rogue/Logging.cpp");
     REQUIRE_MESSAGE(f.is_open(),
-                    "CORE-001: could not open src/rogue/Logging.cpp (ROGUE_SRC_DIR=",
+                    "could not open src/rogue/Logging.cpp (ROGUE_SRC_DIR=",
                     ROGUE_SRC_DIR, ")");
 
     std::string content((std::istreambuf_iterator<char>(f)), std::istreambuf_iterator<char>());
@@ -76,12 +76,12 @@ TEST_CASE("CORE-001: Logging::setFilter does not leak LogFilter allocations — 
     bool has_ownership_management = has_delete_flt || has_clear || has_unique_ptr;
 
     CHECK_MESSAGE(has_ownership_management,
-                  "CORE-001: Logging::setFilter leaks LogFilter; "
+                  "Logging::setFilter leaks LogFilter; "
                   "no delete/clearFilters/unique_ptr found in Logging.cpp. "
                   "Raw pointer pushed to static filters_ vector is never freed.");
 }
 
-TEST_CASE("CORE-001: Logging::setFilter RSS growth from 1000 filter insertions") {
+TEST_CASE("Logging::setFilter RSS growth from 1000 filter insertions") {
     // Baseline RSS before the allocations.
     int64_t rss_before = getRssKb();
 
@@ -102,7 +102,7 @@ TEST_CASE("CORE-001: Logging::setFilter RSS growth from 1000 filter insertions")
     // If rss_before == -1 the platform doesn't support getrusage — skip.
     if (rss_before > 0) {
         CHECK_MESSAGE(delta_kb < 1024,
-                      "CORE-001: setFilter leaked ",
+                      "setFilter leaked ",
                       delta_kb,
                       " KiB over 1000 calls (threshold 1024 KiB). "
                       "Raw LogFilter pointers pushed to static filters_ are never deleted.");

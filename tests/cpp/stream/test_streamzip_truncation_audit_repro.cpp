@@ -3,10 +3,10 @@
  * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
- * Audit repros for bzip2 output truncation and state-machine swallow bugs:
- *   UTIL-007: StreamZip uses 32-bit total_out_lo32; truncates output >4GiB
- *   UTIL-008: StreamUnZip uses 32-bit total_out_lo32; same truncation risk
- *   UTIL-009: StreamZip state machine only checks BZ_SEQUENCE_ERROR;
+ * Regression tests for bzip2 output truncation and state-machine swallow bugs:
+ *   StreamZip uses 32-bit total_out_lo32; truncates output >4GiB
+ *   StreamUnZip uses 32-bit total_out_lo32; same truncation risk
+ *   StreamZip state machine only checks BZ_SEQUENCE_ERROR;
  *             BZ_PARAM_ERROR is not caught, leaking bzip2 state
  *
  * Source-text invariant tests; each TEST_CASE asserts a structural property
@@ -41,7 +41,7 @@ static std::string readFile(const std::string& path) {
     return ss.str();
 }
 
-TEST_CASE("UTIL-007: StreamZip uses 32-bit total_out_lo32; truncates >4GiB") {
+TEST_CASE("StreamZip uses 32-bit total_out_lo32; truncates >4GiB") {
     const std::string src = readFile(
         ROGUE_SRC_DIR "/src/rogue/utilities/StreamZip.cpp");
     REQUIRE_MESSAGE(!src.empty(), "Could not read StreamZip.cpp");
@@ -51,24 +51,24 @@ TEST_CASE("UTIL-007: StreamZip uses 32-bit total_out_lo32; truncates >4GiB") {
     // using the bzip2 uint64_t extension API).
     const bool uses32bit = (src.find("total_out_lo32") != std::string::npos);
     CHECK_MESSAGE(!uses32bit,
-                  "UTIL-007: StreamZip::acceptFrame uses 32-bit "
+                  "StreamZip::acceptFrame uses 32-bit "
                   "total_out_lo32; compressed output exceeding 4 GiB is "
                   "silently truncated without error; use 64-bit total_out");
 }
 
-TEST_CASE("UTIL-008: StreamUnZip uses 32-bit total_out_lo32; truncates >4GiB") {
+TEST_CASE("StreamUnZip uses 32-bit total_out_lo32; truncates >4GiB") {
     const std::string src = readFile(
         ROGUE_SRC_DIR "/src/rogue/utilities/StreamUnZip.cpp");
     REQUIRE_MESSAGE(!src.empty(), "Could not read StreamUnZip.cpp");
 
     const bool uses32bit = (src.find("total_out_lo32") != std::string::npos);
     CHECK_MESSAGE(!uses32bit,
-                  "UTIL-008: StreamUnZip::acceptFrame uses 32-bit "
+                  "StreamUnZip::acceptFrame uses 32-bit "
                   "total_out_lo32; decompressed output exceeding 4 GiB is "
                   "silently truncated; use 64-bit total_out");
 }
 
-TEST_CASE("UTIL-009: StreamZip does not handle BZ_PARAM_ERROR") {
+TEST_CASE("StreamZip does not handle BZ_PARAM_ERROR") {
     const std::string src = readFile(
         ROGUE_SRC_DIR "/src/rogue/utilities/StreamZip.cpp");
     REQUIRE_MESSAGE(!src.empty(), "Could not read StreamZip.cpp");
@@ -79,7 +79,7 @@ TEST_CASE("UTIL-009: StreamZip does not handle BZ_PARAM_ERROR") {
     const bool handlesBzParamError =
         (src.find("BZ_PARAM_ERROR") != std::string::npos);
     CHECK_MESSAGE(handlesBzParamError,
-                  "UTIL-009: StreamZip state machine does not handle "
+                  "StreamZip state machine does not handle "
                   "BZ_PARAM_ERROR; BZ2_bzCompress returning BZ_PARAM_ERROR "
                   "is silently ignored, leaking bzip2 stream state on "
                   "misaligned buffer inputs");

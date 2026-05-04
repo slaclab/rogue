@@ -3,7 +3,7 @@
  * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
- * Audit repro for IFCE-005: Pool::allocBuffer uses raw malloc/free for buffer
+ * Regression tests for Pool::allocBuffer uses raw malloc/free for buffer
  * allocation.  The raw malloc/free pattern is inconsistent with the codebase
  * norm of RAII (std::vector / unique_ptr) and makes future Pool subclasses
  * error-prone.
@@ -40,7 +40,7 @@ static std::string readFile(const std::string& path) {
     return ss.str();
 }
 
-TEST_CASE("IFCE-005: Pool::allocBuffer uses raw malloc") {
+TEST_CASE("Pool::allocBuffer uses raw malloc") {
     const std::string src = readFile(
         ROGUE_SRC_DIR "/src/rogue/interfaces/stream/Pool.cpp");
     REQUIRE_MESSAGE(!src.empty(), "Could not read stream/Pool.cpp");
@@ -55,7 +55,7 @@ TEST_CASE("IFCE-005: Pool::allocBuffer uses raw malloc") {
     // FIXED state: raw malloc replaced with new uint8_t[] or std::vector
     const bool hasMalloc = (region.find("malloc(") != std::string::npos);
     CHECK_MESSAGE(!hasMalloc,
-                  "IFCE-005: Pool::allocBuffer uses raw malloc for buffer "
+                  "Pool::allocBuffer uses raw malloc for buffer "
                   "allocation; inconsistent with RAII codebase norm; future "
                   "Pool subclasses can easily miss the paired free()");
 }

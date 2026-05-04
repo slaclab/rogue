@@ -2,7 +2,7 @@
 # Company    : SLAC National Accelerator Laboratory
 #-----------------------------------------------------------------------------
 # Description:
-#   Audit repro for PYR-014.
+#   Regression test.
 #   DataReceiver.__init__ has a mutable default argument
 #   `value=numpy.zeros(shape=1, dtype=numpy.uint8, order='C')` (line 44).
 #   The numpy array is created once at class-definition time.  All instances
@@ -24,8 +24,8 @@
 import pyrogue as pr
 
 
-def test_datareceiver_default_value_isolated_pyr_014():
-    """PYR-014: DataReceiver mutable numpy default bleeds mutation across instances."""
+def test_datareceiver_default_value_isolated():
+    """DataReceiver mutable numpy default bleeds mutation across instances."""
     r1 = pr.DataReceiver(name='recv1')
     r2 = pr.DataReceiver(name='recv2')
 
@@ -37,7 +37,7 @@ def test_datareceiver_default_value_isolated_pyr_014():
     r2_val = r2.Data.value()[0]
 
     assert r2_val == 0, (
-        "PYR-014: DataReceiver mutable default leaked mutation across instances; "
+        "DataReceiver mutable default leaked mutation across instances; "
         "r2.Data.value()[0] == " + str(r2_val) + " (expected 0); "
         "the numpy.zeros() array in the default argument is shared by all instances"
     )

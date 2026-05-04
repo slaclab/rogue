@@ -3,7 +3,7 @@
  * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
- * Audit repros for PROT-005 and PROT-006:
+ * Regression tests
  * Both udp::Client and udp::Server allocate their worker thread via
  * ``new std::thread`` (with a try/catch guard), storing the result in a raw
  * ``thread_`` pointer.  The existing try/catch makes the immediate exception
@@ -46,7 +46,7 @@ static bool hasRaiiThread(const std::string& src) {
            src.find("unique_ptr<std::thread>") != std::string::npos;
 }
 
-TEST_CASE("PROT-005: udp::Client uses RAII thread allocation") {
+TEST_CASE("udp::Client uses RAII thread allocation") {
     const std::string path =
         std::string(ROGUE_SRC_DIR) + "/src/rogue/protocols/udp/Client.cpp";
     const std::string src = readFile(path);
@@ -54,15 +54,15 @@ TEST_CASE("PROT-005: udp::Client uses RAII thread allocation") {
 
     const bool hasRaw = src.find("new std::thread") != std::string::npos;
     CHECK_MESSAGE(!hasRaw,
-        "PROT-005 regression: raw 'new std::thread' is back in udp/Client.cpp; "
-        "fix(PROT-005) replaced it with std::make_unique<std::thread>");
+        " regression: raw 'new std::thread' is back in udp/Client.cpp; "
+        "fix replaced it with std::make_unique<std::thread>");
 
     CHECK_MESSAGE(hasRaiiThread(src),
-        "PROT-005: Client.cpp must allocate worker thread via "
+        "Client.cpp must allocate worker thread via "
         "std::make_unique<std::thread> or std::unique_ptr<std::thread>");
 }
 
-TEST_CASE("PROT-006: udp::Server uses RAII thread allocation") {
+TEST_CASE("udp::Server uses RAII thread allocation") {
     const std::string path =
         std::string(ROGUE_SRC_DIR) + "/src/rogue/protocols/udp/Server.cpp";
     const std::string src = readFile(path);
@@ -70,10 +70,10 @@ TEST_CASE("PROT-006: udp::Server uses RAII thread allocation") {
 
     const bool hasRaw = src.find("new std::thread") != std::string::npos;
     CHECK_MESSAGE(!hasRaw,
-        "PROT-006 regression: raw 'new std::thread' is back in udp/Server.cpp; "
-        "fix(PROT-006) replaced it with std::make_unique<std::thread>");
+        " regression: raw 'new std::thread' is back in udp/Server.cpp; "
+        "fix replaced it with std::make_unique<std::thread>");
 
     CHECK_MESSAGE(hasRaiiThread(src),
-        "PROT-006: Server.cpp must allocate worker thread via "
+        "Server.cpp must allocate worker thread via "
         "std::make_unique<std::thread> or std::unique_ptr<std::thread>");
 }

@@ -3,7 +3,7 @@
  * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
- * Audit repro for IFCE-002: Block::setBytes byte-reversed path allocates buff
+ * Regression tests for Block::setBytes byte-reversed path allocates buff
  * with malloc and has three distinct free() exit paths; a future code-path
  * addition can easily miss the free, leaking the buffer.
  *
@@ -40,12 +40,12 @@ static std::string readFile(const std::string& path) {
     return ss.str();
 }
 
-TEST_CASE("IFCE-002: setBytes byte-reverse path 3 distinct free() exit paths") {
+TEST_CASE("setBytes byte-reverse path 3 distinct free() exit paths") {
     const std::string src = readFile(
         ROGUE_SRC_DIR "/src/rogue/interfaces/memory/Block.cpp");
     REQUIRE_MESSAGE(!src.empty(), "Could not read Block.cpp");
 
-    // The byte-reverse malloc site is near: "buff = ... malloc(var->valueBytes_)"
+    // The byte-reverse malloc site is near: "buff =... malloc(var->valueBytes_)"
     // (around line 666).  Locate it via the unique sentinel.
     const std::string sentinel = "var->valueBytes_))";
     const std::size_t pos = src.find(sentinel);
@@ -60,7 +60,7 @@ TEST_CASE("IFCE-002: setBytes byte-reverse path 3 distinct free() exit paths") {
     // std::vector), so raw "free(buff)" does not appear in this region.
     const bool hasRawFree = (window.find("free(buff)") != std::string::npos);
     CHECK_MESSAGE(!hasRawFree,
-                  "IFCE-002: setBytes byte-reverse has 3 distinct free() exit "
+                  "setBytes byte-reverse has 3 distinct free() exit "
                   "paths; future addition can skip the free and leak the buffer; "
                   "should use std::unique_ptr<uint8_t[]> for RAII cleanup");
 }

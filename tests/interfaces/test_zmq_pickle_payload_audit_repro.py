@@ -2,7 +2,7 @@
 # Company    : SLAC National Accelerator Laboratory
 #-----------------------------------------------------------------------------
 # Description:
-#   Audit repro for PYR-006.
+#   Regression test.
 #   ZmqServer._doRequest calls pickle.loads(data) on attacker-controllable
 #   bytes (line 90).  The source-text test asserts this pattern is absent
 #   from the file.  On HEAD it IS present, so the test FAILS.
@@ -19,8 +19,8 @@
 import inspect
 
 
-def test_zmqserver_pickle_loads_unsafe_pyr_006():
-    """PYR-006: ZmqServer._doRequest uses raw pickle.loads on network bytes."""
+def test_zmqserver_pickle_loads_unsafe():
+    """ZmqServer._doRequest uses raw pickle.loads on network bytes."""
     import pyrogue.interfaces._ZmqServer as zmq_mod
 
     src = inspect.getsource(zmq_mod)
@@ -28,7 +28,7 @@ def test_zmqserver_pickle_loads_unsafe_pyr_006():
     # The unsafe pattern: bare pickle.loads() call inside _doRequest.
     # A safe implementation would use a restricted unpickler or JSON.
     assert "pickle.loads" not in src, (
-        "PYR-006: ZmqServer._doRequest uses raw pickle.loads on "
+        "ZmqServer._doRequest uses raw pickle.loads on "
         "attacker-controllable bytes (line 90); arbitrary code execution "
         "is possible if the ZMQ REP port is reachable by an adversary"
     )

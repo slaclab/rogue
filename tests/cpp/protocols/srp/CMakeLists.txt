@@ -1,4 +1,4 @@
-# Audit repro tests for SRP protocol candidates (plan 02-03).
+# Regression tests for SRP protocol candidates (plan 02-03).
 
 rogue_add_cpp_test(rogue-cpp-protocols-srpv3-emulation-alloc-audit-repro
    SOURCES

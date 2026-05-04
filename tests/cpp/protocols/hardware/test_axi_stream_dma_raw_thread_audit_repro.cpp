@@ -3,10 +3,10 @@
  * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
- * Audit repro for HW-003:
+ * Regression tests
  * hardware::axi::AxiStreamDma constructor allocates its worker thread via
  * ``new std::thread`` stored in a raw ``thread_`` pointer with a try/catch
- * guard.  Same raw-ptr tech debt as HW-001 and HW-002.
+ * guard.  Same raw-ptr tech debt as  and.
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to
  * the license terms in the LICENSE.txt file found in the top-level directory
@@ -36,7 +36,7 @@ static std::string readFile(const std::string& path) {
     return ss.str();
 }
 
-TEST_CASE("HW-003: hardware::AxiStreamDma uses RAII thread allocation") {
+TEST_CASE("hardware::AxiStreamDma uses RAII thread allocation") {
     const std::string path =
         std::string(ROGUE_SRC_DIR) + "/src/rogue/hardware/axi/AxiStreamDma.cpp";
     const std::string src = readFile(path);
@@ -44,13 +44,13 @@ TEST_CASE("HW-003: hardware::AxiStreamDma uses RAII thread allocation") {
 
     const bool hasRaw = src.find("new std::thread") != std::string::npos;
     CHECK_MESSAGE(!hasRaw,
-        "HW-003 regression: raw 'new std::thread' is back in hardware/axi/AxiStreamDma.cpp; "
-        "fix(HW-003) replaced it with std::make_unique<std::thread>");
+        " regression: raw 'new std::thread' is back in hardware/axi/AxiStreamDma.cpp; "
+        "fix replaced it with std::make_unique<std::thread>");
 
     const bool hasRaiiThread =
         src.find("make_unique<std::thread>") != std::string::npos ||
         src.find("unique_ptr<std::thread>") != std::string::npos;
     CHECK_MESSAGE(hasRaiiThread,
-        "HW-003: AxiStreamDma.cpp must allocate worker thread via "
+        "AxiStreamDma.cpp must allocate worker thread via "
         "std::make_unique<std::thread> or std::unique_ptr<std::thread>");
 }

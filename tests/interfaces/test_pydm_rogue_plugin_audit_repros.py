@@ -2,14 +2,14 @@
 # Company    : SLAC National Accelerator Laboratory
 #-----------------------------------------------------------------------------
 # Description:
-#   Audit repros for PYDM-001..PYDM-004.
-#   PYDM-001: remove_listener calls self._client.stop() unconditionally,
+#   Regression test.
+#   remove_listener calls self._client.stop() unconditionally,
 #             tearing down the shared VirtualClient for all channels.
-#   PYDM-002: add_listener calls self._client.addLinkMonitor(...)
+#   add_listener calls self._client.addLinkMonitor(...)
 #             unconditionally; self._client may be None on non-pydm-app paths.
-#   PYDM-003: _updateVariable emits new_value_signal[type(varValue.value)]
+#   _updateVariable emits new_value_signal[type(varValue.value)]
 #             without handling bool; PyDM raises KeyError on bool type.
-#   PYDM-004: parseAddress indexes alist[int(data[0])] without bounds check;
+#   parseAddress indexes alist[int(data[0])] without bounds check;
 #             out-of-range index raises IndexError.
 #
 #   All four tests use source-text inspection to avoid needing a live server.
@@ -35,27 +35,27 @@ except Exception as exc:
 
 
 # ---------------------------------------------------------------------------
-# PYDM-001 — remove_listener calls self._client.stop() unconditionally
+# remove_listener calls self._client.stop() unconditionally
 # ---------------------------------------------------------------------------
-def test_remove_listener_does_not_kill_shared_client_pydm_001():
-    """PYDM-001: remove_listener calls self._client.stop() unconditionally."""
+def test_remove_listener_does_not_kill_shared_client():
+    """remove_listener calls self._client.stop() unconditionally."""
     src = inspect.getsource(rogue_plugin_mod.RogueConnection.remove_listener)
 
     # A correct implementation would only call stop() when the last listener
     # is removed, or not at all (since the VirtualClient is shared).
     # On HEAD an unconditional self._client.stop() is present.
     assert "self._client.stop()" not in src, (
-        "PYDM-001: RogueConnection.remove_listener calls self._client.stop() "
+        "RogueConnection.remove_listener calls self._client.stop() "
         "unconditionally; removing any single channel tears down the shared "
         "VirtualClient for all channels bound to the same server endpoint"
     )
 
 
 # ---------------------------------------------------------------------------
-# PYDM-002 — add_listener calls addLinkMonitor without guarding None client
+# add_listener calls addLinkMonitor without guarding None client
 # ---------------------------------------------------------------------------
-def test_addlinkmonitor_guards_none_client_pydm_002():
-    """PYDM-002: RogueConnection.__init__ calls addLinkMonitor without None guard."""
+def test_addlinkmonitor_guards_none_client():
+    """RogueConnection.__init__ calls addLinkMonitor without None guard."""
     src = inspect.getsource(rogue_plugin_mod.RogueConnection.__init__)
     lines = src.splitlines()
 
@@ -71,7 +71,7 @@ def test_addlinkmonitor_guards_none_client_pydm_002():
                 or "_client is not None" in context_text
             )
             assert has_guard, (
-                "PYDM-002: RogueConnection.__init__ calls "
+                "RogueConnection.__init__ calls "
                 "self._client.addLinkMonitor(self.linkState) without a "
                 "preceding None guard (line 148); self._client is only set "
                 "when utilities.is_pydm_app() is True — on other code paths "
@@ -80,16 +80,16 @@ def test_addlinkmonitor_guards_none_client_pydm_002():
             return
 
     raise AssertionError(
-        "PYDM-002: Could not find self._client.addLinkMonitor call in "
+        "Could not find self._client.addLinkMonitor call in "
         "RogueConnection.__init__ — file structure may have changed"
     )
 
 
 # ---------------------------------------------------------------------------
-# PYDM-003 — _updateVariable signal routing does not handle bool type
+# _updateVariable signal routing does not handle bool type
 # ---------------------------------------------------------------------------
-def test_signal_routing_handles_bool_pydm_003():
-    """PYDM-003: _updateVariable emits signal[type(value)] without handling bool."""
+def test_signal_routing_handles_bool():
+    """_updateVariable emits signal[type(value)] without handling bool."""
     src = inspect.getsource(rogue_plugin_mod.RogueConnection._updateVariable)
 
     # PyDM's new_value_signal does not have a [bool] key.
@@ -106,7 +106,7 @@ def test_signal_routing_handles_bool_pydm_003():
 
     if has_type_dispatch:
         assert has_bool_handling, (
-            "PYDM-003: RogueConnection._updateVariable emits "
+            "RogueConnection._updateVariable emits "
             "new_value_signal[type(varValue.value)] (line 205) without "
             "handling the bool case; PyDM raises KeyError on "
             "new_value_signal[bool] because bool is not a registered signal type"
@@ -115,17 +115,17 @@ def test_signal_routing_handles_bool_pydm_003():
         # If raw type dispatch is gone, the signal may have been refactored;
         # assert bool is still handled
         assert has_bool_handling, (
-            "PYDM-003: _updateVariable does not contain bool handling and "
+            "_updateVariable does not contain bool handling and "
             "the new_value_signal[type(...)] dispatch is also absent — "
             "file structure may have changed"
         )
 
 
 # ---------------------------------------------------------------------------
-# PYDM-004 — parseAddress lacks bounds check on alist index
+# parseAddress lacks bounds check on alist index
 # ---------------------------------------------------------------------------
-def test_parseaddress_bounds_check_pydm_004():
-    """PYDM-004: parseAddress indexes alist[int(data[0])] without bounds check."""
+def test_parseaddress_bounds_check():
+    """parseAddress indexes alist[int(data[0])] without bounds check."""
     src = inspect.getsource(rogue_plugin_mod.parseAddress)
 
     # The unsafe pattern: direct alist[int(data[0])] with no bounds check.
@@ -136,7 +136,7 @@ def test_parseaddress_bounds_check_pydm_004():
     )
 
     assert has_bounds_check, (
-        "PYDM-004: parseAddress() indexes alist[int(data[0])] (line 70) "
+        "parseAddress() indexes alist[int(data[0])] (line 70) "
         "without a bounds check against len(alist); if ROGUE_SERVERS has "
         "fewer entries than the numeric index in the channel address, "
         "raises IndexError with a confusing traceback in the PyDM widget"
