@@ -170,8 +170,9 @@ void rpp::ControllerV1::transportRx(ris::FramePtr frame) {
         }
         tranFrame_[0].reset();
 
-        // Detect SSI error
-        if (enSsi_ & (tmpLuser & 0x1)) tranFrame_[tmpDest]->setError(0x80);
+        // Detect SSI error — guard against null shared_ptr when tmpDest != 0
+        if (enSsi_ & (tmpLuser & 0x1))
+            if (tranFrame_[tmpDest]) tranFrame_[tmpDest]->setError(0x80);
     } else {
         tranCount_[0]++;
     }
