@@ -118,14 +118,13 @@ rogue::Logging::Logging(const std::string& name, bool quiet) {
 rogue::Logging::~Logging() {
     std::vector<rogue::Logging*>::iterator it;
 
-    levelMtx_.lock();
+    std::lock_guard<std::mutex> lock(levelMtx_);
     for (it = loggers_.begin(); it < loggers_.end(); ++it) {
         if (*it == this) {
             loggers_.erase(it);
             break;
         }
     }
-    levelMtx_.unlock();
 }
 
 void rogue::Logging::updateLevelLocked() {
@@ -144,52 +143,41 @@ void rogue::Logging::updateLevelLocked() {
 void rogue::Logging::setLevel(uint32_t level) {
     std::vector<rogue::Logging*>::iterator it;
 
-    levelMtx_.lock();
+    std::lock_guard<std::mutex> lock(levelMtx_);
     gblLevel_ = level;
     for (it = loggers_.begin(); it < loggers_.end(); ++it) (*it)->updateLevelLocked();
-    levelMtx_.unlock();
 }
 
 void rogue::Logging::setFilter(const std::string& name, uint32_t level) {
     std::vector<rogue::Logging*>::iterator it;
 
-    levelMtx_.lock();
+    std::lock_guard<std::mutex> lock(levelMtx_);
 
     rogue::LogFilter* flt = new rogue::LogFilter(normalizeName(name), level);
 
     filters_.push_back(flt);
 
     for (it = loggers_.begin(); it < loggers_.end(); ++it) (*it)->updateLevelLocked();
-
-    levelMtx_.unlock();
 }
 
 void rogue::Logging::setForwardPython(bool enable) {
-    levelMtx_.lock();
+    std::lock_guard<std::mutex> lock(levelMtx_);
     forwardPython_ = enable;
-    levelMtx_.unlock();
 }
 
 bool rogue::Logging::forwardPython() {
-    bool enable;
-    levelMtx_.lock();
-    enable = forwardPython_;
-    levelMtx_.unlock();
-    return enable;
+    std::lock_guard<std::mutex> lock(levelMtx_);
+    return forwardPython_;
 }
 
 void rogue::Logging::setEmitStdout(bool enable) {
-    levelMtx_.lock();
+    std::lock_guard<std::mutex> lock(levelMtx_);
     emitStdout_ = enable;
-    levelMtx_.unlock();
 }
 
 bool rogue::Logging::emitStdout() {
-    bool enable;
-    levelMtx_.lock();
-    enable = emitStdout_;
-    levelMtx_.unlock();
-    return enable;
+    std::lock_guard<std::mutex> lock(levelMtx_);
+    return emitStdout_;
 }
 
 void rogue::Logging::intLog(uint32_t level, const char* fmt, va_list args) {
