@@ -70,9 +70,17 @@ def parse() -> list[Any]:
         print('Not a valid zip file:', zname)
         exit()
 
-    # Extract all the contents of the zip file in the current directory
+    # Extract all the contents of the zip file in the current directory.
+    # Validate each member path to prevent zip-slip attacks (path traversal
+    # via members containing '..' that escape the extraction directory).
+    target_dir = os.path.realpath(os.getcwd())
     with ZipFile(zname, 'r') as zipObj:
-        zipObj.extractall()
+        for member in zipObj.namelist():
+            member_path = os.path.realpath(os.path.join(target_dir, member))
+            if not member_path.startswith(target_dir + os.sep) and member_path != target_dir:
+                print('Unsafe zip entry rejected (zip-slip):', member)
+                exit()
+        zipObj.extractall(target_dir)
 
     fname = ''
 
