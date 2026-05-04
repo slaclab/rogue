@@ -13,10 +13,42 @@
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 
+import io as _io
+import pickle as _pickle
 import rogue.interfaces
-import pickle
 import json
 from typing import Any
+
+
+class _SafeUnpickler(_pickle.Unpickler):
+    """Restricted Unpickler that only allows built-in safe types."""
+
+    _ALLOWED = {
+        ('builtins', 'dict'),
+        ('builtins', 'list'),
+        ('builtins', 'tuple'),
+        ('builtins', 'set'),
+        ('builtins', 'frozenset'),
+        ('builtins', 'str'),
+        ('builtins', 'int'),
+        ('builtins', 'float'),
+        ('builtins', 'bool'),
+        ('builtins', 'bytes'),
+        ('builtins', 'bytearray'),
+        ('builtins', 'NoneType'),
+        ('builtins', 'complex'),
+    }
+
+    def find_class(self, module: str, name: str) -> type:
+        if (module, name) in self._ALLOWED:
+            return super().find_class(module, name)
+        raise _pickle.UnpicklingError(
+            f"Unsafe pickle payload: {module}.{name}")
+
+
+def _safe_loads(data: bytes) -> object:
+    """Deserialise pickle bytes using a restricted Unpickler."""
+    return _SafeUnpickler(_io.BytesIO(data)).load()
 
 
 class ZmqServer(rogue.interfaces.ZmqServer):
@@ -87,11 +119,11 @@ class ZmqServer(rogue.interfaces.ZmqServer):
     def _doRequest(self, data: bytes) -> bytes:
         """Handle a pickle-serialized request and return serialized response."""
         try:
-            return pickle.dumps(self._doOperation(pickle.loads(data)))
+            return _pickle.dumps(self._doOperation(_safe_loads(data)))
         except Exception as msg:
             exc_type = type(msg)
             exc_name = getattr(exc_type, "__qualname__", exc_type.__name__)
-            return pickle.dumps(Exception(
+            return _pickle.dumps(Exception(
                 f"{exc_type.__module__}.{exc_name}: {msg}"))
 
     def _doString(self, data: str) -> str:
@@ -111,7 +143,7 @@ class ZmqServer(rogue.interfaces.ZmqServer):
     def _varDone(self) -> None:
         """Flush queued variable updates to subscribers."""
         if len(self._updateList) > 0:
-            self._publish(pickle.dumps(self._updateList))
+            self._publish(_pickle.dumps(self._updateList))
             self._updateList = {}
 
     def _start(self) -> None:
