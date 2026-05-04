@@ -93,44 +93,55 @@ void ru::StreamZip::acceptFrame(ris::FramePtr frame) {
     // accumulated output would overflow that interface.
     uint64_t outBytes = 0;
 
-    // Use the iterators to move data
-    done = false;
-    do {
-        uint32_t availBefore = strm.avail_out;
-        ret = BZ2_bzCompress(&strm, (done) ? BZ_FINISH : BZ_RUN);
-        if (ret == BZ_SEQUENCE_ERROR || ret == BZ_PARAM_ERROR || ret < 0)
-            throw(rogue::GeneralError::create("StreamZip::acceptFrame", "Compression runtime error %" PRIi32, ret));
+    // Wrap the compression loop so any throw (BZ_PARAM_ERROR, reqFrame OOM,
+    // etc.) still reaches BZ2_bzCompressEnd; otherwise the bzip2-internal
+    // state allocated by BZ2_bzCompressInit leaks on the error path.
+    try {
+        // Use the iterators to move data
+        done = false;
+        do {
+            uint32_t availBefore = strm.avail_out;
+            ret = BZ2_bzCompress(&strm, (done) ? BZ_FINISH : BZ_RUN);
+            if (ret == BZ_SEQUENCE_ERROR || ret == BZ_PARAM_ERROR || ret < 0)
+                throw(rogue::GeneralError::create("StreamZip::acceptFrame",
+                                                  "Compression runtime error %" PRIi32,
+                                                  ret));
 
-        outBytes += availBefore - strm.avail_out;
+            outBytes += availBefore - strm.avail_out;
 
-        // Update read buffer if necessary
-        if (strm.avail_in == 0 && (!done)) {
-            if (++rBuff != frame->endBuffer()) {
-                strm.next_in  = reinterpret_cast<char*>((*rBuff)->begin());
-                strm.avail_in = (*rBuff)->getPayload();
-            } else {
-                done = true;
+            // Update read buffer if necessary
+            if (strm.avail_in == 0 && (!done)) {
+                if (++rBuff != frame->endBuffer()) {
+                    strm.next_in  = reinterpret_cast<char*>((*rBuff)->begin());
+                    strm.avail_in = (*rBuff)->getPayload();
+                } else {
+                    done = true;
+                }
             }
-        }
 
-        // Update write buffer if necessary
-        if (strm.avail_out == 0) {
-            // We ran out of room, double the frame size, should not happen
-            if ((wBuff + 1) == newFrame->endBuffer()) {
-                ris::FramePtr tmpFrame = this->reqFrame(frame->getPayload(), true);
-                wBuff                  = newFrame->appendFrame(tmpFrame);
-            } else {
-                ++wBuff;
+            // Update write buffer if necessary
+            if (strm.avail_out == 0) {
+                // We ran out of room, double the frame size, should not happen
+                if ((wBuff + 1) == newFrame->endBuffer()) {
+                    ris::FramePtr tmpFrame = this->reqFrame(frame->getPayload(), true);
+                    wBuff                  = newFrame->appendFrame(tmpFrame);
+                } else {
+                    ++wBuff;
+                }
+                strm.next_out  = reinterpret_cast<char*>((*wBuff)->begin());
+                strm.avail_out = (*wBuff)->getAvailable();
             }
-            strm.next_out  = reinterpret_cast<char*>((*wBuff)->begin());
-            strm.avail_out = (*wBuff)->getAvailable();
-        }
-    } while (ret != BZ_STREAM_END);
+        } while (ret != BZ_STREAM_END);
+    } catch (...) {
+        BZ2_bzCompressEnd(&strm);
+        throw;
+    }
+
+    BZ2_bzCompressEnd(&strm);
 
     // Update output frame using manually tracked byte count.  setPayload is
     // a 32-bit interface; surface a clear error if the compressed output
     // would exceed UINT32_MAX rather than silently truncate the size.
-    BZ2_bzCompressEnd(&strm);
     if (outBytes > UINT32_MAX) {
         throw rogue::GeneralError::create(
             "StreamZip::acceptFrame",
