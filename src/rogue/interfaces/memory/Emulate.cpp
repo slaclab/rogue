@@ -27,6 +27,7 @@
 #include <string>
 #include <utility>
 
+#include "rogue/GeneralError.h"
 #include "rogue/GilRelease.h"
 #include "rogue/interfaces/memory/Constants.h"
 #include "rogue/interfaces/memory/Transaction.h"
@@ -87,7 +88,12 @@ void rim::Emulate::doTransaction(rim::TransactionPtr tran) {
             addr += size4k;
 
             if (memMap_.find(addr4k) == memMap_.end()) {
-                memMap_.insert(std::make_pair(addr4k, reinterpret_cast<uint8_t*>(malloc(0x1000))));
+                uint8_t* page = reinterpret_cast<uint8_t*>(malloc(0x1000));
+                if (page == nullptr)
+                    throw(rogue::GeneralError::create("Emulate::doTransaction",
+                                                      "Failed to allocate 4k page at address 0x%" PRIx64,
+                                                      addr4k));
+                memMap_.insert(std::make_pair(addr4k, page));
                 totSize_ += 0x1000;
                 totAlloc_++;
                 log_->debug("Allocating block at 0x%x. Total Blocks %i, Total Size = %i", addr4k, totAlloc_, totSize_);
