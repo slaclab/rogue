@@ -91,7 +91,7 @@ bool rogue::Logging::forwardPython_ = false;
 // Stdout emission enable
 bool rogue::Logging::emitStdout_ = true;
 
-// Crate logger
+// Create logger
 rogue::LoggingPtr rogue::Logging::create(const std::string& name, bool quiet) {
     rogue::LoggingPtr log = std::make_shared<rogue::Logging>(name, quiet);
     return log;
