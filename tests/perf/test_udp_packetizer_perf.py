@@ -18,7 +18,7 @@ import time
 import threading
 import pytest
 
-from tests.perf._perf_metrics import emit_perf_result
+from ._perf_metrics import emit_perf_result
 
 pytestmark = [pytest.mark.integration, pytest.mark.perf]
 

@@ -31,7 +31,7 @@ class _SignalRecorder:
 
 
 def test_rogue_connection_link_state_refreshes_static_name_channels():
-    conn = object.__new__(RogueConnection)
+    conn = RogueConnection.__new__(RogueConnection)
     conn._node = SimpleNamespace(name="MyVar", path="root.MyVar")
     conn._notDev = True
     conn._mode = "name"
