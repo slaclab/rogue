@@ -670,14 +670,19 @@ void rim::Block::setBytes(const uint8_t* data, rim::Variable* var, uint32_t inde
     // Set stale flag
     if (var->mode_ != "RO") stale_ = true;
 
-    // Change byte order, need to make a copy
+    // Change byte order, need to make a copy.
+    // unique_ptr with custom deleter owns the malloc buffer so all exit paths
+    // (normal return, exception, early throw) release the buffer automatically,
+    // removing the need for explicit deallocation at every return site.
+    std::unique_ptr<uint8_t, decltype(&free)> revBuf(nullptr, free);
     if (var->byteReverse_) {
-        buff = reinterpret_cast<uint8_t*>(malloc(var->valueBytes_));
-        if (buff == NULL)
+        revBuf.reset(static_cast<uint8_t*>(malloc(var->valueBytes_)));
+        if (!revBuf)
             throw(rogue::GeneralError::create("Block::setBytes",
                                               "Failed to allocate %" PRIu32 " bytes for byte-reversed copy of %s",
                                               var->valueBytes_,
                                               var->name_.c_str()));
+        buff = revBuf.get();
         memcpy(buff, data, var->valueBytes_);
         reverseBytes(buff, var->valueBytes_);
     } else {
@@ -687,7 +692,6 @@ void rim::Block::setBytes(const uint8_t* data, rim::Variable* var, uint32_t inde
     // List variable
     if (var->numValues_ != 0) {
         if (index >= var->numValues_) {
-            if (var->byteReverse_) free(buff);
             throw(rogue::GeneralError::create("Block::setBytes",
                                               "Index %" PRIu32 " is out of range for %s",
                                               index,
@@ -740,7 +744,6 @@ void rim::Block::setBytes(const uint8_t* data, rim::Variable* var, uint32_t inde
         }
     }
     if ( var->mode_ != "RO" ) var->stale_ = true;
-    if (var->byteReverse_) free(buff);
 }
 
 // Get data to pointer from internal block or staged memory
