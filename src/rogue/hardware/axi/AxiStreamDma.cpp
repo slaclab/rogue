@@ -218,7 +218,7 @@ rha::AxiStreamDma::AxiStreamDma(std::string path, uint32_t dest, bool ssiEnable)
 
     threadEn_ = true;
     try {
-        thread_ = new std::thread(&rha::AxiStreamDma::runThread, this, std::weak_ptr<int>(scopePtr));
+        thread_ = std::make_unique<std::thread>(&rha::AxiStreamDma::runThread, this, std::weak_ptr<int>(scopePtr));
     } catch (...) {
         threadEn_ = false;
         closeShared(desc_);
@@ -245,8 +245,7 @@ void rha::AxiStreamDma::stop() {
         // Stop read thread
         threadEn_ = false;
         thread_->join();
-        delete thread_;
-        thread_ = nullptr;
+        thread_.reset();
 
         closeShared(desc_);
         ::close(fd_);

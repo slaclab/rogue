@@ -59,14 +59,12 @@ rpr::Application::Application() {}
 //! Destructor
 rpr::Application::~Application() {
     // No-op if setController() never ran.
-    if (thread_ != nullptr) {
+    if (thread_) {
         threadEn_ = false;
         // Release the GIL: worker may be mid-sendFrame to a Python slave.
         rogue::GilRelease noGil;
         cntl_->stopQueue();
         thread_->join();
-        delete thread_;
-        thread_ = nullptr;
     }
 }
 
@@ -76,7 +74,7 @@ void rpr::Application::setController(rpr::ControllerPtr cntl) {
 
     // Start read thread
     threadEn_ = true;
-    thread_   = new std::thread(&rpr::Application::runThread, this);
+    thread_ = std::make_unique<std::thread>(&rpr::Application::runThread, this);
 
     // Set a thread name
 #ifndef __MACH__

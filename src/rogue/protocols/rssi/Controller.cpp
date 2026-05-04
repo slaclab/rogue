@@ -130,22 +130,21 @@ void rpr::Controller::stopQueue() {
 
 //! Close
 void rpr::Controller::stop() {
-    if (thread_ != NULL) {
+    if (thread_) {
         rogue::GilRelease noGil;
         threadEn_ = false;
         thread_->join();
-        delete thread_;
-        thread_ = NULL;
-        state_  = StClosed;
+        thread_.reset();
+        state_ = StClosed;
     }
 }
 
 //! Start
 void rpr::Controller::start() {
-    if (thread_ == NULL) {
+    if (!thread_) {
         state_    = StClosed;
         threadEn_ = true;
-        thread_   = new std::thread(&rpr::Controller::runThread, this);
+        thread_ = std::make_unique<std::thread>(&rpr::Controller::runThread, this);
 
         // Set a thread name
 #ifndef __MACH__

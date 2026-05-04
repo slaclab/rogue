@@ -109,7 +109,7 @@ rpu::Client::Client(std::string host, uint16_t port, bool jumbo) : rpu::Core(jum
 
     threadEn_ = true;
     try {
-        thread_ = new std::thread(&rpu::Client::runThread, this, std::weak_ptr<int>(scopePtr));
+        thread_ = std::make_unique<std::thread>(&rpu::Client::runThread, this, std::weak_ptr<int>(scopePtr));
     } catch (...) {
         threadEn_ = false;
         ::close(fd_);
@@ -136,8 +136,7 @@ void rpu::Client::stop() {
         rogue::GilRelease noGil;
         ::close(fd_);
         thread_->join();
-        delete thread_;
-        thread_ = nullptr;
+        thread_.reset();
         fd_ = -1;
         udpLog_->debug("Stopping UDP client for remote %s:%" PRIu16, address_.c_str(), port_);
     }
