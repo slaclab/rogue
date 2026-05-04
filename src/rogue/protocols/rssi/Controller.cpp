@@ -580,7 +580,7 @@ uint16_t rpr::Controller::curNullTout() {
 
 // Lower-half implementation: state machine, retransmit, flow-control, timer,
 // and OOO queue management.  Extracted to reduce Controller.cpp line count
-// below the 600-line maintainability threshold (PROT-019).
+// below the 600-line maintainability threshold.
 #include "ControllerImpl.hpp"  // NOLINT(build/include_subdir)
 
 // End of Controller.cpp — lower-half implementations are in ControllerImpl.hpp

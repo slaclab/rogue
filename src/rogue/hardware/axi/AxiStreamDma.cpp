@@ -44,7 +44,7 @@ namespace bp = boost::python;
 
 std::map<std::string, std::shared_ptr<rha::AxiStreamDmaShared> > rha::AxiStreamDma::sharedBuffers_;
 
-// HW-009: protect sharedBuffers_ against concurrent AxiStreamDma construction.
+// Protect sharedBuffers_ against concurrent AxiStreamDma construction.
 static std::mutex sharedBuffersMtx;
 
 rha::AxiStreamDmaShared::AxiStreamDmaShared(std::string path) {

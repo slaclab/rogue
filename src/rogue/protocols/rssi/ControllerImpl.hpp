@@ -4,9 +4,9 @@
  * ----------------------------------------------------------------------------
  * Description:
  * RSSI Controller — lower half: state machine, retransmit, flow control,
- * timer, and OOO queue management.  Extracted from Controller.cpp (PROT-019)
- * to bring the primary source file below the 600-line maintainability
- * threshold.  Included only by Controller.cpp; not a public header.
+ * timer, and OOO queue management.  Extracted from Controller.cpp to bring
+ * the primary source file below the 600-line maintainability threshold.
+ * Included only by Controller.cpp; not a public header.
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to
  * the license terms in the LICENSE.txt file found in the top-level directory
