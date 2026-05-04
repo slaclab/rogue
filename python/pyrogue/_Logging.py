@@ -29,6 +29,9 @@ else:
 
 LogTarget = str | logging.Logger | _NodeType | type[_NodeType]
 
+# Guard: call logging.basicConfig() at most once across all logInit() calls.
+_LOG_INIT_DONE = False
+
 
 def _logger_family_name(cls: type[Any]) -> str:
     """Return the logger family name for a PyRogue class."""
@@ -88,9 +91,12 @@ def logInit(
     logging.Logger
         Configured logger instance.
     """
-    logging.basicConfig(
-        format="%(levelname)s:%(name)s:%(message)s",
-        stream=sys.stdout)
+    global _LOG_INIT_DONE
+    if not _LOG_INIT_DONE:
+        logging.basicConfig(
+            format="%(levelname)s:%(name)s:%(message)s",
+            stream=sys.stdout)
+        _LOG_INIT_DONE = True
 
     ln = 'pyrogue'
 
