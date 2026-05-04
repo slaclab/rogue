@@ -208,6 +208,8 @@ class RogueConnection(PyDMConnection):
                 self.new_value_signal[str].emit(varValue.valueDisp)
             elif isinstance(varValue.value, Figure):
                 self.new_value_signal[object].emit(varValue.value)
+            elif isinstance(varValue.value, bool):
+                self.new_value_signal[int].emit(int(varValue.value))
             else:
                 self.new_value_signal[type(varValue.value)].emit(varValue.value)
 
