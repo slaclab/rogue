@@ -469,11 +469,8 @@ void rim::Block::addVariables(std::vector<rim::VariablePtr> variables) {
 
     uint32_t x;
 
-    uint8_t excMask[size_];
-    uint8_t oleMask[size_];
-
-    memset(excMask, 0, size_);
-    memset(oleMask, 0, size_);
+    std::vector<uint8_t> excMask(size_, 0);
+    std::vector<uint8_t> oleMask(size_, 0);
 
     variables_ = variables;
 
@@ -501,11 +498,11 @@ void rim::Block::addVariables(std::vector<rim::VariablePtr> variables) {
             for (x = 0; x < (*vit)->bitOffset_.size(); x++) {
                 // Variable allows overlaps, add to overlap enable mask
                 if ((*vit)->overlapEn_) {
-                    setBits(oleMask, (*vit)->bitOffset_[x], (*vit)->bitSize_[x]);
+                    setBits(oleMask.data(), (*vit)->bitOffset_[x], (*vit)->bitSize_[x]);
 
                     // Otherwise add to exclusive mask and check for existing mapping
                 } else {
-                    if (anyBits(excMask, (*vit)->bitOffset_[x], (*vit)->bitSize_[x]))
+                    if (anyBits(excMask.data(), (*vit)->bitOffset_[x], (*vit)->bitSize_[x]))
                         throw(rogue::GeneralError::create(
                             "Block::addVariables",
                             "Variable bit overlap detected for block %s with address 0x%.8x and variable %s",
@@ -513,7 +510,7 @@ void rim::Block::addVariables(std::vector<rim::VariablePtr> variables) {
                             address(),
                             (*vit)->name_.c_str()));
 
-                    setBits(excMask, (*vit)->bitOffset_[x], (*vit)->bitSize_[x]);
+                    setBits(excMask.data(), (*vit)->bitOffset_[x], (*vit)->bitSize_[x]);
                 }
 
                 // update verify mask
@@ -546,11 +543,11 @@ void rim::Block::addVariables(std::vector<rim::VariablePtr> variables) {
             for (x = 0; x < (*vit)->numValues_; x++) {
                 // Variable allows overlaps, add to overlap enable mask
                 if ((*vit)->overlapEn_) {
-                    setBits(oleMask, x * (*vit)->valueStride_ + (*vit)->bitOffset_[0], (*vit)->valueBits_);
+                    setBits(oleMask.data(), x * (*vit)->valueStride_ + (*vit)->bitOffset_[0], (*vit)->valueBits_);
 
                     // Otherwise add to exclusive mask and check for existing mapping
                 } else {
-                    if (anyBits(excMask, x * (*vit)->valueStride_ + (*vit)->bitOffset_[0], (*vit)->valueBits_))
+                    if (anyBits(excMask.data(), x * (*vit)->valueStride_ + (*vit)->bitOffset_[0], (*vit)->valueBits_))
                         throw(rogue::GeneralError::create(
                             "Block::addVariables",
                             "Variable bit overlap detected for block %s with address 0x%.8x and variable %s",
@@ -558,7 +555,7 @@ void rim::Block::addVariables(std::vector<rim::VariablePtr> variables) {
                             address(),
                             (*vit)->name_.c_str()));
 
-                    setBits(excMask, x * (*vit)->valueStride_ + (*vit)->bitOffset_[0], (*vit)->valueBits_);
+                    setBits(excMask.data(), x * (*vit)->valueStride_ + (*vit)->bitOffset_[0], (*vit)->valueBits_);
                 }
 
                 // update verify mask
