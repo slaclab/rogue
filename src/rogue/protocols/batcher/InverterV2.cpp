@@ -78,6 +78,10 @@ void rpb::InverterV2::acceptFrame(ris::FramePtr frame) {
     // Must have at least one record
     if (core.count() == 0) return;
 
+    // Verify frame payload holds the full tail region before copying.
+    // frame->getPayload() is the total byte count; we need header + count tails.
+    if (frame->getPayload() < core.headerSize() * (core.count() + 1)) return;
+
     // Copy first tail to head
     std::memcpy(core.beginHeader().ptr(), core.beginTail(0).ptr(), core.headerSize());
 
