@@ -177,8 +177,8 @@ rim::Variable::Variable(std::string name,
         // Compute rounded up byte size
         byteSize_ = static_cast<int>(std::ceil(static_cast<float>(bitTotal_) / 8.0));
 
-        lowTranByte_  = reinterpret_cast<uint32_t*>(malloc(sizeof(uint32_t)));
-        highTranByte_ = reinterpret_cast<uint32_t*>(malloc(sizeof(uint32_t)));
+        lowTranByte_  = new uint32_t[1];
+        highTranByte_ = new uint32_t[1];
 
         // Init remaining fields
         valueBytes_  = byteSize_;
@@ -197,8 +197,8 @@ rim::Variable::Variable(std::string name,
         valueBytes_ = static_cast<uint32_t>(std::ceil(static_cast<float>(valueBits_) / 8.0));
 
         // High and low byte tracking
-        lowTranByte_  = reinterpret_cast<uint32_t*>(malloc(numValues_ * sizeof(uint32_t)));
-        highTranByte_ = reinterpret_cast<uint32_t*>(malloc(numValues_ * sizeof(uint32_t)));
+        lowTranByte_  = new uint32_t[numValues_];
+        highTranByte_ = new uint32_t[numValues_];
     }
 
     // Byte array for fast copies
@@ -210,11 +210,11 @@ rim::Variable::Variable(std::string name,
     if ((bitOffset_.size() == 1) && (bitOffset_[0] % 8 == 0) && (bitSize_[0] % 8 == 0)) {
         // Standard variable
         if (numValues_ == 0) {
-            fastByte_ = reinterpret_cast<uint32_t*>(malloc(sizeof(uint32_t)));
+            fastByte_ = new uint32_t[1];
 
             // List variable
         } else if ((valueBits_ % 8) == 0 && (valueStride_ % 8) == 0) {
-            fastByte_ = reinterpret_cast<uint32_t*>(malloc(numValues_ * sizeof(uint32_t)));
+            fastByte_ = new uint32_t[numValues_];
         }
     }
     stale_ = false;
@@ -560,9 +560,9 @@ rim::Variable::Variable(std::string name,
 
 // Destroy the variable
 rim::Variable::~Variable() {
-    if (lowTranByte_ != NULL) free(lowTranByte_);
-    if (highTranByte_ != NULL) free(highTranByte_);
-    if (fastByte_ != NULL) free(fastByte_);
+    delete[] lowTranByte_;
+    delete[] highTranByte_;
+    delete[] fastByte_;
 }
 
 // Shift offset down
