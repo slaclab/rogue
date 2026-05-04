@@ -310,7 +310,6 @@ class RogueConnection(PyDMConnection):
             Whether removal is part of channel/widget destruction.
         """
         self._client.remLinkMonitor(self.linkState)
-        self._client.stop()
         #if channel.value_signal is not None:
         #    #try:
         #    #    channel.value_signal[str].disconnect(self.put_value)
