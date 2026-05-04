@@ -44,6 +44,9 @@ namespace bp = boost::python;
 
 std::map<std::string, std::shared_ptr<rha::AxiStreamDmaShared> > rha::AxiStreamDma::sharedBuffers_;
 
+// HW-009: protect sharedBuffers_ against concurrent AxiStreamDma construction.
+static std::mutex sharedBuffersMtx;
+
 rha::AxiStreamDmaShared::AxiStreamDmaShared(std::string path) {
     this->fd        = -1;
     this->path      = path;
@@ -56,6 +59,8 @@ rha::AxiStreamDmaShared::AxiStreamDmaShared(std::string path) {
 
 //! Open shared buffer space
 rha::AxiStreamDmaSharedPtr rha::AxiStreamDma::openShared(std::string path, rogue::LoggingPtr log) {
+    rogue::GilRelease noGil;
+    std::lock_guard<std::mutex> lock(sharedBuffersMtx);
     std::map<std::string, rha::AxiStreamDmaSharedPtr>::iterator it;
     rha::AxiStreamDmaSharedPtr ret;
 
@@ -130,6 +135,8 @@ rha::AxiStreamDmaSharedPtr rha::AxiStreamDma::openShared(std::string path, rogue
 
 //! Close shared buffer space
 void rha::AxiStreamDma::closeShared(rha::AxiStreamDmaSharedPtr desc) {
+    rogue::GilRelease noGil;
+    std::lock_guard<std::mutex> lock(sharedBuffersMtx);
     desc->openCount--;
 
     if (desc->openCount == 0) {
@@ -152,6 +159,8 @@ rha::AxiStreamDmaPtr rha::AxiStreamDma::create(std::string path, uint32_t dest, 
 }
 
 void rha::AxiStreamDma::zeroCopyDisable(std::string path) {
+    rogue::GilRelease noGil;
+    std::lock_guard<std::mutex> lock(sharedBuffersMtx);
     std::map<std::string, rha::AxiStreamDmaSharedPtr>::iterator it;
 
     // Entry already exists
@@ -455,29 +464,8 @@ void rha::AxiStreamDma::retBuffer(uint8_t* data, uint32_t meta, uint32_t size) {
         // Device is open and buffer is not stale
         // Bit 30 indicates buffer has already been returned to hardware
         if ((fd_ >= 0) && ((meta & 0x40000000) == 0)) {
-#if 0
-         // Add to queue
-         printf("Adding to queue\n");
-         retQueue_.push(meta);
-
-         // Bulk return
-         if ( (count = retQueue_.size()) >= retThold_ ) {
-            printf("Return count=%" PRIu32 "\n", count);
-            if ( count > 100 ) count = 100;
-            for (x=0; x < count; x++) ret[x] = retQueue_.pop() & 0x3FFFFFFF;
-
-            if ( dmaRetIndexes(fd_, count, ret) < 0 )
-               throw(rogue::GeneralError("AxiStreamDma::retBuffer", "AXIS Return Buffer Call Failed!!!!"));
-
-            decCounter(size*count);
-            printf("Return done\n");
-         }
-
-#else
             if (dmaRetIndex(fd_, meta & 0x3FFFFFFF) < 0)
                 throw(rogue::GeneralError("AxiStreamDma::retBuffer", "AXIS Return Buffer Call Failed!!!!"));
-
-#endif
         }
         decCounter(size);
 
