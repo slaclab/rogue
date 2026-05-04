@@ -122,14 +122,15 @@ class SideBandSim():
     def _recvWorker(self) -> None:
         """Worker thread that receives sideband data and invokes the callback."""
         while True:
-            # Exit thread when stop() called
             with self._lock:
+                # Exit thread when stop() called
                 if self._run is False:
                     self._log.debug('Exiting receive thread')
                     return
 
-            # Wait for new data
-            socks, x, y = zmq.select([self._sbPull], [], [], 1.0)
+                # Wait for new data (short timeout so _run is re-checked promptly)
+                socks, x, y = zmq.select([self._sbPull], [], [], 1.0)
+
             if self._sbPull in socks:
                 ba = self._sbPull.recv()
 
