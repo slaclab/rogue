@@ -23,8 +23,9 @@
 #define rogueStreamConnect(src, dst) src->addSlave(dst);
 
 // Add stream tap, DEPRECATED
-/** @brief Deprecated alias for `rogueStreamConnect`. */
+/** @brief Deprecated alias for `rogueStreamConnect`. Use rogueStreamConnect for new code. */
 #define rogueStreamTap(src, dst) src->addSlave(dst);
+[[deprecated]] inline void rogueStreamTap_deprecated_notice_() {}
 
 // Connect stream bi-directionally
 /** @brief Connect two stream endpoints in both directions. */
