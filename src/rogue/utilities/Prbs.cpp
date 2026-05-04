@@ -78,7 +78,8 @@ ru::Prbs::Prbs() {
 
     // Init 4 taps
     tapCnt_  = 4;
-    taps_    = reinterpret_cast<uint8_t*>(malloc(sizeof(uint8_t) * tapCnt_));
+    taps_ = reinterpret_cast<uint8_t*>(malloc(sizeof(uint8_t) * tapCnt_));
+    if (taps_ == nullptr) throw(rogue::GeneralError("Prbs::Prbs", "Failed to allocate taps_ buffer"));
     taps_[0] = 1;
     taps_[1] = 2;
     taps_[2] = 6;
@@ -149,6 +150,7 @@ void ru::Prbs::setTaps(uint32_t tapCnt, uint8_t* taps) {
     free(taps_);
     tapCnt_ = tapCnt;
     taps_   = reinterpret_cast<uint8_t*>(malloc(sizeof(uint8_t) * tapCnt));
+    if (taps_ == nullptr) throw(rogue::GeneralError("Prbs::setTaps", "Failed to allocate taps_ buffer"));
 
     for (i = 0; i < tapCnt_; i++) taps_[i] = taps[i];
 }
@@ -212,10 +214,10 @@ void ru::Prbs::enable(uint32_t size) {
     // Verify size first
     if (((size % byteWidth_) != 0) || size < minSize_) throw rogue::GeneralError("Prbs::enable", "Invalid frame size");
 
-    if (txThread_ == NULL) {
+    if (!txThread_) {
         txSize_   = size;
         threadEn_ = true;
-        txThread_ = new std::thread(&Prbs::runThread, this);
+        txThread_ = std::make_unique<std::thread>(&Prbs::runThread, this);
 
         // Set a thread name
 #ifndef __MACH__
@@ -226,12 +228,11 @@ void ru::Prbs::enable(uint32_t size) {
 
 //! Disable auto generation
 void ru::Prbs::disable() {
-    if (txThread_ != NULL) {
+    if (txThread_) {
         rogue::GilRelease noGil;
         threadEn_ = false;
         txThread_->join();
-        delete txThread_;
-        txThread_ = NULL;
+        txThread_.reset();
     }
 }
 
