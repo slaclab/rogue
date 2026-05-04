@@ -134,6 +134,11 @@ class Controller : public rogue::EnableSharedFromThis<rogue::protocols::rssi::Co
     // Transmit tracking
     std::shared_ptr<rogue::protocols::rssi::Header> txList_[256];
     std::mutex txMtx_;
+    // Signaled (under txMtx_) whenever txListCount_ decreases so the
+    // applicationRx() backpressure path can wake immediately.  Pairing the
+    // condition variable with txMtx_ — the same mutex that protects
+    // txListCount_ — is required for correct condvar semantics.
+    std::condition_variable txCond_;
     uint8_t txListCount_;
     uint8_t lastAckTx_;
     uint8_t locSequence_;

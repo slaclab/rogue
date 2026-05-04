@@ -219,12 +219,20 @@ void rpr::Controller::transportRx(ris::FramePtr frame) {
 
     // Ack set
     if (head->ack && (head->acknowledge != lastAckRx_)) {
-        std::unique_lock<std::mutex> lock(txMtx_);
+        bool decremented = false;
+        {
+            std::unique_lock<std::mutex> lock(txMtx_);
 
-        do {
-            txList_[++lastAckRx_].reset();
-            if (txListCount_ != 0) txListCount_--;
-        } while (lastAckRx_ != head->acknowledge);
+            do {
+                txList_[++lastAckRx_].reset();
+                if (txListCount_ != 0) {
+                    txListCount_--;
+                    decremented = true;
+                }
+            } while (lastAckRx_ != head->acknowledge);
+        }
+        // Wake the applicationRx() backpressure waiter when slots reopen.
+        if (decremented) txCond_.notify_all();
     }
 
     // Check for busy state transition
@@ -393,11 +401,18 @@ void rpr::Controller::applicationRx(ris::FramePtr frame) {
         return;
     }
 
-    // Wait while busy either by flow control or buffer starvation.
+    // Wait while busy either by flow control or buffer starvation.  The
+    // wait MUST use txMtx_ (the mutex that guards txListCount_) so the
+    // condition variable contract holds: writers in transportRx /
+    // transportTx mutate txListCount_ under txMtx_ and notify txCond_ once
+    // the slot reopens.  curMaxBuffers_ is updated only by the state
+    // thread on connection negotiation; on the platforms rogue targets the
+    // 8-bit/uint32_t reads are atomic enough that occasional staleness
+    // here just causes one extra wait_for tick.
     {
-        std::unique_lock<std::mutex> lk(stMtx_);
+        std::unique_lock<std::mutex> lk(txMtx_);
         while (txListCount_ >= curMaxBuffers_) {
-            stCond_.wait_for(lk, std::chrono::microseconds(10),
+            txCond_.wait_for(lk, std::chrono::milliseconds(10),
                              [this] { return txListCount_ < curMaxBuffers_; });
             if (timePassed(startTime, timeout_)) {
                 gettimeofday(&startTime, NULL);
@@ -411,7 +426,6 @@ void rpr::Controller::applicationRx(ris::FramePtr frame) {
 
     // Transmit
     transportTx(head, true, false);
-    stCond_.notify_all();
 }
 
 //! Get state
@@ -607,6 +621,9 @@ void rpr::Controller::transportTx(rpr::HeaderPtr head, bool seqUpdate, bool txRe
     if (txReset) {
         for (uint32_t x = 0; x < 256; x++) txList_[x].reset();
         txListCount_ = 0;
+        // Notify waiters after the lock is released below.
+        // (lock.unlock() at the bottom of this function reorders before
+        //  the txCond_.notify_all() outside the lock.)
     }
 
     if (getLocBusy()) {
@@ -642,6 +659,12 @@ void rpr::Controller::transportTx(rpr::HeaderPtr head, bool seqUpdate, bool txRe
 
     flock->unlock();
     lock.unlock();
+
+    // After releasing txMtx_, wake any thread blocked in applicationRx()
+    // backpressure when txListCount_ was reset.  Skipping this for the
+    // normal increment path keeps wakes cheap; the decrement path in
+    // transportRx() handles the common reopen-slot case.
+    if (txReset) txCond_.notify_all();
 
     // Send frame
     tran_->sendFrame(head->getFrame());
