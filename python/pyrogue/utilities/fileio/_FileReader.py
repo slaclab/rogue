@@ -229,7 +229,7 @@ class FileReader(object):
                                 if curIdx + (bHead.width-8) > self._header.size:
                                     raise FileReaderException(f'Batch frame header underrun in {self._currFName}')
 
-                                self._currFile.seek(bHead.width-8)
+                                self._currFile.seek(bHead.width-8, os.SEEK_CUR)
 
                             # Check payload size
                             if curIdx + bHead.size > self._header.size:
