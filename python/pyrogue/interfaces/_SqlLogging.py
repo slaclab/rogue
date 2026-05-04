@@ -162,6 +162,8 @@ class SqlLogger(object):
 
     def _worker(self) -> None:
         """Worker thread that processes queue entries and writes to the database."""
+        self._lastError = None
+
         while True:
             # Block and wait for a queue entry to arrive
             entry = self._queue.get()
@@ -194,9 +196,9 @@ class SqlLogger(object):
                         # Read the next queue entry and loop
                         entry = self._queue.get()
 
-
             except Exception as e:
                 self._engine = None
+                self._lastError = str(e)
                 pr.logException(self._log,e)
                 self._log.error("Lost database connection to %s", self._url)
 
