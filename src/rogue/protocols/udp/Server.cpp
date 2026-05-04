@@ -185,6 +185,8 @@ void rpu::Server::acceptFrame(ris::FramePtr frame) {
         // but write fails because we did not win the buffer lock
         do {
             // Setup fds for select call
+            if (fd_ < 0 || fd_ >= FD_SETSIZE)
+                throw rogue::GeneralError::create("Server::acceptFrame", "fd_ value %d out of FD_SETSIZE range", fd_);
             FD_ZERO(&fds);
             FD_SET(fd_, &fds);
 
@@ -264,6 +266,8 @@ void rpu::Server::runThread(std::weak_ptr<int> lockPtr) {
             }
         } else {
             // Setup fds for select call
+            if (fd_ < 0 || fd_ >= FD_SETSIZE)
+                throw rogue::GeneralError::create("Server::runThread", "fd_ value %d out of FD_SETSIZE range", fd_);
             FD_ZERO(&fds);
             FD_SET(fd_, &fds);
 

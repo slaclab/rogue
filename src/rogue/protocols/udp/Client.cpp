@@ -186,6 +186,8 @@ void rpu::Client::acceptFrame(ris::FramePtr frame) {
         // but write fails because we did not win the (*it)er lock
         do {
             // Setup fds for select call
+            if (fd_ < 0 || fd_ >= FD_SETSIZE)
+                throw rogue::GeneralError::create("Client::acceptFrame", "fd_ value %d out of FD_SETSIZE range", fd_);
             FD_ZERO(&fds);
             FD_SET(fd_, &fds);
 
@@ -246,6 +248,8 @@ void rpu::Client::runThread(std::weak_ptr<int> lockPtr) {
             frame = reqLocalFrame(maxPayload(), false);
         } else {
             // Setup fds for select call
+            if (fd_ < 0 || fd_ >= FD_SETSIZE)
+                throw rogue::GeneralError::create("Client::runThread", "fd_ value %d out of FD_SETSIZE range", fd_);
             FD_ZERO(&fds);
             FD_SET(fd_, &fds);
 

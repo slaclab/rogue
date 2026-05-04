@@ -306,6 +306,10 @@ ris::FramePtr rha::AxiStreamDma::acceptReq(uint32_t size, bool zeroCopyEn) {
             // but getIndex fails because we did not win the buffer lock
             do {
                 // Setup fds for select call
+                if (fd_ < 0 || fd_ >= FD_SETSIZE)
+                    throw rogue::GeneralError::create("AxiStreamDma::acceptReq",
+                                                      "fd_ value %d out of FD_SETSIZE range",
+                                                      fd_);
                 FD_ZERO(&fds);
                 FD_SET(fd_, &fds);
 
@@ -408,6 +412,10 @@ void rha::AxiStreamDma::acceptFrame(ris::FramePtr frame) {
             // but write fails because we did not win the (*it)er lock
             do {
                 // Setup fds for select call
+                if (fd_ < 0 || fd_ >= FD_SETSIZE)
+                    throw rogue::GeneralError::create("AxiStreamDma::acceptFrame",
+                                                      "fd_ value %d out of FD_SETSIZE range",
+                                                      fd_);
                 FD_ZERO(&fds);
                 FD_SET(fd_, &fds);
 
@@ -510,6 +518,10 @@ void rha::AxiStreamDma::runThread(std::weak_ptr<int> lockPtr) {
 
     while (threadEn_) {
         // Setup fds for select call
+        if (fd_ < 0 || fd_ >= FD_SETSIZE)
+            throw rogue::GeneralError::create("AxiStreamDma::runThread",
+                                              "fd_ value %d out of FD_SETSIZE range",
+                                              fd_);
         FD_ZERO(&fds);
         FD_SET(fd_, &fds);
 
