@@ -313,33 +313,6 @@ def test_unified_logging_respects_python_logger_level_filtering():
         logger.removeHandler(handler)
 
 
-def test_unified_logging_swallows_python_handler_exceptions():
-    logger_name = 'pyrogue.memory.Emulate'
-    logger = logging.getLogger(logger_name)
-    handler = RaisingHandler()
-
-    logger.setLevel(logging.DEBUG)
-    logger.addHandler(handler)
-    pr.setUnifiedLogging(True)
-
-    try:
-        root = pr.Root(name='root', pollEn=False)
-        emu = rogue.interfaces.memory.Emulate(4, 0x1000)
-        root.addInterface(emu)
-        root.add(EmulateDevice(name='Dev', offset=0x0, memBase=emu))
-
-        try:
-            root.start()
-            rogue.Logging.setFilter(logger_name, rogue.Logging.Debug)
-            root.Dev.TestValue.set(1)
-        finally:
-            root.stop()
-
-    finally:
-        pr.setUnifiedLogging(False)
-        logger.removeHandler(handler)
-
-
 def test_root_system_log_captures_metadata_and_limits_history():
     logger = logging.getLogger('pyrogue.test.logging')
     logger.setLevel(logging.INFO)

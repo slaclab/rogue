@@ -63,7 +63,7 @@ def test_zmq_server_lifecycle_smoke(free_zmq_port):
     root = pr.Root(name="AuditSmokeRoot", pollEn=False)
     root.start()
     try:
-        srv = rogue.interfaces.ZmqServer("127.0.0.1", free_zmq_port, False)
+        srv = rogue.interfaces.ZmqServer("127.0.0.1", free_zmq_port)
         srv._stop()
     finally:
         root.stop()

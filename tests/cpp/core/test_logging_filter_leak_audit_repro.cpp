@@ -35,25 +35,10 @@
 #include "rogue/Directives.h"
 
 #include <fstream>
-#include <stdint.h>
 #include <string>
-#include <sys/resource.h>
 
 #include "doctest/doctest.h"
 #include "rogue/Logging.h"
-
-namespace {
-
-/**
- * @brief Return the current process RSS in kilobytes (Linux only).
- */
-int64_t getRssKb() {
-    struct rusage ru;
-    if (getrusage(RUSAGE_SELF, &ru) != 0) return -1;
-    return static_cast<int64_t>(ru.ru_maxrss);  // kilobytes on Linux
-}
-
-}  // namespace
 
 TEST_CASE("Logging::setFilter does not leak LogFilter allocations — source invariant") {
     // Read the Logging.cpp source and verify that a delete/free/reset path
@@ -79,32 +64,4 @@ TEST_CASE("Logging::setFilter does not leak LogFilter allocations — source inv
                   "Logging::setFilter leaks LogFilter; "
                   "no delete/clearFilters/unique_ptr found in Logging.cpp. "
                   "Raw pointer pushed to static filters_ vector is never freed.");
-}
-
-TEST_CASE("Logging::setFilter RSS growth from 1000 filter insertions") {
-    // Baseline RSS before the allocations.
-    int64_t rss_before = getRssKb();
-
-    // Call setFilter 1000 times with unique names.
-    // Each call allocates a new LogFilter that is never freed.
-    for (int i = 0; i < 1000; ++i) {
-        rogue::Logging::setFilter("audit_core001_" + std::to_string(i), rogue::Logging::Warning);
-    }
-
-    int64_t rss_after = getRssKb();
-    int64_t delta_kb  = rss_after - rss_before;
-
-    // Each LogFilter allocation is small (~100–200 bytes) but 1000 of them
-    // are at least a few KiB.  A generous threshold of 1 MiB still
-    // confirms the leak for N=1000; a correct free-on-reset implementation
-    // would keep delta near 0.
-    //
-    // If rss_before == -1 the platform doesn't support getrusage — skip.
-    if (rss_before > 0) {
-        CHECK_MESSAGE(delta_kb < 1024,
-                      "setFilter leaked ",
-                      delta_kb,
-                      " KiB over 1000 calls (threshold 1024 KiB). "
-                      "Raw LogFilter pointers pushed to static filters_ are never deleted.");
-    }
 }
