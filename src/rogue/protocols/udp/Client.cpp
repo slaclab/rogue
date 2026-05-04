@@ -73,6 +73,21 @@ rpu::Client::Client(std::string host, uint16_t port, bool jumbo) : rpu::Core(jum
                                           port_,
                                           address_.c_str()));
 
+    // Validate fd_ fits in fd_set before the worker thread is started.  An fd
+    // returned by socket() can legally exceed FD_SETSIZE on a process with
+    // many open descriptors; deferring the check to runThread() turns that
+    // into an asynchronous throw out of the worker, terminating the process
+    // after the constructor has already returned a "live" object.
+    if (fd_ >= FD_SETSIZE) {
+        const int badFd = fd_;
+        ::close(fd_);
+        fd_ = -1;
+        throw(rogue::GeneralError::create("Client::Client",
+                                          "Socket fd %d >= FD_SETSIZE (%d); reduce open file descriptors",
+                                          badFd,
+                                          static_cast<int>(FD_SETSIZE)));
+    }
+
     // Lookup host address
     bzero(&aiHints, sizeof(aiHints));
     aiHints.ai_flags    = AI_CANONNAME;

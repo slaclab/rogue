@@ -65,6 +65,21 @@ rpu::Server::Server(uint16_t port, bool jumbo) : rpu::Core(jumbo) {
     if ((fd_ = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
         throw(rogue::GeneralError::create("Server::Server", "Failed to create socket for port %" PRIu16, port_));
 
+    // Validate fd_ fits in fd_set before the worker thread is started.  An fd
+    // returned by socket() can legally exceed FD_SETSIZE on a process with
+    // many open descriptors; deferring the check to runThread() turns that
+    // into an asynchronous throw out of the worker, terminating the process
+    // after the constructor has already returned a "live" object.
+    if (fd_ >= FD_SETSIZE) {
+        const int badFd = fd_;
+        ::close(fd_);
+        fd_ = -1;
+        throw(rogue::GeneralError::create("Server::Server",
+                                          "Socket fd %d >= FD_SETSIZE (%d); reduce open file descriptors",
+                                          badFd,
+                                          static_cast<int>(FD_SETSIZE)));
+    }
+
     // Setup Remote Address
     memset(&locAddr_, 0, sizeof(struct sockaddr_in));
     locAddr_.sin_family      = AF_INET;
