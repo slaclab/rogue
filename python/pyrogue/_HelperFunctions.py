@@ -226,7 +226,7 @@ def yamlToData(stream: str = '', fName: str | None = None) -> Any:
 
     log = pr.logInit(name='yamlToData')
 
-    class PyrogueLoader(yaml.Loader):
+    class PyrogueLoader(yaml.SafeLoader):
         pass
 
     def include_mapping(loader: yaml.Loader, node: Any) -> Any:
@@ -258,7 +258,11 @@ def yamlToData(stream: str = '', fName: str | None = None) -> Any:
 
     # Use passed string
     if fName is None:
-        return yaml.load(stream,Loader=PyrogueLoader)
+        try:
+            return yaml.load(stream, Loader=PyrogueLoader)
+        except yaml.constructor.ConstructorError:
+            log.warning("YAML contained an unsafe or unrecognised tag; returning None")
+            return None
 
     # Main or sub-file is in a zip
     elif '.zip' in fName:
@@ -269,13 +273,21 @@ def yamlToData(stream: str = '', fName: str | None = None) -> Any:
 
         with zipfile.ZipFile(base, 'r', compression=zipfile.ZIP_LZMA) as myzip:
             with myzip.open(sub) as myfile:
-                return yaml.load(myfile.read(),Loader=PyrogueLoader)
+                try:
+                    return yaml.load(myfile.read(), Loader=PyrogueLoader)
+                except yaml.constructor.ConstructorError:
+                    log.warning("YAML contained an unsafe or unrecognised tag; returning None")
+                    return None
 
     # Non zip file
     else:
         log.debug("loading %s", fName)
-        with open(fName,'r') as f:
-            return yaml.load(f.read(),Loader=PyrogueLoader)
+        with open(fName, 'r') as f:
+            try:
+                return yaml.load(f.read(), Loader=PyrogueLoader)
+            except yaml.constructor.ConstructorError:
+                log.warning("YAML contained an unsafe or unrecognised tag; returning None")
+                return None
 
 
 def dataToYaml(data: Any) -> str:
