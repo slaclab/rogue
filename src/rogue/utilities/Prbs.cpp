@@ -147,10 +147,17 @@ void ru::Prbs::setTaps(uint32_t tapCnt, uint8_t* taps) {
 
     std::lock_guard<std::mutex> lockT(pMtx_);
 
+    // Allocate the new tap table BEFORE freeing the old one.  Otherwise an
+    // OOM here would leave taps_ == nullptr while leaving Prbs alive, and
+    // any concurrent flfsr() reader (the TX worker, acceptFrame()) would
+    // dereference the null table.  Strong exception guarantee: on failure
+    // the existing taps_ / tapCnt_ are unchanged.
+    uint8_t* newTaps = reinterpret_cast<uint8_t*>(malloc(sizeof(uint8_t) * tapCnt));
+    if (newTaps == nullptr) throw(rogue::GeneralError("Prbs::setTaps", "Failed to allocate taps_ buffer"));
+
     free(taps_);
+    taps_   = newTaps;
     tapCnt_ = tapCnt;
-    taps_   = reinterpret_cast<uint8_t*>(malloc(sizeof(uint8_t) * tapCnt));
-    if (taps_ == nullptr) throw(rogue::GeneralError("Prbs::setTaps", "Failed to allocate taps_ buffer"));
 
     for (i = 0; i < tapCnt_; i++) taps_[i] = taps[i];
 }
