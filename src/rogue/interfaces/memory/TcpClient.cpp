@@ -117,7 +117,7 @@ rim::TcpClient::TcpClient(std::string addr, uint16_t port, bool waitReady) : rim
 
         // Start rx thread
         threadEn_     = true;
-        this->thread_ = new std::thread(&rim::TcpClient::runThread, this);
+        this->thread_ = std::make_unique<std::thread>(&rim::TcpClient::runThread, this);
 
         // Set a thread name
 #ifndef __MACH__
@@ -131,13 +131,12 @@ rim::TcpClient::TcpClient(std::string addr, uint16_t port, bool waitReady) : rim
         // a transaction into Python, and joining while holding the GIL would
         // deadlock.
         threadEn_ = false;
-        if (thread_ != nullptr) {
+        if (thread_) {
             {
                 rogue::GilRelease noGil;
                 thread_->join();
             }
-            delete thread_;
-            thread_ = nullptr;
+            thread_.reset();
         }
         if (zmqResp_ != nullptr) {
             zmq_close(zmqResp_);
@@ -170,8 +169,7 @@ void rim::TcpClient::stop() {
         rogue::GilRelease noGil;
         threadEn_ = false;
         thread_->join();
-        delete thread_;
-        thread_ = nullptr;
+        thread_.reset();
         zmq_close(this->zmqResp_);
         zmqResp_ = nullptr;
         zmq_close(this->zmqReq_);

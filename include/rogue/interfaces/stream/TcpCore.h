@@ -118,8 +118,8 @@ class TcpCore : public rogue::interfaces::stream::Master, public rogue::interfac
     /** @brief Destroys the bridge core and releases resources. */
     ~TcpCore();
 
-    /** @brief Closes active bridge connections. */
-    void close();
+    /** @brief Closes active bridge connections. Deprecated; use stop(). */
+    [[deprecated("Use stop() instead")]] void close();
 
     /** @brief Stops the interface and worker thread. */
     void stop();

@@ -170,7 +170,7 @@ rogue::interfaces::ZmqClient::ZmqClient(const std::string& addr, uint16_t port, 
             log_->info("Connected to Rogue server at ports %" PRIu16 ":%" PRIu32, port, reqPort);
 
             threadEn_ = true;
-            thread_   = new std::thread(&rogue::interfaces::ZmqClient::runThread, this);
+            thread_   = std::make_unique<std::thread>(&rogue::interfaces::ZmqClient::runThread, this);
         }
         running_ = true;
     } catch (...) {
@@ -202,8 +202,7 @@ void rogue::interfaces::ZmqClient::stop() {
             waitRetry_ = false;
             threadEn_  = false;
             thread_->join();
-            delete thread_;
-            thread_ = nullptr;
+            thread_.reset();
         }
         if (!doString_) zmq_close(this->zmqSub_);
         zmq_close(this->zmqReq_);

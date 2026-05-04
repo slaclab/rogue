@@ -104,7 +104,7 @@ rim::TcpServer::TcpServer(std::string addr, uint16_t port) {
                                 this->respAddr_.c_str());
 
         threadEn_     = true;
-        this->thread_ = new std::thread(&rim::TcpServer::runThread, this);
+        this->thread_ = std::make_unique<std::thread>(&rim::TcpServer::runThread, this);
 
         // Set a thread name
 #ifndef __MACH__
@@ -118,13 +118,12 @@ rim::TcpServer::TcpServer(std::string addr, uint16_t port) {
         // a transaction into Python, and joining while holding the GIL would
         // deadlock.
         threadEn_ = false;
-        if (thread_ != nullptr) {
+        if (thread_) {
             {
                 rogue::GilRelease noGil;
                 thread_->join();
             }
-            delete thread_;
-            thread_ = nullptr;
+            thread_.reset();
         }
         if (zmqResp_ != nullptr) {
             zmq_close(zmqResp_);
@@ -162,8 +161,7 @@ void rim::TcpServer::stop() {
         rogue::GilRelease noGil;
         threadEn_ = false;
         thread_->join();
-        delete thread_;
-        thread_ = nullptr;
+        thread_.reset();
         this->bridgeLog_->debug("Stopping TCP memory bridge. request=%s response=%s",
                                 this->reqAddr_.c_str(),
                                 this->respAddr_.c_str());
@@ -286,8 +284,13 @@ void rim::TcpServer::runThread() {
             zmq_msg_init_size(&(msg[5]), result.length());
             std::memcpy(zmq_msg_data(&(msg[5])), result.c_str(), result.length());
 
-            // Send message
-            for (x = 0; x < 6; x++) zmq_sendmsg(this->zmqResp_, &(msg[x]), (x == 5) ? 0 : ZMQ_SNDMORE);
+            // Send message; check return value to detect partial-send failures.
+            for (x = 0; x < 6; x++) {
+                if (zmq_sendmsg(this->zmqResp_, &(msg[x]), (x == 5) ? 0 : ZMQ_SNDMORE) < 0) {
+                    bridgeLog_->warning("zmq_sendmsg failed on part %" PRIu32 " for id=%" PRIu32 ": %s",
+                                        x, id, zmq_strerror(zmq_errno()));
+                }
+            }
         } else {
             for (x = 0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
         }

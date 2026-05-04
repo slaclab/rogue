@@ -111,8 +111,8 @@ void rogue::interfaces::ZmqServer::start() {
                 this->basePort_ + 2);
 
     this->threadEn_ = true;
-    this->rThread_  = new std::thread(&rogue::interfaces::ZmqServer::runThread, this);
-    this->sThread_  = new std::thread(&rogue::interfaces::ZmqServer::strThread, this);
+    this->rThread_  = std::make_unique<std::thread>(&rogue::interfaces::ZmqServer::runThread, this);
+    this->sThread_  = std::make_unique<std::thread>(&rogue::interfaces::ZmqServer::strThread, this);
 
     // Send empty frame
     dummy = "null\n";
@@ -126,15 +126,13 @@ void rogue::interfaces::ZmqServer::stop() {
         log_->info("Waiting for server thread to exit");
         // Null-guard: a bad_alloc on the second start()-allocated thread leaves
         // one pointer valid and the other null.
-        if (rThread_ != nullptr) {
+        if (rThread_) {
             rThread_->join();
-            delete rThread_;
-            rThread_ = nullptr;
+            rThread_.reset();
         }
-        if (sThread_ != nullptr) {
+        if (sThread_) {
             sThread_->join();
-            delete sThread_;
-            sThread_ = nullptr;
+            sThread_.reset();
         }
         log_->info("Closing pub socket");
         zmq_close(this->zmqPub_);
