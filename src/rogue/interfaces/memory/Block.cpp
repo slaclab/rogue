@@ -2293,6 +2293,12 @@ bp::object rim::Block::getFloat8Py(rim::Variable* var, int32_t index) {
 
 // Set data using float8
 void rim::Block::setFloat8(const float& val, rim::Variable* var, int32_t index) {
+    // Guard NaN/Inf inputs before E4M3 conversion to avoid UB
+    if (!std::isfinite(val))
+        throw(rogue::GeneralError::create("Block::setFloat8",
+                                          "Non-finite value (NaN or Inf) for %s",
+                                          var->name_.c_str()));
+
     // Check range
     if ((var->minValue_ != 0 || var->maxValue_ != 0) && (val > var->maxValue_ || val < var->minValue_))
         throw(rogue::GeneralError::create("Block::setFloat8",
@@ -3166,6 +3172,12 @@ bp::object rim::Block::getFixedPy(rim::Variable* var, int32_t index) {
 
 // Set data using fixed point
 void rim::Block::setFixed(const double& val, rim::Variable* var, int32_t index) {
+    // Guard NaN/Inf before round() to prevent UB in static_cast<int64_t>
+    if (!std::isfinite(val))
+        throw(rogue::GeneralError::create("Block::setFixed",
+                                          "Non-finite value (NaN or Inf) for %s",
+                                          var->name_.c_str()));
+
     // Check range
     if ((var->minValue_ != 0 || var->maxValue_ != 0) && (val > var->maxValue_ || val < var->minValue_))
         throw(rogue::GeneralError::create("Block::setFixed",
@@ -3217,6 +3229,12 @@ double rim::Block::getFixed(rim::Variable* var, int32_t index) {
 
 // Set data using unsigned fixed point
 void rim::Block::setUFixed(const double& val, rim::Variable* var, int32_t index) {
+    // Guard NaN/Inf before range checks to avoid UB in comparisons and cast
+    if (!std::isfinite(val))
+        throw(rogue::GeneralError::create("Block::setUFixed",
+                                          "Non-finite value (NaN or Inf) for %s",
+                                          var->name_.c_str()));
+
     // Check range
     if ((var->minValue_ != 0 || var->maxValue_ != 0) && (val > var->maxValue_ || val < var->minValue_))
         throw(rogue::GeneralError::create("Block::setUFixed",
