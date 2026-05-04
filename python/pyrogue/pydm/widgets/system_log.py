@@ -81,7 +81,10 @@ class SystemLog(PyDMFrame):
 
     def value_changed(self, new_val: str) -> None:
         """Render JSON log entries into the tree widget."""
-        lst = json.loads(new_val)
+        try:
+            lst = json.loads(new_val)
+        except json.JSONDecodeError:
+            return
 
         self._systemLog.clear()
 
