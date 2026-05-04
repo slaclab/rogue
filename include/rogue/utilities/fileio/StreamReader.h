@@ -63,7 +63,7 @@ class StreamReader : public rogue::interfaces::stream::Master {
 
     //! \cond INTERNAL
   protected:
-    std::thread* readThread_ = nullptr;
+    std::unique_ptr<std::thread> readThread_;
     std::atomic<bool> threadEn_{false};
     //! \endcond
 

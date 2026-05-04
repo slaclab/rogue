@@ -45,6 +45,7 @@
 #include <string>
 #include <thread>
 #include <utility>
+#include <vector>
 
 #include "rogue/EnableSharedFromThis.h"
 #include "rogue/Logging.h"
@@ -105,7 +106,7 @@ class StreamWriter : public rogue::EnableSharedFromThis<rogue::utilities::fileio
     uint32_t buffSize_;
 
     // Write buffer storage.
-    uint8_t* buffer_;
+    std::vector<uint8_t> buffer_;
 
     // Number of bytes currently staged in write buffer.
     uint32_t currBuffer_;

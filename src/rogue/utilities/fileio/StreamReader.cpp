@@ -92,7 +92,7 @@ void ruf::StreamReader::open(std::string file) {
     active_   = true;
     threadEn_ = true;
     try {
-        readThread_ = new std::thread(&StreamReader::runThread, this);
+        readThread_ = std::make_unique<std::thread>(&StreamReader::runThread, this);
     } catch (...) {
         active_   = false;
         threadEn_ = false;
@@ -129,8 +129,10 @@ bool ruf::StreamReader::nextFile() {
 
 //! Close a data file
 void ruf::StreamReader::close() {
+    // Must NOT hold mtx_ here: intClose() joins readThread_, and runThread()
+    // acquires mtx_ on exit (to clear active_ and notify cond_).  Holding the
+    // lock during join() would deadlock.
     rogue::GilRelease noGil;
-    std::unique_lock<std::mutex> lock(mtx_);
     intClose();
 }
 
@@ -141,11 +143,10 @@ bool ruf::StreamReader::isOpen() {
 
 //! Close a data file
 void ruf::StreamReader::intClose() {
-    if (readThread_ != NULL) {
+    if (readThread_) {
         threadEn_ = false;
         readThread_->join();
-        delete readThread_;
-        readThread_ = NULL;
+        readThread_.reset();
     }
     if (fd_ >= 0) ::close(fd_);
 }
@@ -205,6 +206,15 @@ void ruf::StreamReader::runThread() {
             flags = meta & 0xFFFF;
             error = (meta >> 16) & 0xFF;
             chan  = (meta >> 24) & 0xFF;
+
+            // Upper-bound guard: reject implausibly large frames from corrupted files.
+            // kMaxFrameSize = 256 MiB; prevents huge allocations on corrupt data.
+            static constexpr uint32_t kMaxFrameSize = 0x10000000u;
+            if (size > kMaxFrameSize) {
+                log.warning("Rejecting oversized frame %" PRIu32 " > 256 MiB", size);
+                err = true;
+                break;
+            }
 
             // Request frame
             frame = reqFrame(size, true);

@@ -94,7 +94,7 @@ ruf::StreamWriter::StreamWriter() {
     buffSize_   = 0;
     currSize_   = 0;
     totSize_    = 0;
-    buffer_     = NULL;
+    // buffer_ (std::vector) default-constructs empty; no explicit init needed.
     frameCount_ = 0;
     bandwidthBytes_ = 0;
     currBuffer_ = 0;
@@ -186,17 +186,14 @@ void ruf::StreamWriter::setBufferSize(uint32_t size) {
         // Flush data out of current buffer
         flush();
 
-        // Free old buffer
-        if (buffer_ != NULL) free(buffer_);
+        // Release old buffer and resize
+        buffer_.clear();
+        buffer_.shrink_to_fit();
         buffSize_ = 0;
 
         // Buffer is enabled
         if (size != 0) {
-            // Create new buffer
-            if ((buffer_ = reinterpret_cast<uint8_t*>(malloc(size))) == NULL)
-                throw(rogue::GeneralError::create("StreamWriter::setBufferSize",
-                                                  "Failed to allocate buffer with size = %" PRIu32,
-                                                  size));
+            buffer_.resize(size);
             buffSize_ = size;
         }
     }
@@ -369,7 +366,7 @@ void ruf::StreamWriter::intWrite(void* data, uint32_t size) {
         totSize_ += size;
         // Append to buffer if non zero
     } else if (buffSize_ > 0 && size > 0) {
-        std::memcpy(buffer_ + currBuffer_, data, size);
+        std::memcpy(buffer_.data() + currBuffer_, data, size);
         currBuffer_ += size;
     }
 
@@ -410,7 +407,7 @@ void ruf::StreamWriter::checkSize(uint32_t size) {
 //! Flush file
 void ruf::StreamWriter::flush() {
     if (currBuffer_ > 0) {
-        if (write(fd_, buffer_, currBuffer_) != static_cast<int32_t>(currBuffer_)) {
+        if (write(fd_, buffer_.data(), currBuffer_) != static_cast<int32_t>(currBuffer_)) {
             ::close(fd_);
             fd_ = -1;
             log_->error("Write failed, closing file!");
