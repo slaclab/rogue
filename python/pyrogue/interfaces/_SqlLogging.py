@@ -218,6 +218,7 @@ class SqlReader(object):
         self._log = pr.logInit(cls=self,name="SqlReader",path=None)
         self._url = url
         self._engine = None
+        self._conn = None
 
         try:
             engine = sqlalchemy.create_engine(self._url)
@@ -231,6 +232,7 @@ class SqlReader(object):
         self._varTable = sqlalchemy.Table('variables', self._metadata, autoload_with=engine)
         self._logTable = sqlalchemy.Table('syslog', self._metadata, autoload_with=engine)
         self._engine = engine
+        self._conn = engine.connect()
 
     def getVariable(self) -> None:
         """Fetch and print all variable entries. Placeholder for future enhancement."""
