@@ -1,0 +1,101 @@
+/**
+ * ----------------------------------------------------------------------------
+ * Company    : SLAC National Accelerator Laboratory
+ * ----------------------------------------------------------------------------
+ * Description:
+ * CORE-002 and CORE-003 repros: Logging ctor/dtor use raw lock()/unlock()
+ * rather than std::lock_guard.
+ *
+ * CORE-002 (src/rogue/Logging.cpp:109): Logging::Logging() calls
+ *   levelMtx_.lock(); ... levelMtx_.unlock();
+ * instead of using std::lock_guard<std::mutex>.  If any code between lock
+ * and unlock throws (e.g. loggers_.push_back can throw std::bad_alloc),
+ * the mutex is held forever → all subsequent log operations deadlock.
+ *
+ * CORE-003 (src/rogue/Logging.cpp:121): Logging::~Logging() has the same
+ * raw lock/unlock pattern. Destructors are implicitly noexcept; if the
+ * iterator erase throws, the mutex is abandoned permanently.
+ *
+ * Both tests use source-text inspection to assert that std::lock_guard is
+ * used in the relevant functions. On HEAD raw lock/unlock is present → FAIL.
+ *
+ * The ROGUE_SRC_DIR macro is injected by the CMakeLists via
+ * target_compile_definitions so the source path resolves at test runtime.
+ * ----------------------------------------------------------------------------
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+ *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
+ * contained in the LICENSE.txt file.
+ * ----------------------------------------------------------------------------
+ **/
+#include "rogue/Directives.h"
+
+#include <fstream>
+#include <string>
+
+#include "doctest/doctest.h"
+#include "rogue/Logging.h"
+
+namespace {
+
+/**
+ * @brief Read the entire contents of a file into a std::string.
+ * @return File contents, or empty string if file could not be opened.
+ */
+std::string readFile(const std::string& path) {
+    std::ifstream f(path);
+    if (!f.is_open()) return "";
+    return std::string((std::istreambuf_iterator<char>(f)), std::istreambuf_iterator<char>());
+}
+
+}  // namespace
+
+TEST_CASE("CORE-002: Logging constructor uses std::lock_guard instead of raw lock/unlock") {
+    // Read Logging.cpp and verify the constructor body uses std::lock_guard
+    // (or std::unique_lock / std::scoped_lock) rather than raw levelMtx_.lock().
+    const std::string src = readFile(std::string(ROGUE_SRC_DIR) + "/src/rogue/Logging.cpp");
+
+    REQUIRE_MESSAGE(!src.empty(),
+                    "CORE-002: could not open src/rogue/Logging.cpp (ROGUE_SRC_DIR=",
+                    ROGUE_SRC_DIR, ")");
+
+    // On HEAD: levelMtx_.lock() / levelMtx_.unlock() are present in the ctor body.
+    bool has_raw_lock   = src.find("levelMtx_.lock()")   != std::string::npos;
+    bool has_lock_guard = src.find("std::lock_guard")     != std::string::npos
+                       || src.find("std::unique_lock")    != std::string::npos
+                       || src.find("std::scoped_lock")    != std::string::npos;
+
+    // A properly fixed implementation uses lock_guard and no raw lock/unlock.
+    CHECK_MESSAGE(!has_raw_lock,
+                  "CORE-002: Logging::Logging() uses raw levelMtx_.lock(); "
+                  "if loggers_.push_back() throws, the mutex is held forever. "
+                  "Replace with std::lock_guard<std::mutex>.");
+
+    CHECK_MESSAGE(has_lock_guard,
+                  "CORE-002: Logging.cpp does not use std::lock_guard / "
+                  "std::unique_lock / std::scoped_lock; fix must introduce RAII locking.");
+}
+
+TEST_CASE("CORE-003: Logging destructor uses std::lock_guard instead of raw lock/unlock") {
+    // Read Logging.cpp and verify the destructor body uses RAII locking.
+    // On HEAD the destructor at line 121 calls levelMtx_.lock() / unlock()
+    // directly; destructors are noexcept by default, so an exception from
+    // the erase path would call std::terminate with the mutex abandoned.
+    const std::string src = readFile(std::string(ROGUE_SRC_DIR) + "/src/rogue/Logging.cpp");
+
+    REQUIRE_MESSAGE(!src.empty(),
+                    "CORE-003: could not open src/rogue/Logging.cpp (ROGUE_SRC_DIR=",
+                    ROGUE_SRC_DIR, ")");
+
+    // The simplest discriminator: after the fix, raw levelMtx_.lock() should
+    // not appear at all (both ctor and dtor are fixed together).
+    bool has_raw_lock = src.find("levelMtx_.lock()") != std::string::npos;
+
+    CHECK_MESSAGE(!has_raw_lock,
+                  "CORE-003: Logging::~Logging() uses raw levelMtx_.lock(); "
+                  "in a noexcept destructor this abandons the mutex if erase throws. "
+                  "Replace with std::lock_guard<std::mutex>.");
+}

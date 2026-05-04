@@ -106,10 +106,11 @@ std::string rogue::Logging::normalizeName(const std::string& name) {
 rogue::Logging::Logging(const std::string& name, bool quiet) {
     name_ = normalizeName(name);
 
-    levelMtx_.lock();
-    updateLevelLocked();
-    loggers_.push_back(this);
-    levelMtx_.unlock();
+    {
+        std::lock_guard<std::mutex> lock(levelMtx_);
+        updateLevelLocked();
+        loggers_.push_back(this);
+    }
 
     if (!quiet) warning("Starting logger with level = %" PRIu32, level_.load());
 }
