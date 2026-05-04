@@ -463,7 +463,7 @@ class VirtualClient(rogue.interfaces.ZmqClient):
         self._vcInitialized = True
         VirtualClient.ClientCache[self._cacheKey] = self
 
-        # ZmqClient.__init__ spawns the SUB thread, so every attribute its
+        # The C++ ZMQ base ctor spawns the SUB thread, so every attribute its
         # callbacks (_doUpdate / _requestDone / _checkLinkState) can touch must
         # exist before the base ctor runs.
         self._varListeners = []
@@ -477,6 +477,10 @@ class VirtualClient(rogue.interfaces.ZmqClient):
         self._linkTimeout = self._defaultLinkTimeout()
         self._requestStallTimeout = self._defaultRequestStallTimeout()
 
+        # Setup logging before the C++ base ctor runs so callbacks spawned by
+        # the SUB thread (e.g. _requestDone, _doUpdate) can safely use self._log.
+        self._log = pr.logInit(cls=self,name="VirtualClient",path=None)
+
         self.setTimeoutConfig(linkTimeout=linkTimeout, requestStallTimeout=requestStallTimeout)
 
         try:
@@ -485,9 +489,6 @@ class VirtualClient(rogue.interfaces.ZmqClient):
             self._removeFromCache()
             self._vcInitialized = False
             raise
-
-        # Setup logging
-        self._log = pr.logInit(cls=self,name="VirtualClient",path=None)
 
         # Get root name as a connection test
         self.setTimeout(1000,False)
