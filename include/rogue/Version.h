@@ -20,6 +20,8 @@
 
 #include <stdint.h>
 
+#include <atomic>
+#include <mutex>
 #include <string>
 
 namespace rogue {
@@ -38,10 +40,10 @@ class Version {
 
     static const char _version[];
 
-    static uint32_t _major;
-    static uint32_t _minor;
-    static uint32_t _maint;
-    static uint32_t _devel;
+    static std::atomic<uint32_t> _major;
+    static std::atomic<uint32_t> _minor;
+    static std::atomic<uint32_t> _maint;
+    static std::atomic<uint32_t> _devel;
 
   public:
     /** @brief Default constructor. */
