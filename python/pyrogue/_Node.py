@@ -14,6 +14,7 @@
 #-----------------------------------------------------------------------------
 from __future__ import annotations
 
+import ast
 import collections
 import inspect
 import re
@@ -938,7 +939,14 @@ def _iterateDict(d: dict[str], keys: list[str]) -> list[Node]:
             tmpList[k] = v
 
         try:
-            subList = eval(f'tmpList[{keys[0]}]')
+            # Validate that the slice expression contains only integer
+            # constants and slice syntax — no arbitrary code — before eval.
+            _allowed_nodes = (ast.Constant, ast.Slice, ast.UnaryOp, ast.USub,
+                              ast.Expression, ast.Index)
+            _tree = ast.parse(keys[0], mode='eval')
+            if not all(isinstance(n, _allowed_nodes) for n in ast.walk(_tree)):
+                raise NodeError(f"Forbidden expression in slice: {keys[0]!r}")
+            subList = eval(f'tmpList[{keys[0]}]', {'tmpList': tmpList})
         except Exception:
             subList = []
 
