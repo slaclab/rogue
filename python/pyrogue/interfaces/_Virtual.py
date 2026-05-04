@@ -24,9 +24,17 @@ from typing import Any, Callable
 
 
 class _VirtualSafeUnpickler(_pickle.Unpickler):
-    """Restricted Unpickler that only allows built-in and pyrogue types."""
+    """Restricted Unpickler for VirtualClient pickle payloads.
 
-    # Modules from which any class may be deserialized
+    The allowlist intentionally covers the data shapes Rogue actually ships
+    over the ZMQ control plane: built-in containers and scalars,
+    pyrogue/rogue tree types, ``numpy.ndarray`` (used by RemoteVariable
+    array values), and matplotlib ``Figure`` objects (used by plot
+    variables).  Without these the deserializer would reject legitimate
+    payloads and break array / plot variables on the client side.
+    """
+
+    # Modules whose entire surface is allowed by exact-match.
     _ALLOWED_MODULES = {
         'builtins',
         'pyrogue',
@@ -39,9 +47,21 @@ class _VirtualSafeUnpickler(_pickle.Unpickler):
         'collections.abc',
     }
 
+    # Top-level packages whose entire submodule tree is allowed.  numpy and
+    # matplotlib are needed for ndarray / Figure variable values that Rogue
+    # ships unmodified over the wire.
+    _ALLOWED_TOP_PACKAGES = (
+        'builtins',
+        'pyrogue',
+        'rogue',
+        'collections',
+        'numpy',
+        'matplotlib',
+    )
+
     def find_class(self, module: str, name: str) -> type:
         top = module.split('.')[0]
-        if module in self._ALLOWED_MODULES or top in ('builtins', 'pyrogue', 'rogue', 'collections'):
+        if module in self._ALLOWED_MODULES or top in self._ALLOWED_TOP_PACKAGES:
             return super().find_class(module, name)
         raise _pickle.UnpicklingError(
             "Unsafe pickle payload: {}.{}".format(module, name))

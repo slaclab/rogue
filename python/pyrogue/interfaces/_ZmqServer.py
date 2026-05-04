@@ -21,7 +21,14 @@ from typing import Any
 
 
 class _SafeUnpickler(_pickle.Unpickler):
-    """Restricted Unpickler that only allows built-in safe types."""
+    """Restricted Unpickler for incoming ZMQ request payloads.
+
+    Builtins cover the JSON-shaped scalars and containers used by
+    ``SimpleClient`` calls.  ``numpy.ndarray`` payloads are explicitly
+    permitted because clients (e.g. ``SimpleClient.set(path, value)`` and
+    the PyDM ndarray write path) serialize numpy arrays directly; rejecting
+    those would break legitimate writes.
+    """
 
     _ALLOWED = {
         ('builtins', 'dict'),
@@ -39,8 +46,16 @@ class _SafeUnpickler(_pickle.Unpickler):
         ('builtins', 'complex'),
     }
 
+    # Top-level package names whose submodules are permitted in addition to
+    # the per-(module, name) allowlist above.
+    _ALLOWED_TOP_PACKAGES = (
+        'numpy',
+    )
+
     def find_class(self, module: str, name: str) -> type:
         if (module, name) in self._ALLOWED:
+            return super().find_class(module, name)
+        if module.split('.')[0] in self._ALLOWED_TOP_PACKAGES:
             return super().find_class(module, name)
         raise _pickle.UnpicklingError(
             f"Unsafe pickle payload: {module}.{name}")
