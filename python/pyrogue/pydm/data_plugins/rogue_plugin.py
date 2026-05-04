@@ -129,6 +129,7 @@ class RogueConnection(PyDMConnection):
         self._enum   = None
         self._notDev = False
         self._address = channel.address
+        self._client = None
 
         if utilities.is_pydm_app():
             self._client = pyrogue.interfaces.VirtualClient(self._host, self._port)
@@ -150,7 +151,8 @@ class RogueConnection(PyDMConnection):
                 self._int = True
 
         self.add_listener(channel)
-        self._client.addLinkMonitor(self.linkState)
+        if self._client is not None:
+            self._client.addLinkMonitor(self.linkState)
 
     def linkState(self, state: bool) -> None:
         """Emit PyDM connection state updates from link-monitor callbacks."""
