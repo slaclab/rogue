@@ -236,7 +236,13 @@ void rogue::Logging::intLog(uint32_t level, const char* fmt, va_list args) {
                 logger.attr("handle")(logging.attr("makeLogRecord")(record));
             }
         } catch (const bp::error_already_set&) {
-            PyErr_Print();
+            // Capture the Python exception details and re-raise so the caller
+            // sees the failure rather than having it silently discarded.
+            PyObject *ptype = nullptr, *pvalue = nullptr, *ptraceback = nullptr;
+            PyErr_Fetch(&ptype, &pvalue, &ptraceback);
+            PyErr_NormalizeException(&ptype, &pvalue, &ptraceback);
+            PyErr_Restore(ptype, pvalue, ptraceback);
+            throw bp::error_already_set();
         }
     }
 #endif
