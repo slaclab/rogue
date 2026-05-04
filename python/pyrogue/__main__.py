@@ -136,5 +136,8 @@ else:
     elif args.cmd == 'exec':
         ret = client.exec(args.path,args.value)
 
+    else:
+        ret = None
+
     if ret is not None:
         print(f'\nRet = {ret}')
