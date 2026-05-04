@@ -85,9 +85,14 @@ void ru::StreamUnZip::acceptFrame(ris::FramePtr frame) {
     strm.next_out  = reinterpret_cast<char*>((*wBuff)->begin());
     strm.avail_out = (*wBuff)->getAvailable();
 
+    // Track output bytes manually to avoid relying on 32-bit struct fields.
+    uint32_t outBytes = 0;
+
     try {
         do {
-            ret = BZ2_bzDecompress(&strm);
+            uint32_t availBefore = strm.avail_out;
+            ret                  = BZ2_bzDecompress(&strm);
+            outBytes += availBefore - strm.avail_out;
 
             if ((ret != BZ_STREAM_END) && (ret != BZ_OK))
                 throw(rogue::GeneralError::create("StreamUnZip::acceptFrame",
@@ -125,10 +130,8 @@ void ru::StreamUnZip::acceptFrame(ris::FramePtr frame) {
         throw;
     }
 
-    const uint32_t totalOut = strm.total_out_lo32;
     BZ2_bzDecompressEnd(&strm);
-
-    newFrame->setPayload(totalOut);
+    newFrame->setPayload(outBytes);
     newFrame->setError(frame->getError());
     newFrame->setChannel(frame->getChannel());
     newFrame->setFlags(frame->getFlags());

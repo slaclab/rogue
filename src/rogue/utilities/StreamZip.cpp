@@ -85,11 +85,18 @@ void ru::StreamZip::acceptFrame(ris::FramePtr frame) {
     strm.next_out  = reinterpret_cast<char*>((*wBuff)->begin());
     strm.avail_out = (*wBuff)->getAvailable();
 
+    // Track output bytes manually to avoid relying on 32-bit struct fields.
+    uint32_t outBytes = 0;
+
     // Use the iterators to move data
     done = false;
     do {
-        if ((ret = BZ2_bzCompress(&strm, (done) ? BZ_FINISH : BZ_RUN)) == BZ_SEQUENCE_ERROR)
+        uint32_t availBefore = strm.avail_out;
+        ret = BZ2_bzCompress(&strm, (done) ? BZ_FINISH : BZ_RUN);
+        if (ret == BZ_SEQUENCE_ERROR || ret == BZ_PARAM_ERROR || ret < 0)
             throw(rogue::GeneralError::create("StreamZip::acceptFrame", "Compression runtime error %" PRIi32, ret));
+
+        outBytes += availBefore - strm.avail_out;
 
         // Update read buffer if necessary
         if (strm.avail_in == 0 && (!done)) {
@@ -115,8 +122,8 @@ void ru::StreamZip::acceptFrame(ris::FramePtr frame) {
         }
     } while (ret != BZ_STREAM_END);
 
-    // Update output frame
-    newFrame->setPayload(strm.total_out_lo32);
+    // Update output frame using manually tracked byte count.
+    newFrame->setPayload(outBytes);
     newFrame->setError(frame->getError());
     newFrame->setChannel(frame->getChannel());
     newFrame->setFlags(frame->getFlags());
