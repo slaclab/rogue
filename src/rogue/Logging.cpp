@@ -79,8 +79,8 @@ uint32_t rogue::Logging::gblLevel_ = rogue::Logging::Error;
 // Logging level lock
 std::mutex rogue::Logging::levelMtx_;
 
-// Filter list
-std::vector<rogue::LogFilter*> rogue::Logging::filters_;
+// Filter list (unique_ptr for RAII ownership)
+std::vector<std::unique_ptr<rogue::LogFilter>> rogue::Logging::filters_;
 
 // Active loggers
 std::vector<rogue::Logging*> rogue::Logging::loggers_;
@@ -128,12 +128,11 @@ rogue::Logging::~Logging() {
 }
 
 void rogue::Logging::updateLevelLocked() {
-    std::vector<rogue::LogFilter*>::iterator it;
     uint32_t level = gblLevel_;
 
-    for (it = filters_.begin(); it < filters_.end(); ++it) {
-        if (name_.find((*it)->name_) == 0) {
-            if ((*it)->level_ < level) level = (*it)->level_;
+    for (const auto& flt : filters_) {
+        if (name_.find(flt->name_) == 0) {
+            if (flt->level_ < level) level = flt->level_;
         }
     }
 
@@ -153,9 +152,7 @@ void rogue::Logging::setFilter(const std::string& name, uint32_t level) {
 
     std::lock_guard<std::mutex> lock(levelMtx_);
 
-    rogue::LogFilter* flt = new rogue::LogFilter(normalizeName(name), level);
-
-    filters_.push_back(flt);
+    filters_.push_back(std::make_unique<rogue::LogFilter>(normalizeName(name), level));
 
     for (it = loggers_.begin(); it < loggers_.end(); ++it) (*it)->updateLevelLocked();
 }
