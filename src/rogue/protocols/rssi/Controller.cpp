@@ -394,13 +394,9 @@ void rpr::Controller::applicationRx(ris::FramePtr frame) {
     }
 
     // Wait while busy either by flow control or buffer starvation.
-    // Previously polled with usleep(10); replaced with a condvar wait_for so
-    // the thread blocks until stCond_.notify_all() fires (or 10 µs elapses)
-    // rather than burning CPU on a tight spin.
     {
         std::unique_lock<std::mutex> lk(stMtx_);
         while (txListCount_ >= curMaxBuffers_) {
-            // usleep(10) — replaced by condvar wait_for for CPU efficiency
             stCond_.wait_for(lk, std::chrono::microseconds(10),
                              [this] { return txListCount_ < curMaxBuffers_; });
             if (timePassed(startTime, timeout_)) {
@@ -578,9 +574,4 @@ uint16_t rpr::Controller::curNullTout() {
     return curNullTout_;
 }
 
-// Lower-half implementation: state machine, retransmit, flow-control, timer,
-// and OOO queue management.  Extracted to reduce Controller.cpp line count
-// below the 600-line maintainability threshold.
 #include "ControllerImpl.hpp"  // NOLINT(build/include_subdir)
-
-// End of Controller.cpp — lower-half implementations are in ControllerImpl.hpp

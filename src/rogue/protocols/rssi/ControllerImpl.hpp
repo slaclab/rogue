@@ -3,10 +3,9 @@
  * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
- * RSSI Controller — lower half: state machine, retransmit, flow control,
- * timer, and OOO queue management.  Extracted from Controller.cpp to bring
- * the primary source file below the 600-line maintainability threshold.
- * Included only by Controller.cpp; not a public header.
+ * RSSI Controller — lower-half implementation (state machine, retransmit,
+ * flow control, timer, OOO queue management).  Included only by
+ * Controller.cpp; not a public header.
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to
  * the license terms in the LICENSE.txt file found in the top-level directory

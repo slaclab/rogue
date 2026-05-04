@@ -119,10 +119,7 @@ void rps::SrpV3Emulation::runThread() {
 }
 
 //! Allocate a new 4K page filled with random data
-// Previously used raw malloc(0x1000); now uses unique_ptr<uint8_t[]> for RAII.
 uint8_t* rps::SrpV3Emulation::allocatePage(uint64_t addr4k) {
-    // Allocate 4K page with RAII so the memory is freed on any exception path
-    // before the raw pointer is stored in memMap_.
     std::unique_ptr<uint8_t[]> page = std::make_unique<uint8_t[]>(0x1000);
 
     // Fill with random data to emulate uninitialized hardware memory
