@@ -74,7 +74,7 @@ rps::SrpV3Emulation::~SrpV3Emulation() {
 
     MemoryMap::iterator it = memMap_.begin();
     while (it != memMap_.end()) {
-        free(it->second);
+        delete[] it->second;
         ++it;
     }
 }
@@ -112,7 +112,21 @@ void rps::SrpV3Emulation::runThread() {
             queue_.pop();
         }
 
-        processFrame(frame);
+        // processFrame() may invoke allocatePage(), which uses
+        // std::make_unique<uint8_t[]> and therefore throws std::bad_alloc
+        // on OOM (rather than returning nullptr as the previous malloc()
+        // path did).  An unhandled exception escaping the worker thread
+        // calls std::terminate() per [thread.thread.member]; catch and
+        // log instead so the worker drops the offending frame and
+        // continues, matching the project-wide
+        // "background-thread exceptions are caught and logged" contract.
+        try {
+            processFrame(frame);
+        } catch (const std::exception& e) {
+            log_->error("Dropped frame on exception in processFrame: %s", e.what());
+        } catch (...) {
+            log_->error("Dropped frame on unknown exception in processFrame");
+        }
     }
 
     log_->debug("Worker thread stopped");
@@ -120,21 +134,32 @@ void rps::SrpV3Emulation::runThread() {
 
 //! Allocate a new 4K page filled with random data
 uint8_t* rps::SrpV3Emulation::allocatePage(uint64_t addr4k) {
-    uint8_t* page = reinterpret_cast<uint8_t*>(malloc(0x1000));
-    if (page == nullptr) {
-        log_->error("Failed to allocate page at 0x%" PRIx64, addr4k);
-        return nullptr;
-    }
+    std::unique_ptr<uint8_t[]> page = std::make_unique<uint8_t[]>(0x1000);
 
     // Fill with random data to emulate uninitialized hardware memory
     std::mt19937 gen(std::random_device {}());
-    uint32_t* p32 = reinterpret_cast<uint32_t*>(page);
+    uint32_t* p32 = reinterpret_cast<uint32_t*>(page.get());
     for (size_t i = 0; i < 0x1000 / 4; i++) p32[i] = gen();
 
-    memMap_.insert(std::make_pair(addr4k, page));
-    totAlloc_++;
-    log_->debug("Allocating page at 0x%" PRIx64 ". Total pages %" PRIu32, addr4k, totAlloc_);
-    return page;
+    // Insert the raw pointer into the map and only release ownership when
+    // insertion actually took place.  std::map::insert is a no-op when the
+    // key already exists; without inspecting result.second the unique_ptr
+    // would be released even though the new buffer is not in the map,
+    // leaking it.  A throwing insert (e.g. std::bad_alloc on the new map
+    // node) is also handled because ownership has not been released yet,
+    // so stack unwinding frees the buffer.
+    auto result = memMap_.emplace(addr4k, page.get());
+    if (result.second) {
+        page.release();
+        totAlloc_++;
+        log_->debug("Allocating page at 0x%" PRIx64 ". Total pages %" PRIu32, addr4k, totAlloc_);
+    } else {
+        log_->debug("Page at 0x%" PRIx64 " already present; reusing existing buffer", addr4k);
+    }
+    // Return the buffer that the map actually owns (existing or newly
+    // inserted).  page goes out of scope; if it still owns a buffer
+    // (duplicate-key case) it is freed here, never leaked.
+    return result.first->second;
 }
 
 //! Read from internal memory
@@ -152,9 +177,11 @@ void rps::SrpV3Emulation::readMemory(uint64_t address, uint8_t* data, uint32_t s
 
         auto it = memMap_.find(addr4k);
         if (it == memMap_.end()) {
-            // Allocate page with random data on first read (like uninitialized SRAM)
+            // Allocate page with random data on first read (like uninitialized SRAM).
+            // allocatePage() throws std::bad_alloc on OOM (via make_unique);
+            // the worker's runThread try/catch surfaces that as a logged
+            // dropped frame.  A null check here would be dead code.
             uint8_t* page = allocatePage(addr4k);
-            if (page == nullptr) return;
             memcpy(data, page + off4k, size4k);
         } else {
             memcpy(data, it->second + off4k, size4k);
@@ -181,8 +208,10 @@ void rps::SrpV3Emulation::writeMemory(uint64_t address, const uint8_t* data, uin
 
         auto it = memMap_.find(addr4k);
         if (it == memMap_.end()) {
-            uint8_t* page = allocatePage(addr4k);
-            if (page == nullptr) return;
+            // allocatePage() throws std::bad_alloc on OOM; runThread's
+            // try/catch surfaces that as a logged dropped frame.  After
+            // a successful return the page is now in memMap_, so re-find.
+            allocatePage(addr4k);
             it = memMap_.find(addr4k);
         }
 

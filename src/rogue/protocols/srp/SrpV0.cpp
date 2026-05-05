@@ -223,9 +223,10 @@ void rps::SrpV0::acceptFrame(ris::FramePtr frame) {
     // Setup transaction iterator
     rim::TransactionLockPtr lock = tran->lock();
 
-    // Transaction expired
+    // Transaction expired — complete with error so callers do not block forever
     if (tran->expired()) {
         log_->warning("Transaction expired. Id=%" PRIu32, id);
+        tran->error("SrpV0 transaction timeout: Id=%" PRIu32, id);
         return;
     }
     tIter = tran->begin();

@@ -212,7 +212,10 @@ int rpx::JtagDriver::xferRel(uint8_t* txb, unsigned txBytes, Header* phdr, uint8
                 }
                 return got;
             }
-        } catch (rogue::GeneralError&) {}
+        } catch (rogue::GeneralError& e) {
+            // Log and retry; do not silently swallow the error.
+            log_->warning("xferRel attempt %u failed: %s", attempt, e.what());
+        }
     }
     if (!this->done_.load(std::memory_order_acquire))
         throw(rogue::GeneralError::create("JtagDriver::xferRel()", "Timeout error"));

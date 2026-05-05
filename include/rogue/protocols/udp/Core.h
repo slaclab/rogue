@@ -77,7 +77,7 @@ class Core {
     // Transmit select()/send timeout.
     struct timeval timeout_;
 
-    std::thread* thread_ = nullptr;
+    std::unique_ptr<std::thread> thread_;
     std::atomic<bool> threadEn_{false};
 
     // Synchronizes shared socket/address updates in derived classes.

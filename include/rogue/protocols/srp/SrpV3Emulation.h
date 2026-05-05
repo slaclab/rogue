@@ -67,7 +67,10 @@ namespace srp {
  * a transaction lock during its `doTransaction()` call chain.
  *
  * Memory is allocated on demand in 4 KiB pages, similar to
- * `rogue::interfaces::memory::Emulate`.
+ * `rogue::interfaces::memory::Emulate`. Each new page is filled with
+ * random (non-deterministic) data via `std::mt19937` to emulate
+ * uninitialised hardware SRAM; callers must not assume zero-initialisation
+ * of unwritten address ranges.
  *
  * Threading/locking model:
  * - `acceptFrame()` queues frames and returns immediately.
