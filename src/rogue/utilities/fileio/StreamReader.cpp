@@ -21,6 +21,7 @@
 #include <fcntl.h>
 #include <inttypes.h>
 #include <stdint.h>
+#include <sys/stat.h>
 #include <unistd.h>
 
 #include <memory>
@@ -207,13 +208,22 @@ void ruf::StreamReader::runThread() {
             error = (meta >> 16) & 0xFF;
             chan  = (meta >> 24) & 0xFF;
 
-            // Upper-bound guard: reject implausibly large frames from corrupted files.
-            // kMaxFrameSize = 256 MiB; prevents huge allocations on corrupt data.
-            static constexpr uint32_t kMaxFrameSize = 0x10000000u;
-            if (size > kMaxFrameSize) {
-                log.warning("Rejecting oversized frame %" PRIu32 " > 256 MiB", size);
-                err = true;
-                break;
+            // Upper-bound guard: reject frame sizes that exceed the remaining
+            // bytes in the open file. This catches corruption (e.g. a 0xFFFFFFFF
+            // size header) without imposing an artificial cap on legitimate
+            // round-trip with StreamWriter, whose serialized size header spans
+            // the full uint32_t range.
+            struct stat st;
+            off_t cur = ::lseek(fd_, 0, SEEK_CUR);
+            if (cur >= 0 && ::fstat(fd_, &st) == 0 && st.st_size >= cur) {
+                uint64_t remaining = static_cast<uint64_t>(st.st_size - cur);
+                if (size > remaining) {
+                    log.warning("Rejecting oversized frame %" PRIu32 " > %" PRIu64 " remaining file bytes",
+                                size,
+                                remaining);
+                    err = true;
+                    break;
+                }
             }
 
             // Request frame
