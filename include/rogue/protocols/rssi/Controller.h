@@ -79,7 +79,12 @@ class Controller : public rogue::EnableSharedFromThis<rogue::protocols::rssi::Co
     uint8_t locMaxCumAck_;
 
     // Negotiated parameters
-    uint8_t curMaxBuffers_;
+    // curMaxBuffers_ is written by the state thread on connection negotiation
+    // (stateOpen / stClosed paths) and read by applicationRx() under txMtx_;
+    // because txMtx_ does not also guard the writes, the cross-thread access
+    // is a data race for any non-atomic type.  Make it std::atomic<uint8_t>
+    // so the read in the txCond_ predicate is well-defined.
+    std::atomic<uint8_t> curMaxBuffers_;
     uint16_t curMaxSegment_;
     uint16_t curCumAckTout_;
     uint16_t curRetranTout_;

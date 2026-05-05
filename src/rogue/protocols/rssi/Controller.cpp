@@ -405,10 +405,10 @@ void rpr::Controller::applicationRx(ris::FramePtr frame) {
     // wait MUST use txMtx_ (the mutex that guards txListCount_) so the
     // condition variable contract holds: writers in transportRx /
     // transportTx mutate txListCount_ under txMtx_ and notify txCond_ once
-    // the slot reopens.  curMaxBuffers_ is updated only by the state
-    // thread on connection negotiation; on the platforms rogue targets the
-    // 8-bit/uint32_t reads are atomic enough that occasional staleness
-    // here just causes one extra wait_for tick.
+    // the slot reopens.  curMaxBuffers_ is updated by the state thread on
+    // connection negotiation outside this mutex, so it is std::atomic
+    // (declared in Controller.h) to make the cross-thread read well-defined
+    // under the C++ memory model.
     {
         std::unique_lock<std::mutex> lk(txMtx_);
         while (txListCount_ >= curMaxBuffers_) {
