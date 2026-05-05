@@ -68,15 +68,18 @@ def test_streamunzip_uses_64bit_total_out():
 
 
 def test_streamzip_handles_bz_param_error():
-    # StreamZip::acceptFrame at
-    # src/rogue/utilities/StreamZip.cpp line ~91 checks BZ2_bzCompress return
-    # only for BZ_SEQUENCE_ERROR.  BZ_PARAM_ERROR and other non-OK codes are
-    # not handled; a misaligned buffer can trigger BZ_PARAM_ERROR which is
-    # silently ignored, leaving the bzip2 stream initialized without
-    # BZ2_bzCompressEnd being called -> bzip2 state leak.
+    # StreamZip::acceptFrame originally checked BZ2_bzCompress return only for
+    # BZ_SEQUENCE_ERROR; BZ_PARAM_ERROR and other negative codes silently fell
+    # through, so a misaligned-buffer error left the bzip2 stream initialized
+    # without BZ2_bzCompressEnd -> bzip2 state leak.  Two valid fixes:
+    #   (a) Name BZ_PARAM_ERROR explicitly in the state machine.
+    #   (b) Generic negative-code check (e.g. `ret < 0`).  All bzip2 errors
+    #       are negative; this is the canonical generic guard.
     src = _read_src("src/rogue/utilities/StreamZip.cpp")
-    assert "BZ_PARAM_ERROR" in src, (
-        "StreamZip does not handle BZ_PARAM_ERROR; can leak bzip2 "
-        "state on misaligned buffers; state machine should validate all "
-        "BZ2_bzCompress return codes"
+    handles_more_codes = ("BZ_PARAM_ERROR" in src) or ("ret < 0" in src)
+    assert handles_more_codes, (
+        "StreamZip does not catch BZ2_bzCompress error codes beyond "
+        "BZ_SEQUENCE_ERROR; can leak bzip2 state on misaligned buffers.  "
+        "Either name BZ_PARAM_ERROR explicitly or use a generic negative-"
+        "return-code check (ret < 0) together with cleanup."
     )
