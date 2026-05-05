@@ -132,16 +132,24 @@ def test_parseaddress_bounds_check():
     """parseAddress indexes alist[int(data[0])] without bounds check."""
     src = inspect.getsource(rogue_plugin_mod.parseAddress)
 
-    # The unsafe pattern: direct alist[int(data[0])] with no bounds check.
-    has_bounds_check = (
-        "len(alist)" in src
-        or "IndexError" in src
-        or "try:" in src
-    )
+    # A correct fix needs to reject indexes outside [0, len(alist)) — the
+    # original bug was both an out-of-range crash and Python's negative-
+    # indexing silently selecting an arbitrary server (e.g. ``rogue://-1/...``
+    # picking the last entry).  Require evidence of both:
+    #   (a) An upper-bound check against len(alist) OR an explicit
+    #       IndexError raise to surface the failure with a clear message.
+    #   (b) A negative-index reject (``idx < 0`` or ``< 0``-equivalent).
+    # A bare ``"try:"`` clause is intentionally NOT accepted: a
+    # ``try/except IndexError`` silently consumes the failure, which is a
+    # worse bug than the original confusing traceback.
+    has_upper_bound = ("len(alist)" in src) or ("raise IndexError" in src)
+    has_negative_reject = ("idx < 0" in src) or ("< 0" in src)
 
-    assert has_bounds_check, (
-        "parseAddress() indexes alist[int(data[0])] (line 70) "
-        "without a bounds check against len(alist); if ROGUE_SERVERS has "
-        "fewer entries than the numeric index in the channel address, "
-        "raises IndexError with a confusing traceback in the PyDM widget"
+    assert has_upper_bound and has_negative_reject, (
+        "parseAddress() indexes alist[int(data[0])] without a complete "
+        "bounds check; needs both an upper bound (len(alist) or raise "
+        "IndexError) AND a negative-index reject (idx < 0).  Without the "
+        "negative reject, addresses like ``rogue://-1/...`` silently "
+        "select the last ROGUE_SERVERS entry via Python's negative "
+        "indexing rather than reporting invalid input."
     )
