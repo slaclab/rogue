@@ -48,6 +48,18 @@ class _SafeUnpickler(_pickle.Unpickler):
 
     # Top-level package names whose submodules are permitted in addition to
     # the per-(module, name) allowlist above.
+    #
+    # Residual risk (acknowledged and accepted): pickle's REDUCE opcode can
+    # invoke any allowed global as a callable, so a malicious client request
+    # could in principle reach numpy.fromfile / numpy.ctypeslib.load_library
+    # at deserialisation time.  A per-class allowlist is impractical because
+    # ndarray pickle uses numpy.core.multiarray._reconstruct (an internal
+    # function whose path varies across numpy versions) plus dtype/scalar
+    # types that we do not want to chase across releases.  The threat model
+    # for this socket is "the operator chose what binds to the REP port" -
+    # typically loopback or a trusted lab network - and the builtins
+    # narrowing above is what closes the eval/exec arbitrary-code path that
+    # would otherwise be reachable from any picklable payload.
     _ALLOWED_TOP_PACKAGES = (
         'numpy',
     )

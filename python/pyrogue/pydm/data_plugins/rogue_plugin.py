@@ -319,6 +319,17 @@ class RogueConnection(PyDMConnection):
         # __init__ leaves self._client = None when not running under a PyDM
         # application; mirror the addLinkMonitor() guard here so teardown
         # does not crash on those code paths.
+        #
+        # IMPORTANT: do NOT call self._client.stop() / .close() here.
+        # VirtualClient maintains a process-wide ClientCache keyed by
+        # (host, port) (see pyrogue.interfaces._Virtual.VirtualClient.__new__
+        # / ClientCache).  The same cached instance is shared by every
+        # PyDM widget bound to the same Rogue server, so stopping it on a
+        # per-widget remove_listener tears down the REQ/SUB sockets and
+        # monitor thread for unrelated live widgets - that was the
+        # original PYDM-001 regression.  Cache lifetime is owned by the
+        # application (process exit) or by an explicit cache flush, not
+        # by individual PyDM channels.
         if self._client is not None:
             self._client.remLinkMonitor(self.linkState)
         #if channel.value_signal is not None:

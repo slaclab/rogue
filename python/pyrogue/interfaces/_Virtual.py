@@ -82,6 +82,17 @@ class _VirtualSafeUnpickler(_pickle.Unpickler):
     # Top-level packages whose entire submodule tree is allowed.  numpy and
     # matplotlib are needed for ndarray / Figure variable values that Rogue
     # ships unmodified over the wire.
+    #
+    # Residual risk (acknowledged and accepted): pickle's REDUCE opcode can
+    # invoke any allowed global as a callable, so a compromised server could
+    # in principle call e.g. numpy.fromfile / numpy.ctypeslib.load_library
+    # during deserialisation.  Tightening to a per-class allowlist is
+    # impractical here because matplotlib Figure pickling pulls in dozens of
+    # internal classes that vary across matplotlib versions, and reliable
+    # enumeration would break legitimate plot-variable traffic.  The trust
+    # boundary for this socket is therefore "the operator owns both server
+    # and client"; the builtins narrowing above is what closes the eval/exec
+    # ACE path that would otherwise be reachable from any picklable payload.
     _ALLOWED_TOP_PACKAGES = (
         'pyrogue',
         'rogue',
