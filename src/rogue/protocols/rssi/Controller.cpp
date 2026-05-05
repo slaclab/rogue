@@ -426,6 +426,13 @@ void rpr::Controller::applicationRx(ris::FramePtr frame) {
 
     // Transmit
     transportTx(head, true, false);
+
+    // Kick the state thread (waits on stCond_/stMtx_ in runThread) so it
+    // re-evaluates ack scheduling, retransmit timers and null-tx timers
+    // immediately after an application transmit instead of waiting out
+    // its periodic wait_for() timeout.  txCond_ above only wakes the
+    // backpressure waiter; it does not replace this stCond_ signal.
+    stCond_.notify_all();
 }
 
 //! Get state
