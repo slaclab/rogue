@@ -42,15 +42,19 @@ class _VirtualSafeUnpickler(_pickle.Unpickler):
 
     # Per-(module, name) allowlist for builtins. These are the only callable
     # references from the ``builtins`` module a legitimate Rogue payload
-    # ever needs (containers, scalars, NoneType).  Anything else from
-    # ``builtins`` (eval, exec, getattr, __import__, compile, open, ...)
-    # would expose an arbitrary-code-execution path through pickle REDUCE.
+    # ever needs (containers, scalars, NoneType, plus Exception for the
+    # server-side error reply path in ZmqServer._doRequest, which always
+    # wraps failures as builtins.Exception(type_qualified_msg) for pickle
+    # round-trip safety).  Anything else from ``builtins`` (eval, exec,
+    # getattr, __import__, compile, open, ...) would expose an
+    # arbitrary-code-execution path through pickle REDUCE.
     _ALLOWED_BUILTINS = {
         'bool',
         'bytearray',
         'bytes',
         'complex',
         'dict',
+        'Exception',
         'float',
         'frozenset',
         'int',
