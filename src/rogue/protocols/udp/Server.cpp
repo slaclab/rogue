@@ -65,6 +65,21 @@ rpu::Server::Server(uint16_t port, bool jumbo) : rpu::Core(jumbo) {
     if ((fd_ = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
         throw(rogue::GeneralError::create("Server::Server", "Failed to create socket for port %" PRIu16, port_));
 
+    // Validate fd_ fits in fd_set before the worker thread is started.  An fd
+    // returned by socket() can legally exceed FD_SETSIZE on a process with
+    // many open descriptors; deferring the check to runThread() turns that
+    // into an asynchronous throw out of the worker, terminating the process
+    // after the constructor has already returned a "live" object.
+    if (fd_ >= FD_SETSIZE) {
+        const int badFd = fd_;
+        ::close(fd_);
+        fd_ = -1;
+        throw(rogue::GeneralError::create("Server::Server",
+                                          "Socket fd %d >= FD_SETSIZE (%d); reduce open file descriptors",
+                                          badFd,
+                                          static_cast<int>(FD_SETSIZE)));
+    }
+
     // Setup Remote Address
     memset(&locAddr_, 0, sizeof(struct sockaddr_in));
     locAddr_.sin_family      = AF_INET;
@@ -104,7 +119,7 @@ rpu::Server::Server(uint16_t port, bool jumbo) : rpu::Core(jumbo) {
 
     threadEn_ = true;
     try {
-        thread_ = new std::thread(&rpu::Server::runThread, this, std::weak_ptr<int>(scopePtr));
+        thread_ = std::make_unique<std::thread>(&rpu::Server::runThread, this, std::weak_ptr<int>(scopePtr));
     } catch (...) {
         threadEn_ = false;
         ::close(fd_);
@@ -124,15 +139,12 @@ rpu::Server::~Server() {
 }
 
 void rpu::Server::stop() {
-    if (threadEn_) {
-        threadEn_ = false;
-        // close() before join() unblocks the worker's recvfrom(). Defer fd_ = -1
-        // until after join so a final FD_SET(fd_) does not see -1.
+    threadEn_ = false;
+    if (thread_ && thread_->joinable()) {
         rogue::GilRelease noGil;
         ::close(fd_);
         thread_->join();
-        delete thread_;
-        thread_ = nullptr;
+        thread_.reset();
         fd_ = -1;
         udpLog_->debug("Stopping UDP server on local port %" PRIu16, port_);
     }
@@ -186,6 +198,8 @@ void rpu::Server::acceptFrame(ris::FramePtr frame) {
         // but write fails because we did not win the buffer lock
         do {
             // Setup fds for select call
+            if (fd_ < 0 || fd_ >= FD_SETSIZE)
+                throw rogue::GeneralError::create("Server::acceptFrame", "fd_ value %d out of FD_SETSIZE range", fd_);
             FD_ZERO(&fds);
             FD_SET(fd_, &fds);
 
@@ -264,7 +278,18 @@ void rpu::Server::runThread(std::weak_ptr<int> lockPtr) {
                 remAddr_ = tmpAddr;
             }
         } else {
-            // Setup fds for select call
+            // Setup fds for select call.  runThread() has no top-level
+            // catch, so a throw here would call std::terminate.  The
+            // ctor already guarantees fd_ < FD_SETSIZE; this in-loop
+            // check only fires if stop()/close() races with the worker
+            // and toggles fd_ to -1.  In that case log and exit the
+            // worker cleanly so stop() can complete instead of crashing
+            // the process.
+            if (fd_ < 0 || fd_ >= FD_SETSIZE) {
+                udpLog_->error("Server::runThread: fd_ value %d out of FD_SETSIZE range; exiting worker", fd_);
+                threadEn_ = false;
+                break;
+            }
             FD_ZERO(&fds);
             FD_SET(fd_, &fds);
 

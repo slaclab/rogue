@@ -1,4 +1,5 @@
 add_subdirectory(packetizer)
+add_subdirectory(udp)
 
 if (NOT NO_PYTHON)
    add_subdirectory(xilinx)
