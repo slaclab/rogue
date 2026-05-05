@@ -28,7 +28,8 @@ Behavior
   address, size).
 - For write requests: stores payload data in internal memory.
 - For read requests: returns data from internal memory (uninitialized
-  memory reads as zero).
+  pages are filled with random data to emulate uninitialised SRAM;
+  callers must not assume zero-initialisation of unwritten addresses).
 - Sends a response frame with the original header, data payload, and
   a zero status tail indicating success.
 - Posted writes are processed silently with no response frame.
@@ -43,6 +44,9 @@ Threading And Locking
 
 - ``acceptFrame()`` can be invoked from any stream transport thread.
 - Internal memory access is protected by a mutex.
+- Exceptions thrown by ``processFrame()`` (e.g. allocation failure) are
+  caught and logged by the worker thread; the offending frame is dropped
+  and the worker continues processing subsequent frames.
 
 Logging
 =======

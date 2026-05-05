@@ -16,6 +16,8 @@ Threading and locking summary
 
 - ``acceptFrame()`` may run from any stream transport thread.
 - Internal memory access is protected by a mutex.
+- Exceptions in ``processFrame()`` are caught and logged by the worker
+  thread; the offending frame is dropped without terminating the thread.
 
 Python binding
 --------------

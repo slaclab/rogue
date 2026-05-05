@@ -67,7 +67,10 @@ namespace srp {
  * a transaction lock during its `doTransaction()` call chain.
  *
  * Memory is allocated on demand in 4 KiB pages, similar to
- * `rogue::interfaces::memory::Emulate`.
+ * `rogue::interfaces::memory::Emulate`. Each new page is filled with
+ * random (non-deterministic) data via `std::mt19937` to emulate
+ * uninitialised hardware SRAM; callers must not assume zero-initialisation
+ * of unwritten address ranges.
  *
  * Threading/locking model:
  * - `acceptFrame()` queues frames and returns immediately.
@@ -168,8 +171,17 @@ class SrpV3Emulation : public rogue::interfaces::stream::Master,
     /**
      * @brief Allocates a new 4K page filled with random data.
      *
+     * @details
+     * The page is owned by `memMap_`; the returned pointer is non-owning.
+     * If `addr4k` is already present in the map, the existing buffer is
+     * returned and no new allocation is performed.
+     *
      * @param addr4k 4K-aligned base address for the page.
-     * @return Pointer to the allocated page, or nullptr on failure.
+     * @return Non-null pointer to the page owned by `memMap_` (existing or
+     *         newly inserted).
+     * @throws std::bad_alloc if the underlying buffer or map node cannot be
+     *         allocated.  The function never returns `nullptr`; on OOM the
+     *         exception propagates and is logged by `runThread`.
      */
     uint8_t* allocatePage(uint64_t addr4k);
 

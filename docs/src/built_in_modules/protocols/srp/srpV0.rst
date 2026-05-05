@@ -31,7 +31,9 @@ Behavior
   order.
 - If a response is missing, the initiating memory master times out based on the
   configured software timeout (see ``Master.setTimeout()``, microseconds).
-- Late responses that arrive after timeout are treated as expired and ignored.
+- Late responses that arrive after timeout are treated as expired; the
+  transaction is completed with an error so that callers do not block
+  indefinitely.
 - ``SrpV0`` enforces 4-byte alignment and defaults to a 2048-byte max
   transaction size (from constructor ``memory::Slave(4, 2048)``).
 
