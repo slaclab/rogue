@@ -75,8 +75,13 @@ ruf::StreamReader::~StreamReader() {
 //! Open a data file
 void ruf::StreamReader::open(std::string file) {
     rogue::GilRelease noGil;
-    std::unique_lock<std::mutex> lock(mtx_);
+    // Must NOT hold mtx_ across intClose(): runThread() acquires mtx_ on
+    // exit (to clear active_ and notify cond_), so joining the worker
+    // while we own mtx_ would deadlock for the same reason close() must
+    // not.  Drain any prior reader thread first, then take the lock for
+    // the new-file state mutations.
     intClose();
+    std::unique_lock<std::mutex> lock(mtx_);
 
     // Determine if we read a group of files
     if (file.substr(file.find_last_of('.')) == ".1") {
