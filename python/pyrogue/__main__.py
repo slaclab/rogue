@@ -54,12 +54,16 @@ if args.cmd == 'path':
     print(os.path.dirname(__file__))
     exit()
 
-# Common extraction for single server address
+# Common extraction for single server address.  ValueError covers int(...)
+# on a non-numeric port; IndexError covers a missing ':' in --server.
+# ``raise ... from exc`` preserves the original traceback so a malformed
+# server string like ``--server localhost`` shows the underlying parse
+# failure instead of just the wrapper message.
 try:
     host = args.server.split(',')[0].split(':')[0]
     port = int(args.server.split(',')[0].split(':')[1])
-except Exception:
-    raise Exception("Failed to extract server host & port")
+except (ValueError, IndexError) as exc:
+    raise ValueError(f"Failed to extract server host & port from {args.server!r}") from exc
 
 print("Connecting to {}".format(args.server))
 

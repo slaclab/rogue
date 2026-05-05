@@ -471,8 +471,12 @@ def functionWrapper(
         # Build overlapping arg name set (intersection with callArgs)
         overlap = [k for k in fargs if k != 'self' and k in callArgs]
 
-    # handle c++ functions, no args supported for now
-    except Exception:
+    # ``getfullargspec`` raises TypeError on non-Python callables (e.g.
+    # boost::python wrappers).  Narrowing the catch to TypeError lets a
+    # genuine bug introduced into this branch (NameError, AttributeError,
+    # ...) surface as a real failure instead of being silently swallowed
+    # into ``overlap = []``.
+    except TypeError:
         overlap = []
 
     # Build the wrapper using a closure to avoid eval().

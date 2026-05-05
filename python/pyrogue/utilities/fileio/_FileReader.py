@@ -247,8 +247,12 @@ class FileReader(object):
                     else:
                         try:
                             data = numpy.fromfile(self._currFile, dtype=numpy.int8, count=self._header.size)
-                        except Exception:
-                            raise FileReaderException(f'Failed to read data from {self._currFName}')
+                        except (OSError, ValueError) as exc:
+                            # ``raise ... from exc`` preserves the original
+                            # OSError / numpy ValueError so callers see the
+                            # actual filesystem or parse failure, not just
+                            # the FileReaderException wrapper.
+                            raise FileReaderException(f'Failed to read data from {self._currFName}') from exc
 
                         yield (self._header, data)
 
