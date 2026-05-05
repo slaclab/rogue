@@ -27,19 +27,30 @@ def test_hls_parser_zip_slip_audit():
     """_RegInterfParser.parse() uses extractall without zip-slip sanitisation."""
     src = inspect.getsource(parser_mod.parse)
 
-    # A safe implementation sanitises zip entry paths before extraction:
-    # either by filtering out traversal sequences or by passing filter='data'
-    # (Python 3.12+).  Assert at least one mitigation is present.
-    has_mitigation = (
-        "filter=" in src             # Python 3.12+ filter='data'
-        or "os.path.realpath" in src  # manual path canonicalisation
-        or "os.path.abspath" in src   # manual path canonicalisation
-        or ".startswith(" in src      # prefix check after realpath
+    # A safe implementation must either:
+    #   (a) Pass filter='data' to extractall (Python 3.12+), which rejects
+    #       path-traversal entries inside the standard library; OR
+    #   (b) Canonicalise each entry to an absolute path AND verify the
+    #       canonical path is contained within the extraction directory.
+    # A bare prefix check without canonicalisation is NOT sufficient: a
+    # naive `path.startswith("/tmp/out")` lets `/tmp/outside` through.
+    has_filter = "filter=" in src
+    has_canonicalisation = (
+        "os.path.realpath" in src or "os.path.abspath" in src
     )
+    has_containment = (
+        "os.path.commonpath" in src
+        or "is_relative_to" in src
+        or ".startswith(" in src   # safe only when paired with canonicalisation
+    )
+    has_mitigation = has_filter or (has_canonicalisation and has_containment)
 
     assert has_mitigation, (
-        "_RegInterfParser.parse() calls ZipFile.extractall() "
-        "at line 74-75 without any zip-slip sanitisation; a zip entry "
-        "containing path-traversal sequences (e.g.../../evil) can write "
-        "files outside the extraction directory"
+        "_RegInterfParser.parse() calls ZipFile.extractall() without "
+        "zip-slip sanitisation.  A zip entry containing path-traversal "
+        "sequences (e.g. ../../evil) can write files outside the "
+        "extraction directory.  Required mitigation: pass filter='data' "
+        "(Python 3.12+), or canonicalise each member path "
+        "(os.path.realpath / os.path.abspath) AND verify containment "
+        "(os.path.commonpath / Path.is_relative_to / startswith)."
     )
