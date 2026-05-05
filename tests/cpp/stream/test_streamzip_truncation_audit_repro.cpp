@@ -82,14 +82,18 @@ TEST_CASE("StreamZip does not handle BZ_PARAM_ERROR") {
         ROGUE_SRC_DIR "/src/rogue/utilities/StreamZip.cpp");
     REQUIRE_MESSAGE(!src.empty(), "Could not read StreamZip.cpp");
 
-    // FIXED state: BZ_PARAM_ERROR is explicitly checked in the bzip2
-    // state machine so misaligned-buffer errors are caught and the
-    // bzip2 stream is properly torn down.
-    const bool handlesBzParamError =
+    // FIXED state has two valid forms:
+    //   (a) BZ_PARAM_ERROR named explicitly in the state machine.
+    //   (b) Generic negative-code check (`ret < 0`).  All bzip2 errors are
+    //       negative; this is the canonical generic guard.
+    const bool namesBzParamError =
         (src.find("BZ_PARAM_ERROR") != std::string::npos);
-    CHECK_MESSAGE(handlesBzParamError,
-                  "StreamZip state machine does not handle "
-                  "BZ_PARAM_ERROR; BZ2_bzCompress returning BZ_PARAM_ERROR "
-                  "is silently ignored, leaking bzip2 stream state on "
-                  "misaligned buffer inputs");
+    const bool catchesNegativeRet = (src.find("ret < 0") != std::string::npos);
+    const bool handlesMoreCodes   = namesBzParamError || catchesNegativeRet;
+    CHECK_MESSAGE(handlesMoreCodes,
+                  "StreamZip does not catch BZ2_bzCompress error codes beyond "
+                  "BZ_SEQUENCE_ERROR; can leak bzip2 state on misaligned "
+                  "buffers.  Either name BZ_PARAM_ERROR explicitly or use a "
+                  "generic negative-return-code check (ret < 0) together with "
+                  "cleanup.");
 }
