@@ -46,19 +46,18 @@ def test_block_setpyfunc_releases_pybuffer_on_throw():
     """Both setBytes call sites in setPyFunc must Release the Py_buffer on throw."""
     body = _setpyfunc_body()
 
-    # We want every setBytes call inside setPyFunc to be wrapped by a
-    # try/catch that releases the Py_buffer before re-raising.  Match
-    # the actual call expression (not the bare token, which would also
-    # appear in narrative comments).
-    setbytes_calls = re.findall(
-        r"setBytes\(reinterpret_cast<uint8_t\*>\(valueBuf\.buf\)",
-        body,
-    )
+    # Count setBytes call sites broadly so a refactor of the cast syntax
+    # (e.g. ``static_cast`` instead of ``reinterpret_cast``, or hoisting the
+    # cast into a temporary) does not break the regression guard.  The
+    # ``\bsetBytes\s*\([^)]`` pattern requires at least one argument so the
+    # narrative comment ``setBytes()`` does not match.
+    setbytes_calls = re.findall(r"\bsetBytes\s*\([^)]", body)
     assert len(setbytes_calls) >= 2, (
-        f"expected at least 2 setBytes call sites in setPyFunc (list + "
+        f"expected at least 2 setBytes() call sites in setPyFunc (list + "
         f"scalar branches); found {len(setbytes_calls)}"
     )
 
+    # Each call must be wrapped in a ``catch (...) { ... PyBuffer_Release(&valueBuf) ... throw; }``.
     catch_blocks = re.findall(
         r"catch\s*\(\.\.\.\)\s*\{[^}]*PyBuffer_Release\(&valueBuf\)[^}]*throw;\s*\}",
         body,
@@ -92,8 +91,13 @@ def test_block_setbytearraypy_releases_pybuffer_on_throw():
     )
     body = match.group("body")
 
-    assert "setBytes(reinterpret_cast<uint8_t*>(valueBuf.buf)" in body, (
-        "expected setBytes call site in setByteArrayPy"
+    # Match setBytes() broadly so a refactor of the cast syntax does not
+    # break the regression guard; the structural catch+release+throw check
+    # below is what enforces the throw-path cleanup.  Require at least one
+    # argument character so a bare narrative ``setBytes()`` reference does
+    # not match.
+    assert re.search(r"\bsetBytes\s*\([^)]", body), (
+        "expected setBytes() call site in setByteArrayPy"
     )
 
     catch_blocks = re.findall(
