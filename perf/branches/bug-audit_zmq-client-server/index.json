@@ -5,6 +5,14 @@
   "history": [
     {
       "ref_name": "bug-audit/zmq-client-server",
+      "sha": "448b5e90330e145c35e0782d5013ccbda7a7f3bf",
+      "short_sha": "448b5e9",
+      "published_at": "2026-05-05T16:03:26Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/25386891909",
+      "summary_url": "/rogue/perf/branches/bug-audit_zmq-client-server/history/448b5e90330e145c35e0782d5013ccbda7a7f3bf.json"
+    },
+    {
+      "ref_name": "bug-audit/zmq-client-server",
       "sha": "608b0634b356885e39cb8b93c71a03a32b34601b",
       "short_sha": "608b063",
       "published_at": "2026-05-05T15:37:08Z",
@@ -22,10 +30,10 @@
   ],
   "latest": {
     "ref_name": "bug-audit/zmq-client-server",
-    "sha": "608b0634b356885e39cb8b93c71a03a32b34601b",
-    "short_sha": "608b063",
-    "published_at": "2026-05-05T15:37:08Z",
-    "run_url": "https://github.com/slaclab/rogue/actions/runs/25385896810",
+    "sha": "448b5e90330e145c35e0782d5013ccbda7a7f3bf",
+    "short_sha": "448b5e9",
+    "published_at": "2026-05-05T16:03:26Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/25386891909",
     "summary_url": "/rogue/perf/branches/bug-audit_zmq-client-server/latest.json"
   }
 }
