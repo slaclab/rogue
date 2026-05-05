@@ -80,7 +80,12 @@ void rpb::InverterV2::acceptFrame(ris::FramePtr frame) {
 
     // Verify frame payload holds the full tail region before copying.
     // frame->getPayload() is the total byte count; we need header + count tails.
-    if (frame->getPayload() < core.headerSize() * (core.count() + 1)) return;
+    // headerSize() and count() are uint32_t; promote the multiplication to
+    // uint64_t so a crafted oversized batcher frame cannot wrap the product
+    // back below frame->getPayload() and bypass the bounds check.
+    const uint64_t requiredBytes =
+        static_cast<uint64_t>(core.headerSize()) * (static_cast<uint64_t>(core.count()) + 1);
+    if (static_cast<uint64_t>(frame->getPayload()) < requiredBytes) return;
 
     // Copy first tail to head
     std::memcpy(core.beginHeader().ptr(), core.beginTail(0).ptr(), core.headerSize());

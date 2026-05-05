@@ -49,7 +49,7 @@ def _has_tail_payload_guard(src, memcpy_tag):
     if memcpy_lineno is None:
         return False
 
-    search_start = max(0, memcpy_lineno - 15)
+    search_start = max(0, memcpy_lineno - 20)
     preceding = "\n".join(lines[search_start:memcpy_lineno])
 
     # These tokens indicate a runtime payload-size guard.
@@ -70,6 +70,30 @@ def _has_tail_payload_guard(src, memcpy_tag):
             "* core.count()",
         )
     )
+
+
+def _multiplication_is_64bit(src, memcpy_tag):
+    """Return True if the bounds-check multiplication is performed in 64-bit.
+
+    headerSize() and count() both return uint32_t. A crafted oversized
+    batcher frame can wrap ``headerSize() * (count() + 1)`` back below
+    frame->getPayload() so the bounds check passes even though the tail
+    region runs past the payload.  The fix promotes one operand to
+    uint64_t before the multiplication.
+    """
+    lines = src.splitlines()
+    memcpy_lineno = None
+    for i, line in enumerate(lines):
+        if memcpy_tag in line:
+            memcpy_lineno = i
+            break
+    if memcpy_lineno is None:
+        return False
+
+    search_start = max(0, memcpy_lineno - 20)
+    preceding = "\n".join(lines[search_start:memcpy_lineno])
+
+    return ("uint64_t" in preceding) and ("headerSize()" in preceding)
 
 
 def test_batcher_v1_memcpy_bounds_check():
@@ -97,6 +121,13 @@ def test_batcher_v1_memcpy_bounds_check():
         "validates metadata consistency, not frame-buffer availability)"
     )
 
+    assert _multiplication_is_64bit(src, "memcpy(core.beginHeader"), (
+        "V1 batcher bounds-check multiplication is still in 32-bit arithmetic — "
+        "headerSize() * (count() + 1) can wrap on a crafted oversized batcher "
+        "frame and the comparison would then under-approximate the required "
+        "tail bytes; promote one operand to uint64_t before the multiplication"
+    )
+
 
 def test_batcher_v2_memcpy_bounds_check():
     """InverterV2::acceptFrame memcpy lacks runtime frame-size guard.
@@ -116,4 +147,11 @@ def test_batcher_v2_memcpy_bounds_check():
         "V2 batcher memcpy lacks runtime frame-size bounds check — "
         "InverterV2::acceptFrame copies core.headerSize() bytes from tail region "
         "without verifying at least headerSize() bytes are available there"
+    )
+
+    assert _multiplication_is_64bit(src, "memcpy(core.beginHeader"), (
+        "V2 batcher bounds-check multiplication is still in 32-bit arithmetic — "
+        "headerSize() * (count() + 1) can wrap on a crafted oversized batcher "
+        "frame and the comparison would then under-approximate the required "
+        "tail bytes; promote one operand to uint64_t before the multiplication"
     )
