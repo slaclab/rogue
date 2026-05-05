@@ -5,6 +5,14 @@
   "history": [
     {
       "ref_name": "bug-audit/tcp-client-server-core",
+      "sha": "c841bee5c5b1499a9722f5430f88aaaa9e3aadfa",
+      "short_sha": "c841bee",
+      "published_at": "2026-05-05T17:28:13Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/25391347564",
+      "summary_url": "/rogue/perf/branches/bug-audit_tcp-client-server-core/history/c841bee5c5b1499a9722f5430f88aaaa9e3aadfa.json"
+    },
+    {
+      "ref_name": "bug-audit/tcp-client-server-core",
       "sha": "71e67430738104dddc4db0f48bcb5d1310f5f982",
       "short_sha": "71e6743",
       "published_at": "2026-05-05T16:51:47Z",
@@ -38,10 +46,10 @@
   ],
   "latest": {
     "ref_name": "bug-audit/tcp-client-server-core",
-    "sha": "71e67430738104dddc4db0f48bcb5d1310f5f982",
-    "short_sha": "71e6743",
-    "published_at": "2026-05-05T16:51:47Z",
-    "run_url": "https://github.com/slaclab/rogue/actions/runs/25389300260",
+    "sha": "c841bee5c5b1499a9722f5430f88aaaa9e3aadfa",
+    "short_sha": "c841bee",
+    "published_at": "2026-05-05T17:28:13Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/25391347564",
     "summary_url": "/rogue/perf/branches/bug-audit_tcp-client-server-core/latest.json"
   }
 }
