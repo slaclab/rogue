@@ -21,6 +21,7 @@ import logging
 import rogue
 import rogue.interfaces.memory as rim
 import pyrogue as pr
+import pyrogue._Logging as _pr_logging
 
 
 def test_intlog_propagates_python_handler_exception(monkeypatch):
@@ -32,6 +33,9 @@ def test_intlog_propagates_python_handler_exception(monkeypatch):
     This test installs a raising handler and asserts the exception propagates.
     """
     rogue.Logging.setForwardPython(True)
+    # Drop level to Warning for the duration of this test; restore the
+    # gblLevel_ default (Error == 40, see src/rogue/Logging.cpp) afterwards
+    # so subsequent tests are not order-dependent on this mutation.
     rogue.Logging.setLevel(rogue.Logging.Warning)
 
     sentinel = 'rogue-intlog-handler-sentinel'
@@ -60,6 +64,7 @@ def test_intlog_propagates_python_handler_exception(monkeypatch):
         root_log.removeHandler(h)
         root_log.setLevel(old_level)
         rogue.Logging.setForwardPython(False)
+        rogue.Logging.setLevel(rogue.Logging.Error)
 
     assert exception_propagated, (
         "bp::error_already_set was silently swallowed by intLog; "
@@ -74,6 +79,11 @@ def test_logging_basicconfig_called_at_most_once(monkeypatch):
     logging.basicConfig() unconditionally on every invocation. This test
     patches basicConfig with a counter and calls logInit() three times.
     """
+    # Reset the module-global guard so the assertion exercises the new
+    # idempotency check rather than passing vacuously when an earlier
+    # test in the process has already set _LOG_INIT_DONE = True.
+    monkeypatch.setattr(_pr_logging, '_LOG_INIT_DONE', False)
+
     call_count = [0]
     original_basicConfig = logging.basicConfig
 
@@ -88,7 +98,8 @@ def test_logging_basicconfig_called_at_most_once(monkeypatch):
     pr.logInit()
 
     n = call_count[0]
-    assert n <= 1, (
-        f"logInit() called basicConfig() {n} times; expected at most 1. "
-        "basicConfig() should be guarded so repeated logInit() calls are idempotent"
+    assert n == 1, (
+        f"logInit() called basicConfig() {n} times; expected exactly 1 after "
+        "resetting the guard. basicConfig() should be guarded so repeated "
+        "logInit() calls are idempotent."
     )
