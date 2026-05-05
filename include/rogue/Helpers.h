@@ -22,10 +22,6 @@
 /** @brief Connect a stream master to a downstream stream slave. */
 #define rogueStreamConnect(src, dst) src->addSlave(dst);
 
-// Add stream tap, DEPRECATED
-/** @brief Deprecated alias for `rogueStreamConnect`. */
-#define rogueStreamTap(src, dst) src->addSlave(dst);
-
 // Connect stream bi-directionally
 /** @brief Connect two stream endpoints in both directions. */
 #define rogueStreamConnectBiDir(devA, devB) \
@@ -51,6 +47,20 @@ inline void defaultTimeout(struct timeval& tout) {
     tout.tv_sec     = divResult.quot;
     tout.tv_usec    = divResult.rem;
 }
+
+// Marker function whose [[deprecated]] attribute is the trigger for
+// -Wdeprecated-declarations at every rogueStreamTap() call site.  Defining
+// the marker inside namespace rogue keeps the global namespace clean.
+[[deprecated("rogueStreamTap is deprecated; use rogueStreamConnect")]]
+inline void rogueStreamTap_deprecated_notice_() {}
 }  // namespace rogue
+
+// Add stream tap, DEPRECATED
+/** @brief Deprecated alias for `rogueStreamConnect`. */
+//
+// The macro evaluates the [[deprecated]] marker function so any caller of
+// rogueStreamTap() triggers a compile-time -Wdeprecated-declarations
+// diagnostic at the call site.
+#define rogueStreamTap(src, dst) ((void)(::rogue::rogueStreamTap_deprecated_notice_(), src->addSlave(dst)));
 
 #endif
