@@ -85,6 +85,27 @@ rpx::Xvc::Xvc(uint16_t port) : JtagDriver(port), mtu_(1450), threadEn_{false}, s
         throw(rogue::GeneralError::create("Xvc::Xvc()", "pipe2() failed: %s (errno %d)",
                                           strerror(errno), errno));
 #endif
+
+    // Reject wakeFd_ >= FD_SETSIZE synchronously here, before start() is
+    // called.  XvcServer::run / XvcConnection::readTo defensively check
+    // FD_SETSIZE inside the worker thread, but a high fd would only
+    // surface as a silent worker-thread exit while start() returned
+    // success; throwing in the ctor lets the caller see a clean failure.
+    // Mirrors the AxiStreamDma / udp::Client / udp::Server FD_SETSIZE
+    // ctor checks added earlier in this audit.
+    for (int idx = 0; idx < 2; ++idx) {
+        if (wakeFd_[idx] >= FD_SETSIZE) {
+            int badFd = wakeFd_[idx];
+            ::close(wakeFd_[0]);
+            ::close(wakeFd_[1]);
+            wakeFd_[0] = wakeFd_[1] = -1;
+            throw(rogue::GeneralError::create(
+                "Xvc::Xvc()",
+                "wake-pipe fd %d exceeds FD_SETSIZE (%d); too many open files in process",
+                badFd,
+                static_cast<int>(FD_SETSIZE)));
+        }
+    }
 }
 
 //! Destructor

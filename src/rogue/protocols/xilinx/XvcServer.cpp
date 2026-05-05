@@ -50,6 +50,22 @@ rpx::XvcServer::XvcServer(uint16_t port, int wakeFd, JtagDriver* drv, unsigned m
     if ((sd_ = ::socket(AF_INET, SOCK_STREAM, 0)) < 0)
         throw(rogue::GeneralError::create("XvcServer::XvcServer()", "Failed to create socket"));
 
+    // Reject sd_ >= FD_SETSIZE synchronously here, before start()
+    // returns.  The defensive FD_SETSIZE check in run() runs on the
+    // worker thread and would only surface as a silent worker-thread
+    // exit (caught by Xvc::runThread) while the caller saw start()
+    // return success.  Throwing in the ctor lets start() fail fast.
+    if (sd_ >= FD_SETSIZE) {
+        int badFd = sd_;
+        ::close(sd_);
+        sd_ = -1;
+        throw(rogue::GeneralError::create(
+            "XvcServer::XvcServer()",
+            "socket fd %d exceeds FD_SETSIZE (%d); too many open files in process",
+            badFd,
+            static_cast<int>(FD_SETSIZE)));
+    }
+
     if (::setsockopt(sd_, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes))) {
         ::close(sd_);
         sd_ = -1;
