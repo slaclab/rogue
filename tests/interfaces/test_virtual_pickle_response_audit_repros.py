@@ -30,29 +30,40 @@ def _get_method_source(cls, method_name):
 
 def test_virtual_remoteattr_pickle_loads():
     """VirtualClient._remoteAttr uses raw pickle.loads on server response."""
+    import re
+
     from pyrogue.interfaces._Virtual import VirtualClient
 
     src = _get_method_source(VirtualClient, "_remoteAttr")
     assert src, "Could not retrieve source for VirtualClient._remoteAttr"
 
-    assert "pickle.loads" not in src, (
-        "VirtualClient._remoteAttr uses raw pickle.loads on "
-        "attacker-controllable server response bytes (line 682); "
-        "a compromised or spoofed server achieves code execution on the client"
+    # The module imports ``pickle as _pickle`` so ``_pickle.loads(data)``
+    # is just as unsafe as ``pickle.loads(data)`` and would slip past a
+    # literal-token check.  Match either the public name or the alias.
+    unsafe_call = re.search(r"\b_?pickle\.loads\s*\(", src)
+    assert unsafe_call is None, (
+        "VirtualClient._remoteAttr uses raw pickle.loads (or _pickle.loads) "
+        "on attacker-controllable server response bytes; a compromised "
+        "or spoofed server achieves code execution on the client.  Replies "
+        "must funnel through the restricted _virtual_safe_loads() helper."
     )
 
 
 def test_virtual_doupdate_pickle_loads():
     """VirtualClient._doUpdate uses raw pickle.loads on ZMQ SUB bytes."""
+    import re
+
     from pyrogue.interfaces._Virtual import VirtualClient
 
     src = _get_method_source(VirtualClient, "_doUpdate")
     assert src, "Could not retrieve source for VirtualClient._doUpdate"
 
-    assert "pickle.loads" not in src, (
-        "VirtualClient._doUpdate uses raw pickle.loads on "
-        "attacker-controllable ZMQ publish bytes (line 707); "
-        "a publish-channel injection achieves code execution on every subscriber"
+    unsafe_call = re.search(r"\b_?pickle\.loads\s*\(", src)
+    assert unsafe_call is None, (
+        "VirtualClient._doUpdate uses raw pickle.loads (or _pickle.loads) "
+        "on attacker-controllable ZMQ publish bytes; a publish-channel "
+        "injection achieves code execution on every subscriber.  Updates "
+        "must funnel through the restricted _virtual_safe_loads() helper."
     )
 
 
