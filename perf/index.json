@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-05T19:44:03Z",
+  "generated_at": "2026-05-05T19:49:36Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -155,6 +155,45 @@
       }
     },
     {
+      "ref_name": "bug-audit/pyrogue-variable-device",
+      "ref_slug": "bug-audit_pyrogue-variable-device",
+      "latest_url": "/rogue/perf/branches/bug-audit_pyrogue-variable-device/latest.json",
+      "history": [
+        {
+          "ref_name": "bug-audit/pyrogue-variable-device",
+          "sha": "e0dadddebb496480f45b8d37b0000d880e1969a6",
+          "short_sha": "e0daddd",
+          "published_at": "2026-05-05T19:49:36Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/25398308824",
+          "summary_url": "/rogue/perf/branches/bug-audit_pyrogue-variable-device/history/e0dadddebb496480f45b8d37b0000d880e1969a6.json"
+        },
+        {
+          "ref_name": "bug-audit/pyrogue-variable-device",
+          "sha": "7967f81d8a2b147f1ca7840bf9cc2998babc831b",
+          "short_sha": "7967f81",
+          "published_at": "2026-05-05T19:37:38Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/25397486233",
+          "summary_url": "/rogue/perf/branches/bug-audit_pyrogue-variable-device/history/7967f81d8a2b147f1ca7840bf9cc2998babc831b.json"
+        },
+        {
+          "ref_name": "bug-audit/pyrogue-variable-device",
+          "sha": "30439d3a90c20f2dc4e1b94b17e0797b5fa5862b",
+          "short_sha": "30439d3",
+          "published_at": "2026-05-05T14:40:22Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/25381472259",
+          "summary_url": "/rogue/perf/branches/bug-audit_pyrogue-variable-device/history/30439d3a90c20f2dc4e1b94b17e0797b5fa5862b.json"
+        }
+      ],
+      "latest": {
+        "ref_name": "bug-audit/pyrogue-variable-device",
+        "sha": "e0dadddebb496480f45b8d37b0000d880e1969a6",
+        "short_sha": "e0daddd",
+        "published_at": "2026-05-05T19:49:36Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/25398308824",
+        "summary_url": "/rogue/perf/branches/bug-audit_pyrogue-variable-device/latest.json"
+      }
+    },
+    {
       "ref_name": "bug-audit/queue",
       "ref_slug": "bug-audit_queue",
       "latest_url": "/rogue/perf/branches/bug-audit_queue/latest.json",
@@ -262,37 +301,6 @@
         "published_at": "2026-05-05T19:41:28Z",
         "run_url": "https://github.com/slaclab/rogue/actions/runs/25397989368",
         "summary_url": "/rogue/perf/branches/bug-audit_pool/latest.json"
-      }
-    },
-    {
-      "ref_name": "bug-audit/pyrogue-variable-device",
-      "ref_slug": "bug-audit_pyrogue-variable-device",
-      "latest_url": "/rogue/perf/branches/bug-audit_pyrogue-variable-device/latest.json",
-      "history": [
-        {
-          "ref_name": "bug-audit/pyrogue-variable-device",
-          "sha": "7967f81d8a2b147f1ca7840bf9cc2998babc831b",
-          "short_sha": "7967f81",
-          "published_at": "2026-05-05T19:37:38Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/25397486233",
-          "summary_url": "/rogue/perf/branches/bug-audit_pyrogue-variable-device/history/7967f81d8a2b147f1ca7840bf9cc2998babc831b.json"
-        },
-        {
-          "ref_name": "bug-audit/pyrogue-variable-device",
-          "sha": "30439d3a90c20f2dc4e1b94b17e0797b5fa5862b",
-          "short_sha": "30439d3",
-          "published_at": "2026-05-05T14:40:22Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/25381472259",
-          "summary_url": "/rogue/perf/branches/bug-audit_pyrogue-variable-device/history/30439d3a90c20f2dc4e1b94b17e0797b5fa5862b.json"
-        }
-      ],
-      "latest": {
-        "ref_name": "bug-audit/pyrogue-variable-device",
-        "sha": "7967f81d8a2b147f1ca7840bf9cc2998babc831b",
-        "short_sha": "7967f81",
-        "published_at": "2026-05-05T19:37:38Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/25397486233",
-        "summary_url": "/rogue/perf/branches/bug-audit_pyrogue-variable-device/latest.json"
       }
     },
     {
