@@ -26,7 +26,11 @@ import pytest
 try:
     from qtpy.QtWidgets import QWidget  # noqa: F401
     import pyrogue.pydm.widgets.system_log as system_log_mod
-except Exception as exc:
+except ImportError as exc:
+    # Skip only when the PyDM / Qt stack is not installed.  Other failure
+    # modes (SyntaxError, NameError, AttributeError, ...) are real product
+    # regressions and must surface as test failures rather than silently
+    # turning into a skip.
     pytest.skip("PyDM/Qt test dependencies unavailable: " + str(exc), allow_module_level=True)
 
 
