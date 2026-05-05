@@ -14,6 +14,7 @@
 #-----------------------------------------------------------------------------
 from __future__ import annotations
 
+import ast
 import collections
 import inspect
 import re
@@ -914,6 +915,40 @@ class Node(object):
             return _iterateDict(self._anodes[aname],keys),None
 
 
+def _ast_int(node: ast.expr) -> int:
+    """Extract an integer from an AST node (handles unary minus)."""
+    if isinstance(node, ast.Constant) and isinstance(node.value, int):
+        return node.value
+    if (isinstance(node, ast.UnaryOp) and isinstance(node.op, ast.USub)
+            and isinstance(node.operand, ast.Constant)
+            and isinstance(node.operand.value, int)):
+        return -node.operand.value
+    raise NodeError("Non-integer in slice expression")
+
+
+def _parse_slice(expr: str) -> int | slice:
+    """Parse a slice expression string into a Python int or slice object.
+
+    Accepts integer indices (e.g. '5', '-1') and slice notation
+    (e.g. '1:3', '::2', '1:10:2'). Rejects arbitrary code.
+    """
+    tree = ast.parse(f'_x[{expr}]', mode='eval')
+    subscript = tree.body
+    if not isinstance(subscript, ast.Subscript):
+        raise NodeError("Forbidden expression in slice")
+    sl = subscript.slice
+    if isinstance(sl, ast.Constant) and isinstance(sl.value, int):
+        return sl.value
+    if isinstance(sl, ast.UnaryOp):
+        return _ast_int(sl)
+    if isinstance(sl, ast.Slice):
+        lower = _ast_int(sl.lower) if sl.lower is not None else None
+        upper = _ast_int(sl.upper) if sl.upper is not None else None
+        step = _ast_int(sl.step) if sl.step is not None else None
+        return slice(lower, upper, step)
+    raise NodeError("Forbidden expression in slice")
+
+
 def _iterateDict(d: dict[str], keys: list[str]) -> list[Node]:
     """Iterate into a nested dict using array-style keys."""
     retList = []
@@ -938,7 +973,9 @@ def _iterateDict(d: dict[str], keys: list[str]) -> list[Node]:
             tmpList[k] = v
 
         try:
-            subList = eval(f'tmpList[{keys[0]}]')
+            idx = _parse_slice(keys[0])
+            result = tmpList[idx]
+            subList = result if isinstance(idx, slice) else [result]
         except Exception:
             subList = []
 
