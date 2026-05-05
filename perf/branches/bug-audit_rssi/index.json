@@ -5,6 +5,14 @@
   "history": [
     {
       "ref_name": "bug-audit/rssi",
+      "sha": "2adcd84ecbcb2d192b0bc954ac938bb44688e4a2",
+      "short_sha": "2adcd84",
+      "published_at": "2026-05-05T17:06:48Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/25389865840",
+      "summary_url": "/rogue/perf/branches/bug-audit_rssi/history/2adcd84ecbcb2d192b0bc954ac938bb44688e4a2.json"
+    },
+    {
+      "ref_name": "bug-audit/rssi",
       "sha": "ba0c25c999a911eaa2f16c6fa8b3d13ba6d48bf5",
       "short_sha": "ba0c25c",
       "published_at": "2026-05-05T16:45:35Z",
@@ -30,10 +38,10 @@
   ],
   "latest": {
     "ref_name": "bug-audit/rssi",
-    "sha": "ba0c25c999a911eaa2f16c6fa8b3d13ba6d48bf5",
-    "short_sha": "ba0c25c",
-    "published_at": "2026-05-05T16:45:35Z",
-    "run_url": "https://github.com/slaclab/rogue/actions/runs/25388346780",
+    "sha": "2adcd84ecbcb2d192b0bc954ac938bb44688e4a2",
+    "short_sha": "2adcd84",
+    "published_at": "2026-05-05T17:06:48Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/25389865840",
     "summary_url": "/rogue/perf/branches/bug-audit_rssi/latest.json"
   }
 }
