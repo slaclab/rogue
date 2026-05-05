@@ -111,6 +111,18 @@ full-featured query interface. In most deployments the practical workflow is to
 log data with ``SqlLogger`` during the run, then inspect the resulting tables
 with standard SQLAlchemy or database tooling suited to the deployment.
 
+``SqlReader`` checks out a pooled SQLAlchemy connection in its constructor and
+can be used as a context manager so that the connection and engine are
+released deterministically:
+
+.. code-block:: python
+
+   from pyrogue.interfaces import SqlReader
+
+   with SqlReader(url='sqlite:///rogue_run.db') as reader:
+       reader.getVariable()
+       reader.getSyslog(None)
+
 Logging
 =======
 

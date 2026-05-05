@@ -48,6 +48,7 @@ class SqlLogger(object):
         self._url = url
         self._engine = None
         self._thread = None
+        self._lastError = None
         self._queue  = queue.Queue()
         self._thread = threading.Thread(target=self._worker)
         self._thread.start()
@@ -59,6 +60,10 @@ class SqlLogger(object):
             engine = sqlalchemy.create_engine(self._url) #, isolation_level="AUTOCOMMIT")
             self._log.info("Opened database connection to %s", self._url)
         except Exception as e:
+            # Surface init-time DB failures via _lastError so callers polling
+            # that attribute can distinguish "logger never connected" from
+            # "logger lost connection at runtime".
+            self._lastError = str(e)
             self._log.error("Failed to open database connection to %s: %s", self._url, e)
             return
 
@@ -87,8 +92,25 @@ class SqlLogger(object):
             sqlalchemy.Column('levelName',   sqlalchemy.String),
             sqlalchemy.Column('levelNumber', sqlalchemy.Integer))
 
-        self._varTable.create(engine, checkfirst=True)
-        self._logTable.create(engine, checkfirst=True)
+        # Stage table creation under a guard.  ``Table.create()`` can fail on
+        # a schema mismatch, permission error, or transient DB issue; if we
+        # leave the engine alive without ever assigning self._engine, _stop()
+        # will not see the engine and its connection pool / DBAPI handles
+        # leak.  Mirror the SqlReader RAII pattern here.
+        try:
+            self._varTable.create(engine, checkfirst=True)
+            self._logTable.create(engine, checkfirst=True)
+        except Exception as e:
+            # Surface init-time table-create failures via _lastError too;
+            # without this the worker thread sits idle with _engine=None
+            # and callers can't distinguish init failure from a clean idle.
+            self._lastError = str(e)
+            self._log.error("Failed to create SQL tables on %s: %s", self._url, e)
+            try:
+                engine.dispose()
+            except Exception:
+                pass
+            return
         self._engine = engine
 
     def _stop(self) -> None:
@@ -194,9 +216,20 @@ class SqlLogger(object):
                         # Read the next queue entry and loop
                         entry = self._queue.get()
 
-
             except Exception as e:
+                # Dispose the engine before clearing the reference so the
+                # SQLAlchemy connection pool / DBAPI handles are released
+                # immediately; otherwise dropping the last reference here
+                # would leak pooled connections (``_stop()`` cannot dispose
+                # an engine it can no longer see).
+                failed_engine = self._engine
                 self._engine = None
+                self._lastError = str(e)
+                if failed_engine is not None:
+                    try:
+                        failed_engine.dispose()
+                    except Exception:
+                        pass
                 pr.logException(self._log,e)
                 self._log.error("Lost database connection to %s", self._url)
 
@@ -218,6 +251,7 @@ class SqlReader(object):
         self._log = pr.logInit(cls=self,name="SqlReader",path=None)
         self._url = url
         self._engine = None
+        self._conn = None
 
         try:
             engine = sqlalchemy.create_engine(self._url)
@@ -226,18 +260,80 @@ class SqlReader(object):
             self._log.error("Failed to open database connection to %s: %s", self._url, e)
             return
 
-        self._metadata = sqlalchemy.MetaData(engine)
+        # Stage table reflection and connection check-out under a guard.
+        # If autoload_with or engine.connect() throws (schema mismatch,
+        # transient DB failure) the engine has already been created and
+        # its pool is non-empty; we must dispose it here, otherwise the
+        # connection pool / DBAPI handles leak because _stop() will not
+        # see self._engine.
+        try:
+            self._metadata = sqlalchemy.MetaData()
+            self._varTable = sqlalchemy.Table('variables', self._metadata, autoload_with=engine)
+            self._logTable = sqlalchemy.Table('syslog', self._metadata, autoload_with=engine)
+            conn = engine.connect()
+        except Exception as e:
+            self._log.error("Failed to load schema / connect for %s: %s", self._url, e)
+            try:
+                engine.dispose()
+            except Exception:
+                pass
+            return
 
-        self._varTable = sqlalchemy.Table('variables', self._metadata, autoload=True)
-        self._logTable = sqlalchemy.Table('syslog', self._metadata, autoload=True)
         self._engine = engine
+        self._conn = conn
 
     def getVariable(self) -> None:
         """Fetch and print all variable entries. Placeholder for future enhancement."""
-        r = self._conn.execute(sqlalchemy.select([self._varTable]))
+        # The constructor logs and returns instead of raising on connect /
+        # autoload failure, leaving _conn at None.  Surface that as a clear
+        # error here instead of letting the call crash with a confusing
+        # ``'NoneType' object has no attribute 'execute'`` AttributeError.
+        if self._conn is None:
+            raise RuntimeError(
+                f"SqlReader has no active database connection to {self._url} "
+                "(construction failed); see earlier log messages for details"
+            )
+        # SQLAlchemy 2.x removed the legacy ``select([table])`` form; pass the
+        # table directly so the call works on both 1.4 and 2.x installs.
+        r = self._conn.execute(sqlalchemy.select(self._varTable))
         print(r.fetchall())
 
     def getSyslog(self, syslogData: Any) -> None:
         """Fetch and print syslog entries. Placeholder for future enhancement."""
-        r = self._conn.execute(sqlalchemy.select([self._logTable]))
+        if self._conn is None:
+            raise RuntimeError(
+                f"SqlReader has no active database connection to {self._url} "
+                "(construction failed); see earlier log messages for details"
+            )
+        r = self._conn.execute(sqlalchemy.select(self._logTable))
         print(r.fetchall())
+
+    def _stop(self) -> None:
+        """Release the pooled connection and dispose the engine.
+
+        ``engine.connect()`` checks a connection out of SQLAlchemy's pool
+        permanently; without an explicit close path repeated SqlReader
+        creation leaks pooled connections until the database starts
+        refusing new ones.
+        """
+        if self._conn is not None:
+            try:
+                self._conn.close()
+            except Exception:
+                pass
+            self._conn = None
+
+        if self._engine is not None:
+            try:
+                self._engine.dispose()
+            except Exception:
+                pass
+            self._engine = None
+
+    def __enter__(self) -> "SqlReader":
+        """Return self for context-manager use."""
+        return self
+
+    def __exit__(self, exc_type: Any, exc_value: Any, traceback: Any) -> None:
+        """Release pooled connection on context-manager exit."""
+        self._stop()
