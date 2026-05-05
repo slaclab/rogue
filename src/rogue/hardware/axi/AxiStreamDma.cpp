@@ -220,8 +220,16 @@ rha::AxiStreamDma::AxiStreamDma(std::string path, uint32_t dest, bool ssiEnable)
                                           FD_SETSIZE));
     }
 
-    // Zero copy is disabled
+    // Zero copy is disabled.  desc_->bCount and desc_->bSize live in the
+    // shared AxiStreamDmaShared instance returned by openShared(), which
+    // is also looked up under sharedBuffersMtx by other concurrent
+    // constructions on the same path.  Two ctors racing here would
+    // otherwise both write the same fields without synchronisation - a
+    // data race even when the values written are identical.  Take the
+    // same mutex that openShared/closeShared/zeroCopyDisable use to
+    // serialise the descriptor-field writes.
     if (desc_->rawBuff == NULL) {
+        std::lock_guard<std::mutex> lock(sharedBuffersMtx);
         desc_->bCount = dmaGetTxBuffCount(fd_) + dmaGetRxBuffCount(fd_);
         desc_->bSize  = dmaGetBuffSize(fd_);
     }
