@@ -5,6 +5,14 @@
   "history": [
     {
       "ref_name": "bug-audit/fileio-streamzip",
+      "sha": "37dad0064f0975fb663e70208ad14de75ec5d2fc",
+      "short_sha": "37dad00",
+      "published_at": "2026-05-05T17:50:46Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/25391947768",
+      "summary_url": "/rogue/perf/branches/bug-audit_fileio-streamzip/history/37dad0064f0975fb663e70208ad14de75ec5d2fc.json"
+    },
+    {
+      "ref_name": "bug-audit/fileio-streamzip",
       "sha": "2911edaa8de306470b00d94529b46961dc204d0c",
       "short_sha": "2911eda",
       "published_at": "2026-05-05T15:43:53Z",
@@ -22,10 +30,10 @@
   ],
   "latest": {
     "ref_name": "bug-audit/fileio-streamzip",
-    "sha": "2911edaa8de306470b00d94529b46961dc204d0c",
-    "short_sha": "2911eda",
-    "published_at": "2026-05-05T15:43:53Z",
-    "run_url": "https://github.com/slaclab/rogue/actions/runs/25386272092",
+    "sha": "37dad0064f0975fb663e70208ad14de75ec5d2fc",
+    "short_sha": "37dad00",
+    "published_at": "2026-05-05T17:50:46Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/25391947768",
     "summary_url": "/rogue/perf/branches/bug-audit_fileio-streamzip/latest.json"
   }
 }
