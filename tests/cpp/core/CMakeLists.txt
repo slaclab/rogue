@@ -71,3 +71,13 @@ rogue_add_cpp_test(rogue-cpp-helpers-deprecated-audit-repro
 )
 target_compile_definitions(rogue-cpp-helpers-deprecated-audit-repro
    PRIVATE ROGUE_SRC_DIR="${CMAKE_SOURCE_DIR}")
+
+rogue_add_cpp_test(rogue-cpp-zmq-server-start-rollback-audit-repro
+   SOURCES
+      test_zmq_server_start_rollback_audit_repro.cpp
+   LABELS
+      cpp-core
+      no-python
+)
+target_compile_definitions(rogue-cpp-zmq-server-start-rollback-audit-repro
+   PRIVATE ROGUE_SRC_DIR="${CMAKE_SOURCE_DIR}")

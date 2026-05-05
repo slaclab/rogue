@@ -110,9 +110,25 @@ void rogue::interfaces::ZmqServer::start() {
                 this->basePort_ + 1,
                 this->basePort_ + 2);
 
+    // Rollback if either thread allocation throws so a half-started server
+    // does not get stuck with threadEn_ == true and no workers, which would
+    // make a subsequent start() return early at the threadEn_ guard above.
     this->threadEn_ = true;
-    this->rThread_  = std::make_unique<std::thread>(&rogue::interfaces::ZmqServer::runThread, this);
-    this->sThread_  = std::make_unique<std::thread>(&rogue::interfaces::ZmqServer::strThread, this);
+    try {
+        this->rThread_ = std::make_unique<std::thread>(&rogue::interfaces::ZmqServer::runThread, this);
+        this->sThread_ = std::make_unique<std::thread>(&rogue::interfaces::ZmqServer::strThread, this);
+    } catch (...) {
+        this->threadEn_ = false;
+        if (this->rThread_) {
+            this->rThread_->join();
+            this->rThread_.reset();
+        }
+        if (this->sThread_) {
+            this->sThread_->join();
+            this->sThread_.reset();
+        }
+        throw;
+    }
 
     // Send empty frame
     dummy = "null\n";
