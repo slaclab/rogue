@@ -262,9 +262,18 @@ void rpu::Client::runThread(std::weak_ptr<int> lockPtr) {
             // Get new frame
             frame = reqLocalFrame(maxPayload(), false);
         } else {
-            // Setup fds for select call
-            if (fd_ < 0 || fd_ >= FD_SETSIZE)
-                throw rogue::GeneralError::create("Client::runThread", "fd_ value %d out of FD_SETSIZE range", fd_);
+            // Setup fds for select call.  runThread() has no top-level
+            // catch, so a throw here would call std::terminate.  The
+            // ctor already guarantees fd_ < FD_SETSIZE; this in-loop
+            // check only fires if stop()/close() races with the worker
+            // and toggles fd_ to -1.  In that case log and exit the
+            // worker cleanly so stop() can complete instead of crashing
+            // the process.
+            if (fd_ < 0 || fd_ >= FD_SETSIZE) {
+                udpLog_->error("Client::runThread: fd_ value %d out of FD_SETSIZE range; exiting worker", fd_);
+                threadEn_ = false;
+                break;
+            }
             FD_ZERO(&fds);
             FD_SET(fd_, &fds);
 

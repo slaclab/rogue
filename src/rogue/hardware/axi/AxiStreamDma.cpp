@@ -521,11 +521,17 @@ void rha::AxiStreamDma::runThread(std::weak_ptr<int> lockPtr) {
     frame = ris::Frame::create();
 
     while (threadEn_) {
-        // Setup fds for select call
-        if (fd_ < 0 || fd_ >= FD_SETSIZE)
-            throw rogue::GeneralError::create("AxiStreamDma::runThread",
-                                              "fd_ value %d out of FD_SETSIZE range",
-                                              fd_);
+        // Setup fds for select call.  runThread() has no top-level catch,
+        // so a throw here would call std::terminate.  The ctor already
+        // guarantees fd_ < FD_SETSIZE; this in-loop check only fires if
+        // stop()/close() races with the worker and toggles fd_ to -1.
+        // Log and exit the worker cleanly in that case so stop() can
+        // complete instead of crashing the process.
+        if (fd_ < 0 || fd_ >= FD_SETSIZE) {
+            log_->error("AxiStreamDma::runThread: fd_ value %d out of FD_SETSIZE range; exiting worker", fd_);
+            threadEn_ = false;
+            break;
+        }
         FD_ZERO(&fds);
         FD_SET(fd_, &fds);
 
