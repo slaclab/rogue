@@ -5,6 +5,14 @@
   "history": [
     {
       "ref_name": "bug-audit/queue",
+      "sha": "537fbd02fe449cf19fa4b830e08ce015f31b8526",
+      "short_sha": "537fbd0",
+      "published_at": "2026-05-05T18:02:59Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/25392233572",
+      "summary_url": "/rogue/perf/branches/bug-audit_queue/history/537fbd02fe449cf19fa4b830e08ce015f31b8526.json"
+    },
+    {
+      "ref_name": "bug-audit/queue",
       "sha": "534196127e856a2a9603220293c312f9cb9ae0f5",
       "short_sha": "5341961",
       "published_at": "2026-05-05T17:26:16Z",
@@ -22,10 +30,10 @@
   ],
   "latest": {
     "ref_name": "bug-audit/queue",
-    "sha": "534196127e856a2a9603220293c312f9cb9ae0f5",
-    "short_sha": "5341961",
-    "published_at": "2026-05-05T17:26:16Z",
-    "run_url": "https://github.com/slaclab/rogue/actions/runs/25391224958",
+    "sha": "537fbd02fe449cf19fa4b830e08ce015f31b8526",
+    "short_sha": "537fbd0",
+    "published_at": "2026-05-05T18:02:59Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/25392233572",
     "summary_url": "/rogue/perf/branches/bug-audit_queue/latest.json"
   }
 }
