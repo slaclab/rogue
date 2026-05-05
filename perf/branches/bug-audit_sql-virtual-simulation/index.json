@@ -5,6 +5,14 @@
   "history": [
     {
       "ref_name": "bug-audit/sql-virtual-simulation",
+      "sha": "067701e1bc8d16b05c561d51d29e47af1fae695e",
+      "short_sha": "067701e",
+      "published_at": "2026-05-05T17:10:32Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/25388352871",
+      "summary_url": "/rogue/perf/branches/bug-audit_sql-virtual-simulation/history/067701e1bc8d16b05c561d51d29e47af1fae695e.json"
+    },
+    {
+      "ref_name": "bug-audit/sql-virtual-simulation",
       "sha": "35626e5b6d9d6fcc512123b69b73b823d21c06d7",
       "short_sha": "35626e5",
       "published_at": "2026-05-05T16:08:00Z",
@@ -22,10 +30,10 @@
   ],
   "latest": {
     "ref_name": "bug-audit/sql-virtual-simulation",
-    "sha": "35626e5b6d9d6fcc512123b69b73b823d21c06d7",
-    "short_sha": "35626e5",
-    "published_at": "2026-05-05T16:08:00Z",
-    "run_url": "https://github.com/slaclab/rogue/actions/runs/25387065060",
+    "sha": "067701e1bc8d16b05c561d51d29e47af1fae695e",
+    "short_sha": "067701e",
+    "published_at": "2026-05-05T17:10:32Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/25388352871",
     "summary_url": "/rogue/perf/branches/bug-audit_sql-virtual-simulation/latest.json"
   }
 }
