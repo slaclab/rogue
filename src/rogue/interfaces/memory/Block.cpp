@@ -101,20 +101,39 @@ rim::Block::Block(uint64_t offset, uint32_t size) {
     verifyBase_ = 0;  // Verify Range
     verifySize_ = 0;  // Verify Range
 
+    // Init pointers so catch / dtor see well-defined values on early OOM.
+    blockData_    = nullptr;
+    verifyData_   = nullptr;
+    verifyMask_   = nullptr;
+    verifyBlock_  = nullptr;
+    expectedData_ = nullptr;
+
+    // Each allocation is null-checked so an OOM throws a rogue::GeneralError
+    // instead of crashing in memset(nullptr, ...).
     try {
         blockData_ = reinterpret_cast<uint8_t*>(malloc(size_));
+        if (blockData_ == nullptr)
+            throw(rogue::GeneralError("Block::Block", "Failed to allocate blockData_ buffer"));
         memset(blockData_, 0, size_);
 
         verifyData_ = reinterpret_cast<uint8_t*>(malloc(size_));
+        if (verifyData_ == nullptr)
+            throw(rogue::GeneralError("Block::Block", "Failed to allocate verifyData_ buffer"));
         memset(verifyData_, 0, size_);
 
         verifyMask_ = reinterpret_cast<uint8_t*>(malloc(size_));
+        if (verifyMask_ == nullptr)
+            throw(rogue::GeneralError("Block::Block", "Failed to allocate verifyMask_ buffer"));
         memset(verifyMask_, 0, size_);
 
         verifyBlock_ = reinterpret_cast<uint8_t*>(malloc(size_));
+        if (verifyBlock_ == nullptr)
+            throw(rogue::GeneralError("Block::Block", "Failed to allocate verifyBlock_ buffer"));
         memset(verifyBlock_, 0, size_);
 
         expectedData_ = reinterpret_cast<uint8_t*>(malloc(size_));
+        if (expectedData_ == nullptr)
+            throw(rogue::GeneralError("Block::Block", "Failed to allocate expectedData_ buffer"));
         memset(expectedData_, 0, size_);
     } catch (...) {
         free(blockData_);
