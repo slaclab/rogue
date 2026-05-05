@@ -127,16 +127,25 @@ uint8_t* rps::SrpV3Emulation::allocatePage(uint64_t addr4k) {
     uint32_t* p32 = reinterpret_cast<uint32_t*>(page.get());
     for (size_t i = 0; i < 0x1000 / 4; i++) p32[i] = gen();
 
-    // Insert the raw pointer into the map BEFORE releasing ownership so a
-    // throwing insert (e.g. std::bad_alloc on the std::map node) cannot
-    // strand the page on the heap.  Only release the unique_ptr after the
-    // map definitely owns the pointer.
-    uint8_t* raw = page.get();
-    memMap_.insert(std::make_pair(addr4k, raw));
-    page.release();
-    totAlloc_++;
-    log_->debug("Allocating page at 0x%" PRIx64 ". Total pages %" PRIu32, addr4k, totAlloc_);
-    return raw;
+    // Insert the raw pointer into the map and only release ownership when
+    // insertion actually took place.  std::map::insert is a no-op when the
+    // key already exists; without inspecting result.second the unique_ptr
+    // would be released even though the new buffer is not in the map,
+    // leaking it.  A throwing insert (e.g. std::bad_alloc on the new map
+    // node) is also handled because ownership has not been released yet,
+    // so stack unwinding frees the buffer.
+    auto result = memMap_.emplace(addr4k, page.get());
+    if (result.second) {
+        page.release();
+        totAlloc_++;
+        log_->debug("Allocating page at 0x%" PRIx64 ". Total pages %" PRIu32, addr4k, totAlloc_);
+    } else {
+        log_->debug("Page at 0x%" PRIx64 " already present; reusing existing buffer", addr4k);
+    }
+    // Return the buffer that the map actually owns (existing or newly
+    // inserted).  page goes out of scope; if it still owns a buffer
+    // (duplicate-key case) it is freed here, never leaked.
+    return result.first->second;
 }
 
 //! Read from internal memory
