@@ -32,11 +32,39 @@ class _VirtualSafeUnpickler(_pickle.Unpickler):
     array values), and matplotlib ``Figure`` objects (used by plot
     variables).  Without these the deserializer would reject legitimate
     payloads and break array / plot variables on the client side.
+
+    ``builtins`` is intentionally NOT allowlisted as a whole module: the
+    pickle ``REDUCE`` opcode would otherwise let a malicious server invoke
+    callables such as ``builtins.eval`` / ``builtins.exec`` and execute
+    arbitrary code on the client.  Only the data-type subset below is
+    permitted.
     """
+
+    # Per-(module, name) allowlist for builtins. These are the only callable
+    # references from the ``builtins`` module a legitimate Rogue payload
+    # ever needs (containers, scalars, NoneType).  Anything else from
+    # ``builtins`` (eval, exec, getattr, __import__, compile, open, ...)
+    # would expose an arbitrary-code-execution path through pickle REDUCE.
+    _ALLOWED_BUILTINS = {
+        'bool',
+        'bytearray',
+        'bytes',
+        'complex',
+        'dict',
+        'float',
+        'frozenset',
+        'int',
+        'list',
+        'NoneType',
+        'range',
+        'set',
+        'slice',
+        'str',
+        'tuple',
+    }
 
     # Modules whose entire surface is allowed by exact-match.
     _ALLOWED_MODULES = {
-        'builtins',
         'pyrogue',
         'pyrogue.interfaces._Virtual',
         'pyrogue._Variable',
@@ -51,7 +79,6 @@ class _VirtualSafeUnpickler(_pickle.Unpickler):
     # matplotlib are needed for ndarray / Figure variable values that Rogue
     # ships unmodified over the wire.
     _ALLOWED_TOP_PACKAGES = (
-        'builtins',
         'pyrogue',
         'rogue',
         'collections',
@@ -60,9 +87,13 @@ class _VirtualSafeUnpickler(_pickle.Unpickler):
     )
 
     def find_class(self, module: str, name: str) -> type:
-        top = module.split('.')[0]
-        if module in self._ALLOWED_MODULES or top in self._ALLOWED_TOP_PACKAGES:
-            return super().find_class(module, name)
+        if module == 'builtins':
+            if name in self._ALLOWED_BUILTINS:
+                return super().find_class(module, name)
+        else:
+            top = module.split('.')[0]
+            if module in self._ALLOWED_MODULES or top in self._ALLOWED_TOP_PACKAGES:
+                return super().find_class(module, name)
         raise _pickle.UnpicklingError(
             "Unsafe pickle payload: {}.{}".format(module, name))
 
