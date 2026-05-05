@@ -39,11 +39,25 @@ except ImportError as exc:
 # ---------------------------------------------------------------------------
 def test_system_log_value_changed_handles_json_error():
     """system_log.value_changed calls json.loads without try/except."""
+    import re
+
     src = inspect.getsource(system_log_mod.SystemLog.value_changed)
 
-    assert "try:" in src, (
-        "SystemLog.value_changed() calls json.loads(new_val) "
-        "(line 84) without a try/except; a non-JSON string emitted by the "
-        "SystemLog variable during startup raises json.JSONDecodeError in a "
-        "Qt slot, which is silently swallowed but may corrupt widget state"
+    # Require json.loads to be wrapped in a try block whose except clause
+    # catches a class that includes json.JSONDecodeError (the specific
+    # exception, ValueError as its parent, or a broader Exception).
+    # A bare ``"try:" in src`` check would false-pass any try block
+    # regardless of what it actually protects.
+    pattern = (
+        r"try:.*?json\.loads.*?except\s+"
+        r"(json\.JSONDecodeError|JSONDecodeError|ValueError|Exception)"
+    )
+    has_protected_loads = bool(re.search(pattern, src, re.DOTALL))
+
+    assert has_protected_loads, (
+        "SystemLog.value_changed() calls json.loads(new_val) without a "
+        "try/except that catches json.JSONDecodeError; a non-JSON string "
+        "emitted by the SystemLog variable during startup raises "
+        "json.JSONDecodeError in a Qt slot, which is silently swallowed "
+        "but may corrupt widget state"
     )
