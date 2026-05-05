@@ -214,8 +214,9 @@ For a small number of bridges, the default operating-system limits are usually
 fine. For many parallel TCP bridge instances, file-descriptor and process limits
 may need to be tuned at the operating-system level.
 
-During controlled shutdown paths, call ``stop()`` or ``close()`` where
-appropriate so the bridge threads and sockets are released cleanly.
+During controlled shutdown paths, call ``stop()`` so the bridge threads and
+sockets are released cleanly.  (The legacy ``close()`` method still works but is
+deprecated and will be removed in a future release.)
 
 Resource Configuration For Multiple Streams
 ===========================================

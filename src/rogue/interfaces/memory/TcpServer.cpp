@@ -104,7 +104,7 @@ rim::TcpServer::TcpServer(std::string addr, uint16_t port) {
                                 this->respAddr_.c_str());
 
         threadEn_     = true;
-        this->thread_ = new std::thread(&rim::TcpServer::runThread, this);
+        this->thread_ = std::make_unique<std::thread>(&rim::TcpServer::runThread, this);
 
         // Set a thread name
 #ifndef __MACH__
@@ -118,13 +118,12 @@ rim::TcpServer::TcpServer(std::string addr, uint16_t port) {
         // a transaction into Python, and joining while holding the GIL would
         // deadlock.
         threadEn_ = false;
-        if (thread_ != nullptr) {
+        if (thread_) {
             {
                 rogue::GilRelease noGil;
                 thread_->join();
             }
-            delete thread_;
-            thread_ = nullptr;
+            thread_.reset();
         }
         if (zmqResp_ != nullptr) {
             zmq_close(zmqResp_);
@@ -162,17 +161,25 @@ void rim::TcpServer::stop() {
         rogue::GilRelease noGil;
         threadEn_ = false;
         thread_->join();
-        delete thread_;
-        thread_ = nullptr;
+        thread_.reset();
         this->bridgeLog_->debug("Stopping TCP memory bridge. request=%s response=%s",
                                 this->reqAddr_.c_str(),
                                 this->respAddr_.c_str());
-        zmq_close(this->zmqResp_);
-        zmqResp_ = nullptr;
-        zmq_close(this->zmqReq_);
-        zmqReq_ = nullptr;
-        zmq_ctx_destroy(this->zmqCtx_);
-        zmqCtx_ = nullptr;
+        // runThread() may null zmqResp_ if its rebuild path fails after a
+        // partial multi-part send; guard each handle so teardown stays safe
+        // regardless of which exit path the worker took.
+        if (zmqResp_ != nullptr) {
+            zmq_close(zmqResp_);
+            zmqResp_ = nullptr;
+        }
+        if (zmqReq_ != nullptr) {
+            zmq_close(zmqReq_);
+            zmqReq_ = nullptr;
+        }
+        if (zmqCtx_ != nullptr) {
+            zmq_ctx_destroy(zmqCtx_);
+            zmqCtx_ = nullptr;
+        }
     }
 }
 
@@ -283,11 +290,89 @@ void rim::TcpServer::runThread() {
 
             // Result message, at least one char needs to be sent
             if (result.length() == 0) result = "OK";
-            zmq_msg_init_size(&(msg[5]), result.length());
+            if (zmq_msg_init_size(&(msg[5]), result.length()) < 0) {
+                bridgeLog_->warning("zmq_msg_init_size failed for result (%" PRIu32 " bytes): %s",
+                                    static_cast<uint32_t>(result.length()), zmq_strerror(zmq_errno()));
+                for (x = 0; x < 5; x++) zmq_msg_close(&(msg[x]));
+                continue;
+            }
             std::memcpy(zmq_msg_data(&(msg[5])), result.c_str(), result.length());
 
-            // Send message
-            for (x = 0; x < 6; x++) zmq_sendmsg(this->zmqResp_, &(msg[x]), (x == 5) ? 0 : ZMQ_SNDMORE);
+            // Send the multi-part reply.  ZMQ only takes ownership of a
+            // msg part on a successful send; failed and unsent parts must
+            // be released explicitly via zmq_msg_close.  If a send fails
+            // after earlier SNDMORE parts have already been queued (or
+            // flushed) on the PUSH socket, the peer may have observed a
+            // partial reply and the socket's multipart FSM is left
+            // expecting the rest of the previous message -- any subsequent
+            // send would be appended to the corrupted multipart.  Recover
+            // by closing and rebinding zmqResp_ so the FSM is reset and
+            // downstream PULL peers reconnect cleanly.  If the rebuild
+            // fails we drop the bridge thread, since there is no usable
+            // response socket left.
+            uint32_t sendFailed = 0;
+            for (x = 0; x < 6; x++) {
+                if (zmq_sendmsg(this->zmqResp_, &(msg[x]), (x == 5) ? 0 : ZMQ_SNDMORE) < 0) {
+                    bridgeLog_->warning("zmq_sendmsg failed on part %" PRIu32 " for id=%" PRIu32 ": %s",
+                                        x, id, zmq_strerror(zmq_errno()));
+                    sendFailed = 1;
+                    // Close the part that failed to send (we still own it).
+                    zmq_msg_close(&(msg[x]));
+                    // Close any remaining parts that were never sent.
+                    for (uint32_t y = x + 1; y < 6; y++) zmq_msg_close(&(msg[y]));
+                    break;
+                }
+            }
+            if (sendFailed) {
+                bridgeLog_->error("Multi-part reply for id=%" PRIu32
+                                  " failed mid-stream on part %" PRIu32
+                                  "; peer may have received a torso-only response. "
+                                  "Resetting response socket to clear PUSH multipart FSM.",
+                                  id, x);
+
+                // Tear down the broken socket and rebuild it.  zmq_close
+                // discards any unflushed parts in the outgoing pipe and
+                // releases the bind; recreating restores the listener with
+                // a clean FSM so subsequent transactions are not appended
+                // to the failed multipart.
+                if (this->zmqResp_ != nullptr) {
+                    zmq_close(this->zmqResp_);
+                    this->zmqResp_ = nullptr;
+                }
+
+                this->zmqResp_ = zmq_socket(this->zmqCtx_, ZMQ_PUSH);
+                bool rebuilt = (this->zmqResp_ != nullptr);
+
+                if (rebuilt) {
+                    // ZMQ_LINGER is documented as taking an `int` value; use a
+                    // signed 32-bit so the variable type and sizeof argument
+                    // agree on every platform.
+                    int32_t lopt = 0;
+                    if (zmq_setsockopt(this->zmqResp_, ZMQ_LINGER, &lopt, sizeof(lopt)) != 0) {
+                        bridgeLog_->error("Failed to set ZMQ_LINGER on rebuilt response socket: %s",
+                                          zmq_strerror(zmq_errno()));
+                        rebuilt = false;
+                    } else if (zmq_bind(this->zmqResp_, this->respAddr_.c_str()) < 0) {
+                        bridgeLog_->error("Failed to rebind response socket to %s: %s",
+                                          this->respAddr_.c_str(), zmq_strerror(zmq_errno()));
+                        rebuilt = false;
+                    }
+                }
+
+                if (!rebuilt) {
+                    if (this->zmqResp_ != nullptr) {
+                        zmq_close(this->zmqResp_);
+                        this->zmqResp_ = nullptr;
+                    }
+                    bridgeLog_->error("Unable to recover TcpServer response socket; "
+                                      "exiting bridge worker thread (stop()/dtor will "
+                                      "complete teardown)");
+                    // Return rather than clearing threadEn_: the destructor's
+                    // stop() guards on threadEn_ to decide whether to join, so
+                    // leaving it true ensures the join still happens cleanly.
+                    return;
+                }
+            }
         } else {
             for (x = 0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
         }
