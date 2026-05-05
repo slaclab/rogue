@@ -1,0 +1,23 @@
+{
+  "ref_name": "bug-audit/pydm",
+  "ref_slug": "bug-audit_pydm",
+  "latest_url": "/rogue/perf/branches/bug-audit_pydm/latest.json",
+  "history": [
+    {
+      "ref_name": "bug-audit/pydm",
+      "sha": "a717fd5c6527326c8216a2379c51ca83beebe515",
+      "short_sha": "a717fd5",
+      "published_at": "2026-05-05T14:03:51Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/25380731890",
+      "summary_url": "/rogue/perf/branches/bug-audit_pydm/history/a717fd5c6527326c8216a2379c51ca83beebe515.json"
+    }
+  ],
+  "latest": {
+    "ref_name": "bug-audit/pydm",
+    "sha": "a717fd5c6527326c8216a2379c51ca83beebe515",
+    "short_sha": "a717fd5",
+    "published_at": "2026-05-05T14:03:51Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/25380731890",
+    "summary_url": "/rogue/perf/branches/bug-audit_pydm/latest.json"
+  }
+}
