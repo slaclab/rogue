@@ -27,7 +27,7 @@ requirements:
     - python
     - pip
     - setuptools
-    - numpy
+    - numpy >=2.0
   run:
     - python >=3.10,<3.14
     - numpy
