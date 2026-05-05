@@ -171,7 +171,16 @@ void ru::Prbs::setTapsPy(boost::python::object p) {
     if (PyObject_GetBuffer(p.ptr(), &pyBuf, PyBUF_SIMPLE) < 0)
         throw(rogue::GeneralError("Prbs::setTapsPy", "Python Buffer Error"));
 
-    setTaps(pyBuf.len, reinterpret_cast<uint8_t*>(pyBuf.buf));
+    // setTaps() can throw rogue::GeneralError on OOM (the strong-exception
+    // guarantee path).  Release the Python buffer on the throw path so a
+    // subsequent allocation failure does not leave the Py_buffer pinned for
+    // the lifetime of the interpreter.
+    try {
+        setTaps(pyBuf.len, reinterpret_cast<uint8_t*>(pyBuf.buf));
+    } catch (...) {
+        PyBuffer_Release(&pyBuf);
+        throw;
+    }
     PyBuffer_Release(&pyBuf);
 }
 

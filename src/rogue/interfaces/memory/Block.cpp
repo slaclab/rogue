@@ -853,7 +853,16 @@ void rim::Block::setPyFunc(bp::object& value, rim::Variable* var, int32_t index)
                                                   "Failed to extract byte array for %s",
                                                   var->name_.c_str()));
 
-            setBytes(reinterpret_cast<uint8_t*>(valueBuf.buf), var, index + x);
+            // setBytes() can throw (index out of range, malloc OOM in the
+            // byteReverse path); release the Python buffer on the throw
+            // path so the Py_buffer is not leaked for the lifetime of the
+            // interpreter.
+            try {
+                setBytes(reinterpret_cast<uint8_t*>(valueBuf.buf), var, index + x);
+            } catch (...) {
+                PyBuffer_Release(&valueBuf);
+                throw;
+            }
             PyBuffer_Release(&valueBuf);
         }
 
@@ -867,7 +876,13 @@ void rim::Block::setPyFunc(bp::object& value, rim::Variable* var, int32_t index)
                                               "Failed to extract byte array from pyFunc return value for %s",
                                               var->name_.c_str()));
 
-        setBytes(reinterpret_cast<uint8_t*>(valueBuf.buf), var, index);
+        // Same setBytes throw-path leak as the list-variable branch above.
+        try {
+            setBytes(reinterpret_cast<uint8_t*>(valueBuf.buf), var, index);
+        } catch (...) {
+            PyBuffer_Release(&valueBuf);
+            throw;
+        }
         PyBuffer_Release(&valueBuf);
     }
 }
@@ -921,7 +936,15 @@ void rim::Block::setByteArrayPy(bp::object& value, rim::Variable* var, int32_t i
                                           "Failed to extract byte array for %s",
                                           var->name_.c_str()));
 
-    setBytes(reinterpret_cast<uint8_t*>(valueBuf.buf), var, index);
+    // setBytes() can throw (index out of range, malloc OOM in the
+    // byteReverse path); release the Python buffer on the throw path so
+    // the Py_buffer is not leaked for the lifetime of the interpreter.
+    try {
+        setBytes(reinterpret_cast<uint8_t*>(valueBuf.buf), var, index);
+    } catch (...) {
+        PyBuffer_Release(&valueBuf);
+        throw;
+    }
     PyBuffer_Release(&valueBuf);
 }
 
