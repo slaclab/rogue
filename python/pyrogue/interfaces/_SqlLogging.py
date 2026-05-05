@@ -229,12 +229,27 @@ class SqlReader(object):
             self._log.error("Failed to open database connection to %s: %s", self._url, e)
             return
 
-        self._metadata = sqlalchemy.MetaData()
+        # Stage table reflection and connection check-out under a guard.
+        # If autoload_with or engine.connect() throws (schema mismatch,
+        # transient DB failure) the engine has already been created and
+        # its pool is non-empty; we must dispose it here, otherwise the
+        # connection pool / DBAPI handles leak because _stop() will not
+        # see self._engine.
+        try:
+            self._metadata = sqlalchemy.MetaData()
+            self._varTable = sqlalchemy.Table('variables', self._metadata, autoload_with=engine)
+            self._logTable = sqlalchemy.Table('syslog', self._metadata, autoload_with=engine)
+            conn = engine.connect()
+        except Exception as e:
+            self._log.error("Failed to load schema / connect for %s: %s", self._url, e)
+            try:
+                engine.dispose()
+            except Exception:
+                pass
+            return
 
-        self._varTable = sqlalchemy.Table('variables', self._metadata, autoload_with=engine)
-        self._logTable = sqlalchemy.Table('syslog', self._metadata, autoload_with=engine)
         self._engine = engine
-        self._conn = engine.connect()
+        self._conn = conn
 
     def getVariable(self) -> None:
         """Fetch and print all variable entries. Placeholder for future enhancement."""
