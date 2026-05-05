@@ -15,7 +15,10 @@ import pyrogue.interfaces.simulation
 import rogue.interfaces.memory
 import time
 import pytest
-from tests.perf._perf_metrics import emit_perf_result
+if __package__:
+    from ._perf_metrics import emit_perf_result
+else:
+    from _perf_metrics import emit_perf_result
 
 pytestmark = pytest.mark.perf
 
