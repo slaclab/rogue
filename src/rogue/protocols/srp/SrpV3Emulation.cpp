@@ -112,7 +112,21 @@ void rps::SrpV3Emulation::runThread() {
             queue_.pop();
         }
 
-        processFrame(frame);
+        // processFrame() may invoke allocatePage(), which uses
+        // std::make_unique<uint8_t[]> and therefore throws std::bad_alloc
+        // on OOM (rather than returning nullptr as the previous malloc()
+        // path did).  An unhandled exception escaping the worker thread
+        // calls std::terminate() per [thread.thread.member]; catch and
+        // log instead so the worker drops the offending frame and
+        // continues, matching the project-wide
+        // "background-thread exceptions are caught and logged" contract.
+        try {
+            processFrame(frame);
+        } catch (const std::exception& e) {
+            log_->error("Dropped frame on exception in processFrame: %s", e.what());
+        } catch (...) {
+            log_->error("Dropped frame on unknown exception in processFrame");
+        }
     }
 
     log_->debug("Worker thread stopped");
@@ -163,9 +177,11 @@ void rps::SrpV3Emulation::readMemory(uint64_t address, uint8_t* data, uint32_t s
 
         auto it = memMap_.find(addr4k);
         if (it == memMap_.end()) {
-            // Allocate page with random data on first read (like uninitialized SRAM)
+            // Allocate page with random data on first read (like uninitialized SRAM).
+            // allocatePage() throws std::bad_alloc on OOM (via make_unique);
+            // the worker's runThread try/catch surfaces that as a logged
+            // dropped frame.  A null check here would be dead code.
             uint8_t* page = allocatePage(addr4k);
-            if (page == nullptr) return;
             memcpy(data, page + off4k, size4k);
         } else {
             memcpy(data, it->second + off4k, size4k);
@@ -192,8 +208,10 @@ void rps::SrpV3Emulation::writeMemory(uint64_t address, const uint8_t* data, uin
 
         auto it = memMap_.find(addr4k);
         if (it == memMap_.end()) {
-            uint8_t* page = allocatePage(addr4k);
-            if (page == nullptr) return;
+            // allocatePage() throws std::bad_alloc on OOM; runThread's
+            // try/catch surfaces that as a logged dropped frame.  After
+            // a successful return the page is now in memMap_, so re-find.
+            allocatePage(addr4k);
             it = memMap_.find(addr4k);
         }
 
