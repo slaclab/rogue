@@ -229,9 +229,12 @@ following toolchain file was used as an example:
    set(ZeroMQ_LIBRARY     /afs/slac/g/lcls/package/libzmq/zeromq-4.3.4/buildroot-2019.08-x86_64/lib/libzmq.a)
    set(ZeroMQ_INCLUDE_DIR /afs/slac/g/lcls/package/libzmq/zeromq-4.3.4/buildroot-2019.08-x86_64/include)
 
-   # Define the location of python3 (cross-compiled)
-   set(PYTHON_LIBRARY     /afs/slac/g/lcls/package/python/3.6.1/buildroot-2019.08-x86_64/lib/libpython3.6m.so)
-   set(PYTHON_INCLUDE_DIR /afs/slac/g/lcls/package/python/3.6.1/buildroot-2019.08-x86_64/include/python3.6m)
+   # Define the location of python3 (cross-compiled).
+   # Use a Python build that meets the >= 3.10 requirement above; the
+   # paths and ``python3.X`` suffix shown here are illustrative and must
+   # match the cross-compiled toolchain you actually have available.
+   set(PYTHON_LIBRARY     /afs/slac/g/lcls/package/python/3.12.0/buildroot-2024.02-x86_64/lib/libpython3.12.so)
+   set(PYTHON_INCLUDE_DIR /afs/slac/g/lcls/package/python/3.12.0/buildroot-2024.02-x86_64/include/python3.12)
 
    # Define the location of boost (cross-compiled)
    set(BOOST_ROOT /afs/slac/g/lcls/package/boost/1.64.0/buildroot-2019.08-x86_64)
