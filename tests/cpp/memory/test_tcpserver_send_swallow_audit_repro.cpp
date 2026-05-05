@@ -41,35 +41,56 @@ static std::string readFile(const std::string& path) {
     return ss.str();
 }
 
+// Locate every occurrence of `needle` in `hay`, and for each one decide
+// whether the surrounding source text places the call in a "checked" context
+// (assignment to a variable, or used as part of an if/while predicate).  A
+// single bare statement counts as unchecked.
+static bool everyCallIsChecked(const std::string& hay, const std::string& needle) {
+    if (hay.find(needle) == std::string::npos) return false;
+
+    std::size_t pos = 0;
+    while ((pos = hay.find(needle, pos)) != std::string::npos) {
+        // Walk back through whitespace to the previous non-space character
+        std::size_t i = pos;
+        while (i > 0 && (hay[i - 1] == ' ' || hay[i - 1] == '\t' || hay[i - 1] == '\n')) {
+            --i;
+        }
+        // Acceptable preceding contexts:
+        //   "= zmq_sendmsg("   (return code captured)
+        //   "(zmq_sendmsg("    (used inside an expression / predicate)
+        //   "!zmq_sendmsg("    (boolean negation as predicate)
+        const char prev = (i > 0) ? hay[i - 1] : '\0';
+        const bool checked = (prev == '=' || prev == '(' || prev == '!' ||
+                              prev == '<' || prev == '>' || prev == ',' ||
+                              prev == '?' || prev == ':' || prev == '|' ||
+                              prev == '&');
+        if (!checked) return false;
+        pos += needle.size();
+    }
+    return true;
+}
+
 TEST_CASE("TcpServer runThread send loop ignores zmq_sendmsg returns") {
     const std::string src = readFile(
         ROGUE_SRC_DIR "/src/rogue/interfaces/memory/TcpServer.cpp");
     REQUIRE_MESSAGE(!src.empty(), "Could not read memory/TcpServer.cpp");
 
-    // The send loop in runThread: "for (x = 0; x < 6; x++) zmq_sendmsg(...)"
-    // Locate it via the unique loop sentinel.
-    const std::string sentinel = "zmq_sendmsg";
-    const std::size_t pos = src.find(sentinel);
-    REQUIRE_MESSAGE(pos != std::string::npos,
+    // Confirm the call exists at all
+    REQUIRE_MESSAGE(src.find("zmq_sendmsg") != std::string::npos,
                     "zmq_sendmsg not found in memory/TcpServer.cpp");
 
-    // Extract the region around the send loop (200 bytes before, 300 after)
-    const std::size_t startPos = (pos > 200) ? (pos - 200) : 0;
-    const std::string region   = src.substr(startPos, 500);
+    // Every zmq_sendmsg call in the entire translation unit must be in a
+    // checked context.  This is stronger than a single nearby-window check:
+    // a partial fix that wraps one call in an if() while leaving five other
+    // bare calls in an unrolled loop will fail this assertion, even though
+    // the old window-based scan would have accepted it.
+    const bool allChecked = everyCallIsChecked(src, "zmq_sendmsg(");
 
-    // FIXED state: zmq_sendmsg return value is checked (assigned to a
-    // variable or used in an if/while condition).
-    // On HEAD: "for (x...) zmq_sendmsg(...,...)" -- return value discarded.
-    const bool returnsChecked = (
-        region.find("= zmq_sendmsg(") != std::string::npos ||
-        region.find("if (zmq_sendmsg(") != std::string::npos ||
-        region.find("if(zmq_sendmsg(") != std::string::npos ||
-        region.find("rc = zmq_sendmsg") != std::string::npos ||
-        region.find("ret = zmq_sendmsg") != std::string::npos);
-
-    CHECK_MESSAGE(returnsChecked,
+    CHECK_MESSAGE(allChecked,
                   "TcpServer runThread send loop ignores "
                   "zmq_sendmsg return code; partial multi-part message "
                   "leaves PUSH socket in undefined state without error "
-                  "propagation to caller");
+                  "propagation to caller (every zmq_sendmsg call in the "
+                  "file must be assigned, predicated, or otherwise "
+                  "consumed -- bare-statement calls are not accepted)");
 }
