@@ -24,22 +24,38 @@
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 
-import inspect
-
 import pyrogue as pr
 
 
 def test_hide_variables_dict_values_index():
-    """Device.hideVariables indexes variables[0] after dict_values assignment."""
-    src = inspect.getsource(pr.Device.hideVariables)
+    """Device.hideVariables(None) must not TypeError on dict_values subscripting.
 
-    # When variables=None, the code sets variables = self.variables.values()
-    # (a dict_values).  The elif then calls variables[0] which raises TypeError.
-    # A correct implementation would either convert to list first or avoid
-    # subscripting.  Assert the subscript is absent from the method body.
-    assert "variables[0]" not in src, (
-        "Device.hideVariables references variables[0] after assigning "
-        "variables = self.variables.values() (dict_values); integer subscripting "
-        "on dict_values raises TypeError — use list(variables)[0] or restructure "
-        "the type check to not depend on subscripting"
-    )
+    The original bug: ``variables = self.variables.values()`` when the caller
+    passes ``variables=None``, followed by an integer subscript such as
+    ``variables[0]``.  ``dict_values`` does not support integer indexing, so
+    the call raises TypeError on every Device with at least one BaseVariable.
+
+    Behavioural test: build a minimal Device with a single LocalVariable,
+    invoke hideVariables(True) with the default variables=None, and verify
+    that the call returns without raising.  A correct fix may either convert
+    to list before subscripting, restructure the type check to iterate, or
+    take any other shape that handles the dict_values default safely — the
+    fix shape is unconstrained.
+    """
+
+    class _ProbeDevice(pr.Device):
+        def __init__(self, **kwargs):
+            super().__init__(**kwargs)
+            self.add(pr.LocalVariable(
+                name='Probe',
+                value=0,
+                mode='RW',
+            ))
+
+    dev = _ProbeDevice(name='Probe')
+
+    dev.hideVariables(True)
+    assert dev.variables['Probe'].hidden is True
+
+    dev.hideVariables(False)
+    assert dev.variables['Probe'].hidden is False
