@@ -430,12 +430,12 @@ class Device(pr.Node,rim.Hub):
             Iterable of variable names or variables.
         """
         if variables is None:
-            variables=self.variables.values()
+            variables = list(self.variables.values())
 
         for v in variables:
             if isinstance(v, pr.BaseVariable):
                 v.hidden = hidden
-            elif isinstance(variables[0], str):
+            elif isinstance(v, str):
                 self.variables[v].hidden = hidden
 
     def initialize(self) -> None:

@@ -35,6 +35,56 @@ class VariableError(Exception):
     pass
 
 
+def _astNodeToInt(node):
+    """Convert an AST node representing an integer literal (possibly negated) to int."""
+    if isinstance(node, ast.Constant) and type(node.value) is int:
+        return node.value
+    if isinstance(node, ast.UnaryOp) and isinstance(node.op, ast.USub):
+        inner = node.operand
+        if isinstance(inner, ast.Constant) and type(inner.value) is int:
+            return -inner.value
+    return None
+
+
+def _parseSliceExpr(expr, varPath=''):
+    """Parse a string index/slice expression into an int or slice object.
+
+    Accepts integer literals (e.g. "3", "-1") and slice notation (e.g. "1:5", "::2").
+    Raises VariableError for anything else.
+    """
+    try:
+        tree = ast.parse(f'_x[{expr}]', mode='eval')
+    except SyntaxError:
+        raise VariableError(f"Invalid slice expression '{expr}' for variable {varPath}")
+
+    subscript = tree.body
+    if not isinstance(subscript, ast.Subscript):
+        raise VariableError(f"Invalid slice expression '{expr}' for variable {varPath}")
+
+    sl = subscript.slice
+    # Handle ast.Index wrapper (Python 3.8)
+    if isinstance(sl, ast.Index):
+        sl = sl.value
+
+    if isinstance(sl, ast.Slice):
+        lower = _astNodeToInt(sl.lower) if sl.lower else None
+        upper = _astNodeToInt(sl.upper) if sl.upper else None
+        step = _astNodeToInt(sl.step) if sl.step else None
+        if sl.lower and lower is None:
+            raise VariableError(f"Invalid slice expression '{expr}' for variable {varPath}")
+        if sl.upper and upper is None:
+            raise VariableError(f"Invalid slice expression '{expr}' for variable {varPath}")
+        if sl.step and step is None:
+            raise VariableError(f"Invalid slice expression '{expr}' for variable {varPath}")
+        return slice(lower, upper, step)
+
+    val = _astNodeToInt(sl)
+    if val is not None:
+        return val
+
+    raise VariableError(f"Invalid slice expression '{expr}' for variable {varPath}")
+
+
 class VariableWaitClass(object):
     """Wait for variable conditions to become true.
 
@@ -986,7 +1036,8 @@ class BaseVariable(pr.Node):
                     for i in range(self._numValues()):
                         self.setDisp(d, write=writeEach, index=i)
                 else:
-                    idxSlice = eval(f'[i for i in range(self._numValues())][{keys[0]}]')
+                    _base = list(range(self._numValues()))
+                    idxSlice = _base[_parseSliceExpr(keys[0], self.path)]
 
                     # Single entry item
                     if ':' not in keys[0]:
