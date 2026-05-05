@@ -20,6 +20,9 @@
 
 import zipfile
 
+import pytest
+import yaml
+
 import pyrogue._HelperFunctions as hf
 
 
@@ -27,23 +30,25 @@ import pyrogue._HelperFunctions as hf
 # string-input path (yamlToData(stream=...), line 261)
 # ---------------------------------------------------------------------------
 def test_yaml_loader_string_path_unsafe(monkeypatch):
-    """PyrogueLoader allows !!python/object/apply on string input."""
+    """PyrogueLoader must reject !!python/object/apply on string input.
+
+    The unsafe tag must surface as a yaml.constructor.ConstructorError so
+    callers (Root.loadYaml -> _setDictRoot, yamlUpdate -> dictUpdate) see
+    the parse failure directly instead of receiving a None sentinel that
+    crashes later in unrelated code with a confusing AttributeError.
+    """
     monkeypatch.setenv("AUDIT_PYR_001_SENTINEL", "compromised_001")
 
     malicious = "!!python/object/apply:os.getenv ['AUDIT_PYR_001_SENTINEL']"
-    result = hf.yamlToData(stream=malicious)
-
-    assert result != "compromised_001", (
-        "PyrogueLoader allowed arbitrary !!python/object/apply "
-        "construction; sentinel value compromised (string-input path, line 261)"
-    )
+    with pytest.raises(yaml.constructor.ConstructorError):
+        hf.yamlToData(stream=malicious)
 
 
 # ---------------------------------------------------------------------------
 # zip-archive branch (yamlToData(fName='...zip/sub'), line 272)
 # ---------------------------------------------------------------------------
 def test_yaml_loader_zip_branch_unsafe(monkeypatch, tmp_path):
-    """PyrogueLoader allows !!python/object/apply on zip-archive branch."""
+    """PyrogueLoader must reject !!python/object/apply on the zip branch."""
     monkeypatch.setenv("AUDIT_PYR_002_SENTINEL", "compromised_002")
 
     malicious = "!!python/object/apply:os.getenv ['AUDIT_PYR_002_SENTINEL']"
@@ -54,28 +59,20 @@ def test_yaml_loader_zip_branch_unsafe(monkeypatch, tmp_path):
         zf.writestr(inner, malicious)
 
     fname = str(zip_path) + "/" + inner
-    result = hf.yamlToData(fName=fname)
-
-    assert result != "compromised_002", (
-        "PyrogueLoader allowed arbitrary !!python/object/apply "
-        "construction; sentinel value compromised (zip-archive branch, line 272)"
-    )
+    with pytest.raises(yaml.constructor.ConstructorError):
+        hf.yamlToData(fName=fname)
 
 
 # ---------------------------------------------------------------------------
 # plain-file branch (yamlToData(fName='...yaml'), line 278)
 # ---------------------------------------------------------------------------
 def test_yaml_loader_file_branch_unsafe(monkeypatch, tmp_path):
-    """PyrogueLoader allows !!python/object/apply on plain-file branch."""
+    """PyrogueLoader must reject !!python/object/apply on the plain-file branch."""
     monkeypatch.setenv("AUDIT_PYR_003_SENTINEL", "compromised_003")
 
     malicious = "!!python/object/apply:os.getenv ['AUDIT_PYR_003_SENTINEL']"
     yaml_file = tmp_path / "payload.yaml"
     yaml_file.write_text(malicious)
 
-    result = hf.yamlToData(fName=str(yaml_file))
-
-    assert result != "compromised_003", (
-        "PyrogueLoader allowed arbitrary !!python/object/apply "
-        "construction; sentinel value compromised (plain-file branch, line 278)"
-    )
+    with pytest.raises(yaml.constructor.ConstructorError):
+        hf.yamlToData(fName=str(yaml_file))

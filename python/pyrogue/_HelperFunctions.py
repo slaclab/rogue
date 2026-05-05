@@ -256,9 +256,12 @@ def yamlToData(stream: str = '', fName: str | None = None) -> Any:
     if fName is None:
         try:
             return yaml.load(stream, Loader=PyrogueLoader)
-        except yaml.constructor.ConstructorError:
-            log.warning("YAML contained an unsafe or unrecognised tag; returning None")
-            return None
+        except yaml.constructor.ConstructorError as exc:
+            # Re-raise so callers (Root.loadYaml, yamlUpdate -> dictUpdate)
+            # see the security/parse failure instead of getting a None
+            # sentinel that crashes later with a confusing AttributeError.
+            log.error("YAML contained an unsafe or unrecognised tag: %s", exc)
+            raise
 
     # Main or sub-file is in a zip
     elif '.zip' in fName:
@@ -271,9 +274,9 @@ def yamlToData(stream: str = '', fName: str | None = None) -> Any:
             with myzip.open(sub) as myfile:
                 try:
                     return yaml.load(myfile.read(), Loader=PyrogueLoader)
-                except yaml.constructor.ConstructorError:
-                    log.warning("YAML contained an unsafe or unrecognised tag; returning None")
-                    return None
+                except yaml.constructor.ConstructorError as exc:
+                    log.error("YAML contained an unsafe or unrecognised tag: %s", exc)
+                    raise
 
     # Non zip file
     else:
@@ -281,9 +284,9 @@ def yamlToData(stream: str = '', fName: str | None = None) -> Any:
         with open(fName, 'r') as f:
             try:
                 return yaml.load(f.read(), Loader=PyrogueLoader)
-            except yaml.constructor.ConstructorError:
-                log.warning("YAML contained an unsafe or unrecognised tag; returning None")
-                return None
+            except yaml.constructor.ConstructorError as exc:
+                log.error("YAML contained an unsafe or unrecognised tag: %s", exc)
+                raise
 
 
 def dataToYaml(data: Any) -> str:
