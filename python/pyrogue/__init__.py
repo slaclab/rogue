@@ -13,7 +13,10 @@ import sys
 
 MIN_PYTHON = (3,10)
 if sys.version_info < MIN_PYTHON:
-    raise Exception("Python %s.%s or later is required.\n" % MIN_PYTHON)
+    # ImportError so consumers that already catch ImportError for optional
+    # dependencies (the documented behavior change for the floor bump) see
+    # the right exception type at ``import pyrogue``.
+    raise ImportError("Python %s.%s or later is required.\n" % MIN_PYTHON)
 
 from pyrogue._Logging   import *
 from pyrogue._Node      import *
