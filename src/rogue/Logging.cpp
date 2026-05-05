@@ -248,45 +248,82 @@ void rogue::Logging::intLog(uint32_t level, const char* fmt, va_list args) {
 #endif
 }
 
+// intLog re-throws bp::error_already_set when a Python log handler raises
+// (deliberate per the audit-repro contract).  C99 requires every va_start to
+// be paired with a va_end before the function exits, including the throw
+// path, so each variadic wrapper guards the intLog call with a try/catch
+// that runs va_end before re-raising.  va_end is a no-op on most ABIs but
+// the standard makes skipping it undefined behaviour, and clang -Wvarargs
+// plus most static analysers flag the unmatched pair.
 void rogue::Logging::log(uint32_t level, const char* fmt, ...) {
     va_list arg;
     va_start(arg, fmt);
-    intLog(level, fmt, arg);
+    try {
+        intLog(level, fmt, arg);
+    } catch (...) {
+        va_end(arg);
+        throw;
+    }
     va_end(arg);
 }
 
 void rogue::Logging::critical(const char* fmt, ...) {
     va_list arg;
     va_start(arg, fmt);
-    intLog(rogue::Logging::Critical, fmt, arg);
+    try {
+        intLog(rogue::Logging::Critical, fmt, arg);
+    } catch (...) {
+        va_end(arg);
+        throw;
+    }
     va_end(arg);
 }
 
 void rogue::Logging::error(const char* fmt, ...) {
     va_list arg;
     va_start(arg, fmt);
-    intLog(rogue::Logging::Error, fmt, arg);
+    try {
+        intLog(rogue::Logging::Error, fmt, arg);
+    } catch (...) {
+        va_end(arg);
+        throw;
+    }
     va_end(arg);
 }
 
 void rogue::Logging::warning(const char* fmt, ...) {
     va_list arg;
     va_start(arg, fmt);
-    intLog(rogue::Logging::Warning, fmt, arg);
+    try {
+        intLog(rogue::Logging::Warning, fmt, arg);
+    } catch (...) {
+        va_end(arg);
+        throw;
+    }
     va_end(arg);
 }
 
 void rogue::Logging::info(const char* fmt, ...) {
     va_list arg;
     va_start(arg, fmt);
-    intLog(rogue::Logging::Info, fmt, arg);
+    try {
+        intLog(rogue::Logging::Info, fmt, arg);
+    } catch (...) {
+        va_end(arg);
+        throw;
+    }
     va_end(arg);
 }
 
 void rogue::Logging::debug(const char* fmt, ...) {
     va_list arg;
     va_start(arg, fmt);
-    intLog(rogue::Logging::Debug, fmt, arg);
+    try {
+        intLog(rogue::Logging::Debug, fmt, arg);
+    } catch (...) {
+        va_end(arg);
+        throw;
+    }
     va_end(arg);
 }
 
