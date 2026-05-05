@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-05T18:28:28Z",
+  "generated_at": "2026-05-05T18:28:45Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -152,6 +152,69 @@
         "published_at": "2026-05-01T21:06:10Z",
         "run_url": "https://github.com/slaclab/rogue/actions/runs/25232882079",
         "summary_url": "/rogue/perf/branches/pre-release/latest.json"
+      }
+    },
+    {
+      "ref_name": "bug-audit/zmq-client-server",
+      "ref_slug": "bug-audit_zmq-client-server",
+      "latest_url": "/rogue/perf/branches/bug-audit_zmq-client-server/latest.json",
+      "history": [
+        {
+          "ref_name": "bug-audit/zmq-client-server",
+          "sha": "364fcd9833455bb7fcacf515232965ff026e76bc",
+          "short_sha": "364fcd9",
+          "published_at": "2026-05-05T18:28:45Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/25394440945",
+          "summary_url": "/rogue/perf/branches/bug-audit_zmq-client-server/history/364fcd9833455bb7fcacf515232965ff026e76bc.json"
+        },
+        {
+          "ref_name": "bug-audit/zmq-client-server",
+          "sha": "91dd8dec3db2a125177a504e1f67a871bbe18dda",
+          "short_sha": "91dd8de",
+          "published_at": "2026-05-05T18:17:14Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/25393788413",
+          "summary_url": "/rogue/perf/branches/bug-audit_zmq-client-server/history/91dd8dec3db2a125177a504e1f67a871bbe18dda.json"
+        },
+        {
+          "ref_name": "bug-audit/zmq-client-server",
+          "sha": "27c1da21442d8f73474e43ef289966aaed33f07b",
+          "short_sha": "27c1da2",
+          "published_at": "2026-05-05T16:57:41Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/25389629714",
+          "summary_url": "/rogue/perf/branches/bug-audit_zmq-client-server/history/27c1da21442d8f73474e43ef289966aaed33f07b.json"
+        },
+        {
+          "ref_name": "bug-audit/zmq-client-server",
+          "sha": "448b5e90330e145c35e0782d5013ccbda7a7f3bf",
+          "short_sha": "448b5e9",
+          "published_at": "2026-05-05T16:03:26Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/25386891909",
+          "summary_url": "/rogue/perf/branches/bug-audit_zmq-client-server/history/448b5e90330e145c35e0782d5013ccbda7a7f3bf.json"
+        },
+        {
+          "ref_name": "bug-audit/zmq-client-server",
+          "sha": "608b0634b356885e39cb8b93c71a03a32b34601b",
+          "short_sha": "608b063",
+          "published_at": "2026-05-05T15:37:08Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/25385896810",
+          "summary_url": "/rogue/perf/branches/bug-audit_zmq-client-server/history/608b0634b356885e39cb8b93c71a03a32b34601b.json"
+        },
+        {
+          "ref_name": "bug-audit/zmq-client-server",
+          "sha": "eb76c7661e65eeb0eb2770561bf2271c46f34cf2",
+          "short_sha": "eb76c76",
+          "published_at": "2026-05-05T14:18:33Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/25380645463",
+          "summary_url": "/rogue/perf/branches/bug-audit_zmq-client-server/history/eb76c7661e65eeb0eb2770561bf2271c46f34cf2.json"
+        }
+      ],
+      "latest": {
+        "ref_name": "bug-audit/zmq-client-server",
+        "sha": "364fcd9833455bb7fcacf515232965ff026e76bc",
+        "short_sha": "364fcd9",
+        "published_at": "2026-05-05T18:28:45Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/25394440945",
+        "summary_url": "/rogue/perf/branches/bug-audit_zmq-client-server/latest.json"
       }
     },
     {
@@ -434,61 +497,6 @@
         "published_at": "2026-05-05T18:19:02Z",
         "run_url": "https://github.com/slaclab/rogue/actions/runs/25393626842",
         "summary_url": "/rogue/perf/branches/bug-audit_fileio-streamzip/latest.json"
-      }
-    },
-    {
-      "ref_name": "bug-audit/zmq-client-server",
-      "ref_slug": "bug-audit_zmq-client-server",
-      "latest_url": "/rogue/perf/branches/bug-audit_zmq-client-server/latest.json",
-      "history": [
-        {
-          "ref_name": "bug-audit/zmq-client-server",
-          "sha": "91dd8dec3db2a125177a504e1f67a871bbe18dda",
-          "short_sha": "91dd8de",
-          "published_at": "2026-05-05T18:17:14Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/25393788413",
-          "summary_url": "/rogue/perf/branches/bug-audit_zmq-client-server/history/91dd8dec3db2a125177a504e1f67a871bbe18dda.json"
-        },
-        {
-          "ref_name": "bug-audit/zmq-client-server",
-          "sha": "27c1da21442d8f73474e43ef289966aaed33f07b",
-          "short_sha": "27c1da2",
-          "published_at": "2026-05-05T16:57:41Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/25389629714",
-          "summary_url": "/rogue/perf/branches/bug-audit_zmq-client-server/history/27c1da21442d8f73474e43ef289966aaed33f07b.json"
-        },
-        {
-          "ref_name": "bug-audit/zmq-client-server",
-          "sha": "448b5e90330e145c35e0782d5013ccbda7a7f3bf",
-          "short_sha": "448b5e9",
-          "published_at": "2026-05-05T16:03:26Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/25386891909",
-          "summary_url": "/rogue/perf/branches/bug-audit_zmq-client-server/history/448b5e90330e145c35e0782d5013ccbda7a7f3bf.json"
-        },
-        {
-          "ref_name": "bug-audit/zmq-client-server",
-          "sha": "608b0634b356885e39cb8b93c71a03a32b34601b",
-          "short_sha": "608b063",
-          "published_at": "2026-05-05T15:37:08Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/25385896810",
-          "summary_url": "/rogue/perf/branches/bug-audit_zmq-client-server/history/608b0634b356885e39cb8b93c71a03a32b34601b.json"
-        },
-        {
-          "ref_name": "bug-audit/zmq-client-server",
-          "sha": "eb76c7661e65eeb0eb2770561bf2271c46f34cf2",
-          "short_sha": "eb76c76",
-          "published_at": "2026-05-05T14:18:33Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/25380645463",
-          "summary_url": "/rogue/perf/branches/bug-audit_zmq-client-server/history/eb76c7661e65eeb0eb2770561bf2271c46f34cf2.json"
-        }
-      ],
-      "latest": {
-        "ref_name": "bug-audit/zmq-client-server",
-        "sha": "91dd8dec3db2a125177a504e1f67a871bbe18dda",
-        "short_sha": "91dd8de",
-        "published_at": "2026-05-05T18:17:14Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/25393788413",
-        "summary_url": "/rogue/perf/branches/bug-audit_zmq-client-server/latest.json"
       }
     },
     {
