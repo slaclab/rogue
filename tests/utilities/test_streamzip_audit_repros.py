@@ -35,29 +35,35 @@ def _read_src(relative_path):
 
 
 def test_streamzip_uses_64bit_total_out():
-    # StreamZip::acceptFrame at
-    # src/rogue/utilities/StreamZip.cpp line ~119 reads
-    # strm.total_out_lo32 (lower 32 bits of the bzip2 64-bit output counter).
-    # For compressed output exceeding 4 GiB the payload is silently truncated.
-    # The fix combines total_out_hi32 and total_out_lo32 into a 64-bit value
-    # or uses a 64-bit payload API.  On HEAD only total_out_lo32 is referenced.
+    # StreamZip::acceptFrame originally read strm.total_out_lo32 (lower 32 bits
+    # of the bzip2 64-bit output counter) in isolation.  Compressed output
+    # exceeding 4 GiB was silently truncated.  Two valid fixes:
+    #   (a) Drop total_out_lo32 entirely (manual uint64_t accumulator, or the
+    #       bzip2 64-bit extension API).  Token absent.
+    #   (b) Combine total_out_hi32 << 32 | total_out_lo32 into a 64-bit value.
+    #       Both tokens present.
     src = _read_src("src/rogue/utilities/StreamZip.cpp")
-    assert "total_out_lo32" not in src, (
-        "StreamZip uses 32-bit total_out_lo32; truncates compressed "
-        "output larger than 4 GiB; should combine total_out_hi32 and "
-        "total_out_lo32 for 64-bit payload"
+    has_lo32 = "total_out_lo32" in src
+    has_hi32 = "total_out_hi32" in src
+    assert (not has_lo32) or has_hi32, (
+        "StreamZip uses 32-bit total_out_lo32 in isolation; truncates "
+        "compressed output larger than 4 GiB.  Either drop total_out_lo32 "
+        "(manual 64-bit accumulator or bzip2 64-bit API) or pair it with "
+        "total_out_hi32 to assemble a 64-bit total_out."
     )
 
 
 def test_streamunzip_uses_64bit_total_out():
-    # StreamUnZip::acceptFrame at
-    # src/rogue/utilities/StreamUnZip.cpp line ~128 reads strm.total_out_lo32
-    # only after BZ2_bzDecompressEnd().  Same truncation risk as  for
-    # decompressed data exceeding 4 GiB.
+    # StreamUnZip::acceptFrame originally read strm.total_out_lo32 only after
+    # BZ2_bzDecompressEnd().  Same truncation risk for decompressed data
+    # exceeding 4 GiB.  Same pair of valid fixes as the StreamZip path above.
     src = _read_src("src/rogue/utilities/StreamUnZip.cpp")
-    assert "total_out_lo32" not in src, (
-        "StreamUnZip uses 32-bit total_out_lo32; truncates "
-        "decompressed output larger than 4 GiB; should use 64-bit total_out"
+    has_lo32 = "total_out_lo32" in src
+    has_hi32 = "total_out_hi32" in src
+    assert (not has_lo32) or has_hi32, (
+        "StreamUnZip uses 32-bit total_out_lo32 in isolation; truncates "
+        "decompressed output larger than 4 GiB.  Either drop total_out_lo32 "
+        "or pair it with total_out_hi32 for a 64-bit total_out value."
     )
 
 
