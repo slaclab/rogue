@@ -46,14 +46,20 @@ TEST_CASE("StreamZip uses 32-bit total_out_lo32; truncates >4GiB") {
         ROGUE_SRC_DIR "/src/rogue/utilities/StreamZip.cpp");
     REQUIRE_MESSAGE(!src.empty(), "Could not read StreamZip.cpp");
 
-    // FIXED state: total_out_lo32 is not used (replaced with a 64-bit
-    // calculation combining total_out_hi32 << 32 | total_out_lo32, or
-    // using the bzip2 uint64_t extension API).
-    const bool uses32bit = (src.find("total_out_lo32") != std::string::npos);
-    CHECK_MESSAGE(!uses32bit,
-                  "StreamZip::acceptFrame uses 32-bit "
-                  "total_out_lo32; compressed output exceeding 4 GiB is "
-                  "silently truncated without error; use 64-bit total_out");
+    // FIXED state has two valid forms:
+    //   (a) total_out_lo32 dropped entirely (manual uint64_t accumulator,
+    //       or the bzip2 64-bit extension API).
+    //   (b) total_out_hi32 << 32 | total_out_lo32 combined into a 64-bit
+    //       value; both tokens present.
+    const bool hasLo32      = (src.find("total_out_lo32") != std::string::npos);
+    const bool hasHi32      = (src.find("total_out_hi32") != std::string::npos);
+    // doctest forbids || inside CHECK_MESSAGE; precompute the disjunction.
+    const bool isFixed = (!hasLo32) || hasHi32;
+    CHECK_MESSAGE(isFixed,
+                  "StreamZip::acceptFrame uses 32-bit total_out_lo32 in "
+                  "isolation; compressed output exceeding 4 GiB is silently "
+                  "truncated.  Either drop total_out_lo32 or pair it with "
+                  "total_out_hi32 to assemble a 64-bit total_out.");
 }
 
 TEST_CASE("StreamUnZip uses 32-bit total_out_lo32; truncates >4GiB") {
@@ -61,11 +67,14 @@ TEST_CASE("StreamUnZip uses 32-bit total_out_lo32; truncates >4GiB") {
         ROGUE_SRC_DIR "/src/rogue/utilities/StreamUnZip.cpp");
     REQUIRE_MESSAGE(!src.empty(), "Could not read StreamUnZip.cpp");
 
-    const bool uses32bit = (src.find("total_out_lo32") != std::string::npos);
-    CHECK_MESSAGE(!uses32bit,
-                  "StreamUnZip::acceptFrame uses 32-bit "
-                  "total_out_lo32; decompressed output exceeding 4 GiB is "
-                  "silently truncated; use 64-bit total_out");
+    const bool hasLo32 = (src.find("total_out_lo32") != std::string::npos);
+    const bool hasHi32 = (src.find("total_out_hi32") != std::string::npos);
+    const bool isFixed = (!hasLo32) || hasHi32;
+    CHECK_MESSAGE(isFixed,
+                  "StreamUnZip::acceptFrame uses 32-bit total_out_lo32 in "
+                  "isolation; decompressed output exceeding 4 GiB is silently "
+                  "truncated.  Either drop total_out_lo32 or pair it with "
+                  "total_out_hi32 to assemble a 64-bit total_out.");
 }
 
 TEST_CASE("StreamZip does not handle BZ_PARAM_ERROR") {
