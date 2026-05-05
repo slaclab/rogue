@@ -44,6 +44,33 @@ rpx::XvcConnection::XvcConnection(int sd, int wakeFd, JtagDriver* drv, uint64_t 
     if ((sd_ = ::accept(sd, reinterpret_cast<struct sockaddr*>(&peer_), &sz)) < 0)
         throw(rogue::GeneralError::create("XvcConnection::XvcConnection()", "Unable to accept connection"));
 
+    // accept() can return a fd >= FD_SETSIZE on a process with many open
+    // descriptors.  readTo() defensively checks FD_SETSIZE on every call
+    // and would treat the connection as immediately broken (returning
+    // -2/EBADF), but that path leaves the bad fd open until the
+    // connection scope exits.  Reject it synchronously so the listener
+    // loop in XvcServer::run drops the bad connection cleanly and moves
+    // on to the next accept.
+    if (sd_ >= FD_SETSIZE) {
+        int badFd = sd_;
+        ::close(sd_);
+        sd_ = -1;
+        throw(rogue::GeneralError::create(
+            "XvcConnection::XvcConnection()",
+            "accept() returned fd %d which exceeds FD_SETSIZE (%d); too many open files",
+            badFd,
+            static_cast<int>(FD_SETSIZE)));
+    }
+    if (wakeFd_ >= 0 && wakeFd_ >= FD_SETSIZE) {
+        ::close(sd_);
+        sd_ = -1;
+        throw(rogue::GeneralError::create(
+            "XvcConnection::XvcConnection()",
+            "wakeFd %d exceeds FD_SETSIZE (%d); too many open files",
+            wakeFd_,
+            static_cast<int>(FD_SETSIZE)));
+    }
+
     // XVC protocol is synchronous / not pipelined :-(
     // use TCP_NODELAY to make sure our messages (many of which
     // are small) are sent ASAP
