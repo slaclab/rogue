@@ -204,6 +204,22 @@ rha::AxiStreamDma::AxiStreamDma(std::string path, uint32_t dest, bool ssiEnable)
             rogue::GeneralError::create("AxiStreamDma::AxiStreamDma", "Failed to open device file: %s", path.c_str()));
     }
 
+    // Reject fd_ >= FD_SETSIZE synchronously here, before the worker thread
+    // starts, so that an out-of-range fd surfaces as a clean ctor exception
+    // instead of throwing later from runThread()/acceptReq()/acceptFrame()
+    // (which would call std::terminate() because those throws are uncaught).
+    if (fd_ >= FD_SETSIZE) {
+        int badFd = fd_;
+        ::close(fd_);
+        fd_ = -1;
+        closeShared(desc_);
+        throw(rogue::GeneralError::create("AxiStreamDma::AxiStreamDma",
+                                          "fd %d for %s exceeds FD_SETSIZE (%d); too many open files in process",
+                                          badFd,
+                                          path.c_str(),
+                                          FD_SETSIZE));
+    }
+
     // Zero copy is disabled
     if (desc_->rawBuff == NULL) {
         desc_->bCount = dmaGetTxBuffCount(fd_) + dmaGetRxBuffCount(fd_);
