@@ -87,8 +87,21 @@ class SqlLogger(object):
             sqlalchemy.Column('levelName',   sqlalchemy.String),
             sqlalchemy.Column('levelNumber', sqlalchemy.Integer))
 
-        self._varTable.create(engine, checkfirst=True)
-        self._logTable.create(engine, checkfirst=True)
+        # Stage table creation under a guard.  ``Table.create()`` can fail on
+        # a schema mismatch, permission error, or transient DB issue; if we
+        # leave the engine alive without ever assigning self._engine, _stop()
+        # will not see the engine and its connection pool / DBAPI handles
+        # leak.  Mirror the SqlReader RAII pattern here.
+        try:
+            self._varTable.create(engine, checkfirst=True)
+            self._logTable.create(engine, checkfirst=True)
+        except Exception as e:
+            self._log.error("Failed to create SQL tables on %s: %s", self._url, e)
+            try:
+                engine.dispose()
+            except Exception:
+                pass
+            return
         self._engine = engine
 
     def _stop(self) -> None:
@@ -253,6 +266,15 @@ class SqlReader(object):
 
     def getVariable(self) -> None:
         """Fetch and print all variable entries. Placeholder for future enhancement."""
+        # The constructor logs and returns instead of raising on connect /
+        # autoload failure, leaving _conn at None.  Surface that as a clear
+        # error here instead of letting the call crash with a confusing
+        # ``'NoneType' object has no attribute 'execute'`` AttributeError.
+        if self._conn is None:
+            raise RuntimeError(
+                f"SqlReader has no active database connection to {self._url} "
+                "(construction failed); see earlier log messages for details"
+            )
         # SQLAlchemy 2.x removed the legacy ``select([table])`` form; pass the
         # table directly so the call works on both 1.4 and 2.x installs.
         r = self._conn.execute(sqlalchemy.select(self._varTable))
@@ -260,6 +282,11 @@ class SqlReader(object):
 
     def getSyslog(self, syslogData: Any) -> None:
         """Fetch and print syslog entries. Placeholder for future enhancement."""
+        if self._conn is None:
+            raise RuntimeError(
+                f"SqlReader has no active database connection to {self._url} "
+                "(construction failed); see earlier log messages for details"
+            )
         r = self._conn.execute(sqlalchemy.select(self._logTable))
         print(r.fetchall())
 
