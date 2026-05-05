@@ -41,10 +41,12 @@ class DataReceiver(pr.Device,ris.Slave):
     def __init__(self,
                  typeStr: str = 'UInt8[np]',
                  hideData: bool = True,
-                 value: Any = numpy.zeros(shape=1, dtype=numpy.uint8, order='C'),
+                 value: Any = None,
                  enableOnStart: bool = True,
                  **kwargs: Any) -> None:
         """Initialize the data receiver."""
+        if value is None:
+            value = numpy.zeros(shape=1, dtype=numpy.uint8, order='C')
 
         pr.Device.__init__(self, **kwargs)
         ris.Slave.__init__(self)

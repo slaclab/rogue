@@ -986,7 +986,17 @@ class BaseVariable(pr.Node):
                     for i in range(self._numValues()):
                         self.setDisp(d, write=writeEach, index=i)
                 else:
-                    idxSlice = eval(f'[i for i in range(self._numValues())][{keys[0]}]')
+                    # Validate keys[0] is a safe integer/slice expression before eval.
+                    # Parse as _x[expr] so that "n:m" slice notation is valid
+                    # (bare "n:m" is not a valid Python expression on its own).
+                    _allowed_nodes = (ast.Constant, ast.Slice, ast.UnaryOp, ast.USub,
+                                      ast.Subscript, ast.Name, ast.Load,
+                                      ast.Expression, ast.Index)
+                    _tree = ast.parse(f'_x[{keys[0]}]', mode='eval')
+                    if not all(isinstance(n, _allowed_nodes) for n in ast.walk(_tree)):
+                        raise VariableError("Forbidden expression in slice")
+                    _base = list(range(self._numValues()))
+                    idxSlice = eval(f'_base[{keys[0]}]', {'_base': _base})
 
                     # Single entry item
                     if ':' not in keys[0]:

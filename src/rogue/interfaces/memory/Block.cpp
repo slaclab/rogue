@@ -101,20 +101,51 @@ rim::Block::Block(uint64_t offset, uint32_t size) {
     verifyBase_ = 0;  // Verify Range
     verifySize_ = 0;  // Verify Range
 
-    blockData_ = reinterpret_cast<uint8_t*>(malloc(size_));
-    memset(blockData_, 0, size_);
+    // Init pointers so catch / dtor see well-defined values on early OOM.
+    blockData_    = nullptr;
+    verifyData_   = nullptr;
+    verifyMask_   = nullptr;
+    verifyBlock_  = nullptr;
+    expectedData_ = nullptr;
 
-    verifyData_ = reinterpret_cast<uint8_t*>(malloc(size_));
-    memset(verifyData_, 0, size_);
+    // OOM throws GeneralError; size_ == 0 is treated as "no buffer needed"
+    // because malloc(0) is implementation-defined (glibc returns non-null,
+    // musl/embedded libcs may return NULL).
+    try {
+        if (size_ != 0) {
+            blockData_ = reinterpret_cast<uint8_t*>(malloc(size_));
+            if (blockData_ == nullptr)
+                throw(rogue::GeneralError("Block::Block", "Failed to allocate blockData_ buffer"));
+            memset(blockData_, 0, size_);
 
-    verifyMask_ = reinterpret_cast<uint8_t*>(malloc(size_));
-    memset(verifyMask_, 0, size_);
+            verifyData_ = reinterpret_cast<uint8_t*>(malloc(size_));
+            if (verifyData_ == nullptr)
+                throw(rogue::GeneralError("Block::Block", "Failed to allocate verifyData_ buffer"));
+            memset(verifyData_, 0, size_);
 
-    verifyBlock_ = reinterpret_cast<uint8_t*>(malloc(size_));
-    memset(verifyBlock_, 0, size_);
+            verifyMask_ = reinterpret_cast<uint8_t*>(malloc(size_));
+            if (verifyMask_ == nullptr)
+                throw(rogue::GeneralError("Block::Block", "Failed to allocate verifyMask_ buffer"));
+            memset(verifyMask_, 0, size_);
 
-    expectedData_ = reinterpret_cast<uint8_t*>(malloc(size_));
-    memset(expectedData_, 0, size_);
+            verifyBlock_ = reinterpret_cast<uint8_t*>(malloc(size_));
+            if (verifyBlock_ == nullptr)
+                throw(rogue::GeneralError("Block::Block", "Failed to allocate verifyBlock_ buffer"));
+            memset(verifyBlock_, 0, size_);
+
+            expectedData_ = reinterpret_cast<uint8_t*>(malloc(size_));
+            if (expectedData_ == nullptr)
+                throw(rogue::GeneralError("Block::Block", "Failed to allocate expectedData_ buffer"));
+            memset(expectedData_, 0, size_);
+        }
+    } catch (...) {
+        free(blockData_);
+        free(verifyData_);
+        free(verifyMask_);
+        free(verifyBlock_);
+        free(expectedData_);
+        throw;
+    }
 }
 
 // Destroy the Hub
@@ -460,11 +491,8 @@ void rim::Block::addVariables(std::vector<rim::VariablePtr> variables) {
 
     uint32_t x;
 
-    uint8_t excMask[size_];
-    uint8_t oleMask[size_];
-
-    memset(excMask, 0, size_);
-    memset(oleMask, 0, size_);
+    std::vector<uint8_t> excMask(size_, 0);
+    std::vector<uint8_t> oleMask(size_, 0);
 
     variables_ = variables;
 
@@ -492,11 +520,11 @@ void rim::Block::addVariables(std::vector<rim::VariablePtr> variables) {
             for (x = 0; x < (*vit)->bitOffset_.size(); x++) {
                 // Variable allows overlaps, add to overlap enable mask
                 if ((*vit)->overlapEn_) {
-                    setBits(oleMask, (*vit)->bitOffset_[x], (*vit)->bitSize_[x]);
+                    setBits(oleMask.data(), (*vit)->bitOffset_[x], (*vit)->bitSize_[x]);
 
                     // Otherwise add to exclusive mask and check for existing mapping
                 } else {
-                    if (anyBits(excMask, (*vit)->bitOffset_[x], (*vit)->bitSize_[x]))
+                    if (anyBits(excMask.data(), (*vit)->bitOffset_[x], (*vit)->bitSize_[x]))
                         throw(rogue::GeneralError::create(
                             "Block::addVariables",
                             "Variable bit overlap detected for block %s with address 0x%.8x and variable %s",
@@ -504,7 +532,7 @@ void rim::Block::addVariables(std::vector<rim::VariablePtr> variables) {
                             address(),
                             (*vit)->name_.c_str()));
 
-                    setBits(excMask, (*vit)->bitOffset_[x], (*vit)->bitSize_[x]);
+                    setBits(excMask.data(), (*vit)->bitOffset_[x], (*vit)->bitSize_[x]);
                 }
 
                 // update verify mask
@@ -537,11 +565,11 @@ void rim::Block::addVariables(std::vector<rim::VariablePtr> variables) {
             for (x = 0; x < (*vit)->numValues_; x++) {
                 // Variable allows overlaps, add to overlap enable mask
                 if ((*vit)->overlapEn_) {
-                    setBits(oleMask, x * (*vit)->valueStride_ + (*vit)->bitOffset_[0], (*vit)->valueBits_);
+                    setBits(oleMask.data(), x * (*vit)->valueStride_ + (*vit)->bitOffset_[0], (*vit)->valueBits_);
 
                     // Otherwise add to exclusive mask and check for existing mapping
                 } else {
-                    if (anyBits(excMask, x * (*vit)->valueStride_ + (*vit)->bitOffset_[0], (*vit)->valueBits_))
+                    if (anyBits(excMask.data(), x * (*vit)->valueStride_ + (*vit)->bitOffset_[0], (*vit)->valueBits_))
                         throw(rogue::GeneralError::create(
                             "Block::addVariables",
                             "Variable bit overlap detected for block %s with address 0x%.8x and variable %s",
@@ -549,7 +577,7 @@ void rim::Block::addVariables(std::vector<rim::VariablePtr> variables) {
                             address(),
                             (*vit)->name_.c_str()));
 
-                    setBits(excMask, x * (*vit)->valueStride_ + (*vit)->bitOffset_[0], (*vit)->valueBits_);
+                    setBits(excMask.data(), x * (*vit)->valueStride_ + (*vit)->bitOffset_[0], (*vit)->valueBits_);
                 }
 
                 // update verify mask
@@ -661,14 +689,19 @@ void rim::Block::setBytes(const uint8_t* data, rim::Variable* var, uint32_t inde
     // Set stale flag
     if (var->mode_ != "RO") stale_ = true;
 
-    // Change byte order, need to make a copy
+    // Change byte order, need to make a copy.
+    // unique_ptr with custom deleter owns the malloc buffer so all exit paths
+    // (normal return, exception, early throw) release the buffer automatically,
+    // removing the need for explicit deallocation at every return site.
+    std::unique_ptr<uint8_t, decltype(&free)> revBuf(nullptr, free);
     if (var->byteReverse_) {
-        buff = reinterpret_cast<uint8_t*>(malloc(var->valueBytes_));
-        if (buff == NULL)
+        revBuf.reset(static_cast<uint8_t*>(malloc(var->valueBytes_)));
+        if (!revBuf)
             throw(rogue::GeneralError::create("Block::setBytes",
                                               "Failed to allocate %" PRIu32 " bytes for byte-reversed copy of %s",
                                               var->valueBytes_,
                                               var->name_.c_str()));
+        buff = revBuf.get();
         memcpy(buff, data, var->valueBytes_);
         reverseBytes(buff, var->valueBytes_);
     } else {
@@ -678,7 +711,6 @@ void rim::Block::setBytes(const uint8_t* data, rim::Variable* var, uint32_t inde
     // List variable
     if (var->numValues_ != 0) {
         if (index >= var->numValues_) {
-            if (var->byteReverse_) free(buff);
             throw(rogue::GeneralError::create("Block::setBytes",
                                               "Index %" PRIu32 " is out of range for %s",
                                               index,
@@ -731,7 +763,6 @@ void rim::Block::setBytes(const uint8_t* data, rim::Variable* var, uint32_t inde
         }
     }
     if ( var->mode_ != "RO" ) var->stale_ = true;
-    if (var->byteReverse_) free(buff);
 }
 
 // Get data to pointer from internal block or staged memory
@@ -825,7 +856,16 @@ void rim::Block::setPyFunc(bp::object& value, rim::Variable* var, int32_t index)
                                                   "Failed to extract byte array for %s",
                                                   var->name_.c_str()));
 
-            setBytes(reinterpret_cast<uint8_t*>(valueBuf.buf), var, index + x);
+            // setBytes() can throw (index out of range, malloc OOM in the
+            // byteReverse path); release the Python buffer on the throw
+            // path so the Py_buffer is not leaked for the lifetime of the
+            // interpreter.
+            try {
+                setBytes(reinterpret_cast<uint8_t*>(valueBuf.buf), var, index + x);
+            } catch (...) {
+                PyBuffer_Release(&valueBuf);
+                throw;
+            }
             PyBuffer_Release(&valueBuf);
         }
 
@@ -839,7 +879,13 @@ void rim::Block::setPyFunc(bp::object& value, rim::Variable* var, int32_t index)
                                               "Failed to extract byte array from pyFunc return value for %s",
                                               var->name_.c_str()));
 
-        setBytes(reinterpret_cast<uint8_t*>(valueBuf.buf), var, index);
+        // Same setBytes throw-path leak as the list-variable branch above.
+        try {
+            setBytes(reinterpret_cast<uint8_t*>(valueBuf.buf), var, index);
+        } catch (...) {
+            PyBuffer_Release(&valueBuf);
+            throw;
+        }
         PyBuffer_Release(&valueBuf);
     }
 }
@@ -893,7 +939,15 @@ void rim::Block::setByteArrayPy(bp::object& value, rim::Variable* var, int32_t i
                                           "Failed to extract byte array for %s",
                                           var->name_.c_str()));
 
-    setBytes(reinterpret_cast<uint8_t*>(valueBuf.buf), var, index);
+    // setBytes() can throw (index out of range, malloc OOM in the
+    // byteReverse path); release the Python buffer on the throw path so
+    // the Py_buffer is not leaked for the lifetime of the interpreter.
+    try {
+        setBytes(reinterpret_cast<uint8_t*>(valueBuf.buf), var, index);
+    } catch (...) {
+        PyBuffer_Release(&valueBuf);
+        throw;
+    }
     PyBuffer_Release(&valueBuf);
 }
 
@@ -2284,6 +2338,12 @@ bp::object rim::Block::getFloat8Py(rim::Variable* var, int32_t index) {
 
 // Set data using float8
 void rim::Block::setFloat8(const float& val, rim::Variable* var, int32_t index) {
+    // Guard NaN/Inf inputs before E4M3 conversion to avoid UB
+    if (!std::isfinite(val))
+        throw(rogue::GeneralError::create("Block::setFloat8",
+                                          "Non-finite value (NaN or Inf) for %s",
+                                          var->name_.c_str()));
+
     // Check range
     if ((var->minValue_ != 0 || var->maxValue_ != 0) && (val > var->maxValue_ || val < var->minValue_))
         throw(rogue::GeneralError::create("Block::setFloat8",
@@ -3157,6 +3217,12 @@ bp::object rim::Block::getFixedPy(rim::Variable* var, int32_t index) {
 
 // Set data using fixed point
 void rim::Block::setFixed(const double& val, rim::Variable* var, int32_t index) {
+    // Guard NaN/Inf before round() to prevent UB in static_cast<int64_t>
+    if (!std::isfinite(val))
+        throw(rogue::GeneralError::create("Block::setFixed",
+                                          "Non-finite value (NaN or Inf) for %s",
+                                          var->name_.c_str()));
+
     // Check range
     if ((var->minValue_ != 0 || var->maxValue_ != 0) && (val > var->maxValue_ || val < var->minValue_))
         throw(rogue::GeneralError::create("Block::setFixed",
@@ -3208,6 +3274,12 @@ double rim::Block::getFixed(rim::Variable* var, int32_t index) {
 
 // Set data using unsigned fixed point
 void rim::Block::setUFixed(const double& val, rim::Variable* var, int32_t index) {
+    // Guard NaN/Inf before range checks to avoid UB in comparisons and cast
+    if (!std::isfinite(val))
+        throw(rogue::GeneralError::create("Block::setUFixed",
+                                          "Non-finite value (NaN or Inf) for %s",
+                                          var->name_.c_str()));
+
     // Check range
     if ((var->minValue_ != 0 || var->maxValue_ != 0) && (val > var->maxValue_ || val < var->minValue_))
         throw(rogue::GeneralError::create("Block::setUFixed",
