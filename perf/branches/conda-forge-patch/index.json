@@ -5,6 +5,14 @@
   "history": [
     {
       "ref_name": "conda-forge-patch",
+      "sha": "3eb55be13787514c09de42a17e3e2bdc455e711e",
+      "short_sha": "3eb55be",
+      "published_at": "2026-05-05T15:57:26Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/25384256460",
+      "summary_url": "/rogue/perf/branches/conda-forge-patch/history/3eb55be13787514c09de42a17e3e2bdc455e711e.json"
+    },
+    {
+      "ref_name": "conda-forge-patch",
       "sha": "c022fffac28a76791d826d39d0bf8e985c29a4af",
       "short_sha": "c022fff",
       "published_at": "2026-05-05T14:11:31Z",
@@ -86,10 +94,10 @@
   ],
   "latest": {
     "ref_name": "conda-forge-patch",
-    "sha": "c022fffac28a76791d826d39d0bf8e985c29a4af",
-    "short_sha": "c022fff",
-    "published_at": "2026-05-05T14:11:31Z",
-    "run_url": "https://github.com/slaclab/rogue/actions/runs/25381284359",
+    "sha": "3eb55be13787514c09de42a17e3e2bdc455e711e",
+    "short_sha": "3eb55be",
+    "published_at": "2026-05-05T15:57:26Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/25384256460",
     "summary_url": "/rogue/perf/branches/conda-forge-patch/latest.json"
   }
 }
