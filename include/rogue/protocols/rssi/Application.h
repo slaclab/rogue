@@ -22,6 +22,7 @@
 
 #include <atomic>
 #include <memory>
+#include <thread>
 
 #include "rogue/interfaces/stream/Master.h"
 #include "rogue/interfaces/stream/Slave.h"
@@ -54,7 +55,7 @@ class Application : public rogue::interfaces::stream::Master, public rogue::inte
 
     //! \cond INTERNAL
   protected:
-    std::thread* thread_ = nullptr;
+    std::unique_ptr<std::thread> thread_;
     std::atomic<bool> threadEn_{false};
     //! \endcond
 
@@ -94,9 +95,22 @@ class Application : public rogue::interfaces::stream::Master, public rogue::inte
      * @brief Attaches the RSSI controller.
      *
      * @details
-     * Stores controller reference and starts outbound worker thread.
+     * Stores controller reference and starts the outbound worker thread.
+     * Wired exactly once by `Client`/`Server` construction; calling this
+     * directly is not part of the normal usage path.
+     *
+     * On thread-creation failure (`std::thread` ctor throw, e.g. EAGAIN),
+     * `cntl_` is reset and `threadEn_` cleared before re-throw so a partial
+     * construction does not leak the `Application <-> Controller` strong
+     * reference cycle.
      *
      * @param cntl Controller instance that owns protocol state.
+     * @throws rogue::GeneralError if `cntl` is null.
+     * @throws rogue::GeneralError if `setController()` has already been
+     *         called on this `Application` (the running worker would be
+     *         destroyed mid-flight, calling `std::terminate()`).
+     * @throws std::system_error if the worker thread cannot be created
+     *         (propagated from `std::thread` construction).
      */
     void setController(std::shared_ptr<rogue::protocols::rssi::Controller> cntl);
 

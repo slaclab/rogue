@@ -130,22 +130,21 @@ void rpr::Controller::stopQueue() {
 
 //! Close
 void rpr::Controller::stop() {
-    if (thread_ != NULL) {
+    if (thread_) {
         rogue::GilRelease noGil;
         threadEn_ = false;
         thread_->join();
-        delete thread_;
-        thread_ = NULL;
-        state_  = StClosed;
+        thread_.reset();
+        state_ = StClosed;
     }
 }
 
 //! Start
 void rpr::Controller::start() {
-    if (thread_ == NULL) {
+    if (!thread_) {
         state_    = StClosed;
         threadEn_ = true;
-        thread_   = new std::thread(&rpr::Controller::runThread, this);
+        thread_ = std::make_unique<std::thread>(&rpr::Controller::runThread, this);
 
         // Set a thread name
 #ifndef __MACH__
@@ -162,9 +161,14 @@ ris::FramePtr rpr::Controller::reqFrame(uint32_t size) {
 
     // Request only single buffer frames.
     // Frame size returned is never greater than remote max size
-    // or local segment size
+    // or local segment size.
+    // Snapshot curMaxSegment_ once: the state thread can lower the
+    // negotiated peer limit during reconnect/renegotiation, and a
+    // torn read between the compare and the clamp-assign would let
+    // an oversized frame slip past the new limit.
+    const uint16_t segLimit = curMaxSegment_.load();
     nSize = size + rpr::Header::HeaderSize;
-    if (nSize > curMaxSegment_ && curMaxSegment_ > 0) nSize = curMaxSegment_;
+    if (segLimit > 0 && nSize > segLimit) nSize = segLimit;
     if (nSize > locMaxSegment_) nSize = locMaxSegment_;
 
     // Forward frame request to transport slave
@@ -199,14 +203,14 @@ void rpr::Controller::transportRx(ris::FramePtr frame) {
     ris::FrameLockPtr flock = frame->lock();
 
     if (frame->getError() || frame->isEmpty() || !head->verify()) {
-        log_->warning("Dumping bad frame state=%" PRIu32 " server=%d", state_, server_);
+        log_->warning("Dumping bad frame state=%" PRIu32 " server=%d", state_.load(), server_);
         dropCount_++;
         return;
     }
 
     log_->debug("RX frame: state=%" PRIu32 " server=%d size=%" PRIu32 " syn=%d ack=%d"
                 " nul=%d, bsy=%d, rst=%d, ack#=%" PRIu8 " seq=%" PRIu8 ", nxt=%" PRIu8,
-                state_,
+                state_.load(),
                 server_,
                 frame->getPayload(),
                 head->syn,
@@ -220,12 +224,27 @@ void rpr::Controller::transportRx(ris::FramePtr frame) {
 
     // Ack set
     if (head->ack && (head->acknowledge != lastAckRx_)) {
-        std::unique_lock<std::mutex> lock(txMtx_);
+        uint32_t freedSlots = 0;
+        {
+            std::unique_lock<std::mutex> lock(txMtx_);
 
-        do {
-            txList_[++lastAckRx_].reset();
-            if (txListCount_ != 0) txListCount_--;
-        } while (lastAckRx_ != head->acknowledge);
+            do {
+                txList_[++lastAckRx_].reset();
+                if (txListCount_ != 0) {
+                    txListCount_--;
+                    freedSlots++;
+                }
+            } while (lastAckRx_ != head->acknowledge);
+        }
+        // Wake exactly the number of backpressure waiters that can now
+        // make progress.  notify_one() per freed slot avoids the
+        // thundering-herd retry on txMtx_ when only a single slot
+        // reopened on a heavily contended cumulative ACK.
+        if (freedSlots == 1) {
+            txCond_.notify_one();
+        } else if (freedSlots > 1) {
+            txCond_.notify_all();
+        }
     }
 
     // Check for busy state transition
@@ -394,20 +413,45 @@ void rpr::Controller::applicationRx(ris::FramePtr frame) {
         return;
     }
 
-    // Wait while busy either by flow control or buffer starvation
-    while (txListCount_ >= curMaxBuffers_) {
-        usleep(10);
-        if (timePassed(startTime, timeout_)) {
-            gettimeofday(&startTime, NULL);
-            log_->critical("Controller::applicationRx: Timeout waiting for outbound queue after %" PRIu32 ".%" PRIu32
-                           " seconds! May be caused by outbound backpressure.",
-                           timeout_.tv_sec,
-                           timeout_.tv_usec);
+    // Backpressure wait + transmit happen inside one txMtx_ critical
+    // section so the curMaxBuffers_ check and the slot-reserving
+    // txListCount_++ inside transportTxLocked() are atomic with respect
+    // to other senders.  Without this, two threads could both observe a
+    // single freed slot, drop the lock, and then both increment in
+    // separate transportTx() calls, overshooting the negotiated window.
+    //
+    // The wait predicate also re-checks state_: a peer reset triggers
+    // stateError() -> transportTx(rst, true, true), and stateError() now
+    // sets state_ = StClosed *before* that transportTx() call so the
+    // notify_all() observed by this waiter follows the close transition.
+    // state_ is std::atomic<uint32_t>, so the cross-thread read here and
+    // the state-thread write in stateError() are well-defined.
+    {
+        std::unique_lock<std::mutex> lk(txMtx_);
+        while (state_ == StOpen && txListCount_ >= curMaxBuffers_) {
+            txCond_.wait_for(lk, std::chrono::milliseconds(10), [this] {
+                return state_ != StOpen || txListCount_ < curMaxBuffers_;
+            });
+            if (timePassed(startTime, timeout_)) {
+                gettimeofday(&startTime, NULL);
+                log_->critical("Controller::applicationRx: Timeout waiting for outbound queue after %" PRIu32
+                               ".%" PRIu32 " seconds! May be caused by outbound backpressure.",
+                               timeout_.tv_sec,
+                               timeout_.tv_usec);
+            }
         }
+
+        if (state_ != StOpen) return;
+
+        // transportTxLocked() unlocks lk before calling sendFrame().
+        transportTxLocked(lk, head, true, false);
     }
 
-    // Transmit
-    transportTx(head, true, false);
+    // Kick the state thread (waits on stCond_/stMtx_ in runThread) so it
+    // re-evaluates ack scheduling, retransmit timers and null-tx timers
+    // immediately after an application transmit instead of waiting out
+    // its periodic wait_for() timeout.  txCond_ above only wakes the
+    // backpressure waiter; it does not replace this stCond_ signal.
     stCond_.notify_all();
 }
 
@@ -587,10 +631,22 @@ void rpr::Controller::resetCounters() {
     remBusyCnt_  = 0;
 }
 
-// Method to transit a frame with proper updates
+// Method to transmit a frame with proper updates.
+// Public entry: takes txMtx_ then delegates to transportTxLocked().
 void rpr::Controller::transportTx(rpr::HeaderPtr head, bool seqUpdate, bool txReset) {
     std::unique_lock<std::mutex> lock(txMtx_);
+    transportTxLocked(lock, head, seqUpdate, txReset);
+}
 
+// Body of transportTx() that runs with txMtx_ already held.  applicationRx()
+// calls this directly so the backpressure check and the slot-reserving
+// txListCount_++ happen inside one critical section — closing the
+// observe-then-reserve race where two senders could both pass the
+// curMaxBuffers_ check on a single freed slot.
+void rpr::Controller::transportTxLocked(std::unique_lock<std::mutex>& lock,
+                                        rpr::HeaderPtr head,
+                                        bool seqUpdate,
+                                        bool txReset) {
     head->sequence = locSequence_;
 
     // Update sequence numbers
@@ -604,6 +660,7 @@ void rpr::Controller::transportTx(rpr::HeaderPtr head, bool seqUpdate, bool txRe
     if (txReset) {
         for (uint32_t x = 0; x < 256; x++) txList_[x].reset();
         txListCount_ = 0;
+        // Notify after lock is released below.
     }
 
     if (getLocBusy()) {
@@ -624,7 +681,7 @@ void rpr::Controller::transportTx(rpr::HeaderPtr head, bool seqUpdate, bool txRe
     log_->log(rogue::Logging::Debug,
               "TX frame: state=%" PRIu32 " server=%d size=%" PRIu32 " syn=%d ack=%d nul=%d"
               ", bsy=%d, rst=%d, ack#=%" PRIu8 ", seq=%" PRIu8 ", recount=%" PRIu32 ", ptr=%p",
-              state_,
+              state_.load(),
               server_,
               head->getFrame()->getPayload(),
               head->syn,
@@ -639,6 +696,12 @@ void rpr::Controller::transportTx(rpr::HeaderPtr head, bool seqUpdate, bool txRe
 
     flock->unlock();
     lock.unlock();
+
+    // After releasing txMtx_, wake any thread blocked in applicationRx()
+    // backpressure when txListCount_ was reset.  Skipping this for the
+    // normal increment path keeps wakes cheap; the decrement path in
+    // transportRx() handles the common reopen-slot case.
+    if (txReset) txCond_.notify_all();
 
     // Send frame
     tran_->sendFrame(head->getFrame());
@@ -674,7 +737,7 @@ int8_t rpr::Controller::retransmit(uint8_t id) {
     log_->log(rogue::Logging::Warning,
               "Retran frame: state=%" PRIu32 " server=%d size=%" PRIu32 " syn=%d ack=%d"
               " nul=%d, rst=%d, ack#=%" PRIu8 ", seq=%" PRIu8 ", recount=%" PRIu32 ", ptr=%p",
-              state_,
+              state_.load(),
               server_,
               head->getFrame()->getPayload(),
               head->syn,
@@ -882,7 +945,7 @@ struct timeval& rpr::Controller::stateSendSeqAck() {
     // Setup frame
     ack->ack  = true;
     ack->nul  = false;
-    ackSeqRx_ = lastSeqRx_;
+    ackSeqRx_ = lastSeqRx_.load();
 
     transportTx(ack, false, true);
 
@@ -953,6 +1016,15 @@ struct timeval& rpr::Controller::stateError() {
 
     log_->warning("Entering reset state. Server=%d", server_);
 
+    // Mark the link closed BEFORE sending the reset frame.  transportTx()
+    // with txReset=true notifies txCond_ to wake any applicationRx()
+    // backpressure waiter; if state_ were still StOpen at that point, the
+    // waiter could re-acquire the lock, see a freshly-reset txListCount_,
+    // and emit a payload frame on the link we are simultaneously resetting.
+    // Setting state_ first makes the wait predicate's state_ != StOpen
+    // re-check observe the closed link.
+    state_ = StClosed;
+
     rst      = rpr::Header::create(tran_->reqFrame(rpr::Header::HeaderSize, false));
     rst->rst = true;
 
@@ -960,7 +1032,6 @@ struct timeval& rpr::Controller::stateError() {
 
     downCount_++;
     log_->warning("Entering closed state after reset. Server=%d", server_);
-    state_ = StClosed;
 
     // Reset queues
     appQueue_.reset();

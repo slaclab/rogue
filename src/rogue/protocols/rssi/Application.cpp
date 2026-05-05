@@ -59,24 +59,55 @@ rpr::Application::Application() {}
 //! Destructor
 rpr::Application::~Application() {
     // No-op if setController() never ran.
-    if (thread_ != nullptr) {
+    if (thread_) {
         threadEn_ = false;
         // Release the GIL: worker may be mid-sendFrame to a Python slave.
         rogue::GilRelease noGil;
         cntl_->stopQueue();
         thread_->join();
-        delete thread_;
-        thread_ = nullptr;
     }
 }
 
 //! Setup links
 void rpr::Application::setController(rpr::ControllerPtr cntl) {
-    cntl_ = cntl;
+    // setController() is wired exactly once by Client/Server construction.
+    // Reject a second call: replacing a still-joinable thread_ unique_ptr
+    // would destroy the running worker and call std::terminate().  Forcing
+    // a stop/join here is unsafe too because the existing worker may be
+    // mid-sendFrame holding the GIL via the previous controller.
+    if (thread_) {
+        throw rogue::GeneralError::create("rssi::Application::setController",
+                                          "setController() already called; Application worker is running");
+    }
 
-    // Start read thread
+    // Reject a null controller synchronously.  The worker thread started
+    // below dereferences cntl_ in runThread() (and acceptReq/acceptFrame
+    // dereference it from the caller's thread), so accepting nullptr here
+    // would turn a caller mistake into an asynchronous segfault inside
+    // the RSSI worker rather than a synchronous GeneralError at the
+    // wiring site.
+    if (!cntl) {
+        throw rogue::GeneralError::create("rssi::Application::setController",
+                                          "controller pointer is null");
+    }
+
+    // cntl_ must be assigned before runThread starts so the worker reads
+    // a valid controller.  If std::thread construction throws (rare but
+    // possible: pthread_create can fail with EAGAIN under thread limits)
+    // we must clear cntl_ before propagating, otherwise Application keeps
+    // a strong ref to Controller and Controller keeps a strong ref back
+    // (see rpr::Controller::Controller setting app_), creating a cycle
+    // with no worker to ever join — both objects leak even though
+    // setController() failed.
+    cntl_     = cntl;
     threadEn_ = true;
-    thread_   = new std::thread(&rpr::Application::runThread, this);
+    try {
+        thread_ = std::make_unique<std::thread>(&rpr::Application::runThread, this);
+    } catch (...) {
+        threadEn_ = false;
+        cntl_.reset();
+        throw;
+    }
 
     // Set a thread name
 #ifndef __MACH__
