@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-05T16:08:00Z",
+  "generated_at": "2026-05-05T16:22:24Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -152,6 +152,45 @@
         "published_at": "2026-05-01T21:06:10Z",
         "run_url": "https://github.com/slaclab/rogue/actions/runs/25232882079",
         "summary_url": "/rogue/perf/branches/pre-release/latest.json"
+      }
+    },
+    {
+      "ref_name": "bug-audit/hardware-memmap-axi",
+      "ref_slug": "bug-audit_hardware-memmap-axi",
+      "latest_url": "/rogue/perf/branches/bug-audit_hardware-memmap-axi/latest.json",
+      "history": [
+        {
+          "ref_name": "bug-audit/hardware-memmap-axi",
+          "sha": "0bc508c72ac7ee046b8a5470c8c746a18edde998",
+          "short_sha": "0bc508c",
+          "published_at": "2026-05-05T16:22:24Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/25387889529",
+          "summary_url": "/rogue/perf/branches/bug-audit_hardware-memmap-axi/history/0bc508c72ac7ee046b8a5470c8c746a18edde998.json"
+        },
+        {
+          "ref_name": "bug-audit/hardware-memmap-axi",
+          "sha": "ddb2032cf96d926f35e2e2b6e4be905999df1fed",
+          "short_sha": "ddb2032",
+          "published_at": "2026-05-05T15:29:36Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/25385434766",
+          "summary_url": "/rogue/perf/branches/bug-audit_hardware-memmap-axi/history/ddb2032cf96d926f35e2e2b6e4be905999df1fed.json"
+        },
+        {
+          "ref_name": "bug-audit/hardware-memmap-axi",
+          "sha": "f75062a509bf70c7bdee624f02ddc0e1ea8f83af",
+          "short_sha": "f75062a",
+          "published_at": "2026-05-05T14:01:35Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/25380627650",
+          "summary_url": "/rogue/perf/branches/bug-audit_hardware-memmap-axi/history/f75062a509bf70c7bdee624f02ddc0e1ea8f83af.json"
+        }
+      ],
+      "latest": {
+        "ref_name": "bug-audit/hardware-memmap-axi",
+        "sha": "0bc508c72ac7ee046b8a5470c8c746a18edde998",
+        "short_sha": "0bc508c",
+        "published_at": "2026-05-05T16:22:24Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/25387889529",
+        "summary_url": "/rogue/perf/branches/bug-audit_hardware-memmap-axi/latest.json"
       }
     },
     {
@@ -472,37 +511,6 @@
         "published_at": "2026-05-05T15:41:59Z",
         "run_url": "https://github.com/slaclab/rogue/actions/runs/25386172261",
         "summary_url": "/rogue/perf/branches/bug-audit_prbs-hls-bsp/latest.json"
-      }
-    },
-    {
-      "ref_name": "bug-audit/hardware-memmap-axi",
-      "ref_slug": "bug-audit_hardware-memmap-axi",
-      "latest_url": "/rogue/perf/branches/bug-audit_hardware-memmap-axi/latest.json",
-      "history": [
-        {
-          "ref_name": "bug-audit/hardware-memmap-axi",
-          "sha": "ddb2032cf96d926f35e2e2b6e4be905999df1fed",
-          "short_sha": "ddb2032",
-          "published_at": "2026-05-05T15:29:36Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/25385434766",
-          "summary_url": "/rogue/perf/branches/bug-audit_hardware-memmap-axi/history/ddb2032cf96d926f35e2e2b6e4be905999df1fed.json"
-        },
-        {
-          "ref_name": "bug-audit/hardware-memmap-axi",
-          "sha": "f75062a509bf70c7bdee624f02ddc0e1ea8f83af",
-          "short_sha": "f75062a",
-          "published_at": "2026-05-05T14:01:35Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/25380627650",
-          "summary_url": "/rogue/perf/branches/bug-audit_hardware-memmap-axi/history/f75062a509bf70c7bdee624f02ddc0e1ea8f83af.json"
-        }
-      ],
-      "latest": {
-        "ref_name": "bug-audit/hardware-memmap-axi",
-        "sha": "ddb2032cf96d926f35e2e2b6e4be905999df1fed",
-        "short_sha": "ddb2032",
-        "published_at": "2026-05-05T15:29:36Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/25385434766",
-        "summary_url": "/rogue/perf/branches/bug-audit_hardware-memmap-axi/latest.json"
       }
     },
     {
