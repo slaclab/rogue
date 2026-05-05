@@ -73,11 +73,22 @@ def parse() -> list[Any]:
     # Extract all the contents of the zip file in the current directory.
     # Validate each member path to prevent zip-slip attacks (path traversal
     # via members containing '..' that escape the extraction directory).
+    # Use os.path.commonpath rather than a `startswith(target_dir + os.sep)`
+    # comparison so a target_dir of '/' (or a Windows drive root) does not
+    # generate the impossible-prefix '//' that would reject every legitimate
+    # member.
     target_dir = os.path.realpath(os.getcwd())
     with ZipFile(zname, 'r') as zipObj:
         for member in zipObj.namelist():
             member_path = os.path.realpath(os.path.join(target_dir, member))
-            if not member_path.startswith(target_dir + os.sep) and member_path != target_dir:
+            try:
+                common = os.path.commonpath([member_path, target_dir])
+            except ValueError:
+                # commonpath raises ValueError for paths on different
+                # drives (Windows) or mixing absolute and relative; treat
+                # those as zip-slip rejections.
+                common = ''
+            if common != target_dir:
                 print('Unsafe zip entry rejected (zip-slip):', member)
                 exit()
         zipObj.extractall(target_dir)
