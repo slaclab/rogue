@@ -128,28 +128,25 @@ def test_signal_routing_handles_bool():
 # ---------------------------------------------------------------------------
 # parseAddress lacks bounds check on alist index
 # ---------------------------------------------------------------------------
-def test_parseaddress_bounds_check():
-    """parseAddress indexes alist[int(data[0])] without bounds check."""
-    src = inspect.getsource(rogue_plugin_mod.parseAddress)
+def test_parseaddress_bounds_check(monkeypatch):
+    """parseAddress indexes alist[int(data[0])] without bounds check.
 
-    # A correct fix needs to reject indexes outside [0, len(alist)) — the
-    # original bug was both an out-of-range crash and Python's negative-
-    # indexing silently selecting an arbitrary server (e.g. ``rogue://-1/...``
-    # picking the last entry).  Require evidence of both:
-    #   (a) An upper-bound check against len(alist) OR an explicit
-    #       IndexError raise to surface the failure with a clear message.
-    #   (b) A negative-index reject (``idx < 0`` or ``< 0``-equivalent).
-    # A bare ``"try:"`` clause is intentionally NOT accepted: a
-    # ``try/except IndexError`` silently consumes the failure, which is a
-    # worse bug than the original confusing traceback.
-    has_upper_bound = ("len(alist)" in src) or ("raise IndexError" in src)
-    has_negative_reject = ("idx < 0" in src) or ("< 0" in src)
+    Behavioural test: with ROGUE_SERVERS set to a known two-entry list,
+    addresses indexing outside ``[0, 2)`` must raise ``IndexError``.
+    Two cases:
+      * Out-of-range positive index (``rogue://5/...``).
+      * Negative index (``rogue://-1/...``).  Without an explicit reject,
+        Python's negative indexing silently selects the last entry — a
+        worse failure mode than the original confusing traceback because
+        the call appears to succeed with an arbitrary server.
 
-    assert has_upper_bound and has_negative_reject, (
-        "parseAddress() indexes alist[int(data[0])] without a complete "
-        "bounds check; needs both an upper bound (len(alist) or raise "
-        "IndexError) AND a negative-index reject (idx < 0).  Without the "
-        "negative reject, addresses like ``rogue://-1/...`` silently "
-        "select the last ROGUE_SERVERS entry via Python's negative "
-        "indexing rather than reporting invalid input."
-    )
+    Tests behaviour rather than source tokens so the fix shape (explicit
+    if-guard, range membership, helper function, ...) is unconstrained.
+    """
+    monkeypatch.setenv("ROGUE_SERVERS", "host1:9099,host2:9099")
+
+    with pytest.raises(IndexError):
+        rogue_plugin_mod.parseAddress("rogue://5/Some/Path")
+
+    with pytest.raises(IndexError):
+        rogue_plugin_mod.parseAddress("rogue://-1/Some/Path")
