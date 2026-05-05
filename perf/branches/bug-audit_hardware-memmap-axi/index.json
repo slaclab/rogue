@@ -5,6 +5,14 @@
   "history": [
     {
       "ref_name": "bug-audit/hardware-memmap-axi",
+      "sha": "d444ac98bb880a021d0c424d6a9b761bdefb81a4",
+      "short_sha": "d444ac9",
+      "published_at": "2026-05-05T17:02:40Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/25389844191",
+      "summary_url": "/rogue/perf/branches/bug-audit_hardware-memmap-axi/history/d444ac98bb880a021d0c424d6a9b761bdefb81a4.json"
+    },
+    {
+      "ref_name": "bug-audit/hardware-memmap-axi",
       "sha": "0bc508c72ac7ee046b8a5470c8c746a18edde998",
       "short_sha": "0bc508c",
       "published_at": "2026-05-05T16:22:24Z",
@@ -30,10 +38,10 @@
   ],
   "latest": {
     "ref_name": "bug-audit/hardware-memmap-axi",
-    "sha": "0bc508c72ac7ee046b8a5470c8c746a18edde998",
-    "short_sha": "0bc508c",
-    "published_at": "2026-05-05T16:22:24Z",
-    "run_url": "https://github.com/slaclab/rogue/actions/runs/25387889529",
+    "sha": "d444ac98bb880a021d0c424d6a9b761bdefb81a4",
+    "short_sha": "d444ac9",
+    "published_at": "2026-05-05T17:02:40Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/25389844191",
     "summary_url": "/rogue/perf/branches/bug-audit_hardware-memmap-axi/latest.json"
   }
 }
