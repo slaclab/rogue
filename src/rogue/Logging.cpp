@@ -79,8 +79,8 @@ uint32_t rogue::Logging::gblLevel_ = rogue::Logging::Error;
 // Logging level lock
 std::mutex rogue::Logging::levelMtx_;
 
-// Filter list
-std::vector<rogue::LogFilter*> rogue::Logging::filters_;
+// Filter list (unique_ptr for RAII ownership)
+std::vector<std::unique_ptr<rogue::LogFilter>> rogue::Logging::filters_;
 
 // Active loggers
 std::vector<rogue::Logging*> rogue::Logging::loggers_;
@@ -91,7 +91,7 @@ bool rogue::Logging::forwardPython_ = false;
 // Stdout emission enable
 bool rogue::Logging::emitStdout_ = true;
 
-// Crate logger
+// Create logger
 rogue::LoggingPtr rogue::Logging::create(const std::string& name, bool quiet) {
     rogue::LoggingPtr log = std::make_shared<rogue::Logging>(name, quiet);
     return log;
@@ -106,34 +106,38 @@ std::string rogue::Logging::normalizeName(const std::string& name) {
 rogue::Logging::Logging(const std::string& name, bool quiet) {
     name_ = normalizeName(name);
 
-    levelMtx_.lock();
-    updateLevelLocked();
-    loggers_.push_back(this);
-    levelMtx_.unlock();
+    {
+        std::lock_guard<std::mutex> lock(levelMtx_);
+        updateLevelLocked();
+    }
 
     if (!quiet) warning("Starting logger with level = %" PRIu32, level_.load());
+
+    {
+        std::lock_guard<std::mutex> lock(levelMtx_);
+        updateLevelLocked();
+        loggers_.push_back(this);
+    }
 }
 
 rogue::Logging::~Logging() {
     std::vector<rogue::Logging*>::iterator it;
 
-    levelMtx_.lock();
+    std::lock_guard<std::mutex> lock(levelMtx_);
     for (it = loggers_.begin(); it < loggers_.end(); ++it) {
         if (*it == this) {
             loggers_.erase(it);
             break;
         }
     }
-    levelMtx_.unlock();
 }
 
 void rogue::Logging::updateLevelLocked() {
-    std::vector<rogue::LogFilter*>::iterator it;
     uint32_t level = gblLevel_;
 
-    for (it = filters_.begin(); it < filters_.end(); ++it) {
-        if (name_.find((*it)->name_) == 0) {
-            if ((*it)->level_ < level) level = (*it)->level_;
+    for (const auto& flt : filters_) {
+        if (name_.find(flt->name_) == 0) {
+            if (flt->level_ < level) level = flt->level_;
         }
     }
 
@@ -143,52 +147,39 @@ void rogue::Logging::updateLevelLocked() {
 void rogue::Logging::setLevel(uint32_t level) {
     std::vector<rogue::Logging*>::iterator it;
 
-    levelMtx_.lock();
+    std::lock_guard<std::mutex> lock(levelMtx_);
     gblLevel_ = level;
     for (it = loggers_.begin(); it < loggers_.end(); ++it) (*it)->updateLevelLocked();
-    levelMtx_.unlock();
 }
 
 void rogue::Logging::setFilter(const std::string& name, uint32_t level) {
     std::vector<rogue::Logging*>::iterator it;
 
-    levelMtx_.lock();
+    std::lock_guard<std::mutex> lock(levelMtx_);
 
-    rogue::LogFilter* flt = new rogue::LogFilter(normalizeName(name), level);
-
-    filters_.push_back(flt);
+    filters_.push_back(std::make_unique<rogue::LogFilter>(normalizeName(name), level));
 
     for (it = loggers_.begin(); it < loggers_.end(); ++it) (*it)->updateLevelLocked();
-
-    levelMtx_.unlock();
 }
 
 void rogue::Logging::setForwardPython(bool enable) {
-    levelMtx_.lock();
+    std::lock_guard<std::mutex> lock(levelMtx_);
     forwardPython_ = enable;
-    levelMtx_.unlock();
 }
 
 bool rogue::Logging::forwardPython() {
-    bool enable;
-    levelMtx_.lock();
-    enable = forwardPython_;
-    levelMtx_.unlock();
-    return enable;
+    std::lock_guard<std::mutex> lock(levelMtx_);
+    return forwardPython_;
 }
 
 void rogue::Logging::setEmitStdout(bool enable) {
-    levelMtx_.lock();
+    std::lock_guard<std::mutex> lock(levelMtx_);
     emitStdout_ = enable;
-    levelMtx_.unlock();
 }
 
 bool rogue::Logging::emitStdout() {
-    bool enable;
-    levelMtx_.lock();
-    enable = emitStdout_;
-    levelMtx_.unlock();
-    return enable;
+    std::lock_guard<std::mutex> lock(levelMtx_);
+    return emitStdout_;
 }
 
 void rogue::Logging::intLog(uint32_t level, const char* fmt, va_list args) {
