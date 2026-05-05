@@ -78,6 +78,12 @@ void rpb::InverterV2::acceptFrame(ris::FramePtr frame) {
     // Must have at least one record
     if (core.count() == 0) return;
 
+    // Bounds-check payload size; uint64_t prevents overflow of count()*tailSize()
+    const uint64_t requiredBytes =
+        static_cast<uint64_t>(core.headerSize()) +
+        static_cast<uint64_t>(core.count()) * static_cast<uint64_t>(core.tailSize());
+    if (static_cast<uint64_t>(frame->getPayload()) < requiredBytes) return;
+
     // Copy first tail to head
     std::memcpy(core.beginHeader().ptr(), core.beginTail(0).ptr(), core.headerSize());
 
