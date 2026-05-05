@@ -1,0 +1,23 @@
+{
+  "ref_name": "bug-audit/batcher",
+  "ref_slug": "bug-audit_batcher",
+  "latest_url": "/rogue/perf/branches/bug-audit_batcher/latest.json",
+  "history": [
+    {
+      "ref_name": "bug-audit/batcher",
+      "sha": "1865d27daa92d560c83dc4bd0e6bc01775bed00d",
+      "short_sha": "1865d27",
+      "published_at": "2026-05-05T14:13:48Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/25381392116",
+      "summary_url": "/rogue/perf/branches/bug-audit_batcher/history/1865d27daa92d560c83dc4bd0e6bc01775bed00d.json"
+    }
+  ],
+  "latest": {
+    "ref_name": "bug-audit/batcher",
+    "sha": "1865d27daa92d560c83dc4bd0e6bc01775bed00d",
+    "short_sha": "1865d27",
+    "published_at": "2026-05-05T14:13:48Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/25381392116",
+    "summary_url": "/rogue/perf/branches/bug-audit_batcher/latest.json"
+  }
+}
