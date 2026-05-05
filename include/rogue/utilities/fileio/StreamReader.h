@@ -83,6 +83,14 @@ class StreamReader : public rogue::interfaces::stream::Master {
     // Mutex for file/thread/activity state.
     std::mutex mtx_;
 
+    // Separate mutex serialising close()/intClose()/open() entry paths.
+    // Held only OUTSIDE the worker thread, so it does not participate in
+    // the runThread()-exit-takes-mtx_ deadlock that mtx_ has to avoid.
+    // Without this, two concurrent close() calls (or close()+open()) can
+    // both observe readThread_ truthy, both call join() on the same
+    // std::thread (UB), and both ::close(fd_).
+    std::mutex closeMtx_;
+
   public:
     /**
      * @brief Creates a stream reader instance.

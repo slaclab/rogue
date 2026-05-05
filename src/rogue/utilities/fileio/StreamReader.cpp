@@ -25,8 +25,10 @@
 #include <unistd.h>
 
 #include <memory>
+#include <mutex>
 #include <string>
 #include <thread>
+#include <utility>
 
 #include "rogue/GeneralError.h"
 #include "rogue/GilRelease.h"
@@ -149,12 +151,34 @@ bool ruf::StreamReader::isOpen() {
 
 //! Close a data file
 void ruf::StreamReader::intClose() {
-    if (readThread_) {
-        threadEn_ = false;
-        readThread_->join();
-        readThread_.reset();
+    // Serialise close paths (close(), open()->intClose, ~StreamReader)
+    // under closeMtx_ so two concurrent callers cannot both join the
+    // same std::thread or both ::close(fd_).  closeMtx_ is intentionally
+    // distinct from mtx_ — the worker thread acquires mtx_ on exit, so
+    // holding mtx_ across the join() below would deadlock for the same
+    // reason close() already had to drop it.
+    std::unique_ptr<std::thread> tToJoin;
+    {
+        std::lock_guard<std::mutex> guard(closeMtx_);
+        if (readThread_) {
+            threadEn_ = false;
+            tToJoin   = std::move(readThread_);
+        }
     }
-    if (fd_ >= 0) ::close(fd_);
+    // Join outside any lock.  Once the worker exits it will (under mtx_)
+    // ::close(fd_) and set fd_=-1; that store is observable to this
+    // thread after join() returns.
+    if (tToJoin) tToJoin->join();
+
+    // Cover the no-thread case where open() failed before creating a
+    // worker (or close()/intClose was called on a never-opened reader)
+    // and fd_ still holds a valid descriptor.  Re-take closeMtx_ so a
+    // second concurrent intClose cannot also see fd_ >= 0 and double-close.
+    std::lock_guard<std::mutex> guard(closeMtx_);
+    if (fd_ >= 0) {
+        ::close(fd_);
+        fd_ = -1;
+    }
 }
 
 //! Close when done
