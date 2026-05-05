@@ -409,9 +409,14 @@ void rim::TcpClient::runThread() {
             // Lock transaction
             rim::TransactionLockPtr lock = tran->lock();
 
-            // Transaction expired
+            // Transaction expired — complete with error so the caller is
+            // unblocked.  Without this, the transaction stays in the in-flight
+            // map and the originating doTransaction() blocks until its own
+            // timeout expires, which can be much longer than the bridge
+            // timeout that already fired.
             if (tran->expired()) {
                 bridgeLog_->warning("Transaction expired. Id=%" PRIu32, id);
+                tran->error("TcpClient transaction timeout: Id=%" PRIu32, id);
                 for (x = 0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
                 continue;  // while (1)
             }
