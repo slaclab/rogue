@@ -195,8 +195,6 @@ rha::AxiStreamDma::AxiStreamDma(std::string path, uint32_t dest, bool ssiEnable)
     // Attempt to open shared structure
     desc_ = openShared(path, log_);
 
-    if (desc_->bCount >= 1000) retThold_ = 80;
-
     // Open non shared file descriptor
     if ((fd_ = ::open(path.c_str(), O_RDWR)) < 0) {
         closeShared(desc_);
@@ -220,20 +218,23 @@ rha::AxiStreamDma::AxiStreamDma(std::string path, uint32_t dest, bool ssiEnable)
                                           FD_SETSIZE));
     }
 
-    // Zero copy is disabled.  desc_->bCount and desc_->bSize live in the
-    // shared AxiStreamDmaShared instance returned by openShared(), which
-    // is also looked up under sharedBuffersMtx by other concurrent
-    // constructions on the same path.  Two ctors racing here would
-    // otherwise both write the same fields without synchronisation - a
-    // data race even when the values written are identical.  Take the
-    // same mutex that openShared/closeShared/zeroCopyDisable use to
-    // serialise the descriptor-field writes.
-    if (desc_->rawBuff == NULL) {
+    // desc_->bCount and desc_->bSize live in the shared AxiStreamDmaShared
+    // instance returned by openShared(), which is also looked up under
+    // sharedBuffersMtx by other concurrent constructions on the same path.
+    // Two ctors racing here would otherwise both write the same fields
+    // without synchronisation - a data race even when the values written
+    // are identical.  Take the same mutex that openShared / closeShared /
+    // zeroCopyDisable use, and BOTH read and write bCount under it (the
+    // earlier "read at function entry, write inside the conditional" form
+    // left the read racing with another ctor's write).
+    {
         std::lock_guard<std::mutex> lock(sharedBuffersMtx);
-        desc_->bCount = dmaGetTxBuffCount(fd_) + dmaGetRxBuffCount(fd_);
-        desc_->bSize  = dmaGetBuffSize(fd_);
+        if (desc_->rawBuff == NULL) {
+            desc_->bCount = dmaGetTxBuffCount(fd_) + dmaGetRxBuffCount(fd_);
+            desc_->bSize  = dmaGetBuffSize(fd_);
+        }
+        if (desc_->bCount >= 1000) retThold_ = 80;
     }
-    if (desc_->bCount >= 1000) retThold_ = 80;
 
     dmaInitMaskBytes(mask);
     dmaAddMaskBytes(mask, dest_);
