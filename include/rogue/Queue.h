@@ -42,8 +42,15 @@ class Queue {
     mutable std::mutex mtx_;
     std::condition_variable pushCond_;
     std::condition_variable popCond_;
-    uint32_t max_   = 0;
-    uint32_t thold_ = 0;
+    // max_/thold_ are written by setMax()/setThold() (lock-free) and read
+    // inside push()/pop() under mtx_.  In current callers both setters are
+    // only invoked at construction time before any worker thread runs, so
+    // the race is benign in practice — but a non-atomic read concurrent
+    // with a non-atomic write is UB per the C++ memory model and trips
+    // ThreadSanitizer / static analysers.  std::atomic<uint32_t> is
+    // lock-free on every supported platform and adds no measurable cost.
+    std::atomic<uint32_t> max_{0};
+    std::atomic<uint32_t> thold_{0};
     std::atomic<bool> busy_{false};
     bool run_ = true;
 
@@ -100,6 +107,7 @@ class Queue {
      * @return `true` when no entries are queued.
      */
     bool empty() {
+        std::unique_lock<std::mutex> lock(mtx_);
         return queue_.empty();
     }
 

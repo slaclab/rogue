@@ -21,3 +21,13 @@ rogue_add_cpp_test(rogue-cpp-stream-flow-primitives
       cpp-core
       no-python
 )
+
+rogue_add_cpp_test(rogue-cpp-stream-pool-raw-alloc-audit-repro
+   SOURCES
+      test_pool_raw_alloc_audit_repro.cpp
+   LABELS
+      cpp-core
+      no-python
+)
+target_compile_definitions(rogue-cpp-stream-pool-raw-alloc-audit-repro
+   PRIVATE ROGUE_SRC_DIR="${CMAKE_SOURCE_DIR}")

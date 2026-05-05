@@ -221,8 +221,18 @@ class Pool : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Pool>
      * hardware DMA driver. This method is protected to allow it to be called
      * by a sub-class of Pool.
      *
+     * Allocator/deallocator contract: the base-class `Pool::retBuffer()`
+     * deallocates buffers via `delete[]` (matching the `new uint8_t[]`
+     * allocation in `Pool::allocBuffer()`).  A sub-class that hands a
+     * pointer to `createBuffer()` whose allocation is NOT compatible with
+     * `delete[]` (for example a `malloc`-returned buffer or a kernel
+     * mapping) MUST override `retBuffer()` so the corresponding free path
+     * does not delegate to the base implementation.  Mixing
+     * `malloc`/`delete[]` is undefined behaviour.
+     *
      * Not exposed to Python
-     * @param data Data pointer to pre-allocated memory block
+     * @param data Data pointer to pre-allocated memory block (must be
+     *             `delete[]`-compatible if `retBuffer()` is not overridden)
      * @param meta Meta data associated with pre-allocated memory block
      * @param size Usable size of memory block (may be smaller than allocated size)
      * @param alloc Allocated size of memory block (may be greater than requested size)
