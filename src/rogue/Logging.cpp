@@ -79,7 +79,7 @@ uint32_t rogue::Logging::gblLevel_ = rogue::Logging::Error;
 // Logging level lock
 std::mutex rogue::Logging::levelMtx_;
 
-// Filter list (unique_ptr for RAII ownership)
+// Filter list
 std::vector<std::unique_ptr<rogue::LogFilter>> rogue::Logging::filters_;
 
 // Active loggers

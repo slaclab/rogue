@@ -20,12 +20,7 @@ import rogue.interfaces.memory as rim
 
 
 def test_intlog_surfaces_python_handler_exception(monkeypatch, capsys):
-    """Exceptions raised in Python log handlers must be surfaced via stderr.
-
-    intLog catches bp::error_already_set and calls PyErr_Print(), which
-    prints the traceback to stderr.  Logging must never re-throw because
-    it is called from noexcept destructor paths (e.g. ZmqServer, Client).
-    """
+    """Verify intLog surfaces handler exceptions via PyErr_Print (never re-throws from noexcept paths)."""
     rogue.Logging.setForwardPython(True)
     rogue.Logging.setLevel(rogue.Logging.Warning)
 

@@ -33,9 +33,6 @@
 #include "rogue/Logging.h"
 
 TEST_CASE("Logging::setFilter does not leak LogFilter allocations — source invariant") {
-    // Read the Logging.cpp source and verify that a delete/free/reset path
-    // exists for the raw pointer pushed by setFilter.  On HEAD no such path
-    // exists → test fails deterministically.
     std::ifstream f(std::string(ROGUE_SRC_DIR) + "/src/rogue/Logging.cpp");
     REQUIRE_MESSAGE(f.is_open(),
                     "could not open src/rogue/Logging.cpp (ROGUE_SRC_DIR=",
@@ -43,8 +40,6 @@ TEST_CASE("Logging::setFilter does not leak LogFilter allocations — source inv
 
     std::string content((std::istreambuf_iterator<char>(f)), std::istreambuf_iterator<char>());
 
-    // The fix would add one of: delete flt; clearFilters(); std::unique_ptr
-    // On HEAD none of these exist for the LogFilter pointer from setFilter.
     bool has_delete_flt   = content.find("delete flt")    != std::string::npos;
     bool has_clear        = content.find("clearFilters")  != std::string::npos;
     bool has_unique_ptr   = content.find("unique_ptr<rogue::LogFilter>") != std::string::npos

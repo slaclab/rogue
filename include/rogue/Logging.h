@@ -63,7 +63,7 @@ class Logging {
     // Logging-level lock
     static std::mutex levelMtx_;
 
-    // Name/level filters (owned via unique_ptr to prevent leaks)
+    // Name/level filters
     static std::vector<std::unique_ptr<rogue::LogFilter>> filters_;
 
     // Active logger instances
