@@ -156,19 +156,15 @@ def test_runPyDM_rejects_plain_qapplication():
         f"Message:\n{msg}"
     )
 
-    # Lock the stderr-first emission behavior. runPyDM prints the diagnostic
-    # to stderr BEFORE raising RuntimeError so the message survives caller
-    # code that wraps runPyDM in `try/finally: sys.exit(...)` and swallows
-    # exceptions. The subprocess catches RuntimeError and exits 0, so no
-    # traceback reaches stderr — the unique "Rogue runPyDM ERROR:" prefix
-    # only appears via the explicit print and would silently disappear if
-    # that print were ever dropped.
-    assert "Rogue runPyDM ERROR:" in result.stderr, (
-        "runPyDM did not emit the explicit-stderr diagnostic prefix; the "
+    # Verify the logging.error() call emits the diagnostic to stderr before
+    # the exception propagates, so the message survives caller code that
+    # wraps runPyDM in `try/finally: sys.exit(...)` and swallows exceptions.
+    assert "runPyDM detected a pre-existing QApplication" in result.stderr, (
+        "runPyDM did not emit the logging.error() diagnostic to stderr; the "
         "stderr-first path that survives try/finally exception swallowers "
         f"is broken.\nstderr:\n{result.stderr}"
     )
     assert detected_name in result.stderr, (
-        "Explicit-stderr diagnostic must also name the detected application "
+        "Logged diagnostic must also name the detected application "
         f"class {detected_name!r}.\nstderr:\n{result.stderr}"
     )

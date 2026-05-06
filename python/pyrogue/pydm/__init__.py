@@ -15,6 +15,7 @@ from __future__ import annotations
 # copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
+import logging
 import os
 import signal
 import sys
@@ -182,16 +183,8 @@ def runPyDM(
     if sum(v is not None for v in (ui, display, display_factory)) > 1:
         raise ValueError("ui, display, and display_factory are mutually exclusive")
 
-    # Refuse to coexist with a non-PyDM QApplication. A plain QApplication
-    # constructed before runPyDM prevents PyDMApplication's window-management
-    # hooks from attaching to visible windows, which causes the compositor to
-    # mark the GUI as "not responding" (XSync counter / _NET_WM_PING reply
-    # registration land on the wrong instance).
     existing_app = QApplication.instance()
     if existing_app is not None and not isinstance(existing_app, pydm.PyDMApplication):
-        # Surface the concrete class and instance id so callers can confirm
-        # they really have a plain QApplication (vs another subclass) when
-        # debugging this failure.
         detected_cls = type(existing_app)
         detected_name = f"{detected_cls.__module__}.{detected_cls.__qualname__}"
         detected_repr = f"{detected_name} id=0x{id(existing_app):x}"
@@ -212,9 +205,7 @@ def runPyDM(
             "runPyDM. runPyDM constructs the PyDMApplication itself; let it "
             "be the sole QApplication in the process."
         )
-        # Print to stderr first so the message survives caller code that
-        # swallows exceptions in a try/finally: sys.exit(...) wrapper.
-        print(f"\nRogue runPyDM ERROR:\n{msg}\n", file=sys.stderr, flush=True)
+        logging.getLogger(__name__).error(msg)
         raise RuntimeError(msg)
 
     # Set the ROGUE_SERVERS environment variable
