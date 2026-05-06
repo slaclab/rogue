@@ -173,6 +173,39 @@ The current :py:func:`pyrogue.pydm.runPyDM` signature accepts ``serverList``
 and does not accept a ``root=`` argument. Older examples that passed a local
 ``Root`` directly are stale and should be updated to expose a server first.
 
+Do Not Pre-Construct A QApplication
+===================================
+
+:py:func:`pyrogue.pydm.runPyDM` constructs a :py:class:`pydm.PyDMApplication`
+internally and that instance must be the sole
+:py:class:`qtpy.QtWidgets.QApplication` in the process. Constructing a plain
+:py:class:`qtpy.QtWidgets.QApplication` (or any non-PyDM ``QApplication``
+subclass) before calling ``runPyDM`` is unsupported and will be rejected:
+
+.. code-block:: python
+
+   import sys
+   from qtpy.QtWidgets import QApplication
+   import pyrogue.pydm
+
+   app = QApplication(sys.argv)         # don't do this
+   ...
+   pyrogue.pydm.runPyDM(...)             # raises RuntimeError
+
+The reason is that PyDM's window-management hooks (``XSync`` counter updates
+and ``_NET_WM_PING`` reply registration) only attach to
+``PyDMApplication``. If a plain ``QApplication`` already exists, the visible
+windows are bound to it instead, never reply to the compositor's ping/sync
+messages, and get flagged as "not responding" (notably under
+GNOME-on-Wayland with XWayland).
+
+``runPyDM`` detects this case at entry, prints a step-by-step diagnostic to
+``stderr``, and raises :py:class:`RuntimeError`. Companion widgets that need a
+live ``QApplication`` should be built inside a :py:class:`pydm.Display`
+subclass (see the `Custom Python Top-Level Displays` section above) or via
+the ``display`` / ``display_factory`` arguments, not before ``runPyDM`` is
+called.
+
 Important Runtime Options
 =========================
 
