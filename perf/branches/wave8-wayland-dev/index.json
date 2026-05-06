@@ -5,6 +5,14 @@
   "history": [
     {
       "ref_name": "wave8-wayland-dev",
+      "sha": "016c104bb89c8102fb59ad0a40e128787c45cc53",
+      "short_sha": "016c104",
+      "published_at": "2026-05-06T15:33:01Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/25444447838",
+      "summary_url": "/rogue/perf/branches/wave8-wayland-dev/history/016c104bb89c8102fb59ad0a40e128787c45cc53.json"
+    },
+    {
+      "ref_name": "wave8-wayland-dev",
       "sha": "52676a3eb55dda48974de780f0b6de6e2323350b",
       "short_sha": "52676a3",
       "published_at": "2026-05-02T04:07:57Z",
@@ -94,10 +102,10 @@
   ],
   "latest": {
     "ref_name": "wave8-wayland-dev",
-    "sha": "52676a3eb55dda48974de780f0b6de6e2323350b",
-    "short_sha": "52676a3",
-    "published_at": "2026-05-02T04:07:57Z",
-    "run_url": "https://github.com/slaclab/rogue/actions/runs/25242240872",
+    "sha": "016c104bb89c8102fb59ad0a40e128787c45cc53",
+    "short_sha": "016c104",
+    "published_at": "2026-05-06T15:33:01Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/25444447838",
     "summary_url": "/rogue/perf/branches/wave8-wayland-dev/latest.json"
   }
 }
