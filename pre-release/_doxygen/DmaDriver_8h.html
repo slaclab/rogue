@@ -120,52 +120,76 @@ Macros</h2></td></tr>
 <tr class="memitem:a6a4e8cd632d35cd8f2c77da874786053" id="r_a6a4e8cd632d35cd8f2c77da874786053"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="DmaDriver_8h.html#a6a4e8cd632d35cd8f2c77da874786053">DMA_ERR_BUS</a>&#160;&#160;&#160;0x08</td></tr>
 <tr class="separator:a6a4e8cd632d35cd8f2c77da874786053"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2f3ab68e37a66a8bfbee511d722bc833" id="r_a2f3ab68e37a66a8bfbee511d722bc833"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="DmaDriver_8h.html#a2f3ab68e37a66a8bfbee511d722bc833">DMA_Get_Buff_Count</a>&#160;&#160;&#160;0x1001</td></tr>
+<tr class="memdesc:a2f3ab68e37a66a8bfbee511d722bc833"><td class="mdescLeft">&#160;</td><td class="mdescRight">ioctl command code: get the total number of DMA buffers in the pool.  <br /></td></tr>
 <tr class="separator:a2f3ab68e37a66a8bfbee511d722bc833"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a202ad0447ecaa6358e239020ada1c471" id="r_a202ad0447ecaa6358e239020ada1c471"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="DmaDriver_8h.html#a202ad0447ecaa6358e239020ada1c471">DMA_Get_Buff_Size</a>&#160;&#160;&#160;0x1002</td></tr>
+<tr class="memdesc:a202ad0447ecaa6358e239020ada1c471"><td class="mdescLeft">&#160;</td><td class="mdescRight">ioctl command code: get the size in bytes of each DMA buffer.  <br /></td></tr>
 <tr class="separator:a202ad0447ecaa6358e239020ada1c471"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a17f0d17cbf276724514a21bbe4b7ac85" id="r_a17f0d17cbf276724514a21bbe4b7ac85"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="DmaDriver_8h.html#a17f0d17cbf276724514a21bbe4b7ac85">DMA_Set_Debug</a>&#160;&#160;&#160;0x1003</td></tr>
+<tr class="memdesc:a17f0d17cbf276724514a21bbe4b7ac85"><td class="mdescLeft">&#160;</td><td class="mdescRight">ioctl command code: set the kernel debug verbosity level (0 = off).  <br /></td></tr>
 <tr class="separator:a17f0d17cbf276724514a21bbe4b7ac85"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a68b983281ede8a5c0163e951213013e6" id="r_a68b983281ede8a5c0163e951213013e6"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="DmaDriver_8h.html#a68b983281ede8a5c0163e951213013e6">DMA_Set_Mask</a>&#160;&#160;&#160;0x1004</td></tr>
+<tr class="memdesc:a68b983281ede8a5c0163e951213013e6"><td class="mdescLeft">&#160;</td><td class="mdescRight">ioctl command code: set the 32-bit destination channel mask (convenience wrapper for single-mask use).  <br /></td></tr>
 <tr class="separator:a68b983281ede8a5c0163e951213013e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6900d5b9ad955f0310f3f21fe36f430e" id="r_a6900d5b9ad955f0310f3f21fe36f430e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="DmaDriver_8h.html#a6900d5b9ad955f0310f3f21fe36f430e">DMA_Ret_Index</a>&#160;&#160;&#160;0x1005</td></tr>
+<tr class="memdesc:a6900d5b9ad955f0310f3f21fe36f430e"><td class="mdescLeft">&#160;</td><td class="mdescRight">ioctl command code: return one or more buffer indices to the DMA free pool. The upper 16 bits of the command encode the count: cmd = DMA_Ret_Index | ((count &lt;&lt; 16) &amp; 0xFFFF0000).  <br /></td></tr>
 <tr class="separator:a6900d5b9ad955f0310f3f21fe36f430e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1800155037eb3bfe74244daed56c3445" id="r_a1800155037eb3bfe74244daed56c3445"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="DmaDriver_8h.html#a1800155037eb3bfe74244daed56c3445">DMA_Get_Index</a>&#160;&#160;&#160;0x1006</td></tr>
+<tr class="memdesc:a1800155037eb3bfe74244daed56c3445"><td class="mdescLeft">&#160;</td><td class="mdescRight">ioctl command code: get the index of the next available write buffer.  <br /></td></tr>
 <tr class="separator:a1800155037eb3bfe74244daed56c3445"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afc04a4cba59140f5b74dd916702b4c72" id="r_afc04a4cba59140f5b74dd916702b4c72"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="DmaDriver_8h.html#afc04a4cba59140f5b74dd916702b4c72">DMA_Read_Ready</a>&#160;&#160;&#160;0x1007</td></tr>
+<tr class="memdesc:afc04a4cba59140f5b74dd916702b4c72"><td class="mdescLeft">&#160;</td><td class="mdescRight">ioctl command code: check whether a receive frame is pending (returns 1 if data ready).  <br /></td></tr>
 <tr class="separator:afc04a4cba59140f5b74dd916702b4c72"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a72697e08d6a20eec058566152b1a70af" id="r_a72697e08d6a20eec058566152b1a70af"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="DmaDriver_8h.html#a72697e08d6a20eec058566152b1a70af">DMA_Set_MaskBytes</a>&#160;&#160;&#160;0x1008</td></tr>
+<tr class="memdesc:a72697e08d6a20eec058566152b1a70af"><td class="mdescLeft">&#160;</td><td class="mdescRight">ioctl command code: set the destination channel mask using a 512-byte bitmap (DMA_MASK_SIZE bytes).  <br /></td></tr>
 <tr class="separator:a72697e08d6a20eec058566152b1a70af"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a888e03df403e5bb541bc29b0ee896803" id="r_a888e03df403e5bb541bc29b0ee896803"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="DmaDriver_8h.html#a888e03df403e5bb541bc29b0ee896803">DMA_Get_Version</a>&#160;&#160;&#160;0x1009</td></tr>
+<tr class="memdesc:a888e03df403e5bb541bc29b0ee896803"><td class="mdescLeft">&#160;</td><td class="mdescRight">ioctl command code: get the driver API version integer; compare to DMA_VERSION for compatibility.  <br /></td></tr>
 <tr class="separator:a888e03df403e5bb541bc29b0ee896803"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a380ec8c28855d92b765980690d270c5f" id="r_a380ec8c28855d92b765980690d270c5f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="DmaDriver_8h.html#a380ec8c28855d92b765980690d270c5f">DMA_Write_Register</a>&#160;&#160;&#160;0x100A</td></tr>
+<tr class="memdesc:a380ec8c28855d92b765980690d270c5f"><td class="mdescLeft">&#160;</td><td class="mdescRight">ioctl command code: write a 32-bit value to a device BAR register; argument is struct DmaRegisterData*.  <br /></td></tr>
 <tr class="separator:a380ec8c28855d92b765980690d270c5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:affc5ed3bd37dc3c9ca27bfba9dd134cf" id="r_affc5ed3bd37dc3c9ca27bfba9dd134cf"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="DmaDriver_8h.html#affc5ed3bd37dc3c9ca27bfba9dd134cf">DMA_Read_Register</a>&#160;&#160;&#160;0x100B</td></tr>
+<tr class="memdesc:affc5ed3bd37dc3c9ca27bfba9dd134cf"><td class="mdescLeft">&#160;</td><td class="mdescRight">ioctl command code: read a 32-bit value from a device BAR register; argument is struct DmaRegisterData*.  <br /></td></tr>
 <tr class="separator:affc5ed3bd37dc3c9ca27bfba9dd134cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3ea544e208d9cd7789c80434f5cc7e4e" id="r_a3ea544e208d9cd7789c80434f5cc7e4e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="DmaDriver_8h.html#a3ea544e208d9cd7789c80434f5cc7e4e">DMA_Get_RxBuff_Count</a>&#160;&#160;&#160;0x100C</td></tr>
+<tr class="memdesc:a3ea544e208d9cd7789c80434f5cc7e4e"><td class="mdescLeft">&#160;</td><td class="mdescRight">ioctl command code: get the total number of receive DMA buffers in the pool.  <br /></td></tr>
 <tr class="separator:a3ea544e208d9cd7789c80434f5cc7e4e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5febeaaff4b0aae4ae9da2acb3306559" id="r_a5febeaaff4b0aae4ae9da2acb3306559"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="DmaDriver_8h.html#a5febeaaff4b0aae4ae9da2acb3306559">DMA_Get_TxBuff_Count</a>&#160;&#160;&#160;0x100D</td></tr>
+<tr class="memdesc:a5febeaaff4b0aae4ae9da2acb3306559"><td class="mdescLeft">&#160;</td><td class="mdescRight">ioctl command code: get the total number of transmit DMA buffers in the pool.  <br /></td></tr>
 <tr class="separator:a5febeaaff4b0aae4ae9da2acb3306559"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4c7473e214b79f11d1eb958e89f1bbad" id="r_a4c7473e214b79f11d1eb958e89f1bbad"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="DmaDriver_8h.html#a4c7473e214b79f11d1eb958e89f1bbad">DMA_Get_TxBuffinUser_Count</a>&#160;&#160;&#160;0x100F</td></tr>
+<tr class="memdesc:a4c7473e214b79f11d1eb958e89f1bbad"><td class="mdescLeft">&#160;</td><td class="mdescRight">ioctl command code: get the count of TX buffers currently held in user space.  <br /></td></tr>
 <tr class="separator:a4c7473e214b79f11d1eb958e89f1bbad"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5d1295f5004a81b21a7ea3d93fd2d9ad" id="r_a5d1295f5004a81b21a7ea3d93fd2d9ad"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="DmaDriver_8h.html#a5d1295f5004a81b21a7ea3d93fd2d9ad">DMA_Get_TxBuffinHW_Count</a>&#160;&#160;&#160;0x1010</td></tr>
+<tr class="memdesc:a5d1295f5004a81b21a7ea3d93fd2d9ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">ioctl command code: get the count of TX buffers currently submitted to hardware.  <br /></td></tr>
 <tr class="separator:a5d1295f5004a81b21a7ea3d93fd2d9ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abcd0e8eb6f0a99046436febc3f467d2b" id="r_abcd0e8eb6f0a99046436febc3f467d2b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="DmaDriver_8h.html#abcd0e8eb6f0a99046436febc3f467d2b">DMA_Get_TxBuffinPreHWQ_Count</a>&#160;&#160;&#160;0x1011</td></tr>
+<tr class="memdesc:abcd0e8eb6f0a99046436febc3f467d2b"><td class="mdescLeft">&#160;</td><td class="mdescRight">ioctl command code: get the count of TX buffers in the pre-hardware queue.  <br /></td></tr>
 <tr class="separator:abcd0e8eb6f0a99046436febc3f467d2b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae09eef96d966393e651dbcbbffdce7e3" id="r_ae09eef96d966393e651dbcbbffdce7e3"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="DmaDriver_8h.html#ae09eef96d966393e651dbcbbffdce7e3">DMA_Get_TxBuffinSWQ_Count</a>&#160;&#160;&#160;0x1012</td></tr>
+<tr class="memdesc:ae09eef96d966393e651dbcbbffdce7e3"><td class="mdescLeft">&#160;</td><td class="mdescRight">ioctl command code: get the count of TX buffers in the software queue.  <br /></td></tr>
 <tr class="separator:ae09eef96d966393e651dbcbbffdce7e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6ea630aad920d765d6f16935bf7b33b4" id="r_a6ea630aad920d765d6f16935bf7b33b4"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="DmaDriver_8h.html#a6ea630aad920d765d6f16935bf7b33b4">DMA_Get_TxBuffMiss_Count</a>&#160;&#160;&#160;0x1013</td></tr>
+<tr class="memdesc:a6ea630aad920d765d6f16935bf7b33b4"><td class="mdescLeft">&#160;</td><td class="mdescRight">ioctl command code: get the TX buffer allocation miss count (buffers requested but unavailable).  <br /></td></tr>
 <tr class="separator:a6ea630aad920d765d6f16935bf7b33b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa8008232c587cce580915ef53778efd6" id="r_aa8008232c587cce580915ef53778efd6"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="DmaDriver_8h.html#aa8008232c587cce580915ef53778efd6">DMA_Get_RxBuffinUser_Count</a>&#160;&#160;&#160;0x1014</td></tr>
+<tr class="memdesc:aa8008232c587cce580915ef53778efd6"><td class="mdescLeft">&#160;</td><td class="mdescRight">ioctl command code: get the count of RX buffers currently held in user space.  <br /></td></tr>
 <tr class="separator:aa8008232c587cce580915ef53778efd6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6a67675cbf9cb65d75de47895f56131b" id="r_a6a67675cbf9cb65d75de47895f56131b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="DmaDriver_8h.html#a6a67675cbf9cb65d75de47895f56131b">DMA_Get_RxBuffinHW_Count</a>&#160;&#160;&#160;0x1015</td></tr>
+<tr class="memdesc:a6a67675cbf9cb65d75de47895f56131b"><td class="mdescLeft">&#160;</td><td class="mdescRight">ioctl command code: get the count of RX buffers currently submitted to hardware.  <br /></td></tr>
 <tr class="separator:a6a67675cbf9cb65d75de47895f56131b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a57e927b562633559adfa6cf6e01e0064" id="r_a57e927b562633559adfa6cf6e01e0064"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="DmaDriver_8h.html#a57e927b562633559adfa6cf6e01e0064">DMA_Get_RxBuffinPreHWQ_Count</a>&#160;&#160;&#160;0x1016</td></tr>
+<tr class="memdesc:a57e927b562633559adfa6cf6e01e0064"><td class="mdescLeft">&#160;</td><td class="mdescRight">ioctl command code: get the count of RX buffers in the pre-hardware queue.  <br /></td></tr>
 <tr class="separator:a57e927b562633559adfa6cf6e01e0064"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad3482903601bd451f4510c739016869a" id="r_ad3482903601bd451f4510c739016869a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="DmaDriver_8h.html#ad3482903601bd451f4510c739016869a">DMA_Get_RxBuffinSWQ_Count</a>&#160;&#160;&#160;0x1017</td></tr>
+<tr class="memdesc:ad3482903601bd451f4510c739016869a"><td class="mdescLeft">&#160;</td><td class="mdescRight">ioctl command code: get the count of RX buffers in the software queue.  <br /></td></tr>
 <tr class="separator:ad3482903601bd451f4510c739016869a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae5525e8412910efcc75ddd65308005d9" id="r_ae5525e8412910efcc75ddd65308005d9"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="DmaDriver_8h.html#ae5525e8412910efcc75ddd65308005d9">DMA_Get_RxBuffMiss_Count</a>&#160;&#160;&#160;0x1018</td></tr>
+<tr class="memdesc:ae5525e8412910efcc75ddd65308005d9"><td class="mdescLeft">&#160;</td><td class="mdescRight">ioctl command code: get the RX buffer allocation miss count (buffers requested but unavailable).  <br /></td></tr>
 <tr class="separator:ae5525e8412910efcc75ddd65308005d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a20ea3687e573ddca953514b80b1a6b7a" id="r_a20ea3687e573ddca953514b80b1a6b7a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="DmaDriver_8h.html#a20ea3687e573ddca953514b80b1a6b7a">DMA_Get_GITV</a>&#160;&#160;&#160;0x1019</td></tr>
+<tr class="memdesc:a20ea3687e573ddca953514b80b1a6b7a"><td class="mdescLeft">&#160;</td><td class="mdescRight">ioctl command code: get the driver git version string into a caller-supplied char[32] buffer.  <br /></td></tr>
 <tr class="separator:a20ea3687e573ddca953514b80b1a6b7a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a784881c5ca3eb26228dcaf3a3acddbc8" id="r_a784881c5ca3eb26228dcaf3a3acddbc8"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="DmaDriver_8h.html#a784881c5ca3eb26228dcaf3a3acddbc8">DMA_MASK_SIZE</a>&#160;&#160;&#160;512</td></tr>
 <tr class="separator:a784881c5ca3eb26228dcaf3a3acddbc8"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -370,7 +394,9 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00043">43</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
+<p>ioctl command code: get the total number of DMA buffers in the pool. </p>
+
+<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00045">45</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
 
 </div>
 </div>
@@ -386,7 +412,9 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00044">44</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
+<p>ioctl command code: get the size in bytes of each DMA buffer. </p>
+
+<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00048">48</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
 
 </div>
 </div>
@@ -402,7 +430,9 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00066">66</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
+<p>ioctl command code: get the driver git version string into a caller-supplied char[32] buffer. </p>
+
+<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00115">115</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
 
 </div>
 </div>
@@ -418,7 +448,9 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00048">48</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
+<p>ioctl command code: get the index of the next available write buffer. </p>
+
+<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00061">61</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
 
 </div>
 </div>
@@ -434,7 +466,9 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00054">54</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
+<p>ioctl command code: get the total number of receive DMA buffers in the pool. </p>
+
+<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00079">79</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
 
 </div>
 </div>
@@ -450,7 +484,9 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00062">62</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
+<p>ioctl command code: get the count of RX buffers currently submitted to hardware. </p>
+
+<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00103">103</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
 
 </div>
 </div>
@@ -466,7 +502,9 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00063">63</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
+<p>ioctl command code: get the count of RX buffers in the pre-hardware queue. </p>
+
+<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00106">106</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
 
 </div>
 </div>
@@ -482,7 +520,9 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00064">64</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
+<p>ioctl command code: get the count of RX buffers in the software queue. </p>
+
+<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00109">109</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
 
 </div>
 </div>
@@ -498,7 +538,9 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00061">61</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
+<p>ioctl command code: get the count of RX buffers currently held in user space. </p>
+
+<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00100">100</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
 
 </div>
 </div>
@@ -514,7 +556,9 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00065">65</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
+<p>ioctl command code: get the RX buffer allocation miss count (buffers requested but unavailable). </p>
+
+<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00112">112</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
 
 </div>
 </div>
@@ -530,7 +574,9 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00055">55</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
+<p>ioctl command code: get the total number of transmit DMA buffers in the pool. </p>
+
+<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00082">82</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
 
 </div>
 </div>
@@ -546,7 +592,9 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00057">57</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
+<p>ioctl command code: get the count of TX buffers currently submitted to hardware. </p>
+
+<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00088">88</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
 
 </div>
 </div>
@@ -562,7 +610,9 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00058">58</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
+<p>ioctl command code: get the count of TX buffers in the pre-hardware queue. </p>
+
+<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00091">91</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
 
 </div>
 </div>
@@ -578,7 +628,9 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00059">59</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
+<p>ioctl command code: get the count of TX buffers in the software queue. </p>
+
+<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00094">94</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
 
 </div>
 </div>
@@ -594,7 +646,9 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00056">56</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
+<p>ioctl command code: get the count of TX buffers currently held in user space. </p>
+
+<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00085">85</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
 
 </div>
 </div>
@@ -610,7 +664,9 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00060">60</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
+<p>ioctl command code: get the TX buffer allocation miss count (buffers requested but unavailable). </p>
+
+<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00097">97</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
 
 </div>
 </div>
@@ -626,7 +682,9 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00051">51</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
+<p>ioctl command code: get the driver API version integer; compare to DMA_VERSION for compatibility. </p>
+
+<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00070">70</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
 
 </div>
 </div>
@@ -642,7 +700,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00069">69</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00118">118</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
 
 </div>
 </div>
@@ -658,7 +716,9 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00049">49</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
+<p>ioctl command code: check whether a receive frame is pending (returns 1 if data ready). </p>
+
+<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00064">64</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
 
 </div>
 </div>
@@ -674,7 +734,9 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00053">53</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
+<p>ioctl command code: read a 32-bit value from a device BAR register; argument is struct DmaRegisterData*. </p>
+
+<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00076">76</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
 
 </div>
 </div>
@@ -690,7 +752,9 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00047">47</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
+<p>ioctl command code: return one or more buffer indices to the DMA free pool. The upper 16 bits of the command encode the count: cmd = DMA_Ret_Index | ((count &lt;&lt; 16) &amp; 0xFFFF0000). </p>
+
+<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00058">58</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
 
 </div>
 </div>
@@ -706,7 +770,9 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00045">45</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
+<p>ioctl command code: set the kernel debug verbosity level (0 = off). </p>
+
+<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00051">51</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
 
 </div>
 </div>
@@ -722,7 +788,9 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00046">46</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
+<p>ioctl command code: set the 32-bit destination channel mask (convenience wrapper for single-mask use). </p>
+
+<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00054">54</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
 
 </div>
 </div>
@@ -738,7 +806,9 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00050">50</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
+<p>ioctl command code: set the destination channel mask using a 512-byte bitmap (DMA_MASK_SIZE bytes). </p>
+
+<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00067">67</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
 
 </div>
 </div>
@@ -774,7 +844,9 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00052">52</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
+<p>ioctl command code: write a 32-bit value to a device BAR register; argument is struct DmaRegisterData*. </p>
+
+<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00073">73</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
 
 </div>
 </div>
@@ -823,7 +895,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00832">832</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00881">881</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
 
 </div>
 </div>
@@ -871,7 +943,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00782">782</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00831">831</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
 
 </div>
 </div>
@@ -909,7 +981,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>0 if the version matches, -1 otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00866">866</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00915">915</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
 
 </div>
 </div>
@@ -947,7 +1019,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The API version of the DMA driver </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00881">881</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00930">930</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
 
 </div>
 </div>
@@ -985,7 +1057,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The count of DMA buffers. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00665">665</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00714">714</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
 
 </div>
 </div>
@@ -1023,7 +1095,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The size of DMA buffers. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00652">652</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00701">701</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
 
 </div>
 </div>
@@ -1061,7 +1133,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The DMA Driver's Git Version string </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00678">678</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00727">727</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
 
 </div>
 </div>
@@ -1099,7 +1171,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The current write buffer index. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00470">470</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00519">519</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
 
 </div>
 </div>
@@ -1137,7 +1209,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The count of receive buffers. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00496">496</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00545">545</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
 
 </div>
 </div>
@@ -1175,7 +1247,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The count of receive buffers in hardware </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00522">522</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00571">571</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
 
 </div>
 </div>
@@ -1213,7 +1285,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The count of receive buffers in pre-hardware queue </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00535">535</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00584">584</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
 
 </div>
 </div>
@@ -1251,7 +1323,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The count of receive buffers in software queue </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00548">548</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00597">597</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
 
 </div>
 </div>
@@ -1289,7 +1361,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The count of receive buffers in user </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00509">509</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00558">558</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
 
 </div>
 </div>
@@ -1327,7 +1399,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The count of receive buffers missing </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00561">561</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00610">610</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
 
 </div>
 </div>
@@ -1365,7 +1437,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The count of transmit buffers. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00574">574</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00623">623</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
 
 </div>
 </div>
@@ -1403,7 +1475,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The count of transmit buffers in hardware </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00600">600</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00649">649</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
 
 </div>
 </div>
@@ -1441,7 +1513,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The count of transmit buffers in pre-hardware queue </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00613">613</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00662">662</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
 
 </div>
 </div>
@@ -1479,7 +1551,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The count of transmit buffers in software queue </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00626">626</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00675">675</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
 
 </div>
 </div>
@@ -1517,7 +1589,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The count of transmit buffers in user </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00587">587</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00636">636</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
 
 </div>
 </div>
@@ -1555,7 +1627,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The count of transmit buffers missing </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00639">639</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00688">688</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
 
 </div>
 </div>
@@ -1592,7 +1664,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00818">818</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00867">867</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
 
 </div>
 </div>
@@ -1648,7 +1720,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Pointer to an array of pointers to the mapped buffers, or NULL on failure. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00698">698</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00747">747</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
 
 </div>
 </div>
@@ -1704,7 +1776,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>A pointer to the mapped memory region in user space, or MAP_FAILED on failure. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00946">946</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00995">995</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
 
 </div>
 </div>
@@ -1781,7 +1853,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Size of the data received, or negative on failure. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00331">331</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00380">380</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
 
 </div>
 </div>
@@ -1865,7 +1937,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The number of bytes read. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00400">400</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00449">449</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
 
 </div>
 </div>
@@ -1935,7 +2007,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Size of the data received, or negative on failure. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00365">365</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00414">414</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
 
 </div>
 </div>
@@ -1973,7 +2045,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Result of the IOCTL operation, indicating read readiness. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00483">483</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00532">532</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
 
 </div>
 </div>
@@ -2029,7 +2101,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The result of the ioctl operation, indicating success or failure. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00916">916</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00965">965</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
 
 </div>
 </div>
@@ -2078,7 +2150,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Result of the IOCTL operation. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00437">437</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00486">486</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
 
 </div>
 </div>
@@ -2134,7 +2206,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Result of the IOCTL operation. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00455">455</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00504">504</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
 
 </div>
 </div>
@@ -2183,7 +2255,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Result from the IOCTL call. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00767">767</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00816">816</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
 
 </div>
 </div>
@@ -2232,7 +2304,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Result from the IOCTL call. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00806">806</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00855">855</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
 
 </div>
 </div>
@@ -2281,7 +2353,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Result from the IOCTL call. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00853">853</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00902">902</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
 
 </div>
 </div>
@@ -2330,7 +2402,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>0 on success. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00742">742</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00791">791</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
 
 </div>
 </div>
@@ -2386,7 +2458,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Always returns 0 indicating success. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00974">974</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l01023">1023</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
 
 </div>
 </div>
@@ -2456,7 +2528,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Number of bytes written, or a negative error code on failure. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00169">169</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00218">218</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
 
 </div>
 </div>
@@ -2526,7 +2598,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Number of bytes written, or a negative error code on failure. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00197">197</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00246">246</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
 
 </div>
 </div>
@@ -2610,7 +2682,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Total number of bytes written, or negative on failure. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00281">281</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00330">330</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
 
 </div>
 </div>
@@ -2666,7 +2738,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Result from the IOCTL call. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00896">896</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00945">945</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
 
 </div>
 </div>
@@ -2750,7 +2822,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Total number of bytes written, or a negative error code on failure. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00229">229</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="DmaDriver_8h_source.html#l00278">278</a> of file <a class="el" href="DmaDriver_8h_source.html">DmaDriver.h</a>.</p>
 
 </div>
 </div>
