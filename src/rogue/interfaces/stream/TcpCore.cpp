@@ -198,19 +198,8 @@ void ris::TcpCore::stop() {
         this->bridgeLog_->debug("Stopping TCP stream bridge. pull=%s push=%s",
                                 this->pullAddr_.c_str(),
                                 this->pushAddr_.c_str());
-        // acceptFrame() and rebuildPushSocket() take bridgeMtx_ around their
-        // access to zmqPush_/zmqCtx_; the worker thread join above only
-        // serialises us with runThread()'s use of zmqPull_, not with frame
-        // senders running on other threads.  Take bridgeMtx_ here so we wait
-        // for any in-flight acceptFrame() to finish before closing the
-        // sockets and destroying the context.  Combined with the threadEn_
-        // early-out at the top of acceptFrame(), any new senders that take
-        // the mutex after teardown will see threadEn_=false and bail out
-        // without touching the freed handles.
+        // Serialize with in-flight acceptFrame() callers before destroying sockets.
         std::lock_guard<std::mutex> lock(bridgeMtx_);
-        // runThread() may null zmqPush_ if its rebuild path fails after a
-        // partial multi-part send; guard each handle so teardown stays safe
-        // regardless of which exit path the worker took.
         if (zmqPull_ != nullptr) {
             zmq_close(zmqPull_);
             zmqPull_ = nullptr;
@@ -226,8 +215,6 @@ void ris::TcpCore::stop() {
     }
 }
 
-//! Tear down (if needed) and rebuild the PUSH socket on the same context with
-//! the original socket configuration.  Caller must hold bridgeMtx_.
 bool ris::TcpCore::rebuildPushSocket() {
     if (this->zmqPush_ != nullptr) {
         zmq_close(this->zmqPush_);
@@ -296,13 +283,6 @@ void ris::TcpCore::acceptFrame(ris::FramePtr frame) {
     ris::FrameLockPtr frLock = frame->lock();
     std::lock_guard<std::mutex> lock(bridgeMtx_);
 
-    // stop() takes bridgeMtx_ around its socket/context teardown after the
-    // worker join, so once we hold the mutex either the bridge is still
-    // running (threadEn_ is true and the handles are valid) or stop() has
-    // already finished tearing everything down.  In the latter case the
-    // sockets and context have been freed; bail out instead of touching
-    // dead handles.  This serialises the Python lifecycle (Device._stop or
-    // an explicit close()) with concurrent senders.
     if (!threadEn_) {
         bridgeLog_->debug("Dropping frame on stopped bridge %s (payload=%" PRIu32 ")",
                           this->pushAddr_.c_str(),
@@ -310,11 +290,7 @@ void ris::TcpCore::acceptFrame(ris::FramePtr frame) {
         return;
     }
 
-    // If a previous send failed and the rebuild also failed, zmqPush_ was
-    // left null.  zmq_sendmsg(nullptr, ...) is not guaranteed safe across
-    // libzmq versions, so retry the rebuild here so a transient failure can
-    // self-heal on the next frame.  If the rebuild still fails, drop this
-    // frame and let a subsequent acceptFrame() retry.
+    // Retry rebuild if a previous failure left zmqPush_ null.
     if (this->zmqPush_ == nullptr) {
         if (!rebuildPushSocket()) {
             bridgeLog_->warning("Push socket unavailable on %s; dropping frame "
@@ -351,16 +327,6 @@ void ris::TcpCore::acceptFrame(ris::FramePtr frame) {
     data                    = reinterpret_cast<uint8_t*>(zmq_msg_data(&(msg[3])));
     ris::fromFrame(iter, frame->getPayload(), data);
 
-    // Send the multi-part frame.  ZMQ only takes ownership of a msg part
-    // on a successful send; failed and unsent parts must be released
-    // explicitly via zmq_msg_close.  If a send fails after earlier
-    // SNDMORE parts have already been queued (or flushed) on the PUSH
-    // socket, the peer may have observed a partial frame and the local
-    // socket's multipart FSM is left expecting the rest of the previous
-    // message -- any subsequent send would be appended to the corrupted
-    // multipart.  Recover by closing and rebuilding zmqPush_ (rebind for
-    // server mode, reconnect for client mode) so the FSM is reset and
-    // downstream PULL peers reconnect cleanly.
     bool sendFailed = false;
     for (x = 0; x < 4; x++) {
         if (zmq_sendmsg(this->zmqPush_, &(msg[x]), (x == 3) ? 0 : ZMQ_SNDMORE) < 0) {
@@ -370,9 +336,7 @@ void ris::TcpCore::acceptFrame(ris::FramePtr frame) {
                                 this->pushAddr_.c_str(),
                                 zmq_strerror(zmq_errno()));
             sendFailed = true;
-            // Close the part that failed to send (we still own it).
             zmq_msg_close(&(msg[x]));
-            // Close any remaining parts that were never sent.
             for (uint32_t y = x + 1; y < 4; y++) zmq_msg_close(&(msg[y]));
             break;
         }
@@ -384,13 +348,6 @@ void ris::TcpCore::acceptFrame(ris::FramePtr frame) {
                           "Resetting push socket to clear PUSH multipart FSM.",
                           x);
 
-        // Tear down the broken socket and rebuild it.  zmq_close discards any
-        // unflushed parts in the outgoing pipe and releases the bind/connect;
-        // recreating restores the link with a clean FSM so subsequent frames
-        // are not appended to the failed multipart.  If the rebuild itself
-        // fails, zmqPush_ is left null; the next acceptFrame() will retry the
-        // rebuild via the entry-point guard, and stop()'s teardown is
-        // nullptr-safe across both exit paths.
         if (!rebuildPushSocket()) {
             bridgeLog_->error("Unable to recover TcpCore push socket on %s; "
                               "next acceptFrame() will retry the rebuild",

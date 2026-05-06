@@ -409,16 +409,6 @@ void rim::TcpClient::runThread() {
             // Lock transaction
             rim::TransactionLockPtr lock = tran->lock();
 
-            // Late/stale response: Transaction::expired() is true once
-            // wait() has returned (it sets done_ and clears iter_), and
-            // getTransaction(id) above has already removed this entry from
-            // the in-flight map.  The originating waitTransaction() call has
-            // therefore already been unblocked — either with the data, or
-            // with the per-transaction timeout error wait() itself recorded.
-            // There is nothing useful to deliver here; appending another
-            // error_ on a transaction that is already done would only
-            // mutate a completed object.  Drop the response and continue,
-            // matching the existing pattern in protocols/srp/SrpV0.cpp.
             if (tran->expired()) {
                 bridgeLog_->warning("Dropping late response for expired transaction. Id=%" PRIu32, id);
                 for (x = 0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));

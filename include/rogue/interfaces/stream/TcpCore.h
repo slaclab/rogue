@@ -61,19 +61,12 @@ class TcpCore : public rogue::interfaces::stream::Master, public rogue::interfac
     void* zmqPull_ = nullptr;
     void* zmqPush_ = nullptr;
 
-    // Server vs client mode; cached so the worker can rebuild zmqPush_ with
-    // the correct bind/connect after a partial multi-part send failure.
     bool server_ = false;
 
     // Thread background
     void runThread();
 
-    // Tear down (if needed) and rebuild zmqPush_ on the same context with the
-    // original socket configuration.  Used after a partial multi-part send
-    // failure to clear the PUSH multipart FSM, and at the top of acceptFrame()
-    // to self-heal when a previous rebuild itself failed and left the handle
-    // null.  Caller must hold bridgeMtx_.  Returns true on success (zmqPush_
-    // valid); on any failure leaves zmqPush_ == nullptr and returns false.
+    // Rebuild zmqPush_ after a failed multipart send.  Caller must hold bridgeMtx_.
     bool rebuildPushSocket();
 
     // Log
