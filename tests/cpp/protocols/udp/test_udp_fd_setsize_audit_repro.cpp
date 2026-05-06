@@ -39,7 +39,6 @@ static std::string readFile(const std::string& path) {
     return ss.str();
 }
 
-/// Split source into lines.
 static std::vector<std::string> splitLines(const std::string& src) {
     std::vector<std::string> lines;
     std::istringstream ss(src);
@@ -48,7 +47,6 @@ static std::vector<std::string> splitLines(const std::string& src) {
     return lines;
 }
 
-/// Return the 0-based line index of the Nth occurrence of needle (N is 0-based).
 static int findNthLine(const std::vector<std::string>& lines,
                        const std::string& needle,
                        unsigned occurrence) {
@@ -62,8 +60,6 @@ static int findNthLine(const std::vector<std::string>& lines,
     return -1;
 }
 
-/// Return true if a FD_SETSIZE guard precedes the FD_SET call.
-/// Searches the 8 lines before fdSetLine for "FD_SETSIZE".
 static bool hasFdGuard(const std::vector<std::string>& lines, int fdSetLine) {
     int start = (fdSetLine > 8) ? fdSetLine - 8 : 0;
     for (int i = start; i < fdSetLine; ++i) {
@@ -72,8 +68,6 @@ static bool hasFdGuard(const std::vector<std::string>& lines, int fdSetLine) {
     return false;
 }
 
-/// Return true if `line` is a single-line comment (`//...` after optional
-/// whitespace). Used to skip FD_SET tokens that appear only in comments.
 static bool isCommentLine(const std::string& line) {
     for (char c : line) {
         if (c == ' ' || c == '\t') continue;
@@ -83,8 +77,6 @@ static bool isCommentLine(const std::string& line) {
     return false;
 }
 
-/// Return true if every active (non-comment) FD_SET(fd_,...) call in the
-/// file has an FD_SETSIZE guard within the 8 lines preceding it.
 static bool everyFdSetIsGuarded(const std::vector<std::string>& lines) {
     bool allGuarded = true;
     bool any        = false;

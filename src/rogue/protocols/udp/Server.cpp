@@ -65,11 +65,7 @@ rpu::Server::Server(uint16_t port, bool jumbo) : rpu::Core(jumbo) {
     if ((fd_ = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
         throw(rogue::GeneralError::create("Server::Server", "Failed to create socket for port %" PRIu16, port_));
 
-    // Validate fd_ fits in fd_set before the worker thread is started.  An fd
-    // returned by socket() can legally exceed FD_SETSIZE on a process with
-    // many open descriptors; deferring the check to runThread() turns that
-    // into an asynchronous throw out of the worker, terminating the process
-    // after the constructor has already returned a "live" object.
+    // Reject fd >= FD_SETSIZE early; FD_SET would corrupt memory otherwise.
     if (fd_ >= FD_SETSIZE) {
         const int badFd = fd_;
         ::close(fd_);
@@ -278,13 +274,7 @@ void rpu::Server::runThread(std::weak_ptr<int> lockPtr) {
                 remAddr_ = tmpAddr;
             }
         } else {
-            // Setup fds for select call.  runThread() has no top-level
-            // catch, so a throw here would call std::terminate.  The
-            // ctor already guarantees fd_ < FD_SETSIZE; this in-loop
-            // check only fires if stop()/close() races with the worker
-            // and toggles fd_ to -1.  In that case log and exit the
-            // worker cleanly so stop() can complete instead of crashing
-            // the process.
+            // Guard against fd_ invalidated by a racing stop().
             if (fd_ < 0 || fd_ >= FD_SETSIZE) {
                 udpLog_->error("Server::runThread: fd_ value %d out of FD_SETSIZE range; exiting worker", fd_);
                 threadEn_ = false;

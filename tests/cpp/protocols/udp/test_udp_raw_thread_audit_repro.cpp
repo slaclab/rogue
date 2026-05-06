@@ -40,7 +40,6 @@ static std::string readFile(const std::string& path) {
     return ss.str();
 }
 
-/// Return true if the source uses RAII-managed thread allocation.
 static bool hasRaiiThread(const std::string& src) {
     return src.find("make_unique<std::thread>") != std::string::npos ||
            src.find("unique_ptr<std::thread>") != std::string::npos;

@@ -1,5 +1,3 @@
-# Regression tests for UDP protocol candidates (plan 02-03).
-
 rogue_add_cpp_test(rogue-cpp-protocols-udp-fd-setsize-audit-repro
    SOURCES
       test_udp_fd_setsize_audit_repro.cpp
