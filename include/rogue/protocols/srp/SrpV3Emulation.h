@@ -171,17 +171,9 @@ class SrpV3Emulation : public rogue::interfaces::stream::Master,
     /**
      * @brief Allocates a new 4K page filled with random data.
      *
-     * @details
-     * The page is owned by `memMap_`; the returned pointer is non-owning.
-     * If `addr4k` is already present in the map, the existing buffer is
-     * returned and no new allocation is performed.
-     *
      * @param addr4k 4K-aligned base address for the page.
-     * @return Non-null pointer to the page owned by `memMap_` (existing or
-     *         newly inserted).
-     * @throws std::bad_alloc if the underlying buffer or map node cannot be
-     *         allocated.  The function never returns `nullptr`; on OOM the
-     *         exception propagates and is logged by `runThread`.
+     * @return Non-null pointer to page (existing if already present, or newly allocated).
+     * @throws std::bad_alloc on allocation failure.
      */
     uint8_t* allocatePage(uint64_t addr4k);
 
