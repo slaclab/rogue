@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-06T15:42:48Z",
+  "generated_at": "2026-05-06T15:49:47Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -177,6 +177,14 @@
       "history": [
         {
           "ref_name": "bug-audit/tcp-client-server-core",
+          "sha": "4880bbb2c5f6d475a795928c2c16b3e78bbe04dc",
+          "short_sha": "4880bbb",
+          "published_at": "2026-05-06T15:49:47Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/25445617927",
+          "summary_url": "/rogue/perf/branches/bug-audit_tcp-client-server-core/history/4880bbb2c5f6d475a795928c2c16b3e78bbe04dc.json"
+        },
+        {
+          "ref_name": "bug-audit/tcp-client-server-core",
           "sha": "3ce43f17f7e9fe53b953a78521391783da9ad448",
           "short_sha": "3ce43f1",
           "published_at": "2026-05-06T15:42:48Z",
@@ -258,42 +266,11 @@
       ],
       "latest": {
         "ref_name": "bug-audit/tcp-client-server-core",
-        "sha": "3ce43f17f7e9fe53b953a78521391783da9ad448",
-        "short_sha": "3ce43f1",
-        "published_at": "2026-05-06T15:42:48Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/25445267648",
+        "sha": "4880bbb2c5f6d475a795928c2c16b3e78bbe04dc",
+        "short_sha": "4880bbb",
+        "published_at": "2026-05-06T15:49:47Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/25445617927",
         "summary_url": "/rogue/perf/branches/bug-audit_tcp-client-server-core/latest.json"
-      }
-    },
-    {
-      "ref_name": "bug-audit/drivers-sync",
-      "ref_slug": "bug-audit_drivers-sync",
-      "latest_url": "/rogue/perf/branches/bug-audit_drivers-sync/latest.json",
-      "history": [
-        {
-          "ref_name": "bug-audit/drivers-sync",
-          "sha": "5b9974ab6b7143f0f0aba710ac8d557aa5a26406",
-          "short_sha": "5b9974a",
-          "published_at": "2026-05-06T15:42:16Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/25444575795",
-          "summary_url": "/rogue/perf/branches/bug-audit_drivers-sync/history/5b9974ab6b7143f0f0aba710ac8d557aa5a26406.json"
-        },
-        {
-          "ref_name": "bug-audit/drivers-sync",
-          "sha": "e1521f08fa4fd2ac6232e9fda495217a7c7004c7",
-          "short_sha": "e1521f0",
-          "published_at": "2026-05-05T14:34:47Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/25380602705",
-          "summary_url": "/rogue/perf/branches/bug-audit_drivers-sync/history/e1521f08fa4fd2ac6232e9fda495217a7c7004c7.json"
-        }
-      ],
-      "latest": {
-        "ref_name": "bug-audit/drivers-sync",
-        "sha": "5b9974ab6b7143f0f0aba710ac8d557aa5a26406",
-        "short_sha": "5b9974a",
-        "published_at": "2026-05-06T15:42:16Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/25444575795",
-        "summary_url": "/rogue/perf/branches/bug-audit_drivers-sync/latest.json"
       }
     },
     {
