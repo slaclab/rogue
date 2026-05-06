@@ -7,7 +7,7 @@
       "ref_name": "bug-audit/tcp-client-server-core",
       "sha": "b5985fc69c79109ee71d4ee68ad6612c6d44de85",
       "short_sha": "b5985fc",
-      "published_at": "2026-05-05T19:15:27Z",
+      "published_at": "2026-05-06T08:24:28Z",
       "run_url": "https://github.com/slaclab/rogue/actions/runs/25396372814",
       "summary_url": "/rogue/perf/branches/bug-audit_tcp-client-server-core/history/b5985fc69c79109ee71d4ee68ad6612c6d44de85.json"
     },
@@ -80,7 +80,7 @@
     "ref_name": "bug-audit/tcp-client-server-core",
     "sha": "b5985fc69c79109ee71d4ee68ad6612c6d44de85",
     "short_sha": "b5985fc",
-    "published_at": "2026-05-05T19:15:27Z",
+    "published_at": "2026-05-06T08:24:28Z",
     "run_url": "https://github.com/slaclab/rogue/actions/runs/25396372814",
     "summary_url": "/rogue/perf/branches/bug-audit_tcp-client-server-core/latest.json"
   }
