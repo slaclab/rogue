@@ -454,6 +454,8 @@ void rim::TcpClient::runThread() {
 void rim::TcpClient::setup_python() {
 #ifndef NO_PYTHON
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
     bp::class_<rim::TcpClient, rim::TcpClientPtr, bp::bases<rim::Slave>, boost::noncopyable>(
         "TcpClient",
         bp::init<std::string, uint16_t, bp::optional<bool> >())
@@ -461,6 +463,7 @@ void rim::TcpClient::setup_python() {
         .def("waitReady", &rim::TcpClient::waitReady)
         .def("_start", &rim::TcpClient::start)
         .def("_stop", &rim::TcpClient::stop);
+#pragma GCC diagnostic pop
 
     bp::implicitly_convertible<rim::TcpClientPtr, rim::SlavePtr>();
 #endif

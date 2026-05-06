@@ -301,15 +301,27 @@ void ris::TcpCore::acceptFrame(ris::FramePtr frame) {
         }
     }
 
-    if ((zmq_msg_init_size(&(msg[0]), 2) < 0) ||  // Flags
-        (zmq_msg_init_size(&(msg[1]), 1) < 0) ||  // Channel
-        (zmq_msg_init_size(&(msg[2]), 1) < 0)) {  // Error
+    if (zmq_msg_init_size(&(msg[0]), 2) < 0) {
         bridgeLog_->warning("Failed to init message header");
+        return;
+    }
+    if (zmq_msg_init_size(&(msg[1]), 1) < 0) {
+        bridgeLog_->warning("Failed to init message header");
+        zmq_msg_close(&(msg[0]));
+        return;
+    }
+    if (zmq_msg_init_size(&(msg[2]), 1) < 0) {
+        bridgeLog_->warning("Failed to init message header");
+        zmq_msg_close(&(msg[0]));
+        zmq_msg_close(&(msg[1]));
         return;
     }
 
     if (zmq_msg_init_size(&(msg[3]), frame->getPayload()) < 0) {
         bridgeLog_->warning("Failed to init message with size %" PRIu32, frame->getPayload());
+        zmq_msg_close(&(msg[0]));
+        zmq_msg_close(&(msg[1]));
+        zmq_msg_close(&(msg[2]));
         return;
     }
 
@@ -442,9 +454,12 @@ void ris::TcpCore::runThread() {
 void ris::TcpCore::setup_python() {
 #ifndef NO_PYTHON
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
     bp::class_<ris::TcpCore, ris::TcpCorePtr, bp::bases<ris::Master, ris::Slave>, boost::noncopyable>("TcpCore",
                                                                                                       bp::no_init)
         .def("close", &ris::TcpCore::close);
+#pragma GCC diagnostic pop
 
     bp::implicitly_convertible<ris::TcpCorePtr, ris::MasterPtr>();
     bp::implicitly_convertible<ris::TcpCorePtr, ris::SlavePtr>();

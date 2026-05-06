@@ -355,12 +355,15 @@ void rim::TcpServer::runThread() {
 void rim::TcpServer::setup_python() {
 #ifndef NO_PYTHON
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
     bp::class_<rim::TcpServer, rim::TcpServerPtr, bp::bases<rim::Master>, boost::noncopyable>(
         "TcpServer",
         bp::init<std::string, uint16_t>())
         .def("close", &rim::TcpServer::close)
         .def("_start", &rim::TcpServer::start)
         .def("_stop", &rim::TcpServer::stop);
+#pragma GCC diagnostic pop
 
     bp::implicitly_convertible<rim::TcpServerPtr, rim::MasterPtr>();
 #endif
