@@ -226,18 +226,19 @@ class SqlReader(object):
             self._log.error("Failed to open database connection to %s: %s", self._url, e)
             return
 
-        self._metadata = sqlalchemy.MetaData(engine)
-
-        self._varTable = sqlalchemy.Table('variables', self._metadata, autoload=True)
-        self._logTable = sqlalchemy.Table('syslog', self._metadata, autoload=True)
+        self._metadata = sqlalchemy.MetaData()
+        self._varTable = sqlalchemy.Table('variables', self._metadata, autoload_with=engine)
+        self._logTable = sqlalchemy.Table('syslog', self._metadata, autoload_with=engine)
         self._engine = engine
 
     def getVariable(self) -> None:
-        """Fetch and print all variable entries. Placeholder for future enhancement."""
-        r = self._conn.execute(sqlalchemy.select([self._varTable]))
-        print(r.fetchall())
+        """Fetch and print all variable entries."""
+        with self._engine.connect() as conn:
+            r = conn.execute(sqlalchemy.select(self._varTable))
+            print(r.fetchall())
 
-    def getSyslog(self, syslogData: Any) -> None:
-        """Fetch and print syslog entries. Placeholder for future enhancement."""
-        r = self._conn.execute(sqlalchemy.select([self._logTable]))
-        print(r.fetchall())
+    def getSyslog(self, syslogData: Any = None) -> None:
+        """Fetch and print all syslog entries."""
+        with self._engine.connect() as conn:
+            r = conn.execute(sqlalchemy.select(self._logTable))
+            print(r.fetchall())
