@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>runPyDM &mdash; Rogue v6.12.0-10-gfd51f260e documentation</title>
+  <title>runPyDM &mdash; Rogue v6.12.0-15-g7bf66341c documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../../_static/slac-favicon-192.png"/>
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=6612a94e"></script>
+      <script src="../../../_static/documentation_options.js?v=8761c7e0"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -195,6 +195,18 @@ bound for valid request duration.</p></li>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
 </dd>
 </dl>
+<p class="rubric">Notes</p>
+<p>Do <strong>not</strong> instantiate a plain <code class="xref py py-class docutils literal notranslate"><span class="pre">qtpy.QtWidgets.QApplication</span></code>
+before calling <code class="docutils literal notranslate"><span class="pre">runPyDM</span></code>. <code class="docutils literal notranslate"><span class="pre">runPyDM</span></code> constructs a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">pydm.PyDMApplication</span></code>, which must be the sole
+<code class="xref py py-class docutils literal notranslate"><span class="pre">qtpy.QtWidgets.QApplication</span></code> in the process so PyDM’s
+window-management hooks (<code class="docutils literal notranslate"><span class="pre">XSync</span></code> counter updates and
+<code class="docutils literal notranslate"><span class="pre">_NET_WM_PING</span></code> reply registration) attach to the visible windows.
+Constructing a plain <code class="xref py py-class docutils literal notranslate"><span class="pre">qtpy.QtWidgets.QApplication</span></code> first leaves
+PyDM’s hooks bound to a stub instance and the visible windows fail to
+reply to the compositor’s ping/sync messages, leading to spurious
+“not responding” warnings (notably under GNOME-on-Wayland with
+XWayland). <code class="docutils literal notranslate"><span class="pre">runPyDM</span></code> detects this case and raises <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">RuntimeError</span></code></a>.</p>
 </dd></dl>
 
 </section>

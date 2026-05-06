@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue.pydm &mdash; Rogue v6.12.0-10-gfd51f260e documentation</title>
+  <title>pyrogue.pydm &mdash; Rogue v6.12.0-15-g7bf66341c documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="../../_static/slac-favicon-192.png"/>
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=6612a94e"></script>
+      <script src="../../_static/documentation_options.js?v=8761c7e0"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -118,8 +118,10 @@
 <span class="c1"># copied, modified, propagated, or distributed except according to the terms</span>
 <span class="c1"># contained in the LICENSE.txt file.</span>
 <span class="c1">#-----------------------------------------------------------------------------</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">signal</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">inspect</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">types</span><span class="w"> </span><span class="kn">import</span> <span class="n">FrameType</span>
@@ -260,16 +262,56 @@
 <span class="sd">    -------</span>
 <span class="sd">    None</span>
 <span class="sd">        This function runs the Qt event loop until the application exits.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Do **not** instantiate a plain :class:`qtpy.QtWidgets.QApplication`</span>
+<span class="sd">    before calling ``runPyDM``. ``runPyDM`` constructs a</span>
+<span class="sd">    :class:`pydm.PyDMApplication`, which must be the sole</span>
+<span class="sd">    :class:`qtpy.QtWidgets.QApplication` in the process so PyDM&#39;s</span>
+<span class="sd">    window-management hooks (``XSync`` counter updates and</span>
+<span class="sd">    ``_NET_WM_PING`` reply registration) attach to the visible windows.</span>
+<span class="sd">    Constructing a plain :class:`qtpy.QtWidgets.QApplication` first leaves</span>
+<span class="sd">    PyDM&#39;s hooks bound to a stub instance and the visible windows fail to</span>
+<span class="sd">    reply to the compositor&#39;s ping/sync messages, leading to spurious</span>
+<span class="sd">    &quot;not responding&quot; warnings (notably under GNOME-on-Wayland with</span>
+<span class="sd">    XWayland). ``runPyDM`` detects this case and raises :class:`RuntimeError`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">import</span><span class="w"> </span><span class="nn">pydm</span>
     <span class="kn">import</span><span class="w"> </span><span class="nn">pydm.data_plugins</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">pydm.utilities</span><span class="w"> </span><span class="kn">import</span> <span class="n">establish_widget_connections</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">pydm.widgets.rules</span><span class="w"> </span><span class="kn">import</span> <span class="n">register_widget_rules</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">qtpy.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QApplication</span>
 
     <span class="kn">from</span><span class="w"> </span><span class="nn">pyrogue.pydm.data_plugins.rogue_plugin</span><span class="w"> </span><span class="kn">import</span> <span class="n">RoguePlugin</span>
 
     <span class="k">if</span> <span class="nb">sum</span><span class="p">(</span><span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="p">(</span><span class="n">ui</span><span class="p">,</span> <span class="n">display</span><span class="p">,</span> <span class="n">display_factory</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;ui, display, and display_factory are mutually exclusive&quot;</span><span class="p">)</span>
+
+    <span class="n">existing_app</span> <span class="o">=</span> <span class="n">QApplication</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">existing_app</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">existing_app</span><span class="p">,</span> <span class="n">pydm</span><span class="o">.</span><span class="n">PyDMApplication</span><span class="p">):</span>
+        <span class="n">detected_cls</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">existing_app</span><span class="p">)</span>
+        <span class="n">detected_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">detected_cls</span><span class="o">.</span><span class="vm">__module__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">detected_cls</span><span class="o">.</span><span class="vm">__qualname__</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">detected_repr</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">detected_name</span><span class="si">}</span><span class="s2"> id=0x</span><span class="si">{</span><span class="nb">id</span><span class="p">(</span><span class="n">existing_app</span><span class="p">)</span><span class="si">:</span><span class="s2">x</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;runPyDM detected a pre-existing QApplication that is not a &quot;</span>
+            <span class="s2">&quot;pydm.PyDMApplication. PyDM&#39;s window-management hooks (XSync &quot;</span>
+            <span class="s2">&quot;counter, _NET_WM_PING reply) only register on PyDMApplication, &quot;</span>
+            <span class="s2">&quot;so the visible windows fail to reply to the compositor&#39;s &quot;</span>
+            <span class="s2">&quot;ping/sync messages and get flagged as &#39;not responding&#39; &quot;</span>
+            <span class="s2">&quot;(notably on GNOME-on-Wayland with XWayland).</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;Detected application: </span><span class="si">{</span><span class="n">detected_repr</span><span class="si">}</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;Common cause:</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;    appTop = QApplication(sys.argv)   # remove this</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;    ...                               # widget setup</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;    pyrogue.pydm.runPyDM(...)</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;Fix: do NOT construct a QApplication (or any QApplication &quot;</span>
+            <span class="s2">&quot;subclass other than pydm.PyDMApplication) before calling &quot;</span>
+            <span class="s2">&quot;runPyDM. runPyDM constructs the PyDMApplication itself; let it &quot;</span>
+            <span class="s2">&quot;be the sole QApplication in the process.&quot;</span>
+        <span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 
     <span class="c1"># Set the ROGUE_SERVERS environment variable</span>
     <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;ROGUE_SERVERS&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">serverList</span>

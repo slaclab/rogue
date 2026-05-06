@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Starting The Rogue PyDM GUI &mdash; Rogue v6.12.0-10-gfd51f260e documentation</title>
+  <title>Starting The Rogue PyDM GUI &mdash; Rogue v6.12.0-15-g7bf66341c documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../_static/slac-favicon-192.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=6612a94e"></script>
+      <script src="../_static/documentation_options.js?v=8761c7e0"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -251,6 +251,35 @@ path rather than attaching directly to the Root object.</p>
 <p>The current <a class="reference internal" href="../api/python/pyrogue/pydm_runpydm.html#pyrogue.pydm.runPyDM" title="pyrogue.pydm.runPyDM"><code class="xref py py-func docutils literal notranslate"><span class="pre">pyrogue.pydm.runPyDM()</span></code></a> signature accepts <code class="docutils literal notranslate"><span class="pre">serverList</span></code>
 and does not accept a <code class="docutils literal notranslate"><span class="pre">root=</span></code> argument. Older examples that passed a local
 <code class="docutils literal notranslate"><span class="pre">Root</span></code> directly are stale and should be updated to expose a server first.</p>
+</section>
+<section id="do-not-pre-construct-a-qapplication">
+<h2>Do Not Pre-Construct A QApplication<a class="headerlink" href="#do-not-pre-construct-a-qapplication" title="Link to this heading"></a></h2>
+<p><a class="reference internal" href="../api/python/pyrogue/pydm_runpydm.html#pyrogue.pydm.runPyDM" title="pyrogue.pydm.runPyDM"><code class="xref py py-func docutils literal notranslate"><span class="pre">pyrogue.pydm.runPyDM()</span></code></a> constructs a <code class="xref py py-class docutils literal notranslate"><span class="pre">pydm.PyDMApplication</span></code>
+internally and that instance must be the sole
+<code class="xref py py-class docutils literal notranslate"><span class="pre">qtpy.QtWidgets.QApplication</span></code> in the process. Constructing a plain
+<code class="xref py py-class docutils literal notranslate"><span class="pre">qtpy.QtWidgets.QApplication</span></code> (or any non-PyDM <code class="docutils literal notranslate"><span class="pre">QApplication</span></code>
+subclass) before calling <code class="docutils literal notranslate"><span class="pre">runPyDM</span></code> is unsupported and will be rejected:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qtpy.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QApplication</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue.pydm</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">QApplication</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>         <span class="c1"># don&#39;t do this</span>
+<span class="o">...</span>
+<span class="n">pyrogue</span><span class="o">.</span><span class="n">pydm</span><span class="o">.</span><span class="n">runPyDM</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>             <span class="c1"># raises RuntimeError</span>
+</pre></div>
+</div>
+<p>The reason is that PyDM’s window-management hooks (<code class="docutils literal notranslate"><span class="pre">XSync</span></code> counter updates
+and <code class="docutils literal notranslate"><span class="pre">_NET_WM_PING</span></code> reply registration) only attach to
+<code class="docutils literal notranslate"><span class="pre">PyDMApplication</span></code>. If a plain <code class="docutils literal notranslate"><span class="pre">QApplication</span></code> already exists, the visible
+windows are bound to it instead, never reply to the compositor’s ping/sync
+messages, and get flagged as “not responding” (notably under
+GNOME-on-Wayland with XWayland).</p>
+<p><code class="docutils literal notranslate"><span class="pre">runPyDM</span></code> detects this case at entry, prints a step-by-step diagnostic to
+<code class="docutils literal notranslate"><span class="pre">stderr</span></code>, and raises <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">RuntimeError</span></code></a>. Companion widgets that need a
+live <code class="docutils literal notranslate"><span class="pre">QApplication</span></code> should be built inside a <code class="xref py py-class docutils literal notranslate"><span class="pre">pydm.Display</span></code>
+subclass (see the <cite>Custom Python Top-Level Displays</cite> section above) or via
+the <code class="docutils literal notranslate"><span class="pre">display</span></code> / <code class="docutils literal notranslate"><span class="pre">display_factory</span></code> arguments, not before <code class="docutils literal notranslate"><span class="pre">runPyDM</span></code> is
+called.</p>
 </section>
 <section id="important-runtime-options">
 <h2>Important Runtime Options<a class="headerlink" href="#important-runtime-options" title="Link to this heading"></a></h2>
