@@ -92,25 +92,11 @@ class Application : public rogue::interfaces::stream::Master, public rogue::inte
     ~Application();
 
     /**
-     * @brief Attaches the RSSI controller.
-     *
-     * @details
-     * Stores controller reference and starts the outbound worker thread.
-     * Wired exactly once by `Client`/`Server` construction; calling this
-     * directly is not part of the normal usage path.
-     *
-     * On thread-creation failure (`std::thread` ctor throw, e.g. EAGAIN),
-     * `cntl_` is reset and `threadEn_` cleared before re-throw so a partial
-     * construction does not leak the `Application <-> Controller` strong
-     * reference cycle.
+     * @brief Attaches the RSSI controller and starts the outbound worker thread.
      *
      * @param cntl Controller instance that owns protocol state.
-     * @throws rogue::GeneralError if `cntl` is null.
-     * @throws rogue::GeneralError if `setController()` has already been
-     *         called on this `Application` (the running worker would be
-     *         destroyed mid-flight, calling `std::terminate()`).
-     * @throws std::system_error if the worker thread cannot be created
-     *         (propagated from `std::thread` construction).
+     * @throws rogue::GeneralError if `cntl` is null or already set.
+     * @throws std::system_error if the worker thread cannot be created.
      */
     void setController(std::shared_ptr<rogue::protocols::rssi::Controller> cntl);
 

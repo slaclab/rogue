@@ -81,14 +81,7 @@ class Controller : public rogue::EnableSharedFromThis<rogue::protocols::rssi::Co
     uint8_t locMaxRetran_;
     uint8_t locMaxCumAck_;
 
-    // Negotiated parameters.
-    // All cur* values are written by the state thread on connection
-    // negotiation (stateClosedWait) and read on application threads /
-    // external Python pollers (via the public getters in
-    // python/pyrogue/protocols/_Network.py).  The state-thread writes are
-    // not taken under txMtx_, so non-atomic access is a data race under
-    // the C++ memory model.  std::atomic makes the cross-thread reads
-    // well-defined.
+    // Negotiated parameters (atomic: written by state thread, read from app/Python threads).
     std::atomic<uint8_t> curMaxBuffers_;
     std::atomic<uint16_t> curMaxSegment_;
     std::atomic<uint16_t> curCumAckTout_;
@@ -112,12 +105,7 @@ class Controller : public rogue::EnableSharedFromThis<rogue::protocols::rssi::Co
     // Receive tracking
     std::atomic<uint32_t> dropCount_;
     uint8_t nextSeqRx_;
-    // lastAckRx_ is mutated under txMtx_ in transportRx() while
-    // stateClosedWait() (state thread) writes it without txMtx_, and
-    // stateOpen() reads it without txMtx_ to size the retransmit window.
-    // std::atomic makes the cross-thread access well-defined under the
-    // C++ memory model.
-    std::atomic<uint8_t> lastAckRx_;
+    std::atomic<uint8_t> lastAckRx_;  // cross-thread: transportRx vs stateOpen/stateClosedWait
     std::atomic<bool> remBusy_;
     std::atomic<bool> locBusy_;
 
@@ -130,25 +118,14 @@ class Controller : public rogue::EnableSharedFromThis<rogue::protocols::rssi::Co
     // State queue
     rogue::Queue<std::shared_ptr<rogue::protocols::rssi::Header>> stQueue_;
 
-    // Application tracking
-    // lastSeqRx_ is written from transportRx() (rx thread) and read from
-    // stateSendSeqAck() (state thread) without a common mutex.
-    // ackSeqRx_ is written from applicationTx() (app thread) and
-    // stateSendSeqAck() (state thread) without txMtx_, and read from
-    // transportTxLocked() / retransmit() / stateOpen() under txMtx_.
-    // std::atomic makes those cross-thread accesses well-defined.
+    // Application tracking (atomic: cross-thread between rx/app/state threads).
     std::atomic<uint8_t> lastSeqRx_;
     std::atomic<uint8_t> ackSeqRx_;
 
     // State Tracking
     std::condition_variable stCond_;
     std::mutex stMtx_;
-    // state_ is written by the state thread (runThread/state* helpers) and
-    // by stateError() without holding txMtx_, while applicationRx() reads
-    // it under txMtx_ and via getOpen() on caller threads.  std::atomic
-    // makes the cross-thread reads/writes well-defined under the C++
-    // memory model so the backpressure waiter cannot miss a close/reset
-    // transition and emit a payload during reset.
+    // Atomic: read by applicationRx/getOpen without txMtx_, written by state thread.
     std::atomic<uint32_t> state_;
     struct timeval stTime_;
     std::atomic<uint32_t> downCount_;
@@ -161,21 +138,11 @@ class Controller : public rogue::EnableSharedFromThis<rogue::protocols::rssi::Co
     // Transmit tracking
     std::shared_ptr<rogue::protocols::rssi::Header> txList_[256];
     std::mutex txMtx_;
-    // Notified after txListCount_ decreases (or txReset wakes a sender on
-    // reset) so the applicationRx() backpressure path can wake immediately.
-    // The notify_one()/notify_all() calls happen after txMtx_ is released
-    // — txMtx_ guards the predicate (txListCount_ < curMaxBuffers_), and
-    // pairing this condition variable with that same mutex is what closes
-    // the lost-wakeup window between the waiter's predicate test and its
-    // wait_for() call.
+    // Wakes applicationRx() backpressure waiters when txListCount_ decreases or resets.
     std::condition_variable txCond_;
     uint8_t txListCount_;
     uint8_t lastAckTx_;
-    // locSequence_ is mutated under txMtx_ in transportTxLocked() while
-    // stateOpen() reads it without txMtx_ to compute the retransmit
-    // window upper bound (idx != locSequence_).  std::atomic closes the
-    // cross-thread race under the C++ memory model.
-    std::atomic<uint8_t> locSequence_;
+    std::atomic<uint8_t> locSequence_;  // cross-thread: transportTxLocked vs stateOpen
     struct timeval txTime_;
 
     // Time values
@@ -459,11 +426,7 @@ class Controller : public rogue::EnableSharedFromThis<rogue::protocols::rssi::Co
     // Method to transit a frame with proper updates
     void transportTx(std::shared_ptr<rogue::protocols::rssi::Header> head, bool seqUpdate, bool txReset);
 
-    // transportTx() body that runs with txMtx_ already held by the caller.
-    // Used by applicationRx() so the backpressure check and slot reservation
-    // happen inside the same critical section, preventing two senders from
-    // both observing a single freed slot and overshooting curMaxBuffers_.
-    // Releases the supplied lock before calling sendFrame().
+    // transportTx() with txMtx_ already held; releases lock before sendFrame().
     void transportTxLocked(std::unique_lock<std::mutex>& lock,
                            std::shared_ptr<rogue::protocols::rssi::Header> head,
                            bool seqUpdate,

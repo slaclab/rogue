@@ -162,11 +162,7 @@ ris::FramePtr rpr::Controller::reqFrame(uint32_t size) {
     // Request only single buffer frames.
     // Frame size returned is never greater than remote max size
     // or local segment size.
-    // Snapshot curMaxSegment_ once: the state thread can lower the
-    // negotiated peer limit during reconnect/renegotiation, and a
-    // torn read between the compare and the clamp-assign would let
-    // an oversized frame slip past the new limit.
-    const uint16_t segLimit = curMaxSegment_.load();
+    const uint16_t segLimit = curMaxSegment_.load();  // snapshot: avoid torn read during renegotiation
     nSize = size + rpr::Header::HeaderSize;
     if (segLimit > 0 && nSize > segLimit) nSize = segLimit;
     if (nSize > locMaxSegment_) nSize = locMaxSegment_;
@@ -236,10 +232,7 @@ void rpr::Controller::transportRx(ris::FramePtr frame) {
                 }
             } while (lastAckRx_ != head->acknowledge);
         }
-        // Wake exactly the number of backpressure waiters that can now
-        // make progress.  notify_one() per freed slot avoids the
-        // thundering-herd retry on txMtx_ when only a single slot
-        // reopened on a heavily contended cumulative ACK.
+        // Wake waiters proportional to freed slots to avoid thundering herd.
         if (freedSlots == 1) {
             txCond_.notify_one();
         } else if (freedSlots > 1) {
@@ -413,19 +406,8 @@ void rpr::Controller::applicationRx(ris::FramePtr frame) {
         return;
     }
 
-    // Backpressure wait + transmit happen inside one txMtx_ critical
-    // section so the curMaxBuffers_ check and the slot-reserving
-    // txListCount_++ inside transportTxLocked() are atomic with respect
-    // to other senders.  Without this, two threads could both observe a
-    // single freed slot, drop the lock, and then both increment in
-    // separate transportTx() calls, overshooting the negotiated window.
-    //
-    // The wait predicate also re-checks state_: a peer reset triggers
-    // stateError() -> transportTx(rst, true, true), and stateError() now
-    // sets state_ = StClosed *before* that transportTx() call so the
-    // notify_all() observed by this waiter follows the close transition.
-    // state_ is std::atomic<uint32_t>, so the cross-thread read here and
-    // the state-thread write in stateError() are well-defined.
+    // Hold txMtx_ across wait + transportTxLocked so the curMaxBuffers_
+    // check and slot reservation are atomic (prevents multi-sender overshoot).
     {
         std::unique_lock<std::mutex> lk(txMtx_);
         while (state_ == StOpen && txListCount_ >= curMaxBuffers_) {
@@ -443,15 +425,9 @@ void rpr::Controller::applicationRx(ris::FramePtr frame) {
 
         if (state_ != StOpen) return;
 
-        // transportTxLocked() unlocks lk before calling sendFrame().
         transportTxLocked(lk, head, true, false);
     }
 
-    // Kick the state thread (waits on stCond_/stMtx_ in runThread) so it
-    // re-evaluates ack scheduling, retransmit timers and null-tx timers
-    // immediately after an application transmit instead of waiting out
-    // its periodic wait_for() timeout.  txCond_ above only wakes the
-    // backpressure waiter; it does not replace this stCond_ signal.
     stCond_.notify_all();
 }
 
@@ -632,17 +608,12 @@ void rpr::Controller::resetCounters() {
 }
 
 // Method to transmit a frame with proper updates.
-// Public entry: takes txMtx_ then delegates to transportTxLocked().
 void rpr::Controller::transportTx(rpr::HeaderPtr head, bool seqUpdate, bool txReset) {
     std::unique_lock<std::mutex> lock(txMtx_);
     transportTxLocked(lock, head, seqUpdate, txReset);
 }
 
-// Body of transportTx() that runs with txMtx_ already held.  applicationRx()
-// calls this directly so the backpressure check and the slot-reserving
-// txListCount_++ happen inside one critical section — closing the
-// observe-then-reserve race where two senders could both pass the
-// curMaxBuffers_ check on a single freed slot.
+// transportTx() with txMtx_ already held; releases lock before sendFrame().
 void rpr::Controller::transportTxLocked(std::unique_lock<std::mutex>& lock,
                                         rpr::HeaderPtr head,
                                         bool seqUpdate,
@@ -697,10 +668,7 @@ void rpr::Controller::transportTxLocked(std::unique_lock<std::mutex>& lock,
     flock->unlock();
     lock.unlock();
 
-    // After releasing txMtx_, wake any thread blocked in applicationRx()
-    // backpressure when txListCount_ was reset.  Skipping this for the
-    // normal increment path keeps wakes cheap; the decrement path in
-    // transportRx() handles the common reopen-slot case.
+    // Wake backpressure waiters after txListCount_ reset.
     if (txReset) txCond_.notify_all();
 
     // Send frame
@@ -1016,13 +984,7 @@ struct timeval& rpr::Controller::stateError() {
 
     log_->warning("Entering reset state. Server=%d", server_);
 
-    // Mark the link closed BEFORE sending the reset frame.  transportTx()
-    // with txReset=true notifies txCond_ to wake any applicationRx()
-    // backpressure waiter; if state_ were still StOpen at that point, the
-    // waiter could re-acquire the lock, see a freshly-reset txListCount_,
-    // and emit a payload frame on the link we are simultaneously resetting.
-    // Setting state_ first makes the wait predicate's state_ != StOpen
-    // re-check observe the closed link.
+    // Close before reset frame so backpressure waiters see !StOpen on wake.
     state_ = StClosed;
 
     rst      = rpr::Header::create(tran_->reqFrame(rpr::Header::HeaderSize, false));
