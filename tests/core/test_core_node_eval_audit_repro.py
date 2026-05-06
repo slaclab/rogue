@@ -22,8 +22,7 @@ import pyrogue as pr
 
 
 class VarDevice(pr.Device):
-    """Device with indexed LocalVariables so nodeMatch exercises the
-    slice/eval branch for bracket-style lookups."""
+    """Device with indexed LocalVariables for bracket-style lookup tests."""
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         for i in range(4):
@@ -37,14 +36,7 @@ class NodeEvalRoot(pr.Root):
 
 
 def test_iterate_dict_eval_injection(monkeypatch):
-    """Verify that nodeMatch/_iterateDict does NOT execute arbitrary code.
-
-    On HEAD, eval(f'tmpList[{keys[0]}]') is called with user-controlled
-    content. This test patches os.getenv to track calls, then passes a
-    bracket expression containing __import__('os').getenv('USER') to
-    nodeMatch. The assertion fires when the injection succeeds (os.getenv
-    was invoked), confirming the  eval injection bug.
-    """
+    """Verify that nodeMatch/_iterateDict does NOT execute arbitrary code."""
     sentinel = 'AUDIT_REP_CORE_009_SENTINEL'
     monkeypatch.setenv('USER', sentinel)
 

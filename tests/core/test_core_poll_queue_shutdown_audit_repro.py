@@ -28,18 +28,7 @@ import pathlib
 
 
 def test_pollqueue_toctou_stop_check():
-    """Verify PollQueue._poll() checks empty()/paused() inside the condition lock.
-
-    On HEAD, _poll() at line 164 evaluates `self.empty() or self.paused()`
-    OUTSIDE `_condLock`. This creates a TOCTOU window: _stop() can set
-    _run=False and deliver the wakeup notification BEFORE the thread enters
-    wait(), causing the notification to be lost. The thread then sleeps for
-    the full poll interval before checking _run again.
-
-    Source-text invariant: the unsafe pattern `if self.empty() or self.paused():`
-    appears in _poll() without a preceding `with self._condLock:` on the same
-    or immediately prior line. On HEAD this pattern is present => assertion fails.
-    """
+    """Verify PollQueue._poll() checks empty()/paused() inside the condition lock."""
     src_file = pathlib.Path(__file__).parent.parent.parent / 'python' / 'pyrogue' / '_PollQueue.py'
 
     assert src_file.exists(), (

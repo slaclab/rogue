@@ -162,10 +162,7 @@ class PollQueue(object):
         while True:
 
             with self._condLock:
-                # Evaluate empty/paused INSIDE the lock to close the TOCTOU
-                # window between the check and wait(): _stop() sets _run=False
-                # and calls notify() under the same lock, so the wakeup cannot
-                # be lost between the condition check and the wait() call.
+                # Check empty/paused inside the lock to prevent TOCTOU with _stop().
                 queue_blocked = self.empty() or self.paused()
                 if queue_blocked:
                     if self._run is False:
@@ -179,7 +176,6 @@ class PollQueue(object):
                     else:
                         continue
 
-                # Queue has entries and is running; compute time until next poll.
                 now = datetime.datetime.now()
                 readTime = self.peek().readTime
                 waitTime = (readTime - now).total_seconds()

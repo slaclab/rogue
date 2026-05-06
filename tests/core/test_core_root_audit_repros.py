@@ -25,13 +25,7 @@ import pyrogue._Root as _root_module
 
 
 def test_root_double_assignment_pollqueue():
-    """Verify that the double-assignment bug in _Root.__init__ is absent.
-
-    On HEAD, python/pyrogue/_Root.py line 243 contains:
-        self._pollQueue = self._pollQueue = pr.PollQueue(root=self)
-    which is a redundant double assignment. This test reads the source file
-    and asserts the literal token is not present.
-    """
+    """Verify that the double-assignment bug in _Root.__init__ is absent."""
     src_file = pathlib.Path(__file__).parent.parent.parent / 'python' / 'pyrogue' / '_Root.py'
 
     assert src_file.exists(), (
@@ -48,21 +42,10 @@ def test_root_double_assignment_pollqueue():
 
 
 def test_root_updategroup_swallow_non_keyerror(memory_root):
-    """Verify that non-KeyError exceptions in updateGroup() are propagated.
-
-    On HEAD, python/pyrogue/_Root.py line 585-590 uses a bare
-    `except Exception` around `self._updateTrack[tid].increment(period)`.
-    When the tracker ALREADY EXISTS for the thread (no KeyError), but
-    increment() raises RuntimeError, the bare except catches it silently
-    and falls into the recovery block. Only the recovery block's second
-    increment() call raises visibly. This test patches increment() to raise
-    on the first call only (the second succeeds), then verifies the first
-    exception propagated. On HEAD it does not — the bug is confirmed.
-    """
+    """Verify that non-KeyError exceptions in updateGroup() are propagated."""
     tid = threading.get_ident()
 
-    # Pre-create a tracker for this thread so the first lookup succeeds
-    # and increment() is called on the EXISTING tracker (not KeyError path).
+    # Pre-create tracker so increment() is called on the existing tracker.
     with memory_root._updateLock:
         memory_root._updateTrack[tid] = _root_module.UpdateTracker(memory_root._updateQueue)
 
@@ -95,14 +78,7 @@ def test_root_updategroup_swallow_non_keyerror(memory_root):
 
 
 def test_root_queueupdates_swallow_non_keyerror(memory_root):
-    """Verify that non-KeyError exceptions in _queueUpdates() are propagated.
-
-    On HEAD, python/pyrogue/_Root.py line 1199-1204 uses the same bare
-    `except Exception` pattern as updateGroup(), swallowing any non-KeyError
-    exception from an existing tracker's update() call. This test patches
-    update() to raise on the first call only (recovery succeeds), then
-    asserts the first exception propagated. On HEAD it does not.
-    """
+    """Verify that non-KeyError exceptions in _queueUpdates() are propagated."""
     tid = threading.get_ident()
 
     # Pre-create a tracker for this thread

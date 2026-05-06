@@ -927,11 +927,7 @@ def _ast_int(node: ast.expr) -> int:
 
 
 def _parse_slice(expr: str) -> int | slice:
-    """Parse a slice expression string into a Python int or slice object.
-
-    Accepts integer indices (e.g. '5', '-1') and slice notation
-    (e.g. '1:3', '::2', '1:10:2'). Rejects arbitrary code.
-    """
+    """Parse an integer or slice expression, rejecting arbitrary code."""
     tree = ast.parse(f'_x[{expr}]', mode='eval')
     subscript = tree.body
     if not isinstance(subscript, ast.Subscript):
