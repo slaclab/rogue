@@ -23,8 +23,6 @@ import rogue.interfaces.memory as rim
 
 
 class ArrayDevice(pr.Device):
-    """Device with a multi-value RemoteVariable to exercise the eval branch
-    in BaseVariable._setDict (requires nativeType == np.ndarray)."""
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.add(pr.RemoteVariable(
@@ -48,14 +46,7 @@ class SetDictEvalRoot(pr.Root):
 
 
 def test_variable_setdict_eval_injection(monkeypatch):
-    """Verify that BaseVariable._setDict does NOT execute arbitrary code.
-
-    On HEAD, eval(f'[i for i in range(self._numValues())][{keys[0]}]')
-    executes user-controlled keys[0]. This test patches os.getenv to track
-    calls, then passes a key containing __import__('os').getenv('USER') to
-    _setDict. The assertion fires when the injection succeeds (os.getenv
-    was called), confirming the  eval injection bug.
-    """
+    """Verify that _setDict rejects eval-injectable slice keys."""
     original_getenv = os.getenv
     getenv_calls = []
 
@@ -71,7 +62,7 @@ def test_variable_setdict_eval_injection(monkeypatch):
         try:
             var._setDict(1, writeEach=False, modes=['RW'], keys=[payload])
         except Exception:
-            pass  # VariableError from invalid slice expression is expected; side-effect is what matters
+            pass  # VariableError expected; we only care whether side-effect fired
 
     assert 'USER' not in getenv_calls, (
         "eval() executed user-controlled code in BaseVariable._setDict; "

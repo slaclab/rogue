@@ -29,11 +29,9 @@ def test_datareceiver_default_value_isolated():
     r1 = pr.DataReceiver(name='recv1')
     r2 = pr.DataReceiver(name='recv2')
 
-    # Mutate the array that backs r1's Data variable in-place.
     arr = r1.Data.value()
     arr[0] = 42
 
-    # The mutation must NOT be visible through r2's Data variable.
     r2_val = r2.Data.value()[0]
 
     assert r2_val == 0, (

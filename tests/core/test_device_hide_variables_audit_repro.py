@@ -21,21 +21,7 @@ import pyrogue as pr
 
 
 def test_hide_variables_dict_values_index():
-    """Device.hideVariables(True) with variables=None must not TypeError.
-
-    The original bug: ``variables = self.variables.values()`` when the caller
-    omits the ``variables`` kwarg (defaulting to None), followed by an integer
-    subscript such as ``variables[0]``.  ``dict_values`` does not support
-    integer indexing, so the call raises TypeError on every Device with at
-    least one BaseVariable.
-
-    Behavioural test: build a minimal Device with a single LocalVariable,
-    invoke hideVariables(True) with the default variables=None, and verify
-    that the call returns without raising.  A correct fix may either convert
-    to list before subscripting, restructure the type check to iterate, or
-    take any other shape that handles the dict_values default safely — the
-    fix shape is unconstrained.
-    """
+    """hideVariables(True) with default variables=None must not TypeError."""
 
     class _ProbeDevice(pr.Device):
         def __init__(self, **kwargs):

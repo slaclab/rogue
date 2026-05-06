@@ -47,11 +47,7 @@ def _astNodeToInt(node):
 
 
 def _parseSliceExpr(expr, varPath=''):
-    """Parse a string index/slice expression into an int or slice object.
-
-    Accepts integer literals (e.g. "3", "-1") and slice notation (e.g. "1:5", "::2").
-    Raises VariableError for anything else.
-    """
+    """Parse a string index/slice expression into an int or slice; reject anything else."""
     try:
         tree = ast.parse(f'_x[{expr}]', mode='eval')
     except SyntaxError:
