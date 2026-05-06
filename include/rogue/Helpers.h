@@ -48,19 +48,13 @@ inline void defaultTimeout(struct timeval& tout) {
     tout.tv_usec    = divResult.rem;
 }
 
-// Marker function whose [[deprecated]] attribute is the trigger for
-// -Wdeprecated-declarations at every rogueStreamTap() call site.  Defining
-// the marker inside namespace rogue keeps the global namespace clean.
+// Marker triggers -Wdeprecated-declarations at rogueStreamTap() call sites
 [[deprecated("rogueStreamTap is deprecated; use rogueStreamConnect")]]
 inline void rogueStreamTap_deprecated_notice_() {}
 }  // namespace rogue
 
 // Add stream tap, DEPRECATED
 /** @brief Deprecated alias for `rogueStreamConnect`. */
-//
-// The macro evaluates the [[deprecated]] marker function so any caller of
-// rogueStreamTap() triggers a compile-time -Wdeprecated-declarations
-// diagnostic at the call site.
 #define rogueStreamTap(src, dst) ((void)(::rogue::rogueStreamTap_deprecated_notice_(), src->addSlave(dst)));
 
 #endif

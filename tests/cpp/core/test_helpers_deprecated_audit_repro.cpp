@@ -43,10 +43,6 @@ std::string readFile(const std::string& path) {
     return std::string((std::istreambuf_iterator<char>(f)), std::istreambuf_iterator<char>());
 }
 
-/**
- * @brief Extract up to @p max_chars starting at the first occurrence of
- *        @p needle in @p src, or empty string if not found.
- */
 std::string extractRegion(const std::string& src, const std::string& needle,
                            size_t max_chars = 120) {
     size_t pos = src.find(needle);
@@ -58,26 +54,12 @@ std::string extractRegion(const std::string& src, const std::string& needle,
 }  // namespace
 
 TEST_CASE("rogueStreamTap actually triggers a compiler deprecation diagnostic") {
-    // Read Helpers.h and verify two things:
-    //   (1) the file declares a [[deprecated]] marker function
-    //   (2) the rogueStreamTap macro expansion REFERENCES that marker, so a
-    //       call site triggers a -Wdeprecated-declarations diagnostic.
-    //
-    // The original failure mode was a macro that simply expanded to
-    // src->addSlave(dst) so callers got no compile-time warning despite the
-    // adjacent "// DEPRECATED" comment.  A [[deprecated]] marker function
-    // declared near the macro is necessary but not sufficient; the macro
-    // must call the marker (or otherwise expand to deprecated-attributed
-    // code) for the diagnostic to actually fire.
-
     const std::string src = readFile(std::string(ROGUE_SRC_DIR) + "/include/rogue/Helpers.h");
 
     REQUIRE_MESSAGE(!src.empty(),
                     "could not open include/rogue/Helpers.h (ROGUE_SRC_DIR=",
                     ROGUE_SRC_DIR, ")");
 
-    // (1) A [[deprecated]] / __attribute__((deprecated)) attribute exists
-    //     somewhere in the file (typically on a marker function).
     bool has_deprecated_attr =
         (src.find("[[deprecated")              != std::string::npos) ||
         (src.find("__attribute__((deprecated") != std::string::npos);
@@ -86,10 +68,6 @@ TEST_CASE("rogueStreamTap actually triggers a compiler deprecation diagnostic") 
                   "anywhere; rogueStreamTap cannot trigger a compile diagnostic "
                   "without an attribute marker somewhere it can reach.");
 
-    // (2) Locate the macro definition and verify it actually references a
-    //     deprecated-attributed entity.  We look for the marker function
-    //     name in the macro expansion; a bare expansion to ``src->addSlave``
-    //     fails this check even if the marker is declared above.
     std::string tap_region = extractRegion(src, "#define rogueStreamTap", 200);
     REQUIRE_MESSAGE(!tap_region.empty(),
                     "could not locate #define rogueStreamTap in Helpers.h");
