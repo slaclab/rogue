@@ -87,13 +87,7 @@ rpx::Xvc::Xvc(uint16_t port) : JtagDriver(port), mtu_(1450), threadEn_{false}, s
                                           strerror(errno), errno));
 #endif
 
-    // Reject wakeFd_ >= FD_SETSIZE synchronously here, before start() is
-    // called.  XvcServer::run / XvcConnection::readTo defensively check
-    // FD_SETSIZE inside the worker thread, but a high fd would only
-    // surface as a silent worker-thread exit while start() returned
-    // success; throwing in the ctor lets the caller see a clean failure.
-    // Mirrors the AxiStreamDma / udp::Client / udp::Server FD_SETSIZE
-    // ctor checks added earlier in this audit.
+    // Fail fast here; worker-thread FD_SETSIZE check would silently exit.
     for (int idx = 0; idx < 2; ++idx) {
         if (wakeFd_[idx] >= FD_SETSIZE) {
             int badFd = wakeFd_[idx];

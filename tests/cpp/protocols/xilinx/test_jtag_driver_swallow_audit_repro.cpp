@@ -66,8 +66,7 @@ TEST_CASE("JtagDriver::xferRel logs caught GeneralError instead of swallowing") 
     }
     REQUIRE_MESSAGE(xferRelLine >= 0, "xferRel function not found in JtagDriver.cpp");
 
-    // Find the catch(rogue::GeneralError& [name]) block after xferRel.
-    // The fix may name the exception parameter (e.g., 'catch (rogue::GeneralError& e)').
+    // Find the catch(rogue::GeneralError&) block after xferRel.
     int catchLine = -1;
     for (int i = xferRelLine; i < static_cast<int>(lines.size()); ++i) {
         const auto& l = lines[i];
@@ -80,9 +79,7 @@ TEST_CASE("JtagDriver::xferRel logs caught GeneralError instead of swallowing") 
     REQUIRE_MESSAGE(catchLine >= 0,
         "catch(rogue::GeneralError&) not found in xferRel");
 
-    // Capture the catch block body (up to 6 lines after the catch line),
-    // stripping comment-only lines, and verify it contains a logging or
-    // rethrow statement — not just '{}' or '}'.
+    // Verify catch body contains a log or rethrow, not just '{}'.
     std::string catchBody;
     const int end = static_cast<int>(lines.size()) < catchLine + 6
                         ? static_cast<int>(lines.size())

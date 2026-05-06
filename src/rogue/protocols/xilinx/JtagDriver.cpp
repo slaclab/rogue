@@ -213,7 +213,6 @@ int rpx::JtagDriver::xferRel(uint8_t* txb, unsigned txBytes, Header* phdr, uint8
                 return got;
             }
         } catch (rogue::GeneralError& e) {
-            // Log and retry; do not silently swallow the error.
             log_->warning("xferRel attempt %u failed: %s", attempt, e.what());
         }
     }

@@ -44,13 +44,7 @@ rpx::XvcConnection::XvcConnection(int sd, int wakeFd, JtagDriver* drv, uint64_t 
     if ((sd_ = ::accept(sd, reinterpret_cast<struct sockaddr*>(&peer_), &sz)) < 0)
         throw(rogue::GeneralError::create("XvcConnection::XvcConnection()", "Unable to accept connection"));
 
-    // accept() can return a fd >= FD_SETSIZE on a process with many open
-    // descriptors.  readTo() defensively checks FD_SETSIZE on every call
-    // and would treat the connection as immediately broken (returning
-    // -2/EBADF), but that path leaves the bad fd open until the
-    // connection scope exits.  Reject it synchronously so the listener
-    // loop in XvcServer::run drops the bad connection cleanly and moves
-    // on to the next accept.
+    // Fail fast here; readTo()'s FD_SETSIZE check would silently break.
     if (sd_ >= FD_SETSIZE) {
         int badFd = sd_;
         ::close(sd_);

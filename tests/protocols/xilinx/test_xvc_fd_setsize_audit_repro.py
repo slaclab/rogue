@@ -58,8 +58,6 @@ def test_xvc_wakefd_fd_setsize_check_in_ctor():
     body = _ctor_body(_XVC_CPP, "rpx::Xvc::Xvc")
     code = _strip_comments(body)
 
-    # Both pipe creation and the FD_SETSIZE bounds check must appear in
-    # the ctor body, with the bounds check after the pipe call.
     pipe_match = re.search(r"::pipe2?\(wakeFd_", code)
     assert pipe_match, "expected pipe()/pipe2() call in Xvc::Xvc"
 

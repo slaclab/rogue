@@ -50,11 +50,7 @@ rpx::XvcServer::XvcServer(uint16_t port, int wakeFd, JtagDriver* drv, unsigned m
     if ((sd_ = ::socket(AF_INET, SOCK_STREAM, 0)) < 0)
         throw(rogue::GeneralError::create("XvcServer::XvcServer()", "Failed to create socket"));
 
-    // Reject sd_ or wakeFd >= FD_SETSIZE synchronously here, before
-    // start() returns.  The defensive FD_SETSIZE check in run() runs on
-    // the worker thread and would only surface as a silent worker-thread
-    // exit (caught by Xvc::runThread) while the caller saw start()
-    // return success.  Throwing in the ctor lets start() fail fast.
+    // Fail fast here; run()'s FD_SETSIZE check would silently exit the thread.
     if (sd_ >= FD_SETSIZE) {
         int badFd = sd_;
         ::close(sd_);
