@@ -233,12 +233,18 @@ class SqlReader(object):
 
     def getVariable(self) -> None:
         """Fetch and print all variable entries."""
+        if self._engine is None:
+            self._log.error("No database connection available")
+            return
         with self._engine.connect() as conn:
             r = conn.execute(sqlalchemy.select(self._varTable))
             print(r.fetchall())
 
-    def getSyslog(self, syslogData: Any = None) -> None:
+    def getSyslog(self) -> None:
         """Fetch and print all syslog entries."""
+        if self._engine is None:
+            self._log.error("No database connection available")
+            return
         with self._engine.connect() as conn:
             r = conn.execute(sqlalchemy.select(self._logTable))
             print(r.fetchall())
