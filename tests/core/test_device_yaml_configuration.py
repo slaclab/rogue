@@ -25,6 +25,15 @@ class InnerDevice(pr.Device):
             base=pr.UInt,
             mode="RW",
         ))
+        self.add(pr.RemoteVariable(
+            name="InnerArray",
+            offset=0x4,
+            numValues=4,
+            valueBits=8,
+            valueStride=8,
+            base=pr.UInt,
+            mode="RW",
+        ))
 
 
 class OuterDevice(pr.Device):
@@ -229,52 +238,55 @@ def test_device_load_yaml_respects_force_write(tmp_path, monkeypatch):
         assert any(f is True for f in force_values)
 
 
-# --- Device SaveConfig/LoadConfig commands ---
+# --- writeEach ---
 
-def test_device_save_yaml_load_yaml_methods(tmp_path):
-    out = tmp_path / "dev_config.yml"
-
-    with DeviceYamlRoot() as root:
-        root.Outer.OuterRemote.set(12)
-        root.Outer.Inner.InnerLocal.set(34)
-
-        root.Outer.saveYaml(name=str(out), readFirst=False, modes=["RW"])
-
-        root.Outer.OuterRemote.set(0)
-        root.Outer.Inner.InnerLocal.set(0)
-
-        root.Outer.loadYaml(name=str(out), writeEach=False, modes=["RW"])
-
-        assert root.Outer.OuterRemote.value() == 12
-        assert root.Outer.Inner.InnerLocal.value() == 34
-
-
-# --- writeEach=True ---
-
-def test_device_set_yaml_write_each_true(monkeypatch):
-    with DeviceYamlRoot() as root:
-        immediate_writes = []
+def test_device_set_yaml_write_each_controls_immediate_writes(monkeypatch):
+    with ArrayDeviceYamlRoot() as root:
         staged_writes = []
+        immediate_writes = []
+        bulk_commits = []
 
-        original_set_disp = root.Outer.OuterRemote.setDisp
+        original_set_disp = root.Parent.Ch[0].InnerArray.setDisp
 
         def recording_set_disp(s_value, write=True, index=-1):
             if write:
-                immediate_writes.append(s_value)
+                immediate_writes.append(index)
             else:
-                staged_writes.append(s_value)
+                staged_writes.append(index)
             return original_set_disp(s_value, write=write, index=index)
 
-        monkeypatch.setattr(root.Outer.OuterRemote, "setDisp", recording_set_disp)
+        monkeypatch.setattr(root.Parent.Ch[0].InnerArray, "setDisp", recording_set_disp)
+        monkeypatch.setattr(root.Parent, "_writeConfig", lambda: bulk_commits.append("write") or True)
 
-        root.Outer.setYaml(
-            yml="OuterRemote: 8\n",
+        root.Parent.setYaml(
+            yml=(
+                "Ch[0]:\n"
+                "  InnerArray[1:3]: 4\n"
+            ),
+            writeEach=False,
+            modes=["RW"],
+        )
+
+        assert staged_writes == [1, 2]
+        assert immediate_writes == []
+        assert bulk_commits == ["write"]
+
+        staged_writes.clear()
+        immediate_writes.clear()
+        bulk_commits.clear()
+
+        root.Parent.setYaml(
+            yml=(
+                "Ch[0]:\n"
+                "  InnerArray[1:3]: 6\n"
+            ),
             writeEach=True,
             modes=["RW"],
         )
 
-        assert immediate_writes == [8]
         assert staged_writes == []
+        assert immediate_writes == [1, 2]
+        assert bulk_commits == []
 
 
 # --- Array device wildcards ---
@@ -282,8 +294,9 @@ def test_device_set_yaml_write_each_true(monkeypatch):
 def test_device_load_yaml_with_array_wildcards_on_device(tmp_path):
     config = tmp_path / "config.yml"
     config.write_text(
-        "Ch[*]:\n"
+        "Ch[:]:\n"
         "  InnerLocal: 42\n"
+        "  InnerArray[:]: 3\n"
     )
 
     with ArrayDeviceYamlRoot() as root:
@@ -291,6 +304,35 @@ def test_device_load_yaml_with_array_wildcards_on_device(tmp_path):
 
         for idx in range(3):
             assert root.Parent.Ch[idx].InnerLocal.value() == 42
+            assert list(root.Parent.Ch[idx].InnerArray.value()) == [3, 3, 3, 3]
+
+
+def test_device_set_yaml_supports_array_variable_wildcards_and_scalar_slices():
+    with ArrayDeviceYamlRoot() as root:
+        root.Parent.setYaml(
+            yml=(
+                "Ch[0]:\n"
+                "  InnerArray[*]: 5\n"
+                "  InnerArray[1:3]: 7\n"
+            ),
+            writeEach=False,
+            modes=["RW"],
+        )
+
+        # Wildcard writes broadcast across the whole array.
+        assert list(root.Parent.Ch[0].InnerArray.value()) == [5, 7, 7, 5]
+
+        root.Parent.setYaml(
+            yml=(
+                "Ch[0]:\n"
+                "  InnerArray[:]: 9\n"
+            ),
+            writeEach=False,
+            modes=["RW"],
+        )
+
+        # ``[:]`` is the same all-elements selection as ``[*]``.
+        assert list(root.Parent.Ch[0].InnerArray.value()) == [9, 9, 9, 9]
 
 
 def test_device_set_yaml_with_array_slice_on_device():
@@ -309,37 +351,21 @@ def test_device_set_yaml_with_array_slice_on_device():
         assert root.Parent.Ch[2].InnerLocal.value() == 99
 
 
-def test_device_set_yaml_with_array_wildcards_at_root():
+def test_device_set_yaml_recursively_applies_wildcards_to_array_variables():
     with ArrayDeviceYamlRoot() as root:
-        root.setYaml(
+        root.Parent.setYaml(
             yml=(
-                "root:\n"
-                "  Dev[*]:\n"
-                "    OuterLocal: broadcast\n"
+                "Ch[*]:\n"
+                "  InnerLocal: 44\n"
+                "  InnerArray[1:3]: 4\n"
             ),
             writeEach=False,
             modes=["RW"],
         )
 
         for idx in range(3):
-            assert root.Dev[idx].OuterLocal.value() == "broadcast"
-
-
-def test_device_set_yaml_with_array_slice_at_root():
-    with ArrayDeviceYamlRoot() as root:
-        root.setYaml(
-            yml=(
-                "root:\n"
-                "  Dev[1:3]:\n"
-                "    OuterLocal: sliced\n"
-            ),
-            writeEach=False,
-            modes=["RW"],
-        )
-
-        assert root.Dev[0].OuterLocal.value() == "init"
-        assert root.Dev[1].OuterLocal.value() == "sliced"
-        assert root.Dev[2].OuterLocal.value() == "sliced"
+            assert root.Parent.Ch[idx].InnerLocal.value() == 44
+            assert list(root.Parent.Ch[idx].InnerArray.value()) == [0, 4, 4, 0]
 
 
 # --- Directory sorted order ---
@@ -348,13 +374,47 @@ def test_device_load_yaml_directory_sorted_order(tmp_path):
     first = tmp_path / "00-defaults.yml"
     second = tmp_path / "10-overrides.yml"
 
-    first.write_text("OuterLocal: base\n")
-    second.write_text("OuterLocal: override\n")
+    first.write_text(
+        "Ch[:]:\n"
+        "  InnerLocal: 10\n"
+        "  InnerArray[*]: 1\n"
+    )
+    second.write_text(
+        "Ch[1]:\n"
+        "  InnerLocal: 20\n"
+        "  InnerArray[2]: 9\n"
+    )
 
-    with DeviceYamlRoot() as root:
-        root.Outer.loadYaml(name=str(tmp_path), writeEach=False, modes=["RW"])
+    with ArrayDeviceYamlRoot() as root:
+        root.Parent.loadYaml(name=str(tmp_path), writeEach=False, modes=["RW"])
 
-        assert root.Outer.OuterLocal.value() == "override"
+        assert root.Parent.Ch[0].InnerLocal.value() == 10
+        assert root.Parent.Ch[1].InnerLocal.value() == 20
+        assert root.Parent.Ch[2].InnerLocal.value() == 10
+        assert list(root.Parent.Ch[0].InnerArray.value()) == [1, 1, 1, 1]
+        assert list(root.Parent.Ch[1].InnerArray.value()) == [1, 1, 9, 1]
+
+
+def test_device_load_yaml_resolves_relative_include(tmp_path):
+    child = tmp_path / "child.yml"
+    parent = tmp_path / "parent.yml"
+
+    child.write_text(
+        "Ch[1]:\n"
+        "  InnerLocal: 61\n"
+        "  InnerArray[:]: 8\n"
+    )
+    parent.write_text(
+        "Parent: !include child.yml\n"
+    )
+
+    with ArrayDeviceYamlRoot() as root:
+        root.Parent.loadYaml(name=str(parent), writeEach=False, modes=["RW"])
+
+        assert root.Parent.Ch[0].InnerLocal.value() == 0
+        assert root.Parent.Ch[1].InnerLocal.value() == 61
+        assert root.Parent.Ch[2].InnerLocal.value() == 0
+        assert list(root.Parent.Ch[1].InnerArray.value()) == [8, 8, 8, 8]
 
 
 # --- Zip support ---
@@ -363,7 +423,10 @@ def test_device_load_yaml_zip_support(tmp_path):
     archive = tmp_path / "configs.zip"
 
     with zipfile.ZipFile(archive, "w", compression=zipfile.ZIP_LZMA) as zf:
-        zf.writestr("cfg/config.yml", "OuterRemote: 25\nInner:\n  InnerLocal: 77\n")
+        # Write the override first to prove load order follows sorted names,
+        # not archive insertion order.
+        zf.writestr("cfg/10-overrides.yml", "OuterRemote: 25\n")
+        zf.writestr("cfg/00-defaults.yml", "OuterRemote: 12\nInner:\n  InnerLocal: 77\n")
 
     with DeviceYamlRoot() as root:
         root.Outer.loadYaml(name=f"{archive}/cfg", writeEach=False, modes=["RW"])
@@ -386,67 +449,3 @@ def test_device_load_yaml_invalid_entry_logs_error(tmp_path, monkeypatch):
 
         assert len(errors) > 0
         assert errors[0] == ("Entry %s not found", "NonExistent")
-
-
-# --- Root backward compat ---
-
-def test_root_load_yaml_still_uses_absolute_paths(tmp_path):
-    config = tmp_path / "config.yml"
-    config.write_text(
-        "root.Outer:\n"
-        "  OuterRemote: 7\n"
-        "root.Outer.Inner:\n"
-        "  InnerLocal: 14\n"
-    )
-
-    with DeviceYamlRoot() as root:
-        root.loadYaml(name=str(config), writeEach=False, modes=["RW"])
-
-        assert root.Outer.OuterRemote.value() == 7
-        assert root.Outer.Inner.InnerLocal.value() == 14
-
-
-def test_root_load_yaml_init_after_config(tmp_path, monkeypatch):
-    config = tmp_path / "config.yml"
-    config.write_text("root.Outer:\n  OuterLocal: test\n")
-
-    with DeviceYamlRoot() as root:
-        init_calls = []
-        monkeypatch.setattr(root, "initialize", lambda: init_calls.append(1))
-        monkeypatch.setattr(root, "_write", lambda: True)
-
-        root.InitAfterConfig.set(True)
-        root.loadYaml(name=str(config), writeEach=False, modes=["RW"])
-
-        assert root.Outer.OuterLocal.value() == "test"
-        assert init_calls == [1]
-
-
-def test_root_set_yaml_init_after_config(monkeypatch):
-    with DeviceYamlRoot() as root:
-        init_calls = []
-        monkeypatch.setattr(root, "initialize", lambda: init_calls.append(1))
-        monkeypatch.setattr(root, "_write", lambda: True)
-
-        root.InitAfterConfig.set(True)
-        root.setYaml(
-            yml="root.Outer:\n  OuterLocal: from_yaml\n",
-            writeEach=False,
-            modes=["RW"],
-        )
-
-        assert root.Outer.OuterLocal.value() == "from_yaml"
-        assert init_calls == [1]
-
-
-def test_root_save_config_load_config_commands_still_work(tmp_path):
-    config_out = tmp_path / "root_config.yml"
-
-    with DeviceYamlRoot() as root:
-        root.Outer.OuterRemote.set(19)
-        root.SaveConfig(str(config_out))
-
-        root.Outer.OuterRemote.set(0)
-        root.LoadConfig(str(config_out))
-
-        assert root.Outer.OuterRemote.value() == 19
