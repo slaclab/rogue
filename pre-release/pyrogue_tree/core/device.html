@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Device &mdash; Rogue v6.12.0 documentation</title>
+  <title>Device &mdash; Rogue v6.12.0-4-g6ea3239bb documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../_static/slac-favicon-192.png"/>
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=3f8b4f99"></script>
+      <script src="../../_static/documentation_options.js?v=cb8c7619"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -446,9 +446,34 @@ application logic.</p>
 Nodes from local functions.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@pyrogue</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;ReadConfig&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Load config file&#39;</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">_readConfig</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">):</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">loadYaml</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">arg</span><span class="p">,</span> <span class="n">writeEach</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">modes</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span> <span class="s1">&#39;WO&#39;</span><span class="p">])</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">loadYaml</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">arg</span><span class="p">,</span> <span class="n">writeEach</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">modes</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span> <span class="s1">&#39;WO&#39;</span><span class="p">])</span>
 </pre></div>
 </div>
+</section>
+<section id="device-level-yaml-configuration">
+<h2>Device-Level YAML Configuration<a class="headerlink" href="#device-level-yaml-configuration" title="Link to this heading"></a></h2>
+<p>Device provides <code class="docutils literal notranslate"><span class="pre">saveYaml</span></code>, <code class="docutils literal notranslate"><span class="pre">loadYaml</span></code>, and <code class="docutils literal notranslate"><span class="pre">setYaml</span></code> methods that
+operate on the device subtree using device-relative paths. This allows
+configuration of individual devices without needing to know the full tree
+structure above the device.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">root</span><span class="p">:</span>
+    <span class="c1"># Save config from a specific device</span>
+    <span class="n">root</span><span class="o">.</span><span class="n">MyBoard</span><span class="o">.</span><span class="n">saveYaml</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;board.yml&quot;</span><span class="p">,</span> <span class="n">readFirst</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">modes</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;RW&quot;</span><span class="p">,</span> <span class="s2">&quot;WO&quot;</span><span class="p">])</span>
+
+    <span class="c1"># Load config back — YAML uses device-relative paths</span>
+    <span class="n">root</span><span class="o">.</span><span class="n">MyBoard</span><span class="o">.</span><span class="n">loadYaml</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;board.yml&quot;</span><span class="p">,</span> <span class="n">writeEach</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">modes</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;RW&quot;</span><span class="p">,</span> <span class="s2">&quot;WO&quot;</span><span class="p">])</span>
+
+    <span class="c1"># Apply YAML text directly</span>
+    <span class="n">root</span><span class="o">.</span><span class="n">MyBoard</span><span class="o">.</span><span class="n">setYaml</span><span class="p">(</span>
+        <span class="n">yml</span><span class="o">=</span><span class="s2">&quot;SubDevice:</span><span class="se">\n</span><span class="s2">  Variable: 42</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="n">writeEach</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">modes</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;RW&quot;</span><span class="p">],</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+<p>Device-level loads write only the blocks belonging to the device and its
+descendants. For details on the YAML format, path resolution, and array
+matching, see <a class="reference internal" href="yaml_configuration.html"><span class="doc">YAML Configuration</span></a>.</p>
 </section>
 <section id="what-to-explore-next">
 <h2>What To Explore Next<a class="headerlink" href="#what-to-explore-next" title="Link to this heading"></a></h2>

@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Device Block Operations &mdash; Rogue v6.12.0 documentation</title>
+  <title>Device Block Operations &mdash; Rogue v6.12.0-4-g6ea3239bb documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../_static/slac-favicon-192.png"/>
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=3f8b4f99"></script>
+      <script src="../../_static/documentation_options.js?v=cb8c7619"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -266,10 +266,12 @@ good way to avoid open-coding the same multi-step sequence in many places.</p>
 <h2>How YAML Configuration Uses These Methods<a class="headerlink" href="#how-yaml-configuration-uses-these-methods" title="Link to this heading"></a></h2>
 <p>YAML configuration loading is one of the main places where users encounter
 bulk block operations indirectly.</p>
-<p>For <code class="docutils literal notranslate"><span class="pre">Root.loadYaml(...,</span> <span class="pre">writeEach=False)</span></code> and <code class="docutils literal notranslate"><span class="pre">Root.setYaml(...,</span> <span class="pre">writeEach=False)</span></code>,
+<p>For <code class="docutils literal notranslate"><span class="pre">Device.loadYaml(...,</span> <span class="pre">writeEach=False)</span></code> and <code class="docutils literal notranslate"><span class="pre">Device.setYaml(...,</span> <span class="pre">writeEach=False)</span></code>,
 PyRogue first stages values into Variables with <code class="docutils literal notranslate"><span class="pre">setDisp(...,</span> <span class="pre">write=False)</span></code>.
-Only after that full YAML payload has been applied to the tree does Root
-commit the configuration through its normal bulk write path.</p>
+Only after that full YAML payload has been applied does the device commit the
+configuration through its bulk write path (<code class="docutils literal notranslate"><span class="pre">writeBlocks</span></code>, <code class="docutils literal notranslate"><span class="pre">verifyBlocks</span></code>,
+<code class="docutils literal notranslate"><span class="pre">checkBlocks</span></code>). When called on Root, this covers the entire tree; when called
+on a specific Device, only that device’s subtree is committed.</p>
 <p>In practice, that means YAML configuration uses the same transaction model
 described on this page:</p>
 <ul class="simple">

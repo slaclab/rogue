@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Root &mdash; Rogue v6.12.0 documentation</title>
+  <title>Root &mdash; Rogue v6.12.0-4-g6ea3239bb documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../_static/slac-favicon-192.png"/>
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=3f8b4f99"></script>
+      <script src="../../_static/documentation_options.js?v=cb8c7619"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -334,18 +334,23 @@ with background poll reads.</p>
 </section>
 <section id="yaml-configuration-and-bulk-operations">
 <h2>YAML Configuration And Bulk Operations<a class="headerlink" href="#yaml-configuration-and-bulk-operations" title="Link to this heading"></a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">Root</span></code> provides the main tree-level YAML and bulk I/O entry points:</p>
+<p><code class="docutils literal notranslate"><span class="pre">Root</span></code> inherits YAML configuration methods from <code class="docutils literal notranslate"><span class="pre">Device</span></code>:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="../../api/python/pyrogue/root.html#pyrogue.Root.saveYaml" title="pyrogue.Root.saveYaml"><code class="xref py py-meth docutils literal notranslate"><span class="pre">saveYaml()</span></code></a></p></li>
-<li><p><a class="reference internal" href="../../api/python/pyrogue/root.html#pyrogue.Root.loadYaml" title="pyrogue.Root.loadYaml"><code class="xref py py-meth docutils literal notranslate"><span class="pre">loadYaml()</span></code></a></p></li>
-<li><p><a class="reference internal" href="../../api/python/pyrogue/root.html#pyrogue.Root.setYaml" title="pyrogue.Root.setYaml"><code class="xref py py-meth docutils literal notranslate"><span class="pre">setYaml()</span></code></a></p></li>
+<li><p><a class="reference internal" href="../../api/python/pyrogue/device.html#pyrogue.Device.saveYaml" title="pyrogue.Device.saveYaml"><code class="xref py py-meth docutils literal notranslate"><span class="pre">saveYaml()</span></code></a></p></li>
+<li><p><a class="reference internal" href="../../api/python/pyrogue/device.html#pyrogue.Device.loadYaml" title="pyrogue.Device.loadYaml"><code class="xref py py-meth docutils literal notranslate"><span class="pre">loadYaml()</span></code></a></p></li>
+<li><p><a class="reference internal" href="../../api/python/pyrogue/device.html#pyrogue.Device.setYaml" title="pyrogue.Device.setYaml"><code class="xref py py-meth docutils literal notranslate"><span class="pre">setYaml()</span></code></a></p></li>
 <li><p><a class="reference internal" href="../../api/python/pyrogue/node.html#pyrogue.Node.getYaml" title="pyrogue.Node.getYaml"><code class="xref py py-meth docutils literal notranslate"><span class="pre">getYaml()</span></code></a></p></li>
 </ul>
-<p>These methods back the built-in configuration and state commands exposed on the
-Root itself. They are the main mechanism for saving baselines, restoring known
-configurations, and applying configuration changes across the whole tree.</p>
-<p>For YAML matching, file formats, and array slicing, see
-<a class="reference internal" href="yaml_configuration.html"><span class="doc">YAML Configuration</span></a>.</p>
+<p>Root adds <code class="docutils literal notranslate"><span class="pre">InitAfterConfig</span></code> behavior: when enabled, <code class="docutils literal notranslate"><span class="pre">loadYaml</span></code> and
+<code class="docutils literal notranslate"><span class="pre">setYaml</span></code> call <code class="docutils literal notranslate"><span class="pre">initialize()</span></code> after applying configuration. Root also
+resolves top-level YAML keys as absolute dotted paths (e.g.
+<code class="docutils literal notranslate"><span class="pre">root.Top.Child</span></code>) for backward compatibility with existing YAML files.</p>
+<p>These methods back the built-in configuration and state commands (<code class="docutils literal notranslate"><span class="pre">SaveConfig</span></code>,
+<code class="docutils literal notranslate"><span class="pre">LoadConfig</span></code>, <code class="docutils literal notranslate"><span class="pre">SaveState</span></code>, <code class="docutils literal notranslate"><span class="pre">SetYamlConfig</span></code>, <code class="docutils literal notranslate"><span class="pre">GetYamlConfig</span></code>,
+<code class="docutils literal notranslate"><span class="pre">GetYamlState</span></code>) exposed on Root.</p>
+<p>Any <code class="docutils literal notranslate"><span class="pre">Device</span></code> in the tree can also use <code class="docutils literal notranslate"><span class="pre">saveYaml</span></code>, <code class="docutils literal notranslate"><span class="pre">loadYaml</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">setYaml</span></code> with device-relative paths. See
+<a class="reference internal" href="yaml_configuration.html"><span class="doc">YAML Configuration</span></a> for details.</p>
 <p>For the bulk transaction model used when those staged values are committed
 through the tree, see <a class="reference internal" href="block_operations.html"><span class="doc">Device Block Operations</span></a>.</p>
 </section>
