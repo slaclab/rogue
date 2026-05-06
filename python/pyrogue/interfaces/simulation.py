@@ -122,18 +122,12 @@ class SideBandSim():
     def _recvWorker(self) -> None:
         """Worker thread that receives sideband data and invokes the callback."""
         while True:
-            # Read self._run under the lock and release it before blocking so
-            # _stop() (which sets self._run=False under the same lock) can
-            # acquire it and signal shutdown without waiting for the next
-            # zmq.select timeout.  Holding self._lock across zmq.select would
-            # serialize _stop behind a 1-second select window.
+            # Check _run under lock; release before blocking in zmq.select.
             with self._lock:
                 if self._run is False:
                     self._log.debug('Exiting receive thread')
                     return
 
-            # Short poll timeout so the _run flag is re-checked promptly on
-            # the next iteration when no data is available.
             socks, x, y = zmq.select([self._sbPull], [], [], 1.0)
 
             if self._sbPull in socks:

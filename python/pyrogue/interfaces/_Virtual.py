@@ -24,30 +24,9 @@ from typing import Any, Callable
 
 
 class _VirtualSafeUnpickler(_pickle.Unpickler):
-    """Restricted Unpickler for VirtualClient pickle payloads.
+    """Restricted Unpickler that allowlists only data types and known Rogue modules."""
 
-    The allowlist intentionally covers the data shapes Rogue actually ships
-    over the ZMQ control plane: built-in containers and scalars,
-    pyrogue/rogue tree types, ``numpy.ndarray`` (used by RemoteVariable
-    array values), and matplotlib ``Figure`` objects (used by plot
-    variables).  Without these the deserializer would reject legitimate
-    payloads and break array / plot variables on the client side.
-
-    ``builtins`` is intentionally NOT allowlisted as a whole module: the
-    pickle ``REDUCE`` opcode would otherwise let a malicious server invoke
-    callables such as ``builtins.eval`` / ``builtins.exec`` and execute
-    arbitrary code on the client.  Only the data-type subset below is
-    permitted.
-    """
-
-    # Per-(module, name) allowlist for builtins. These are the only callable
-    # references from the ``builtins`` module a legitimate Rogue payload
-    # ever needs (containers, scalars, NoneType, plus Exception for the
-    # server-side error reply path in ZmqServer._doRequest, which always
-    # wraps failures as builtins.Exception(type_qualified_msg) for pickle
-    # round-trip safety).  Anything else from ``builtins`` (eval, exec,
-    # getattr, __import__, compile, open, ...) would expose an
-    # arbitrary-code-execution path through pickle REDUCE.
+    # Data types + Exception only; no callables like eval/exec/open.
     _ALLOWED_BUILTINS = {
         'bool',
         'bytearray',
@@ -79,20 +58,7 @@ class _VirtualSafeUnpickler(_pickle.Unpickler):
         'collections.abc',
     }
 
-    # Top-level packages whose entire submodule tree is allowed.  numpy and
-    # matplotlib are needed for ndarray / Figure variable values that Rogue
-    # ships unmodified over the wire.
-    #
-    # Residual risk (acknowledged and accepted): pickle's REDUCE opcode can
-    # invoke any allowed global as a callable, so a compromised server could
-    # in principle call e.g. numpy.fromfile / numpy.ctypeslib.load_library
-    # during deserialisation.  Tightening to a per-class allowlist is
-    # impractical here because matplotlib Figure pickling pulls in dozens of
-    # internal classes that vary across matplotlib versions, and reliable
-    # enumeration would break legitimate plot-variable traffic.  The trust
-    # boundary for this socket is therefore "the operator owns both server
-    # and client"; the builtins narrowing above is what closes the eval/exec
-    # ACE path that would otherwise be reachable from any picklable payload.
+    # numpy/matplotlib needed for ndarray/Figure variable values over ZMQ.
     _ALLOWED_TOP_PACKAGES = (
         'pyrogue',
         'rogue',
@@ -543,8 +509,6 @@ class VirtualClient(rogue.interfaces.ZmqClient):
         self._linkTimeout = self._defaultLinkTimeout()
         self._requestStallTimeout = self._defaultRequestStallTimeout()
 
-        # Setup logging before the C++ base ctor runs so callbacks spawned by
-        # the SUB thread (e.g. _requestDone, _doUpdate) can safely use self._log.
         self._log = pr.logInit(cls=self,name="VirtualClient",path=None)
 
         self.setTimeoutConfig(linkTimeout=linkTimeout, requestStallTimeout=requestStallTimeout)
@@ -780,9 +744,6 @@ class VirtualClient(rogue.interfaces.ZmqClient):
             self._requestDone(True)
         except Exception as e:
             self._requestDone(False)
-            # ``raise ... from e`` preserves the original traceback chain so
-            # callers can diagnose the underlying failure (UnpicklingError,
-            # ZMQ timeout, etc.) instead of seeing only the wrapped string.
             raise Exception(f"ZMQ Interface Exception: {e}") from e
 
         if isinstance(ret,Exception):
