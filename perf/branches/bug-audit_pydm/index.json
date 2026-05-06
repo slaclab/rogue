@@ -5,6 +5,14 @@
   "history": [
     {
       "ref_name": "bug-audit/pydm",
+      "sha": "073e8fe636ad33ffb8b1113b6744416f6e4238dd",
+      "short_sha": "073e8fe",
+      "published_at": "2026-05-06T16:37:09Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/25447979895",
+      "summary_url": "/rogue/perf/branches/bug-audit_pydm/history/073e8fe636ad33ffb8b1113b6744416f6e4238dd.json"
+    },
+    {
+      "ref_name": "bug-audit/pydm",
       "sha": "530d553a4b45eba31f36b3eac58310567a9be504",
       "short_sha": "530d553",
       "published_at": "2026-05-05T17:01:25Z",
@@ -22,10 +30,10 @@
   ],
   "latest": {
     "ref_name": "bug-audit/pydm",
-    "sha": "530d553a4b45eba31f36b3eac58310567a9be504",
-    "short_sha": "530d553",
-    "published_at": "2026-05-05T17:01:25Z",
-    "run_url": "https://github.com/slaclab/rogue/actions/runs/25389064957",
+    "sha": "073e8fe636ad33ffb8b1113b6744416f6e4238dd",
+    "short_sha": "073e8fe",
+    "published_at": "2026-05-06T16:37:09Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/25447979895",
     "summary_url": "/rogue/perf/branches/bug-audit_pydm/latest.json"
   }
 }
