@@ -31,10 +31,6 @@ rogue_add_cpp_test(rogue-cpp-queue-thread-safety-audit-repro
 )
 target_compile_definitions(rogue-cpp-queue-thread-safety-audit-repro
    PRIVATE ROGUE_SRC_DIR="${PROJECT_SOURCE_DIR}")
-# Bound the cleanup path: the audit's behavioural cases use unconditional
-# join() after stop(), so a regression that leaves a producer parked in
-# pushCond_.wait() would otherwise hang ctest indefinitely (no global
-# --timeout in CI).  60 s is well above the suite's normal wall-clock cost
-# (~tens of seconds, dominated by bounded waits) and bounds any hang.
+# Bound any hang from a regression that leaves a producer parked in pushCond_.wait().
 set_tests_properties(rogue-cpp-queue-thread-safety-audit-repro
    PROPERTIES TIMEOUT 60)

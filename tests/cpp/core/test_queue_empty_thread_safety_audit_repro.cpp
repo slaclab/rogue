@@ -131,22 +131,7 @@ std::string readFile(const std::string& path) {
     return std::string((std::istreambuf_iterator<char>(f)), std::istreambuf_iterator<char>());
 }
 
-/**
- * @brief Strip C and C++ comments and string/char literals from @p src.
- *
- * @details
- * The audit below treats `unique_lock<` / `lock_guard<` (and a small set of
- * member-name fingerprints like `(mtx_)`, `pushCond_.notify`, `queue_.size()`)
- * as evidence that a method actually does the right thing.  If those tokens
- * appear inside a `// ...` comment, a `/* ... *\/` block, a string literal,
- * or a char literal they look identical to real code to a naïve substring
- * search.  Stripping them up front removes that false-positive surface so
- * every downstream operation (signature lookup, brace counting, grep) only
- * inspects executable text.  This is also why every TEST_CASE consumes the
- * pre-stripped source rather than re-stripping per-body — a `{` / `}` or a
- * spurious signature spelling inside a comment in Queue.h must not be able
- * to fool extractMethodBody() into picking up the wrong range.
- */
+// Removes comments and string/char literals so audits only inspect executable text.
 std::string stripCommentsAndLiterals(const std::string& src) {
     std::string out;
     out.reserve(src.size());
@@ -205,41 +190,11 @@ std::string stripCommentsAndLiterals(const std::string& src) {
     return out;
 }
 
-/**
- * @brief Read Queue.h from ROGUE_SRC_DIR with comments and literals stripped.
- *
- * @details
- * Centralised so every TEST_CASE consumes the same pre-stripped form.  Each
- * call re-reads Queue.h and re-runs stripCommentsAndLiterals(); there is no
- * cross-call cache.  The pre-strip happens before signature lookup or brace
- * counting in the calling TEST_CASE, which is what makes the audit immune to:
- *   - `bool empty()` / `void setMax(uint32_t max)` etc. appearing in a
- *     doxygen comment before the real definition,
- *   - stray `{` or `}` inside a comment or string skewing the brace depth,
- *   - lock/condvar tokens in a comment satisfying a naïve substring check.
- *
- * Queue.h is small and the audit suite has a handful of TEST_CASEs, so the
- * per-call I/O + strip cost is negligible (~microseconds) and not worth a
- * static cache.
- */
 std::string loadStrippedQueueHeader() {
     return stripCommentsAndLiterals(readFile(std::string(ROGUE_SRC_DIR) + "/include/rogue/Queue.h"));
 }
 
-/**
- * @brief Extract the substring of src that starts at the first occurrence of
- *        @p method_prefix and ends at the matching closing brace of the
- *        method body (brace-counting), so adjacent methods are not included.
- *
- * @details
- * Operates on a comment-and-literal-stripped src.  The function scans forward
- * from method_prefix until it finds the opening '{', then counts braces until
- * depth returns to zero.  Stripping at the file level (see
- * loadStrippedQueueHeader) is what makes this correct on the raw header: a
- * `{` / `}` inside a comment or string in Queue.h cannot perturb the depth
- * counter, and a signature spelling inside a doxygen block cannot redirect
- * the search to the wrong range.
- */
+// Extract method body (brace-counted) from comment-stripped source.
 std::string extractMethodBody(const std::string& src, const std::string& method_prefix) {
     std::size_t pos = src.find(method_prefix);
     if (pos == std::string::npos) return "";
@@ -265,24 +220,7 @@ std::string extractMethodBody(const std::string& src, const std::string& method_
     return src.substr(pos, i - pos);
 }
 
-/**
- * @brief Position of the first `unique_lock<` / `lock_guard<` instantiation
- *        in @p code whose declaration statement contains `(mtx_)`, or
- *        `std::string::npos` if no such statement exists.
- *
- * @details
- * Scans the body statement by statement (split on `;`).  Starting at each
- * `unique_lock<` / `lock_guard<` token, the helper walks forward to the
- * next `;` and checks whether `(mtx_)` appears in that range.  The
- * returned position is the offset of the first lock-template token whose
- * statement passes that check.
- *
- * Pinning to `(mtx_)` matters for both presence and ordering: a regressed
- * body that takes an unrelated mutex first and leaves a stray `(mtx_)`
- * reference elsewhere (or in a later statement) would otherwise satisfy
- * a naïve "first lock primitive" search and let the protected read /
- * store appear to be properly ordered against an unrelated lock.
- */
+// Position of the first lock_guard/unique_lock statement that takes (mtx_).
 std::size_t findLockPos(const std::string& code) {
     std::size_t best = std::string::npos;
     static const std::string tokens[] = {"unique_lock<", "lock_guard<"};
@@ -301,42 +239,11 @@ std::size_t findLockPos(const std::string& code) {
     return best;
 }
 
-/**
- * @brief True when @p code contains at least one `unique_lock<` /
- *        `lock_guard<` declaration whose constructor argument is `(mtx_)`.
- *
- * @details
- * Thin wrapper over findLockPos(): the method body locks `mtx_` if and
- * only if findLockPos() finds a qualifying statement.  Using the same
- * underlying scan keeps presence and ordering checks consistent — a
- * regressed body that takes an unrelated mutex (e.g.
- * `lock_guard<std::mutex> lock(other_mtx); use(mtx_);`) cannot satisfy
- * one check without also satisfying the other.
- */
 bool locksMtx(const std::string& code) {
     return findLockPos(code) != std::string::npos;
 }
 
-/**
- * @brief Position of the first assignment whose left-hand side is the
- *        identifier @p lhs in @p code, or `std::string::npos` if no such
- *        assignment exists.
- *
- * @details
- * Distinguishes assignment from comparison and from substring matches: a
- * naïve `code.find(lhs)` would also fire on `if (lhs == ...)` or on a
- * read like `(void)lhs;`, so an ordering check pinned to that position
- * could be satisfied by a regression that puts the read first and the
- * actual store last (e.g. `if (max_ == max) ...; pushCond_.notify_all();
- * max_ = max;`).
- *
- * Scans the code for occurrences of @p lhs, then for each occurrence
- * verifies (a) the preceding character is not part of an identifier
- * (avoiding e.g. `q_max_` matching when looking for `max_`), and (b) the
- * next non-whitespace character is `=` with the character after that not
- * also `=` (so `lhs ==` does not match).  The returned position is the
- * offset of @p lhs in the matching assignment.
- */
+// Position of the first `lhs = ...` assignment (excludes comparisons and substrings).
 std::size_t findAssignPos(const std::string& code, const std::string& lhs) {
     auto isIdentChar = [](char c) {
         return (c == '_') || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9');
@@ -361,36 +268,21 @@ std::size_t findAssignPos(const std::string& code, const std::string& lhs) {
 }  // namespace
 
 TEST_CASE("Queue::empty() acquires mutex before reading queue_") {
-    // Read Queue.h (comments/literals stripped) and inspect the empty()
-    // method body.
-    //
-    // Steady-state (post-fix) shape:
-    //   bool empty() {
-    //       std::unique_lock<std::mutex> lock(mtx_);
-    //       return queue_.empty();
-    //   }
-    //
-    // Discriminator: empty() body must contain "unique_lock<" or "lock_guard<"
-    // and the (mtx_) constructor-argument fingerprint.
-
     const std::string src = loadStrippedQueueHeader();
     REQUIRE_MESSAGE(!src.empty(),
                     "could not open include/rogue/Queue.h (ROGUE_SRC_DIR=",
                     ROGUE_SRC_DIR, ")");
 
-    // Extract the empty() and size() method bodies from the stripped source.
     const std::string empty_code = extractMethodBody(src, "bool empty()");
     REQUIRE_MESSAGE(!empty_code.empty(), "could not locate bool empty() in Queue.h");
 
     const std::string size_code = extractMethodBody(src, "uint32_t size()");
     REQUIRE_MESSAGE(!size_code.empty(), "could not locate uint32_t size() in Queue.h");
 
-    // Reference check: size() must lock mtx_ (this is already true on HEAD).
     CHECK_MESSAGE(locksMtx(size_code),
                   "reference check failed — size() does not take mtx_; "
                   "the test assumption about the reference implementation is wrong.");
 
-    // Primary assertion: empty() must lock mtx_ (not just any mutex).
     CHECK_MESSAGE(locksMtx(empty_code),
                   "Queue::empty() body lacks std::unique_lock<std::mutex> lock(mtx_) "
                   "or std::lock_guard<std::mutex> lock(mtx_); it reads queue_.empty() "
@@ -398,11 +290,7 @@ TEST_CASE("Queue::empty() acquires mutex before reading queue_") {
                   "Concurrent push+empty() can observe an inconsistent queue state "
                   "(not thread-safe).");
 
-    // Ordering assertion: the lock must be taken *before* queue_.empty() is
-    // read.  A regression that reads queue_ first and acquires the lock
-    // afterward would still satisfy locksMtx(), so position-test the two.
-    // Pre-compute the bool — doctest CHECK_MESSAGE cannot decompose chained
-    // `&&` expressions.
+    // Lock must precede the queue_.empty() read.
     const std::size_t lock_pos = findLockPos(empty_code);
     const std::size_t read_pos = empty_code.find("queue_.empty()");
     const bool   ordered  = (lock_pos != std::string::npos) && (read_pos != std::string::npos) && (lock_pos < read_pos);
@@ -413,19 +301,6 @@ TEST_CASE("Queue::empty() acquires mutex before reading queue_") {
 }
 
 TEST_CASE("Queue::max_ and Queue::thold_ are declared std::atomic<uint32_t>") {
-    // Read Queue.h (comments/literals stripped) and assert that max_/thold_
-    // are atomics.
-    //
-    // push()/pop() read these members under mtx_, and the setters now also
-    // write them under mtx_, so the same mutex serializes both sides on the
-    // steady-state code path.  The atomic<> declaration is kept as
-    // API-level defence in depth: setMax()/setThold() are public and the
-    // contract does not restrict them to construction time, so a future
-    // caller (or a regression that drops the setter lock) would create a
-    // concurrent non-atomic write/read pair that is UB under the C++ memory
-    // model.  Declaring the members atomic makes the worst case well-defined
-    // even when the lock is missing.
-
     const std::string src = loadStrippedQueueHeader();
     REQUIRE_MESSAGE(!src.empty(), "could not open include/rogue/Queue.h");
 
@@ -444,25 +319,6 @@ TEST_CASE("Queue::max_ and Queue::thold_ are declared std::atomic<uint32_t>") {
 }
 
 TEST_CASE("Queue::setMax() acquires mtx_ and notifies pushCond_") {
-    // setMax() updates the cap that push() waits on.  Two structural
-    // invariants are required for correctness:
-    //
-    //   a. setMax() must hold mtx_ across the store + notify.  push()
-    //      evaluates the wait predicate (max_ > 0 && size >= max_) under
-    //      mtx_; if setMax() updates max_ lock-free the new value can
-    //      land between the predicate check and the pushCond_.wait()
-    //      call, so notify_all() fires while the producer is not yet
-    //      waiting (no-op) and the producer then sleeps indefinitely
-    //      against the old cap — a classic check→wait lost-wakeup.
-    //
-    //   b. setMax() must call pushCond_.notify_all so *every* producer
-    //      already blocked on the old cap re-evaluates against the new
-    //      value.  notify_one() is insufficient: push() itself only
-    //      issues popCond_.notify_all() on success, so the second/third
-    //      blocked producer would never wake until an unrelated
-    //      pop()/stop() — multiple-waiter starvation rather than the
-    //      single-waiter lost-wakeup the lock closes.
-
     const std::string src = loadStrippedQueueHeader();
     REQUIRE_MESSAGE(!src.empty(), "could not open include/rogue/Queue.h");
 
@@ -475,20 +331,7 @@ TEST_CASE("Queue::setMax() acquires mtx_ and notifies pushCond_") {
                   "pushCond_.wait(), making notify_all() a no-op and leaving the "
                   "producer asleep on the old cap (check→wait lost-wakeup).");
 
-    // Ordering assertion: the body must lock mtx_, *then* store max_, *then*
-    // notify pushCond_.  Notifying before the store (or storing outside the
-    // locked region) reintroduces the lost-wakeup race the lock is meant to
-    // close, so a bare presence check on `pushCond_.notify` is insufficient.
-    // The store position must be the actual `max_ = ...` assignment, not the
-    // first `max_` token in the body — otherwise a regression like
-    // `if (max_ == max) return; pushCond_.notify_all(); max_ = max;` would
-    // pass an ordering check pinned to the comparison's `max_` while leaving
-    // the real store after the notify.  findAssignPos() distinguishes
-    // assignment from comparison and from substring matches.
-    // The notify must specifically be notify_all (not notify_one) so that
-    // every producer blocked on the old cap re-evaluates the predicate.
-    // Pre-compute the bool — doctest CHECK_MESSAGE cannot decompose chained
-    // `&&` expressions.
+    // Ordering: lock → store max_ → notify_all pushCond_.
     const std::size_t lock_pos   = findLockPos(code);
     const std::size_t store_pos  = findAssignPos(code, "max_");
     const std::size_t notify_pos = code.find("pushCond_.notify_all");
@@ -515,10 +358,6 @@ TEST_CASE("Queue::setMax() acquires mtx_ and notifies pushCond_") {
 }
 
 TEST_CASE("Queue::setThold() acquires mtx_ and recomputes busy_") {
-    // setThold() changes the threshold that busy_ is computed from.  Without
-    // recomputing busy_ under mtx_ at the same time the threshold changes,
-    // busy() keeps reporting the previous state until the next push()/pop().
-
     const std::string src = loadStrippedQueueHeader();
     REQUIRE_MESSAGE(!src.empty(), "could not open include/rogue/Queue.h");
 
@@ -535,11 +374,7 @@ TEST_CASE("Queue::setThold() acquires mtx_ and recomputes busy_") {
                   "threshold at runtime leaves busy() reporting the previous "
                   "state until the next push()/pop()/reset().");
 
-    // Recompute assertion: a bare `busy_` token can be satisfied by
-    // assigning the previous value back to itself, which leaves busy()
-    // stale until the next push()/pop()/reset().  Requiring `queue_.size()`
-    // in the same body forces the recompute to consult the live queue
-    // depth (e.g. `busy_ = (thold > 0 && queue_.size() >= thold);`).
+    // Recompute must consult live queue depth, not just touch busy_.
     CHECK_MESSAGE(code.find("queue_.size()") != std::string::npos,
                   "Queue::setThold() does not recompute busy_ against the "
                   "current queue_.size(); a regression that copies the "
@@ -548,75 +383,6 @@ TEST_CASE("Queue::setThold() acquires mtx_ and recomputes busy_") {
 }
 
 TEST_CASE("Queue::setMax() wakes a producer blocked in push()") {
-    // Behavioural complement to the setMax source-text audit.  Source-text
-    // checks can only prove the lock primitive and notify call exist in the
-    // method body; they cannot prove that the actual runtime wakeup happens.
-    // This test fills the queue to the cap, spawns a producer that blocks
-    // in push(), confirms the producer really is parked in pushCond_.wait()
-    // before changing the cap, then verifies that the producer completes —
-    // proving that setMax() really does wake an already-blocked waiter.
-    //
-    // Two SUBCASEs cover both runtime contract paths:
-    //   - "raising the cap to a larger value": setMax(10).  push() exits
-    //     its wait when queue_.size() < max_ becomes true.
-    //   - "disabling the cap with setMax(0)": setMax(0).  setMax(0) is
-    //     the documented "no limit" special case, and push()'s wait
-    //     predicate (max_ > 0 && size >= max_) becomes unconditionally
-    //     false — a regression in the setMax(0) path (e.g. updating the
-    //     cap without waking blocked producers) would leave the producer
-    //     parked indefinitely against the old cap.
-    //
-    // Failure modes either SUBCASE catches that the source-text audit cannot:
-    //   - dropping std::lock_guard<std::mutex>(mtx_) in setMax() reopens
-    //     the check→wait lost-wakeup window: notify_all() can fire while
-    //     no waiter is yet sleeping, leaving the producer asleep on the
-    //     old cap until an unrelated pop()/stop().
-    //   - dropping pushCond_.notify_all() leaves a producer that is
-    //     already asleep on the old cap with no way to learn about the
-    //     new value until an unrelated pop()/stop().
-    //
-    // Blocked-evidence handshake: `entered` is published *before* q.push(2),
-    // so seeing entered=true alone does not prove the producer has reached
-    // pushCond_.wait() — on a busy or instrumented runner, setMax could
-    // fire before the producer even enters push(), and a lock-free
-    // regression would then satisfy the new (raised) predicate on first
-    // evaluation and complete the push without ever touching notify_all.
-    // To rule that out, after entered=true the test runs a sustained-quiet
-    // window that polls *both* `done` AND `q.size()`:
-    //   - q.size() takes mtx_ on every call, so each successful poll proves
-    //     mtx_ was reachable at that instant (the producer is not holding
-    //     it across the window — predicate evaluation in push() takes
-    //     microseconds).
-    //   - q.size()==2 across the window proves the producer has not pushed
-    //     past the wait predicate.
-    //   - done==false across the window proves push() has not returned.
-    // Across the window, the only states consistent with all three
-    // observations are (a) the producer is parked in pushCond_.wait() with
-    // mtx_ released, or (b) the producer's lambda has been continuously
-    // descheduled between `entered.store(true)` and the push() entry for
-    // the entire window.  (b) requires a 500 ms scheduler stall on two
-    // consecutive simple statements, which is implausible on real CI even
-    // under TSan/Valgrind; (a) is the contract this test is checking.
-    //
-    // Honest limitation: this is observational, not instrumented.  Truly
-    // proving "producer is inside pushCond_.wait()" without false negatives
-    // would require a hook inside Queue::push() to signal at the wait
-    // entry point, which the public API does not expose.  Layer A's
-    // structural audit catches the lock-free setMax regression
-    // deterministically (no scheduling sensitivity); Layer B (this test)
-    // catches the visible-runtime-breakage cases — dropped notify, dropped
-    // lock that breaks the wakeup outright — with high but not perfect
-    // probability.  The two layers are complementary.
-    //
-    // Cleanup ordering: the producer thread is stopped + joined BEFORE
-    // any REQUIRE/CHECK assertion runs.  doctest's fatal assertions
-    // unwind the stack on failure; if the std::thread is still joinable
-    // at that point its destructor calls std::terminate().  Capturing
-    // outcomes into locals first keeps the assertion phase cleanup-safe.
-
-    // The active SUBCASE name is rendered by doctest in the failure
-    // banner, so the scenario is already visible in test output without
-    // having to thread a description string through CHECK_MESSAGE.
     uint32_t new_cap = 0;
     SUBCASE("raising the cap to a larger value") {
         new_cap = 10;
@@ -628,8 +394,6 @@ TEST_CASE("Queue::setMax() wakes a producer blocked in push()") {
     rogue::Queue<int> q;
     q.setMax(2);
 
-    // Fill queue to capacity (these calls must not block — queue is empty
-    // before each push, then has 1 entry, then exactly hits the cap).
     q.push(0);
     q.push(1);
 
@@ -638,11 +402,10 @@ TEST_CASE("Queue::setMax() wakes a producer blocked in push()") {
 
     std::thread producer([&] {
         entered.store(true, std::memory_order_release);
-        q.push(2);  // must block: queue at cap until setMax changes it.
+        q.push(2);
         done.store(true, std::memory_order_release);
     });
 
-    // Phase 1: wait for the producer's lambda to start.
     bool producer_started = false;
     {
         const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(2);
@@ -653,21 +416,7 @@ TEST_CASE("Queue::setMax() wakes a producer blocked in push()") {
         producer_started = entered.load(std::memory_order_acquire);
     }
 
-    // Phase 2: sustained-quiet-window check — for the full window we
-    // require done==false (push() did not return) AND q.size() stays at
-    // the initial cap (the producer did not make it past the wait
-    // predicate).  Each q.size() call also takes mtx_ and releases it, so
-    // a successful poll proves mtx_ was reachable at that instant — the
-    // producer is not holding mtx_ across the window (predicate evaluation
-    // in push() is microseconds, not 500 ms).  After per-thread started
-    // evidence (Phase 1) plus 500 ms with no progress and no mtx_
-    // contention, the only schedules consistent with these observations
-    // are (a) the producer is parked in pushCond_.wait() — the contract
-    // this test is checking — or (b) the producer's lambda has been
-    // continuously descheduled between `entered.store(true)` and push()
-    // entry for the entire window, which would require a 500 ms scheduler
-    // stall on two consecutive simple statements.  Matches the
-    // multi-producer SUBCASE below for the same reasons.
+    // Sustained-quiet window: infer producer is parked in pushCond_.wait().
     bool producer_blocked = false;
     if (producer_started) {
         const auto deadline = std::chrono::steady_clock::now() + std::chrono::milliseconds(500);
@@ -686,15 +435,10 @@ TEST_CASE("Queue::setMax() wakes a producer blocked in push()") {
         producer_blocked = stable;
     }
 
-    // Phase 3: change the cap — must wake the producer.  Only fire setMax
-    // once we have evidence the producer is parked in pushCond_.wait();
-    // otherwise a lock-free regression would slip through because
-    // push()'s first predicate evaluation already sees the new cap.
     if (producer_blocked) {
         q.setMax(new_cap);
     }
 
-    // Phase 4: wait for completion with a generous timeout.
     bool producer_completed = false;
     {
         const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(2);
@@ -705,14 +449,9 @@ TEST_CASE("Queue::setMax() wakes a producer blocked in push()") {
         producer_completed = done.load(std::memory_order_acquire);
     }
 
-    // Phase 5: cleanup BEFORE any fatal assertion fires.  If the producer
-    // is still parked (broken setMax, or producer_blocked was false and
-    // we never changed the cap), stop() drains the wait so join() returns.
+    // Cleanup before assertions to avoid std::terminate on joinable thread.
     if (!producer_completed) {
         q.stop();
-        // After stop(), Queue<T>::pop() returns a default-initialized T
-        // and push() exits its wait without enqueueing; give the producer
-        // a final chance to flip `done` before joining.
         const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(2);
         while (!done.load(std::memory_order_acquire) &&
                std::chrono::steady_clock::now() < deadline) {
@@ -721,8 +460,6 @@ TEST_CASE("Queue::setMax() wakes a producer blocked in push()") {
     }
     producer.join();
 
-    // Phase 6: assertions run on captured state with the worker already
-    // joined, so any fatal failure unwinds cleanly.
     REQUIRE(producer_started);
     REQUIRE_MESSAGE(producer_blocked,
                     "Test setup invariant violated: producer completed "
@@ -740,55 +477,6 @@ TEST_CASE("Queue::setMax() wakes a producer blocked in push()") {
 }
 
 TEST_CASE("Queue::setMax() wakes ALL blocked producers (notify_all, not notify_one)") {
-    // Behavioural complement to the source-text notify_all check.  Source
-    // text proves the spelling `pushCond_.notify_all` appears in setMax();
-    // this test proves the runtime contract — that *every* producer
-    // blocked on the old cap re-evaluates against the new value.
-    //
-    // Failure mode this catches: a regression to pushCond_.notify_one()
-    // wakes only one of N blocked producers.  Because push() itself only
-    // issues popCond_.notify_all() on success (not pushCond_.notify_all),
-    // the remaining N-1 producers stay parked until an unrelated
-    // pop()/stop() — multiple-waiter starvation rather than the
-    // single-waiter lost-wakeup the lock closes.
-    //
-    // Per-thread blocked evidence (not just an aggregate counter): a
-    // shared `entered` counter combined with `done == 0` does not
-    // guarantee every producer reached pushCond_.wait() before setMax
-    // ran — a producer "in flight" between entered++ and the wait would
-    // see the raised cap on its first predicate check and complete the
-    // push without ever being notified, masking a notify_one() regression.
-    // To rule that out, this test pairs per-thread `started[i]` flags
-    // with a *sustained quiet window*: throughout the window we require
-    //   - done == 0 (no producer's push() returned), AND
-    //   - q.size() == initial cap (no producer made it past the wait
-    //     predicate), AND
-    //   - q.size() polling itself succeeds quickly on every iteration —
-    //     each call takes mtx_, so a successful poll proves mtx_ was
-    //     reachable at that instant (no producer is holding it across
-    //     the window; predicate evaluation in push() takes microseconds).
-    // After per-thread started flags AND 500 ms of all three signals
-    // remaining stable, the only schedules consistent with the
-    // observations are (a) every producer is parked in pushCond_.wait()
-    // — the contract this test is checking — or (b) one or more
-    // producers have been continuously descheduled between
-    // started[i].store() and push() entry for the entire window.  (b)
-    // would require sustained scheduler stalls on consecutive simple
-    // statements, which is not seen in practice on CI even under
-    // TSan/Valgrind; (a) is the contract.  A regressed notify_one()
-    // then wakes one waiter; the remaining N-1 stay parked because
-    // push() does not chain pushCond_ notifications.
-    //
-    // Honest limitation: this is observational, not instrumented.
-    // Deterministically proving "every producer is inside
-    // pushCond_.wait()" without false negatives would require a hook
-    // inside Queue::push() to signal at the wait entry point, which the
-    // public API does not expose.  Layer A's structural audit catches
-    // the notify_one regression deterministically by pinning the literal
-    // `pushCond_.notify_all` spelling in setMax(); Layer B (this test)
-    // catches the visible-runtime-breakage cases with high but not
-    // perfect probability.  The two layers are complementary.
-
     rogue::Queue<int> q;
     q.setMax(2);
     q.push(0);
@@ -816,8 +504,6 @@ TEST_CASE("Queue::setMax() wakes ALL blocked producers (notify_all, not notify_o
         return c;
     };
 
-    // Phase 1: wait for *every* producer's started[i] flag — per-thread
-    // evidence that each lambda has begun, not just an aggregate count.
     bool all_started = false;
     {
         const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(2);
@@ -827,16 +513,7 @@ TEST_CASE("Queue::setMax() wakes ALL blocked producers (notify_all, not notify_o
         all_started = (count_started() == N);
     }
 
-    // Phase 2: sustained-quiet-window check — for the full window
-    // require done==0 (no producer completed push) AND q.size() stays
-    // at the initial cap (no producer made it past the wait predicate).
-    // This is the per-thread blocked evidence: per (1) above, every
-    // producer's lambda is past started[i]; per this loop, no producer
-    // pushed during the window; per the SUT structure, the only
-    // remaining state for each producer is pushCond_.wait().  With
-    // notify_one() each woken waiter would still satisfy the test, so
-    // the per-producer "must be parked in pushCond_.wait()" invariant
-    // is what makes the multi-waiter test discriminative.
+    // Sustained-quiet window: infer all producers are parked in pushCond_.wait().
     bool all_blocked = false;
     if (all_started) {
         const auto deadline = std::chrono::steady_clock::now() + std::chrono::milliseconds(500);
@@ -855,13 +532,10 @@ TEST_CASE("Queue::setMax() wakes ALL blocked producers (notify_all, not notify_o
         all_blocked = stable;
     }
 
-    // Phase 3: raise cap to fit the queued entries (2) plus all blocked
-    // producers (N).  All N must wake; with notify_one() only one would.
     if (all_blocked) {
         q.setMax(2 + N);
     }
 
-    // Phase 4: wait for completion with a generous timeout.
     int completed = 0;
     {
         const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(4);
@@ -872,7 +546,6 @@ TEST_CASE("Queue::setMax() wakes ALL blocked producers (notify_all, not notify_o
         completed = done.load(std::memory_order_acquire);
     }
 
-    // Phase 5: cleanup BEFORE any fatal assertion fires.
     if (completed < N) {
         q.stop();
         const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(2);
@@ -883,7 +556,6 @@ TEST_CASE("Queue::setMax() wakes ALL blocked producers (notify_all, not notify_o
     }
     for (auto& p : producers) p.join();
 
-    // Phase 6: assertions on captured state with workers joined.
     REQUIRE(all_started);
     REQUIRE_MESSAGE(all_blocked,
                     "Test setup invariant violated: at least one producer "
@@ -900,32 +572,17 @@ TEST_CASE("Queue::setMax() wakes ALL blocked producers (notify_all, not notify_o
 }
 
 TEST_CASE("Queue::setThold() flips busy() immediately against the current depth") {
-    // Behavioural complement to the setThold source-text audit.  Source-text
-    // checks can prove that setThold() touches busy_ and queue_.size() in
-    // the same body, but they cannot prove that the recompute happens at
-    // setThold() call time rather than (e.g.) being deferred to the next
-    // push()/pop().  This test fills the queue, then calls setThold() with
-    // values that straddle the current depth and asserts that busy() flips
-    // accordingly *without* an intervening push()/pop()/reset().
-    //
-    // Purely deterministic — no threading, no scheduling sensitivity.
-
     rogue::Queue<int> q;
     q.push(0);
     q.push(1);
     q.push(2);
     REQUIRE(q.size() == 3u);
 
-    // thold_ defaults to 0 — busy() must be false regardless of depth.
     CHECK_FALSE(q.busy());
 
-    // Threshold strictly above current depth — busy() must remain false.
     q.setThold(10);
     CHECK_FALSE(q.busy());
 
-    // Threshold at current depth — busy() must flip true *immediately*.
-    // Without recomputing busy_ at setThold() time, busy() would keep
-    // reporting the pre-setThold state until the next push()/pop()/reset().
     q.setThold(3);
     CHECK_MESSAGE(q.busy(),
                   "Queue::setThold() did not recompute busy_ at call time; "
@@ -934,21 +591,13 @@ TEST_CASE("Queue::setThold() flips busy() immediately against the current depth"
                   "moment the threshold changes, not on the next "
                   "push()/pop()/reset().");
 
-    // Threshold below current depth — busy() must remain true.
     q.setThold(1);
     CHECK(q.busy());
 
-    // Raise threshold above current depth — busy() must clear immediately.
     q.setThold(100);
     CHECK_FALSE(q.busy());
 
-    // setThold(0) is the documented "no threshold" special case: busy()
-    // must stay false regardless of queue depth.  At this point the queue
-    // still holds 3 entries.  A regression that drops the (thold > 0)
-    // guard and computes busy_ = (queue_.size() >= thold_) would compute
-    // (3 >= 0) = true here while still passing every nonzero case above
-    // — so this is the only step in the suite that pins the zero-threshold
-    // contract.
+    // setThold(0) disables the threshold; busy() must stay false even with items queued.
     REQUIRE(q.size() == 3u);
     q.setThold(0);
     CHECK_MESSAGE(!q.busy(),
