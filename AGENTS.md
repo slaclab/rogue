@@ -10,4 +10,7 @@ under `docs/plans/<task-name>/`.
 
 Follow the project guidance in those files over tool-specific defaults.
 
+Create pull requests against `pre-release` unless explicitly directed
+otherwise. PR descriptions should follow `.github/pull_request_template.md`.
+
 Do not stage files or make git commits unless explicitly asked.

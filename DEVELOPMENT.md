@@ -459,6 +459,13 @@ Use this workflow for most tasks:
 11. Leave unrelated files untouched.
 12. Do not stage or commit unless explicitly asked.
 
+## Pull Requests
+
+Open pull requests against `pre-release` unless the user explicitly requests a
+different base branch. Use `.github/pull_request_template.md` for PR
+descriptions, keeping the release-note-facing `Description` section clean and
+readable.
+
 ## Agent Checklist
 
 At the start of a new AI-agent context window:
