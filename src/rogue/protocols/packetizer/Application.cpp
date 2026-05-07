@@ -62,23 +62,30 @@ rpp::Application::Application(uint8_t id) {
 //! Destructor
 rpp::Application::~Application() {
     // No-op if setController() never ran.
-    if (thread_ != nullptr) {
+    if (thread_) {
         threadEn_ = false;
         rogue::GilRelease noGil;
         queue_.stop();
         thread_->join();
-        delete thread_;
-        thread_ = nullptr;
     }
 }
 
 //! Setup links
 void rpp::Application::setController(rpp::ControllerPtr cntl) {
-    cntl_ = cntl;
+    // One-shot: re-assigning a joinable std::thread triggers std::terminate.
+    if (thread_) return;
 
-    // Start read thread
+    // threadEn_ must precede thread ctor; rollback both on spawn failure.
+    rpp::ControllerPtr prevCntl = cntl_;
+    cntl_ = cntl;
     threadEn_ = true;
-    thread_   = new std::thread(&rpp::Application::runThread, this);
+    try {
+        thread_ = std::make_unique<std::thread>(&rpp::Application::runThread, this);
+    } catch (...) {
+        threadEn_ = false;
+        cntl_ = prevCntl;
+        throw;
+    }
 
     // Set a thread name
 #ifndef __MACH__
