@@ -319,6 +319,10 @@ void rim::TcpServer::runThread() {
 
                 // Rebuild response socket to reset multipart FSM.
                 if (this->zmqResp_ != nullptr) {
+                    if (zmq_unbind(this->zmqResp_, this->respAddr_.c_str()) != 0) {
+                        bridgeLog_->warning("Failed to unbind response socket from %s during recovery: %s",
+                                            this->respAddr_.c_str(), zmq_strerror(zmq_errno()));
+                    }
                     zmq_close(this->zmqResp_);
                     this->zmqResp_ = nullptr;
                 }
