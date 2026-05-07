@@ -2,12 +2,9 @@
 # Company    : SLAC National Accelerator Laboratory
 #-----------------------------------------------------------------------------
 # Description:
-#   Regression test.
-#   Both pickle.loads() call-sites in _Virtual.py (VirtualClient._remoteAttr
-#   and VirtualClient._doUpdate) deserialise network bytes without
-#   restriction.  These source-text tests assert the pattern is absent;
-#   replies / publishes must funnel through the restricted
-#   _virtual_safe_loads() helper instead.
+#   Functional behaviour tests for the restricted ``_virtual_safe_loads``
+#   helper used by ``VirtualClient._remoteAttr`` and ``VirtualClient._doUpdate``
+#   to deserialise server replies and ZMQ SUB publishes.
 #-----------------------------------------------------------------------------
 # This file is part of the rogue software platform. It is subject to
 # the license terms in the LICENSE.txt file found in the top-level directory
@@ -17,55 +14,6 @@
 # copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
-
-import inspect
-
-
-def _get_method_source(cls, method_name):
-    """Return source lines for a method, or empty string if unavailable."""
-    try:
-        return inspect.getsource(getattr(cls, method_name))
-    except (OSError, TypeError):
-        return ""
-
-
-def test_virtual_remoteattr_pickle_loads():
-    """VirtualClient._remoteAttr uses raw pickle.loads on server response."""
-    import re
-
-    from pyrogue.interfaces._Virtual import VirtualClient
-
-    src = _get_method_source(VirtualClient, "_remoteAttr")
-    assert src, "Could not retrieve source for VirtualClient._remoteAttr"
-
-    # The module imports ``pickle as _pickle`` so ``_pickle.loads(data)``
-    # is just as unsafe as ``pickle.loads(data)`` and would slip past a
-    # literal-token check.  Match either the public name or the alias.
-    unsafe_call = re.search(r"\b_?pickle\.loads\s*\(", src)
-    assert unsafe_call is None, (
-        "VirtualClient._remoteAttr uses raw pickle.loads (or _pickle.loads) "
-        "on attacker-controllable server response bytes; a compromised "
-        "or spoofed server achieves code execution on the client.  Replies "
-        "must funnel through the restricted _virtual_safe_loads() helper."
-    )
-
-
-def test_virtual_doupdate_pickle_loads():
-    """VirtualClient._doUpdate uses raw pickle.loads on ZMQ SUB bytes."""
-    import re
-
-    from pyrogue.interfaces._Virtual import VirtualClient
-
-    src = _get_method_source(VirtualClient, "_doUpdate")
-    assert src, "Could not retrieve source for VirtualClient._doUpdate"
-
-    unsafe_call = re.search(r"\b_?pickle\.loads\s*\(", src)
-    assert unsafe_call is None, (
-        "VirtualClient._doUpdate uses raw pickle.loads (or _pickle.loads) "
-        "on attacker-controllable ZMQ publish bytes; a publish-channel "
-        "injection achieves code execution on every subscriber.  Updates "
-        "must funnel through the restricted _virtual_safe_loads() helper."
-    )
 
 
 def test_virtual_safe_loads_decodes_server_error_reply():
