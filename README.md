@@ -4,6 +4,9 @@
 
 SLAC Python Based Hardware Abstraction &amp; Data Acquisition System
 
+Development guidance for contributors and AI agents is available in
+[DEVELOPMENT.md](DEVELOPMENT.md).
+
 *Current documentation can be found at:*
 
    https://slaclab.github.io/rogue/
