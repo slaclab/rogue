@@ -5,6 +5,14 @@
   "history": [
     {
       "ref_name": "bug-audit/udp",
+      "sha": "e77859bc8b8022ff539deb989b128a55e6d66e28",
+      "short_sha": "e77859b",
+      "published_at": "2026-05-07T15:59:22Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/25506794483",
+      "summary_url": "/rogue/perf/branches/bug-audit_udp/history/e77859bc8b8022ff539deb989b128a55e6d66e28.json"
+    },
+    {
+      "ref_name": "bug-audit/udp",
       "sha": "6d2beeea587651b4647a96b4b764757bd1c8f56a",
       "short_sha": "6d2beee",
       "published_at": "2026-05-06T17:03:07Z",
@@ -30,10 +38,10 @@
   ],
   "latest": {
     "ref_name": "bug-audit/udp",
-    "sha": "6d2beeea587651b4647a96b4b764757bd1c8f56a",
-    "short_sha": "6d2beee",
-    "published_at": "2026-05-06T17:03:07Z",
-    "run_url": "https://github.com/slaclab/rogue/actions/runs/25447987283",
+    "sha": "e77859bc8b8022ff539deb989b128a55e6d66e28",
+    "short_sha": "e77859b",
+    "published_at": "2026-05-07T15:59:22Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/25506794483",
     "summary_url": "/rogue/perf/branches/bug-audit_udp/latest.json"
   }
 }

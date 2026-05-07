@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-06T23:40:51Z",
+  "generated_at": "2026-05-07T15:59:22Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -187,26 +187,50 @@
       }
     },
     {
-      "ref_name": "wave8-wayland-dev",
-      "ref_slug": "wave8-wayland-dev",
-      "latest_url": "/rogue/perf/branches/wave8-wayland-dev/latest.json",
+      "ref_name": "bug-audit/udp",
+      "ref_slug": "bug-audit_udp",
+      "latest_url": "/rogue/perf/branches/bug-audit_udp/latest.json",
       "history": [
         {
-          "ref_name": "wave8-wayland-dev",
-          "sha": "1add1ca0b45b10cf282df3befb2b96fda9c7d668",
-          "short_sha": "1add1ca",
-          "published_at": "2026-05-06T23:40:51Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/25448957728",
-          "summary_url": "/rogue/perf/branches/wave8-wayland-dev/history/1add1ca0b45b10cf282df3befb2b96fda9c7d668.json"
+          "ref_name": "bug-audit/udp",
+          "sha": "e77859bc8b8022ff539deb989b128a55e6d66e28",
+          "short_sha": "e77859b",
+          "published_at": "2026-05-07T15:59:22Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/25506794483",
+          "summary_url": "/rogue/perf/branches/bug-audit_udp/history/e77859bc8b8022ff539deb989b128a55e6d66e28.json"
+        },
+        {
+          "ref_name": "bug-audit/udp",
+          "sha": "6d2beeea587651b4647a96b4b764757bd1c8f56a",
+          "short_sha": "6d2beee",
+          "published_at": "2026-05-06T17:03:07Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/25447987283",
+          "summary_url": "/rogue/perf/branches/bug-audit_udp/history/6d2beeea587651b4647a96b4b764757bd1c8f56a.json"
+        },
+        {
+          "ref_name": "bug-audit/udp",
+          "sha": "1bd5a8efc6214ae5b4bd812bcadb64b933f8925d",
+          "short_sha": "1bd5a8e",
+          "published_at": "2026-05-05T19:06:05Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/25395304656",
+          "summary_url": "/rogue/perf/branches/bug-audit_udp/history/1bd5a8efc6214ae5b4bd812bcadb64b933f8925d.json"
+        },
+        {
+          "ref_name": "bug-audit/udp",
+          "sha": "d87628214a4dbdd961021be6486319b591f5c63b",
+          "short_sha": "d876282",
+          "published_at": "2026-05-05T14:23:24Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/25381383044",
+          "summary_url": "/rogue/perf/branches/bug-audit_udp/history/d87628214a4dbdd961021be6486319b591f5c63b.json"
         }
       ],
       "latest": {
-        "ref_name": "wave8-wayland-dev",
-        "sha": "1add1ca0b45b10cf282df3befb2b96fda9c7d668",
-        "short_sha": "1add1ca",
-        "published_at": "2026-05-06T23:40:51Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/25448957728",
-        "summary_url": "/rogue/perf/branches/wave8-wayland-dev/latest.json"
+        "ref_name": "bug-audit/udp",
+        "sha": "e77859bc8b8022ff539deb989b128a55e6d66e28",
+        "short_sha": "e77859b",
+        "published_at": "2026-05-07T15:59:22Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/25506794483",
+        "summary_url": "/rogue/perf/branches/bug-audit_udp/latest.json"
       }
     },
     {
@@ -751,45 +775,6 @@
         "published_at": "2026-05-06T17:05:15Z",
         "run_url": "https://github.com/slaclab/rogue/actions/runs/25448865657",
         "summary_url": "/rogue/perf/branches/bug-audit_queue/latest.json"
-      }
-    },
-    {
-      "ref_name": "bug-audit/udp",
-      "ref_slug": "bug-audit_udp",
-      "latest_url": "/rogue/perf/branches/bug-audit_udp/latest.json",
-      "history": [
-        {
-          "ref_name": "bug-audit/udp",
-          "sha": "6d2beeea587651b4647a96b4b764757bd1c8f56a",
-          "short_sha": "6d2beee",
-          "published_at": "2026-05-06T17:03:07Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/25447987283",
-          "summary_url": "/rogue/perf/branches/bug-audit_udp/history/6d2beeea587651b4647a96b4b764757bd1c8f56a.json"
-        },
-        {
-          "ref_name": "bug-audit/udp",
-          "sha": "1bd5a8efc6214ae5b4bd812bcadb64b933f8925d",
-          "short_sha": "1bd5a8e",
-          "published_at": "2026-05-05T19:06:05Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/25395304656",
-          "summary_url": "/rogue/perf/branches/bug-audit_udp/history/1bd5a8efc6214ae5b4bd812bcadb64b933f8925d.json"
-        },
-        {
-          "ref_name": "bug-audit/udp",
-          "sha": "d87628214a4dbdd961021be6486319b591f5c63b",
-          "short_sha": "d876282",
-          "published_at": "2026-05-05T14:23:24Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/25381383044",
-          "summary_url": "/rogue/perf/branches/bug-audit_udp/history/d87628214a4dbdd961021be6486319b591f5c63b.json"
-        }
-      ],
-      "latest": {
-        "ref_name": "bug-audit/udp",
-        "sha": "6d2beeea587651b4647a96b4b764757bd1c8f56a",
-        "short_sha": "6d2beee",
-        "published_at": "2026-05-06T17:03:07Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/25447987283",
-        "summary_url": "/rogue/perf/branches/bug-audit_udp/latest.json"
       }
     },
     {
