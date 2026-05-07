@@ -5,6 +5,14 @@
   "history": [
     {
       "ref_name": "bug-audit/xilinx",
+      "sha": "88e37d06670c9b2b3b19aada7a20ce3e03daf67a",
+      "short_sha": "88e37d0",
+      "published_at": "2026-05-07T19:14:09Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/25515727486",
+      "summary_url": "/rogue/perf/branches/bug-audit_xilinx/history/88e37d06670c9b2b3b19aada7a20ce3e03daf67a.json"
+    },
+    {
+      "ref_name": "bug-audit/xilinx",
       "sha": "49e3c41eef6c645accff9e7f9f13690b6e7f249f",
       "short_sha": "49e3c41",
       "published_at": "2026-05-07T18:23:02Z",
@@ -46,10 +54,10 @@
   ],
   "latest": {
     "ref_name": "bug-audit/xilinx",
-    "sha": "49e3c41eef6c645accff9e7f9f13690b6e7f249f",
-    "short_sha": "49e3c41",
-    "published_at": "2026-05-07T18:23:02Z",
-    "run_url": "https://github.com/slaclab/rogue/actions/runs/25513740891",
+    "sha": "88e37d06670c9b2b3b19aada7a20ce3e03daf67a",
+    "short_sha": "88e37d0",
+    "published_at": "2026-05-07T19:14:09Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/25515727486",
     "summary_url": "/rogue/perf/branches/bug-audit_xilinx/latest.json"
   }
 }
