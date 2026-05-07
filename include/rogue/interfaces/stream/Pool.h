@@ -198,12 +198,12 @@ class Pool : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Pool>
     /**
      * Allocate and Create a Buffer
      * This method is the default Buffer allocator. The requested
-     * buffer is created from either a malloc call or fulling a free entry from
-     * the memory pool if it is enabled. If fixed size is configured the
-     * size parameter is ignored and a Buffer is returned with the fixed size
-     * amount of memory. The passed total value is incremented by the
-     * allocated Buffer size. This method is protected to allow it to be called
-     * by a sub-class of Pool.
+     * buffer is created from either a new uint8_t[] call or pulling a free
+     * entry from the memory pool if it is enabled. If fixed size is configured the
+     * allocation size is rounded up to fixedSize_, but the usable (payload)
+     * size of the returned Buffer is min(size, fixedSize_). The passed total
+     * value is incremented by the usable Buffer size. This method is protected
+     * to allow it to be called by a sub-class of Pool.
      *
      * Not exposed to Python
      * @param size Buffer size requested
@@ -221,8 +221,11 @@ class Pool : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Pool>
      * hardware DMA driver. This method is protected to allow it to be called
      * by a sub-class of Pool.
      *
+     * Sub-classes passing non-new[] memory must override retBuffer() to avoid delete[]/malloc mismatch UB.
+     *
      * Not exposed to Python
-     * @param data Data pointer to pre-allocated memory block
+     * @param data Data pointer to pre-allocated memory block (must be
+     *             `delete[]`-compatible if `retBuffer()` is not overridden)
      * @param meta Meta data associated with pre-allocated memory block
      * @param size Usable size of memory block (may be smaller than allocated size)
      * @param alloc Allocated size of memory block (may be greater than requested size)

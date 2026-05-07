@@ -24,6 +24,7 @@
 #include <unistd.h>
 
 #include <memory>
+#include <new>
 #include <string>
 
 #include "rogue/GeneralError.h"
@@ -50,7 +51,7 @@ ris::Pool::Pool() {
 //! Destructor
 ris::Pool::~Pool() {
     while (!dataQ_.empty()) {
-        free(dataQ_.front());
+        delete[] dataQ_.front();
         dataQ_.pop();
     }
 }
@@ -94,7 +95,7 @@ void ris::Pool::retBuffer(uint8_t* data, uint32_t meta, uint32_t rawSize) {
         if (rawSize == fixedSize_ && poolSize_ > dataQ_.size())
             dataQ_.push(data);
         else
-            free(data);
+            delete[] data;
     }
     allocBytes_ -= rawSize;
     allocCount_--;
@@ -159,9 +160,12 @@ ris::BufferPtr ris::Pool::allocBuffer(uint32_t size, uint32_t* total) {
     if (dataQ_.size() > 0) {
         data = dataQ_.front();
         dataQ_.pop();
-    } else if ((data = reinterpret_cast<uint8_t*>(malloc(bAlloc))) == NULL) {
-        throw(
-            rogue::GeneralError::create("Pool::allocBuffer", "Failed to allocate buffer with size = %" PRIu32, bAlloc));
+    } else {
+        data = new (std::nothrow) uint8_t[bAlloc];
+        if (data == NULL)
+            throw(rogue::GeneralError::create("Pool::allocBuffer",
+                                              "Failed to allocate buffer with size = %" PRIu32,
+                                              bAlloc));
     }
 
     // Only use lower 24 bits of meta.
