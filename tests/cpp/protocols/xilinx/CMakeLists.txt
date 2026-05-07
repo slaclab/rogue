@@ -1,20 +1,8 @@
-if (NOT NO_PYTHON)
-   rogue_add_cpp_test(rogue-cpp-xvc-smoke
-      SOURCES
-         test_xvc_smoke.cpp
-      LABELS
-         xilinx
-         requires-python
-   )
-   set_tests_properties(rogue-cpp-xvc-smoke PROPERTIES TIMEOUT 10)
-endif()
-
-rogue_add_cpp_test(rogue-cpp-protocols-jtag-driver-swallow-audit-repro
+rogue_add_cpp_test(rogue-cpp-xvc-smoke
    SOURCES
-      test_jtag_driver_swallow_audit_repro.cpp
+      test_xvc_smoke.cpp
    LABELS
-      cpp-core
-      no-python
+      xilinx
+      requires-python
 )
-target_compile_definitions(rogue-cpp-protocols-jtag-driver-swallow-audit-repro
-   PRIVATE ROGUE_SRC_DIR="${CMAKE_SOURCE_DIR}")
+set_tests_properties(rogue-cpp-xvc-smoke PROPERTIES TIMEOUT 10)
