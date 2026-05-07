@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-07T19:14:09Z",
+  "generated_at": "2026-05-07T20:54:35Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -184,6 +184,29 @@
         "published_at": "2026-05-06T19:22:26Z",
         "run_url": "https://github.com/slaclab/rogue/actions/runs/25455897132",
         "summary_url": "/rogue/perf/branches/pre-release/latest.json"
+      }
+    },
+    {
+      "ref_name": "agent-guidance",
+      "ref_slug": "agent-guidance",
+      "latest_url": "/rogue/perf/branches/agent-guidance/latest.json",
+      "history": [
+        {
+          "ref_name": "agent-guidance",
+          "sha": "b85c8ff65a79f63984e1b4c5a1bd770eca153786",
+          "short_sha": "b85c8ff",
+          "published_at": "2026-05-07T20:54:35Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/25521260389",
+          "summary_url": "/rogue/perf/branches/agent-guidance/history/b85c8ff65a79f63984e1b4c5a1bd770eca153786.json"
+        }
+      ],
+      "latest": {
+        "ref_name": "agent-guidance",
+        "sha": "b85c8ff65a79f63984e1b4c5a1bd770eca153786",
+        "short_sha": "b85c8ff",
+        "published_at": "2026-05-07T20:54:35Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/25521260389",
+        "summary_url": "/rogue/perf/branches/agent-guidance/latest.json"
       }
     },
     {
