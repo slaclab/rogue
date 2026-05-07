@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-07T21:19:14Z",
+  "generated_at": "2026-05-07T21:35:43Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -195,138 +195,42 @@
       }
     },
     {
-      "ref_name": "bug-audit/tcp-client-server-core",
-      "ref_slug": "bug-audit_tcp-client-server-core",
-      "latest_url": "/rogue/perf/branches/bug-audit_tcp-client-server-core/latest.json",
+      "ref_name": "SQLAlchemy",
+      "ref_slug": "SQLAlchemy",
+      "latest_url": "/rogue/perf/branches/SQLAlchemy/latest.json",
       "history": [
         {
-          "ref_name": "bug-audit/tcp-client-server-core",
-          "sha": "74c862bbd4203d7c4f2dd0e521112e9d5c63d43c",
-          "short_sha": "74c862b",
-          "published_at": "2026-05-07T21:19:14Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/25522421380",
-          "summary_url": "/rogue/perf/branches/bug-audit_tcp-client-server-core/history/74c862bbd4203d7c4f2dd0e521112e9d5c63d43c.json"
+          "ref_name": "SQLAlchemy",
+          "sha": "28ba628ee77933e40773e8688313c09ec29e446f",
+          "short_sha": "28ba628",
+          "published_at": "2026-05-07T21:35:43Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/25523023542",
+          "summary_url": "/rogue/perf/branches/SQLAlchemy/history/28ba628ee77933e40773e8688313c09ec29e446f.json"
         },
         {
-          "ref_name": "bug-audit/tcp-client-server-core",
-          "sha": "fb30f5895fcba012df9c051efa8874f9842ba03b",
-          "short_sha": "fb30f58",
-          "published_at": "2026-05-07T18:25:11Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/25513704550",
-          "summary_url": "/rogue/perf/branches/bug-audit_tcp-client-server-core/history/fb30f5895fcba012df9c051efa8874f9842ba03b.json"
+          "ref_name": "SQLAlchemy",
+          "sha": "33d251e32fdbff5951830333cb199b6387747cfb",
+          "short_sha": "33d251e",
+          "published_at": "2026-05-06T23:23:27Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/25466488899",
+          "summary_url": "/rogue/perf/branches/SQLAlchemy/history/33d251e32fdbff5951830333cb199b6387747cfb.json"
         },
         {
-          "ref_name": "bug-audit/tcp-client-server-core",
-          "sha": "767c6caca9ab2983720db03256b837976c2c9702",
-          "short_sha": "767c6ca",
-          "published_at": "2026-05-07T16:25:56Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/25508182291",
-          "summary_url": "/rogue/perf/branches/bug-audit_tcp-client-server-core/history/767c6caca9ab2983720db03256b837976c2c9702.json"
-        },
-        {
-          "ref_name": "bug-audit/tcp-client-server-core",
-          "sha": "1af32c08574a0f611633b6636457b699ae0d225a",
-          "short_sha": "1af32c0",
-          "published_at": "2026-05-06T15:55:32Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/25445915862",
-          "summary_url": "/rogue/perf/branches/bug-audit_tcp-client-server-core/history/1af32c08574a0f611633b6636457b699ae0d225a.json"
-        },
-        {
-          "ref_name": "bug-audit/tcp-client-server-core",
-          "sha": "4880bbb2c5f6d475a795928c2c16b3e78bbe04dc",
-          "short_sha": "4880bbb",
-          "published_at": "2026-05-06T15:49:47Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/25445617927",
-          "summary_url": "/rogue/perf/branches/bug-audit_tcp-client-server-core/history/4880bbb2c5f6d475a795928c2c16b3e78bbe04dc.json"
-        },
-        {
-          "ref_name": "bug-audit/tcp-client-server-core",
-          "sha": "3ce43f17f7e9fe53b953a78521391783da9ad448",
-          "short_sha": "3ce43f1",
-          "published_at": "2026-05-06T15:42:48Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/25445267648",
-          "summary_url": "/rogue/perf/branches/bug-audit_tcp-client-server-core/history/3ce43f17f7e9fe53b953a78521391783da9ad448.json"
-        },
-        {
-          "ref_name": "bug-audit/tcp-client-server-core",
-          "sha": "b5985fc69c79109ee71d4ee68ad6612c6d44de85",
-          "short_sha": "b5985fc",
-          "published_at": "2026-05-06T08:24:28Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/25396372814",
-          "summary_url": "/rogue/perf/branches/bug-audit_tcp-client-server-core/history/b5985fc69c79109ee71d4ee68ad6612c6d44de85.json"
-        },
-        {
-          "ref_name": "bug-audit/tcp-client-server-core",
-          "sha": "28d23044f56561087e1b72354fc12da103f0eaa5",
-          "short_sha": "28d2304",
-          "published_at": "2026-05-05T18:47:30Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/25395046225",
-          "summary_url": "/rogue/perf/branches/bug-audit_tcp-client-server-core/history/28d23044f56561087e1b72354fc12da103f0eaa5.json"
-        },
-        {
-          "ref_name": "bug-audit/tcp-client-server-core",
-          "sha": "33ffbccd789cf22d691b13c585cbf85ba4d79d6e",
-          "short_sha": "33ffbcc",
-          "published_at": "2026-05-05T18:26:19Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/25394317062",
-          "summary_url": "/rogue/perf/branches/bug-audit_tcp-client-server-core/history/33ffbccd789cf22d691b13c585cbf85ba4d79d6e.json"
-        },
-        {
-          "ref_name": "bug-audit/tcp-client-server-core",
-          "sha": "3e899d1ef4710e7ee4d342eef900f2b54fd44310",
-          "short_sha": "3e899d1",
-          "published_at": "2026-05-05T18:10:52Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/25393463278",
-          "summary_url": "/rogue/perf/branches/bug-audit_tcp-client-server-core/history/3e899d1ef4710e7ee4d342eef900f2b54fd44310.json"
-        },
-        {
-          "ref_name": "bug-audit/tcp-client-server-core",
-          "sha": "c841bee5c5b1499a9722f5430f88aaaa9e3aadfa",
-          "short_sha": "c841bee",
-          "published_at": "2026-05-05T17:28:13Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/25391347564",
-          "summary_url": "/rogue/perf/branches/bug-audit_tcp-client-server-core/history/c841bee5c5b1499a9722f5430f88aaaa9e3aadfa.json"
-        },
-        {
-          "ref_name": "bug-audit/tcp-client-server-core",
-          "sha": "71e67430738104dddc4db0f48bcb5d1310f5f982",
-          "short_sha": "71e6743",
-          "published_at": "2026-05-05T16:51:47Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/25389300260",
-          "summary_url": "/rogue/perf/branches/bug-audit_tcp-client-server-core/history/71e67430738104dddc4db0f48bcb5d1310f5f982.json"
-        },
-        {
-          "ref_name": "bug-audit/tcp-client-server-core",
-          "sha": "6cbfc924828dc6e40ec43314892637f77d409f5e",
-          "short_sha": "6cbfc92",
-          "published_at": "2026-05-05T16:35:45Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/25388289317",
-          "summary_url": "/rogue/perf/branches/bug-audit_tcp-client-server-core/history/6cbfc924828dc6e40ec43314892637f77d409f5e.json"
-        },
-        {
-          "ref_name": "bug-audit/tcp-client-server-core",
-          "sha": "de58893e53ead9e6b3f17c159e390d0bb1fb47ea",
-          "short_sha": "de58893",
-          "published_at": "2026-05-05T15:58:33Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/25386850078",
-          "summary_url": "/rogue/perf/branches/bug-audit_tcp-client-server-core/history/de58893e53ead9e6b3f17c159e390d0bb1fb47ea.json"
-        },
-        {
-          "ref_name": "bug-audit/tcp-client-server-core",
-          "sha": "168e1cedc97ca22ec4e769324d160f0442cb2bd6",
-          "short_sha": "168e1ce",
-          "published_at": "2026-05-05T15:34:09Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/25385750589",
-          "summary_url": "/rogue/perf/branches/bug-audit_tcp-client-server-core/history/168e1cedc97ca22ec4e769324d160f0442cb2bd6.json"
+          "ref_name": "SQLAlchemy",
+          "sha": "506abd40e04b5ae279e494c96a086a2c598b6184",
+          "short_sha": "506abd4",
+          "published_at": "2026-05-06T22:59:07Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/25465561456",
+          "summary_url": "/rogue/perf/branches/SQLAlchemy/history/506abd40e04b5ae279e494c96a086a2c598b6184.json"
         }
       ],
       "latest": {
-        "ref_name": "bug-audit/tcp-client-server-core",
-        "sha": "74c862bbd4203d7c4f2dd0e521112e9d5c63d43c",
-        "short_sha": "74c862b",
-        "published_at": "2026-05-07T21:19:14Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/25522421380",
-        "summary_url": "/rogue/perf/branches/bug-audit_tcp-client-server-core/latest.json"
+        "ref_name": "SQLAlchemy",
+        "sha": "28ba628ee77933e40773e8688313c09ec29e446f",
+        "short_sha": "28ba628",
+        "published_at": "2026-05-07T21:35:43Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/25523023542",
+        "summary_url": "/rogue/perf/branches/SQLAlchemy/latest.json"
       }
     },
     {
@@ -1675,37 +1579,6 @@
         "published_at": "2026-05-07T18:07:51Z",
         "run_url": "https://github.com/slaclab/rogue/actions/runs/25513250969",
         "summary_url": "/rogue/perf/branches/bug-audit_packetizer/latest.json"
-      }
-    },
-    {
-      "ref_name": "SQLAlchemy",
-      "ref_slug": "SQLAlchemy",
-      "latest_url": "/rogue/perf/branches/SQLAlchemy/latest.json",
-      "history": [
-        {
-          "ref_name": "SQLAlchemy",
-          "sha": "33d251e32fdbff5951830333cb199b6387747cfb",
-          "short_sha": "33d251e",
-          "published_at": "2026-05-06T23:23:27Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/25466488899",
-          "summary_url": "/rogue/perf/branches/SQLAlchemy/history/33d251e32fdbff5951830333cb199b6387747cfb.json"
-        },
-        {
-          "ref_name": "SQLAlchemy",
-          "sha": "506abd40e04b5ae279e494c96a086a2c598b6184",
-          "short_sha": "506abd4",
-          "published_at": "2026-05-06T22:59:07Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/25465561456",
-          "summary_url": "/rogue/perf/branches/SQLAlchemy/history/506abd40e04b5ae279e494c96a086a2c598b6184.json"
-        }
-      ],
-      "latest": {
-        "ref_name": "SQLAlchemy",
-        "sha": "33d251e32fdbff5951830333cb199b6387747cfb",
-        "short_sha": "33d251e",
-        "published_at": "2026-05-06T23:23:27Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/25466488899",
-        "summary_url": "/rogue/perf/branches/SQLAlchemy/latest.json"
       }
     },
     {
