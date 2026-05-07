@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Stream TCP Bridge &mdash; Rogue v6.12.0-38-g304671f5a documentation</title>
+  <title>Stream TCP Bridge &mdash; Rogue v6.12.0-41-g5fe6fdcfd documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../_static/slac-favicon-192.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=dca5c5d4"></script>
+      <script src="../_static/documentation_options.js?v=5213bfaa"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -315,9 +315,11 @@ the stream graph.</p>
 <p>For a small number of bridges, the default operating-system limits are usually
 fine. For many parallel TCP bridge instances, file-descriptor and process limits
 may need to be tuned at the operating-system level.</p>
-<p>During controlled shutdown paths, call <code class="docutils literal notranslate"><span class="pre">stop()</span></code> so the bridge threads and
-sockets are released cleanly.  (The legacy <code class="docutils literal notranslate"><span class="pre">close()</span></code> method still works but is
-deprecated and will be removed in a future release.)</p>
+<p>During controlled shutdown paths, C++ code should call <code class="docutils literal notranslate"><span class="pre">stop()</span></code> so bridge
+threads and sockets are released cleanly. In Python, Rogue exposes <code class="docutils literal notranslate"><span class="pre">_stop()</span></code>
+for managed-interface lifecycle teardown. The legacy Python <code class="docutils literal notranslate"><span class="pre">close()</span></code> method
+still works but is deprecated; prefer the managed lifecycle hook or C++
+<code class="docutils literal notranslate"><span class="pre">stop()</span></code> in new code.</p>
 </section>
 <section id="resource-configuration-for-multiple-streams">
 <h2>Resource Configuration For Multiple Streams<a class="headerlink" href="#resource-configuration-for-multiple-streams" title="Link to this heading"></a></h2>
