@@ -22,15 +22,13 @@ rogue_add_cpp_test(rogue-cpp-ctor-catch-thread-cleanup
       no-python
 )
 
-rogue_add_cpp_test(rogue-cpp-queue-thread-safety-audit-repro
+rogue_add_cpp_test(rogue-cpp-queue-thread-safety
    SOURCES
-      test_queue_empty_thread_safety_audit_repro.cpp
+      test_queue_thread_safety.cpp
    LABELS
       cpp-core
       no-python
 )
-target_compile_definitions(rogue-cpp-queue-thread-safety-audit-repro
-   PRIVATE ROGUE_SRC_DIR="${PROJECT_SOURCE_DIR}")
 # Bound any hang from a regression that leaves a producer parked in pushCond_.wait().
-set_tests_properties(rogue-cpp-queue-thread-safety-audit-repro
+set_tests_properties(rogue-cpp-queue-thread-safety
    PROPERTIES TIMEOUT 60)
