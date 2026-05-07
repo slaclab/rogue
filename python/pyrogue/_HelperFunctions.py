@@ -70,10 +70,6 @@ def addLibraryPath(path: str | list[str]) -> None:
     else:
         base = os.path.dirname(sys.argv[0])
 
-    # If script was not started with ./       # If script was not started with ./
-    if base == '':
-        base = '.'
-
     # If script was not started with ./
     if base == '':
         base = '.'
@@ -226,10 +222,10 @@ def yamlToData(stream: str = '', fName: str | None = None) -> Any:
 
     log = pr.logInit(name='yamlToData')
 
-    class PyrogueLoader(yaml.Loader):
+    class PyrogueLoader(yaml.SafeLoader):
         pass
 
-    def include_mapping(loader: yaml.Loader, node: Any) -> Any:
+    def include_mapping(loader: yaml.SafeLoader, node: Any) -> Any:
         """Resolve and load a ``!include`` YAML reference."""
         rel = loader.construct_scalar(node)
 
@@ -243,12 +239,12 @@ def yamlToData(stream: str = '', fName: str | None = None) -> Any:
 
         # File is relative without a base path, assume cwd (Current working directory)
         else:
-            filename = node
+            filename = rel
 
         # Recursive call, flatten relative jumps
         return yamlToData(fName=os.path.abspath(filename))
 
-    def construct_mapping(loader: yaml.Loader, node: Any) -> odict:
+    def construct_mapping(loader: yaml.SafeLoader, node: Any) -> odict:
         """Construct mappings as ``OrderedDict`` to preserve key order."""
         loader.flatten_mapping(node)
         return odict(loader.construct_pairs(node))
@@ -258,7 +254,11 @@ def yamlToData(stream: str = '', fName: str | None = None) -> Any:
 
     # Use passed string
     if fName is None:
-        return yaml.load(stream,Loader=PyrogueLoader)
+        try:
+            return yaml.load(stream, Loader=PyrogueLoader)
+        except yaml.constructor.ConstructorError as exc:
+            log.error("YAML contained an unsafe or unrecognised tag: %s", exc)
+            raise
 
     # Main or sub-file is in a zip
     elif '.zip' in fName:
@@ -269,13 +269,21 @@ def yamlToData(stream: str = '', fName: str | None = None) -> Any:
 
         with zipfile.ZipFile(base, 'r', compression=zipfile.ZIP_LZMA) as myzip:
             with myzip.open(sub) as myfile:
-                return yaml.load(myfile.read(),Loader=PyrogueLoader)
+                try:
+                    return yaml.load(myfile.read(), Loader=PyrogueLoader)
+                except yaml.constructor.ConstructorError as exc:
+                    log.error("YAML contained an unsafe or unrecognised tag: %s", exc)
+                    raise
 
     # Non zip file
     else:
         log.debug("loading %s", fName)
-        with open(fName,'r') as f:
-            return yaml.load(f.read(),Loader=PyrogueLoader)
+        with open(fName, 'r') as f:
+            try:
+                return yaml.load(f.read(), Loader=PyrogueLoader)
+            except yaml.constructor.ConstructorError as exc:
+                log.error("YAML contained an unsafe or unrecognised tag: %s", exc)
+                raise
 
 
 def dataToYaml(data: Any) -> str:

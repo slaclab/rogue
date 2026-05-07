@@ -51,11 +51,7 @@ static std::mutex sharedBuffersMtx;
 rha::AxiStreamDmaShared::AxiStreamDmaShared(std::string path) {
     this->fd        = -1;
     this->path      = path;
-    // Start at 0; openShared() is the single point that increments openCount
-    // for every caller (including the !zCopyEn early-return path), so a freshly
-    // constructed record must contribute zero to the refcount.  Initializing to
-    // 1 here previously double-counted entries seeded by zeroCopyDisable() and
-    // was the root cause of openCount drifting negative on close.
+    // openShared() increments; start at 0 to avoid double-counting.
     this->openCount = 0;
     this->rawBuff   = NULL;
     this->bCount    = 0;
@@ -82,11 +78,6 @@ rha::AxiStreamDmaSharedPtr rha::AxiStreamDma::openShared(std::string path, rogue
             return ret;
         }
 
-        // Entry was seeded by zeroCopyDisable() (or fully closed and is being
-        // reopened with zCopyEn=false): no kernel fd will be held, but every
-        // AxiStreamDma sharing this path is still a refcount user.  Without
-        // this branch, closeShared() would decrement an entry that never got
-        // counted, driving openCount negative.
         if (!ret->zCopyEn) {
             ret->openCount++;
             log->debug("Zero copy is disabled. Not Mapping Buffers for %s", path.c_str());
@@ -107,17 +98,7 @@ rha::AxiStreamDmaSharedPtr rha::AxiStreamDma::openShared(std::string path, rogue
         throw(rogue::GeneralError::create("AxiStreamDma::openShared", "Failed to open device file: %s", path.c_str()));
 
     // Check driver version ( ApiVersion 0x05 (or less) is the 32-bit address version)
-    //
-    // closeShared() leaves entries in sharedBuffers_ after openCount drops to
-    // 0 (only fd/bCount/bSize/rawBuff are reset), so an entry can be re-entered
-    // here via the "fd == -1, zCopyEn == true" fall-through.  If we close the
-    // fd on error but leave ret->fd != -1, the persistent map entry will still
-    // hold the (now closed) descriptor, and the next openShared() caller would
-    // hit the "ret->fd != -1" fast-path and reuse a stale fd.  Reset the
-    // shared record fd (ret->fd) to -1 (and clear any partial mapping state)
-    // on every error path before throwing.  Note: ret->fd here is the shared
-    // AxiStreamDmaShared record field, distinct from the AxiStreamDma::fd_
-    // per-instance member.
+    // Reset ret->fd to -1 on every error path to prevent stale-fd reuse.
     if (dmaGetApiVersion(ret->fd) < 0x06) {
         ::close(ret->fd);
         ret->fd = -1;
@@ -142,10 +123,7 @@ rha::AxiStreamDmaSharedPtr rha::AxiStreamDma::openShared(std::string path, rogue
     // Should this just be a warning?
     ret->rawBuff = dmaMapDma(ret->fd, &(ret->bCount), &(ret->bSize));
     if (ret->rawBuff == NULL) {
-        // dmaMapDma may have written to bCount/bSize even on failure; query
-        // the buffer count one more time for the user-facing error message,
-        // then scrub the shared record so a future openShared() on a
-        // re-entered entry starts clean.
+        // Scrub shared record so a re-entered entry starts clean.
         uint32_t mapSize = dmaGetBuffCount(ret->fd) + 8192;
 
         ::close(ret->fd);
@@ -177,10 +155,6 @@ void rha::AxiStreamDma::closeShared(rha::AxiStreamDmaSharedPtr desc) {
             dmaUnMapDma(desc->fd, desc->rawBuff);
         }
 
-        // Guard against close(-1).  In the zeroCopyDisable() flow desc->fd is
-        // never opened, so calling ::close(desc->fd) here would issue a real
-        // syscall with fd=-1 and return EBADF.  Skip the close when the fd
-        // was never held by this descriptor.
         if (desc->fd != -1) {
             ::close(desc->fd);
         }
@@ -241,10 +215,7 @@ rha::AxiStreamDma::AxiStreamDma(std::string path, uint32_t dest, bool ssiEnable)
             rogue::GeneralError::create("AxiStreamDma::AxiStreamDma", "Failed to open device file: %s", path.c_str()));
     }
 
-    // Reject fd_ >= FD_SETSIZE synchronously here, before the worker thread
-    // starts, so that an out-of-range fd surfaces as a clean ctor exception
-    // instead of throwing later from runThread()/acceptReq()/acceptFrame()
-    // (which would call std::terminate() because those throws are uncaught).
+    // Fail early; uncaught throw from runThread() would call std::terminate().
     if (fd_ >= FD_SETSIZE) {
         int badFd = fd_;
         ::close(fd_);
@@ -257,15 +228,7 @@ rha::AxiStreamDma::AxiStreamDma(std::string path, uint32_t dest, bool ssiEnable)
                                           FD_SETSIZE));
     }
 
-    // desc_->bCount and desc_->bSize live in the shared AxiStreamDmaShared
-    // instance returned by openShared(), which is also looked up under
-    // sharedBuffersMtx by other concurrent constructions on the same path.
-    // Two ctors racing here would otherwise both write the same fields
-    // without synchronisation - a data race even when the values written
-    // are identical.  Take the same mutex that openShared / closeShared /
-    // zeroCopyDisable use, and BOTH read and write bCount under it (the
-    // earlier "read at function entry, write inside the conditional" form
-    // left the read racing with another ctor's write).
+    // Protect shared bCount/bSize against concurrent ctor races.
     {
         std::lock_guard<std::mutex> lock(sharedBuffersMtx);
         if (desc_->rawBuff == NULL) {
@@ -314,25 +277,13 @@ rha::AxiStreamDma::~AxiStreamDma() {
 void rha::AxiStreamDma::stop() {
     rogue::GilRelease noGil;
 
-    // Signal the worker to exit; idempotent so stop() can be called multiple
-    // times (user-initiated stop() followed by ~AxiStreamDma()).
     threadEn_ = false;
 
-    // Join based on thread state, not threadEn_.  runThread() can now exit on
-    // its own (e.g. the in-loop fd_ guard) by setting threadEn_ = false and
-    // returning, so gating cleanup on threadEn_ here would skip the join and
-    // ~unique_ptr<std::thread> on a still-joinable thread would call
-    // std::terminate().  Joining via joinable() handles both that early-exit
-    // path and the normal stop() path with the same code.
     if (thread_ && thread_->joinable()) {
         thread_->join();
     }
     thread_.reset();
 
-    // Release the shared descriptor exactly once even if stop() is called
-    // again (or runThread() self-exited and the user called stop() before
-    // ~AxiStreamDma()): clearing desc_ after closeShared() prevents a
-    // double-decrement of openCount.
     if (desc_) {
         closeShared(desc_);
         desc_.reset();
@@ -374,10 +325,6 @@ ris::FramePtr rha::AxiStreamDma::acceptReq(uint32_t size, bool zeroCopyEn) {
     ris::FramePtr frame;
     uint32_t buffSize;
 
-    // Reject use after stop()/teardown.  stop() resets the shared-descriptor
-    // shared_ptr to nullptr and closes the per-instance fd, so a post-stop
-    // call would otherwise segfault on the buffer-size read below instead
-    // of throwing a clean GeneralError.
     if (!desc_ || fd_ < 0)
         throw rogue::GeneralError("AxiStreamDma::acceptReq",
                                   "instance has been stopped or did not finish construction");
@@ -453,11 +400,6 @@ void rha::AxiStreamDma::acceptFrame(ris::FramePtr frame) {
     uint32_t cont;
     bool emptyFrame;
 
-    // Reject use after stop()/teardown.  stop() releases the shared descriptor
-    // and closes fd_, so the inner-loop FD_SETSIZE guard would still catch
-    // this, but that fires only after frame->lock() and buffer iteration
-    // have already run.  Fail-fast at entry for a cleaner error path,
-    // mirroring the guard in acceptReq().
     if (!desc_ || fd_ < 0)
         throw rogue::GeneralError("AxiStreamDma::acceptFrame",
                                   "instance has been stopped or did not finish construction");
@@ -613,12 +555,7 @@ void rha::AxiStreamDma::runThread(std::weak_ptr<int> lockPtr) {
     frame = ris::Frame::create();
 
     while (threadEn_) {
-        // Setup fds for select call.  runThread() has no top-level catch,
-        // so a throw here would call std::terminate.  The ctor already
-        // guarantees fd_ < FD_SETSIZE; this in-loop check only fires if
-        // stop()/close() races with the worker and toggles fd_ to -1.
-        // Log and exit the worker cleanly in that case so stop() can
-        // complete instead of crashing the process.
+        // Exit cleanly if stop() races with the worker.
         if (fd_ < 0 || fd_ >= FD_SETSIZE) {
             log_->error("AxiStreamDma::runThread: fd_ value %d out of FD_SETSIZE range; exiting worker", fd_);
             threadEn_ = false;

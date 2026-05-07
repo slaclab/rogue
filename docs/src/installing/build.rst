@@ -23,7 +23,7 @@ The following packages are required to build the Rogue library:
 
 * CMake >= 3.15
 * Boost >= 1.58
-* Python3 >= 3.9
+* Python3 >= 3.10
 * Bz2
 
 Package Manager Install
@@ -207,40 +207,42 @@ following toolchain file was used as an example:
    set(CMAKE_SYSTEM_NAME               Generic)
    set(CMAKE_SYSTEM_PROCESSOR          x86_64)
 
-   set(CMAKE_C_COMPILER_AR     /afs/slac/package/linuxRT/buildroot-2019.08/host/linux-x86_64/x86_64/usr/bin/x86_64-linux-ar)
-   set(CMAKE_ASM_COMPILER      /afs/slac/package/linuxRT/buildroot-2019.08/host/linux-x86_64/x86_64/usr/bin/x86_64-linux-gcc)
-   set(CMAKE_C_COMPILER        /afs/slac/package/linuxRT/buildroot-2019.08/host/linux-x86_64/x86_64/usr/bin/x86_64-linux-gcc)
-   set(CMAKE_CXX_COMPILER      /afs/slac/package/linuxRT/buildroot-2019.08/host/linux-x86_64/x86_64/usr/bin/x86_64-linux-g++)
-   set(CMAKE_LINKER            /afs/slac/package/linuxRT/buildroot-2019.08/host/linux-x86_64/x86_64/usr/bin/x86_64-linux-ld)
-   set(CMAKE_OBJCOPY           /afs/slac/package/linuxRT/buildroot-2019.08/host/linux-x86_64/x86_64/usr/bin/x86_64-linux-objcopy)
-   set(CMAKE_C_COMPILER_RANLIB /afs/slac/package/linuxRT/buildroot-2019.08/host/linux-x86_64/x86_64/usr/bin/x86_64-linux-ranlib)
-   set(CMAKE_SIZE              /afs/slac/package/linuxRT/buildroot-2019.08/host/linux-x86_64/x86_64/usr/bin/x86_64-linux-size)
-   set(CMAKE_STRIP             /afs/slac/package/linuxRT/buildroot-2019.08/host/linux-x86_64/x86_64/usr/bin/x86_64-linux-strip)
+   set(CMAKE_C_COMPILER_AR     /sdf/sw/epics/package/linuxRT/buildroot-2025.02/host/linux-x86_64/x86_64/bin/x86_64-linux-ar)
+   set(CMAKE_ASM_COMPILER      /sdf/sw/epics/package/linuxRT/buildroot-2025.02/host/linux-x86_64/x86_64/bin/x86_64-linux-gcc)
+   set(CMAKE_C_COMPILER        /sdf/sw/epics/package/linuxRT/buildroot-2025.02/host/linux-x86_64/x86_64/bin/x86_64-linux-gcc)
+   set(CMAKE_CXX_COMPILER      /sdf/sw/epics/package/linuxRT/buildroot-2025.02/host/linux-x86_64/x86_64/bin/x86_64-linux-g++)
+   set(CMAKE_LINKER            /sdf/sw/epics/package/linuxRT/buildroot-2025.02/host/linux-x86_64/x86_64/bin/x86_64-linux-ld)
+   set(CMAKE_OBJCOPY           /sdf/sw/epics/package/linuxRT/buildroot-2025.02/host/linux-x86_64/x86_64/bin/x86_64-linux-objcopy)
+   set(CMAKE_C_COMPILER_RANLIB /sdf/sw/epics/package/linuxRT/buildroot-2025.02/host/linux-x86_64/x86_64/bin/x86_64-linux-ranlib)
+   set(CMAKE_SIZE              /sdf/sw/epics/package/linuxRT/buildroot-2025.02/host/linux-x86_64/x86_64/bin/x86_64-linux-size)
+   set(CMAKE_STRIP             /sdf/sw/epics/package/linuxRT/buildroot-2025.02/host/linux-x86_64/x86_64/bin/x86_64-linux-strip)
 
    set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
    set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
    set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 
    # Define location of BZIP2 (cross-compiled)
-   set(BZIP2_LIBRARIES   /afs/slac/g/lcls/package/bzip2/1.0.6/buildroot-2019.08-x86_64/lib/libbz2.a)
-   set(BZIP2_INCLUDE_DIR /afs/slac/g/lcls/package/bzip2/1.0.6/buildroot-2019.08-x86_64/include)
+   set(BZIP2_LIBRARIES   /sdf/sw/epics/package/bzip2/1.0.8/buildroot-2025.02-x86_64/lib/libbz2.a)
+   set(BZIP2_INCLUDE_DIR /sdf/sw/epics/package/bzip2/1.0.8/buildroot-2025.02-x86_64/include)
 
-   # Define  the location of ZMQ (cross-compiled)
-   set(ZeroMQ_LIBRARY     /afs/slac/g/lcls/package/libzmq/zeromq-4.3.4/buildroot-2019.08-x86_64/lib/libzmq.a)
-   set(ZeroMQ_INCLUDE_DIR /afs/slac/g/lcls/package/libzmq/zeromq-4.3.4/buildroot-2019.08-x86_64/include)
+   # Define the location of ZMQ (cross-compiled).
+   # ZMQ must be cross-compiled locally; no pre-built package exists on SDF.
+   set(ZeroMQ_LIBRARY     /path/to/cross-compiled/libzmq.a)
+   set(ZeroMQ_INCLUDE_DIR /path/to/cross-compiled/include)
 
-   # Define the location of python3 (cross-compiled)
-   set(PYTHON_LIBRARY     /afs/slac/g/lcls/package/python/3.6.1/buildroot-2019.08-x86_64/lib/libpython3.6m.so)
-   set(PYTHON_INCLUDE_DIR /afs/slac/g/lcls/package/python/3.6.1/buildroot-2019.08-x86_64/include/python3.6m)
+   # Define the location of python3 (cross-compiled).
+   # The buildroot-2025.02 toolchain bundles Python 3.12 in its host directory.
+   set(PYTHON_LIBRARY     /sdf/sw/epics/package/linuxRT/buildroot-2025.02/host/linux-x86_64/x86_64/lib/libpython3.12.so)
+   set(PYTHON_INCLUDE_DIR /sdf/sw/epics/package/linuxRT/buildroot-2025.02/host/linux-x86_64/x86_64/include/python3.12)
 
    # Define the location of boost (cross-compiled)
-   set(BOOST_ROOT /afs/slac/g/lcls/package/boost/1.64.0/buildroot-2019.08-x86_64)
+   set(BOOST_ROOT /sdf/sw/epics/package/boost/1.64.0/buildroot-2025.02-x86_64)
 
 Then build Rogue as described above, but add the
 ``CMAKE_TOOLCHAIN_FILE`` variable when calling CMake:
 
 .. code::
 
-   cmake .. -DCMAKE_TOOLCHAIN_FILE=buildroot-2019.08-x86_64.cmake
+   cmake .. -DCMAKE_TOOLCHAIN_FILE=buildroot-2025.02-x86_64.cmake
 
 **Note:** Pass the correct absolute or relative path to the toolchain file.

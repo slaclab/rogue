@@ -54,12 +54,11 @@ if args.cmd == 'path':
     print(os.path.dirname(__file__))
     exit()
 
-# Common extraction for single server address
 try:
     host = args.server.split(',')[0].split(':')[0]
     port = int(args.server.split(',')[0].split(':')[1])
-except Exception:
-    raise Exception("Failed to extract server host & port")
+except (ValueError, IndexError) as exc:
+    raise ValueError(f"Failed to extract server host & port from {args.server!r}") from exc
 
 print("Connecting to {}".format(args.server))
 
@@ -135,6 +134,9 @@ else:
 
     elif args.cmd == 'exec':
         ret = client.exec(args.path,args.value)
+
+    else:
+        ret = None
 
     if ret is not None:
         print(f'\nRet = {ret}')

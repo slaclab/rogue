@@ -411,7 +411,6 @@ def test_device_set_yaml_supports_array_variable_wildcards_and_scalar_slices():
             modes=["RW"],
         )
 
-        # Wildcard writes broadcast across the whole array.
         assert list(root.Parent.Ch[0].InnerArray.value()) == [5, 7, 7, 5]
 
         root.Parent.setYaml(
@@ -423,7 +422,7 @@ def test_device_set_yaml_supports_array_variable_wildcards_and_scalar_slices():
             modes=["RW"],
         )
 
-        # ``[:]`` is the same all-elements selection as ``[*]``.
+        # [:] is equivalent to [*]
         assert list(root.Parent.Ch[0].InnerArray.value()) == [9, 9, 9, 9]
 
 
@@ -540,8 +539,7 @@ def test_device_load_yaml_zip_support(tmp_path):
     archive = tmp_path / "configs.zip"
 
     with zipfile.ZipFile(archive, "w", compression=zipfile.ZIP_LZMA) as zf:
-        # Write the override first to prove load order follows sorted names,
-        # not archive insertion order.
+        # Override written first; load order is sorted names, not insertion order.
         zf.writestr("cfg/10-overrides.yml", "OuterRemote: 25\n")
         zf.writestr("cfg/00-defaults.yml", "OuterRemote: 12\nInner:\n  InnerLocal: 77\n")
 
