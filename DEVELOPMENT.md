@@ -46,6 +46,8 @@ Top-level areas:
 - `docs/`: Sphinx and Doxygen documentation sources and publishing helpers.
 - `scripts/`: linting, documentation, and performance-publishing utilities.
 - `.github/workflows/`: CI workflows for Linux, macOS, docs, and perf jobs.
+- `docs/plans/`: planning, progress, handoff, and decision notes for
+  substantial feature work.
 - `conda.yml`, `pip_requirements*.txt`, `conda-recipe/`, `docker/`:
   environment, packaging, and container support.
 
@@ -79,6 +81,27 @@ Generated and local-only outputs:
   generated output is intentionally tracked by the repository.
 - Do not rely on files produced by a previous local build when explaining or
   validating a change; rebuild or reconfigure when the generated state matters.
+
+## Agent Work Records
+
+For substantial feature work that may span multiple context windows, keep
+agent-generated planning and handoff notes under
+`docs/plans/<task-name>/`.
+
+Use these files to preserve working context:
+
+- `PLAN.md`: scope, assumptions, affected subsystems, intended approach, and
+  validation plan.
+- `PROGRESS.md`: completed work, commands run, results, blockers, and open
+  questions.
+- `HANDOFF.md`: current state, remaining tasks, risks, verification gaps, and
+  exact next steps.
+- `DECISIONS.md`: important tradeoffs or design decisions.
+
+Keep these notes concise and factual. Do not store secrets, raw logs, or local
+environment noise. When work completes, either keep useful durable notes or
+move the important information into permanent docs, tests, comments, issues, or
+PR text.
 
 ## Architecture
 
@@ -341,7 +364,8 @@ Documentation sources:
 - `docs/src/_ext/`: custom Sphinx extensions for Boost.Python and C++ source
   links.
 - `docs/README.md`: notes for docs generation helpers.
-- `docs/plans/`: planning documents for docs/publishing changes.
+- `docs/plans/`: repo-local planning, progress, handoff, and decision notes
+  for substantial feature work.
 
 When changing public APIs:
 
@@ -422,15 +446,18 @@ Use this workflow for most tasks:
 1. Read the nearby code and tests before editing.
 2. Identify whether the contract is C++, Python, docs, tests, packaging, or a
    cross-layer behavior.
-3. Make the smallest coherent change in the owning subsystem.
-4. For public API changes, update bindings, docs, examples, and compatibility
+3. For substantial feature work, create or update
+   `docs/plans/<task-name>/PLAN.md`.
+4. Make the smallest coherent change in the owning subsystem.
+5. For public API changes, update bindings, docs, examples, and compatibility
    notes as needed.
-5. Update public docs or docstrings when user-facing behavior changes.
-6. Add or update focused tests following `tests/METHODOLOGY.md`.
-7. Run the narrowest useful command first.
-8. Expand verification to the closest CI-equivalent command when risk warrants.
-9. Leave unrelated files untouched.
-10. Do not stage or commit unless explicitly asked.
+6. Update public docs or docstrings when user-facing behavior changes.
+7. Add or update focused tests following `tests/METHODOLOGY.md`.
+8. Run the narrowest useful command first.
+9. Expand verification to the closest CI-equivalent command when risk warrants.
+10. Update `PROGRESS.md` or `HANDOFF.md` when the work spans context windows.
+11. Leave unrelated files untouched.
+12. Do not stage or commit unless explicitly asked.
 
 ## Agent Checklist
 
@@ -440,8 +467,10 @@ At the start of a new AI-agent context window:
 2. Read `tests/METHODOLOGY.md` for any change that may need tests.
 3. Check `git status --short --branch`.
 4. Inspect the files and tests nearest the requested change.
-5. Preserve user changes already present in the worktree.
-6. Avoid broad rewrites and unrelated cleanup.
-7. Report commands run and any verification gaps.
+5. For substantial feature work, check `docs/plans/` for an existing
+   feature plan or handoff.
+6. Preserve user changes already present in the worktree.
+7. Avoid broad rewrites and unrelated cleanup.
+8. Report commands run and any verification gaps.
 
 When uncertain, prefer the established local pattern over inventing a new one.
