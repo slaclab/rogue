@@ -117,7 +117,7 @@ rim::TcpClient::TcpClient(std::string addr, uint16_t port, bool waitReady) : rim
 
         // Start rx thread
         threadEn_     = true;
-        this->thread_ = new std::thread(&rim::TcpClient::runThread, this);
+        this->thread_ = std::make_unique<std::thread>(&rim::TcpClient::runThread, this);
 
         // Set a thread name
 #ifndef __MACH__
@@ -131,13 +131,12 @@ rim::TcpClient::TcpClient(std::string addr, uint16_t port, bool waitReady) : rim
         // a transaction into Python, and joining while holding the GIL would
         // deadlock.
         threadEn_ = false;
-        if (thread_ != nullptr) {
+        if (thread_) {
             {
                 rogue::GilRelease noGil;
                 thread_->join();
             }
-            delete thread_;
-            thread_ = nullptr;
+            thread_.reset();
         }
         if (zmqResp_ != nullptr) {
             zmq_close(zmqResp_);
@@ -170,8 +169,7 @@ void rim::TcpClient::stop() {
         rogue::GilRelease noGil;
         threadEn_ = false;
         thread_->join();
-        delete thread_;
-        thread_ = nullptr;
+        thread_.reset();
         zmq_close(this->zmqResp_);
         zmqResp_ = nullptr;
         zmq_close(this->zmqReq_);
@@ -411,9 +409,8 @@ void rim::TcpClient::runThread() {
             // Lock transaction
             rim::TransactionLockPtr lock = tran->lock();
 
-            // Transaction expired
             if (tran->expired()) {
-                bridgeLog_->warning("Transaction expired. Id=%" PRIu32, id);
+                bridgeLog_->warning("Dropping late response for expired transaction. Id=%" PRIu32, id);
                 for (x = 0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
                 continue;  // while (1)
             }
@@ -457,12 +454,16 @@ void rim::TcpClient::runThread() {
 void rim::TcpClient::setup_python() {
 #ifndef NO_PYTHON
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
     bp::class_<rim::TcpClient, rim::TcpClientPtr, bp::bases<rim::Slave>, boost::noncopyable>(
         "TcpClient",
         bp::init<std::string, uint16_t, bp::optional<bool> >())
         .def("close", &rim::TcpClient::close)
         .def("waitReady", &rim::TcpClient::waitReady)
-        .def("_start", &rim::TcpClient::start);
+        .def("_start", &rim::TcpClient::start)
+        .def("_stop", &rim::TcpClient::stop);
+#pragma GCC diagnostic pop
 
     bp::implicitly_convertible<rim::TcpClientPtr, rim::SlavePtr>();
 #endif
