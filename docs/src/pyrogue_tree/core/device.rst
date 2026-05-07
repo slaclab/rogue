@@ -361,7 +361,35 @@ Nodes from local functions.
 
    @pyrogue.command(name='ReadConfig', value='', description='Load config file')
    def _readConfig(self, arg):
-       self.root.loadYaml(name=arg, writeEach=False, modes=['RW', 'WO'])
+       self.loadYaml(name=arg, writeEach=False, modes=['RW', 'WO'])
+
+Device-Level YAML Configuration
+================================
+
+Device provides ``saveYaml``, ``loadYaml``, and ``setYaml`` methods that
+operate on the device subtree using device-relative paths. This allows
+configuration of individual devices without needing to know the full tree
+structure above the device.
+
+.. code-block:: python
+
+   with root:
+       # Save config from a specific device
+       root.MyBoard.saveYaml(name="board.yml", readFirst=True, modes=["RW", "WO"])
+
+       # Load config back — YAML uses device-relative paths
+       root.MyBoard.loadYaml(name="board.yml", writeEach=False, modes=["RW", "WO"])
+
+       # Apply YAML text directly
+       root.MyBoard.setYaml(
+           yml="SubDevice:\n  Variable: 42\n",
+           writeEach=False,
+           modes=["RW"],
+       )
+
+Device-level loads write only the blocks belonging to the device and its
+descendants. For details on the YAML format, path resolution, and array
+matching, see :doc:`/pyrogue_tree/core/yaml_configuration`.
 
 What To Explore Next
 ====================
