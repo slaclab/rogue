@@ -82,7 +82,7 @@ rha::AxiMemMap::AxiMemMap(std::string path) : rim::Slave(4, 0xFFFFFFFF) {
 
     threadEn_ = true;
     try {
-        thread_ = new std::thread(&rha::AxiMemMap::runThread, this);
+        thread_ = std::make_unique<std::thread>(&rha::AxiMemMap::runThread, this);
     } catch (...) {
         threadEn_ = false;
         ::close(fd_);
@@ -103,8 +103,7 @@ void rha::AxiMemMap::stop() {
         threadEn_ = false;
         queue_.stop();
         thread_->join();
-        delete thread_;
-        thread_ = nullptr;
+        thread_.reset();
         ::close(fd_);
         fd_ = -1;
     }
