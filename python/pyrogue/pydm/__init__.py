@@ -15,8 +15,10 @@ from __future__ import annotations
 # copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
+import logging
 import os
 import signal
+import sys
 import inspect
 from collections.abc import Callable
 from types import FrameType
@@ -155,16 +157,56 @@ def runPyDM(
     -------
     None
         This function runs the Qt event loop until the application exits.
+
+    Notes
+    -----
+    Do **not** instantiate a plain :class:`qtpy.QtWidgets.QApplication`
+    before calling ``runPyDM``. ``runPyDM`` constructs a
+    :class:`pydm.PyDMApplication`, which must be the sole
+    :class:`qtpy.QtWidgets.QApplication` in the process so PyDM's
+    window-management hooks (``XSync`` counter updates and
+    ``_NET_WM_PING`` reply registration) attach to the visible windows.
+    Constructing a plain :class:`qtpy.QtWidgets.QApplication` first leaves
+    PyDM's hooks bound to a stub instance and the visible windows fail to
+    reply to the compositor's ping/sync messages, leading to spurious
+    "not responding" warnings (notably under GNOME-on-Wayland with
+    XWayland). ``runPyDM`` detects this case and raises :class:`RuntimeError`.
     """
     import pydm
     import pydm.data_plugins
     from pydm.utilities import establish_widget_connections
     from pydm.widgets.rules import register_widget_rules
+    from qtpy.QtWidgets import QApplication
 
     from pyrogue.pydm.data_plugins.rogue_plugin import RoguePlugin
 
     if sum(v is not None for v in (ui, display, display_factory)) > 1:
         raise ValueError("ui, display, and display_factory are mutually exclusive")
+
+    existing_app = QApplication.instance()
+    if existing_app is not None and not isinstance(existing_app, pydm.PyDMApplication):
+        detected_cls = type(existing_app)
+        detected_name = f"{detected_cls.__module__}.{detected_cls.__qualname__}"
+        detected_repr = f"{detected_name} id=0x{id(existing_app):x}"
+        msg = (
+            "runPyDM detected a pre-existing QApplication that is not a "
+            "pydm.PyDMApplication. PyDM's window-management hooks (XSync "
+            "counter, _NET_WM_PING reply) only register on PyDMApplication, "
+            "so the visible windows fail to reply to the compositor's "
+            "ping/sync messages and get flagged as 'not responding' "
+            "(notably on GNOME-on-Wayland with XWayland).\n\n"
+            f"Detected application: {detected_repr}\n\n"
+            "Common cause:\n"
+            "    appTop = QApplication(sys.argv)   # remove this\n"
+            "    ...                               # widget setup\n"
+            "    pyrogue.pydm.runPyDM(...)\n\n"
+            "Fix: do NOT construct a QApplication (or any QApplication "
+            "subclass other than pydm.PyDMApplication) before calling "
+            "runPyDM. runPyDM constructs the PyDMApplication itself; let it "
+            "be the sole QApplication in the process."
+        )
+        logging.getLogger(__name__).error(msg)
+        raise RuntimeError(msg)
 
     # Set the ROGUE_SERVERS environment variable
     os.environ['ROGUE_SERVERS'] = serverList
