@@ -21,11 +21,14 @@
 #include <fcntl.h>
 #include <inttypes.h>
 #include <stdint.h>
+#include <sys/stat.h>
 #include <unistd.h>
 
 #include <memory>
+#include <mutex>
 #include <string>
 #include <thread>
+#include <utility>
 
 #include "rogue/GeneralError.h"
 #include "rogue/GilRelease.h"
@@ -74,8 +77,12 @@ ruf::StreamReader::~StreamReader() {
 //! Open a data file
 void ruf::StreamReader::open(std::string file) {
     rogue::GilRelease noGil;
+    // closeMtx_ serialises lifecycle; distinct from mtx_ to avoid join() deadlock.
+    std::lock_guard<std::mutex> closeGuard(closeMtx_);
+
+    intCloseLocked();
+
     std::unique_lock<std::mutex> lock(mtx_);
-    intClose();
 
     // Determine if we read a group of files
     if (file.substr(file.find_last_of('.')) == ".1") {
@@ -86,18 +93,31 @@ void ruf::StreamReader::open(std::string file) {
         baseName_ = file;
     }
 
-    if ((fd_ = ::open(file.c_str(), O_RDONLY)) < 0)
-        throw(rogue::GeneralError::create("StreamReader::open", "Failed to open data file: %s", file.c_str()));
+    {
+        const int32_t newFd = ::open(file.c_str(), O_RDONLY);
+        if (newFd < 0)
+            throw(rogue::GeneralError::create("StreamReader::open", "Failed to open data file: %s", file.c_str()));
+        fd_.store(newFd);
+    }
 
-    active_   = true;
+    {
+        struct stat st;
+        if (::fstat(fd_.load(), &st) == 0 && S_ISREG(st.st_mode)) {
+            fileSize_ = static_cast<int64_t>(st.st_size);
+        } else {
+            fileSize_ = 0;
+        }
+    }
+
+    active_.store(true);
     threadEn_ = true;
     try {
-        readThread_ = new std::thread(&StreamReader::runThread, this);
+        readThread_ = std::make_unique<std::thread>(&StreamReader::runThread, this);
     } catch (...) {
-        active_   = false;
+        active_.store(false);
         threadEn_ = false;
-        ::close(fd_);
-        fd_ = -1;
+        ::close(fd_.load());
+        fd_.store(-1);
         throw;
     }
 
@@ -112,9 +132,9 @@ bool ruf::StreamReader::nextFile() {
     std::unique_lock<std::mutex> lock(mtx_);
     std::string name;
 
-    if (fd_ >= 0) {
-        ::close(fd_);
-        fd_ = -1;
+    if (fd_.load() >= 0) {
+        ::close(fd_.load());
+        fd_.store(-1);
     } else {
         return (false);
     }
@@ -123,45 +143,68 @@ bool ruf::StreamReader::nextFile() {
     fdIdx_++;
     name = baseName_ + "." + std::to_string(fdIdx_);
 
-    if ((fd_ = ::open(name.c_str(), O_RDONLY)) < 0) return (false);
+    {
+        const int32_t newFd = ::open(name.c_str(), O_RDONLY);
+        if (newFd < 0) return (false);
+        fd_.store(newFd);
+    }
+
+    {
+        struct stat st;
+        if (::fstat(fd_.load(), &st) == 0 && S_ISREG(st.st_mode)) {
+            fileSize_ = static_cast<int64_t>(st.st_size);
+        } else {
+            fileSize_ = 0;
+        }
+    }
     return (true);
 }
 
 //! Close a data file
 void ruf::StreamReader::close() {
     rogue::GilRelease noGil;
-    std::unique_lock<std::mutex> lock(mtx_);
     intClose();
 }
 
 //! Get open status
 bool ruf::StreamReader::isOpen() {
-    return (fd_ >= 0);
+    return (fd_.load() >= 0);
 }
 
 //! Close a data file
 void ruf::StreamReader::intClose() {
-    if (readThread_ != NULL) {
+    std::lock_guard<std::mutex> guard(closeMtx_);
+    intCloseLocked();
+}
+
+//! Close body with closeMtx_ assumed held by caller.
+void ruf::StreamReader::intCloseLocked() {
+    if (readThread_) {
         threadEn_ = false;
         readThread_->join();
-        delete readThread_;
-        readThread_ = NULL;
+        readThread_.reset();
     }
-    if (fd_ >= 0) ::close(fd_);
+    if (fd_.load() >= 0) {
+        ::close(fd_.load());
+        fd_.store(-1);
+    }
 }
 
 //! Close when done
 void ruf::StreamReader::closeWait() {
     rogue::GilRelease noGil;
-    std::unique_lock<std::mutex> lock(mtx_);
-    while (active_) cond_.wait_for(lock, std::chrono::microseconds(1000));
+    // Release mtx_ before intClose() to avoid lock-order inversion with open().
+    {
+        std::unique_lock<std::mutex> lock(mtx_);
+        while (active_.load()) cond_.wait_for(lock, std::chrono::microseconds(1000));
+    }
     intClose();
 }
 
 //! Return true when done
 bool ruf::StreamReader::isActive() {
     rogue::GilRelease noGil;
-    return (active_);
+    return (active_.load());
 }
 
 //! Thread background
@@ -181,9 +224,11 @@ void ruf::StreamReader::runThread() {
 
     ret = 0;
     err = false;
+    int64_t filePos = 0;
     do {
         // Read size of each frame
-        while ((fd_ >= 0) && (read(fd_, &size, 4) == 4)) {
+        while ((fd_.load() >= 0) && (read(fd_.load(), &size, 4) == 4)) {
+            filePos += 4;
             if (size == 0) {
                 log.warning("Bad size read %" PRIu32, size);
                 err = true;
@@ -191,11 +236,12 @@ void ruf::StreamReader::runThread() {
             }
 
             // Read flags
-            if (read(fd_, &meta, 4) != 4) {
+            if (read(fd_.load(), &meta, 4) != 4) {
                 log.warning("Failed to read flags");
                 err = true;
                 break;
             }
+            filePos += 4;
 
             // Skip next step if frame is empty
             if (size <= 4) continue;
@@ -205,6 +251,18 @@ void ruf::StreamReader::runThread() {
             flags = meta & 0xFFFF;
             error = (meta >> 16) & 0xFF;
             chan  = (meta >> 24) & 0xFF;
+
+            // Reject frames larger than remaining file bytes (catches corruption).
+            if (fileSize_ > 0 && filePos <= fileSize_) {
+                uint64_t remaining = static_cast<uint64_t>(fileSize_ - filePos);
+                if (size > remaining) {
+                    log.warning("Rejecting oversized frame %" PRIu32 " > %" PRIu64 " remaining file bytes",
+                                size,
+                                remaining);
+                    err = true;
+                    break;
+                }
+            }
 
             // Request frame
             frame = reqFrame(size, true);
@@ -219,28 +277,31 @@ void ruf::StreamReader::runThread() {
                 // Adjust to buffer size, if necessary
                 if (bSize > (*it)->getSize()) bSize = (*it)->getSize();
 
-                if ((ret = read(fd_, (*it)->begin(), bSize)) != bSize) {
+                if ((ret = read(fd_.load(), (*it)->begin(), bSize)) != bSize) {
                     log.warning("Short read. Ret = %" PRId32 " Req = %" PRIu32 " after %" PRIu32 " bytes",
                                 ret,
                                 bSize,
                                 frame->getPayload());
-                    ::close(fd_);
-                    fd_ = -1;
+                    if (ret > 0) filePos += ret;
+                    ::close(fd_.load());
+                    fd_.store(-1);
                     frame->setError(0x1);
                     err = true;
                 } else {
                     (*it)->setPayload(bSize);
+                    filePos += bSize;
                     ++it;  // Next buffer
                 }
                 size -= bSize;
             }
             sendFrame(frame);
         }
+        filePos = 0;
     } while (threadEn_ && (err == false) && nextFile());
 
     std::unique_lock<std::mutex> lock(mtx_);
-    if (fd_ >= 0) ::close(fd_);
-    fd_     = -1;
-    active_ = false;
+    if (fd_.load() >= 0) ::close(fd_.load());
+    fd_.store(-1);
+    active_.store(false);
     cond_.notify_all();
 }

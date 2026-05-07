@@ -21,6 +21,7 @@
 #include <bzlib.h>
 #include <inttypes.h>
 #include <stdarg.h>
+#include <stdint.h>
 #include <unistd.h>
 
 #include <memory>
@@ -85,9 +86,14 @@ void ru::StreamUnZip::acceptFrame(ris::FramePtr frame) {
     strm.next_out  = reinterpret_cast<char*>((*wBuff)->begin());
     strm.avail_out = (*wBuff)->getAvailable();
 
+    // Manual 64-bit counter; bzip2's 32-bit output counter wraps at 4 GiB.
+    uint64_t outBytes = 0;
+
     try {
         do {
-            ret = BZ2_bzDecompress(&strm);
+            uint32_t availBefore = strm.avail_out;
+            ret                  = BZ2_bzDecompress(&strm);
+            outBytes += availBefore - strm.avail_out;
 
             if ((ret != BZ_STREAM_END) && (ret != BZ_OK))
                 throw(rogue::GeneralError::create("StreamUnZip::acceptFrame",
@@ -125,10 +131,15 @@ void ru::StreamUnZip::acceptFrame(ris::FramePtr frame) {
         throw;
     }
 
-    const uint32_t totalOut = strm.total_out_lo32;
     BZ2_bzDecompressEnd(&strm);
 
-    newFrame->setPayload(totalOut);
+    if (outBytes > UINT32_MAX) {
+        throw rogue::GeneralError::create(
+            "StreamUnZip::acceptFrame",
+            "Decompressed output %" PRIu64 " bytes exceeds 32-bit setPayload() limit",
+            outBytes);
+    }
+    newFrame->setPayload(static_cast<uint32_t>(outBytes));
     newFrame->setError(frame->getError());
     newFrame->setChannel(frame->getChannel());
     newFrame->setFlags(frame->getFlags());

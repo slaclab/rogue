@@ -53,17 +53,21 @@ class StreamReader : public rogue::interfaces::stream::Master {
     // Base file name for indexed-file mode.
     std::string baseName_;
 
-    int32_t fd_ = -1;
+    // Atomic: isOpen() reads without locking; mutators hold varying locks.
+    std::atomic<int32_t> fd_{-1};
 
     // Current file index in indexed-file mode.
     uint32_t fdIdx_ = 0;
 
-    // True while read thread is actively processing file data.
-    bool active_ = false;
+    // Atomic: isActive() reads without locking; cond_/mtx_ still used for closeWait() wakeup.
+    std::atomic<bool> active_{false};
+
+    // Cached file size from fstat at open/nextFile; 0 means skip bound check.
+    int64_t fileSize_ = 0;
 
     //! \cond INTERNAL
   protected:
-    std::thread* readThread_ = nullptr;
+    std::unique_ptr<std::thread> readThread_;
     std::atomic<bool> threadEn_{false};
     //! \endcond
 
@@ -74,14 +78,20 @@ class StreamReader : public rogue::interfaces::stream::Master {
     // Open next indexed file in sequence.
     bool nextFile();
 
-    // Internal close helper.
+    // Internal close helper; acquires closeMtx_ then delegates to intCloseLocked().
     void intClose();
+
+    // Close body; caller must already hold closeMtx_.
+    void intCloseLocked();
 
     // Condition signaled when activity state changes.
     std::condition_variable cond_;
 
     // Mutex for file/thread/activity state.
     std::mutex mtx_;
+
+    // Serialises lifecycle operations (open/close); never held by runThread().
+    std::mutex closeMtx_;
 
   public:
     /**
