@@ -1,5 +1,8 @@
 Documentation Generation.
 
+For project-wide development, documentation, and agent-orientation guidance,
+see `../DEVELOPMENT.md`.
+
 Planning documents for docs publishing changes live under `docs/plans/`.
 
 Boost.Python API build-time generation:

@@ -4,6 +4,9 @@ This guide describes how to choose and write Rogue tests when changing
 production code. It is meant for both humans and AI agents working in the
 repository.
 
+For project-wide architecture, coding, documentation, and workflow guidance,
+read `../DEVELOPMENT.md`.
+
 Use the narrowest test that proves the behavior, then add higher-level coverage
 only when the risk crosses a boundary that the narrow test cannot exercise.
 
