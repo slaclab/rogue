@@ -377,7 +377,7 @@ class LocalBlock(object):
             elif index >= 0:
                 changed = self._value[index] != value
             elif isinstance(value, np.ndarray):
-                changed = np.array_equal(self._value, value)
+                changed = not np.array_equal(self._value, value)
             else:
 
                 if (self._minimum is not None and value < self._minimum) or \

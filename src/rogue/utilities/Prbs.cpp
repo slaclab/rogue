@@ -146,9 +146,16 @@ void ru::Prbs::setTaps(uint32_t tapCnt, uint8_t* taps) {
 
     std::lock_guard<std::mutex> lockT(pMtx_);
 
+    uint8_t* newTaps = NULL;
+    if (tapCnt > 0) {
+        newTaps = reinterpret_cast<uint8_t*>(malloc(sizeof(uint8_t) * tapCnt));
+        if (newTaps == NULL)
+            throw(rogue::GeneralError("Prbs::setTaps", "Failed to allocate tap buffer"));
+    }
+
     free(taps_);
     tapCnt_ = tapCnt;
-    taps_   = reinterpret_cast<uint8_t*>(malloc(sizeof(uint8_t) * tapCnt));
+    taps_   = newTaps;
 
     for (i = 0; i < tapCnt_; i++) taps_[i] = taps[i];
 }
@@ -162,7 +169,12 @@ void ru::Prbs::setTapsPy(boost::python::object p) {
     if (PyObject_GetBuffer(p.ptr(), &pyBuf, PyBUF_SIMPLE) < 0)
         throw(rogue::GeneralError("Prbs::setTapsPy", "Python Buffer Error"));
 
-    setTaps(pyBuf.len, reinterpret_cast<uint8_t*>(pyBuf.buf));
+    try {
+        setTaps(pyBuf.len, reinterpret_cast<uint8_t*>(pyBuf.buf));
+    } catch (...) {
+        PyBuffer_Release(&pyBuf);
+        throw;
+    }
     PyBuffer_Release(&pyBuf);
 }
 

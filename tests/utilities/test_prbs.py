@@ -138,5 +138,26 @@ def test_prbs_background_tx():
     assert rx.getRxErrors() == 0
 
 
+def test_prbs_set_taps_custom():
+    tx = rogue.utilities.Prbs()
+    rx = rogue.utilities.Prbs()
+    taps = bytes([0, 3, 5, 31])
+    tx.setTaps(taps)
+    rx.setTaps(taps)
+    tx >> rx
+    rx.checkPayload(True)
+
+    # Send multiple frames so later seeds are non-zero and taps actually affect output
+    for _ in range(10):
+        tx.genFrame(256)
+    assert wait_for(lambda: rx.getRxCount() == 10, timeout=5.0)
+    assert rx.getRxErrors() == 0
+
+
+def test_prbs_set_taps_empty():
+    tx = rogue.utilities.Prbs()
+    tx.setTaps(b'')
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
