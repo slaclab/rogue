@@ -235,19 +235,25 @@ For the detailed scheduling and behavior model, see
 YAML Configuration And Bulk Operations
 ======================================
 
-``Root`` provides the main tree-level YAML and bulk I/O entry points:
+``Root`` inherits YAML configuration methods from ``Device``:
 
-* :py:meth:`~pyrogue.Root.saveYaml`
-* :py:meth:`~pyrogue.Root.loadYaml`
-* :py:meth:`~pyrogue.Root.setYaml`
+* :py:meth:`~pyrogue.Device.saveYaml`
+* :py:meth:`~pyrogue.Device.loadYaml`
+* :py:meth:`~pyrogue.Device.setYaml`
 * :py:meth:`~pyrogue.Node.getYaml`
 
-These methods back the built-in configuration and state commands exposed on the
-Root itself. They are the main mechanism for saving baselines, restoring known
-configurations, and applying configuration changes across the whole tree.
+Root adds ``InitAfterConfig`` behavior: when enabled, ``loadYaml`` and
+``setYaml`` call ``initialize()`` after applying configuration. Root also
+resolves top-level YAML keys as absolute dotted paths (e.g.
+``root.Top.Child``) for backward compatibility with existing YAML files.
 
-For YAML matching, file formats, and array slicing, see
-:doc:`/pyrogue_tree/core/yaml_configuration`.
+These methods back the built-in configuration and state commands (``SaveConfig``,
+``LoadConfig``, ``SaveState``, ``SetYamlConfig``, ``GetYamlConfig``,
+``GetYamlState``) exposed on Root.
+
+Any ``Device`` in the tree can also use ``saveYaml``, ``loadYaml``, and
+``setYaml`` with device-relative paths. See
+:doc:`/pyrogue_tree/core/yaml_configuration` for details.
 
 For the bulk transaction model used when those staged values are committed
 through the tree, see :doc:`/pyrogue_tree/core/block_operations`.
