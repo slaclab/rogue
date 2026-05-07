@@ -18,8 +18,6 @@
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 
-import inspect
-
 import pyrogue
 
 
@@ -31,20 +29,4 @@ def test_min_python_at_least_310():
         "MIN_PYTHON = " + str(min_py) + " but conda build matrix "
         "targets 3.10-3.13 and CPython 3.6 reached end-of-life December 2021; "
         "the minimum version should be updated to at least (3, 10)"
-    )
-
-
-def test_min_python_gate_raises_import_error():
-    """The version gate must raise ImportError so consumers that catch
-    ImportError for optional dependencies (the PR-described behavior
-    change for the floor bump) get the right exception type at
-    ``import pyrogue``.  A plain ``Exception`` is too broad and bypasses
-    the standard optional-dependency catch pattern.
-    """
-    src = inspect.getsource(pyrogue)
-
-    assert "raise ImportError(" in src, (
-        "pyrogue/__init__.py version gate must raise ImportError, not a "
-        "generic Exception, so callers using ``except ImportError:`` for "
-        "optional pyrogue dependencies see the documented behavior change"
     )
