@@ -1,30 +1,6 @@
+#!/usr/bin/env python3
 #-----------------------------------------------------------------------------
-# Company    : SLAC National Accelerator Laboratory
-#-----------------------------------------------------------------------------
-# Description:
-#   Behavioral tests for ``ZmqServer._doRequest`` itself.
-#
-#   The companion suites cover adjacent layers:
-#     * ``test_zmq_safe_unpickler_behavior.py`` exercises ``_safe_loads`` /
-#       ``_SafeUnpickler`` directly.
-#     * ``test_zmq_pickle_payload_audit_repro.py`` walks the AST of
-#       ``_doRequest`` and rejects any reference to ``pickle.loads`` /
-#       ``_pickle.loads`` / ``pickle.load`` / ``_pickle.load`` /
-#       ``pickle.Unpickler`` / ``_pickle.Unpickler``.
-#
-#   Neither layer catches a regression that imports a raw loader as a bare
-#   name -- ``from pickle import loads; loads(data)``.  The AST audit only
-#   sees ``Attribute(value=Name)`` references; ``loads`` here is just a
-#   ``Name``.  The unpickler-level tests never invoke ``_doRequest`` at all.
-#
-#   These tests close that gap: they feed crafted payloads through
-#   ``_doRequest`` end-to-end and assert (a) ``_doOperation`` is never
-#   reached for an unsafe pickle, (b) the response is a pickled Exception
-#   whose message contains "Unsafe pickle payload" -- which only
-#   ``_SafeUnpickler.find_class`` produces -- and (c) for REDUCE-driven
-#   payloads the embedded callable is never invoked.  Each property fails
-#   under the bare-import regression above, so any future bypass that
-#   re-routes the bytes around ``_safe_loads`` is caught here.
+# Title      : ZmqServer._doRequest end-to-end behavior
 #-----------------------------------------------------------------------------
 # This file is part of the rogue software platform. It is subject to
 # the license terms in the LICENSE.txt file found in the top-level directory
@@ -34,6 +10,21 @@
 # copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
+#
+# End-to-end behavioral coverage for ``ZmqServer._doRequest``.
+#
+# Companion suite ``test_zmq_safe_unpickler_behavior.py`` exercises
+# ``_safe_loads`` / ``_SafeUnpickler`` directly. The tests here close the
+# gap by feeding crafted payloads through ``_doRequest`` itself and
+# asserting:
+#   (a) ``_doOperation`` is never reached for an unsafe pickle,
+#   (b) the response is a pickled ``Exception`` whose message contains
+#       ``"Unsafe pickle payload"`` -- only ``_SafeUnpickler.find_class``
+#       produces that string,
+#   (c) for REDUCE-driven payloads the embedded callable is never invoked.
+#
+# Each property fails under a regression that re-routes the request bytes
+# around ``_safe_loads`` (e.g. ``from pickle import loads; loads(data)``).
 
 import os
 import pickle

@@ -1,12 +1,6 @@
+#!/usr/bin/env python3
 #-----------------------------------------------------------------------------
-# Company    : SLAC National Accelerator Laboratory
-#-----------------------------------------------------------------------------
-# Description:
-#   Behavioral tests for the restricted Unpickler that ZmqServer._doRequest
-#   funnels incoming binary requests through. The audit-repro source-text
-#   test only proves that the module no longer calls raw pickle.loads(); the
-#   tests here exercise the actual deserialisation path so a regression that
-#   keeps _safe_loads in place but quietly relaxes the allowlist still fails.
+# Title      : ZmqServer _SafeUnpickler / _safe_loads behavior
 #-----------------------------------------------------------------------------
 # This file is part of the rogue software platform. It is subject to
 # the license terms in the LICENSE.txt file found in the top-level directory
@@ -16,6 +10,14 @@
 # copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
+#
+# Behavioral coverage for the restricted ``Unpickler`` that
+# ``ZmqServer._doRequest`` funnels incoming binary requests through.
+#
+# The tests here exercise the actual deserialisation path so a regression
+# that keeps ``_safe_loads`` in place but quietly relaxes the allowlist
+# still fails. End-to-end ``_doRequest`` coverage lives in
+# ``test_zmq_do_request_behavior.py``.
 
 import io
 import os
@@ -79,8 +81,7 @@ def test_safe_loads_rejects_builtin_eval():
 
 
 def test_safe_unpickler_find_class_rejects_unlisted_module():
-    import io as _io
-    unp = _SafeUnpickler(_io.BytesIO(b''))
+    unp = _SafeUnpickler(io.BytesIO(b''))
     with pytest.raises(pickle.UnpicklingError, match="Unsafe pickle payload"):
         unp.find_class('os', 'system')
     with pytest.raises(pickle.UnpicklingError, match="Unsafe pickle payload"):
