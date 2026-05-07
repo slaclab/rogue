@@ -161,10 +161,12 @@ How YAML Configuration Uses These Methods
 YAML configuration loading is one of the main places where users encounter
 bulk block operations indirectly.
 
-For ``Root.loadYaml(..., writeEach=False)`` and ``Root.setYaml(..., writeEach=False)``,
+For ``Device.loadYaml(..., writeEach=False)`` and ``Device.setYaml(..., writeEach=False)``,
 PyRogue first stages values into Variables with ``setDisp(..., write=False)``.
-Only after that full YAML payload has been applied to the tree does Root
-commit the configuration through its normal bulk write path.
+Only after that full YAML payload has been applied does the device commit the
+configuration through its bulk write path (``writeBlocks``, ``verifyBlocks``,
+``checkBlocks``). When called on Root, this covers the entire tree; when called
+on a specific Device, only that device's subtree is committed.
 
 In practice, that means YAML configuration uses the same transaction model
 described on this page:
