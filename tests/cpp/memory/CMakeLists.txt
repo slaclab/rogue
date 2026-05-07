@@ -49,6 +49,9 @@ rogue_add_cpp_test(rogue-cpp-memory-tcpserver-send-failure-recovery
       cpp-core
       no-python
 )
+set_tests_properties(rogue-cpp-memory-tcpserver-send-failure-recovery PROPERTIES
+   TIMEOUT 10
+)
 
 rogue_add_cpp_test(rogue-cpp-memory-tcpserver-close-deprecated-audit-repro
    SOURCES
