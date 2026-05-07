@@ -110,9 +110,40 @@ void rogue::interfaces::ZmqServer::start() {
                 this->basePort_ + 1,
                 this->basePort_ + 2);
 
+    // Roll back threadEn_ if thread construction throws to avoid stuck half-start.
     this->threadEn_ = true;
-    this->rThread_  = new std::thread(&rogue::interfaces::ZmqServer::runThread, this);
-    this->sThread_  = new std::thread(&rogue::interfaces::ZmqServer::strThread, this);
+    try {
+        this->rThread_ = std::make_unique<std::thread>(&rogue::interfaces::ZmqServer::runThread, this);
+        this->sThread_ = std::make_unique<std::thread>(&rogue::interfaces::ZmqServer::strThread, this);
+    } catch (...) {
+        this->threadEn_ = false;
+        // Drop GIL before join; workers acquire it via ScopedGil and would deadlock.
+        {
+            rogue::GilRelease noGil;
+            if (this->rThread_) {
+                this->rThread_->join();
+                this->rThread_.reset();
+            }
+            if (this->sThread_) {
+                this->sThread_->join();
+                this->sThread_.reset();
+            }
+        }
+        // Close sockets bound by tryConnect() so a retry can re-bind the ports.
+        if (this->zmqPub_ != nullptr) {
+            zmq_close(this->zmqPub_);
+            this->zmqPub_ = nullptr;
+        }
+        if (this->zmqRep_ != nullptr) {
+            zmq_close(this->zmqRep_);
+            this->zmqRep_ = nullptr;
+        }
+        if (this->zmqStr_ != nullptr) {
+            zmq_close(this->zmqStr_);
+            this->zmqStr_ = nullptr;
+        }
+        throw;
+    }
 
     // Send empty frame
     dummy = "null\n";
@@ -124,17 +155,14 @@ void rogue::interfaces::ZmqServer::stop() {
         rogue::GilRelease noGil;
         threadEn_ = false;
         log_->info("Waiting for server thread to exit");
-        // Null-guard: a bad_alloc on the second start()-allocated thread leaves
-        // one pointer valid and the other null.
-        if (rThread_ != nullptr) {
+        // Null-guard: partial start() failure may leave one thread unallocated.
+        if (rThread_) {
             rThread_->join();
-            delete rThread_;
-            rThread_ = nullptr;
+            rThread_.reset();
         }
-        if (sThread_ != nullptr) {
+        if (sThread_) {
             sThread_->join();
-            delete sThread_;
-            sThread_ = nullptr;
+            sThread_.reset();
         }
         log_->info("Closing pub socket");
         zmq_close(this->zmqPub_);

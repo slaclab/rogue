@@ -63,7 +63,7 @@ class ZmqClient {
 
     //! \cond INTERNAL
   protected:
-    std::thread* thread_ = nullptr;
+    std::unique_ptr<std::thread> thread_;
     std::atomic<bool> threadEn_{false};
     //! \endcond
 
