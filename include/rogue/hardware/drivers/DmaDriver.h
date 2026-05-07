@@ -40,29 +40,78 @@
 #define DMA_ERR_BUS  0x08
 
 /* Commands */
+
+/** @brief ioctl command code: get the total number of DMA buffers in the pool. */
 #define DMA_Get_Buff_Count           0x1001
+
+/** @brief ioctl command code: get the size in bytes of each DMA buffer. */
 #define DMA_Get_Buff_Size            0x1002
+
+/** @brief ioctl command code: set the kernel debug verbosity level (0 = off). */
 #define DMA_Set_Debug                0x1003
+
+/** @brief ioctl command code: set the 32-bit destination channel mask (convenience wrapper for single-mask use). */
 #define DMA_Set_Mask                 0x1004
+
+/** @brief ioctl command code: return one or more buffer indices to the DMA free pool.
+ *  The upper 16 bits of the command encode the count: cmd = DMA_Ret_Index | ((count << 16) & 0xFFFF0000). */
 #define DMA_Ret_Index                0x1005
+
+/** @brief ioctl command code: get the index of the next available write buffer. */
 #define DMA_Get_Index                0x1006
+
+/** @brief ioctl command code: check whether a receive frame is pending (returns 1 if data ready). */
 #define DMA_Read_Ready               0x1007
+
+/** @brief ioctl command code: set the destination channel mask using a 512-byte bitmap (DMA_MASK_SIZE bytes). */
 #define DMA_Set_MaskBytes            0x1008
+
+/** @brief ioctl command code: get the driver API version integer; compare to DMA_VERSION for compatibility. */
 #define DMA_Get_Version              0x1009
+
+/** @brief ioctl command code: write a 32-bit value to a device BAR register; argument is struct DmaRegisterData*. */
 #define DMA_Write_Register           0x100A
+
+/** @brief ioctl command code: read a 32-bit value from a device BAR register; argument is struct DmaRegisterData*. */
 #define DMA_Read_Register            0x100B
+
+/** @brief ioctl command code: get the total number of receive DMA buffers in the pool. */
 #define DMA_Get_RxBuff_Count         0x100C
+
+/** @brief ioctl command code: get the total number of transmit DMA buffers in the pool. */
 #define DMA_Get_TxBuff_Count         0x100D
+
+/** @brief ioctl command code: get the count of TX buffers currently held in user space. */
 #define DMA_Get_TxBuffinUser_Count   0x100F
+
+/** @brief ioctl command code: get the count of TX buffers currently submitted to hardware. */
 #define DMA_Get_TxBuffinHW_Count     0x1010
+
+/** @brief ioctl command code: get the count of TX buffers in the pre-hardware queue. */
 #define DMA_Get_TxBuffinPreHWQ_Count 0x1011
+
+/** @brief ioctl command code: get the count of TX buffers in the software queue. */
 #define DMA_Get_TxBuffinSWQ_Count    0x1012
+
+/** @brief ioctl command code: get the TX buffer allocation miss count (buffers requested but unavailable). */
 #define DMA_Get_TxBuffMiss_Count     0x1013
+
+/** @brief ioctl command code: get the count of RX buffers currently held in user space. */
 #define DMA_Get_RxBuffinUser_Count   0x1014
+
+/** @brief ioctl command code: get the count of RX buffers currently submitted to hardware. */
 #define DMA_Get_RxBuffinHW_Count     0x1015
+
+/** @brief ioctl command code: get the count of RX buffers in the pre-hardware queue. */
 #define DMA_Get_RxBuffinPreHWQ_Count 0x1016
+
+/** @brief ioctl command code: get the count of RX buffers in the software queue. */
 #define DMA_Get_RxBuffinSWQ_Count    0x1017
+
+/** @brief ioctl command code: get the RX buffer allocation miss count (buffers requested but unavailable). */
 #define DMA_Get_RxBuffMiss_Count     0x1018
+
+/** @brief ioctl command code: get the driver git version string into a caller-supplied char[32] buffer. */
 #define DMA_Get_GITV                 0x1019
 
 /* Mask size */

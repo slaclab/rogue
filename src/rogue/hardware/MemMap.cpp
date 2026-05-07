@@ -71,7 +71,7 @@ rh::MemMap::MemMap(uint64_t base, uint32_t size) : rim::Slave(4, 0xFFFFFFFF) {
 
     threadEn_ = true;
     try {
-        thread_ = new std::thread(&rh::MemMap::runThread, this);
+        thread_ = std::make_unique<std::thread>(&rh::MemMap::runThread, this);
     } catch (...) {
         threadEn_ = false;
         munmap(reinterpret_cast<void*>(const_cast<uint8_t*>(map_)), size_);
@@ -93,8 +93,7 @@ void rh::MemMap::stop() {
         threadEn_ = false;
         queue_.stop();
         thread_->join();
-        delete thread_;
-        thread_ = nullptr;
+        thread_.reset();
         munmap(reinterpret_cast<void*>(const_cast<uint8_t*>(map_)), size_);
         ::close(fd_);
         fd_ = -1;
