@@ -71,6 +71,15 @@ Python layout under `python/pyrogue/`:
 - `pydm/` contains PyDM data plugins, widgets, and tools.
 - `examples/` contains user-facing examples.
 
+Generated and local-only outputs:
+
+- `build/`, docs build outputs, caches, virtual environments, and local editor
+  state are not source of truth.
+- Update templates and source inputs, not generated outputs, unless the
+  generated output is intentionally tracked by the repository.
+- Do not rely on files produced by a previous local build when explaining or
+  validating a change; rebuild or reconfigure when the generated state matters.
+
 ## Architecture
 
 Rogue has two major public layers:
@@ -99,6 +108,28 @@ When changing behavior, identify the layer where the contract lives. A bug in
 Python tree semantics usually belongs in `python/pyrogue` plus pytest coverage.
 A transport, memory, protocol, or threading bug usually needs C++ changes and
 native C++ or integration coverage.
+
+## Public API Changes
+
+Treat public Python APIs, installed C++ headers, and Boost.Python-exposed C++
+classes as downstream contracts. Before changing one, check existing docs,
+tests, examples, and naming patterns.
+
+When adding or changing a Python-exposed C++ API, update the full path:
+
+- Public header in `include/rogue/...`.
+- Implementation in `src/rogue/...`.
+- `setup_python()` binding in the implementation file.
+- Submodule registration in the nearest `module.cpp` if a new class or module
+  is introduced.
+- `#ifndef NO_PYTHON` guards for Python-only code.
+- Python API docs or C++ API docs, depending on the exposed surface.
+- Tests for both the native behavior and Python-visible behavior when both are
+  part of the contract.
+
+Prefer additive changes for established user-facing APIs. If a breaking change
+is unavoidable, document the migration path and update release or migration
+notes in the docs tree when appropriate.
 
 ## Build Environments
 
@@ -305,6 +336,8 @@ Documentation sources:
 - `docs/src/index.rst`: documentation landing page and main toctree.
 - `docs/src/api/python/...`: Python API pages.
 - `docs/src/api/cpp/...`: C++ API pages.
+- `docs/src/migration/...`: user-facing migration notes for behavioral or API
+  changes that require downstream action.
 - `docs/src/_ext/`: custom Sphinx extensions for Boost.Python and C++ source
   links.
 - `docs/README.md`: notes for docs generation helpers.
@@ -374,6 +407,14 @@ When adding dependencies:
   required.
 - Avoid adding heavy runtime dependencies for narrow helper behavior.
 
+When changing packaging behavior:
+
+- Keep conda, pip, and CMake install paths aligned.
+- Prefer editing package templates and recipes over generated install outputs.
+- Verify imports from the installed environment when package layout changes.
+- Be careful with version behavior; release tags, CMake configuration, Python
+  package metadata, and docs all consume Rogue version information.
+
 ## Change Workflow
 
 Use this workflow for most tasks:
@@ -382,12 +423,14 @@ Use this workflow for most tasks:
 2. Identify whether the contract is C++, Python, docs, tests, packaging, or a
    cross-layer behavior.
 3. Make the smallest coherent change in the owning subsystem.
-4. Update public docs or docstrings when user-facing behavior changes.
-5. Add or update focused tests following `tests/METHODOLOGY.md`.
-6. Run the narrowest useful command first.
-7. Expand verification to the closest CI-equivalent command when risk warrants.
-8. Leave unrelated files untouched.
-9. Do not stage or commit unless explicitly asked.
+4. For public API changes, update bindings, docs, examples, and compatibility
+   notes as needed.
+5. Update public docs or docstrings when user-facing behavior changes.
+6. Add or update focused tests following `tests/METHODOLOGY.md`.
+7. Run the narrowest useful command first.
+8. Expand verification to the closest CI-equivalent command when risk warrants.
+9. Leave unrelated files untouched.
+10. Do not stage or commit unless explicitly asked.
 
 ## Agent Checklist
 

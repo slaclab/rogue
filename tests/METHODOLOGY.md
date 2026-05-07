@@ -147,17 +147,8 @@ execution. Most local commands should:
 3. Source `build/setup_rogue.sh`.
 4. Run pytest or ctest from that same build tree.
 
-The VS Code tasks assume a `rogue_build` conda environment and provide the
-common local entry points:
-
-- `Code: Build Only`
-- `Code: Build + Install`
-- `Tests: Fast Python`
-- `Tests: Core`
-- `Tests: Interfaces`
-- `Tests: Integration`
-- `Tests: Perf`
-- `Tests: Full Python Coverage`
+For local development, prefer the Miniforge/`rogue_build` workflow described
+in `../DEVELOPMENT.md`.
 
 GitHub Actions in `.github/workflows/rogue_ci.yml` exercises a broader matrix:
 
@@ -188,8 +179,8 @@ When adding production code, an AI agent should do this before editing tests:
 3. Decide whether the new coverage belongs in a fast deterministic test,
    integration test, perf test, Python-enabled native test, no-Python native
    test, or a small combination of those.
-4. Confirm the relevant local command from this guide, `tests/README.md`,
-   `tests/cpp/README.md`, `.vscode/tasks.json`, or `rogue_ci.yml`.
+4. Confirm the relevant local command from this guide, `../DEVELOPMENT.md`,
+   `tests/README.md`, `tests/cpp/README.md`, or `rogue_ci.yml`.
 5. Add tests that fail for the old behavior when that is practical.
 6. Run the narrow test first, then expand to the nearest suite or label that CI
    will use for the changed surface.
