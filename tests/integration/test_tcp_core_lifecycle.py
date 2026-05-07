@@ -93,9 +93,8 @@ def test_tcp_core_create_destroy_cycle_smoke(free_tcp_port):
     a zmq context never released, a thread stack never reaped) while
     leaving ASan/Valgrind to chase the small leak directly.
 
-    Skipped on libcs without ``mallinfo2`` (macOS, musl). The C++-side
-    audit lives in tests/cpp/core/test_atomic_thread_flags.cpp; the
-    fd-leak corollary is covered by tests/protocols/test_udp_constructor_throws.py.
+    Skipped on libcs without ``mallinfo2`` (macOS, musl). The fd-leak
+    corollary is covered by tests/protocols/test_udp_constructor_throws.py.
     """
     if _mallinfo2_uordblks() is None:
         pytest.skip("mallinfo2 not available on this libc")
