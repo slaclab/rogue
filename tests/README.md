@@ -18,9 +18,11 @@ Other top-level files:
 
 - `conftest.py`: shared pytest fixtures and helpers
 - `test_config_out.yml`: generated/config fixture output used by tests
+- `METHODOLOGY.md`: guidance for choosing and writing Python and C++ tests
 
 Guidelines:
 
+- Start with `METHODOLOGY.md` when adding tests for new production code.
 - Keep focused unit-style behavior tests in the most specific subsystem
   directory.
 - Keep real transport or socket-backed tests in `integration/`, even when the
@@ -68,6 +70,8 @@ Common commands:
 
 Planning / handoff docs:
 
+- `METHODOLOGY.md`: test selection and authoring guidance for humans and AI
+  agents
 - `BRANCH_STATUS.md`: summary of the current branch state, including the native
   C++ suite status
 - `NEXT_STEPS.md`: likely follow-up work and wrap-up checklist for both the
