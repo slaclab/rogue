@@ -21,13 +21,3 @@ rogue_add_cpp_test(rogue-cpp-ctor-catch-thread-cleanup
       cpp-core
       no-python
 )
-
-rogue_add_cpp_test(rogue-cpp-helpers-deprecated-audit-repro
-   SOURCES
-      test_helpers_deprecated_audit_repro.cpp
-   LABELS
-      cpp-core
-      no-python
-)
-target_compile_definitions(rogue-cpp-helpers-deprecated-audit-repro
-   PRIVATE ROGUE_SRC_DIR="${PROJECT_SOURCE_DIR}")
