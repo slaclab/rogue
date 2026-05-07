@@ -129,7 +129,7 @@ class Prbs : public rogue::interfaces::stream::Slave, public rogue::interfaces::
 
     //! \cond INTERNAL
   protected:
-    std::thread* txThread_ = nullptr;
+    std::unique_ptr<std::thread> txThread_;
     std::atomic<bool> threadEn_{false};
     //! \endcond
 

@@ -39,7 +39,7 @@ ria::BspPtr ria::Bsp::create(std::string modName, std::string rootClass) {
 
 ria::Bsp::Bsp(boost::python::object obj) {
     this->_obj    = obj;
-    this->_name   = std::string(bp::extract<char*>(this->_obj.attr("name")));
+    this->_name   = std::string(bp::extract<std::string>(this->_obj.attr("name")));
     this->_isRoot = false;
 }
 
@@ -48,7 +48,7 @@ ria::Bsp::Bsp(std::string modName, std::string rootClass) {
 
     bp::object mod = bp::import(modName.c_str());
     this->_obj     = mod.attr(rootClass.c_str())();
-    this->_name    = std::string(bp::extract<char*>(this->_obj.attr("name")));
+    this->_name    = std::string(bp::extract<std::string>(this->_obj.attr("name")));
     this->_isRoot  = true;
     this->_obj.attr("start")();
 
@@ -73,7 +73,7 @@ void ria::Bsp::addVarListener(void (*func)(std::string, std::string), void (*don
 //! Get Attribute
 std::string ria::Bsp::getAttribute(std::string attribute) {
     try {
-        return (std::string(bp::extract<char*>(this->_obj.attr(attribute.c_str()))));
+        return (std::string(bp::extract<std::string>(this->_obj.attr(attribute.c_str()))));
     } catch (...) {
         throw(rogue::GeneralError::create("Bsp::getAttribute",
                                           "Invalid attribute %s for node %s",
@@ -111,7 +111,7 @@ std::shared_ptr<rogue::interfaces::api::Bsp> ria::Bsp::getNode(std::string name)
 //! Execute command operator
 std::string ria::Bsp::operator()(std::string arg) {
     try {
-        return (std::string(bp::extract<char*>(this->_obj.attr("callDisp")(arg))));
+        return (std::string(bp::extract<std::string>(this->_obj.attr("callDisp")(arg))));
     } catch (...) {
         throw(rogue::GeneralError::create("Bsp::()", "Error executing node %s", this->_name.c_str()));
     }
@@ -120,7 +120,7 @@ std::string ria::Bsp::operator()(std::string arg) {
 //! Execute command operator without arg
 std::string ria::Bsp::operator()() {
     try {
-        return (std::string(bp::extract<char*>(this->_obj.attr("callDisp")())));
+        return (std::string(bp::extract<std::string>(this->_obj.attr("callDisp")())));
     } catch (...) {
         throw(rogue::GeneralError::create("Bsp::()", "Error executing node %s", this->_name.c_str()));
     }
@@ -129,7 +129,7 @@ std::string ria::Bsp::operator()() {
 //! Execute command
 std::string ria::Bsp::execute(std::string arg) {
     try {
-        return (std::string(bp::extract<char*>(this->_obj.attr("callDisp")(arg))));
+        return (std::string(bp::extract<std::string>(this->_obj.attr("callDisp")(arg))));
     } catch (...) {
         throw(rogue::GeneralError::create("Bsp::execute", "Error executing node %s", this->_name.c_str()));
     }
@@ -138,7 +138,7 @@ std::string ria::Bsp::execute(std::string arg) {
 //! Execute command without arg
 std::string ria::Bsp::execute() {
     try {
-        return (std::string(bp::extract<char*>(this->_obj.attr("callDisp")())));
+        return (std::string(bp::extract<std::string>(this->_obj.attr("callDisp")())));
     } catch (...) {
         throw(rogue::GeneralError::create("Bsp::execute", "Error executing node %s", this->_name.c_str()));
     }
@@ -171,7 +171,7 @@ void ria::Bsp::setWrite(std::string value) {
 //! Get value
 std::string ria::Bsp::get() {
     try {
-        return (std::string(bp::extract<char*>(this->_obj.attr("getDisp")(false, -1))));
+        return (std::string(bp::extract<std::string>(this->_obj.attr("getDisp")(false, -1))));
     } catch (...) {
         throw(rogue::GeneralError::create("Bsp::set", "Error getting value on node %s", this->_name.c_str()));
     }
@@ -180,7 +180,7 @@ std::string ria::Bsp::get() {
 //! Get value with read
 std::string ria::Bsp::readGet() {
     try {
-        return (std::string(bp::extract<char*>(this->_obj.attr("getDisp")(true, -1))));
+        return (std::string(bp::extract<std::string>(this->_obj.attr("getDisp")(true, -1))));
     } catch (...) {
         throw(rogue::GeneralError::create("Bsp::set", "Error getting value on node %s", this->_name.c_str()));
     }

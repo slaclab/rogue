@@ -825,7 +825,12 @@ void rim::Block::setPyFunc(bp::object& value, rim::Variable* var, int32_t index)
                                                   "Failed to extract byte array for %s",
                                                   var->name_.c_str()));
 
-            setBytes(reinterpret_cast<uint8_t*>(valueBuf.buf), var, index + x);
+            try {
+                setBytes(reinterpret_cast<uint8_t*>(valueBuf.buf), var, index + x);
+            } catch (...) {
+                PyBuffer_Release(&valueBuf);
+                throw;
+            }
             PyBuffer_Release(&valueBuf);
         }
 
@@ -839,7 +844,12 @@ void rim::Block::setPyFunc(bp::object& value, rim::Variable* var, int32_t index)
                                               "Failed to extract byte array from pyFunc return value for %s",
                                               var->name_.c_str()));
 
-        setBytes(reinterpret_cast<uint8_t*>(valueBuf.buf), var, index);
+        try {
+            setBytes(reinterpret_cast<uint8_t*>(valueBuf.buf), var, index);
+        } catch (...) {
+            PyBuffer_Release(&valueBuf);
+            throw;
+        }
         PyBuffer_Release(&valueBuf);
     }
 }
@@ -893,7 +903,12 @@ void rim::Block::setByteArrayPy(bp::object& value, rim::Variable* var, int32_t i
                                           "Failed to extract byte array for %s",
                                           var->name_.c_str()));
 
-    setBytes(reinterpret_cast<uint8_t*>(valueBuf.buf), var, index);
+    try {
+        setBytes(reinterpret_cast<uint8_t*>(valueBuf.buf), var, index);
+    } catch (...) {
+        PyBuffer_Release(&valueBuf);
+        throw;
+    }
     PyBuffer_Release(&valueBuf);
 }
 
