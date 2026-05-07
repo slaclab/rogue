@@ -13,5 +13,6 @@
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 
+import logging as _logging
 from pyrogue.pydm.widgets.designer import *
-print("Loading Rogue Widgets Designer Plugins")
+_logging.getLogger(__name__).debug("Loading Rogue Widgets Designer Plugins")

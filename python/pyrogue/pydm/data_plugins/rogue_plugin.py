@@ -67,7 +67,17 @@ def parseAddress(address: str) -> tuple[str, int, str, str, int]:
     if ":" in data[0]:
         data_server = data[0].split(":")
     else:
-        data_server = alist[int(data[0])].split(":")
+        idx = int(data[0])
+        # Reject negative indexes: Python would silently select an arbitrary entry.
+        if idx < 0 or idx >= len(alist):
+            source = (
+                f"ROGUE_SERVERS has {len(alist)} entr{'y' if len(alist)==1 else 'ies'}"
+                if envList is not None
+                else f"default server list has {len(alist)} entr{'y' if len(alist)==1 else 'ies'} (ROGUE_SERVERS unset)"
+            )
+            raise IndexError(
+                f"parseAddress: server index {idx} is out of bounds ({source})")
+        data_server = alist[idx].split(":")
 
     host = data_server[0]
     port = int(data_server[1])
@@ -124,6 +134,7 @@ class RogueConnection(PyDMConnection):
         self._enum   = None
         self._notDev = False
         self._address = channel.address
+        self._client = None
 
         if utilities.is_pydm_app():
             self._client = pyrogue.interfaces.VirtualClient(self._host, self._port)
@@ -145,7 +156,8 @@ class RogueConnection(PyDMConnection):
                 self._int = True
 
         self.add_listener(channel)
-        self._client.addLinkMonitor(self.linkState)
+        if self._client is not None:
+            self._client.addLinkMonitor(self.linkState)
 
     def linkState(self, state: bool) -> None:
         """Emit PyDM connection state updates from link-monitor callbacks."""
@@ -201,6 +213,8 @@ class RogueConnection(PyDMConnection):
                 self.new_value_signal[str].emit(varValue.valueDisp)
             elif isinstance(varValue.value, Figure):
                 self.new_value_signal[object].emit(varValue.value)
+            elif isinstance(varValue.value, bool):
+                self.new_value_signal[int].emit(int(varValue.value))
             else:
                 self.new_value_signal[type(varValue.value)].emit(varValue.value)
 
@@ -304,8 +318,9 @@ class RogueConnection(PyDMConnection):
         destroying : bool
             Whether removal is part of channel/widget destruction.
         """
-        self._client.remLinkMonitor(self.linkState)
-        self._client.stop()
+        # Do NOT call _client.stop() here — VirtualClient is shared across all widgets via ClientCache.
+        if self._client is not None:
+            self._client.remLinkMonitor(self.linkState)
         #if channel.value_signal is not None:
         #    #try:
         #    #    channel.value_signal[str].disconnect(self.put_value)

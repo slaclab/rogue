@@ -15,7 +15,8 @@ import pytest
 
 try:
     from pyrogue.pydm.data_plugins.rogue_plugin import RogueConnection
-except Exception as exc:
+except ImportError as exc:
+    # ImportError only — other exceptions are real regressions, not missing deps.
     pytest.skip(f"PyDM/Qt test dependencies unavailable: {exc}", allow_module_level=True)
 
 
@@ -31,7 +32,7 @@ class _SignalRecorder:
 
 
 def test_rogue_connection_link_state_refreshes_static_name_channels():
-    conn = object.__new__(RogueConnection)
+    conn = RogueConnection.__new__(RogueConnection)
     conn._node = SimpleNamespace(name="MyVar", path="root.MyVar")
     conn._notDev = True
     conn._mode = "name"
