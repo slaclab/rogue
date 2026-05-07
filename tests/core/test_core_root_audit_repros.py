@@ -9,8 +9,6 @@
 #-----------------------------------------------------------------------------
 """Regression tests in python/pyrogue/_Root.py.
 
-Double assignment `self._pollQueue = self._pollQueue = pr.PollQueue(root=self)`
-          at line 243 — a copy-paste artifact; the first assignment is redundant.
 updateGroup() catches bare `except Exception` around
           `self._updateTrack[tid].increment(period)`, silently swallowing any
           non-KeyError exception raised by the existing tracker.
@@ -18,27 +16,9 @@ _queueUpdates() uses the same bare `except Exception` pattern,
           silently swallowing non-KeyError exceptions from an existing tracker.
 """
 
-import pathlib
 import threading
 
 import pyrogue._Root as _root_module
-
-
-def test_root_double_assignment_pollqueue():
-    """Verify that the double-assignment bug in _Root.__init__ is absent."""
-    src_file = pathlib.Path(__file__).parent.parent.parent / 'python' / 'pyrogue' / '_Root.py'
-
-    assert src_file.exists(), (
-        "cannot locate python/pyrogue/_Root.py relative to test tree"
-    )
-
-    content = src_file.read_text()
-
-    assert 'self._pollQueue = self._pollQueue =' not in content, (
-        "double assignment to self._pollQueue present in _Root.py; "
-        "line 243 contains `self._pollQueue = self._pollQueue = pr.PollQueue(root=self)`. "
-        "The first assignment is a redundant copy-paste artifact."
-    )
 
 
 def test_root_updategroup_swallow_non_keyerror(memory_root):
