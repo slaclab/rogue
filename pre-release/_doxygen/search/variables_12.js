@@ -1,7 +1,7 @@
 var searchData=
 [
   ['sequence_0',['sequence',['../classrogue_1_1protocols_1_1rssi_1_1Header.html#adc13dc16708d1f00d0e0e4d0d16a56cd',1,'rogue::protocols::rssi::Header']]],
-  ['server_5f_1',['server_',['../classrogue_1_1protocols_1_1xilinx_1_1Xvc.html#a1b4384aaa025faa3396d7ca3f59877ec',1,'rogue::protocols::xilinx::Xvc']]],
+  ['server_5f_1',['server_',['../classrogue_1_1interfaces_1_1stream_1_1TcpCore.html#a0c49ff8a67720a14a7c53b61c7c7c678',1,'rogue::interfaces::stream::TcpCore::server_'],['../classrogue_1_1protocols_1_1xilinx_1_1Xvc.html#a1b4384aaa025faa3396d7ca3f59877ec',1,'rogue::protocols::xilinx::Xvc::server_']]],
   ['setbfloat16_5f_2',['setBFloat16_',['../classrogue_1_1interfaces_1_1memory_1_1Variable.html#a6d46ab6347d9f90672fe98495a95364d',1,'rogue::interfaces::memory::Variable']]],
   ['setbool_5f_3',['setBool_',['../classrogue_1_1interfaces_1_1memory_1_1Variable.html#ad9963080336320ba4287eda422891f46',1,'rogue::interfaces::memory::Variable']]],
   ['setbytearray_5f_4',['setByteArray_',['../classrogue_1_1interfaces_1_1memory_1_1Variable.html#a04b82c126919108d79df768df14bfcf2',1,'rogue::interfaces::memory::Variable']]],
@@ -18,7 +18,7 @@ var searchData=
   ['settensorfloat32_5f_15',['setTensorFloat32_',['../classrogue_1_1interfaces_1_1memory_1_1Variable.html#acb02b4f35dc98bab4639aa6e91f05a6e',1,'rogue::interfaces::memory::Variable']]],
   ['setuint_5f_16',['setUInt_',['../classrogue_1_1interfaces_1_1memory_1_1Variable.html#a6dd26b22a966236ec7aeb50dded594e1',1,'rogue::interfaces::memory::Variable']]],
   ['sharedbuffersmtx_17',['sharedBuffersMtx',['../AxiStreamDma_8cpp.html#a04dac6c19ce5e27f5e51dc4d9c6cab05',1,'AxiStreamDma.cpp']]],
-  ['size_18',['size',['../structDmaWriteData.html#a26b28bdc8f1da01d873c2297b6655d15',1,'DmaWriteData::size'],['../structDmaReadData.html#a6251f657463df6bd6c6a17842d76ce6d',1,'DmaReadData::size']]],
+  ['size_18',['size',['../structDmaReadData.html#a6251f657463df6bd6c6a17842d76ce6d',1,'DmaReadData::size'],['../structDmaWriteData.html#a26b28bdc8f1da01d873c2297b6655d15',1,'DmaWriteData::size']]],
   ['size_5f_19',['size_',['../classrogue_1_1interfaces_1_1memory_1_1Block.html#a41bfc780ca3cd66978d3ebabf518ae64',1,'rogue::interfaces::memory::Block::size_'],['../classrogue_1_1interfaces_1_1memory_1_1Transaction.html#a45a5fc539bcf4598239ef6f4181582ea',1,'rogue::interfaces::memory::Transaction::size_']]],
   ['sizelimit_5f_20',['sizeLimit_',['../classrogue_1_1utilities_1_1fileio_1_1StreamWriter.html#a4f4da28f3ca311883eac02c12f917af2',1,'rogue::utilities::fileio::StreamWriter']]],
   ['stale_5f_21',['stale_',['../classrogue_1_1interfaces_1_1memory_1_1Block.html#ab2e22f2d59abfaff1e6897618b1fab8e',1,'rogue::interfaces::memory::Block::stale_'],['../classrogue_1_1interfaces_1_1memory_1_1Variable.html#aeee27231246578a29d687044abc3fbee',1,'rogue::interfaces::memory::Variable::stale_']]],

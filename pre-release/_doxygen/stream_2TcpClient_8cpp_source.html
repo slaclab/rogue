@@ -123,11 +123,12 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span> </div>
 <div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>    bp::class_&lt;ris::TcpClient, ris::TcpClientPtr, bp::bases&lt;ris::TcpCore&gt;, boost::noncopyable&gt;(</div>
 <div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>        <span class="stringliteral">&quot;TcpClient&quot;</span>,</div>
-<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>        bp::init&lt;std::string, uint16_t&gt;());</div>
-<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span> </div>
-<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>    bp::implicitly_convertible&lt;ris::TcpClientPtr, ris::TcpCorePtr&gt;();</div>
-<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>}</div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>        bp::init&lt;std::string, uint16_t&gt;())</div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>        .def(<span class="stringliteral">&quot;_stop&quot;</span>, &amp;ris::TcpCore::stop);</div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span> </div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>    bp::implicitly_convertible&lt;ris::TcpClientPtr, ris::TcpCorePtr&gt;();</div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>}</div>
 </div>
 <div class="ttc" id="aBuffer_8h_html"><div class="ttname"><a href="Buffer_8h.html">Buffer.h</a></div></div>
 <div class="ttc" id="aDirectives_8h_html"><div class="ttname"><a href="Directives_8h.html">Directives.h</a></div></div>

@@ -6,7 +6,7 @@ var searchData=
   ['header_2ecpp_3',['Header.cpp',['../Header_8cpp.html',1,'']]],
   ['header_2eh_4',['Header.h',['../Header_8h.html',1,'']]],
   ['headerptr_5',['HeaderPtr',['../namespacerogue_1_1protocols_1_1rssi.html#a7c40e2fe0bc2c102751b8ba7d92e061e',1,'rogue::protocols::rssi']]],
-  ['headersize_6',['headersize',['../classrogue_1_1protocols_1_1rssi_1_1Header.html#ab40b573ae8130e21757e8a40098aee33',1,'rogue::protocols::rssi::Header::HeaderSize'],['../classrogue_1_1protocols_1_1batcher_1_1CoreV1.html#afb8c395859fdcfbc22e6c40aaac7af81',1,'rogue::protocols::batcher::CoreV1::headerSize()'],['../classrogue_1_1protocols_1_1batcher_1_1CoreV2.html#aabb6a32b1dbb7fd7c213c2406fcf3cf0',1,'rogue::protocols::batcher::CoreV2::headerSize()']]],
+  ['headersize_6',['headersize',['../classrogue_1_1protocols_1_1batcher_1_1CoreV1.html#afb8c395859fdcfbc22e6c40aaac7af81',1,'rogue::protocols::batcher::CoreV1::headerSize()'],['../classrogue_1_1protocols_1_1batcher_1_1CoreV2.html#aabb6a32b1dbb7fd7c213c2406fcf3cf0',1,'rogue::protocols::batcher::CoreV2::headerSize()'],['../classrogue_1_1protocols_1_1rssi_1_1Header.html#ab40b573ae8130e21757e8a40098aee33',1,'rogue::protocols::rssi::Header::HeaderSize']]],
   ['headsize_5f_7',['headSize_',['../classrogue_1_1protocols_1_1packetizer_1_1Controller.html#a9af27bc7f5382266e3ba618f594f2f1a',1,'rogue::protocols::packetizer::Controller']]],
   ['helpers_2eh_8',['Helpers.h',['../Helpers_8h.html',1,'']]],
   ['hightranbyte_5f_9',['highTranByte_',['../classrogue_1_1interfaces_1_1memory_1_1Variable.html#a3bf57fb9b25898a4b48a64bb61380515',1,'rogue::interfaces::memory::Variable']]],
