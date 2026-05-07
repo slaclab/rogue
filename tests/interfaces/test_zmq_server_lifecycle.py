@@ -147,9 +147,8 @@ def test_zmq_server_construct_without_start_is_safe(free_zmq_port):
     The dtor's ``stop()`` short-circuits via ``threadEn_=false``, so no
     thread cleanup runs and the never-allocated ``rThread_/sThread_``
     pointers are never dereferenced. This pins the contract that the
-    pre-start state is destroy-safe — important because the new
-    ``delete rThread_; delete sThread_;`` lines added by the audit
-    follow-up only execute inside the threadEn_ guard.
+    pre-start state is destroy-safe, including the cleanup path that only
+    runs after the server has allocated worker threads.
     """
     port = free_zmq_port
     server = rogue.interfaces.ZmqServer("127.0.0.1", port)
