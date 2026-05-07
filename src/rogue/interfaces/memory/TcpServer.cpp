@@ -156,6 +156,10 @@ void rim::TcpServer::start() {
     // symmetry with TcpClient.
 }
 
+int rim::TcpServer::sendResponseMsg_(void* msg, int flags) {
+    return zmq_sendmsg(this->zmqResp_, reinterpret_cast<zmq_msg_t*>(msg), flags);
+}
+
 void rim::TcpServer::stop() {
     if (threadEn_) {
         rogue::GilRelease noGil;
@@ -297,7 +301,7 @@ void rim::TcpServer::runThread() {
 
             uint32_t sendFailed = 0;
             for (x = 0; x < 6; x++) {
-                if (zmq_sendmsg(this->zmqResp_, &(msg[x]), (x == 5) ? 0 : ZMQ_SNDMORE) < 0) {
+                if (this->sendResponseMsg_(&(msg[x]), (x == 5) ? 0 : ZMQ_SNDMORE) < 0) {
                     bridgeLog_->warning("zmq_sendmsg failed on part %" PRIu32 " for id=%" PRIu32 ": %s",
                                         x, id, zmq_strerror(zmq_errno()));
                     sendFailed = 1;

@@ -71,6 +71,14 @@ class TcpServer : public rogue::interfaces::memory::Master {
   protected:
     std::unique_ptr<std::thread> thread_;
     std::atomic<bool> threadEn_{false};
+
+    /**
+     * @brief Sends one response multipart message frame.
+     *
+     * @details Protected so tests can inject transport send failures while the
+     * production path still uses the real TcpServer worker and ZeroMQ sockets.
+     */
+    virtual int sendResponseMsg_(void* msg, int flags);
     //! \endcond
 
   public:

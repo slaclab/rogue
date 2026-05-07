@@ -42,6 +42,14 @@ rogue_add_cpp_test(rogue-cpp-memory-tcpserver-send-swallow-audit-repro
 target_compile_definitions(rogue-cpp-memory-tcpserver-send-swallow-audit-repro
    PRIVATE ROGUE_SRC_DIR="${CMAKE_SOURCE_DIR}")
 
+rogue_add_cpp_test(rogue-cpp-memory-tcpserver-send-failure-recovery
+   SOURCES
+      test_tcpserver_send_failure_recovery.cpp
+   LABELS
+      cpp-core
+      no-python
+)
+
 rogue_add_cpp_test(rogue-cpp-memory-tcpserver-close-deprecated-audit-repro
    SOURCES
       test_tcpserver_close_deprecated_audit_repro.cpp
