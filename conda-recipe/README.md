@@ -34,6 +34,9 @@ export PATH="${HOME}/miniforge3/bin:$PATH"
 # Go to rogue clone dir
 cd rogue
 
+# Set the version tag (must match an existing GitHub release tag)
+export GIT_DESCRIBE_TAG=$(git describe --tags --abbrev=0)
+
 # Build the .conda file
 conda build conda-recipe --output-folder bld-dir -c tidair-tag -c conda-forge
 ```
@@ -57,3 +60,10 @@ conda create -n test-rogue -c file:///$PWD/bld-dir -c conda-forge rogue
 conda activate test-rogue
 python -c "import pyrogue; print(pyrogue.__version__)"
 ```
+
+# conda-forge submission notes
+
+When submitting to conda-forge, the feedstock version of this recipe should:
+1. Replace the `environ.get(...)` version with a hardcoded `{% set version = "x.y.z" %}`
+2. Replace `path: ..` source with a GitHub release tarball URL and `sha256:`
+3. Remove the `GIT_DESCRIBE_TAG` / `GITHUB_REF_NAME` fallback logic (version is hardcoded)
