@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Device &mdash; Rogue v6.12.0-41-g5fe6fdcfd documentation</title>
+  <title>Device &mdash; Rogue v6.12.0-45-gfa08822e0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../_static/slac-favicon-192.png"/>
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=5213bfaa"></script>
+      <script src="../../_static/documentation_options.js?v=918f792b"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -429,6 +429,35 @@ even though they are not always identical.</p>
 <li><p><a class="reference internal" href="block.html"><span class="doc">Blocks</span></a></p></li>
 <li><p><a class="reference internal" href="../../memory_interface/index.html"><span class="doc">Memory Interface</span></a></p></li>
 </ul>
+</section>
+<section id="pre-write-listeners">
+<h2>Pre-Write Listeners<a class="headerlink" href="#pre-write-listeners" title="Link to this heading"></a></h2>
+<p>Devices can register pre-write listeners that fire before <strong>any</strong> child
+Variable write on the Device. This provides a single guard point for protecting
+hardware that must not receive register writes under certain conditions (for
+example, a camera that corrupts if written during acquisition).</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">ProtectedCamera</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Acquiring&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RW&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Config&#39;</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mh">0x0</span><span class="p">,</span> <span class="n">bitSize</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span>
+                                   <span class="n">base</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RW&#39;</span><span class="p">))</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_start</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addPreWriteListener</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_guardWrites</span><span class="p">,</span> <span class="n">stateVars</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">Acquiring</span><span class="p">])</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_guardWrites</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Acquiring</span><span class="o">.</span><span class="n">path</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">pr</span><span class="o">.</span><span class="n">WriteBlockedError</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;camera is acquiring&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+</pre></div>
+</div>
+<p>Device-level listeners execute before any variable-level listeners on the
+target Variable. See <a class="reference internal" href="../../api/python/pyrogue/device.html#pyrogue.Device.addPreWriteListener" title="pyrogue.Device.addPreWriteListener"><code class="xref py py-meth docutils literal notranslate"><span class="pre">addPreWriteListener()</span></code></a> and
+<a class="reference internal" href="variable.html"><span class="doc">Variable</span></a> for the full pre-write listener model.</p>
 </section>
 <section id="operational-hooks-and-decorators">
 <h2>Operational Hooks And Decorators<a class="headerlink" href="#operational-hooks-and-decorators" title="Link to this heading"></a></h2>

@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Variable &mdash; Rogue v6.12.0-41-g5fe6fdcfd documentation</title>
+  <title>Variable &mdash; Rogue v6.12.0-45-gfa08822e0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../_static/slac-favicon-192.png"/>
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=5213bfaa"></script>
+      <script src="../../_static/documentation_options.js?v=918f792b"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -379,6 +379,44 @@ read:</p>
 <p>These are useful when the caller wants the current tree state as it already
 exists locally, without implying that the underlying source should be accessed
 again.</p>
+</section>
+<section id="pre-write-listeners">
+<h2>Pre-Write Listeners<a class="headerlink" href="#pre-write-listeners" title="Link to this heading"></a></h2>
+<p>Variables support pre-write listeners that execute synchronously <strong>before</strong> a
+hardware write occurs. Unlike the post-write update notifications described
+above, pre-write listeners can:</p>
+<ul class="simple">
+<li><p><strong>Block a write</strong> by raising <code class="xref py py-class docutils literal notranslate"><span class="pre">WriteBlockedError</span></code>.</p></li>
+<li><p><strong>Modify the value</strong> being written by returning a replacement value.</p></li>
+<li><p><strong>Inspect system state</strong> through a configurable state snapshot.</p></li>
+</ul>
+<p>This is useful when hardware requires protection from writes under certain
+conditions. For example, a camera device that corrupts if registers are written
+during image acquisition can use a pre-write listener to guard against unsafe
+writes.</p>
+<p>Pre-write listeners fire only on actual hardware writes (<code class="docutils literal notranslate"><span class="pre">set(write=True)</span></code>
+and <code class="docutils literal notranslate"><span class="pre">post()</span></code>). Staging a value with <code class="docutils literal notranslate"><span class="pre">set(write=False)</span></code> does not trigger
+them.</p>
+<p>Registration and callback signature:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">my_guard</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Block writes when acquisition is active.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">acq_active</span><span class="o">.</span><span class="n">path</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">pr</span><span class="o">.</span><span class="n">WriteBlockedError</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;acquisition active&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="kc">None</span>  <span class="c1"># allow write, no value modification</span>
+
+<span class="c1"># Register with state variables whose values are snapshotted at call time</span>
+<span class="n">target_var</span><span class="o">.</span><span class="n">addPreWriteListener</span><span class="p">(</span><span class="n">my_guard</span><span class="p">,</span> <span class="n">stateVars</span><span class="o">=</span><span class="p">[</span><span class="n">acq_active</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>When multiple pre-write listeners are registered, they execute in registration
+order. All must pass (AND logic), and value modifications chain through the
+sequence.</p>
+<p>Pre-write listeners can also be registered at the <strong>Device level</strong>, where they
+fire before any child Variable write on that Device. Device-level listeners
+execute before variable-level listeners. See
+<a class="reference internal" href="../../api/python/pyrogue/device.html#pyrogue.Device.addPreWriteListener" title="pyrogue.Device.addPreWriteListener"><code class="xref py py-meth docutils literal notranslate"><span class="pre">addPreWriteListener()</span></code></a>.</p>
 </section>
 <section id="advanced-related-topics">
 <h2>Advanced Related Topics<a class="headerlink" href="#advanced-related-topics" title="Link to this heading"></a></h2>
