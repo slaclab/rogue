@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-08T18:40:31Z",
+  "generated_at": "2026-05-08T22:22:41Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -224,6 +224,29 @@
         "published_at": "2026-05-08T18:40:31Z",
         "run_url": "https://github.com/slaclab/rogue/actions/runs/25572763090",
         "summary_url": "/rogue/perf/branches/pre-release/latest.json"
+      }
+    },
+    {
+      "ref_name": "ESROGUE-711",
+      "ref_slug": "ESROGUE-711",
+      "latest_url": "/rogue/perf/branches/ESROGUE-711/latest.json",
+      "history": [
+        {
+          "ref_name": "ESROGUE-711",
+          "sha": "55cd33c1e81c836765f1e6c819bc9483b8294b0e",
+          "short_sha": "55cd33c",
+          "published_at": "2026-05-08T22:22:41Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/25582231251",
+          "summary_url": "/rogue/perf/branches/ESROGUE-711/history/55cd33c1e81c836765f1e6c819bc9483b8294b0e.json"
+        }
+      ],
+      "latest": {
+        "ref_name": "ESROGUE-711",
+        "sha": "55cd33c1e81c836765f1e6c819bc9483b8294b0e",
+        "short_sha": "55cd33c",
+        "published_at": "2026-05-08T22:22:41Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/25582231251",
+        "summary_url": "/rogue/perf/branches/ESROGUE-711/latest.json"
       }
     },
     {
