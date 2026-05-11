@@ -1633,7 +1633,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
             # Set value to block
             self._set(value,index)
 
-            pr.startTransaction(self._block, type=rim.Post, forceWr=False, checkEach=True, variable=self, index=index)
+            pr.startTransaction(self._block, type=rim.Post, forceWr=False, check=True, variable=self, index=index)
 
         except WriteBlockedError:
             raise

@@ -554,7 +554,7 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
             self._set(value,index)
 
             if write:
-                pr.startTransaction(self._block, type=rogue.interfaces.memory.Write, forceWr=True, checkEach=True, variable=self, index=index)
+                pr.startTransaction(self._block, type=rogue.interfaces.memory.Write, forceWr=True, check=True, variable=self, index=index)
 
         except Exception as e:
             pr.logException(self._log,e)
@@ -580,7 +580,7 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
             index = operator.index(index)
 
             if read:
-                pr.startTransaction(self._block, type=rogue.interfaces.memory.Read, forceWr=False, checkEach=True, variable=self, index=index)
+                pr.startTransaction(self._block, type=rogue.interfaces.memory.Read, forceWr=False, check=True, variable=self, index=index)
 
             return self._get(index)
 

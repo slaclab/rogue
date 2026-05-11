@@ -531,12 +531,12 @@ class Device(pr.Node,rim.Hub):
         checkEach = checkEach or self.forceCheckEach
 
         if variable is not None:
-            pr.startTransaction(variable._block, type=rim.Write, forceWr=force, checkEach=checkEach, variable=variable, index=index, **kwargs)
+            pr.startTransaction(variable._block, type=rim.Write, forceWr=force, check=checkEach, variable=variable, index=index, **kwargs)
 
         else:
             for block in self._blocks:
                 if block.bulkOpEn:
-                    pr.startTransaction(block, type=rim.Write, forceWr=force, checkEach=checkEach, **kwargs)
+                    pr.startTransaction(block, type=rim.Write, forceWr=force, check=checkEach, **kwargs)
 
             if recurse:
                 for key,value in self.devices.items():
@@ -566,12 +566,12 @@ class Device(pr.Node,rim.Hub):
         checkEach = checkEach or self.forceCheckEach
 
         if variable is not None:
-            pr.startTransaction(variable._block, type=rim.Verify, checkEach=checkEach, **kwargs) # Verify range is set by previous write
+            pr.startTransaction(variable._block, type=rim.Verify, check=checkEach, **kwargs) # Verify range is set by previous write
 
         else:
             for block in self._blocks:
                 if block.bulkOpEn:
-                    pr.startTransaction(block, type=rim.Verify, checkEach=checkEach, **kwargs)
+                    pr.startTransaction(block, type=rim.Verify, check=checkEach, **kwargs)
 
             if recurse:
                 for key,value in self.devices.items():
@@ -604,12 +604,12 @@ class Device(pr.Node,rim.Hub):
         checkEach = checkEach or self.forceCheckEach
 
         if variable is not None:
-            pr.startTransaction(variable._block, type=rim.Read, checkEach=checkEach, variable=variable, index=index, **kwargs)
+            pr.startTransaction(variable._block, type=rim.Read, check=checkEach, variable=variable, index=index, **kwargs)
 
         else:
             for block in self._blocks:
                 if block.bulkOpEn:
-                    pr.startTransaction(block, type=rim.Read, checkEach=checkEach, **kwargs)
+                    pr.startTransaction(block, type=rim.Read, check=checkEach, **kwargs)
 
             if recurse:
                 for key,value in self.devices.items():

@@ -149,7 +149,7 @@ def test_device_force_check_each_recurse_false_and_reset_propagation(monkeypatch
     starts = []
 
     def fake_start(block, **kwargs):
-        starts.append((block.path, kwargs["type"], kwargs.get("checkEach")))
+        starts.append((block.path, kwargs["type"], kwargs.get("check")))
 
     monkeypatch.setattr(pr, "startTransaction", fake_start)
 
