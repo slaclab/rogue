@@ -686,7 +686,7 @@ class VirtualClient(rogue.interfaces.ZmqClient):
                 mon(notify_link)
 
 
-    def _remoteAttr(self, path: str, attr: str, *args: Any, **kwargs: Any) -> Any:
+    def _remoteAttr(self, path: str, attr: str | None, *args: Any, **kwargs: Any) -> Any:
         """Invoke a remote attribute on the server."""
         # Liveness guard: fail fast on a dead instance (stop() was called or
         # a prior init failed). Without this guard the call slips through to
