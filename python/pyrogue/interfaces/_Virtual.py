@@ -428,10 +428,14 @@ class VirtualClient(rogue.interfaces.ZmqClient):
             If the bootstrap ``__ROOT__`` handshake fails within the window
             defined by ``ROGUE_VIRTUAL_CONNECT_TIMEOUT`` (default 5 s).
             Causes include the server process not running, an address/port
-            mismatch, or ports blocked by firewall. The underlying handshake
-            exception is preserved on the raised error's ``__cause__``.
-            Sockets and the ZMQ context are torn down before the raise, so
-            no partially-initialised instance is left in the singleton cache.
+            mismatch, or ports blocked by firewall. The handshake failure
+            is preserved via standard exception chaining: the immediate
+            ``__cause__`` is the wrapping ``Exception`` raised by
+            ``_remoteAttr``, and its own ``__cause__`` is the underlying
+            transport error (typically a ``rogue.GeneralError`` from
+            ``ZmqClient::send``). Sockets and the ZMQ context are torn
+            down before the raise, so no partially-initialised instance
+            is left in the singleton cache.
         """
         if getattr(self, "_vcInitialized", False):
             if linkTimeout is not None or requestStallTimeout is not None:
@@ -706,7 +710,11 @@ class VirtualClient(rogue.interfaces.ZmqClient):
             self._requestDone(True)
         except Exception as e:
             self._requestDone(False)
-            raise Exception(f"ZMQ Interface Exception: {e}")
+            # Chain explicitly so the underlying transport error (e.g. the
+            # rogue.GeneralError from ZmqClient::send) is reachable via the
+            # standard __cause__ chain from any wrapping exception higher up
+            # the stack (notably the ConnectionError raised by __init__).
+            raise Exception(f"ZMQ Interface Exception: {e}") from e
 
         if isinstance(ret,Exception):
             raise ret

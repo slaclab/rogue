@@ -96,6 +96,16 @@ def test_zmq_client_second_send_after_recv_timeout_does_not_raise_sendmsg_failed
             assert "zmq_sendmsg failed" not in first_msg, (
                 f"First send raised zmq_sendmsg failed (unexpected): {first_msg}"
             )
+            # Positive assertion: the precondition for the EFSM-regression
+            # check on the second send is that the first send abandoned recv
+            # via RCVTIMEO. If the first send fails on a different error
+            # (early disconnect/ETERM/etc.), the second send isn't actually
+            # exercising the EFSM-recovery path and the test would pass
+            # vacuously.
+            assert "Timeout" in first_msg or "timeout" in first_msg.lower(), (
+                f"First send raised an unexpected error "
+                f"(not Timeout, not zmq_sendmsg): {first_msg}"
+            )
 
             # Second send immediately after the timeout: with ZMQ_REQ_RELAXED,
             # zmq_sendmsg must succeed (queue the message), and RCVTIMEO fires.
