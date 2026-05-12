@@ -41,8 +41,6 @@
 #   second _send either succeeds or raises "Timeout" (not "zmq_sendmsg failed")
 
 import pickle
-import threading
-import time
 
 import pytest
 import zmq
@@ -70,34 +68,6 @@ def _bind_silent_peer(port: int):
     rep = ctx.socket(zmq.REP)
     rep.bind(f"tcp://127.0.0.1:{port + 1}")
     return ctx, pub, rep
-
-
-def _bind_responding_peer(port: int):
-    """Bind PUB on port and a REP on port+1 that echoes requests back.
-
-    Used for the second-send phase: the REP peer recv+sends so the client
-    completes the request/reply cycle normally.
-    """
-    ctx = zmq.Context()
-    pub = ctx.socket(zmq.PUB)
-    pub.bind(f"tcp://127.0.0.1:{port}")
-    rep = ctx.socket(zmq.REP)
-    rep.bind(f"tcp://127.0.0.1:{port + 1}")
-
-    def _echo():
-        while True:
-            try:
-                rep.recv(flags=zmq.NOBLOCK)
-                rep.send(pickle.dumps(None))
-            except zmq.Again:
-                pass
-            except zmq.ZMQError:
-                break
-            time.sleep(0.01)
-
-    t = threading.Thread(target=_echo, daemon=True)
-    t.start()
-    return ctx, pub, rep, t
 
 
 def test_zmq_client_second_send_after_recv_timeout_does_not_raise_sendmsg_failed(free_zmq_port):
@@ -176,6 +146,14 @@ def test_zmq_client_multiple_sends_after_repeated_recv_timeouts(free_zmq_port):
                     f"Iteration {i}: send raised 'zmq_sendmsg failed' — "
                     f"REQ socket entered EFSM after {i} abandoned-recv cycles. "
                     f"ZMQ_REQ_RELAXED should prevent this. Full error: {msg}"
+                )
+                # Positive assertion: each iteration must surface the RCVTIMEO
+                # timeout, not some other ZMQ error (ETERM, ENOTSOCK, etc.).
+                # Without this check the test could pass on a different
+                # failure mode and silently lose coverage.
+                assert "Timeout" in msg or "timeout" in msg.lower(), (
+                    f"Iteration {i}: send raised an unexpected error "
+                    f"(not Timeout, not zmq_sendmsg failed): {msg}"
                 )
         finally:
             client._stop()
