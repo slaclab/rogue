@@ -328,8 +328,16 @@ bp::object rogue::interfaces::ZmqClient::send(bp::object value) {
         // also prevents the recv loop below from blocking on a request that
         // was never put on the wire.
         if (zmq_sendmsg(this->zmqReq_, &txMsg, 0) < 0) {
+            // Capture errno before zmq_msg_close, which may overwrite it.
+            // ETERM here is the issue #1234 signature: VirtualClient.__init__
+            // tore down the context via _cleanupFailedInit() but returned
+            // without raising, so the caller is now sending on a dead socket.
+            int err = zmq_errno();
             zmq_msg_close(&txMsg);
-            throw rogue::GeneralError::create("ZmqClient::send", "zmq_sendmsg failed");
+            throw rogue::GeneralError::create("ZmqClient::send",
+                                              "zmq_sendmsg failed: errno=%d %s",
+                                              err,
+                                              zmq_strerror(err));
         }
 
         while (1) {
