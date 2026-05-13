@@ -82,7 +82,9 @@ void rogue::interfaces::ZmqClient::setup_python() {
         bp::init<std::string, uint16_t, bool>())
         .def("_doUpdate", &rogue::interfaces::ZmqClient::doUpdate, &rogue::interfaces::ZmqClientWrap::defDoUpdate)
         .def("_send", &rogue::interfaces::ZmqClient::send)
-        .def("setTimeout", &rogue::interfaces::ZmqClient::setTimeout)
+        .def("setTimeout",
+             &rogue::interfaces::ZmqClient::setTimeout,
+             (bp::arg("msecs"), bp::arg("waitRetry"), bp::arg("maxRetries") = 0u))
         .def("getDisp", &rogue::interfaces::ZmqClient::getDisp)
         .def("setDisp", &rogue::interfaces::ZmqClient::setDisp)
         .def("exec", &rogue::interfaces::ZmqClient::exec)
@@ -141,8 +143,9 @@ rogue::interfaces::ZmqClient::ZmqClient(const std::string& addr, uint16_t port, 
         temp.append(":");
         temp.append(std::to_string(static_cast<int64_t>(reqPort)));
 
-        waitRetry_ = false;  // Don't keep waiting after timeout
-        timeout_   = 1000;   // 1 second
+        waitRetry_  = false;  // Don't keep waiting after timeout
+        timeout_    = 1000;   // 1 second
+        maxRetries_ = 0;      // unbounded retry budget when waitRetry_ becomes true
         if (zmq_setsockopt(this->zmqReq_, ZMQ_RCVTIMEO, &timeout_, sizeof(int32_t)) != 0)
             throw(rogue::GeneralError("ZmqClient::ZmqClient", "Failed to set socket timeout"));
 
@@ -211,16 +214,20 @@ void rogue::interfaces::ZmqClient::stop() {
     }
 }
 
-void rogue::interfaces::ZmqClient::setTimeout(uint32_t msecs, bool waitRetry) {
+void rogue::interfaces::ZmqClient::setTimeout(uint32_t msecs, bool waitRetry, uint32_t maxRetries) {
     // ZMQ sockets are not thread-safe; serialize zmqReq_ access.
     rogue::GilRelease noGil;
     std::lock_guard<std::mutex> lock(reqLock_);
 
-    waitRetry_ = waitRetry;
-    timeout_   = msecs;
+    waitRetry_  = waitRetry;
+    timeout_    = msecs;
+    maxRetries_ = maxRetries;
 
     // %d (not PRIu8): bool promotes to int through varargs.
-    log_->debug("Setting timeout to %" PRIu32 " msecs, waitRetry = %d", timeout_, waitRetry_);
+    log_->debug("Setting timeout to %" PRIu32 " msecs, waitRetry = %d, maxRetries = %" PRIu32,
+                timeout_,
+                waitRetry_,
+                maxRetries_);
 
     if (zmq_setsockopt(this->zmqReq_, ZMQ_RCVTIMEO, &timeout_, sizeof(int32_t)) != 0)
         throw(rogue::GeneralError("ZmqClient::setTimeout", "Failed to set socket timeout"));
@@ -247,11 +254,17 @@ std::string rogue::interfaces::ZmqClient::sendString(const std::string& path, co
     std::lock_guard<std::mutex> lock(reqLock_);
     zmq_send(this->zmqReq_, snd.c_str(), snd.size(), 0);
 
+    uint32_t retryCount = 0;
+
     while (1) {
         zmq_msg_init(&msg);
         if (zmq_recvmsg(this->zmqReq_, &msg, 0) <= 0) {
             seconds += static_cast<double>(timeout_) / 1000.0;
-            if (waitRetry_) {
+            // maxRetries_ == 0 preserves the historic unbounded-retry contract
+            // (issue #1236). Caps the loop only when the caller explicitly
+            // requested a finite retry budget via setTimeout(..., maxRetries).
+            const bool retryBudgetExhausted = (maxRetries_ != 0 && ++retryCount >= maxRetries_);
+            if (waitRetry_ && !retryBudgetExhausted) {
                 logWaitRetry(log_, seconds, lastLoggedSeconds);
                 zmq_msg_close(&msg);
             } else {
@@ -340,11 +353,17 @@ bp::object rogue::interfaces::ZmqClient::send(bp::object value) {
                                               zmq_strerror(err));
         }
 
+        uint32_t retryCount = 0;
+
         while (1) {
             zmq_msg_init(&rxMsg);
             if (zmq_recvmsg(this->zmqReq_, &rxMsg, 0) <= 0) {
                 seconds += static_cast<double>(timeout_) / 1000.0;
-                if (waitRetry_) {
+                // maxRetries_ == 0 preserves the historic unbounded-retry contract
+                // (issue #1236). Caps the loop only when the caller explicitly
+                // requested a finite retry budget via setTimeout(..., maxRetries).
+                const bool retryBudgetExhausted = (maxRetries_ != 0 && ++retryCount >= maxRetries_);
+                if (waitRetry_ && !retryBudgetExhausted) {
                     logWaitRetry(log_, seconds, lastLoggedSeconds);
                     zmq_msg_close(&rxMsg);
                 } else {
