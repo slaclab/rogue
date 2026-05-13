@@ -1,0 +1,23 @@
+{
+  "ref_name": "issues/1238",
+  "ref_slug": "issues_1238",
+  "latest_url": "/rogue/perf/branches/issues_1238/latest.json",
+  "history": [
+    {
+      "ref_name": "issues/1238",
+      "sha": "4aab1d63ad63b55916ee7ebf3ce2f29d79d7e2ea",
+      "short_sha": "4aab1d6",
+      "published_at": "2026-05-13T23:48:52Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/25832818936",
+      "summary_url": "/rogue/perf/branches/issues_1238/history/4aab1d63ad63b55916ee7ebf3ce2f29d79d7e2ea.json"
+    }
+  ],
+  "latest": {
+    "ref_name": "issues/1238",
+    "sha": "4aab1d63ad63b55916ee7ebf3ce2f29d79d7e2ea",
+    "short_sha": "4aab1d6",
+    "published_at": "2026-05-13T23:48:52Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/25832818936",
+    "summary_url": "/rogue/perf/branches/issues_1238/latest.json"
+  }
+}
