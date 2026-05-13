@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue.interfaces._Virtual &mdash; Rogue v6.12.0-47-gb27871c09 documentation</title>
+  <title>pyrogue.interfaces._Virtual &mdash; Rogue v6.12.0-53-gb56b26f98 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="../../../_static/slac-favicon-192.png"/>
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=8533e141"></script>
+      <script src="../../../_static/documentation_options.js?v=3e74d081"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -526,6 +526,21 @@
 <span class="sd">            treats it as stalled. ``None`` or non-positive values disable this</span>
 <span class="sd">            policy. In practice this is usually left disabled unless a system</span>
 <span class="sd">            has a known upper bound for valid request duration.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ConnectionError</span>
+<span class="sd">            If the bootstrap ``__ROOT__`` handshake fails within the window</span>
+<span class="sd">            defined by ``ROGUE_VIRTUAL_CONNECT_TIMEOUT`` (default 5 s).</span>
+<span class="sd">            Causes include the server process not running, an address/port</span>
+<span class="sd">            mismatch, or ports blocked by firewall. The handshake failure</span>
+<span class="sd">            is preserved via standard exception chaining: the immediate</span>
+<span class="sd">            ``__cause__`` is the wrapping ``Exception`` raised by</span>
+<span class="sd">            ``_remoteAttr``, and its own ``__cause__`` is the underlying</span>
+<span class="sd">            transport error (typically a ``rogue.GeneralError`` from</span>
+<span class="sd">            ``ZmqClient::send``). Sockets and the ZMQ context are torn</span>
+<span class="sd">            down before the raise, so no partially-initialised instance</span>
+<span class="sd">            is left in the singleton cache.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_vcInitialized&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">linkTimeout</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">requestStallTimeout</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -569,19 +584,20 @@
 
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_root</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_waitForRoot</span><span class="p">()</span>
-        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+            <span class="c1"># Tear down sockets/context before raising so the caller cannot</span>
+            <span class="c1"># inadvertently use a half-initialised instance. Pre-fix this</span>
+            <span class="c1"># path printed the banner and returned normally, leaving the</span>
+            <span class="c1"># caller with a dead VirtualClient whose first _remoteAttr</span>
+            <span class="c1"># crashed in ZmqClient::send (issue #1234).</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_cleanupFailedInit</span><span class="p">()</span>
-            <span class="n">error_message</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">Failed to connect to </span><span class="si">{</span><span class="n">addr</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">port</span><span class="si">}</span><span class="s2">!</span><span class="se">\n\n</span><span class="s2">&quot;</span>
-                <span class="s2">&quot;Possible causes for the issue:</span><span class="se">\n</span><span class="s2">&quot;</span>
-                <span class="s2">&quot;- ZeroMQ Server not included in the root class</span><span class="se">\n</span><span class="s2">&quot;</span>
-                <span class="s2">&quot;- Root process not running</span><span class="se">\n</span><span class="s2">&quot;</span>
-                <span class="s2">&quot;- Mismatch between Client address and Server address</span><span class="se">\n</span><span class="s2">&quot;</span>
-                <span class="s2">&quot;- Mismatch between Client port and Server port</span><span class="se">\n</span><span class="s2">&quot;</span>
-                <span class="s2">&quot;- Server ports being blocked</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">error_message</span><span class="p">)</span>
-            <span class="k">return</span>
+            <span class="k">raise</span> <span class="ne">ConnectionError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Failed to connect to </span><span class="si">{</span><span class="n">addr</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">port</span><span class="si">}</span><span class="s2">. &quot;</span>
+                <span class="s2">&quot;Possible causes: ZeroMQ Server not included in the root &quot;</span>
+                <span class="s2">&quot;class; Root process not running; client/server address &quot;</span>
+                <span class="s2">&quot;mismatch; client/server port mismatch; server ports &quot;</span>
+                <span class="s2">&quot;blocked by firewall.&quot;</span>
+            <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
 
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Connected to </span><span class="si">{}</span><span class="s2"> at </span><span class="si">{}</span><span class="s2">:</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_root</span><span class="o">.</span><span class="n">name</span><span class="p">,</span><span class="n">addr</span><span class="p">,</span><span class="n">port</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setTimeout</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span><span class="kc">True</span><span class="p">)</span>
@@ -788,8 +804,19 @@
                 <span class="n">mon</span><span class="p">(</span><span class="n">notify_link</span><span class="p">)</span>
 
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_remoteAttr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">attr</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_remoteAttr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">attr</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Invoke a remote attribute on the server.&quot;&quot;&quot;</span>
+        <span class="c1"># Liveness guard: fail fast on a dead instance (stop() was called or</span>
+        <span class="c1"># a prior init failed). Without this guard the call slips through to</span>
+        <span class="c1"># ZmqClient::send on a torn-down socket and surfaces as the</span>
+        <span class="c1"># &quot;zmq_sendmsg failed&quot; crash reported in issue #1234.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_vcInitialized&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="s2">&quot;VirtualClient is not connected: __init__ failed or stop() &quot;</span>
+                <span class="s2">&quot;was called. Construct a new VirtualClient before issuing &quot;</span>
+                <span class="s2">&quot;remote attribute calls.&quot;</span>
+            <span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">_requestStart</span><span class="p">()</span>
 
         <span class="k">try</span><span class="p">:</span>
@@ -797,7 +824,11 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_requestDone</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_requestDone</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ZMQ Interface Exception: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="c1"># Chain explicitly so the underlying transport error (e.g. the</span>
+            <span class="c1"># rogue.GeneralError from ZmqClient::send) is reachable via the</span>
+            <span class="c1"># standard __cause__ chain from any wrapping exception higher up</span>
+            <span class="c1"># the stack (notably the ConnectionError raised by __init__).</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ZMQ Interface Exception: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span><span class="ne">Exception</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">ret</span>
