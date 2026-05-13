@@ -103,9 +103,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ab29afe4fe41fea11137ab2a1060e78e7" id="r_ab29afe4fe41fea11137ab2a1060e78e7"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1interfaces_1_1ZmqClient.html#ab29afe4fe41fea11137ab2a1060e78e7">~ZmqClient</a> ()</td></tr>
 <tr class="memdesc:ab29afe4fe41fea11137ab2a1060e78e7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destroys client and stops background activity.  <br /></td></tr>
 <tr class="separator:ab29afe4fe41fea11137ab2a1060e78e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9efc4a2996c63962af726236b79b5762" id="r_a9efc4a2996c63962af726236b79b5762"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1interfaces_1_1ZmqClient.html#a9efc4a2996c63962af726236b79b5762">setTimeout</a> (uint32_t msecs, bool waitRetry)</td></tr>
-<tr class="memdesc:a9efc4a2996c63962af726236b79b5762"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets request timeout behavior.  <br /></td></tr>
-<tr class="separator:a9efc4a2996c63962af726236b79b5762"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac2541f956fe433461518ac49b6ba9ea6" id="r_ac2541f956fe433461518ac49b6ba9ea6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1interfaces_1_1ZmqClient.html#ac2541f956fe433461518ac49b6ba9ea6">setTimeout</a> (uint32_t msecs, bool waitRetry, uint32_t maxRetries=0)</td></tr>
+<tr class="memdesc:ac2541f956fe433461518ac49b6ba9ea6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets request timeout behavior.  <br /></td></tr>
+<tr class="separator:ac2541f956fe433461518ac49b6ba9ea6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0a76bdc0aff07df5aa822504b880bdf2" id="r_a0a76bdc0aff07df5aa822504b880bdf2"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classrogue_1_1interfaces_1_1ZmqClient.html#a0a76bdc0aff07df5aa822504b880bdf2">sendString</a> (const std::string &amp;path, const std::string &amp;attr, const std::string &amp;arg)</td></tr>
 <tr class="memdesc:a0a76bdc0aff07df5aa822504b880bdf2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sends a string-mode request.  <br /></td></tr>
 <tr class="separator:a0a76bdc0aff07df5aa822504b880bdf2"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -193,7 +193,7 @@ Static Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="ZmqClient_8cpp_source.html#l00094">94</a> of file <a class="el" href="ZmqClient_8cpp_source.html">ZmqClient.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ZmqClient_8cpp_source.html#l00096">96</a> of file <a class="el" href="ZmqClient_8cpp_source.html">ZmqClient.cpp</a>.</p>
 
 </div>
 </div>
@@ -222,7 +222,7 @@ Static Public Member Functions</h2></td></tr>
 
 <p>Destroys client and stops background activity. </p>
 
-<p class="definition">Definition at line <a class="el" href="ZmqClient_8cpp_source.html#l00193">193</a> of file <a class="el" href="ZmqClient_8cpp_source.html">ZmqClient.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ZmqClient_8cpp_source.html#l00196">196</a> of file <a class="el" href="ZmqClient_8cpp_source.html">ZmqClient.cpp</a>.</p>
 
 </div>
 </div>
@@ -317,7 +317,7 @@ Static Public Member Functions</h2></td></tr>
 
 <p>Reimplemented in <a class="el" href="classrogue_1_1interfaces_1_1ZmqClientWrap.html#a588a20c532278a4740debba9c5bddd7f">rogue::interfaces::ZmqClientWrap</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="ZmqClient_8cpp_source.html#l00375">375</a> of file <a class="el" href="ZmqClient_8cpp_source.html">ZmqClient.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ZmqClient_8cpp_source.html#l00394">394</a> of file <a class="el" href="ZmqClient_8cpp_source.html">ZmqClient.cpp</a>.</p>
 
 </div>
 </div>
@@ -357,7 +357,7 @@ Static Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Callable result as string. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="ZmqClient_8cpp_source.html#l00283">283</a> of file <a class="el" href="ZmqClient_8cpp_source.html">ZmqClient.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ZmqClient_8cpp_source.html#l00296">296</a> of file <a class="el" href="ZmqClient_8cpp_source.html">ZmqClient.cpp</a>.</p>
 
 </div>
 </div>
@@ -386,7 +386,7 @@ Static Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Display-formatted value. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="ZmqClient_8cpp_source.html#l00275">275</a> of file <a class="el" href="ZmqClient_8cpp_source.html">ZmqClient.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ZmqClient_8cpp_source.html#l00288">288</a> of file <a class="el" href="ZmqClient_8cpp_source.html">ZmqClient.cpp</a>.</p>
 
 </div>
 </div>
@@ -415,7 +415,7 @@ Static Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Response bytes as a Python bytes-like object. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="ZmqClient_8cpp_source.html#l00293">293</a> of file <a class="el" href="ZmqClient_8cpp_source.html">ZmqClient.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ZmqClient_8cpp_source.html#l00306">306</a> of file <a class="el" href="ZmqClient_8cpp_source.html">ZmqClient.cpp</a>.</p>
 
 </div>
 </div>
@@ -462,7 +462,7 @@ Static Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Server response string. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="ZmqClient_8cpp_source.html#l00229">229</a> of file <a class="el" href="ZmqClient_8cpp_source.html">ZmqClient.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ZmqClient_8cpp_source.html#l00236">236</a> of file <a class="el" href="ZmqClient_8cpp_source.html">ZmqClient.cpp</a>.</p>
 
 </div>
 </div>
@@ -501,12 +501,12 @@ Static Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="ZmqClient_8cpp_source.html#l00279">279</a> of file <a class="el" href="ZmqClient_8cpp_source.html">ZmqClient.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ZmqClient_8cpp_source.html#l00292">292</a> of file <a class="el" href="ZmqClient_8cpp_source.html">ZmqClient.cpp</a>.</p>
 
 </div>
 </div>
-<a id="a9efc4a2996c63962af726236b79b5762" name="a9efc4a2996c63962af726236b79b5762"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9efc4a2996c63962af726236b79b5762">&#9670;&#160;</a></span>setTimeout()</h2>
+<a id="ac2541f956fe433461518ac49b6ba9ea6" name="ac2541f956fe433461518ac49b6ba9ea6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac2541f956fe433461518ac49b6ba9ea6">&#9670;&#160;</a></span>setTimeout()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -521,7 +521,13 @@ Static Public Member Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>waitRetry</em>&#160;</td>
+          <td class="paramname"><em>waitRetry</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>maxRetries</em> = <code>0</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -532,15 +538,17 @@ Static Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Sets request timeout behavior. </p>
+<p><code>maxRetries</code> caps the recv-then-retry loop in <code><a class="el" href="classrogue_1_1interfaces_1_1ZmqClient.html#a61e84cf5d8467fd1d9d3ec541e35ed29" title="Sends binary request payload and receives binary response.">send()</a></code> / <code><a class="el" href="classrogue_1_1interfaces_1_1ZmqClient.html#a0a76bdc0aff07df5aa822504b880bdf2" title="Sends a string-mode request.">sendString()</a></code> when <code>waitRetry</code> is true. <code>0</code> (default) preserves the historic unbounded-retry contract; downstream callers (notably <code>pysmurf</code>) rely on it. A positive value throws <code><a class="el" href="classrogue_1_1GeneralError.html" title="Generic Rogue exception type.">rogue::GeneralError</a></code> after that many RCVTIMEO trips, matching the throw on the <code>waitRetry == false</code> path. Ignored when <code>waitRetry</code> is false.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">msecs</td><td>Timeout in milliseconds. </td></tr>
     <tr><td class="paramname">waitRetry</td><td><code>true</code> to continue waiting/retrying after timeouts. </td></tr>
+    <tr><td class="paramname">maxRetries</td><td>Optional retry cap when <code>waitRetry</code> is true. <code>0</code> means unbounded (default). </td></tr>
   </table>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="ZmqClient_8cpp_source.html#l00214">214</a> of file <a class="el" href="ZmqClient_8cpp_source.html">ZmqClient.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ZmqClient_8cpp_source.html#l00217">217</a> of file <a class="el" href="ZmqClient_8cpp_source.html">ZmqClient.cpp</a>.</p>
 
 </div>
 </div>
@@ -591,7 +599,7 @@ Static Public Member Functions</h2></td></tr>
 
 <p>Stops client sockets and background thread. </p>
 
-<p class="definition">Definition at line <a class="el" href="ZmqClient_8cpp_source.html#l00197">197</a> of file <a class="el" href="ZmqClient_8cpp_source.html">ZmqClient.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ZmqClient_8cpp_source.html#l00200">200</a> of file <a class="el" href="ZmqClient_8cpp_source.html">ZmqClient.cpp</a>.</p>
 
 </div>
 </div>
@@ -620,7 +628,7 @@ Static Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Value display string. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="ZmqClient_8cpp_source.html#l00287">287</a> of file <a class="el" href="ZmqClient_8cpp_source.html">ZmqClient.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ZmqClient_8cpp_source.html#l00300">300</a> of file <a class="el" href="ZmqClient_8cpp_source.html">ZmqClient.cpp</a>.</p>
 
 </div>
 </div>
