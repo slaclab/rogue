@@ -39,8 +39,12 @@ requirements:
     - libboost-python
     - bzip2
     - zeromq
+    - ipython  # slaclab/surf dep
     - pyyaml
+    - jsonpickle  # slaclab/surf dep
     - pyzmq
+    - parse  # slaclab/surf dep
+    - click  # slaclab/surf dep
     - sqlalchemy
     - pyserial
     - pydm >=1.18
