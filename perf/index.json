@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-14T01:33:06Z",
+  "generated_at": "2026-05-14T01:34:47Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -227,26 +227,34 @@
       }
     },
     {
-      "ref_name": "issues/1234",
-      "ref_slug": "issues_1234",
-      "latest_url": "/rogue/perf/branches/issues_1234/latest.json",
+      "ref_name": "ESROGUE-711",
+      "ref_slug": "ESROGUE-711",
+      "latest_url": "/rogue/perf/branches/ESROGUE-711/latest.json",
       "history": [
         {
-          "ref_name": "issues/1234",
-          "sha": "a288c67be301adfb8be15c82bb6760d45f4dde63",
-          "short_sha": "a288c67",
-          "published_at": "2026-05-14T01:33:06Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/25709465704",
-          "summary_url": "/rogue/perf/branches/issues_1234/history/a288c67be301adfb8be15c82bb6760d45f4dde63.json"
+          "ref_name": "ESROGUE-711",
+          "sha": "be4c5da465cbd337992bb7dee9e4eb90daef28fe",
+          "short_sha": "be4c5da",
+          "published_at": "2026-05-14T01:34:47Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/25836145195",
+          "summary_url": "/rogue/perf/branches/ESROGUE-711/history/be4c5da465cbd337992bb7dee9e4eb90daef28fe.json"
+        },
+        {
+          "ref_name": "ESROGUE-711",
+          "sha": "55cd33c1e81c836765f1e6c819bc9483b8294b0e",
+          "short_sha": "55cd33c",
+          "published_at": "2026-05-08T22:22:41Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/25582231251",
+          "summary_url": "/rogue/perf/branches/ESROGUE-711/history/55cd33c1e81c836765f1e6c819bc9483b8294b0e.json"
         }
       ],
       "latest": {
-        "ref_name": "issues/1234",
-        "sha": "a288c67be301adfb8be15c82bb6760d45f4dde63",
-        "short_sha": "a288c67",
-        "published_at": "2026-05-14T01:33:06Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/25709465704",
-        "summary_url": "/rogue/perf/branches/issues_1234/latest.json"
+        "ref_name": "ESROGUE-711",
+        "sha": "be4c5da465cbd337992bb7dee9e4eb90daef28fe",
+        "short_sha": "be4c5da",
+        "published_at": "2026-05-14T01:34:47Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/25836145195",
+        "summary_url": "/rogue/perf/branches/ESROGUE-711/latest.json"
       }
     },
     {
@@ -333,29 +341,6 @@
         "published_at": "2026-05-11T22:39:10Z",
         "run_url": "https://github.com/slaclab/rogue/actions/runs/25701239541",
         "summary_url": "/rogue/perf/branches/RemoteCommand-checkEach-fix/latest.json"
-      }
-    },
-    {
-      "ref_name": "ESROGUE-711",
-      "ref_slug": "ESROGUE-711",
-      "latest_url": "/rogue/perf/branches/ESROGUE-711/latest.json",
-      "history": [
-        {
-          "ref_name": "ESROGUE-711",
-          "sha": "55cd33c1e81c836765f1e6c819bc9483b8294b0e",
-          "short_sha": "55cd33c",
-          "published_at": "2026-05-08T22:22:41Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/25582231251",
-          "summary_url": "/rogue/perf/branches/ESROGUE-711/history/55cd33c1e81c836765f1e6c819bc9483b8294b0e.json"
-        }
-      ],
-      "latest": {
-        "ref_name": "ESROGUE-711",
-        "sha": "55cd33c1e81c836765f1e6c819bc9483b8294b0e",
-        "short_sha": "55cd33c",
-        "published_at": "2026-05-08T22:22:41Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/25582231251",
-        "summary_url": "/rogue/perf/branches/ESROGUE-711/latest.json"
       }
     },
     {
