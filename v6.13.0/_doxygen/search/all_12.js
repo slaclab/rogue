@@ -26,7 +26,7 @@ var searchData=
   ['setbool_5f_23',['setBool_',['../classrogue_1_1interfaces_1_1memory_1_1Variable.html#ad9963080336320ba4287eda422891f46',1,'rogue::interfaces::memory::Variable']]],
   ['setboolpy_24',['setBoolPy',['../classrogue_1_1interfaces_1_1memory_1_1Block.html#a1abab7343c00bf80cd2ecf088ebffdba',1,'rogue::interfaces::memory::Block']]],
   ['setbuffersize_25',['setBufferSize',['../classrogue_1_1utilities_1_1fileio_1_1StreamWriter.html#a3100de1c83bd2855d7937fb8ea273ad1',1,'rogue::utilities::fileio::StreamWriter']]],
-  ['setbytearray_26',['setbytearray',['../classrogue_1_1interfaces_1_1memory_1_1Block.html#ac608978216d5298ddcc848d86f985b57',1,'rogue::interfaces::memory::Block::setByteArray()'],['../classrogue_1_1interfaces_1_1memory_1_1Variable.html#a9199a12237106c860e59ef112d05a8a3',1,'rogue::interfaces::memory::Variable::setByteArray(uint8_t *value, int32_t index=-1)']]],
+  ['setbytearray_26',['setbytearray',['../classrogue_1_1interfaces_1_1memory_1_1Variable.html#a9199a12237106c860e59ef112d05a8a3',1,'rogue::interfaces::memory::Variable::setByteArray()'],['../classrogue_1_1interfaces_1_1memory_1_1Block.html#ac608978216d5298ddcc848d86f985b57',1,'rogue::interfaces::memory::Block::setByteArray()']]],
   ['setbytearray_5f_27',['setByteArray_',['../classrogue_1_1interfaces_1_1memory_1_1Variable.html#a04b82c126919108d79df768df14bfcf2',1,'rogue::interfaces::memory::Variable']]],
   ['setbytearraypy_28',['setByteArrayPy',['../classrogue_1_1interfaces_1_1memory_1_1Block.html#ad39fd22f0773739eed5c2aa958bd4a0f',1,'rogue::interfaces::memory::Block']]],
   ['setbytes_29',['setBytes',['../classrogue_1_1interfaces_1_1memory_1_1Block.html#aba1d11a3c75f49a2066efcf8164f6ea4',1,'rogue::interfaces::memory::Block']]],
