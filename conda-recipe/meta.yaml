@@ -1,5 +1,9 @@
 {% set name = "rogue" %}
-{% set version = (environ.get('GIT_DESCRIBE_TAG', '') or environ.get('GITHUB_REF_NAME', '') or 'v0.0.0').lstrip('v') %}
+{# Keep the leading 'v' so tidair-tag artifacts stay named rogue-vX.Y.Z-...conda. #}
+{# The conda-forge feedstock should hardcode `version` without the 'v' instead. #}
+{% set raw_tag = environ.get('GIT_DESCRIBE_TAG', '') or environ.get('GITHUB_REF_NAME', '') or 'v0.0.0' %}
+{% set version = raw_tag if raw_tag.startswith('v') else 'v' + raw_tag %}
+{% set py_version = version[1:] %}
 
 package:
   name: {{ name }}
@@ -53,7 +57,7 @@ test:
   requires:
     - pip
   commands:
-    - python -c "import pyrogue; assert pyrogue.__version__ == '{{ version }}'"
+    - python -c "import pyrogue; assert pyrogue.__version__ == '{{ py_version }}'"
     - pip check
 
 about:

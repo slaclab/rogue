@@ -61,9 +61,26 @@ conda activate test-rogue
 python -c "import pyrogue; print(pyrogue.__version__)"
 ```
 
+# Build matrix
+
+`conda_build_config.yaml` declares the Python variants built for the
+`tidair-tag` channel: py310, py311, py312, and py313. Running
+`conda build conda-recipe` produces one `.conda` per variant.
+
+# Version convention
+
+The `tidair-tag` channel uses the `v`-prefixed tag (e.g. `rogue-v6.13.0-py312_0.conda`).
+`meta.yaml` reads `GIT_DESCRIBE_TAG` (or `GITHUB_REF_NAME` in CI) and forces a leading
+`v` on the package version. `build.sh` then passes the same string to CMake as
+`ROGUE_VERSION`, which the C++ `Version::init()` parser requires to start with `v`.
+
 # conda-forge submission notes
 
-When submitting to conda-forge, the feedstock version of this recipe should:
-1. Replace the `environ.get(...)` version with a hardcoded `{% set version = "x.y.z" %}`
+When submitting to conda-forge, the feedstock copy of this recipe should:
+1. Replace the `environ.get(...)` version logic with a hardcoded `{% set version = "x.y.z" %}` (no `v` prefix per conda-forge convention)
 2. Replace `path: ..` source with a GitHub release tarball URL and `sha256:`
 3. Remove the `GIT_DESCRIBE_TAG` / `GITHUB_REF_NAME` fallback logic (version is hardcoded)
+4. Drop `conda_build_config.yaml` (conda-forge supplies global pinning)
+
+`build.sh` already handles both cases — it auto-prepends `v` when `PKG_VERSION`
+lacks one, so it works unchanged in a conda-forge feedstock.
