@@ -1,6 +1,10 @@
 Documentation Generation.
 
-Planning documents for docs publishing changes live under `docs/plans/`.
+For project-wide development, documentation, and agent-orientation guidance,
+see `../DEVELOPMENT.md`.
+
+Planning, progress, handoff, and decision notes for substantial feature work
+live under `docs/plans/<task-name>/`.
 
 Boost.Python API build-time generation:
 

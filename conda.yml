@@ -1,7 +1,8 @@
 channels:
   - conda-forge
 dependencies:
-  - python
+  - python >=3.10,<3.14
+  - pip
   - c-compiler
   - cxx-compiler
   - make
@@ -14,7 +15,7 @@ dependencies:
   - parse
   - click
   - numpy
-  - boost
+  - libboost-python-devel
   - bzip2
   - zeromq
   - sphinx

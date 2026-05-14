@@ -340,6 +340,38 @@ For deeper memory-stack behavior, see:
 * :doc:`/pyrogue_tree/core/block`
 * :doc:`/memory_interface/index`
 
+Pre-Write Listeners
+====================
+
+Devices can register pre-write listeners that fire before **any** child
+Variable write on the Device. This provides a single guard point for protecting
+hardware that must not receive register writes under certain conditions (for
+example, a camera that corrupts if written during acquisition).
+
+.. code-block:: python
+
+   import pyrogue as pr
+
+   class ProtectedCamera(pr.Device):
+       def __init__(self, **kwargs):
+           super().__init__(**kwargs)
+           self.add(pr.LocalVariable(name='Acquiring', value=False, mode='RW'))
+           self.add(pr.RemoteVariable(name='Config', offset=0x0, bitSize=32,
+                                      base=pr.UInt, mode='RW'))
+
+       def _start(self):
+           super()._start()
+           self.addPreWriteListener(self._guardWrites, stateVars=[self.Acquiring])
+
+       def _guardWrites(self, path, value, state):
+           if state.get(self.Acquiring.path) is True:
+               raise pr.WriteBlockedError(path, "camera is acquiring")
+           return None
+
+Device-level listeners execute before any variable-level listeners on the
+target Variable. See :py:meth:`~pyrogue.Device.addPreWriteListener` and
+:doc:`/pyrogue_tree/core/variable` for the full pre-write listener model.
+
 Operational Hooks And Decorators
 ================================
 
@@ -361,7 +393,35 @@ Nodes from local functions.
 
    @pyrogue.command(name='ReadConfig', value='', description='Load config file')
    def _readConfig(self, arg):
-       self.root.loadYaml(name=arg, writeEach=False, modes=['RW', 'WO'])
+       self.loadYaml(name=arg, writeEach=False, modes=['RW', 'WO'])
+
+Device-Level YAML Configuration
+================================
+
+Device provides ``saveYaml``, ``loadYaml``, and ``setYaml`` methods that
+operate on the device subtree using device-relative paths. This allows
+configuration of individual devices without needing to know the full tree
+structure above the device.
+
+.. code-block:: python
+
+   with root:
+       # Save config from a specific device
+       root.MyBoard.saveYaml(name="board.yml", readFirst=True, modes=["RW", "WO"])
+
+       # Load config back — YAML uses device-relative paths
+       root.MyBoard.loadYaml(name="board.yml", writeEach=False, modes=["RW", "WO"])
+
+       # Apply YAML text directly
+       root.MyBoard.setYaml(
+           yml="SubDevice:\n  Variable: 42\n",
+           writeEach=False,
+           modes=["RW"],
+       )
+
+Device-level loads write only the blocks belonging to the device and its
+descendants. For details on the YAML format, path resolution, and array
+matching, see :doc:`/pyrogue_tree/core/yaml_configuration`.
 
 What To Explore Next
 ====================

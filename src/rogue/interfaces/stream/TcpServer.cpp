@@ -55,7 +55,8 @@ void ris::TcpServer::setup_python() {
 
     bp::class_<ris::TcpServer, ris::TcpServerPtr, bp::bases<ris::TcpCore>, boost::noncopyable>(
         "TcpServer",
-        bp::init<std::string, uint16_t>());
+        bp::init<std::string, uint16_t>())
+        .def("_stop", &ris::TcpCore::stop);
 
     bp::implicitly_convertible<ris::TcpServerPtr, ris::TcpCorePtr>();
 #endif
