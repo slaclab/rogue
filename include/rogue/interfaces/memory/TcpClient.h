@@ -70,7 +70,7 @@ class TcpClient : public rogue::interfaces::memory::Slave {
 
     //! \cond INTERNAL
   protected:
-    std::thread* thread_ = nullptr;
+    std::unique_ptr<std::thread> thread_;
     std::atomic<bool> threadEn_{false};
     //! \endcond
 
@@ -143,7 +143,7 @@ class TcpClient : public rogue::interfaces::memory::Slave {
      *
      * @details Deprecated; use `stop()`.
      */
-    void close();
+    [[deprecated("Use stop() instead")]] void close();
 
     /**
      * @brief Stops the bridge interface and worker thread.

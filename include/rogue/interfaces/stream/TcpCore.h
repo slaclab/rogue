@@ -61,13 +61,18 @@ class TcpCore : public rogue::interfaces::stream::Master, public rogue::interfac
     void* zmqPull_ = nullptr;
     void* zmqPush_ = nullptr;
 
+    bool server_ = false;
+
     // Thread background
     void runThread();
+
+    // Rebuild zmqPush_ after a failed multipart send.  Caller must hold bridgeMtx_.
+    bool rebuildPushSocket();
 
     // Log
     std::shared_ptr<rogue::Logging> bridgeLog_;
 
-    std::thread* thread_ = nullptr;
+    std::unique_ptr<std::thread> thread_;
     std::atomic<bool> threadEn_{false};
 
     // Lock
@@ -118,8 +123,8 @@ class TcpCore : public rogue::interfaces::stream::Master, public rogue::interfac
     /** @brief Destroys the bridge core and releases resources. */
     ~TcpCore();
 
-    /** @brief Closes active bridge connections. */
-    void close();
+    /** @brief Closes active bridge connections. Deprecated; use stop(). */
+    [[deprecated("Use stop() instead")]] void close();
 
     /** @brief Stops the interface and worker thread. */
     void stop();

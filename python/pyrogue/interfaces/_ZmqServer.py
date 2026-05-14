@@ -17,6 +17,7 @@ import io
 import rogue.interfaces
 import pickle
 import json
+import threading
 from typing import Any
 
 
@@ -88,8 +89,9 @@ class ZmqServer(rogue.interfaces.ZmqServer):
         rogue.interfaces.ZmqServer.__init__(self,addr,port)
         self._root = root
         self._addr = addr
-        self._root.addVarListener(func=self._varUpdate, done=self._varDone, incGroups=incGroups, excGroups=excGroups)
         self._updateList = {}
+        self._updateLock = threading.Lock()
+        self._root.addVarListener(func=self._varUpdate, done=self._varDone, incGroups=incGroups, excGroups=excGroups)
 
     @property
     def address(self) -> str:
@@ -146,13 +148,17 @@ class ZmqServer(rogue.interfaces.ZmqServer):
 
     def _varUpdate(self, path: str, value: Any) -> None:
         """Queue a variable update for batching."""
-        self._updateList[path] = value
+        with self._updateLock:
+            self._updateList[path] = value
 
     def _varDone(self) -> None:
         """Flush queued variable updates to subscribers."""
-        if len(self._updateList) > 0:
-            self._publish(pickle.dumps(self._updateList))
+        with self._updateLock:
+            if not self._updateList:
+                return
+            snapshot = self._updateList
             self._updateList = {}
+        self._publish(pickle.dumps(snapshot))
 
     def _start(self) -> None:
         """Start the ZMQ server and print connection info."""
