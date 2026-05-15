@@ -147,3 +147,24 @@ def test_memory_tcp_repeated_close_is_safe(free_tcp_port):
 
     # Give any background threads a tick to fully unwind before drop.
     time.sleep(0.05)
+
+
+def test_memory_tcp_python_stop_bindings_are_exposed(free_tcp_port):
+    """Python ``_stop()`` bindings must release both memory TCP bridge sides.
+
+    PyRogue managed-lifecycle code calls ``_stop()`` on interfaces, so the
+    Boost.Python binding is part of the Python-visible contract even though the
+    C++ method is named ``stop()``.
+    """
+    server = rogue.interfaces.memory.TcpServer("127.0.0.1", free_tcp_port)
+    client = rogue.interfaces.memory.TcpClient("127.0.0.1", free_tcp_port, False)
+
+    assert callable(server._stop)
+    assert callable(client._stop)
+
+    client._stop()
+    server._stop()
+
+    # Idempotence matters because application teardown may also call close().
+    client._stop()
+    server._stop()

@@ -146,3 +146,19 @@ def test_tcp_core_repeated_close_is_safe(free_tcp_port):
 
     # Give any background threads a tick to fully unwind before drop.
     time.sleep(0.05)
+
+
+def test_tcp_core_python_stop_bindings_are_exposed(free_tcp_port):
+    """Python ``_stop()`` bindings must release both stream TCP bridge sides."""
+    server = rogue.interfaces.stream.TcpServer("127.0.0.1", free_tcp_port)
+    client = rogue.interfaces.stream.TcpClient("127.0.0.1", free_tcp_port)
+
+    assert callable(server._stop)
+    assert callable(client._stop)
+
+    server._stop()
+    client._stop()
+
+    # Idempotence matters because application teardown may also call close().
+    server._stop()
+    client._stop()

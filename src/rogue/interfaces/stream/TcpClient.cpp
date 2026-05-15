@@ -55,7 +55,8 @@ void ris::TcpClient::setup_python() {
 
     bp::class_<ris::TcpClient, ris::TcpClientPtr, bp::bases<ris::TcpCore>, boost::noncopyable>(
         "TcpClient",
-        bp::init<std::string, uint16_t>());
+        bp::init<std::string, uint16_t>())
+        .def("_stop", &ris::TcpCore::stop);
 
     bp::implicitly_convertible<ris::TcpClientPtr, ris::TcpCorePtr>();
 #endif
