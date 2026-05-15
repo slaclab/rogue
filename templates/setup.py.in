@@ -72,4 +72,19 @@ setup (
     package_dir={'':'../python'},
     package_data={'':['../rogue.so'], 'pyrogue.pydm':['examples/*.ui']},
     include_package_data=True,
+    install_requires=[
+        'numpy',
+        'pyyaml',
+        'pyzmq',
+        'sqlalchemy',
+        'pyserial',
+        'matplotlib',
+    ],
+    extras_require={
+        'gui': [
+            'pydm>=1.18',
+            'qtpy>=2.0',
+            'pyqtgraph>=0.13',
+        ],
+    },
 )

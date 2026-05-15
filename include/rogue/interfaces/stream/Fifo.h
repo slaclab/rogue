@@ -67,8 +67,8 @@ class Fifo : public rogue::interfaces::stream::Master, public rogue::interfaces:
 
     //! \cond INTERNAL
   protected:
-    std::thread* thread_ = nullptr;
     std::atomic<bool> threadEn_{false};
+    std::thread* thread_ = nullptr;
     //! \endcond
 
   private:
