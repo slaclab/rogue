@@ -16,8 +16,9 @@ import pyrogue.interfaces._Virtual as virtual_mod
 
 
 class FakeThread:
-    def __init__(self, target):
+    def __init__(self, target, daemon=None):
         self.target = target
+        self.daemon = daemon
         self.started = False
 
     def start(self):
