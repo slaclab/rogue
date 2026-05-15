@@ -51,6 +51,8 @@ ris::TcpCore::TcpCore(const std::string& addr, uint16_t port, bool server) {
     int32_t opt;
     std::string logstr;
 
+    this->server_ = server;
+
     logstr = "stream.TcpCore.";
     logstr.append(addr);
     logstr.append(".");
@@ -140,7 +142,7 @@ ris::TcpCore::TcpCore(const std::string& addr, uint16_t port, bool server) {
                                 this->pushAddr_.c_str());
 
         threadEn_     = true;
-        this->thread_ = new std::thread(&ris::TcpCore::runThread, this);
+        this->thread_ = std::make_unique<std::thread>(&ris::TcpCore::runThread, this);
 
         // Set a thread name
 #ifndef __MACH__
@@ -154,13 +156,12 @@ ris::TcpCore::TcpCore(const std::string& addr, uint16_t port, bool server) {
         // GIL to deliver into a Python slave, and join while holding the GIL
         // would deadlock.
         threadEn_ = false;
-        if (thread_ != nullptr) {
+        if (thread_) {
             {
                 rogue::GilRelease noGil;
                 thread_->join();
             }
-            delete thread_;
-            thread_ = nullptr;
+            thread_.reset();
         }
         if (zmqPull_ != nullptr) {
             zmq_close(zmqPull_);
@@ -193,18 +194,80 @@ void ris::TcpCore::stop() {
         rogue::GilRelease noGil;
         threadEn_ = false;
         thread_->join();
-        delete thread_;
-        thread_ = nullptr;
+        thread_.reset();
         this->bridgeLog_->debug("Stopping TCP stream bridge. pull=%s push=%s",
                                 this->pullAddr_.c_str(),
                                 this->pushAddr_.c_str());
-        zmq_close(this->zmqPull_);
-        zmqPull_ = nullptr;
-        zmq_close(this->zmqPush_);
-        zmqPush_ = nullptr;
-        zmq_ctx_destroy(this->zmqCtx_);
-        zmqCtx_ = nullptr;
+        // Serialize with in-flight acceptFrame() callers before destroying sockets.
+        std::lock_guard<std::mutex> lock(bridgeMtx_);
+        if (zmqPull_ != nullptr) {
+            zmq_close(zmqPull_);
+            zmqPull_ = nullptr;
+        }
+        if (zmqPush_ != nullptr) {
+            zmq_close(zmqPush_);
+            zmqPush_ = nullptr;
+        }
+        if (zmqCtx_ != nullptr) {
+            zmq_ctx_destroy(zmqCtx_);
+            zmqCtx_ = nullptr;
+        }
     }
+}
+
+bool ris::TcpCore::rebuildPushSocket() {
+    if (this->zmqPush_ != nullptr) {
+        zmq_close(this->zmqPush_);
+        this->zmqPush_ = nullptr;
+    }
+
+    this->zmqPush_ = zmq_socket(this->zmqCtx_, ZMQ_PUSH);
+    if (this->zmqPush_ == nullptr) {
+        bridgeLog_->error("Failed to create replacement push socket on %s: %s",
+                          this->pushAddr_.c_str(),
+                          zmq_strerror(zmq_errno()));
+        return false;
+    }
+
+    int32_t opt = 1;
+    if (zmq_setsockopt(this->zmqPush_, ZMQ_IMMEDIATE, &opt, sizeof(opt)) != 0) {
+        bridgeLog_->error("Failed to set ZMQ_IMMEDIATE on rebuilt push socket: %s",
+                          zmq_strerror(zmq_errno()));
+        zmq_close(this->zmqPush_);
+        this->zmqPush_ = nullptr;
+        return false;
+    }
+
+    opt = 0;
+    if (zmq_setsockopt(this->zmqPush_, ZMQ_LINGER, &opt, sizeof(opt)) != 0) {
+        bridgeLog_->error("Failed to set ZMQ_LINGER on rebuilt push socket: %s",
+                          zmq_strerror(zmq_errno()));
+        zmq_close(this->zmqPush_);
+        this->zmqPush_ = nullptr;
+        return false;
+    }
+
+    if (this->server_) {
+        if (zmq_bind(this->zmqPush_, this->pushAddr_.c_str()) < 0) {
+            bridgeLog_->error("Failed to rebind push socket to %s: %s",
+                              this->pushAddr_.c_str(),
+                              zmq_strerror(zmq_errno()));
+            zmq_close(this->zmqPush_);
+            this->zmqPush_ = nullptr;
+            return false;
+        }
+    } else {
+        if (zmq_connect(this->zmqPush_, this->pushAddr_.c_str()) < 0) {
+            bridgeLog_->error("Failed to reconnect push socket to %s: %s",
+                              this->pushAddr_.c_str(),
+                              zmq_strerror(zmq_errno()));
+            zmq_close(this->zmqPush_);
+            this->zmqPush_ = nullptr;
+            return false;
+        }
+    }
+
+    return true;
 }
 
 //! Accept a frame from master
@@ -220,15 +283,45 @@ void ris::TcpCore::acceptFrame(ris::FramePtr frame) {
     ris::FrameLockPtr frLock = frame->lock();
     std::lock_guard<std::mutex> lock(bridgeMtx_);
 
-    if ((zmq_msg_init_size(&(msg[0]), 2) < 0) ||  // Flags
-        (zmq_msg_init_size(&(msg[1]), 1) < 0) ||  // Channel
-        (zmq_msg_init_size(&(msg[2]), 1) < 0)) {  // Error
+    if (!threadEn_) {
+        bridgeLog_->debug("Dropping frame on stopped bridge %s (payload=%" PRIu32 ")",
+                          this->pushAddr_.c_str(),
+                          frame->getPayload());
+        return;
+    }
+
+    // Retry rebuild if a previous failure left zmqPush_ null.
+    if (this->zmqPush_ == nullptr) {
+        if (!rebuildPushSocket()) {
+            bridgeLog_->warning("Push socket unavailable on %s; dropping frame "
+                                "(payload=%" PRIu32 ")",
+                                this->pushAddr_.c_str(),
+                                frame->getPayload());
+            return;
+        }
+    }
+
+    if (zmq_msg_init_size(&(msg[0]), 2) < 0) {
         bridgeLog_->warning("Failed to init message header");
+        return;
+    }
+    if (zmq_msg_init_size(&(msg[1]), 1) < 0) {
+        bridgeLog_->warning("Failed to init message header");
+        zmq_msg_close(&(msg[0]));
+        return;
+    }
+    if (zmq_msg_init_size(&(msg[2]), 1) < 0) {
+        bridgeLog_->warning("Failed to init message header");
+        zmq_msg_close(&(msg[0]));
+        zmq_msg_close(&(msg[1]));
         return;
     }
 
     if (zmq_msg_init_size(&(msg[3]), frame->getPayload()) < 0) {
         bridgeLog_->warning("Failed to init message with size %" PRIu32, frame->getPayload());
+        zmq_msg_close(&(msg[0]));
+        zmq_msg_close(&(msg[1]));
+        zmq_msg_close(&(msg[2]));
         return;
     }
 
@@ -246,14 +339,35 @@ void ris::TcpCore::acceptFrame(ris::FramePtr frame) {
     data                    = reinterpret_cast<uint8_t*>(zmq_msg_data(&(msg[3])));
     ris::fromFrame(iter, frame->getPayload(), data);
 
-    // Send data
+    bool sendFailed = false;
     for (x = 0; x < 4; x++) {
-        if (zmq_sendmsg(this->zmqPush_, &(msg[x]), (x == 3) ? 0 : ZMQ_SNDMORE) < 0)
-            bridgeLog_->warning("Failed to push message with size %" PRIu32 " on %s: %s",
+        if (zmq_sendmsg(this->zmqPush_, &(msg[x]), (x == 3) ? 0 : ZMQ_SNDMORE) < 0) {
+            bridgeLog_->warning("Failed to push message part %" PRIu32 " (frame size %" PRIu32 ") on %s: %s",
+                                x,
                                 frame->getPayload(),
                                 this->pushAddr_.c_str(),
                                 zmq_strerror(zmq_errno()));
+            sendFailed = true;
+            zmq_msg_close(&(msg[x]));
+            for (uint32_t y = x + 1; y < 4; y++) zmq_msg_close(&(msg[y]));
+            break;
+        }
     }
+
+    if (sendFailed) {
+        bridgeLog_->error("Multi-part frame failed mid-stream on part %" PRIu32
+                          "; peer may have received a torso-only frame. "
+                          "Resetting push socket to clear PUSH multipart FSM.",
+                          x);
+
+        if (!rebuildPushSocket()) {
+            bridgeLog_->error("Unable to recover TcpCore push socket on %s; "
+                              "next acceptFrame() will retry the rebuild",
+                              this->pushAddr_.c_str());
+        }
+        return;
+    }
+
     bridgeLog_->debug("Pushed TCP frame with size %" PRIu32 " on %s", frame->getPayload(), this->pushAddr_.c_str());
 }
 
@@ -340,9 +454,12 @@ void ris::TcpCore::runThread() {
 void ris::TcpCore::setup_python() {
 #ifndef NO_PYTHON
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
     bp::class_<ris::TcpCore, ris::TcpCorePtr, bp::bases<ris::Master, ris::Slave>, boost::noncopyable>("TcpCore",
                                                                                                       bp::no_init)
         .def("close", &ris::TcpCore::close);
+#pragma GCC diagnostic pop
 
     bp::implicitly_convertible<ris::TcpCorePtr, ris::MasterPtr>();
     bp::implicitly_convertible<ris::TcpCorePtr, ris::SlavePtr>();
