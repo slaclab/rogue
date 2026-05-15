@@ -1,5 +1,9 @@
 {% set name = "rogue" %}
-{% set version = (environ.get('GIT_DESCRIBE_TAG', '') or environ.get('GITHUB_REF_NAME', '') or 'v0.0.0').lstrip('v') %}
+{# Keep the leading 'v' so tidair-tag artifacts stay named rogue-vX.Y.Z-...conda. #}
+{# The conda-forge feedstock should hardcode `version` without the 'v' instead. #}
+{% set raw_tag = environ.get('GIT_DESCRIBE_TAG', '') or environ.get('GITHUB_REF_NAME', '') or 'v0.0.0' %}
+{% set version = raw_tag if raw_tag.startswith('v') else 'v' + raw_tag %}
+{% set py_version = version[1:] %}
 
 package:
   name: {{ name }}
@@ -18,6 +22,7 @@ requirements:
   build:
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
+    - sysroot_linux-64 2.28  # Target Rocky 8 glibc (2.28) for maximum compatibility
     - cmake >=3.19
     - make
   host:
@@ -34,8 +39,12 @@ requirements:
     - libboost-python
     - bzip2
     - zeromq
+    - ipython  # slaclab/surf dep
     - pyyaml
+    - jsonpickle  # slaclab/surf dep
     - pyzmq
+    - parse  # slaclab/surf dep
+    - click  # slaclab/surf dep
     - sqlalchemy
     - pyserial
     - pydm >=1.18
@@ -53,7 +62,7 @@ test:
   requires:
     - pip
   commands:
-    - python -c "import pyrogue; assert pyrogue.__version__ == '{{ version }}'"
+    - python -c "import pyrogue; assert pyrogue.__version__ == '{{ py_version }}'"
     - pip check
 
 about:
