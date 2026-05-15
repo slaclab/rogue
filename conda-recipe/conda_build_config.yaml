@@ -21,8 +21,10 @@ python_abi:
   - 3.12 *_cp312
   - 3.13 *_cp313
 
+# Pair python and python_abi so we get 4 variants, not the 16-way cross product
 zip_keys:
-  - [python, python_abi, cpython]
+  - - python
+    - python_abi
 
 pin_run_as_build:
   python: {min_pin: x.x, max_pin: x.x}
