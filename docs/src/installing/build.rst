@@ -21,7 +21,7 @@ Installing Packages Required For Rogue
 
 The following packages are required to build the Rogue library:
 
-* CMake >= 3.15
+* CMake >= 3.19
 * Boost >= 1.58
 * Python3 >= 3.9
 * Bz2

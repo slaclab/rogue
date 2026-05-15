@@ -104,7 +104,7 @@ rim::TcpServer::TcpServer(std::string addr, uint16_t port) {
                                 this->respAddr_.c_str());
 
         threadEn_     = true;
-        this->thread_ = new std::thread(&rim::TcpServer::runThread, this);
+        this->thread_ = std::make_unique<std::thread>(&rim::TcpServer::runThread, this);
 
         // Set a thread name
 #ifndef __MACH__
@@ -118,13 +118,12 @@ rim::TcpServer::TcpServer(std::string addr, uint16_t port) {
         // a transaction into Python, and joining while holding the GIL would
         // deadlock.
         threadEn_ = false;
-        if (thread_ != nullptr) {
+        if (thread_) {
             {
                 rogue::GilRelease noGil;
                 thread_->join();
             }
-            delete thread_;
-            thread_ = nullptr;
+            thread_.reset();
         }
         if (zmqResp_ != nullptr) {
             zmq_close(zmqResp_);
@@ -157,22 +156,31 @@ void rim::TcpServer::start() {
     // symmetry with TcpClient.
 }
 
+int rim::TcpServer::sendResponseMsg_(void* msg, int flags) {
+    return zmq_sendmsg(this->zmqResp_, reinterpret_cast<zmq_msg_t*>(msg), flags);
+}
+
 void rim::TcpServer::stop() {
     if (threadEn_) {
         rogue::GilRelease noGil;
         threadEn_ = false;
         thread_->join();
-        delete thread_;
-        thread_ = nullptr;
+        thread_.reset();
         this->bridgeLog_->debug("Stopping TCP memory bridge. request=%s response=%s",
                                 this->reqAddr_.c_str(),
                                 this->respAddr_.c_str());
-        zmq_close(this->zmqResp_);
-        zmqResp_ = nullptr;
-        zmq_close(this->zmqReq_);
-        zmqReq_ = nullptr;
-        zmq_ctx_destroy(this->zmqCtx_);
-        zmqCtx_ = nullptr;
+        if (zmqResp_ != nullptr) {
+            zmq_close(zmqResp_);
+            zmqResp_ = nullptr;
+        }
+        if (zmqReq_ != nullptr) {
+            zmq_close(zmqReq_);
+            zmqReq_ = nullptr;
+        }
+        if (zmqCtx_ != nullptr) {
+            zmq_ctx_destroy(zmqCtx_);
+            zmqCtx_ = nullptr;
+        }
     }
 }
 
@@ -283,11 +291,69 @@ void rim::TcpServer::runThread() {
 
             // Result message, at least one char needs to be sent
             if (result.length() == 0) result = "OK";
-            zmq_msg_init_size(&(msg[5]), result.length());
+            if (zmq_msg_init_size(&(msg[5]), result.length()) < 0) {
+                bridgeLog_->warning("zmq_msg_init_size failed for result (%" PRIu32 " bytes): %s",
+                                    static_cast<uint32_t>(result.length()), zmq_strerror(zmq_errno()));
+                for (x = 0; x < 5; x++) zmq_msg_close(&(msg[x]));
+                continue;
+            }
             std::memcpy(zmq_msg_data(&(msg[5])), result.c_str(), result.length());
 
-            // Send message
-            for (x = 0; x < 6; x++) zmq_sendmsg(this->zmqResp_, &(msg[x]), (x == 5) ? 0 : ZMQ_SNDMORE);
+            uint32_t sendFailed = 0;
+            for (x = 0; x < 6; x++) {
+                if (this->sendResponseMsg_(&(msg[x]), (x == 5) ? 0 : ZMQ_SNDMORE) < 0) {
+                    bridgeLog_->warning("zmq_sendmsg failed on part %" PRIu32 " for id=%" PRIu32 ": %s",
+                                        x, id, zmq_strerror(zmq_errno()));
+                    sendFailed = 1;
+                    zmq_msg_close(&(msg[x]));
+                    for (uint32_t y = x + 1; y < 6; y++) zmq_msg_close(&(msg[y]));
+                    break;
+                }
+            }
+            if (sendFailed) {
+                bridgeLog_->error("Multi-part reply for id=%" PRIu32
+                                  " failed mid-stream on part %" PRIu32
+                                  "; peer may have received a torso-only response. "
+                                  "Resetting response socket to clear PUSH multipart FSM.",
+                                  id, x);
+
+                // Rebuild response socket to reset multipart FSM.
+                if (this->zmqResp_ != nullptr) {
+                    if (zmq_unbind(this->zmqResp_, this->respAddr_.c_str()) != 0) {
+                        bridgeLog_->warning("Failed to unbind response socket from %s during recovery: %s",
+                                            this->respAddr_.c_str(), zmq_strerror(zmq_errno()));
+                    }
+                    zmq_close(this->zmqResp_);
+                    this->zmqResp_ = nullptr;
+                }
+
+                this->zmqResp_ = zmq_socket(this->zmqCtx_, ZMQ_PUSH);
+                bool rebuilt = (this->zmqResp_ != nullptr);
+
+                if (rebuilt) {
+                    int32_t lopt = 0;
+                    if (zmq_setsockopt(this->zmqResp_, ZMQ_LINGER, &lopt, sizeof(lopt)) != 0) {
+                        bridgeLog_->error("Failed to set ZMQ_LINGER on rebuilt response socket: %s",
+                                          zmq_strerror(zmq_errno()));
+                        rebuilt = false;
+                    } else if (zmq_bind(this->zmqResp_, this->respAddr_.c_str()) < 0) {
+                        bridgeLog_->error("Failed to rebind response socket to %s: %s",
+                                          this->respAddr_.c_str(), zmq_strerror(zmq_errno()));
+                        rebuilt = false;
+                    }
+                }
+
+                if (!rebuilt) {
+                    if (this->zmqResp_ != nullptr) {
+                        zmq_close(this->zmqResp_);
+                        this->zmqResp_ = nullptr;
+                    }
+                    bridgeLog_->error("Unable to recover TcpServer response socket; "
+                                      "exiting bridge worker thread (stop()/dtor will "
+                                      "complete teardown)");
+                    return;
+                }
+            }
         } else {
             for (x = 0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
         }
@@ -297,12 +363,15 @@ void rim::TcpServer::runThread() {
 void rim::TcpServer::setup_python() {
 #ifndef NO_PYTHON
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
     bp::class_<rim::TcpServer, rim::TcpServerPtr, bp::bases<rim::Master>, boost::noncopyable>(
         "TcpServer",
         bp::init<std::string, uint16_t>())
         .def("close", &rim::TcpServer::close)
         .def("_start", &rim::TcpServer::start)
         .def("_stop", &rim::TcpServer::stop);
+#pragma GCC diagnostic pop
 
     bp::implicitly_convertible<rim::TcpServerPtr, rim::MasterPtr>();
 #endif
