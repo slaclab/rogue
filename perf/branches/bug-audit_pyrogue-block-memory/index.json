@@ -5,6 +5,14 @@
   "history": [
     {
       "ref_name": "bug-audit/pyrogue-block-memory",
+      "sha": "ead0cbc0bc4227615b940f78e14cade4e742bf1d",
+      "short_sha": "ead0cbc",
+      "published_at": "2026-05-15T20:40:13Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/25940056785",
+      "summary_url": "/rogue/perf/branches/bug-audit_pyrogue-block-memory/history/ead0cbc0bc4227615b940f78e14cade4e742bf1d.json"
+    },
+    {
+      "ref_name": "bug-audit/pyrogue-block-memory",
       "sha": "5f3d4e8a2f1c7982bdab0ea0d5180a94bf1513cd",
       "short_sha": "5f3d4e8",
       "published_at": "2026-05-07T19:00:26Z",
@@ -118,10 +126,10 @@
   ],
   "latest": {
     "ref_name": "bug-audit/pyrogue-block-memory",
-    "sha": "5f3d4e8a2f1c7982bdab0ea0d5180a94bf1513cd",
-    "short_sha": "5f3d4e8",
-    "published_at": "2026-05-07T19:00:26Z",
-    "run_url": "https://github.com/slaclab/rogue/actions/runs/25515791163",
+    "sha": "ead0cbc0bc4227615b940f78e14cade4e742bf1d",
+    "short_sha": "ead0cbc",
+    "published_at": "2026-05-15T20:40:13Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/25940056785",
     "summary_url": "/rogue/perf/branches/bug-audit_pyrogue-block-memory/latest.json"
   }
 }
