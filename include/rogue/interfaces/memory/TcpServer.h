@@ -69,8 +69,16 @@ class TcpServer : public rogue::interfaces::memory::Master {
 
     //! \cond INTERNAL
   protected:
-    std::thread* thread_ = nullptr;
+    std::unique_ptr<std::thread> thread_;
     std::atomic<bool> threadEn_{false};
+
+    /**
+     * @brief Sends one response multipart message frame.
+     *
+     * @details Protected so tests can inject transport send failures while the
+     * production path still uses the real TcpServer worker and ZeroMQ sockets.
+     */
+    virtual int sendResponseMsg_(void* msg, int flags);
     //! \endcond
 
   public:
@@ -124,7 +132,7 @@ class TcpServer : public rogue::interfaces::memory::Master {
      *
      * @details Deprecated; use `stop()`.
      */
-    void close();
+    [[deprecated("Use stop() instead")]] void close();
 
     /**
      * @brief Stops the bridge interface and worker thread.
