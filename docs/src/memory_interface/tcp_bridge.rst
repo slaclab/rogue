@@ -168,6 +168,15 @@ connection-startup messages:
 At debug level these classes log socket setup and transaction forwarding
 details. There is no additional per-instance runtime debug helper.
 
+Operational Notes
+=================
+
+During controlled shutdown paths, C++ code should call ``stop()`` so bridge
+threads and sockets are released cleanly. In Python, Rogue exposes ``_stop()``
+for managed-interface lifecycle teardown. The legacy Python ``close()`` method
+still works but is deprecated; prefer the managed lifecycle hook or C++
+``stop()`` in new code.
+
 What To Explore Next
 ====================
 
