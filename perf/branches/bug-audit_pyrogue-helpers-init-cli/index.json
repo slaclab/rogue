@@ -5,6 +5,14 @@
   "history": [
     {
       "ref_name": "bug-audit/pyrogue-helpers-init-cli",
+      "sha": "6e4871e53d49b676b786ea28d9a1fa0294a0076f",
+      "short_sha": "6e4871e",
+      "published_at": "2026-05-15T20:39:37Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/25940038686",
+      "summary_url": "/rogue/perf/branches/bug-audit_pyrogue-helpers-init-cli/history/6e4871e53d49b676b786ea28d9a1fa0294a0076f.json"
+    },
+    {
+      "ref_name": "bug-audit/pyrogue-helpers-init-cli",
       "sha": "4398d3283ff954bff2e8d18092c2ec87ab77556a",
       "short_sha": "4398d32",
       "published_at": "2026-05-07T19:03:50Z",
@@ -94,10 +102,10 @@
   ],
   "latest": {
     "ref_name": "bug-audit/pyrogue-helpers-init-cli",
-    "sha": "4398d3283ff954bff2e8d18092c2ec87ab77556a",
-    "short_sha": "4398d32",
-    "published_at": "2026-05-07T19:03:50Z",
-    "run_url": "https://github.com/slaclab/rogue/actions/runs/25515949913",
+    "sha": "6e4871e53d49b676b786ea28d9a1fa0294a0076f",
+    "short_sha": "6e4871e",
+    "published_at": "2026-05-15T20:39:37Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/25940038686",
     "summary_url": "/rogue/perf/branches/bug-audit_pyrogue-helpers-init-cli/latest.json"
   }
 }
