@@ -16,10 +16,12 @@
 if (DEFINED ENV{CONDA_PREFIX})
    set(CMAKE_PREFIX_PATH "$ENV{CONDA_PREFIX}")
    link_directories($ENV{CONDA_PREFIX}/lib)
+   set(Python3_ROOT_DIR "$ENV{CONDA_PREFIX}")
+   set(Python3_FIND_FRAMEWORK NEVER)
 endif()
 
 # Check cmake version
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.19)
 include(InstallRequiredSystemLibraries)
 
 # CMake policy compatibility:
@@ -73,7 +75,7 @@ endif()
 
 # C/C++
 enable_language(CXX)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wno-deprecated")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated")
 add_definitions(-D__STDC_FORMAT_MACROS)
 
 SET(CMAKE_CXX_STANDARD 14)
@@ -92,7 +94,7 @@ if ( NOT NO_PYTHON )
 
    # Find Numpy
    execute_process(
-      COMMAND python3 -c "import numpy; print(numpy.get_include(), end='')"
+      COMMAND ${Python3_EXECUTABLE} -c "import numpy; print(numpy.get_include(), end='')"
       RESULT_VARIABLE Python3_NumPy_RESULT
       OUTPUT_VARIABLE Python3_NumPy_INCLUDE_DIRS
       ERROR_QUIET
@@ -220,8 +222,8 @@ if ( NOT ROGUE_VERSION )
          message(WARNING "git describe failed; defaulting ROGUE_VERSION to ${ROGUE_VERSION}")
       endif()
    else()
-      message("")
-      message(FATAL_ERROR "Git is required to build rogue!")
+      set(ROGUE_VERSION "v0.0.0")
+      message(WARNING "Git not found; defaulting ROGUE_VERSION to ${ROGUE_VERSION}")
    endif()
 endif()
 
@@ -452,11 +454,11 @@ endif()
 
 # Conda activate and deactivate functions
 if (${ROGUE_INSTALL} STREQUAL "conda")
-   install(CODE "execute_process(COMMAND mkdir -p ${ROGUE_DIR}/etc/conda/activate.d)")
-   install(CODE "execute_process(COMMAND mkdir -p ${ROGUE_DIR}/etc/conda/deactivate.d)")
-   install(CODE "execute_process(COMMAND scp ${PROJECT_SOURCE_DIR}/templates/activate-rogue.sh
+   install(CODE "execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory ${ROGUE_DIR}/etc/conda/activate.d)")
+   install(CODE "execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory ${ROGUE_DIR}/etc/conda/deactivate.d)")
+   install(CODE "execute_process(COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_SOURCE_DIR}/templates/activate-rogue.sh
                                              ${ROGUE_DIR}/etc/conda/activate.d/rogue.sh)")
-   install(CODE "execute_process(COMMAND scp ${PROJECT_SOURCE_DIR}/templates/deactivate-rogue.sh
+   install(CODE "execute_process(COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_SOURCE_DIR}/templates/deactivate-rogue.sh
                                              ${ROGUE_DIR}/etc/conda/deactivate.d/rogue.sh)")
 endif()
 
@@ -470,12 +472,12 @@ if (NOT NO_PYTHON)
 
    # Use pip with python3 for system or miniforge
    elseif ((${ROGUE_INSTALL} STREQUAL "system") OR (${ROGUE_INSTALL} STREQUAL "conda"))
-      install(CODE "execute_process(COMMAND pip3 install ${PROJECT_BINARY_DIR}/)")
+      install(CODE "execute_process(COMMAND ${Python3_EXECUTABLE} -m pip install --no-deps --no-build-isolation ${PROJECT_BINARY_DIR}/ COMMAND_ERROR_IS_FATAL ANY)")
    endif()
 
    # Do byte compile for custom or local
    if ((${ROGUE_INSTALL} STREQUAL "custom") OR (${ROGUE_INSTALL} STREQUAL "local"))
-      install(CODE "execute_process(COMMAND python3 -m compileall ${ROGUE_DIR}/python)")
+      install(CODE "execute_process(COMMAND ${Python3_EXECUTABLE} -m compileall ${ROGUE_DIR}/python)")
    endif()
 
 endif()

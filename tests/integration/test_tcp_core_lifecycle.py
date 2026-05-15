@@ -93,9 +93,8 @@ def test_tcp_core_create_destroy_cycle_smoke(free_tcp_port):
     a zmq context never released, a thread stack never reaped) while
     leaving ASan/Valgrind to chase the small leak directly.
 
-    Skipped on libcs without ``mallinfo2`` (macOS, musl). The C++-side
-    audit lives in tests/cpp/core/test_atomic_thread_flags.cpp; the
-    fd-leak corollary is covered by tests/protocols/test_udp_constructor_throws.py.
+    Skipped on libcs without ``mallinfo2`` (macOS, musl). The fd-leak
+    corollary is covered by tests/protocols/test_udp_constructor_throws.py.
     """
     if _mallinfo2_uordblks() is None:
         pytest.skip("mallinfo2 not available on this libc")
@@ -147,3 +146,19 @@ def test_tcp_core_repeated_close_is_safe(free_tcp_port):
 
     # Give any background threads a tick to fully unwind before drop.
     time.sleep(0.05)
+
+
+def test_tcp_core_python_stop_bindings_are_exposed(free_tcp_port):
+    """Python ``_stop()`` bindings must release both stream TCP bridge sides."""
+    server = rogue.interfaces.stream.TcpServer("127.0.0.1", free_tcp_port)
+    client = rogue.interfaces.stream.TcpClient("127.0.0.1", free_tcp_port)
+
+    assert callable(server._stop)
+    assert callable(client._stop)
+
+    server._stop()
+    client._stop()
+
+    # Idempotence matters because application teardown may also call close().
+    server._stop()
+    client._stop()
