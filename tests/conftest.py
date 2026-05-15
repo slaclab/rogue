@@ -102,6 +102,14 @@ def _worker_port_search_range(worker_id, *, start=20000, stop=60000, span=256):
 
 
 @pytest.fixture
+def worker_id(request):
+    worker_input = getattr(request.config, "workerinput", None)
+    if worker_input is None:
+        return "master"
+    return worker_input.get("workerid", "master")
+
+
+@pytest.fixture
 def free_zmq_port(pytestconfig):
     # Rogue's ZMQ server uses a base port plus adjacent ports, so integration
     # tests need a free consecutive block rather than a single ephemeral port.
