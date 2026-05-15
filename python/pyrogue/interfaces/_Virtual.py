@@ -421,6 +421,21 @@ class VirtualClient(rogue.interfaces.ZmqClient):
             treats it as stalled. ``None`` or non-positive values disable this
             policy. In practice this is usually left disabled unless a system
             has a known upper bound for valid request duration.
+
+        Raises
+        ------
+        ConnectionError
+            If the bootstrap ``__ROOT__`` handshake fails within the window
+            defined by ``ROGUE_VIRTUAL_CONNECT_TIMEOUT`` (default 5 s).
+            Causes include the server process not running, an address/port
+            mismatch, or ports blocked by firewall. The handshake failure
+            is preserved via standard exception chaining: the immediate
+            ``__cause__`` is the wrapping ``Exception`` raised by
+            ``_remoteAttr``, and its own ``__cause__`` is the underlying
+            transport error (typically a ``rogue.GeneralError`` from
+            ``ZmqClient::send``). Sockets and the ZMQ context are torn
+            down before the raise, so no partially-initialised instance
+            is left in the singleton cache.
         """
         if getattr(self, "_vcInitialized", False):
             if linkTimeout is not None or requestStallTimeout is not None:
@@ -464,19 +479,20 @@ class VirtualClient(rogue.interfaces.ZmqClient):
 
         try:
             self._root = self._waitForRoot()
-        except Exception:
+        except Exception as exc:
+            # Tear down sockets/context before raising so the caller cannot
+            # inadvertently use a half-initialised instance. Pre-fix this
+            # path printed the banner and returned normally, leaving the
+            # caller with a dead VirtualClient whose first _remoteAttr
+            # crashed in ZmqClient::send (issue #1234).
             self._cleanupFailedInit()
-            error_message = (
-                f"\n\nFailed to connect to {addr}:{port}!\n\n"
-                "Possible causes for the issue:\n"
-                "- ZeroMQ Server not included in the root class\n"
-                "- Root process not running\n"
-                "- Mismatch between Client address and Server address\n"
-                "- Mismatch between Client port and Server port\n"
-                "- Server ports being blocked\n"
-            )
-            print(error_message)
-            return
+            raise ConnectionError(
+                f"Failed to connect to {addr}:{port}. "
+                "Possible causes: ZeroMQ Server not included in the root "
+                "class; Root process not running; client/server address "
+                "mismatch; client/server port mismatch; server ports "
+                "blocked by firewall."
+            ) from exc
 
         print("Connected to {} at {}:{}".format(self._root.name,addr,port))
         self.setTimeout(1000,True)
@@ -491,9 +507,12 @@ class VirtualClient(rogue.interfaces.ZmqClient):
         self._link  = True
         self._ltime = self._root.Time.value()
 
-        # Create monitoring thread
+        # Create monitoring thread. daemon=True so the interpreter can exit
+        # cleanly even when ClientCache still pins this instance (issue #1238);
+        # without it, an ipython/host script that forgot to call stop() hangs
+        # on quit().
         self._monEnable = True
-        self._monThread = threading.Thread(target=self._monWorker)
+        self._monThread = threading.Thread(target=self._monWorker, daemon=True)
         self._monThread.start()
 
     def _removeFromCache(self) -> None:
@@ -674,8 +693,19 @@ class VirtualClient(rogue.interfaces.ZmqClient):
                 mon(notify_link)
 
 
-    def _remoteAttr(self, path: str, attr: str, *args: Any, **kwargs: Any) -> Any:
+    def _remoteAttr(self, path: str, attr: str | None, *args: Any, **kwargs: Any) -> Any:
         """Invoke a remote attribute on the server."""
+        # Liveness guard: fail fast on a dead instance (stop() was called or
+        # a prior init failed). Without this guard the call slips through to
+        # ZmqClient::send on a torn-down socket and surfaces as the
+        # "zmq_sendmsg failed" crash reported in issue #1234.
+        if not getattr(self, "_vcInitialized", False):
+            raise RuntimeError(
+                "VirtualClient is not connected: __init__ failed or stop() "
+                "was called. Construct a new VirtualClient before issuing "
+                "remote attribute calls."
+            )
+
         self._requestStart()
 
         try:
@@ -683,7 +713,11 @@ class VirtualClient(rogue.interfaces.ZmqClient):
             self._requestDone(True)
         except Exception as e:
             self._requestDone(False)
-            raise Exception(f"ZMQ Interface Exception: {e}")
+            # Chain explicitly so the underlying transport error (e.g. the
+            # rogue.GeneralError from ZmqClient::send) is reachable via the
+            # standard __cause__ chain from any wrapping exception higher up
+            # the stack (notably the ConnectionError raised by __init__).
+            raise Exception(f"ZMQ Interface Exception: {e}") from e
 
         if isinstance(ret,Exception):
             raise ret
@@ -715,13 +749,22 @@ class VirtualClient(rogue.interfaces.ZmqClient):
             for func in self._varListeners:
                 func(k,val)
 
-    def stop(self) -> None:
-        """Stop the monitor thread and release the underlying ZMQ resources.
+    def stopMonitor(self) -> None:
+        """Stop the link-monitor thread without releasing ZMQ resources.
 
-        After ``stop()`` returns the C++ sockets and ZMQ context are released
-        and this instance is removed from ``ClientCache``; a subsequent
-        ``VirtualClient(addr, port)`` therefore constructs a fresh, fully
-        connected instance instead of returning the torn-down one.
+        Use this when a long-lived client must drop link-heartbeat polling
+        but the ZMQ transport must remain open. The intended caller is a
+        host script that hands a ``VirtualClient`` to an interactive
+        wrapper (for example ``pysmurf``) and wants to silence the monitor
+        on shutdown without losing the connection. ``stop()`` is the
+        wrong choice for that case because it also closes the C++
+        ``ZmqClient`` sockets and removes the instance from
+        ``ClientCache``.
+
+        After ``stopMonitor()`` returns the client still services
+        ``_remoteAttr`` calls and SUB publish updates; only the periodic
+        link-state heartbeat is disabled. Idempotent; safe to call from
+        any thread other than ``_monThread`` itself.
         """
         self._monEnable = False
         thr = self._monThread
@@ -734,6 +777,16 @@ class VirtualClient(rogue.interfaces.ZmqClient):
             thr.join(timeout=3.0)
             if thr.is_alive():
                 self._log.warning("Monitor thread did not stop within timeout")
+
+    def stop(self) -> None:
+        """Stop the monitor thread and release the underlying ZMQ resources.
+
+        After ``stop()`` returns the C++ sockets and ZMQ context are released
+        and this instance is removed from ``ClientCache``; a subsequent
+        ``VirtualClient(addr, port)`` therefore constructs a fresh, fully
+        connected instance instead of returning the torn-down one.
+        """
+        self.stopMonitor()
 
         # ClientCache pins this instance, so the C++ stop() must run explicitly
         # to release SUB/REQ sockets and the ZMQ context. _stop() is idempotent.
