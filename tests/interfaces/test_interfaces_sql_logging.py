@@ -176,3 +176,48 @@ def test_sql_logger_syslog_insert_from_queue(tmp_path):
 
     rows = _read_rows(url, "syslog")
     assert any(row.name == "pyrogue.test.sql" and row.message == "entry" for row in rows)
+
+
+def test_sql_reader_get_variable(tmp_path, capsys):
+    """Write variable data via SqlLogger, then read it back via SqlReader."""
+    db_path = tmp_path / "sql_reader_var.db"
+    url = f"sqlite:///{db_path}"
+
+    with SqlTestRoot() as root:
+        logger = pr_intf.SqlLogger(root=root, url=url)
+        logger._varUpdate(root.Dev.Value.path, root.Dev.Value.getVariableValue(read=False))
+        logger._stop()
+
+    reader = pr_intf.SqlReader(url)
+    assert reader._engine is not None
+
+    reader.getVariable()
+    captured = capsys.readouterr()
+    assert "root.Dev.Value" in captured.out
+
+
+def test_sql_reader_get_syslog(tmp_path, capsys):
+    """Write syslog data via SqlLogger, then read it back via SqlReader."""
+    db_path = tmp_path / "sql_reader_syslog.db"
+    url = f"sqlite:///{db_path}"
+    log = logging.getLogger("pyrogue.test.sqlreader")
+    log.setLevel(logging.INFO)
+
+    with SqlTestRoot() as root:
+        logger = pr_intf.SqlLogger(root=root, url=url)
+        log.info("reader test message")
+        assert _wait_for(
+            lambda: any(
+                row.name == "pyrogue.test.sqlreader" and row.message == "reader test message"
+                for row in _read_rows(url, "syslog")
+            ),
+            timeout=2.0,
+        )
+        logger._stop()
+
+    reader = pr_intf.SqlReader(url)
+    assert reader._engine is not None
+
+    reader.getSyslog()
+    captured = capsys.readouterr()
+    assert "reader test message" in captured.out
