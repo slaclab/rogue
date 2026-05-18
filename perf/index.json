@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-18T18:55:29Z",
+  "generated_at": "2026-05-18T19:17:43Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -259,58 +259,34 @@
       }
     },
     {
-      "ref_name": "SQLAlchemy",
-      "ref_slug": "SQLAlchemy",
-      "latest_url": "/rogue/perf/branches/SQLAlchemy/latest.json",
+      "ref_name": "XDG_SESSION_TYPE",
+      "ref_slug": "XDG_SESSION_TYPE",
+      "latest_url": "/rogue/perf/branches/XDG_SESSION_TYPE/latest.json",
       "history": [
         {
-          "ref_name": "SQLAlchemy",
-          "sha": "d1dd0077e37688db87ee0b066f2158ae794200b8",
-          "short_sha": "d1dd007",
-          "published_at": "2026-05-18T18:55:29Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/26053590320",
-          "summary_url": "/rogue/perf/branches/SQLAlchemy/history/d1dd0077e37688db87ee0b066f2158ae794200b8.json"
+          "ref_name": "XDG_SESSION_TYPE",
+          "sha": "f1561a363e8c73e7364d96ba3752a6f8108209b1",
+          "short_sha": "f1561a3",
+          "published_at": "2026-05-18T19:17:43Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/26054743483",
+          "summary_url": "/rogue/perf/branches/XDG_SESSION_TYPE/history/f1561a363e8c73e7364d96ba3752a6f8108209b1.json"
         },
         {
-          "ref_name": "SQLAlchemy",
-          "sha": "7e6c6d44d828c1a2d64d3389e953ef89a63a58d7",
-          "short_sha": "7e6c6d4",
-          "published_at": "2026-05-15T20:39:19Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/25940025254",
-          "summary_url": "/rogue/perf/branches/SQLAlchemy/history/7e6c6d44d828c1a2d64d3389e953ef89a63a58d7.json"
-        },
-        {
-          "ref_name": "SQLAlchemy",
-          "sha": "28ba628ee77933e40773e8688313c09ec29e446f",
-          "short_sha": "28ba628",
-          "published_at": "2026-05-07T21:35:43Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/25523023542",
-          "summary_url": "/rogue/perf/branches/SQLAlchemy/history/28ba628ee77933e40773e8688313c09ec29e446f.json"
-        },
-        {
-          "ref_name": "SQLAlchemy",
-          "sha": "33d251e32fdbff5951830333cb199b6387747cfb",
-          "short_sha": "33d251e",
-          "published_at": "2026-05-06T23:23:27Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/25466488899",
-          "summary_url": "/rogue/perf/branches/SQLAlchemy/history/33d251e32fdbff5951830333cb199b6387747cfb.json"
-        },
-        {
-          "ref_name": "SQLAlchemy",
-          "sha": "506abd40e04b5ae279e494c96a086a2c598b6184",
-          "short_sha": "506abd4",
-          "published_at": "2026-05-06T22:59:07Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/25465561456",
-          "summary_url": "/rogue/perf/branches/SQLAlchemy/history/506abd40e04b5ae279e494c96a086a2c598b6184.json"
+          "ref_name": "XDG_SESSION_TYPE",
+          "sha": "f2cf2f459f5c48df0001bc032a0d0d3d9c1874c4",
+          "short_sha": "f2cf2f4",
+          "published_at": "2026-05-06T22:18:59Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/25464077267",
+          "summary_url": "/rogue/perf/branches/XDG_SESSION_TYPE/history/f2cf2f459f5c48df0001bc032a0d0d3d9c1874c4.json"
         }
       ],
       "latest": {
-        "ref_name": "SQLAlchemy",
-        "sha": "d1dd0077e37688db87ee0b066f2158ae794200b8",
-        "short_sha": "d1dd007",
-        "published_at": "2026-05-18T18:55:29Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/26053590320",
-        "summary_url": "/rogue/perf/branches/SQLAlchemy/latest.json"
+        "ref_name": "XDG_SESSION_TYPE",
+        "sha": "f1561a363e8c73e7364d96ba3752a6f8108209b1",
+        "short_sha": "f1561a3",
+        "published_at": "2026-05-18T19:17:43Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/26054743483",
+        "summary_url": "/rogue/perf/branches/XDG_SESSION_TYPE/latest.json"
       }
     },
     {
@@ -1788,29 +1764,6 @@
         "published_at": "2026-05-07T18:21:57Z",
         "run_url": "https://github.com/slaclab/rogue/actions/runs/25513930206",
         "summary_url": "/rogue/perf/branches/bug-audit_queue/latest.json"
-      }
-    },
-    {
-      "ref_name": "XDG_SESSION_TYPE",
-      "ref_slug": "XDG_SESSION_TYPE",
-      "latest_url": "/rogue/perf/branches/XDG_SESSION_TYPE/latest.json",
-      "history": [
-        {
-          "ref_name": "XDG_SESSION_TYPE",
-          "sha": "f2cf2f459f5c48df0001bc032a0d0d3d9c1874c4",
-          "short_sha": "f2cf2f4",
-          "published_at": "2026-05-06T22:18:59Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/25464077267",
-          "summary_url": "/rogue/perf/branches/XDG_SESSION_TYPE/history/f2cf2f459f5c48df0001bc032a0d0d3d9c1874c4.json"
-        }
-      ],
-      "latest": {
-        "ref_name": "XDG_SESSION_TYPE",
-        "sha": "f2cf2f459f5c48df0001bc032a0d0d3d9c1874c4",
-        "short_sha": "f2cf2f4",
-        "published_at": "2026-05-06T22:18:59Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/25464077267",
-        "summary_url": "/rogue/perf/branches/XDG_SESSION_TYPE/latest.json"
       }
     },
     {

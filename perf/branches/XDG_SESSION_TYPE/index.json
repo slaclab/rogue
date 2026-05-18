@@ -5,6 +5,14 @@
   "history": [
     {
       "ref_name": "XDG_SESSION_TYPE",
+      "sha": "f1561a363e8c73e7364d96ba3752a6f8108209b1",
+      "short_sha": "f1561a3",
+      "published_at": "2026-05-18T19:17:43Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/26054743483",
+      "summary_url": "/rogue/perf/branches/XDG_SESSION_TYPE/history/f1561a363e8c73e7364d96ba3752a6f8108209b1.json"
+    },
+    {
+      "ref_name": "XDG_SESSION_TYPE",
       "sha": "f2cf2f459f5c48df0001bc032a0d0d3d9c1874c4",
       "short_sha": "f2cf2f4",
       "published_at": "2026-05-06T22:18:59Z",
@@ -14,10 +22,10 @@
   ],
   "latest": {
     "ref_name": "XDG_SESSION_TYPE",
-    "sha": "f2cf2f459f5c48df0001bc032a0d0d3d9c1874c4",
-    "short_sha": "f2cf2f4",
-    "published_at": "2026-05-06T22:18:59Z",
-    "run_url": "https://github.com/slaclab/rogue/actions/runs/25464077267",
+    "sha": "f1561a363e8c73e7364d96ba3752a6f8108209b1",
+    "short_sha": "f1561a3",
+    "published_at": "2026-05-18T19:17:43Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/26054743483",
     "summary_url": "/rogue/perf/branches/XDG_SESSION_TYPE/latest.json"
   }
 }
