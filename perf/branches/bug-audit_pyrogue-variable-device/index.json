@@ -5,6 +5,14 @@
   "history": [
     {
       "ref_name": "bug-audit/pyrogue-variable-device",
+      "sha": "9b9fa07685975d9e01d19e7f2ab1bebba0d897a3",
+      "short_sha": "9b9fa07",
+      "published_at": "2026-05-18T21:37:45Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/26061685145",
+      "summary_url": "/rogue/perf/branches/bug-audit_pyrogue-variable-device/history/9b9fa07685975d9e01d19e7f2ab1bebba0d897a3.json"
+    },
+    {
+      "ref_name": "bug-audit/pyrogue-variable-device",
       "sha": "f00a44945638233f10048cbafdae14a5763c3bed",
       "short_sha": "f00a449",
       "published_at": "2026-05-15T21:01:04Z",
@@ -46,10 +54,10 @@
   ],
   "latest": {
     "ref_name": "bug-audit/pyrogue-variable-device",
-    "sha": "f00a44945638233f10048cbafdae14a5763c3bed",
-    "short_sha": "f00a449",
-    "published_at": "2026-05-15T21:01:04Z",
-    "run_url": "https://github.com/slaclab/rogue/actions/runs/25940944655",
+    "sha": "9b9fa07685975d9e01d19e7f2ab1bebba0d897a3",
+    "short_sha": "9b9fa07",
+    "published_at": "2026-05-18T21:37:45Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/26061685145",
     "summary_url": "/rogue/perf/branches/bug-audit_pyrogue-variable-device/latest.json"
   }
 }
