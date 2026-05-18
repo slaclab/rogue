@@ -21,6 +21,7 @@ from collections import OrderedDict as odict
 from typing import Any, Callable, Iterable, OrderedDict
 
 import pyrogue as pr
+from pyrogue._HelperFunctions import _parseSliceExpr
 
 
 def expose(item: Any) -> Any:
@@ -938,7 +939,9 @@ def _iterateDict(d: dict[str], keys: list[str]) -> list[Node]:
             tmpList[k] = v
 
         try:
-            subList = eval(f'tmpList[{keys[0]}]')
+            parsed = _parseSliceExpr(keys[0])
+            result = tmpList[parsed]
+            subList = result if isinstance(parsed, slice) else [result]
         except Exception:
             subList = []
 
