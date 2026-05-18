@@ -23,6 +23,7 @@
 #include <unistd.h>
 
 #include <cstdio>
+#include <mutex>
 #include <sstream>
 #include <string>
 
@@ -34,28 +35,36 @@
 namespace bp = boost::python;
 #endif
 
-const char rogue::Version::_version[] = ROGUE_VERSION;
-uint32_t rogue::Version::_major       = 0;
-uint32_t rogue::Version::_minor       = 0;
-uint32_t rogue::Version::_maint       = 0;
-uint32_t rogue::Version::_devel       = 0;
+const char rogue::Version::_version[]      = ROGUE_VERSION;
+std::atomic<uint32_t> rogue::Version::_major{0};
+std::atomic<uint32_t> rogue::Version::_minor{0};
+std::atomic<uint32_t> rogue::Version::_maint{0};
+std::atomic<uint32_t> rogue::Version::_devel{0};
 
 void rogue::Version::init() {
-    char dump[100];
-    char lead;
-    int32_t ret;
+    static std::once_flag flag_;
 
-    ret = sscanf(_version,
-                 "%c%" SCNu32 ".%" SCNu32 ".%" SCNu32 "-%" SCNu32 "-%s",
-                 &lead,
-                 &_major,
-                 &_minor,
-                 &_maint,
-                 &_devel,
-                 dump);
+    std::call_once(flag_, []() {
+        char dump[100];
+        char lead;
+        uint32_t maj = 0, min = 0, mnt = 0, dev = 0;
+        int32_t ret  = sscanf(_version,
+                              "%c%" SCNu32 ".%" SCNu32 ".%" SCNu32 "-%" SCNu32 "-%99s",
+                              &lead,
+                              &maj,
+                              &min,
+                              &mnt,
+                              &dev,
+                              dump);
 
-    if ((ret != 4 && ret != 6) || (lead != 'v' && lead != 'V'))
-        throw(rogue::GeneralError("Version:init", "Invalid compiled version string"));
+        if ((ret != 4 && ret != 6) || (lead != 'v' && lead != 'V'))
+            throw(rogue::GeneralError("Version:init", "Invalid compiled version string"));
+
+        _major.store(maj);
+        _minor.store(min);
+        _maint.store(mnt);
+        _devel.store(dev);
+    });
 }
 
 void rogue::Version::extract(const std::string& compare, uint32_t* major, uint32_t* minor, uint32_t* maint) {
