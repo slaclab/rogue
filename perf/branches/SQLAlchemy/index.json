@@ -5,6 +5,14 @@
   "history": [
     {
       "ref_name": "SQLAlchemy",
+      "sha": "d1dd0077e37688db87ee0b066f2158ae794200b8",
+      "short_sha": "d1dd007",
+      "published_at": "2026-05-18T18:55:29Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/26053590320",
+      "summary_url": "/rogue/perf/branches/SQLAlchemy/history/d1dd0077e37688db87ee0b066f2158ae794200b8.json"
+    },
+    {
+      "ref_name": "SQLAlchemy",
       "sha": "7e6c6d44d828c1a2d64d3389e953ef89a63a58d7",
       "short_sha": "7e6c6d4",
       "published_at": "2026-05-15T20:39:19Z",
@@ -38,10 +46,10 @@
   ],
   "latest": {
     "ref_name": "SQLAlchemy",
-    "sha": "7e6c6d44d828c1a2d64d3389e953ef89a63a58d7",
-    "short_sha": "7e6c6d4",
-    "published_at": "2026-05-15T20:39:19Z",
-    "run_url": "https://github.com/slaclab/rogue/actions/runs/25940025254",
+    "sha": "d1dd0077e37688db87ee0b066f2158ae794200b8",
+    "short_sha": "d1dd007",
+    "published_at": "2026-05-18T18:55:29Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/26053590320",
     "summary_url": "/rogue/perf/branches/SQLAlchemy/latest.json"
   }
 }
