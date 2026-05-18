@@ -180,6 +180,11 @@ def runPyDM(
 
     from pyrogue.pydm.data_plugins.rogue_plugin import RoguePlugin
 
+    # Qt on GNOME ignores XDG_SESSION_TYPE=wayland and falls back to XCB
+    # regardless; pre-empt the noisy warning by declaring x11 upfront.
+    if os.environ.get('XDG_SESSION_TYPE') == 'wayland':
+        os.environ['XDG_SESSION_TYPE'] = 'x11'
+
     if sum(v is not None for v in (ui, display, display_factory)) > 1:
         raise ValueError("ui, display, and display_factory are mutually exclusive")
 
