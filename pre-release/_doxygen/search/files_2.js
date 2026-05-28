@@ -9,8 +9,8 @@ var searchData=
   ['combinerv2_2ecpp_6',['CombinerV2.cpp',['../CombinerV2_8cpp.html',1,'']]],
   ['combinerv2_2eh_7',['CombinerV2.h',['../CombinerV2_8h.html',1,'']]],
   ['constants_2eh_8',['Constants.h',['../Constants_8h.html',1,'']]],
-  ['controller_2ecpp_9',['controller.cpp',['../rssi_2Controller_8cpp.html',1,'(Global Namespace)'],['../packetizer_2Controller_8cpp.html',1,'(Global Namespace)']]],
-  ['controller_2eh_10',['controller.h',['../packetizer_2Controller_8h.html',1,'(Global Namespace)'],['../rssi_2Controller_8h.html',1,'(Global Namespace)']]],
+  ['controller_2ecpp_9',['controller.cpp',['../packetizer_2Controller_8cpp.html',1,'(Global Namespace)'],['../rssi_2Controller_8cpp.html',1,'(Global Namespace)']]],
+  ['controller_2eh_10',['controller.h',['../rssi_2Controller_8h.html',1,'(Global Namespace)'],['../packetizer_2Controller_8h.html',1,'(Global Namespace)']]],
   ['controllerv1_2ecpp_11',['ControllerV1.cpp',['../ControllerV1_8cpp.html',1,'']]],
   ['controllerv1_2eh_12',['ControllerV1.h',['../ControllerV1_8h.html',1,'']]],
   ['controllerv2_2ecpp_13',['ControllerV2.cpp',['../ControllerV2_8cpp.html',1,'']]],
@@ -19,7 +19,7 @@ var searchData=
   ['core_2eh_16',['core.h',['../udp_2Core_8h.html',1,'(Global Namespace)'],['../packetizer_2Core_8h.html',1,'(Global Namespace)']]],
   ['corev1_2ecpp_17',['CoreV1.cpp',['../CoreV1_8cpp.html',1,'']]],
   ['corev1_2eh_18',['CoreV1.h',['../CoreV1_8h.html',1,'']]],
-  ['corev2_2ecpp_19',['corev2.cpp',['../packetizer_2CoreV2_8cpp.html',1,'(Global Namespace)'],['../batcher_2CoreV2_8cpp.html',1,'(Global Namespace)']]],
+  ['corev2_2ecpp_19',['corev2.cpp',['../batcher_2CoreV2_8cpp.html',1,'(Global Namespace)'],['../packetizer_2CoreV2_8cpp.html',1,'(Global Namespace)']]],
   ['corev2_2eh_20',['corev2.h',['../packetizer_2CoreV2_8h.html',1,'(Global Namespace)'],['../batcher_2CoreV2_8h.html',1,'(Global Namespace)']]],
   ['crc_2eh_21',['CRC.h',['../CRC_8h.html',1,'']]]
 ];

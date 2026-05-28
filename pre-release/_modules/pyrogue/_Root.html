@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue._Root &mdash; Rogue v6.13.0-26-g20cbb7e6e documentation</title>
+  <title>pyrogue._Root &mdash; Rogue v6.13.0-28-g8bebe4469 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="../../_static/slac-favicon-192.png"/>
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=1a079b4e"></script>
+      <script src="../../_static/documentation_options.js?v=0fe230c5"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -735,8 +735,40 @@
 <a class="viewcode-back" href="../../api/python/pyrogue/root.html#pyrogue.Root.waitOnUpdate">[docs]</a>
     <span class="nd">@pr</span><span class="o">.</span><span class="n">expose</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">waitOnUpdate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Wait until all update queue items have been processed.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_updateQueue</span><span class="o">.</span><span class="n">join</span><span class="p">()</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Block until update-queue items present at call time have been processed.</span>
+
+<span class="sd">        A barrier sentinel (``threading.Event``) is appended to the update</span>
+<span class="sd">        queue and this method blocks until the update worker reaches it.</span>
+<span class="sd">        Items added to the queue *while* this method is waiting are NOT</span>
+<span class="sd">        included in the wait — the wait is bounded by the queue contents</span>
+<span class="sd">        at the moment of this call.</span>
+
+<span class="sd">        This is intentional: the previous implementation called</span>
+<span class="sd">        ``_updateQueue.join()``, which only returns once the unfinished-task</span>
+<span class="sd">        counter reaches zero. Under sustained producer load (poll thread,</span>
+<span class="sd">        listener-fired sets, UDP listeners) the counter never settles and</span>
+<span class="sd">        the call could silently take minutes.</span>
+
+<span class="sd">        To flush updates that the calling thread has accumulated inside</span>
+<span class="sd">        an ``updateGroup()`` context, call this method *outside* that</span>
+<span class="sd">        context. While inside ``updateGroup()`` the calling thread&#39;s</span>
+<span class="sd">        pending updates remain buffered in its ``UpdateTracker`` and</span>
+<span class="sd">        have not yet been queued.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_running</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">barrier</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Event</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_updateQueue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">barrier</span><span class="p">)</span>
+
+        <span class="c1"># Race guard: stop() can flip _running and enqueue the None stop</span>
+        <span class="c1"># sentinel between this method&#39;s _running check and the put() above.</span>
+        <span class="c1"># If our barrier ends up behind the stop sentinel the worker will</span>
+        <span class="c1"># consume None and exit before reaching us, leaving barrier.wait()</span>
+        <span class="c1"># blocked forever. Poll _running so we return after stop() runs.</span>
+        <span class="k">while</span> <span class="ow">not</span> <span class="n">barrier</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_running</span><span class="p">:</span>
+                <span class="k">return</span></div>
 
 
 <div class="viewcode-block" id="Root.hardReset">
@@ -1272,6 +1304,14 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Stopping update thread&quot;</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_updateQueue</span><span class="o">.</span><span class="n">task_done</span><span class="p">()</span>
                 <span class="k">return</span>
+
+            <span class="c1"># Barrier sentinel posted by waitOnUpdate(). Items queued before</span>
+            <span class="c1"># the barrier have already been processed by the time we reach</span>
+            <span class="c1"># it; signal the waiter and continue.</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">uvars</span><span class="p">,</span> <span class="n">threading</span><span class="o">.</span><span class="n">Event</span><span class="p">):</span>
+                <span class="n">uvars</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_updateQueue</span><span class="o">.</span><span class="n">task_done</span><span class="p">()</span>
+                <span class="k">continue</span>
 
             <span class="c1"># Process list</span>
             <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">uvars</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>

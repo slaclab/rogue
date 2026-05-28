@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Root &mdash; Rogue v6.13.0-26-g20cbb7e6e documentation</title>
+  <title>Root &mdash; Rogue v6.13.0-28-g8bebe4469 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../../_static/slac-favicon-192.png"/>
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=1a079b4e"></script>
+      <script src="../../../_static/documentation_options.js?v=0fe230c5"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -267,7 +267,22 @@ This will reduce the number of update broadcasts that the Root has to make.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pyrogue.Root.waitOnUpdate">
 <span class="sig-name descname"><span class="pre">waitOnUpdate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Root.html#Root.waitOnUpdate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Root.waitOnUpdate" title="Link to this definition"></a></dt>
-<dd><p>Wait until all update queue items have been processed.</p>
+<dd><p>Block until update-queue items present at call time have been processed.</p>
+<p>A barrier sentinel (<code class="docutils literal notranslate"><span class="pre">threading.Event</span></code>) is appended to the update
+queue and this method blocks until the update worker reaches it.
+Items added to the queue <em>while</em> this method is waiting are NOT
+included in the wait — the wait is bounded by the queue contents
+at the moment of this call.</p>
+<p>This is intentional: the previous implementation called
+<code class="docutils literal notranslate"><span class="pre">_updateQueue.join()</span></code>, which only returns once the unfinished-task
+counter reaches zero. Under sustained producer load (poll thread,
+listener-fired sets, UDP listeners) the counter never settles and
+the call could silently take minutes.</p>
+<p>To flush updates that the calling thread has accumulated inside
+an <code class="docutils literal notranslate"><span class="pre">updateGroup()</span></code> context, call this method <em>outside</em> that
+context. While inside <code class="docutils literal notranslate"><span class="pre">updateGroup()</span></code> the calling thread’s
+pending updates remain buffered in its <code class="docutils literal notranslate"><span class="pre">UpdateTracker</span></code> and
+have not yet been queued.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
