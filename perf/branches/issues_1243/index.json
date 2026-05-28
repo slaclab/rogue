@@ -5,6 +5,14 @@
   "history": [
     {
       "ref_name": "issues/1243",
+      "sha": "1301848271ca21fc860575a732f983cc547687eb",
+      "short_sha": "1301848",
+      "published_at": "2026-05-28T04:57:19Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/26555424541",
+      "summary_url": "/rogue/perf/branches/issues_1243/history/1301848271ca21fc860575a732f983cc547687eb.json"
+    },
+    {
+      "ref_name": "issues/1243",
       "sha": "67c06b9d4f76a1242be9391a01d0c4879a271d43",
       "short_sha": "67c06b9",
       "published_at": "2026-05-28T04:44:50Z",
@@ -38,10 +46,10 @@
   ],
   "latest": {
     "ref_name": "issues/1243",
-    "sha": "67c06b9d4f76a1242be9391a01d0c4879a271d43",
-    "short_sha": "67c06b9",
-    "published_at": "2026-05-28T04:44:50Z",
-    "run_url": "https://github.com/slaclab/rogue/actions/runs/26555022556",
+    "sha": "1301848271ca21fc860575a732f983cc547687eb",
+    "short_sha": "1301848",
+    "published_at": "2026-05-28T04:57:19Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/26555424541",
     "summary_url": "/rogue/perf/branches/issues_1243/latest.json"
   }
 }
