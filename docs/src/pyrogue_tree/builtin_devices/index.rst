@@ -34,6 +34,8 @@ The built-in devices fall into a few natural groups:
 
 * Start with :doc:`run_control` and :doc:`process` if you are organizing
   software actions, acquisition loops, or operator-visible procedures.
+* When you need ad-hoc fire-and-poll dispatch without progress or step UI, see
+  :doc:`long_running_operations` for the comparison and recipes.
 * Use :doc:`data_writer` and :doc:`data_receiver` for tree-facing stream write
   and receive patterns.
 * Use :doc:`/built_in_modules/index` for lower-level utilities and wrappers
@@ -57,6 +59,7 @@ Related Topics
 * Data receive/read path: :doc:`data_receiver`
 * Lower-level modules and wrappers: :doc:`/built_in_modules/index`
 * External process integration: :doc:`process`
+* Long-running operations: comparing pr.Process vs Command(nonBlocking=True): :doc:`long_running_operations`
 
 .. toctree::
    :maxdepth: 1
@@ -66,3 +69,4 @@ Related Topics
    data_writer
    data_receiver
    process
+   long_running_operations

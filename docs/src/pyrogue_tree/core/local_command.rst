@@ -220,6 +220,7 @@ real implementation is attached.
 What To Explore Next
 ====================
 
+* Long-running operations: :doc:`/pyrogue_tree/builtin_devices/long_running_operations`
 * Hardware-backed commands: :doc:`/pyrogue_tree/core/remote_command`
 * Shared command behavior: :doc:`/pyrogue_tree/core/command`
 * Tree-level placement and decorators: :doc:`/pyrogue_tree/core/device`

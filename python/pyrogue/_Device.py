@@ -320,6 +320,13 @@ class Device(pr.Node,rim.Hub):
 
     def _stop(self) -> None:
         """Called recursively from Root.stop when exiting"""
+        # Join non-blocking command workers BEFORE stopping interfaces — the
+        # worker function may still touch managed interfaces/memory during
+        # teardown.  Mirrors Process._stop calling _stopProcess() before
+        # Device._stop().
+        for c in self.commands.values():
+            if hasattr(c, '_stop'):
+                c._stop()
         for intf in self._ifAndProto:
             if hasattr(intf,"_stop"):
                 self._log.debug("Stopping managed interface/protocol %s", intf)
@@ -1103,7 +1110,11 @@ class Device(pr.Node,rim.Hub):
         """Attach this device into the rooted tree and build variable blocks."""
         pr.Node._rootAttached(self, parent, root)
 
-        for key,value in self._nodes.items():
+        # Snapshot _nodes before iterating: nonBlocking BaseCommand._rootAttached
+        # may inject sibling LocalVariables into _nodes during the loop; a live
+        # dict view would raise RuntimeError.  Newly added siblings are processed
+        # by _buildBlocks below since they are in _nodes by the time it runs.
+        for key,value in list(self._nodes.items()):
             value._rootAttached(self,root)
 
         self._buildBlocks()

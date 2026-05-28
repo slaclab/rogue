@@ -120,7 +120,7 @@ def test_virtual_client_concurrent_threadsafety(free_zmq_port):
     state machine.
 
     On unpatched main this test is EXPECTED to fail (crash, timeout, or
-    ZMQ protocol error) within ~30 s. Phase 2 adds a std::mutex in C++
+    ZMQ protocol error) within ~30 s. The fix adds a std::mutex in C++
     ZmqClient to serialize the REQ cycle; the same test must then pass.
     """
     N_COMMANDS = 500
@@ -166,10 +166,10 @@ def test_virtual_client_concurrent_threadsafety(free_zmq_port):
         def _watchdog():
             # Fires iff the test process is still alive after WATCHDOG_SECONDS.
             # On unpatched HEAD the corrupted ZMQ_REQ socket can deadlock
-            # teardown (srv._stop/root.stop), so setting stop_event alone
-            # is insufficient to satisfy REPRO-03 (< 30s).  Hard-exit is
-            # the only mechanism that bypasses a C++/GIL deadlock; a
-            # non-zero exit preserves the Phase 1 FAIL-on-unpatched signal.
+            # teardown (srv._stop/root.stop), so setting stop_event alone is
+            # insufficient to bound the test runtime.  Hard-exit is the only
+            # mechanism that bypasses a C++/GIL deadlock; a non-zero exit
+            # preserves the FAIL-on-unpatched signal.
             timeout_flag["fired"] = True
             stop_event.set()
             sys.stderr.write(
@@ -200,13 +200,13 @@ def test_virtual_client_concurrent_threadsafety(free_zmq_port):
             watchdog.cancel()
             poll_thread.join(timeout=JOIN_TIMEOUT)
 
-        # REPRO-03 invariants: the polling thread MUST have exited, and
-        # the watchdog MUST NOT have fired (otherwise we blew the 30 s budget).
+        # Invariants: the polling thread MUST have exited, and the watchdog
+        # MUST NOT have fired (otherwise we blew the 30 s budget).
         assert not poll_thread.is_alive(), "polling thread did not join within %.1fs" % JOIN_TIMEOUT
         assert not timeout_flag["fired"], "watchdog fired: test exceeded %.1fs budget" % WATCHDOG_SECONDS
 
         # Re-raise any error captured in the polling thread so a poller-only
-        # crash still fails the pytest run (D-12).
+        # crash still fails the pytest run.
         if errors:
             raise AssertionError(
                 "concurrent RPC race: polling thread raised %d error(s); first: %r"

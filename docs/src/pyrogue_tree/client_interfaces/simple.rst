@@ -81,6 +81,7 @@ Related Topics
 - Server-side transport setup: :doc:`/pyrogue_tree/client_interfaces/zmq_server`
 - Mirrored-tree access model: :doc:`/pyrogue_tree/client_interfaces/virtual`
 - CLI operations for quick checks: :doc:`/pyrogue_tree/client_interfaces/commandline`
+- Long-running operations: :doc:`/pyrogue_tree/builtin_devices/long_running_operations`
 
 API Reference
 =============

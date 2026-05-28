@@ -102,6 +102,7 @@ What To Explore Next
 * Hardware-backed actions: :doc:`/pyrogue_tree/core/remote_command`
 * Device placement and operational hooks: :doc:`/pyrogue_tree/core/device`
 * Root-level system actions: :doc:`/pyrogue_tree/core/root`
+* Long-running operations: :doc:`/pyrogue_tree/builtin_devices/long_running_operations`
 
 API Reference
 =============

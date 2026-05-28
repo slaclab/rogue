@@ -197,6 +197,7 @@ Related Topics
 * Command behavior: :doc:`/pyrogue_tree/core/command`
 * Device composition and lifecycle: :doc:`/pyrogue_tree/core/device`
 * Lower-level transport, protocol, and utility families: :doc:`/built_in_modules/index`
+* Long-running operations comparison: :doc:`long_running_operations`
 
 API Reference
 =============

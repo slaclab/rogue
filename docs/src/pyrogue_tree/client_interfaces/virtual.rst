@@ -112,6 +112,12 @@ It is only useful when the deployment has a known upper bound for legitimate
 request duration and wants the client to declare a request hung after that
 threshold.
 
+.. note::
+   For Commands whose work duration legitimately exceeds ``linkTimeout``,
+   prefer the non-blocking dispatch pattern documented in
+   :doc:`/pyrogue_tree/builtin_devices/long_running_operations`
+   over enlarging the timeout.
+
 .. code-block:: python
 
    from pyrogue.interfaces import VirtualClient
@@ -150,6 +156,7 @@ Related Topics
 - Server endpoint and port behavior: :doc:`/pyrogue_tree/client_interfaces/zmq_server`
 - Minimal string-path client usage: :doc:`/pyrogue_tree/client_interfaces/simple`
 - CLI and GUI workflows: :doc:`/pyrogue_tree/client_interfaces/commandline`
+- Long-running operations: :doc:`/pyrogue_tree/builtin_devices/long_running_operations`
 
 API Reference
 =============

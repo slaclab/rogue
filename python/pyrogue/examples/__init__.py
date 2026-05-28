@@ -13,5 +13,6 @@
 from pyrogue.examples._AxiVersion  import *
 from pyrogue.examples._ExampleRoot import *
 from pyrogue.examples._LargeDevice import *
+from pyrogue.examples._NonBlockingCommandExample import *
 from pyrogue.examples._OsMemMaster import *
 from pyrogue.examples._OsMemSlave  import *
