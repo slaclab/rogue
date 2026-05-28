@@ -1,0 +1,23 @@
+{
+  "ref_name": "bugfix/wait-on-update-hang",
+  "ref_slug": "bugfix_wait-on-update-hang",
+  "latest_url": "/rogue/perf/branches/bugfix_wait-on-update-hang/latest.json",
+  "history": [
+    {
+      "ref_name": "bugfix/wait-on-update-hang",
+      "sha": "c4071a70c63aa4577b16dade8ebcc4869496aa1d",
+      "short_sha": "c4071a7",
+      "published_at": "2026-05-28T06:51:48Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/26559333878",
+      "summary_url": "/rogue/perf/branches/bugfix_wait-on-update-hang/history/c4071a70c63aa4577b16dade8ebcc4869496aa1d.json"
+    }
+  ],
+  "latest": {
+    "ref_name": "bugfix/wait-on-update-hang",
+    "sha": "c4071a70c63aa4577b16dade8ebcc4869496aa1d",
+    "short_sha": "c4071a7",
+    "published_at": "2026-05-28T06:51:48Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/26559333878",
+    "summary_url": "/rogue/perf/branches/bugfix_wait-on-update-hang/latest.json"
+  }
+}
