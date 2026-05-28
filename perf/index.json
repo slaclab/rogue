@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-28T06:51:48Z",
+  "generated_at": "2026-05-28T07:07:35Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -265,6 +265,14 @@
       "history": [
         {
           "ref_name": "bugfix/wait-on-update-hang",
+          "sha": "a788c73067a259d51f8a416bb80d50be66a2f3cc",
+          "short_sha": "a788c73",
+          "published_at": "2026-05-28T07:07:35Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/26559962528",
+          "summary_url": "/rogue/perf/branches/bugfix_wait-on-update-hang/history/a788c73067a259d51f8a416bb80d50be66a2f3cc.json"
+        },
+        {
+          "ref_name": "bugfix/wait-on-update-hang",
           "sha": "c4071a70c63aa4577b16dade8ebcc4869496aa1d",
           "short_sha": "c4071a7",
           "published_at": "2026-05-28T06:51:48Z",
@@ -274,10 +282,10 @@
       ],
       "latest": {
         "ref_name": "bugfix/wait-on-update-hang",
-        "sha": "c4071a70c63aa4577b16dade8ebcc4869496aa1d",
-        "short_sha": "c4071a7",
-        "published_at": "2026-05-28T06:51:48Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/26559333878",
+        "sha": "a788c73067a259d51f8a416bb80d50be66a2f3cc",
+        "short_sha": "a788c73",
+        "published_at": "2026-05-28T07:07:35Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/26559962528",
         "summary_url": "/rogue/perf/branches/bugfix_wait-on-update-hang/latest.json"
       }
     },
