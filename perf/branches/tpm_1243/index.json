@@ -1,0 +1,23 @@
+{
+  "ref_name": "tpm/1243",
+  "ref_slug": "tpm_1243",
+  "latest_url": "/rogue/perf/branches/tpm_1243/latest.json",
+  "history": [
+    {
+      "ref_name": "tpm/1243",
+      "sha": "1f243e424346f98caebf35023f6ac889a4f398b0",
+      "short_sha": "1f243e4",
+      "published_at": "2026-05-29T16:43:57Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/26649684186",
+      "summary_url": "/rogue/perf/branches/tpm_1243/history/1f243e424346f98caebf35023f6ac889a4f398b0.json"
+    }
+  ],
+  "latest": {
+    "ref_name": "tpm/1243",
+    "sha": "1f243e424346f98caebf35023f6ac889a4f398b0",
+    "short_sha": "1f243e4",
+    "published_at": "2026-05-29T16:43:57Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/26649684186",
+    "summary_url": "/rogue/perf/branches/tpm_1243/latest.json"
+  }
+}
