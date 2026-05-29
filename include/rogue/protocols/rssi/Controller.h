@@ -401,6 +401,40 @@ class Controller : public rogue::EnableSharedFromThis<rogue::protocols::rssi::Co
      */
     uint8_t curMaxCumAck();
 
+    /**
+     * @brief Clamps peer-advertised connection parameters to the locally legal range.
+     *
+     * @details
+     * The RSSI SYN/SYN-ACK handshake adopts the peer's advertised parameters. A peer
+     * advertising out-of-range values (zero outstanding segments, zero timeouts, a
+     * sub-header-size segment, or a window larger than the locally offered maximum)
+     * would otherwise drive the controller into illegal state (for example
+     * `curMaxBuffers == 0` makes the outbound wait loop spin forever). This helper
+     * clamps in place to the legal range instead of rejecting the connection, which
+     * preserves backward/forward compatibility with conformant peers. SLAC firmware
+     * never advertises invalid parameters, so in practice this is defense-in-depth.
+     *
+     * Pure (no member state) so it can be unit tested directly. Mirrors the firmware
+     * `validPeerParams`/`clampWindowSize`/`clampBufferSize` checks in surf
+     * `protocols/rssi/v1/rtl/RssiConnFsm.vhd`.
+     *
+     * @param maxBuffers     Peer max outstanding segments; clamped to [1, locMaxBuffers].
+     * @param maxSegment     Peer max segment size; clamped to [HeaderSize, locMaxSegment].
+     * @param cumAckTout     Peer cumulative-ACK timeout; clamped to >= 1.
+     * @param retranTout     Peer retransmit timeout; clamped to >= 1.
+     * @param nullTout       Peer null-segment timeout; clamped to >= 1.
+     * @param locMaxBuffers  Locally offered max outstanding segments (upper bound).
+     * @param locMaxSegment  Locally offered max segment size (upper bound).
+     * @return True if any parameter was modified, false if all were already legal.
+     */
+    static bool clampPeerParams(uint8_t& maxBuffers,
+                                uint16_t& maxSegment,
+                                uint16_t& cumAckTout,
+                                uint16_t& retranTout,
+                                uint16_t& nullTout,
+                                uint8_t locMaxBuffers,
+                                uint16_t locMaxSegment);
+
     /** @brief Resets runtime counters. */
     void resetCounters();
 

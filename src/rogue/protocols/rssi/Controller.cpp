@@ -696,6 +696,51 @@ int8_t rpr::Controller::retransmit(uint8_t id) {
     return 1;
 }
 
+//! Clamp peer-advertised connection parameters to the locally legal range
+bool rpr::Controller::clampPeerParams(uint8_t& maxBuffers,
+                                      uint16_t& maxSegment,
+                                      uint16_t& cumAckTout,
+                                      uint16_t& retranTout,
+                                      uint16_t& nullTout,
+                                      uint8_t locMaxBuffers,
+                                      uint16_t locMaxSegment) {
+    bool clamped = false;
+
+    // Max outstanding segments: at least 1, never more than locally offered
+    if (maxBuffers == 0) {
+        maxBuffers = 1;
+        clamped    = true;
+    } else if (maxBuffers > locMaxBuffers) {
+        maxBuffers = locMaxBuffers;
+        clamped    = true;
+    }
+
+    // Max segment size: must hold at least a header, never more than locally offered
+    if (maxSegment < static_cast<uint16_t>(rpr::Header::HeaderSize)) {
+        maxSegment = static_cast<uint16_t>(rpr::Header::HeaderSize);
+        clamped    = true;
+    } else if (maxSegment > locMaxSegment) {
+        maxSegment = locMaxSegment;
+        clamped    = true;
+    }
+
+    // Timeouts: a zero value would make the corresponding timer expire immediately
+    if (cumAckTout == 0) {
+        cumAckTout = 1;
+        clamped    = true;
+    }
+    if (retranTout == 0) {
+        retranTout = 1;
+        clamped    = true;
+    }
+    if (nullTout == 0) {
+        nullTout = 1;
+        clamped  = true;
+    }
+
+    return clamped;
+}
+
 //! Convert rssi time to microseconds
 void rpr::Controller::convTime(struct timeval& tme, uint32_t rssiTime) {
     float units = std::pow(10, -TimeoutUnit);
@@ -789,6 +834,19 @@ struct timeval& rpr::Controller::stateClosedWait() {
             curMaxRetran_  = head->maxRetransmissions;
             curMaxCumAck_  = head->maxCumulativeAck;
             lastAckRx_     = head->acknowledge;
+
+            // Clamp peer-advertised parameters to the locally legal range before
+            // they are converted to timers or used as window/buffer bounds. A
+            // conformant peer (including SLAC firmware) is unaffected.
+            if (clampPeerParams(curMaxBuffers_,
+                                curMaxSegment_,
+                                curCumAckTout_,
+                                curRetranTout_,
+                                curNullTout_,
+                                locMaxBuffers_,
+                                locMaxSegment_)) {
+                log_->warning("Clamped out-of-range peer RSSI parameters. server=%d", server_);
+            }
 
             // Convert times
             convTime(retranToutD1_, curRetranTout_);
