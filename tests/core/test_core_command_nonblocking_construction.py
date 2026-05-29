@@ -10,7 +10,6 @@
 
 import time
 
-import pytest
 import pyrogue as pr
 from conftest import MemoryRoot
 

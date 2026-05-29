@@ -267,7 +267,9 @@ class SimpleClient(object):
         obj
             Return value of the underlying command
         """
-        return self._remoteAttr(path, '__call__', arg, blocking=blocking)
+        if blocking:
+            return self._remoteAttr(path, '__call__', arg)
+        return self._remoteAttr(path, '__call__', arg, blocking=False)
 
     def __enter__(self) -> "SimpleClient":
         """Return self for context-manager use."""
