@@ -242,10 +242,16 @@ class BaseCommand(pr.BaseVariable):
                 self._default = arg
                 self._queueUpdate()
 
+            with self._lock:
+                self._workerResult = ret
+                self._workerError  = ''
+
             return ret
 
         except Exception as e:
             pr.logException(self._log,e)
+            with self._lock:
+                self._workerError = str(e)
             raise e
 
     @pr.expose
