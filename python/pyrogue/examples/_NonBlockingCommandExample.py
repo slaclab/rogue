@@ -4,9 +4,9 @@
 #-----------------------------------------------------------------------------
 #  Description:
 #       Cookbook: non-blocking Command with client-side polling loop.
-#       Demonstrates a setDefaults-shaped configuration-apply Command using
-#       nonBlocking=True and the matching hand-rolled polling loop driven by
-#       SimpleClient.  Run directly:
+#       Demonstrates calling a long-running Command with blocking=False
+#       and polling the command's exposed properties via SimpleClient.
+#       Run directly:
 #           python -m pyrogue.examples._NonBlockingCommandExample
 #       Import and call main() from a smoke test for CI coverage.
 #-----------------------------------------------------------------------------
@@ -24,12 +24,7 @@ import pyrogue.interfaces as pr_interfaces
 
 
 def _apply_config(cmd):
-    """Simulate a multi-step configuration apply (the long-running work).
-
-    Models a setDefaults-style operation: iterate over named steps, each
-    with a short delay to simulate real register/DMA traffic, then return
-    a status string that populates the ApplyConfigResult sibling variable.
-    """
+    """Simulate a multi-step configuration apply (the long-running work)."""
     steps = [
         ('reset_defaults',   0.3),
         ('load_cal_table',   0.3),
@@ -44,10 +39,9 @@ def _apply_config(cmd):
 class ConfigDevice(pr.Device):
     """Device that exposes a single long-running ApplyConfig command.
 
-    The command is marked nonBlocking=True so that ZMQ clients (e.g.
-    SimpleClient, VirtualClient) receive None immediately and can poll
-    the ApplyConfigRunning / ApplyConfigResult / ApplyConfigError sibling
-    variables for completion status.
+    Any command can be called with ``blocking=False`` to dispatch on a
+    worker thread.  The caller polls ``cmd.running``, ``cmd.result``,
+    and ``cmd.error`` for completion status.
     """
 
     def __init__(self, **kwargs):
@@ -56,11 +50,10 @@ class ConfigDevice(pr.Device):
             name='ApplyConfig',
             description=(
                 'Apply full device configuration (setDefaults-style). '
-                'Returns immediately; poll ApplyConfigRunning for completion. '
-                'Result is available in ApplyConfigResult once Running is False.'
+                'Call with blocking=False to return immediately; poll '
+                'the running property for completion.'
             ),
             function=_apply_config,
-            nonBlocking=True,
             retValue='',
         ))
 
@@ -71,9 +64,7 @@ class NonBlockingCommandRoot(pr.Root):
     Parameters
     ----------
     port : int
-        Base ZMQ port.  0 (default) lets the server auto-assign from 9099
-        upward.  Pass an explicit port when the caller must control binding
-        (e.g. in a smoke test that supplies a free port).
+        Base ZMQ port.  0 (default) lets the server auto-assign.
     """
 
     def __init__(self, *, port=0):
@@ -86,43 +77,35 @@ class NonBlockingCommandRoot(pr.Root):
 def main(port=0, poll_interval=0.1, timeout=30.0):
     """Run the non-blocking Command example and return the Result string.
 
-    This function is the canonical reference shape for the hand-rolled
-    client-side polling loop that pairs with a nonBlocking=True Command:
-
-    1. Fire the command via SimpleClient.exec — returns None immediately.
-    2. Poll ApplyConfigRunning until it becomes False (bounded by timeout).
-    3. Read ApplyConfigError; raise RuntimeError if non-empty.
-    4. Return ApplyConfigResult.
+    1. Fire the command via SimpleClient.exec(blocking=False).
+    2. Poll the command's ``running`` property until False.
+    3. Check ``error``; raise RuntimeError if non-empty.
+    4. Return ``result``.
 
     Parameters
     ----------
     port : int
         ZMQ base port passed to NonBlockingCommandRoot.  0 = auto-assign.
     poll_interval : float
-        Seconds between ApplyConfigRunning polls.
+        Seconds between polls.
     timeout : float
-        Maximum seconds to wait for the command to finish before raising.
+        Maximum seconds to wait before raising.
 
     Returns
     -------
     str
-        The value stored in ApplyConfigResult on successful completion.
+        The command's result value on successful completion.
     """
     with NonBlockingCommandRoot(port=port) as root:
         actual_port = root.zmqServer.port()
         with pr_interfaces.SimpleClient(addr='127.0.0.1', port=actual_port) as client:
 
-            # Fire the long-running command — returns None immediately because
-            # the server dispatches a worker thread and replies before it finishes.
-            client.exec('Top.Dev.ApplyConfig')
+            client.exec('Top.Dev.ApplyConfig', blocking=False)
 
-            # Hand-rolled polling loop: the canonical pattern for nonBlocking Commands.
-            # Poll the auto-injected ApplyConfigRunning sibling variable until it
-            # transitions to False, indicating the worker thread has completed.
             deadline  = time.monotonic() + timeout
             completed = False
             while time.monotonic() < deadline:
-                if not client.get('Top.Dev.ApplyConfigRunning'):
+                if not client._remoteAttr('Top.Dev.ApplyConfig', 'running'):
                     completed = True
                     break
                 time.sleep(poll_interval)
@@ -131,8 +114,8 @@ def main(port=0, poll_interval=0.1, timeout=30.0):
                 raise TimeoutError(
                     f'ApplyConfig did not complete within {timeout:.1f}s')
 
-            error  = client.get('Top.Dev.ApplyConfigError')
-            result = client.get('Top.Dev.ApplyConfigResult')
+            error  = client._remoteAttr('Top.Dev.ApplyConfig', 'error')
+            result = client._remoteAttr('Top.Dev.ApplyConfig', 'result')
 
             if error:
                 raise RuntimeError(f'ApplyConfig failed: {error}')

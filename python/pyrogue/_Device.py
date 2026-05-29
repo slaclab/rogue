@@ -1110,11 +1110,7 @@ class Device(pr.Node,rim.Hub):
         """Attach this device into the rooted tree and build variable blocks."""
         pr.Node._rootAttached(self, parent, root)
 
-        # Snapshot _nodes before iterating: nonBlocking BaseCommand._rootAttached
-        # may inject sibling LocalVariables into _nodes during the loop; a live
-        # dict view would raise RuntimeError.  Newly added siblings are processed
-        # by _buildBlocks below since they are in _nodes by the time it runs.
-        for key,value in list(self._nodes.items()):
+        for key,value in self._nodes.items():
             value._rootAttached(self,root)
 
         self._buildBlocks()

@@ -340,18 +340,11 @@ class VirtualClient(rogue.interfaces.ZmqClient):
         primary operational timeout knob for both hardware and simulation
         applications.
 
-        For Commands whose work duration legitimately exceeds this timeout,
-        see :ref:`pyrogue_tree_builtin_devices_long_running_ops` for the
-        non-blocking dispatch pattern.
-
     requestStallTimeout : float | None, optional
         Optional policy timeout for how long a single in-flight request may
         remain outstanding before the client declares the connection stalled.
         This is disabled by default and is typically only useful when a
         deployment has a well-defined upper bound for legitimate request time.
-
-        See :ref:`pyrogue_tree_builtin_devices_long_running_ops` for how
-        this interacts with non-blocking Command polling.
 
     Attributes
     ----------

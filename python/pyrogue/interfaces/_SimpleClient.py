@@ -247,7 +247,7 @@ class SimpleClient(object):
         """
         return self._remoteAttr(path, 'setDisp', value)
 
-    def exec(self, path: str, arg: Any = None) -> Any:
+    def exec(self, path: str, arg: Any = None, *, blocking: bool = True) -> Any:
         """
         Call a command, with the optional arg
 
@@ -259,12 +259,15 @@ class SimpleClient(object):
         arg : obj
             Command argument, in native or string form
 
+        blocking : bool, optional (default = True)
+            When ``False``, dispatch on a worker thread and return ``None``.
+
         Returns
         -------
         obj
             Return value of the underlying command
         """
-        return self._remoteAttr(path, '__call__', arg)
+        return self._remoteAttr(path, '__call__', arg, blocking=blocking)
 
     def __enter__(self) -> "SimpleClient":
         """Return self for context-manager use."""

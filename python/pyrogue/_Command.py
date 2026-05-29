@@ -57,22 +57,7 @@ class BaseCommand(pr.BaseVariable):
         callback may accept any subset of these names.
         Default to no-op for command if None.
     background : bool, optional (default = False)
-        Reserved for future use; not implemented. Use ``nonBlocking=True``
-        to dispatch the function on a worker thread.
-    nonBlocking : bool, optional (default = False)
-        When ``True``, ``call()`` dispatches the function on a non-daemon
-        worker thread and returns ``None`` immediately.  Three sibling
-        ``LocalVariable``\\s are auto-added to the parent ``Device``:
-        ``{name}Running`` (bool), ``{name}Result`` (last return value),
-        and ``{name}Error`` (last exception string, empty when none).
-        Re-entrant calls while the worker is running are logged as a
-        warning and ignored.  The worker is joined on ``Root.stop()``.
-        Mirrors the ``pr.Process`` worker-thread lifecycle.
-
-        See :ref:`pyrogue_tree_builtin_devices_long_running_ops` for the
-        polling pattern and timeout interactions.
-
-        .. versionadded:: 6.14.0
+        Reserved for future use; not implemented.
     guiGroup : str, optional
         GUI grouping label.
     **kwargs : Any
@@ -93,7 +78,6 @@ class BaseCommand(pr.BaseVariable):
         maximum: Any | None = None,
         function: Callable[..., Any] | None = None,
         background: bool = False,
-        nonBlocking: bool = False,
         guiGroup: str | None = None,
         **kwargs: Any,
     ) -> None:
@@ -121,11 +105,8 @@ class BaseCommand(pr.BaseVariable):
         self._runEn  = False
         self._retDisp = "{}"
 
-        self._nonBlocking = nonBlocking
-        self._nonBlockingVarsAdded = False
-        self._varRunning = None
-        self._varResult  = None
-        self._varError   = None
+        self._workerResult = None
+        self._workerError  = ''
 
         if retValue is None:
             self._retTypeStr = None
@@ -154,61 +135,27 @@ class BaseCommand(pr.BaseVariable):
         """Return the display string for the return type."""
         return self._retTypeStr
 
-    def _rootAttached(self, parent: Any, root: Any) -> None:
-        """Attach this command into the rooted tree; inject sibling status vars."""
-        pr.BaseVariable._rootAttached(self, parent, root)
+    @pr.expose
+    @property
+    def running(self) -> bool:
+        """Return True if a non-blocking worker thread is in flight."""
+        with self._lock:
+            thr = self._thread
+        return thr is not None and thr.is_alive()
 
-        if not self._nonBlocking or self._nonBlockingVarsAdded:
-            return
-        if not isinstance(parent, pr.Device):
-            return
+    @pr.expose
+    @property
+    def result(self) -> Any:
+        """Return the last successful return value from a non-blocking call."""
+        with self._lock:
+            return self._workerResult
 
-        # Inject three sibling LocalVariables onto the parent Device.
-        # parent.add() cannot be used here because parent._root is already set
-        # (Device._rootAttached sets it before iterating children).  Instead we
-        # place the vars directly into parent._nodes and call _rootAttached on
-        # each so they receive their path, logger, and block setup.
-        lv_running = pr.LocalVariable(
-            name=f'{self.name}Running',
-            mode='RO',
-            value=False,
-            pollInterval=1.0,
-            description=f'Running status for {self.path}.',
-        )
-        lv_result = pr.LocalVariable(
-            name=f'{self.name}Result',
-            mode='RO',
-            value='',
-            pollInterval=1.0,
-            typeCheck=False,
-            description=f'Last successful return value of {self.path}.',
-        )
-        lv_error = pr.LocalVariable(
-            name=f'{self.name}Error',
-            mode='RO',
-            value='',
-            pollInterval=1.0,
-            description=f'Last error from {self.path}. Empty string when none.',
-        )
-
-        # Check for name collisions BEFORE any parent._nodes mutation so a
-        # collision on the second or third sibling does not leave a
-        # half-injected state.  Mirrors Node.add()'s duplicate guard, which is
-        # bypassed here because parent.add() raises when the tree is already
-        # started.
-        for lv in (lv_running, lv_result, lv_error):
-            if lv.name in parent._nodes:
-                raise pr.NodeError(
-                    'Error adding node with name %s to %s. Name collision.' % (lv.name, parent.name))
-
-        for lv in (lv_running, lv_result, lv_error):
-            parent._nodes[lv.name] = lv
-            lv._rootAttached(parent, root)
-
-        self._varRunning = lv_running
-        self._varResult  = lv_result
-        self._varError   = lv_error
-        self._nonBlockingVarsAdded = True
+    @pr.expose
+    @property
+    def error(self) -> str:
+        """Return the last error string from a non-blocking call, or ''."""
+        with self._lock:
+            return self._workerError
 
     def _resolveArg(self, arg: Any) -> Any:
         """Parse raw call argument into the canonical command value.
@@ -223,15 +170,23 @@ class BaseCommand(pr.BaseVariable):
             return self._default
         return self.parseDisp(arg)
 
-    def __call__(self, arg: Any = None) -> Any:
+    def __call__(self, arg: Any = None, *, blocking: bool = True) -> Any:
         """Invoke the command.
 
         Parameters
         ----------
         arg : object, optional
             Command argument. If ``None``, uses the default value.
+        blocking : bool, optional (default = True)
+            When ``True`` (the default), execute the command synchronously and
+            return the result.  When ``False``, dispatch the command on a
+            worker thread and return ``None`` immediately.  Use the
+            :attr:`running`, :attr:`result`, and :attr:`error` properties to
+            monitor progress and retrieve the outcome.
+
+            .. versionadded:: 6.14.0
         """
-        if not self._nonBlocking:
+        if blocking:
             return self._doFunc(arg)
 
         # Non-blocking path: dispatch worker thread and return immediately.
@@ -242,9 +197,6 @@ class BaseCommand(pr.BaseVariable):
 
         with self._lock:
             if self._thread is None or not self._thread.is_alive():
-                # Mirror the _doFunc sync path: when the callback accepts an
-                # arg and this is a LocalCommand, cache the resolved argument
-                # so cmd.get() reflects the last invocation.
                 if self._arg and not isinstance(self, RemoteCommand):
                     self._default = resolvedArg
                     self._queueUpdate()
@@ -297,45 +249,44 @@ class BaseCommand(pr.BaseVariable):
             raise e
 
     @pr.expose
-    def call(self, arg: Any = None) -> Any:
+    def call(self, arg: Any = None, *, blocking: bool = True) -> Any:
         """Invoke the command and return the raw result.
 
         Parameters
         ----------
         arg : object, optional
             Command argument.
+        blocking : bool, optional (default = True)
+            When ``False``, dispatch on a worker thread and return ``None``.
         """
-        return self.__call__(arg)
+        return self.__call__(arg, blocking=blocking)
 
     @pr.expose
-    def callDisp(self, arg: Any = None) -> str:
+    def callDisp(self, arg: Any = None, *, blocking: bool = True) -> str:
         """Invoke the command and return the display-formatted result.
 
         Parameters
         ----------
         arg : object, optional
             Command argument.
+        blocking : bool, optional (default = True)
+            When ``False``, dispatch on a worker thread and return ``""``.
         """
-        if self._nonBlocking:
-            self.__call__(arg)
+        if not blocking:
+            self.__call__(arg, blocking=False)
             return ""
-        return self.genDisp(self.__call__(arg),useDisp=self._retDisp)
+        return self.genDisp(self.__call__(arg), useDisp=self._retDisp)
 
     def _runWorker(self, arg: Any) -> None:
         """Execute the command function on a worker thread.
 
-        Mirrors ``pr.Process._run``.  State transitions are batched via
-        ``Root.updateGroup()`` so clients receive one coherent snapshot per
-        phase.  Exceptions are logged server-side; only ``str(exc)`` is
-        surfaced to clients via the ``{name}Error`` sibling variable.
+        Mirrors ``pr.Process._run``.  Exceptions are logged server-side;
+        only ``str(exc)`` is surfaced to clients via the :attr:`error`
+        property.
         """
-        # Start transition: clear previous error, advertise running.
-        with self.root.updateGroup():
-            self._varError.set('')
-            self._varRunning.set(True)
+        with self._lock:
+            self._workerError = ''
 
-        ret = None
-        err = None
         try:
             with self.root.updateGroup(period=1.0):
                 ret = self._functionWrap(
@@ -347,23 +298,14 @@ class BaseCommand(pr.BaseVariable):
                 )
         except Exception as e:
             pr.logException(self._log, e)
-            err = str(e)
-
-        # End transition: publish result or error, clear running.
-        if err is not None:
-            with self.root.updateGroup():
-                self._varError.set(err)
-                self._varRunning.set(False)
+            with self._lock:
+                self._workerError = str(e)
         else:
-            with self.root.updateGroup():
-                self._varResult.set(ret)
-                self._varRunning.set(False)
+            with self._lock:
+                self._workerResult = ret
 
-        # Release the run-enable flag last so re-entry detection is accurate
-        # throughout the variable-update phase above.
         with self._lock:
             self._runEn  = False
-            self._thread = None
 
     def _stopWorker(self) -> None:
         """Signal the worker to stop and wait for it to exit.
@@ -384,12 +326,11 @@ class BaseCommand(pr.BaseVariable):
             thr.join()
 
     def _stop(self) -> None:
-        """Join the in-flight worker thread if nonBlocking.
+        """Join any in-flight worker thread.
 
         Called by ``Device._stop`` during ``Root.stop()``.
         """
-        if self._nonBlocking:
-            self._stopWorker()
+        self._stopWorker()
 
     @staticmethod
     def nothing() -> None:
@@ -660,10 +601,6 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
         keyword arguments ``root``, ``dev``, ``cmd``, and ``arg``; the
         callback may accept any subset of these names.
         Default to no-op for command if None.
-    nonBlocking : bool, optional (default = False)
-        When ``True``, ``call()`` dispatches the function on a non-daemon
-        worker thread and returns ``None`` immediately.  Forwarded only to
-        ``BaseCommand.__init__``; not passed to ``RemoteVariable.__init__``.
     base : object, optional (default = ``pr.UInt``)
         Base data type for the underlying remote variable.
     offset : int, optional
@@ -693,7 +630,6 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
         minimum: Any | None = None,
         maximum: Any | None = None,
         function: Callable[..., Any] | None = None,
-        nonBlocking: bool = False,
         base: Any = pr.UInt,
         offset: int | None = None,
         bitSize: int = 32,
@@ -703,16 +639,11 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
         **kwargs: Any,
     ) -> None:
         """Initialize a remote command."""
-
-        # nonBlocking is explicit here so it is NOT in **kwargs and therefore
-        # does not reach pr.RemoteVariable.__init__ (which does not accept it).
-        # Forward it only to BaseCommand.__init__.
         BaseCommand.__init__(
             self,
             name=name,
             retValue=retValue,
             function=function,
-            nonBlocking=nonBlocking,
             guiGroup=guiGroup,
             **kwargs)
 

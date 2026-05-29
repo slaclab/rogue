@@ -59,7 +59,7 @@ Related Topics
 * Data receive/read path: :doc:`data_receiver`
 * Lower-level modules and wrappers: :doc:`/built_in_modules/index`
 * External process integration: :doc:`process`
-* Long-running operations: comparing pr.Process vs Command(nonBlocking=True): :doc:`long_running_operations`
+* Long-running operations: comparing pr.Process vs Command(blocking=False): :doc:`long_running_operations`
 
 .. toctree::
    :maxdepth: 1
