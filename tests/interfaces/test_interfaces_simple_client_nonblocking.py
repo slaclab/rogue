@@ -45,7 +45,7 @@ class NonBlockingRoot(pr.Root):
 
 def test_simpleclient_exec_nonblocking_returns_immediately(wait_until, free_zmq_port):
     """SimpleClient.exec(blocking=False) returns immediately. Status is
-    polled via the exposed properties on the command."""
+    polled via _remoteAttr on the exposed command properties."""
 
     with NonBlockingRoot(port=free_zmq_port) as root:
         with pr_interfaces.SimpleClient(addr='127.0.0.1', port=root.zmqServer.port()) as client:

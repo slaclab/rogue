@@ -133,31 +133,15 @@ Client-Side Polling Pattern
 
 After calling with ``blocking=False``, poll the command's ``running``
 property until it becomes ``False``, then read ``result`` and ``error``.
-These are ``@pr.expose``-d properties on the Command itself, so they are
-accessible through VirtualClient as properties and through SimpleClient
-via ``_remoteAttr``.
+These are ``@pr.expose``-d properties on the Command itself, accessible
+as direct property access through :py:class:`~pyrogue.interfaces.VirtualClient`.
 
-The example below is the canonical reference shape for the hand-rolled loop:
+The example below is the canonical reference shape for the polling loop:
 
 .. literalinclude:: ../../../../python/pyrogue/examples/_NonBlockingCommandExample.py
    :language: python
    :pyobject: main
-   :caption: SimpleClient hand-rolled polling loop
-
-For :py:class:`~pyrogue.VirtualClient` users, the equivalent approach uses
-property access on the virtual command node:
-
-.. code-block:: python
-
-   remote_cmd = client.root.Dev.ApplyConfig
-   remote_cmd(blocking=False)
-
-   while remote_cmd.running:
-       time.sleep(0.1)
-
-   if remote_cmd.error:
-       raise RuntimeError(remote_cmd.error)
-   print(remote_cmd.result)
+   :caption: VirtualClient polling loop
 
 Interaction with linkTimeout and requestStallTimeout
 =====================================================

@@ -5,7 +5,7 @@
 #  Description:
 #       Cookbook: non-blocking Command with client-side polling loop.
 #       Demonstrates calling a long-running Command with blocking=False
-#       and polling the command's exposed properties via SimpleClient.
+#       and polling the command's exposed properties via VirtualClient.
 #       Run directly:
 #           python -m pyrogue.examples._NonBlockingCommandExample
 #       Import and call main() from a smoke test for CI coverage.
@@ -77,7 +77,7 @@ class NonBlockingCommandRoot(pr.Root):
 def main(port=0, poll_interval=0.1, timeout=30.0):
     """Run the non-blocking Command example and return the Result string.
 
-    1. Fire the command via SimpleClient.exec(blocking=False).
+    1. Fire the command with ``blocking=False`` via VirtualClient.
     2. Poll the command's ``running`` property until False.
     3. Check ``error``; raise RuntimeError if non-empty.
     4. Return ``result``.
@@ -98,14 +98,16 @@ def main(port=0, poll_interval=0.1, timeout=30.0):
     """
     with NonBlockingCommandRoot(port=port) as root:
         actual_port = root.zmqServer.port()
-        with pr_interfaces.SimpleClient(addr='127.0.0.1', port=actual_port) as client:
+        client = pr_interfaces.VirtualClient(addr='127.0.0.1', port=actual_port)
+        try:
+            cmd = client.root.Dev.ApplyConfig
 
-            client.exec('Top.Dev.ApplyConfig', blocking=False)
+            cmd(blocking=False)
 
             deadline  = time.monotonic() + timeout
             completed = False
             while time.monotonic() < deadline:
-                if not client._remoteAttr('Top.Dev.ApplyConfig', 'running'):
+                if not cmd.running:
                     completed = True
                     break
                 time.sleep(poll_interval)
@@ -114,13 +116,13 @@ def main(port=0, poll_interval=0.1, timeout=30.0):
                 raise TimeoutError(
                     f'ApplyConfig did not complete within {timeout:.1f}s')
 
-            error  = client._remoteAttr('Top.Dev.ApplyConfig', 'error')
-            result = client._remoteAttr('Top.Dev.ApplyConfig', 'result')
+            if cmd.error:
+                raise RuntimeError(f'ApplyConfig failed: {cmd.error}')
 
-            if error:
-                raise RuntimeError(f'ApplyConfig failed: {error}')
-
-            return result
+            return cmd.result
+        finally:
+            client.stop()
+            pr_interfaces.VirtualClient.ClientCache.clear()
 
 
 if __name__ == '__main__':
