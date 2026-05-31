@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-31T19:40:57Z",
+  "generated_at": "2026-05-31T20:00:30Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -256,6 +256,29 @@
         "published_at": "2026-05-28T19:41:14Z",
         "run_url": "https://github.com/slaclab/rogue/actions/runs/26597604573",
         "summary_url": "/rogue/perf/branches/pre-release/latest.json"
+      }
+    },
+    {
+      "ref_name": "revert-PR1239",
+      "ref_slug": "revert-PR1239",
+      "latest_url": "/rogue/perf/branches/revert-PR1239/latest.json",
+      "history": [
+        {
+          "ref_name": "revert-PR1239",
+          "sha": "016a8ad10690f1dbc6fc6d39e3a3de27c6f5010a",
+          "short_sha": "016a8ad",
+          "published_at": "2026-05-31T20:00:30Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/26722850584",
+          "summary_url": "/rogue/perf/branches/revert-PR1239/history/016a8ad10690f1dbc6fc6d39e3a3de27c6f5010a.json"
+        }
+      ],
+      "latest": {
+        "ref_name": "revert-PR1239",
+        "sha": "016a8ad10690f1dbc6fc6d39e3a3de27c6f5010a",
+        "short_sha": "016a8ad",
+        "published_at": "2026-05-31T20:00:30Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/26722850584",
+        "summary_url": "/rogue/perf/branches/revert-PR1239/latest.json"
       }
     },
     {
