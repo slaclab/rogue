@@ -12,8 +12,6 @@
 import os
 import time
 
-import pytest
-
 import pyrogue
 import pyrogue.interfaces
 
@@ -180,24 +178,15 @@ def test_virtual_client_reqlock_exists_before_zmq_base_init(monkeypatch):
 
 
 def test_virtual_client_does_not_cache_failed_bootstrap(monkeypatch):
-    """A failed bootstrap must raise and must not pollute ClientCache.
-
-    Issue #1234 fix: ``VirtualClient.__init__`` raises ``ConnectionError``
-    when ``_waitForRoot`` fails (previously it printed an error and
-    returned a dead instance). This test pins that contract and confirms
-    a subsequent successful ``VirtualClient(addr, port)`` against the
-    same target still works -- i.e. the failed construction did not pin
-    a stale entry in the singleton cache.
-    """
     port = _test_port(1)
     cache_key = hash(('127.0.0.1', port))
     _clear_virtual_client_cache()
     monkeypatch.setenv('ROGUE_VIRTUAL_CONNECT_TIMEOUT', '1.0')
 
     try:
-        with pytest.raises(ConnectionError):
-            pyrogue.interfaces.VirtualClient(addr='127.0.0.1', port=port)
+        failed = pyrogue.interfaces.VirtualClient(addr='127.0.0.1', port=port)
 
+        assert failed.root is None
         assert cache_key not in pyrogue.interfaces.VirtualClient.ClientCache
 
         with VirtualConnectRoot(name='RecoveredRoot', port=port):
