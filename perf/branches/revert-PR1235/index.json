@@ -1,0 +1,23 @@
+{
+  "ref_name": "revert-PR1235",
+  "ref_slug": "revert-PR1235",
+  "latest_url": "/rogue/perf/branches/revert-PR1235/latest.json",
+  "history": [
+    {
+      "ref_name": "revert-PR1235",
+      "sha": "98a5970296ee6c39fea9840d631a83ef4d0d8d7e",
+      "short_sha": "98a5970",
+      "published_at": "2026-05-31T19:40:43Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/26722400385",
+      "summary_url": "/rogue/perf/branches/revert-PR1235/history/98a5970296ee6c39fea9840d631a83ef4d0d8d7e.json"
+    }
+  ],
+  "latest": {
+    "ref_name": "revert-PR1235",
+    "sha": "98a5970296ee6c39fea9840d631a83ef4d0d8d7e",
+    "short_sha": "98a5970",
+    "published_at": "2026-05-31T19:40:43Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/26722400385",
+    "summary_url": "/rogue/perf/branches/revert-PR1235/latest.json"
+  }
+}
