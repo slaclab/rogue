@@ -61,11 +61,6 @@ class ZmqClient {
     // Continue retrying after timeout when true.
     bool waitRetry_;
 
-    // Maximum recv retries when waitRetry_ is true. 0 means unbounded (the
-    // default, preserving the pre-#1236 forever-retry contract that pysmurf
-    // and other downstream callers rely on).
-    uint32_t maxRetries_;
-
     //! \cond INTERNAL
   protected:
     std::thread* thread_ = nullptr;
@@ -122,21 +117,10 @@ class ZmqClient {
 
     /**
      * @brief Sets request timeout behavior.
-     *
-     * @details
-     * `maxRetries` caps the recv-then-retry loop in `send()` / `sendString()`
-     * when `waitRetry` is true. `0` (default) preserves the historic
-     * unbounded-retry contract; downstream callers (notably `pysmurf`) rely
-     * on it. A positive value throws `rogue::GeneralError` after that many
-     * RCVTIMEO trips, matching the throw on the `waitRetry == false` path.
-     * Ignored when `waitRetry` is false.
-     *
      * @param msecs Timeout in milliseconds.
      * @param waitRetry `true` to continue waiting/retrying after timeouts.
-     * @param maxRetries Optional retry cap when `waitRetry` is true. `0` means
-     *                   unbounded (default).
      */
-    void setTimeout(uint32_t msecs, bool waitRetry, uint32_t maxRetries = 0);
+    void setTimeout(uint32_t msecs, bool waitRetry);
 
     /**
      * @brief Sends a string-mode request.
