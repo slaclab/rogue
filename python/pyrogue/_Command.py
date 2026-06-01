@@ -56,8 +56,6 @@ class BaseCommand(pr.BaseVariable):
         keyword arguments ``root``, ``dev``, ``cmd``, and ``arg``; the
         callback may accept any subset of these names.
         Default to no-op for command if None.
-    background : bool, optional (default = False)
-        Reserved for background execution.
     guiGroup : str, optional
         GUI grouping label.
     **kwargs : Any
@@ -77,7 +75,6 @@ class BaseCommand(pr.BaseVariable):
         minimum: Any | None = None,
         maximum: Any | None = None,
         function: Callable[..., Any] | None = None,
-        background: bool = False,
         guiGroup: str | None = None,
         **kwargs: Any,
     ) -> None:

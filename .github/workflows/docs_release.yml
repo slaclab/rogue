@@ -48,7 +48,7 @@ jobs:
       REPO_NAME: ${{ github.event.repository.name }}
     steps:
       - name: Checkout source
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
           ref: ${{ inputs.target_ref || github.ref }}
@@ -118,7 +118,7 @@ jobs:
           echo "DOCS_LATEST_TARGET_VERSION=$latest_tag" >> "$GITHUB_ENV"
 
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.12"
           cache: "pip"

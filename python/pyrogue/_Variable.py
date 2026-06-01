@@ -35,17 +35,6 @@ class VariableError(Exception):
     pass
 
 
-class WriteBlockedError(VariableError):
-    """Raised by a pre-write listener to block a write operation."""
-    def __init__(self, path: str, reason: str = '') -> None:
-        self.varPath = path
-        self.reason = reason
-        msg = f"Write to '{path}' blocked"
-        if reason:
-            msg += f": {reason}"
-        super().__init__(msg)
-
-
 class VariableWaitClass(object):
     """Wait for variable conditions to become true.
 
@@ -346,7 +335,6 @@ class BaseVariable(pr.Node):
         self._listeners     = []
         self.__functions    = []
         self.__dependencies = []
-        self._preWriteListeners = []
 
         # Build enum if specified
         self._disp = disp
@@ -639,92 +627,6 @@ class BaseVariable(pr.Node):
         else:
             if listener in self.__functions:
                 self.__functions.remove(listener)
-
-    def addPreWriteListener(
-        self,
-        listener: Callable[[str, Any, dict[str, Any]], Any | None],
-        stateVars: list[BaseVariable] | None = None,
-    ) -> None:
-        """Register a pre-write listener for this variable.
-
-        The listener is called synchronously before hardware writes,
-        in the caller's thread. It receives (path, value, state) where
-        state is a dict of {var.path: var.value()} for each var in stateVars.
-
-        To block a write, raise WriteBlockedError.
-        To modify the value being written, return the new value.
-        Return None to leave the value unchanged.
-
-        Parameters
-        ----------
-        listener : callable
-            Callback: func(path, value, state) -> value | None
-        stateVars : list of BaseVariable, optional
-            Variables whose current values are captured into the state dict.
-        """
-        entry = (listener, stateVars or [])
-        if entry not in self._preWriteListeners:
-            self._preWriteListeners.append(entry)
-
-    def delPreWriteListener(
-        self,
-        listener: Callable[[str, Any, dict[str, Any]], Any | None],
-    ) -> None:
-        """Remove a previously registered pre-write listener.
-
-        Parameters
-        ----------
-        listener : callable
-            The callback to remove.
-        """
-        self._preWriteListeners = [
-            (cb, sv) for (cb, sv) in self._preWriteListeners if cb is not listener
-        ]
-
-    def _runPreWriteListeners(self, value: Any, index: int) -> Any:
-        """Execute pre-write listeners and return the (possibly modified) value.
-
-        Execution order: device-level listeners first, then variable-level.
-        All must pass. Stops on first WriteBlockedError. Value modifications chain.
-
-        Parameters
-        ----------
-        value : Any
-            The proposed write value.
-        index : int
-            Array index (-1 for scalar).
-
-        Returns
-        -------
-        Any
-            Final value after all listener modifications.
-
-        Raises
-        ------
-        WriteBlockedError
-            If any listener blocks the write.
-        """
-        allListeners = []
-        if hasattr(self, '_parent') and self._parent is not None:
-            if hasattr(self._parent, '_preWriteListeners'):
-                allListeners.extend(self._parent._preWriteListeners)
-        allListeners.extend(self._preWriteListeners)
-
-        if not allListeners:
-            return value
-
-        currentValue = value
-        for callback, stateVars in list(allListeners):
-            state = {}
-            for sv in stateVars:
-                try:
-                    state[sv.path] = sv.value()
-                except Exception:
-                    state[sv.path] = None
-            result = callback(self.path, currentValue, state)
-            if result is not None:
-                currentValue = result
-        return currentValue
 
     @pr.expose
     def set(
@@ -1581,9 +1483,6 @@ class RemoteVariable(BaseVariable,rim.Variable):
             # Set value to block
             index = operator.index(index)
 
-            if write:
-                value = self._runPreWriteListeners(value, index)
-
             self._set(value,index)
 
             if write:
@@ -1593,8 +1492,6 @@ class RemoteVariable(BaseVariable,rim.Variable):
                 if check:
                     self._parent.checkBlocks(recurse=False, variable=self)
 
-        except WriteBlockedError:
-            raise
         except Exception as e:
             pr.logException(self._log,e)
             self._log.error(
@@ -1628,15 +1525,11 @@ class RemoteVariable(BaseVariable,rim.Variable):
 
             index = operator.index(index)
 
-            value = self._runPreWriteListeners(value, index)
-
             # Set value to block
             self._set(value,index)
 
             pr.startTransaction(self._block, type=rim.Post, forceWr=False, check=True, variable=self, index=index)
 
-        except WriteBlockedError:
-            raise
         except Exception as e:
             pr.logException(self._log,e)
             self._log.error(
@@ -1890,17 +1783,12 @@ class LocalVariable(BaseVariable):
 
         try:
 
-            if write:
-                value = self._runPreWriteListeners(value, index)
-
             # Set value to block
             self._block.set(self, value, index)
 
             if write:
                 self._block._checkTransaction()
 
-        except WriteBlockedError:
-            raise
         except Exception as e:
             pr.logException(self._log,e)
             self._log.error(
@@ -1933,13 +1821,9 @@ class LocalVariable(BaseVariable):
         self._log.debug("%s.post(%r)", self, value)
 
         try:
-            value = self._runPreWriteListeners(value, index)
-
             self._block.set(self, value, index)
             self._block._checkTransaction()
 
-        except WriteBlockedError:
-            raise
         except Exception as e:
             pr.logException(self._log,e)
             self._log.error(
