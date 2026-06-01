@@ -82,8 +82,12 @@ class LoadConfigProcess(pr.Process):
                 excGroups='NoConfig',
             )
         else:
+            yml = str(self.YamlString.value())
+            if not yml.strip():
+                self.Message.setDisp('Error: YamlString is empty')
+                return
             self.root.setYaml(
-                yml=self.YamlString.value(),
+                yml=yml,
                 writeEach=False,
                 modes=['RW', 'WO'],
                 incGroups=None,
