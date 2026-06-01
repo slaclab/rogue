@@ -72,8 +72,8 @@ Common Device-level properties include:
 * ``memBase`` for the memory interface used by hardware-backed children.
 * ``enable`` for controlling whether the subtree participates in hardware
   access behavior.
-* ``forceCheckEach`` for forcing block reads, writes, and verifies to check
-  each transaction immediately rather than deferring completion checks.
+* ``forceWaitEach`` for forcing block reads, writes, and verifies to wait
+  for each transaction immediately rather than deferring completion waits.
 
 The built-in ``enable`` Variable is especially important because it lets a tree
 keep its full structure visible while disabling hardware interaction for one
@@ -226,7 +226,7 @@ operations come together. At this level, four ideas matter:
 * ``write`` sends staged values from the tree toward hardware.
 * ``verify`` checks that hardware matches the expected value after a write.
 * ``read`` fetches current hardware state back into the tree.
-* ``check`` waits for initiated transactions to complete and surfaces errors.
+* ``wait`` waits for initiated transactions to complete and surfaces errors.
 
 Those operations are foundational because they are reused throughout the tree:
 bulk configuration, per-Variable access, YAML apply paths, and many custom
@@ -234,7 +234,7 @@ hardware procedures all build on the same model.
 
 One PyRogue design choice is especially important here: transaction initiation
 is intentionally separated from completion. ``write``, ``verify``, and
-``read`` start work, while ``check`` is the step that waits for the
+``read`` start work, while ``wait`` is the step that waits for the
 responses. That separation lets a ``Device`` issue many operations first and
 then retire them as a group.
 
@@ -254,23 +254,28 @@ The main methods are:
 * :py:meth:`~pyrogue.Device.writeBlocks`
 * :py:meth:`~pyrogue.Device.verifyBlocks`
 * :py:meth:`~pyrogue.Device.readBlocks`
-* :py:meth:`~pyrogue.Device.checkBlocks`
+* :py:meth:`~pyrogue.Device.waitBlocks`
 
 At a high level:
 
 * ``writeBlocks`` initiates write transactions.
 * ``verifyBlocks`` initiates verify transactions.
 * ``readBlocks`` initiates read transactions.
-* ``checkBlocks`` waits for previously initiated transactions to complete.
+* ``waitBlocks`` waits for previously initiated transactions to complete.
 
 All four methods can operate on the full Device subtree or on the Block backing
 one specific Variable, and they are the normal override points when hardware
 requires custom sequencing.
 
 If a Device should always use stricter transaction-by-transaction completion
-checking, set ``self.forceCheckEach = True`` in the subclass. That causes the
-Device-level block methods to behave as though ``checkEach=True`` had been
+waiting, set ``self.forceWaitEach = True`` in the subclass. That causes the
+Device-level block methods to behave as though ``waitEach=True`` had been
 requested on each call.
+
+Older names remain as deprecated aliases for compatibility: ``checkBlocks``
+maps to ``waitBlocks``, ``readAndCheckBlocks`` maps to ``readAndWaitBlocks``,
+``checkEach`` maps to ``waitEach``, and ``forceCheckEach`` maps to
+``forceWaitEach``.
 
 For the detailed traversal model, ordering rules, and single-Variable versus
 full-subtree behavior, see :doc:`/pyrogue_tree/core/block_operations`.
@@ -306,13 +311,13 @@ tree traversal. Common reasons include:
 .. code-block:: python
 
    class SequencedDevice(pyrogue.Device):
-       def writeBlocks(self, *, force=False, recurse=True, variable=None, checkEach=False, index=-1):
+       def writeBlocks(self, *, force=False, recurse=True, variable=None, waitEach=False, index=-1):
            # Pre-transaction behavior.
            super().writeBlocks(
                force=force,
                recurse=recurse,
                variable=variable,
-               checkEach=checkEach,
+               waitEach=waitEach,
                index=index,
            )
            # Post-transaction behavior.

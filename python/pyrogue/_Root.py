@@ -807,19 +807,19 @@ class Root(pr.Device):
             self.writeBlocks(force=self.ForceWrite.value(), recurse=True)
             self._log.info("Verify root write with readback")
             self.verifyBlocks(recurse=True)
-            self._log.info("Check verified root write transactions")
-            self.checkBlocks(recurse=True)
+            self._log.info("Wait for verified root write transactions")
+            self.waitBlocks(recurse=True)
 
         self._log.info("Done root write")
         return True
 
     def _read(self) -> bool:
-        """Read and check all blocks."""
+        """Read and wait for all blocks."""
         self._log.info("Start root read")
         with self.pollBlock(), self.updateGroup():
             self.readBlocks(recurse=True)
-            self._log.info("Check root read transactions")
-            self.checkBlocks(recurse=True)
+            self._log.info("Wait for root read transactions")
+            self.waitBlocks(recurse=True)
 
         self._log.info("Done root read")
         return True

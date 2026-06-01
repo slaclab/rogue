@@ -4,15 +4,20 @@
 Device Block Operations
 =======================
 
-``Device`` provides a family of methods that traverse a tree and initiate or
-check ``Block`` transactions:
+``Device`` provides a family of methods that traverse a tree, initiate
+``Block`` transactions, and wait for them to complete:
 
 * :py:meth:`~pyrogue.Device.writeBlocks`
 * :py:meth:`~pyrogue.Device.verifyBlocks`
 * :py:meth:`~pyrogue.Device.readBlocks`
-* :py:meth:`~pyrogue.Device.checkBlocks`
+* :py:meth:`~pyrogue.Device.waitBlocks`
 * :py:meth:`~pyrogue.Device.writeAndVerifyBlocks`
-* :py:meth:`~pyrogue.Device.readAndCheckBlocks`
+* :py:meth:`~pyrogue.Device.readAndWaitBlocks`
+
+Older ``check``-named forms remain as deprecated compatibility aliases:
+``checkBlocks`` for ``waitBlocks``, ``readAndCheckBlocks`` for
+``readAndWaitBlocks``, ``checkEach`` for ``waitEach``, and
+``forceCheckEach`` for ``forceWaitEach``.
 
 These methods sit between the tree model and the lower-level ``Block``
 transaction layer. They are used in three main ways:
@@ -33,19 +38,19 @@ At a high level:
 * ``writeBlocks`` initiates write transactions.
 * ``verifyBlocks`` initiates verify transactions.
 * ``readBlocks`` initiates read transactions.
-* ``checkBlocks`` waits for initiated transactions to complete.
+* ``waitBlocks`` waits for initiated transactions to complete.
 
 That split lets a ``Device`` issue many transactions first and then wait for
 completion afterward. The composed helpers:
 
 * ``writeAndVerifyBlocks``
-* ``readAndCheckBlocks``
+* ``readAndWaitBlocks``
 
 simply bundle the most common full flows on top of those same methods. In
 practice, most readers only need two ideas first:
 
 * The default bulk path is "issue transactions across this ``Device`` or
-  subtree, then check them."
+  subtree, then wait for them."
 * These same methods are also the normal place to override sequencing when the
   hardware needs something more specific.
 
@@ -112,7 +117,7 @@ Read One Subtree
 .. code-block:: python
 
    # Initiate reads across this Device subtree, then wait for completion.
-   my_dev.readAndCheckBlocks(recurse=True)
+   my_dev.readAndWaitBlocks(recurse=True)
 
 This is the normal manual pattern when you want a current hardware snapshot of
 one part of the tree.
@@ -122,7 +127,7 @@ Write And Verify One Subtree
 
 .. code-block:: python
 
-   # Force a full write/verify/check pass across this Device subtree.
+   # Force a full write/verify/wait pass across this Device subtree.
    my_dev.writeAndVerifyBlocks(force=True, recurse=True)
 
 This pattern is often useful for ADC and mixed-signal configuration, where a
@@ -135,8 +140,8 @@ Target One Variable's ``Block``
 .. code-block:: python
 
    # Only issue a write for the Block backing one Variable.
-   my_dev.writeBlocks(variable=my_dev.MyRegister, checkEach=True)
-   my_dev.checkBlocks(variable=my_dev.MyRegister)
+   my_dev.writeBlocks(variable=my_dev.MyRegister, waitEach=True)
+   my_dev.waitBlocks(variable=my_dev.MyRegister)
 
 This is the manual form of the narrower path that hardware-backed per-Variable
 operations use internally.
@@ -147,9 +152,9 @@ Composed Helpers
 Two helpers cover the most common complete flows:
 
 * ``writeAndVerifyBlocks(...)`` runs
-  ``writeBlocks`` -> ``verifyBlocks`` -> ``checkBlocks``.
-* ``readAndCheckBlocks(...)`` runs
-  ``readBlocks`` -> ``checkBlocks``.
+  ``writeBlocks`` -> ``verifyBlocks`` -> ``waitBlocks``.
+* ``readAndWaitBlocks(...)`` runs
+  ``readBlocks`` -> ``waitBlocks``.
 
 These helpers are often the clearest way to trigger a full operation from a
 script, a command callback, or a one-shot configuration step. They are also a
@@ -165,7 +170,7 @@ For ``Device.loadYaml(..., writeEach=False)`` and ``Device.setYaml(..., writeEac
 PyRogue first stages values into Variables with ``setDisp(..., write=False)``.
 Only after that full YAML payload has been applied does the device commit the
 configuration through its bulk write path (``writeBlocks``, ``verifyBlocks``,
-``checkBlocks``). When called on Root, this covers the entire tree; when called
+``waitBlocks``). When called on Root, this covers the entire tree; when called
 on a specific Device, only that device's subtree is committed.
 
 In practice, that means YAML configuration uses the same transaction model
@@ -173,11 +178,11 @@ described on this page:
 
 * Values are staged first.
 * The resulting Block writes are issued across the tree.
-* Verification and completion checks run through the normal bulk helpers.
+* Verification and completion waits run through the normal bulk helpers.
 
 So the YAML page should be read as "how the tree is described and matched,"
 while this page remains the right place for "how the resulting hardware
-transactions are issued and checked."
+transactions are issued and completed."
 
 Two Root settings are especially relevant in that YAML-driven path:
 
@@ -190,7 +195,7 @@ Method Parameters
 
 The methods share a common shape, but the meaning of the parameters is easiest
 to understand after the default traversal and common usage patterns are clear.
-The most important controls are ``recurse``, ``variable``, ``checkEach``, and
+The most important controls are ``recurse``, ``variable``, ``waitEach``, and
 for writes, ``force``.
 
 ``writeBlocks``
@@ -200,7 +205,7 @@ Signature:
 
 .. code-block:: python
 
-   writeBlocks(*, force=False, recurse=True, variable=None, checkEach=False, index=-1, **kwargs)
+   writeBlocks(*, force=False, recurse=True, variable=None, waitEach=False, index=-1, **kwargs)
 
 Important parameters:
 
@@ -210,8 +215,8 @@ Important parameters:
   Include child Devices when ``True``.
 * ``variable``:
   Operate on one Variable's Block instead of the full Device subtree.
-* ``checkEach``:
-  Request per-transaction checking behavior instead of deferring checks.
+* ``waitEach``:
+  Wait after each transaction instead of deferring completion waits.
 * ``index``:
   Array index used for targeted Variable operations.
 * ``**kwargs``:
@@ -224,7 +229,7 @@ Signature:
 
 .. code-block:: python
 
-   verifyBlocks(*, recurse=True, variable=None, checkEach=False, **kwargs)
+   verifyBlocks(*, recurse=True, variable=None, waitEach=False, **kwargs)
 
 Important parameters:
 
@@ -232,8 +237,8 @@ Important parameters:
   Include child Devices when ``True``.
 * ``variable``:
   Verify only one Variable's Block.
-* ``checkEach``:
-  Request per-transaction checking behavior.
+* ``waitEach``:
+  Wait after each transaction.
 * ``**kwargs``:
   Passed through to the transaction helper.
 
@@ -244,7 +249,7 @@ Signature:
 
 .. code-block:: python
 
-   readBlocks(*, recurse=True, variable=None, checkEach=False, index=-1, **kwargs)
+   readBlocks(*, recurse=True, variable=None, waitEach=False, index=-1, **kwargs)
 
 Important parameters:
 
@@ -252,70 +257,70 @@ Important parameters:
   Include child Devices when ``True``.
 * ``variable``:
   Read only one Variable's Block.
-* ``checkEach``:
-  Request per-transaction checking behavior.
+* ``waitEach``:
+  Wait after each transaction.
 * ``index``:
   Array index used for targeted Variable reads.
 * ``**kwargs``:
   Passed through to the transaction helper.
 
-``checkBlocks``
+``waitBlocks``
 ---------------
 
 Signature:
 
 .. code-block:: python
 
-   checkBlocks(*, recurse=True, variable=None, **kwargs)
+   waitBlocks(*, recurse=True, variable=None, **kwargs)
 
 Important parameters:
 
 * ``recurse``:
   Include child Devices when ``True``.
 * ``variable``:
-  Check only one Variable's Block.
+  Wait only on one Variable's Block.
 * ``**kwargs``:
   Passed through to the transaction helper.
 
-Device-Wide ``checkEach`` Behavior
+Device-Wide ``waitEach`` Behavior
 ----------------------------------
 
-The ``checkEach`` control exists at two levels.
+The ``waitEach`` control exists at two levels.
 
 At call time, ``writeBlocks``, ``verifyBlocks``, ``readBlocks``,
-``writeAndVerifyBlocks``, and ``readAndCheckBlocks`` all accept a
-``checkEach=...`` argument. That requests transaction-by-transaction checking
+``writeAndVerifyBlocks``, and ``readAndWaitBlocks`` all accept a
+``waitEach=...`` argument. That requests transaction-by-transaction waiting
 for that one operation.
 
-At Device scope, the persistent control is ``forceCheckEach``. Each block
+At Device scope, the persistent control is ``forceWaitEach``. Each block
 method combines the caller's argument with the Device setting:
 
 .. code-block:: python
 
-   checkEach = checkEach or self.forceCheckEach
+   waitEach = waitEach or self.forceWaitEach
 
-So a Device can force per-transaction checking for all reads, writes, and
+So a Device can force per-transaction waits for all reads, writes, and
 verifies by setting:
 
 .. code-block:: python
 
-   self.forceCheckEach = True
+   self.forceWaitEach = True
 
-There is not a separate ``Device(..., checkEach=...)`` constructor argument in
+There is not a separate ``Device(..., waitEach=...)`` constructor argument in
 this implementation. If a Device should always use this stricter behavior, set
-``forceCheckEach`` in the subclass:
+``forceWaitEach`` in the subclass:
 
 .. code-block:: python
 
    class MyDevice(pyrogue.Device):
        def __init__(self, **kwargs):
            super().__init__(**kwargs)
-           self.forceCheckEach = True
+           self.forceWaitEach = True
 
 This is useful when the hardware benefits from immediate acknowledgement of
-each transaction instead of the default "issue many operations, then check
+each transaction instead of the default "issue many operations, then wait for
 them" flow. One example is a board or front-end path where tight sequencing or
-hardware-side backpressure makes deferred checking less desirable.
+hardware-side backpressure makes deferred completion less desirable.
 
 How To Override Properly
 ========================
@@ -363,12 +368,12 @@ update strobe is written:
                function=pyrogue.BaseCommand.touchZero,
            ))
 
-       def writeBlocks(self, force=False, recurse=True, variable=None, checkEach=False, index=-1, **kwargs):
+       def writeBlocks(self, force=False, recurse=True, variable=None, waitEach=False, index=-1, **kwargs):
            super().writeBlocks(
                force=force,
                recurse=recurse,
                variable=variable,
-               checkEach=checkEach,
+               waitEach=waitEach,
                index=index,
                **kwargs,
            )
@@ -401,13 +406,13 @@ progress:
                function=pyrogue.RemoteCommand.touch,
            ))
 
-       def readBlocks(self, *, recurse=True, variable=None, checkEach=False, index=-1, **kwargs):
+       def readBlocks(self, *, recurse=True, variable=None, waitEach=False, index=-1, **kwargs):
            self.FreezeDebug(1)
            try:
                super().readBlocks(
                    recurse=recurse,
                    variable=variable,
-                   checkEach=checkEach,
+                   waitEach=waitEach,
                    index=index,
                    **kwargs,
                )
@@ -435,25 +440,25 @@ that intermediate hardware procedure:
 .. code-block:: python
 
    class MyCarrier(pyrogue.Device):
-       def writeBlocks(self, force=False, recurse=True, variable=None, checkEach=False, index=-1, **kwargs):
+       def writeBlocks(self, force=False, recurse=True, variable=None, waitEach=False, index=-1, **kwargs):
            super().writeBlocks(
                force=force,
                recurse=False,
                variable=variable,
-               checkEach=checkEach,
+               waitEach=waitEach,
                index=index,
                **kwargs,
            )
 
-           self.Clock.writeBlocks(force=force, recurse=True, variable=variable, checkEach=checkEach, index=index, **kwargs)
-           self.DacA.writeBlocks(force=force, recurse=True, variable=variable, checkEach=checkEach, index=index, **kwargs)
-           self.DacB.writeBlocks(force=force, recurse=True, variable=variable, checkEach=checkEach, index=index, **kwargs)
+           self.Clock.writeBlocks(force=force, recurse=True, variable=variable, waitEach=waitEach, index=index, **kwargs)
+           self.DacA.writeBlocks(force=force, recurse=True, variable=variable, waitEach=waitEach, index=index, **kwargs)
+           self.DacB.writeBlocks(force=force, recurse=True, variable=variable, waitEach=waitEach, index=index, **kwargs)
 
            self.InitJesdLinks()
 
-           self.AdcA.writeBlocks(force=force, recurse=True, variable=variable, checkEach=checkEach, index=index, **kwargs)
-           self.AdcB.writeBlocks(force=force, recurse=True, variable=variable, checkEach=checkEach, index=index, **kwargs)
-           self.checkBlocks(recurse=True)
+           self.AdcA.writeBlocks(force=force, recurse=True, variable=variable, waitEach=waitEach, index=index, **kwargs)
+           self.AdcB.writeBlocks(force=force, recurse=True, variable=variable, waitEach=waitEach, index=index, **kwargs)
+           self.waitBlocks(recurse=True)
 
 In that pattern, the override is intentionally replacing the default child
 recursion order. The important part is to make that decision explicit:
@@ -471,7 +476,7 @@ but instead to call a composed helper from a ``Command``:
 
    @self.command()
    def Configure():
-       self.writeAndVerifyBlocks(force=True, recurse=True, checkEach=True)
+       self.writeAndVerifyBlocks(force=True, recurse=True, waitEach=True)
 
 This is a good fit when the special behavior is a named procedure rather than a
 global change to all future block writes.

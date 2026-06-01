@@ -67,12 +67,16 @@ Callbacks And Dependencies
 In the current implementation, the callback wrappers support keyword arguments
 matching:
 
-* ``linkedGet(dev=None, var=None, read=True, index=-1, check=True)``
-* ``linkedSet(dev=None, var=None, value=..., write=True, index=-1, verify=True, check=True)``
+* ``linkedGet(dev=None, var=None, read=True, index=-1, wait=True, check=True)``
+* ``linkedSet(dev=None, var=None, value=..., write=True, index=-1, verify=True, wait=True, check=True)``
 
 The callback may accept any subset of those parameters. This gives the linked logic
 access to the surrounding ``Device``, the ``LinkVariable`` itself, and the
 normal read/write control flags when needed.
+
+The older ``check`` callback argument is still supplied for compatibility. New
+callbacks should prefer ``wait`` and avoid accepting both names unless they
+intentionally need to bridge old callback code.
 
 The ``read`` and ``write`` controls are especially important:
 

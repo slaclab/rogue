@@ -17,7 +17,7 @@ Why Blocks Exist
 Blocks separate two concerns:
 
 1. Value staging and conversion (pack/unpack Variable values into bytes)
-2. Transport sequencing (initiate/check read/write/verify operations)
+2. Transport sequencing (initiate/wait for read/write/verify operations)
 
 This separation lets Variable APIs stay high-level while transaction handling
 stays efficient and ordered.
@@ -87,7 +87,7 @@ Some details matter:
 
 This is why the later bulk methods in :doc:`/pyrogue_tree/core/block_operations`
 do not decide grouping on the fly. By the time reads, writes, verifies, and
-checks run, the Device has already built the Block structure they will
+completion waits run, the Device has already built the Block structure they will
 traverse.
 
 Access Path (RemoteVariable)
@@ -98,7 +98,7 @@ Typical read/write path:
 * User/API calls ``set`` or ``get`` on a Variable
 * Device/Root APIs initiate Block transactions
 * Block reads/writes memory through the Device's memory interface
-* Completion/check updates Variable state and notifications
+* Completion/wait updates Variable state and notifications
 
 In bulk operations, many Variables can share one Block transaction, improving
 access efficiency versus isolated per-Variable transfers.
@@ -114,13 +114,13 @@ The Block API has two layers:
 * Conversion layer:
   ``set*/get*`` methods convert between native types and staged Block bytes.
 * Transaction layer:
-  ``write/read/startTransaction/checkTransaction`` moves staged bytes to and
+  ``write/read/startTransaction/waitTransaction`` moves staged bytes to and
   from hardware.
 
 In the C++ ``Variable`` API, a typed set call performs both steps:
 
 1. Conversion into staged bytes via a bound ``Block`` method
-2. ``Block::write()`` (write + verify/check sequence)
+2. ``Block::write()`` (write + verify/wait sequence)
 
 A typed get call similarly performs:
 
@@ -131,15 +131,17 @@ Typical write path:
 
 1. Variable ``set`` updates staged Block bytes using Model conversion
 2. Write (and optional verify) transactions are initiated
-3. Completion is checked
+3. Completion is waited on
 
 Typical read path:
 
 1. Read transactions are initiated
-2. Completion is checked
+2. Completion is waited on
 3. Bytes are decoded back into Variable values
 
-In PyRogue terminology, waiting for operation responses is called ``check``.
+In PyRogue terminology, waiting for operation responses is now called
+``wait``. Older ``check`` helper names remain as deprecated compatibility
+aliases.
 
 Block Helper Functions
 ----------------------
@@ -147,13 +149,13 @@ Block Helper Functions
 PyRogue exposes helper functions used by Variable/Device/Root flow:
 
 * :py:func:`~pyrogue.startTransaction`
-* :py:func:`~pyrogue.checkTransaction`
+* :py:func:`~pyrogue.waitTransaction`
 * :py:func:`~pyrogue.writeBlocks`
 * :py:func:`~pyrogue.verifyBlocks`
 * :py:func:`~pyrogue.readBlocks`
-* :py:func:`~pyrogue.checkBlocks`
+* :py:func:`~pyrogue.waitBlocks`
 * :py:func:`~pyrogue.writeAndVerifyBlocks`
-* :py:func:`~pyrogue.readAndCheckBlocks`
+* :py:func:`~pyrogue.readAndWaitBlocks`
 
 Most users call these indirectly through ``Device``/``Root`` methods. Direct
 use is mainly for custom transaction sequencing.
@@ -162,10 +164,10 @@ use is mainly for custom transaction sequencing.
 
    # Bulk read all Blocks attached to a Device
    myDevice.readBlocks(recurse=True)
-   myDevice.checkBlocks(recurse=True)
+   myDevice.waitBlocks(recurse=True)
 
    # Write only the Block backing one Variable
-   myDevice.writeBlocks(variable=myDevice.MyReg, checkEach=True)
+   myDevice.writeBlocks(variable=myDevice.MyReg, waitEach=True)
 
 Logging
 -------
@@ -184,7 +186,7 @@ This logger is useful for low-level register-access debugging because it emits
 messages during:
 
 - Variable-to-Block binding
-- Transaction start/check flow
+- Transaction start/wait flow
 - Retry handling
 - Verify/readback behavior
 
@@ -401,6 +403,6 @@ What To Explore Next
 =====================
 
 * Model API and utility helpers: :doc:`/pyrogue_tree/core/model`
-* Root bulk write/read/check sequencing: :doc:`/pyrogue_tree/core/root`
+* Root bulk write/read/wait sequencing: :doc:`/pyrogue_tree/core/root`
 * C++ Block reference: :doc:`/api/cpp/interfaces/memory/block`
 * Python LocalBlock reference: :doc:`/api/python/pyrogue/localblock`

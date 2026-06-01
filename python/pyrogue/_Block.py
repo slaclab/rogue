@@ -19,8 +19,8 @@ from typing import Any, Callable, Iterable
 
 import numpy as np
 import pyrogue as pr
+from pyrogue._HelperFunctions import _resolve_deprecated_bool, _warn_deprecated
 import rogue.interfaces.memory as rim
-
 
 
 def startTransaction(
@@ -28,7 +28,8 @@ def startTransaction(
     *,
     type: int,
     forceWr: bool = False,
-    check: bool = False,
+    wait: bool | None = None,
+    check: bool | None = None,
     variable: pr.BaseVariable = None,
     index: int = -1,
     **kwargs: Any,
@@ -36,7 +37,7 @@ def startTransaction(
     """Helper function for starting a transaction on a block.
 
     This helper function ensures future changes to the API do not break custom
-    code in a Device's writeBlocks, readBlocks and checkBlocks functions.
+    code in a Device's writeBlocks, readBlocks and waitBlocks functions.
 
     Parameters
     ----------
@@ -46,8 +47,10 @@ def startTransaction(
         Transaction type
     forceWr : bool, optional (default = False)
         Force the write even if block values are unchanged.
-    check : bool, optional (default = False)
+    wait : bool, optional (default = False)
         Wait for transaction to complete before returning
+    check : bool, optional (deprecated)
+        Deprecated alias for ``wait``.
     variable : pr.BaseVariable, optional
         Variable associated with the transaction, None for pure Block transactions.
     index : int, optional (default = -1)
@@ -55,15 +58,22 @@ def startTransaction(
     **kwargs : Any, optional
         Unused, provided for future compatibility.
     """
-    block._startTransaction(type, forceWr, check, variable, index)
+    wait = _resolve_deprecated_bool(
+        new_name="wait",
+        new_value=wait,
+        old_name="check",
+        old_value=check,
+        default=False,
+    )
+    block._startTransaction(type, forceWr, wait, variable, index)
 
 
-def checkTransaction(block: rim.Block, **kwargs: Any) -> None:
+def waitTransaction(block: rim.Block, **kwargs: Any) -> None:
     """Wait for completion of transaction on a block.
 
-    Helper function for calling the checkTransaction function in a block. This helper
+    Helper function for calling the transaction wait function in a block. This helper
     function ensures future changes to the API do not break custom code in a Device's
-    writeBlocks, readBlocks and checkBlocks functions.
+    writeBlocks, readBlocks and waitBlocks functions.
 
     Parameters
     ----------
@@ -74,11 +84,21 @@ def checkTransaction(block: rim.Block, **kwargs: Any) -> None:
     """
     block._checkTransaction()
 
+def checkTransaction(block: rim.Block, **kwargs: Any) -> None:
+    """Deprecated alias for :func:`waitTransaction`."""
+    _warn_deprecated(
+        "`checkTransaction()` is deprecated; use `waitTransaction()` instead.",
+        stacklevel=3,
+    )
+    waitTransaction(block, **kwargs)
+
 def writeBlocks(
     blocks: Iterable[rim.Block],
     force: bool = False,
-    checkEach: bool = False,
+    checkEach: bool | None = None,
     index: int = -1,
+    *,
+    waitEach: bool | None = None,
     **kwargs: Any,
 ) -> None:
     """Write a list of blocks efficiently.
@@ -92,19 +112,30 @@ def writeBlocks(
         Blocks to write.
     force : bool, optional (default = False)
         Force the write even if values are unchanged.
-    checkEach : bool, optional (default = False)
+    waitEach : bool, optional (default = False)
         Wait for completion of each block transaction before initiating the next one
+    checkEach : bool, optional (deprecated)
+        Deprecated alias for ``waitEach``.
     index : int, optional (default = -1)
         Optional index for array variables.
     **kwargs : Any
         Additional arguments passed through to startTransaction().
     """
+    waitEach = _resolve_deprecated_bool(
+        new_name="waitEach",
+        new_value=waitEach,
+        old_name="checkEach",
+        old_value=checkEach,
+        default=False,
+    )
     for b in blocks:
-        startTransaction(b, type=rim.Write, forceWr=force, check=checkEach, index=index, **kwargs)
+        startTransaction(b, type=rim.Write, forceWr=force, wait=waitEach, index=index, **kwargs)
 
 def verifyBlocks(
     blocks: Iterable[rim.Block],
-    checkEach: bool = False,
+    checkEach: bool | None = None,
+    *,
+    waitEach: bool | None = None,
     **kwargs: Any,
 ) -> None:
     """Verify a list of blocks efficiently.
@@ -117,17 +148,28 @@ def verifyBlocks(
     ----------
     blocks : iterable[rim.Block]
         Blocks to verify.
-    checkEach : bool, optional (default = False)
+    waitEach : bool, optional (default = False)
         Wait for completion of each block transation before initiating the next one
+    checkEach : bool, optional (deprecated)
+        Deprecated alias for ``waitEach``.
     **kwargs : Any
         Additional arguments passed through to startTransaction().
     """
+    waitEach = _resolve_deprecated_bool(
+        new_name="waitEach",
+        new_value=waitEach,
+        old_name="checkEach",
+        old_value=checkEach,
+        default=False,
+    )
     for b in blocks:
-        startTransaction(b, type=rim.Verify, check=checkEach, **kwargs)
+        startTransaction(b, type=rim.Verify, wait=waitEach, **kwargs)
 
 def readBlocks(
     blocks: Iterable[rim.Block],
-    checkEach: bool = False,
+    checkEach: bool | None = None,
+    *,
+    waitEach: bool | None = None,
     **kwargs: Any,
 ) -> None:
     """Read a list of blocks efficiently.
@@ -140,20 +182,29 @@ def readBlocks(
     ----------
     blocks : iterable[rim.Block]
         Blocks to read.
-    checkEach : bool, optional (default = False)
+    waitEach : bool, optional (default = False)
         Wait for completion of each block transation before initiating the next one
+    checkEach : bool, optional (deprecated)
+        Deprecated alias for ``waitEach``.
     **kwargs : Any
         Additional arguments passed through to startTransaction()
     """
+    waitEach = _resolve_deprecated_bool(
+        new_name="waitEach",
+        new_value=waitEach,
+        old_name="checkEach",
+        old_value=checkEach,
+        default=False,
+    )
     for b in blocks:
-        startTransaction(b, type=rim.Read, check=checkEach, **kwargs)
+        startTransaction(b, type=rim.Read, wait=waitEach, **kwargs)
 
-def checkBlocks(blocks: Iterable[rim.Block], **kwargs: Any) -> None:
+def waitBlocks(blocks: Iterable[rim.Block], **kwargs: Any) -> None:
     """Wait on block transactions for a list of blocks.
 
     Helper function for waiting on block transactions to complete.
     Allows a custom list of blocks to be efficiently operated on
-    without blocking between each transaction, similar to ``Device.checkBlocks()``.
+    without blocking between each transaction, similar to ``Device.waitBlocks()``.
 
     Parameters
     ----------
@@ -163,13 +214,23 @@ def checkBlocks(blocks: Iterable[rim.Block], **kwargs: Any) -> None:
         Unused
     """
     for b in blocks:
-        checkTransaction(b)
+        waitTransaction(b)
+
+def checkBlocks(blocks: Iterable[rim.Block], **kwargs: Any) -> None:
+    """Deprecated alias for :func:`waitBlocks`."""
+    _warn_deprecated(
+        "`checkBlocks()` is deprecated; use `waitBlocks()` instead.",
+        stacklevel=3,
+    )
+    waitBlocks(blocks, **kwargs)
 
 def writeAndVerifyBlocks(
     blocks: Iterable[rim.Block],
     force: bool = False,
-    checkEach: bool = False,
+    checkEach: bool | None = None,
     index: int = -1,
+    *,
+    waitEach: bool | None = None,
     **kwargs: Any,
 ) -> None:
     """Write and verify a list of blocks efficiently.
@@ -184,39 +245,73 @@ def writeAndVerifyBlocks(
         Blocks to write and verify.
     force : bool, optional (default = False)
         Force the write even if values are unchanged.
-    checkEach : bool, optional (default = False)
+    waitEach : bool, optional (default = False)
         Wait for each block transaction to complete before starting the next one
+    checkEach : bool, optional (deprecated)
+        Deprecated alias for ``waitEach``.
     index : int, optional (default = -1)
         Optional index for array variables.
     **kwargs : Any
         Additional arguments passed through to the block transaction.
     """
-    writeBlocks(blocks, force=force, checkEach=checkEach, index=index, **kwargs)
-    verifyBlocks(blocks, checkEach=checkEach, **kwargs)
-    checkBlocks(blocks)
+    waitEach = _resolve_deprecated_bool(
+        new_name="waitEach",
+        new_value=waitEach,
+        old_name="checkEach",
+        old_value=checkEach,
+        default=False,
+    )
+    writeBlocks(blocks, force=force, waitEach=waitEach, index=index, **kwargs)
+    verifyBlocks(blocks, waitEach=waitEach, **kwargs)
+    waitBlocks(blocks)
 
-def readAndCheckBlocks(
+def readAndWaitBlocks(
     blocks: Iterable[rim.Block],
-    checkEach: bool = False,
+    checkEach: bool | None = None,
+    *,
+    waitEach: bool | None = None,
     **kwargs: Any,
 ) -> None:
     """Read blocks and wait for completion.
 
     Helper function for reading a list of blocks. Allows a custom list of blocks
     to be efficiently read without blocking between each read, similar to
-    ``Device.readAndCheckBlocks()``.
+    ``Device.readAndWaitBlocks()``.
 
     Parameters
     ----------
     blocks : iterable[rim.Block]
         Blocks to read.
-    checkEach : bool, optional (default = False)
+    waitEach : bool, optional (default = False)
         Wait for each block transaction to complete before starting the next one
+    checkEach : bool, optional (deprecated)
+        Deprecated alias for ``waitEach``.
     **kwargs : Any
         Additional arguments passed through to the block transaction.
     """
-    readBlocks(blocks, checkEach, **kwargs)
-    checkBlocks(blocks)
+    waitEach = _resolve_deprecated_bool(
+        new_name="waitEach",
+        new_value=waitEach,
+        old_name="checkEach",
+        old_value=checkEach,
+        default=False,
+    )
+    readBlocks(blocks, waitEach=waitEach, **kwargs)
+    waitBlocks(blocks)
+
+def readAndCheckBlocks(
+    blocks: Iterable[rim.Block],
+    checkEach: bool | None = None,
+    *,
+    waitEach: bool | None = None,
+    **kwargs: Any,
+) -> None:
+    """Deprecated alias for :func:`readAndWaitBlocks`."""
+    _warn_deprecated(
+        "`readAndCheckBlocks()` is deprecated; use `readAndWaitBlocks()` instead.",
+        stacklevel=3,
+    )
+    readAndWaitBlocks(blocks, checkEach=checkEach, waitEach=waitEach, **kwargs)
 
 
 

@@ -145,22 +145,22 @@ def test_root_listener_done_callback_and_cpp_variable_listener(wait_until):
         assert disp_updates == [("root.HexValue", "0x1f"), ("root.HexValue", "0x1f")]
 
 
-def test_device_force_check_each_recurse_false_and_reset_propagation(monkeypatch):
+def test_device_force_wait_each_recurse_false_and_reset_propagation(monkeypatch):
     starts = []
 
     def fake_start(block, **kwargs):
-        starts.append((block.path, kwargs["type"], kwargs.get("check")))
+        starts.append((block.path, kwargs["type"], kwargs.get("wait")))
 
     monkeypatch.setattr(pr, "startTransaction", fake_start)
 
     with StructureRoot() as root:
-        root.Parent.forceCheckEach = True
-        root.Parent.writeBlocks(recurse=False, checkEach=False)
-        root.Parent.readBlocks(recurse=False, checkEach=False)
-        root.Parent.verifyBlocks(recurse=False, checkEach=False)
+        root.Parent.forceWaitEach = True
+        root.Parent.writeBlocks(recurse=False, waitEach=False)
+        root.Parent.readBlocks(recurse=False, waitEach=False)
+        root.Parent.verifyBlocks(recurse=False, waitEach=False)
 
         # recurse=False should stay on the parent device, but still inherit
-        # forceCheckEach when the caller leaves checkEach False. Whole-device
+        # forceWaitEach when the caller leaves waitEach False. Whole-device
         # walks still include local blocks, so the critical boundary here is
         # that child-device blocks are absent.
         assert all(check_each is True for _, _, check_each in starts)
@@ -174,6 +174,17 @@ def test_device_force_check_each_recurse_false_and_reset_propagation(monkeypatch
         assert root.Parent.Child.initialize_calls == 1
         assert root.Parent.Child.hard_reset_calls == 1
         assert root.Parent.Child.count_reset_calls == 1
+
+
+def test_device_force_check_each_alias_is_deprecated():
+    with StructureRoot() as root:
+        with pytest.warns(DeprecationWarning, match="forceCheckEach"):
+            root.Parent.forceCheckEach = True
+
+        assert root.Parent.forceWaitEach is True
+
+        with pytest.warns(DeprecationWarning, match="forceCheckEach"):
+            assert root.Parent.forceCheckEach is True
 
 
 def test_device_enable_changes_propagate_to_blocks_and_children(wait_until):

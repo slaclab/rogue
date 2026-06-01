@@ -13,11 +13,11 @@
 #
 # Background
 # ----------
-# pr.startTransaction() accepts a `check` keyword argument; when True it
+# pr.startTransaction() accepts a `wait` keyword argument; when True it
 # instructs rim::Block::startTransaction to wait for the slave to acknowledge
 # the transaction before returning. Several callers in pyrogue historically
-# passed `checkEach=True` instead, which is silently dropped into the
-# function's **kwargs (the docstring marks them "unused"). The wait was
+# passed `checkEach=True` instead of the then-required `check=True`, which was
+# silently dropped into the function's **kwargs. The wait was
 # therefore disabled, allowing back-to-back operations (notably
 # BaseCommand.toggle which issues set(1); set(0)) to race the shared
 # blockData_ buffer: the second caller mutates the buffer before the slave's
@@ -32,12 +32,12 @@
 # poll queue") on RemoteCommand.set/get, and the same pattern was cloned
 # into RemoteVariable.post and Device.{write,read,verify}Blocks. The
 # block-list helpers in _Block.py (writeBlocks, readBlocks, verifyBlocks,
-# writeAndVerifyBlocks, readAndCheckBlocks) correctly translate
-# `checkEach=` to `check=` and are not affected.
+# writeAndVerifyBlocks, readAndWaitBlocks) correctly translate
+# `waitEach=` to `wait=` and are not affected.
 #
 # These tests pin the contract at two levels:
-#   - Contract: each caller must pass `check=True` (or `check=checkEach`
-#     where checkEach is the caller's own parameter) to pr.startTransaction
+#   - Contract: each caller must pass `wait=True` (or `wait=waitEach`
+#     where waitEach is the caller's own parameter) to pr.startTransaction
 #     so the underlying C++ Block waits for slave completion before
 #     returning.
 #   - Behavior: with a memory slave that consumes the staged data
@@ -94,7 +94,7 @@ def _record_call(calls):
         calls.append({
             "type": kwargs.get("type"),
             "forceWr": kwargs.get("forceWr"),
-            "check": kwargs.get("check"),
+            "wait": kwargs.get("wait"),
             "variable": kwargs.get("variable"),
             "index": kwargs.get("index"),
         })
@@ -105,7 +105,7 @@ def _record_call(calls):
 # Contract tests: RemoteCommand.set / RemoteCommand.get
 # ---------------------------------------------------------------------------
 
-def test_remote_command_set_passes_check_true(monkeypatch):
+def test_remote_command_set_passes_wait_true(monkeypatch):
     """RemoteCommand.set must request a waited write so BaseCommand.toggle
     cannot race the second set(0) against the first set(1)'s staged data."""
     calls = []
@@ -117,15 +117,15 @@ def test_remote_command_set_passes_check_true(monkeypatch):
     assert len(calls) == 1
     assert calls[0]["type"] == rogue.interfaces.memory.Write
     assert calls[0]["forceWr"] is True
-    assert calls[0]["check"] is True, (
-        "RemoteCommand.set() must pass check=True to pr.startTransaction; "
-        "missing check causes BaseCommand.toggle to race the block buffer."
+    assert calls[0]["wait"] is True, (
+        "RemoteCommand.set() must pass wait=True to pr.startTransaction; "
+        "missing wait causes BaseCommand.toggle to race the block buffer."
     )
     assert calls[0]["variable"] is root.Dev.CountReset
     assert calls[0]["index"] == -1
 
 
-def test_remote_command_get_passes_check_true(monkeypatch):
+def test_remote_command_get_passes_wait_true(monkeypatch):
     """RemoteCommand.get must wait for the read transaction to complete
     before returning the cached block contents to the caller."""
     calls = []
@@ -137,8 +137,8 @@ def test_remote_command_get_passes_check_true(monkeypatch):
     assert len(calls) == 1
     assert calls[0]["type"] == rogue.interfaces.memory.Read
     assert calls[0]["forceWr"] is False
-    assert calls[0]["check"] is True, (
-        "RemoteCommand.get() must pass check=True to pr.startTransaction."
+    assert calls[0]["wait"] is True, (
+        "RemoteCommand.get() must pass wait=True to pr.startTransaction."
     )
     assert calls[0]["variable"] is root.Dev.CountReset
     assert calls[0]["index"] == -1
@@ -148,7 +148,7 @@ def test_remote_command_get_passes_check_true(monkeypatch):
 # Contract test: RemoteVariable.post
 # ---------------------------------------------------------------------------
 
-def test_remote_variable_post_passes_check_true(monkeypatch):
+def test_remote_variable_post_passes_wait_true(monkeypatch):
     """RemoteVariable.post must wait for the slave to consume the staged
     data. Two consecutive post() calls otherwise race the block buffer in
     exactly the same way as BaseCommand.toggle."""
@@ -161,8 +161,8 @@ def test_remote_variable_post_passes_check_true(monkeypatch):
     assert len(calls) == 1
     assert calls[0]["type"] == rogue.interfaces.memory.Post
     assert calls[0]["forceWr"] is False
-    assert calls[0]["check"] is True, (
-        "RemoteVariable.post() must pass check=True to pr.startTransaction."
+    assert calls[0]["wait"] is True, (
+        "RemoteVariable.post() must pass wait=True to pr.startTransaction."
     )
     assert calls[0]["variable"] is root.Dev.Strobe
     assert calls[0]["index"] == -1
@@ -174,80 +174,80 @@ def test_remote_variable_post_passes_check_true(monkeypatch):
 # Two distinct code paths per direction:
 #   - variable=<var> path:    issues one startTransaction(variable._block)
 #   - block-iteration path:   issues one startTransaction per device block
-# Both must forward the user-supplied checkEach value into `check`.
+# Both must forward the user-supplied waitEach value into `wait`.
 # ---------------------------------------------------------------------------
 
-def test_device_write_blocks_variable_path_propagates_check(monkeypatch):
-    """Device.writeBlocks(variable=X, checkEach=True) must call
-    startTransaction with check=True for the targeted variable's block."""
+def test_device_write_blocks_variable_path_propagates_wait(monkeypatch):
+    """Device.writeBlocks(variable=X, waitEach=True) must call
+    startTransaction with wait=True for the targeted variable's block."""
     calls = []
     monkeypatch.setattr(pr, "startTransaction", _record_call(calls))
 
     with _CmdRoot() as root:
         root.Dev.writeBlocks(force=True, recurse=False,
-                             variable=root.Dev.Strobe, checkEach=True)
+                             variable=root.Dev.Strobe, waitEach=True)
 
     assert len(calls) == 1
     assert calls[0]["type"] == rogue.interfaces.memory.Write
     assert calls[0]["forceWr"] is True
-    assert calls[0]["check"] is True
+    assert calls[0]["wait"] is True
     assert calls[0]["variable"] is root.Dev.Strobe
 
 
-def test_device_write_blocks_block_path_propagates_check(monkeypatch):
-    """Device.writeBlocks(checkEach=True) must call startTransaction with
-    check=True for every bulk-enabled block it iterates over."""
+def test_device_write_blocks_block_path_propagates_wait(monkeypatch):
+    """Device.writeBlocks(waitEach=True) must call startTransaction with
+    wait=True for every bulk-enabled block it iterates over."""
     calls = []
     monkeypatch.setattr(pr, "startTransaction", _record_call(calls))
 
     with _CmdRoot() as root:
-        root.Dev.writeBlocks(force=True, recurse=False, checkEach=True)
+        root.Dev.writeBlocks(force=True, recurse=False, waitEach=True)
 
     assert len(calls) >= 1
     for call in calls:
         assert call["type"] == rogue.interfaces.memory.Write
         assert call["forceWr"] is True
-        assert call["check"] is True
+        assert call["wait"] is True
 
 
-def test_device_read_blocks_variable_path_propagates_check(monkeypatch):
-    """Device.readBlocks(variable=X, checkEach=True) must call
-    startTransaction with check=True for the targeted variable's block."""
+def test_device_read_blocks_variable_path_propagates_wait(monkeypatch):
+    """Device.readBlocks(variable=X, waitEach=True) must call
+    startTransaction with wait=True for the targeted variable's block."""
     calls = []
     monkeypatch.setattr(pr, "startTransaction", _record_call(calls))
 
     with _CmdRoot() as root:
         root.Dev.readBlocks(recurse=False, variable=root.Dev.Strobe,
-                            checkEach=True)
+                            waitEach=True)
 
     assert len(calls) == 1
     assert calls[0]["type"] == rogue.interfaces.memory.Read
-    assert calls[0]["check"] is True
+    assert calls[0]["wait"] is True
     assert calls[0]["variable"] is root.Dev.Strobe
 
 
-def test_device_read_blocks_block_path_propagates_check(monkeypatch):
-    """Device.readBlocks(checkEach=True) must call startTransaction with
-    check=True for every bulk-enabled block it iterates over."""
+def test_device_read_blocks_block_path_propagates_wait(monkeypatch):
+    """Device.readBlocks(waitEach=True) must call startTransaction with
+    wait=True for every bulk-enabled block it iterates over."""
     calls = []
     monkeypatch.setattr(pr, "startTransaction", _record_call(calls))
 
     with _CmdRoot() as root:
-        root.Dev.readBlocks(recurse=False, checkEach=True)
+        root.Dev.readBlocks(recurse=False, waitEach=True)
 
     assert len(calls) >= 1
     for call in calls:
         assert call["type"] == rogue.interfaces.memory.Read
-        assert call["check"] is True
+        assert call["wait"] is True
 
 
-def test_device_verify_blocks_variable_path_propagates_check(monkeypatch):
-    """Device.verifyBlocks(variable=X, checkEach=True) must call
-    startTransaction with check=True for the targeted variable's block.
+def test_device_verify_blocks_variable_path_propagates_wait(monkeypatch):
+    """Device.verifyBlocks(variable=X, waitEach=True) must call
+    startTransaction with wait=True for the targeted variable's block.
 
     Unlike the write and read paths, the verify path forwards only the
     block (verify range is set by the prior write) and does not pass the
-    variable through to startTransaction. Only the `check` propagation is
+    variable through to startTransaction. Only the `wait` propagation is
     asserted here; the block-targeting is verified by call count.
     """
     calls = []
@@ -255,26 +255,26 @@ def test_device_verify_blocks_variable_path_propagates_check(monkeypatch):
 
     with _CmdRoot() as root:
         root.Dev.verifyBlocks(recurse=False, variable=root.Dev.Strobe,
-                              checkEach=True)
+                              waitEach=True)
 
     assert len(calls) == 1
     assert calls[0]["type"] == rogue.interfaces.memory.Verify
-    assert calls[0]["check"] is True
+    assert calls[0]["wait"] is True
 
 
-def test_device_verify_blocks_block_path_propagates_check(monkeypatch):
-    """Device.verifyBlocks(checkEach=True) must call startTransaction with
-    check=True for every bulk-enabled block it iterates over."""
+def test_device_verify_blocks_block_path_propagates_wait(monkeypatch):
+    """Device.verifyBlocks(waitEach=True) must call startTransaction with
+    wait=True for every bulk-enabled block it iterates over."""
     calls = []
     monkeypatch.setattr(pr, "startTransaction", _record_call(calls))
 
     with _CmdRoot() as root:
-        root.Dev.verifyBlocks(recurse=False, checkEach=True)
+        root.Dev.verifyBlocks(recurse=False, waitEach=True)
 
     assert len(calls) >= 1
     for call in calls:
         assert call["type"] == rogue.interfaces.memory.Verify
-        assert call["check"] is True
+        assert call["wait"] is True
 
 
 # ---------------------------------------------------------------------------
@@ -374,7 +374,7 @@ def test_basecommand_toggle_delivers_one_then_zero_with_async_slave():
     deliver value 1 followed by value 0 to the slave, even when the slave
     consumes the staged data asynchronously.
 
-    With ``check=True`` flowing through to rim::Block::startTransaction, the
+    With ``wait=True`` flowing through to rim::Block::startTransaction, the
     first set(1) blocks until the slave's worker has copied the data and
     acknowledged the transaction. Only then does set(0) get a chance to
     mutate the block buffer. The slave records ``[(addr, 1), (addr, 0)]``.
