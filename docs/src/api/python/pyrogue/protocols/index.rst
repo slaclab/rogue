@@ -10,6 +10,7 @@ Protocol wrappers implemented directly in PyRogue.
 .. toctree::
    :maxdepth: 1
 
+   rocev2
    network_udprssipack
    uartmemory
    gpibcontroller

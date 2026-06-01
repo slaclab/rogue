@@ -29,3 +29,5 @@ rogue.egg-info*
 .planning/
 planning/
 CLAUDE.md
+docs/build/
+docs/build.log

@@ -65,6 +65,7 @@ autodoc_mock_imports = [
     'sip',
     'softioc',
     'softioc.asyncio_dispatcher',
+    'rogue.protocols.rocev2',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
