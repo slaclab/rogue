@@ -172,7 +172,7 @@ bool rim::Block::blockPyTrans() {
 }
 
 // Start a transaction for this block
-void rim::Block::intStartTransaction(uint32_t type, bool forceWr, bool check, rim::Variable* var, int32_t index) {
+void rim::Block::intStartTransaction(uint32_t type, bool forceWr, rim::Variable* var, int32_t index) {
     uint32_t x;
     uint32_t tOff;
     uint32_t tSize;
@@ -292,7 +292,7 @@ void rim::Block::startTransaction(uint32_t type, bool forceWr, bool check, rim::
     fWr   = forceWr;
 
     do {
-        intStartTransaction(type, fWr, check, var, index);
+        intStartTransaction(type, fWr, var, index);
 
         try {
             if (check || retryCount_ > 0) checkTransaction();
@@ -332,7 +332,7 @@ void rim::Block::startTransactionPy(uint32_t type, bool forceWr, bool check, rim
     fWr   = forceWr;
 
     do {
-        intStartTransaction(type, fWr, check, var.get(), index);
+        intStartTransaction(type, fWr, var.get(), index);
 
         try {
             if (check || retryCount_ > 0) upd = checkTransaction();
@@ -361,7 +361,7 @@ void rim::Block::startTransactionPy(uint32_t type, bool forceWr, bool check, rim
 
 #endif
 
-// Check transaction result
+// Wait for pending transaction completion and check the result
 bool rim::Block::checkTransaction() {
     std::string err;
     bool locUpdate;
@@ -417,7 +417,7 @@ bool rim::Block::checkTransaction() {
 
 #ifndef NO_PYTHON
 
-// Check transaction result
+// Wait for pending transaction completion, check the result, and update variables
 void rim::Block::checkTransactionPy() {
     if (blockPyTrans_) return;
 
@@ -426,14 +426,14 @@ void rim::Block::checkTransactionPy() {
 
 #endif
 
-// Write sequence
+// Write/verify/wait-and-check sequence
 void rim::Block::write(rim::Variable* var, int32_t index) {
     startTransaction(rim::Write, true, false, var, index);
     startTransaction(rim::Verify, false, false, var, index);
     checkTransaction();
 }
 
-// Read sequence
+// Read/wait-and-check sequence
 void rim::Block::read(rim::Variable* var, int32_t index) {
     startTransaction(rim::Read, false, false, var, index);
     checkTransaction();

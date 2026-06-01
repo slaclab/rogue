@@ -801,7 +801,7 @@ class Root(pr.Device):
             v._finishInit()
 
     def _write(self) -> bool:
-        """Write and verify all blocks."""
+        """Write, verify, and wait for block transactions to complete."""
         self._log.info("Start root write (forceWrite=%s)", self.ForceWrite.value())
         with self.pollBlock(), self.updateGroup():
             self.writeBlocks(force=self.ForceWrite.value(), recurse=True)
@@ -814,7 +814,7 @@ class Root(pr.Device):
         return True
 
     def _read(self) -> bool:
-        """Read and wait for all blocks."""
+        """Read blocks and wait for read transactions to complete."""
         self._log.info("Start root read")
         with self.pollBlock(), self.updateGroup():
             self.readBlocks(recurse=True)
