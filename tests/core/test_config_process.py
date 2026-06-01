@@ -10,7 +10,6 @@
 
 import glob
 
-import pytest
 import pyrogue as pr
 
 
