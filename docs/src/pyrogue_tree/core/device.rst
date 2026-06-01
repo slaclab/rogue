@@ -226,7 +226,8 @@ operations come together. At this level, four ideas matter:
 * ``write`` sends staged values from the tree toward hardware.
 * ``verify`` checks that hardware matches the expected value after a write.
 * ``read`` fetches current hardware state back into the tree.
-* ``wait`` waits for initiated transactions to complete and surfaces errors.
+* ``wait`` waits for initiated memory transactions to complete and surfaces
+  errors.
 
 Those operations are foundational because they are reused throughout the tree:
 bulk configuration, per-Variable access, YAML apply paths, and many custom
@@ -261,7 +262,8 @@ At a high level:
 * ``writeBlocks`` initiates write transactions.
 * ``verifyBlocks`` initiates verify transactions.
 * ``readBlocks`` initiates read transactions.
-* ``waitBlocks`` waits for previously initiated transactions to complete.
+* ``waitBlocks`` waits for the pending memory transaction on each selected
+  ``Block`` to complete.
 
 All four methods can operate on the full Device subtree or on the Block backing
 one specific Variable, and they are the normal override points when hardware

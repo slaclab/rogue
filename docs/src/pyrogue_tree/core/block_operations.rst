@@ -4,8 +4,8 @@
 Device Block Operations
 =======================
 
-``Device`` provides a family of methods that traverse a tree, initiate
-``Block`` transactions, and wait for them to complete:
+``Device`` provides a family of methods that traverse a tree, initiate memory
+transactions on ``Block`` objects, and wait for those transactions to complete:
 
 * :py:meth:`~pyrogue.Device.writeBlocks`
 * :py:meth:`~pyrogue.Device.verifyBlocks`
@@ -38,7 +38,8 @@ At a high level:
 * ``writeBlocks`` initiates write transactions.
 * ``verifyBlocks`` initiates verify transactions.
 * ``readBlocks`` initiates read transactions.
-* ``waitBlocks`` waits for initiated transactions to complete.
+* ``waitBlocks`` waits for the pending memory transaction on each selected
+  ``Block`` to complete.
 
 That split lets a ``Device`` issue many transactions first and then wait for
 completion afterward. The composed helpers:
@@ -50,7 +51,7 @@ simply bundle the most common full flows on top of those same methods. In
 practice, most readers only need two ideas first:
 
 * The default bulk path is "issue transactions across this ``Device`` or
-  subtree, then wait for them."
+  subtree, then wait for those block transactions to complete."
 * These same methods are also the normal place to override sequencing when the
   hardware needs something more specific.
 
@@ -116,7 +117,8 @@ Read One Subtree
 
 .. code-block:: python
 
-   # Initiate reads across this Device subtree, then wait for completion.
+   # Initiate reads across this Device subtree, then wait for read
+   # transactions to complete.
    my_dev.readAndWaitBlocks(recurse=True)
 
 This is the normal manual pattern when you want a current hardware snapshot of
@@ -151,10 +153,10 @@ Composed Helpers
 
 Two helpers cover the most common complete flows:
 
-* ``writeAndVerifyBlocks(...)`` runs
-  ``writeBlocks`` -> ``verifyBlocks`` -> ``waitBlocks``.
-* ``readAndWaitBlocks(...)`` runs
-  ``readBlocks`` -> ``waitBlocks``.
+* ``writeAndVerifyBlocks(...)`` initiates writes, initiates verifies, then
+  waits for the resulting block transactions to complete.
+* ``readAndWaitBlocks(...)`` initiates reads, then waits for the resulting read
+  transactions to complete.
 
 These helpers are often the clearest way to trigger a full operation from a
 script, a command callback, or a one-shot configuration step. They are also a
@@ -178,7 +180,8 @@ described on this page:
 
 * Values are staged first.
 * The resulting Block writes are issued across the tree.
-* Verification and completion waits run through the normal bulk helpers.
+* Verification and transaction-completion waits run through the normal bulk
+  helpers.
 
 So the YAML page should be read as "how the tree is described and matched,"
 while this page remains the right place for "how the resulting hardware
@@ -279,6 +282,7 @@ Important parameters:
   Include child Devices when ``True``.
 * ``variable``:
   Wait only on one Variable's Block.
+  This waits for the pending transaction on that Block to complete.
 * ``**kwargs``:
   Passed through to the transaction helper.
 

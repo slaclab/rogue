@@ -721,7 +721,7 @@ class Device(pr.Node,rim.Hub):
         *,
         waitEach: bool | None = None,
     ) -> None:
-        """Write, verify, and check all blocks.
+        """Write, verify, and wait for block transactions to complete.
 
         Parameters
         ----------
@@ -755,7 +755,7 @@ class Device(pr.Node,rim.Hub):
         *,
         checkEach: bool | None = None,
     ) -> None:
-        """Read and wait for all blocks.
+        """Read blocks and wait for read transactions to complete.
 
         Parameters
         ----------

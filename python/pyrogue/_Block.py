@@ -209,7 +209,7 @@ def waitBlocks(blocks: Iterable[rim.Block], **kwargs: Any) -> None:
     Parameters
     ----------
     blocks : iterable[rim.Block]
-        Blocks to check.
+        Blocks to wait on.
     **kwargs : Any
         Unused
     """
@@ -233,7 +233,7 @@ def writeAndVerifyBlocks(
     waitEach: bool | None = None,
     **kwargs: Any,
 ) -> None:
-    """Write and verify a list of blocks efficiently.
+    """Write, verify, and wait for block transactions to complete.
 
     Helper function for writing and verifying a list of blocks. Allows a custom
     list of blocks to be efficiently written and verified similar to
@@ -272,7 +272,7 @@ def readAndWaitBlocks(
     waitEach: bool | None = None,
     **kwargs: Any,
 ) -> None:
-    """Read blocks and wait for completion.
+    """Read blocks and wait for read transactions to complete.
 
     Helper function for reading a list of blocks. Allows a custom list of blocks
     to be efficiently read without blocking between each read, similar to
