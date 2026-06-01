@@ -5,6 +5,14 @@
   "history": [
     {
       "ref_name": "ci/bump-actions-node20",
+      "sha": "bfc8465584d346186a4c99dc7fe3036eb9a614a0",
+      "short_sha": "bfc8465",
+      "published_at": "2026-06-01T19:38:51Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/26777265530",
+      "summary_url": "/rogue/perf/branches/ci_bump-actions-node20/history/bfc8465584d346186a4c99dc7fe3036eb9a614a0.json"
+    },
+    {
+      "ref_name": "ci/bump-actions-node20",
       "sha": "7afc27b76f77eccd3fbbeba6d6af1911b8a7d3d6",
       "short_sha": "7afc27b",
       "published_at": "2026-05-21T18:12:34Z",
@@ -14,10 +22,10 @@
   ],
   "latest": {
     "ref_name": "ci/bump-actions-node20",
-    "sha": "7afc27b76f77eccd3fbbeba6d6af1911b8a7d3d6",
-    "short_sha": "7afc27b",
-    "published_at": "2026-05-21T18:12:34Z",
-    "run_url": "https://github.com/slaclab/rogue/actions/runs/26244172675",
+    "sha": "bfc8465584d346186a4c99dc7fe3036eb9a614a0",
+    "short_sha": "bfc8465",
+    "published_at": "2026-06-01T19:38:51Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/26777265530",
     "summary_url": "/rogue/perf/branches/ci_bump-actions-node20/latest.json"
   }
 }
