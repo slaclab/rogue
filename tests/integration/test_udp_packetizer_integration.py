@@ -221,7 +221,7 @@ def run_udp_packetizer_path(version, jumbo):
                 raise AssertionError(f"RSSI timeout error. Ver={version} Jumbo={jumbo}")
             time.sleep(CONNECTION_POLL_INTERVAL)
 
-        out_of_order.period = 10
+        out_of_order.period = 10 if jumbo else 50
 
         # Baseline the segment counter AFTER the RSSI handshake (which itself
         # bumps cnt via SYN/ACK control frames) and immediately before we

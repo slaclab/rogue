@@ -23,6 +23,14 @@ RSSI
 
    rssi/index
 
+RoCEv2
+======
+
+.. toctree::
+   :maxdepth: 1
+
+   rocev2/index
+
 SRP
 ===
 
