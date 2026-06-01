@@ -270,50 +270,6 @@ These are useful when the caller wants the current tree state as it already
 exists locally, without implying that the underlying source should be accessed
 again.
 
-Pre-Write Listeners
-====================
-
-Variables support pre-write listeners that execute synchronously **before** a
-hardware write occurs. Unlike the post-write update notifications described
-above, pre-write listeners can:
-
-* **Block a write** by raising :py:class:`~pyrogue.WriteBlockedError`.
-* **Modify the value** being written by returning a replacement value.
-* **Inspect system state** through a configurable state snapshot.
-
-This is useful when hardware requires protection from writes under certain
-conditions. For example, a camera device that corrupts if registers are written
-during image acquisition can use a pre-write listener to guard against unsafe
-writes.
-
-Pre-write listeners fire only on actual hardware writes (``set(write=True)``
-and ``post()``). Staging a value with ``set(write=False)`` does not trigger
-them.
-
-Registration and callback signature:
-
-.. code-block:: python
-
-   import pyrogue as pr
-
-   def my_guard(path, value, state):
-       """Block writes when acquisition is active."""
-       if state.get(acq_active.path) is True:
-           raise pr.WriteBlockedError(path, "acquisition active")
-       return None  # allow write, no value modification
-
-   # Register with state variables whose values are snapshotted at call time
-   target_var.addPreWriteListener(my_guard, stateVars=[acq_active])
-
-When multiple pre-write listeners are registered, they execute in registration
-order. All must pass (AND logic), and value modifications chain through the
-sequence.
-
-Pre-write listeners can also be registered at the **Device level**, where they
-fire before any child Variable write on that Device. Device-level listeners
-execute before variable-level listeners. See
-:py:meth:`~pyrogue.Device.addPreWriteListener`.
-
 Advanced Related Topics
 =======================
 
