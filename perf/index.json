@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-01T03:30:44Z",
+  "generated_at": "2026-06-01T05:40:23Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -256,6 +256,29 @@
         "published_at": "2026-05-28T19:41:14Z",
         "run_url": "https://github.com/slaclab/rogue/actions/runs/26597604573",
         "summary_url": "/rogue/perf/branches/pre-release/latest.json"
+      }
+    },
+    {
+      "ref_name": "copilot/fix-pr1253-epicsv4-timeout",
+      "ref_slug": "copilot_fix-pr1253-epicsv4-timeout",
+      "latest_url": "/rogue/perf/branches/copilot_fix-pr1253-epicsv4-timeout/latest.json",
+      "history": [
+        {
+          "ref_name": "copilot/fix-pr1253-epicsv4-timeout",
+          "sha": "d32c690dcbf94ca84dbf078fbe5bea65b7dfe97c",
+          "short_sha": "d32c690",
+          "published_at": "2026-06-01T05:40:23Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/26737152068",
+          "summary_url": "/rogue/perf/branches/copilot_fix-pr1253-epicsv4-timeout/history/d32c690dcbf94ca84dbf078fbe5bea65b7dfe97c.json"
+        }
+      ],
+      "latest": {
+        "ref_name": "copilot/fix-pr1253-epicsv4-timeout",
+        "sha": "d32c690dcbf94ca84dbf078fbe5bea65b7dfe97c",
+        "short_sha": "d32c690",
+        "published_at": "2026-06-01T05:40:23Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/26737152068",
+        "summary_url": "/rogue/perf/branches/copilot_fix-pr1253-epicsv4-timeout/latest.json"
       }
     },
     {
