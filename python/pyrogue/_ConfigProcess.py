@@ -70,8 +70,12 @@ class LoadConfigProcess(pr.Process):
         self.setProgress(0.0)
 
         if self.LoadMode.value() == 0:
+            cfg = str(self.ConfigFile.value()).strip()
+            if not cfg:
+                self.Message.setDisp('Error: ConfigFile is empty')
+                return
             self.root.loadYaml(
-                name=self.ConfigFile.value(),
+                name=cfg,
                 writeEach=False,
                 modes=['RW', 'WO'],
                 incGroups=None,
