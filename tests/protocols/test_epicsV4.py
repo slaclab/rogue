@@ -174,12 +174,13 @@ def test_local_root():
     # setup the P4P client
     # https://mdavidsaver.github.io/p4p/client.html#usage
     print( Context.providers() )
+    ctxt = None
     try:
-        ctxt = Context('pva')
-    except RuntimeError as exc:
-        pytest.skip(f'EPICS PVA socket setup unavailable: {exc}')
+        try:
+            ctxt = Context('pva')
+        except RuntimeError as exc:
+            pytest.skip(f'EPICS PVA socket setup unavailable: {exc}')
 
-    try:
         for s in pv_map_states:
             with LocalRootWithEpics(use_map=s) as root:
                 # Device EPICS PV name prefix
@@ -264,7 +265,8 @@ def test_local_root():
                 if test_result != test_value:
                     raise AssertionError('RPC set failed: pv_name={}: expected={}; test_result={}'.format(pv_name, test_value, test_result))
     finally:
-        ctxt.close()
+        if ctxt is not None:
+            ctxt.close()
 
 if __name__ == "__main__":
     test_local_root()
