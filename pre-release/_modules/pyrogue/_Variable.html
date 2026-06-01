@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue._Variable &mdash; Rogue v6.13.0-28-g8bebe4469 documentation</title>
+  <title>pyrogue._Variable &mdash; Rogue v6.13.0-30-g18de88f63 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="../../_static/slac-favicon-192.png"/>
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=0fe230c5"></script>
+      <script src="../../_static/documentation_options.js?v=cb271556"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -136,17 +136,6 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">VariableError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when variable configuration or access fails.&quot;&quot;&quot;</span>
     <span class="k">pass</span>
-
-
-<span class="k">class</span><span class="w"> </span><span class="nc">WriteBlockedError</span><span class="p">(</span><span class="n">VariableError</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised by a pre-write listener to block a write operation.&quot;&quot;&quot;</span>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">reason</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">varPath</span> <span class="o">=</span> <span class="n">path</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">reason</span> <span class="o">=</span> <span class="n">reason</span>
-        <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Write to &#39;</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&#39; blocked&quot;</span>
-        <span class="k">if</span> <span class="n">reason</span><span class="p">:</span>
-            <span class="n">msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;: </span><span class="si">{</span><span class="n">reason</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">VariableWaitClass</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -451,7 +440,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_listeners</span>     <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__functions</span>    <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__dependencies</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_preWriteListeners</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="c1"># Build enum if specified</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_disp</span> <span class="o">=</span> <span class="n">disp</span>
@@ -762,98 +750,6 @@
             <span class="k">if</span> <span class="n">listener</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__functions</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">__functions</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">listener</span><span class="p">)</span></div>
 
-
-<div class="viewcode-block" id="BaseVariable.addPreWriteListener">
-<a class="viewcode-back" href="../../api/python/pyrogue/basevariable.html#pyrogue.BaseVariable.addPreWriteListener">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">addPreWriteListener</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">listener</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span> <span class="n">Any</span> <span class="o">|</span> <span class="kc">None</span><span class="p">],</span>
-        <span class="n">stateVars</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">BaseVariable</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Register a pre-write listener for this variable.</span>
-
-<span class="sd">        The listener is called synchronously before hardware writes,</span>
-<span class="sd">        in the caller&#39;s thread. It receives (path, value, state) where</span>
-<span class="sd">        state is a dict of {var.path: var.value()} for each var in stateVars.</span>
-
-<span class="sd">        To block a write, raise WriteBlockedError.</span>
-<span class="sd">        To modify the value being written, return the new value.</span>
-<span class="sd">        Return None to leave the value unchanged.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        listener : callable</span>
-<span class="sd">            Callback: func(path, value, state) -&gt; value | None</span>
-<span class="sd">        stateVars : list of BaseVariable, optional</span>
-<span class="sd">            Variables whose current values are captured into the state dict.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">entry</span> <span class="o">=</span> <span class="p">(</span><span class="n">listener</span><span class="p">,</span> <span class="n">stateVars</span> <span class="ow">or</span> <span class="p">[])</span>
-        <span class="k">if</span> <span class="n">entry</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_preWriteListeners</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_preWriteListeners</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">entry</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="BaseVariable.delPreWriteListener">
-<a class="viewcode-back" href="../../api/python/pyrogue/basevariable.html#pyrogue.BaseVariable.delPreWriteListener">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">delPreWriteListener</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">listener</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span> <span class="n">Any</span> <span class="o">|</span> <span class="kc">None</span><span class="p">],</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove a previously registered pre-write listener.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        listener : callable</span>
-<span class="sd">            The callback to remove.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_preWriteListeners</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="p">(</span><span class="n">cb</span><span class="p">,</span> <span class="n">sv</span><span class="p">)</span> <span class="k">for</span> <span class="p">(</span><span class="n">cb</span><span class="p">,</span> <span class="n">sv</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_preWriteListeners</span> <span class="k">if</span> <span class="n">cb</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">listener</span>
-        <span class="p">]</span></div>
-
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">_runPreWriteListeners</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute pre-write listeners and return the (possibly modified) value.</span>
-
-<span class="sd">        Execution order: device-level listeners first, then variable-level.</span>
-<span class="sd">        All must pass. Stops on first WriteBlockedError. Value modifications chain.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        value : Any</span>
-<span class="sd">            The proposed write value.</span>
-<span class="sd">        index : int</span>
-<span class="sd">            Array index (-1 for scalar).</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        Any</span>
-<span class="sd">            Final value after all listener modifications.</span>
-
-<span class="sd">        Raises</span>
-<span class="sd">        ------</span>
-<span class="sd">        WriteBlockedError</span>
-<span class="sd">            If any listener blocks the write.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">allListeners</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_parent&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="p">,</span> <span class="s1">&#39;_preWriteListeners&#39;</span><span class="p">):</span>
-                <span class="n">allListeners</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="o">.</span><span class="n">_preWriteListeners</span><span class="p">)</span>
-        <span class="n">allListeners</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_preWriteListeners</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">allListeners</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">value</span>
-
-        <span class="n">currentValue</span> <span class="o">=</span> <span class="n">value</span>
-        <span class="k">for</span> <span class="n">callback</span><span class="p">,</span> <span class="n">stateVars</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">allListeners</span><span class="p">):</span>
-            <span class="n">state</span> <span class="o">=</span> <span class="p">{}</span>
-            <span class="k">for</span> <span class="n">sv</span> <span class="ow">in</span> <span class="n">stateVars</span><span class="p">:</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="n">state</span><span class="p">[</span><span class="n">sv</span><span class="o">.</span><span class="n">path</span><span class="p">]</span> <span class="o">=</span> <span class="n">sv</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
-                <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-                    <span class="n">state</span><span class="p">[</span><span class="n">sv</span><span class="o">.</span><span class="n">path</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="n">result</span> <span class="o">=</span> <span class="n">callback</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">currentValue</span><span class="p">,</span> <span class="n">state</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">currentValue</span> <span class="o">=</span> <span class="n">result</span>
-        <span class="k">return</span> <span class="n">currentValue</span>
 
 <div class="viewcode-block" id="BaseVariable.set">
 <a class="viewcode-back" href="../../api/python/pyrogue/basevariable.html#pyrogue.BaseVariable.set">[docs]</a>
@@ -1748,9 +1644,6 @@
             <span class="c1"># Set value to block</span>
             <span class="n">index</span> <span class="o">=</span> <span class="n">operator</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
 
-            <span class="k">if</span> <span class="n">write</span><span class="p">:</span>
-                <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_runPreWriteListeners</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
-
             <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="n">value</span><span class="p">,</span><span class="n">index</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">write</span><span class="p">:</span>
@@ -1760,8 +1653,6 @@
                 <span class="k">if</span> <span class="n">check</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="o">.</span><span class="n">checkBlocks</span><span class="p">(</span><span class="n">recurse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
 
-        <span class="k">except</span> <span class="n">WriteBlockedError</span><span class="p">:</span>
-            <span class="k">raise</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="n">pr</span><span class="o">.</span><span class="n">logException</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">,</span><span class="n">e</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
@@ -1798,15 +1689,11 @@
 
             <span class="n">index</span> <span class="o">=</span> <span class="n">operator</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
 
-            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_runPreWriteListeners</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
-
             <span class="c1"># Set value to block</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_set</span><span class="p">(</span><span class="n">value</span><span class="p">,</span><span class="n">index</span><span class="p">)</span>
 
             <span class="n">pr</span><span class="o">.</span><span class="n">startTransaction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_block</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">rim</span><span class="o">.</span><span class="n">Post</span><span class="p">,</span> <span class="n">forceWr</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">checkEach</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">)</span>
 
-        <span class="k">except</span> <span class="n">WriteBlockedError</span><span class="p">:</span>
-            <span class="k">raise</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="n">pr</span><span class="o">.</span><span class="n">logException</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">,</span><span class="n">e</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
@@ -2072,17 +1959,12 @@
 
         <span class="k">try</span><span class="p">:</span>
 
-            <span class="k">if</span> <span class="n">write</span><span class="p">:</span>
-                <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_runPreWriteListeners</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
-
             <span class="c1"># Set value to block</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_block</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">write</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_block</span><span class="o">.</span><span class="n">_checkTransaction</span><span class="p">()</span>
 
-        <span class="k">except</span> <span class="n">WriteBlockedError</span><span class="p">:</span>
-            <span class="k">raise</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="n">pr</span><span class="o">.</span><span class="n">logException</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">,</span><span class="n">e</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
@@ -2118,13 +2000,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">.post(</span><span class="si">%r</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_runPreWriteListeners</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
-
             <span class="bp">self</span><span class="o">.</span><span class="n">_block</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_block</span><span class="o">.</span><span class="n">_checkTransaction</span><span class="p">()</span>
 
-        <span class="k">except</span> <span class="n">WriteBlockedError</span><span class="p">:</span>
-            <span class="k">raise</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="n">pr</span><span class="o">.</span><span class="n">logException</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">,</span><span class="n">e</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
