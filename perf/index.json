@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-01T05:40:23Z",
+  "generated_at": "2026-06-01T05:45:37Z",
   "site_root": "/rogue",
   "refs": {
     "main": {
@@ -259,6 +259,37 @@
       }
     },
     {
+      "ref_name": "config_process",
+      "ref_slug": "config_process",
+      "latest_url": "/rogue/perf/branches/config_process/latest.json",
+      "history": [
+        {
+          "ref_name": "config_process",
+          "sha": "9308f87fdf7df872fe7a5df76c82c08e0b0d9c55",
+          "short_sha": "9308f87",
+          "published_at": "2026-06-01T05:45:37Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/26736026655",
+          "summary_url": "/rogue/perf/branches/config_process/history/9308f87fdf7df872fe7a5df76c82c08e0b0d9c55.json"
+        },
+        {
+          "ref_name": "config_process",
+          "sha": "8bebe44691dc0cc2e781e184f1d0b2aa730ce3f7",
+          "short_sha": "8bebe44",
+          "published_at": "2026-06-01T03:30:44Z",
+          "run_url": "https://github.com/slaclab/rogue/actions/runs/26733456385",
+          "summary_url": "/rogue/perf/branches/config_process/history/8bebe44691dc0cc2e781e184f1d0b2aa730ce3f7.json"
+        }
+      ],
+      "latest": {
+        "ref_name": "config_process",
+        "sha": "9308f87fdf7df872fe7a5df76c82c08e0b0d9c55",
+        "short_sha": "9308f87",
+        "published_at": "2026-06-01T05:45:37Z",
+        "run_url": "https://github.com/slaclab/rogue/actions/runs/26736026655",
+        "summary_url": "/rogue/perf/branches/config_process/latest.json"
+      }
+    },
+    {
       "ref_name": "copilot/fix-pr1253-epicsv4-timeout",
       "ref_slug": "copilot_fix-pr1253-epicsv4-timeout",
       "latest_url": "/rogue/perf/branches/copilot_fix-pr1253-epicsv4-timeout/latest.json",
@@ -279,29 +310,6 @@
         "published_at": "2026-06-01T05:40:23Z",
         "run_url": "https://github.com/slaclab/rogue/actions/runs/26737152068",
         "summary_url": "/rogue/perf/branches/copilot_fix-pr1253-epicsv4-timeout/latest.json"
-      }
-    },
-    {
-      "ref_name": "config_process",
-      "ref_slug": "config_process",
-      "latest_url": "/rogue/perf/branches/config_process/latest.json",
-      "history": [
-        {
-          "ref_name": "config_process",
-          "sha": "8bebe44691dc0cc2e781e184f1d0b2aa730ce3f7",
-          "short_sha": "8bebe44",
-          "published_at": "2026-06-01T03:30:44Z",
-          "run_url": "https://github.com/slaclab/rogue/actions/runs/26733456385",
-          "summary_url": "/rogue/perf/branches/config_process/history/8bebe44691dc0cc2e781e184f1d0b2aa730ce3f7.json"
-        }
-      ],
-      "latest": {
-        "ref_name": "config_process",
-        "sha": "8bebe44691dc0cc2e781e184f1d0b2aa730ce3f7",
-        "short_sha": "8bebe44",
-        "published_at": "2026-06-01T03:30:44Z",
-        "run_url": "https://github.com/slaclab/rogue/actions/runs/26733456385",
-        "summary_url": "/rogue/perf/branches/config_process/latest.json"
       }
     },
     {
