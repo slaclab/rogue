@@ -1,7 +1,7 @@
 var searchData=
 [
   ['scopedgil_0',['ScopedGil',['../classrogue_1_1ScopedGil.html',1,'rogue']]],
-  ['server_1',['server',['../classrogue_1_1protocols_1_1rssi_1_1Server.html',1,'rogue::protocols::rssi::Server'],['../classrogue_1_1protocols_1_1udp_1_1Server.html',1,'rogue::protocols::udp::Server']]],
+  ['server_1',['server',['../classrogue_1_1protocols_1_1rocev2_1_1Server.html',1,'rogue::protocols::rocev2::Server'],['../classrogue_1_1protocols_1_1rssi_1_1Server.html',1,'rogue::protocols::rssi::Server'],['../classrogue_1_1protocols_1_1udp_1_1Server.html',1,'rogue::protocols::udp::Server']]],
   ['slave_2',['slave',['../classrogue_1_1interfaces_1_1memory_1_1Slave.html',1,'rogue::interfaces::memory::Slave'],['../classrogue_1_1interfaces_1_1stream_1_1Slave.html',1,'rogue::interfaces::stream::Slave']]],
   ['slavewrap_3',['slavewrap',['../classrogue_1_1interfaces_1_1memory_1_1SlaveWrap.html',1,'rogue::interfaces::memory::SlaveWrap'],['../classrogue_1_1interfaces_1_1stream_1_1SlaveWrap.html',1,'rogue::interfaces::stream::SlaveWrap']]],
   ['splitterv1_4',['SplitterV1',['../classrogue_1_1protocols_1_1batcher_1_1SplitterV1.html',1,'rogue::protocols::batcher']]],

@@ -106,21 +106,21 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span><span class="preprocessor">#include &quot;<a class="code" href="Header_8h.html">rogue/protocols/rssi/Header.h</a>&quot;</span></div>
 <div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span><span class="preprocessor">#include &quot;<a class="code" href="rssi_2Transport_8h.html">rogue/protocols/rssi/Transport.h</a>&quot;</span></div>
 <div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span> </div>
-<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacerogue_1_1protocols_1_1rssi.html">rpr</a> = <a class="code hl_namespace" href="namespacerogue_1_1protocols_1_1rssi.html">rogue::protocols::rssi</a>;</div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacerogue_1_1protocols_1_1rocev2.html">rpr</a> = <a class="code hl_namespace" href="namespacerogue_1_1protocols_1_1rssi.html">rogue::protocols::rssi</a>;</div>
 <div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacerogue_1_1interfaces_1_1stream.html">ris</a> = <a class="code hl_namespace" href="namespacerogue_1_1interfaces_1_1stream.html">rogue::interfaces::stream</a>;</div>
 <div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span> </div>
 <div class="foldopen" id="foldopen00045" data-start="{" data-end="}">
-<div class="line"><a id="l00045" name="l00045"></a><span class="lineno"><a class="line" href="classrogue_1_1protocols_1_1rssi_1_1Controller.html#abaf32fda7fa592d7002c21b4610c0e7f">   45</a></span><a class="code hl_typedef" href="namespacerogue_1_1protocols_1_1rssi.html#ab9e572ed9e6f11586dbe0029d4c9aaae">rpr::ControllerPtr</a> rpr::Controller::create(uint32_t segSize,</div>
-<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>                                           <a class="code hl_typedef" href="namespacerogue_1_1protocols_1_1rssi.html#a12eea2c159254ef846e6d2ab740ceb02">rpr::TransportPtr</a> tran,</div>
-<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>                                           <a class="code hl_typedef" href="namespacerogue_1_1protocols_1_1rssi.html#a3f35628c60465892f54a7653844e13ce">rpr::ApplicationPtr</a> app,</div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno"><a class="line" href="classrogue_1_1protocols_1_1rssi_1_1Controller.html#abaf32fda7fa592d7002c21b4610c0e7f">   45</a></span>rpr::ControllerPtr rpr::Controller::create(uint32_t segSize,</div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>                                           rpr::TransportPtr tran,</div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>                                           rpr::ApplicationPtr app,</div>
 <div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>                                           <span class="keywordtype">bool</span> server) {</div>
-<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>    <a class="code hl_typedef" href="namespacerogue_1_1protocols_1_1rssi.html#ab9e572ed9e6f11586dbe0029d4c9aaae">rpr::ControllerPtr</a> r = std::make_shared&lt;rpr::Controller&gt;(segSize, tran, app, server);</div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>    rpr::ControllerPtr r = std::make_shared&lt;rpr::Controller&gt;(segSize, tran, app, server);</div>
 <div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>    <span class="keywordflow">return</span> (r);</div>
 <div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>}</div>
 </div>
 <div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span> </div>
 <div class="foldopen" id="foldopen00054" data-start="{" data-end="}">
-<div class="line"><a id="l00054" name="l00054"></a><span class="lineno"><a class="line" href="classrogue_1_1protocols_1_1rssi_1_1Controller.html#a1bdcce5d857b9ff5e7a02ee6ace760a4">   54</a></span>rpr::Controller::Controller(uint32_t segSize, <a class="code hl_typedef" href="namespacerogue_1_1protocols_1_1rssi.html#a12eea2c159254ef846e6d2ab740ceb02">rpr::TransportPtr</a> tran, <a class="code hl_typedef" href="namespacerogue_1_1protocols_1_1rssi.html#a3f35628c60465892f54a7653844e13ce">rpr::ApplicationPtr</a> app, <span class="keywordtype">bool</span> server) {</div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno"><a class="line" href="classrogue_1_1protocols_1_1rssi_1_1Controller.html#a1bdcce5d857b9ff5e7a02ee6ace760a4">   54</a></span>rpr::Controller::Controller(uint32_t segSize, rpr::TransportPtr tran, rpr::ApplicationPtr app, <span class="keywordtype">bool</span> server) {</div>
 <div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>    app_    = app;</div>
 <div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>    tran_   = tran;</div>
 <div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>    server_ = server;</div>
@@ -268,7 +268,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00193" name="l00193"></a><span class="lineno"><a class="line" href="classrogue_1_1protocols_1_1rssi_1_1Controller.html#afa32efe3579c79b8bfbb61f48ab31ba6">  193</a></span><span class="keywordtype">void</span> rpr::Controller::transportRx(<a class="code hl_typedef" href="namespacerogue_1_1interfaces_1_1stream.html#aabbfca1143d6d05a2bb0afc11e667778">ris::FramePtr</a> frame) {</div>
 <div class="line"><a id="l00194" name="l00194"></a><span class="lineno">  194</span>    std::map&lt;uint8_t, rpr::HeaderPtr&gt;::iterator it;</div>
 <div class="line"><a id="l00195" name="l00195"></a><span class="lineno">  195</span> </div>
-<div class="line"><a id="l00196" name="l00196"></a><span class="lineno">  196</span>    <a class="code hl_typedef" href="namespacerogue_1_1protocols_1_1rssi.html#a7c40e2fe0bc2c102751b8ba7d92e061e">rpr::HeaderPtr</a> head = rpr::Header::create(frame);</div>
+<div class="line"><a id="l00196" name="l00196"></a><span class="lineno">  196</span>    rpr::HeaderPtr head = rpr::Header::create(frame);</div>
 <div class="line"><a id="l00197" name="l00197"></a><span class="lineno">  197</span> </div>
 <div class="line"><a id="l00198" name="l00198"></a><span class="lineno">  198</span>    <a class="code hl_class" href="classrogue_1_1GilRelease.html">rogue::GilRelease</a> noGil;</div>
 <div class="line"><a id="l00199" name="l00199"></a><span class="lineno">  199</span>    <a class="code hl_typedef" href="namespacerogue_1_1interfaces_1_1stream.html#ad282a6c7aa64c4607580c16125f88308">ris::FrameLockPtr</a> flock = frame-&gt;lock();</div>
@@ -412,7 +412,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="foldopen" id="foldopen00337" data-start="{" data-end="}">
 <div class="line"><a id="l00337" name="l00337"></a><span class="lineno"><a class="line" href="classrogue_1_1protocols_1_1rssi_1_1Controller.html#a983ddd353d6b8af413b76649b057660a">  337</a></span><a class="code hl_typedef" href="namespacerogue_1_1interfaces_1_1stream.html#aabbfca1143d6d05a2bb0afc11e667778">ris::FramePtr</a> rpr::Controller::applicationTx() {</div>
 <div class="line"><a id="l00338" name="l00338"></a><span class="lineno">  338</span>    <a class="code hl_typedef" href="namespacerogue_1_1interfaces_1_1stream.html#aabbfca1143d6d05a2bb0afc11e667778">ris::FramePtr</a> frame;</div>
-<div class="line"><a id="l00339" name="l00339"></a><span class="lineno">  339</span>    <a class="code hl_typedef" href="namespacerogue_1_1protocols_1_1rssi.html#a7c40e2fe0bc2c102751b8ba7d92e061e">rpr::HeaderPtr</a> head;</div>
+<div class="line"><a id="l00339" name="l00339"></a><span class="lineno">  339</span>    rpr::HeaderPtr head;</div>
 <div class="line"><a id="l00340" name="l00340"></a><span class="lineno">  340</span> </div>
 <div class="line"><a id="l00341" name="l00341"></a><span class="lineno">  341</span>    <a class="code hl_class" href="classrogue_1_1GilRelease.html">rogue::GilRelease</a> noGil;</div>
 <div class="line"><a id="l00342" name="l00342"></a><span class="lineno">  342</span> </div>
@@ -462,7 +462,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00385" name="l00385"></a><span class="lineno">  385</span>    (*(frame-&gt;beginBuffer()))-&gt;adjustHeader(-rpr::Header::HeaderSize);</div>
 <div class="line"><a id="l00386" name="l00386"></a><span class="lineno">  386</span> </div>
 <div class="line"><a id="l00387" name="l00387"></a><span class="lineno">  387</span>    <span class="comment">// Map to RSSI</span></div>
-<div class="line"><a id="l00388" name="l00388"></a><span class="lineno">  388</span>    <a class="code hl_typedef" href="namespacerogue_1_1protocols_1_1rssi.html#a7c40e2fe0bc2c102751b8ba7d92e061e">rpr::HeaderPtr</a> head = rpr::Header::create(frame);</div>
+<div class="line"><a id="l00388" name="l00388"></a><span class="lineno">  388</span>    rpr::HeaderPtr head = rpr::Header::create(frame);</div>
 <div class="line"><a id="l00389" name="l00389"></a><span class="lineno">  389</span>    head-&gt;ack           = <span class="keyword">true</span>;</div>
 <div class="line"><a id="l00390" name="l00390"></a><span class="lineno">  390</span>    flock-&gt;unlock();</div>
 <div class="line"><a id="l00391" name="l00391"></a><span class="lineno">  391</span> </div>
@@ -722,7 +722,7 @@ $(document).ready(function() { init_codefold(0); });
 </div>
 <div class="line"><a id="l00589" name="l00589"></a><span class="lineno">  589</span> </div>
 <div class="line"><a id="l00590" name="l00590"></a><span class="lineno">  590</span><span class="comment">// Method to transit a frame with proper updates</span></div>
-<div class="line"><a id="l00591" name="l00591"></a><span class="lineno">  591</span><span class="keywordtype">void</span> rpr::Controller::transportTx(<a class="code hl_typedef" href="namespacerogue_1_1protocols_1_1rssi.html#a7c40e2fe0bc2c102751b8ba7d92e061e">rpr::HeaderPtr</a> head, <span class="keywordtype">bool</span> seqUpdate, <span class="keywordtype">bool</span> txReset) {</div>
+<div class="line"><a id="l00591" name="l00591"></a><span class="lineno">  591</span><span class="keywordtype">void</span> rpr::Controller::transportTx(rpr::HeaderPtr head, <span class="keywordtype">bool</span> seqUpdate, <span class="keywordtype">bool</span> txReset) {</div>
 <div class="line"><a id="l00592" name="l00592"></a><span class="lineno">  592</span>    std::unique_lock&lt;std::mutex&gt; lock(txMtx_);</div>
 <div class="line"><a id="l00593" name="l00593"></a><span class="lineno">  593</span> </div>
 <div class="line"><a id="l00594" name="l00594"></a><span class="lineno">  594</span>    head-&gt;sequence = locSequence_;</div>
@@ -782,7 +782,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00648" name="l00648"></a><span class="lineno">  648</span>int8_t rpr::Controller::retransmit(uint8_t <span class="keywordtype">id</span>) {</div>
 <div class="line"><a id="l00649" name="l00649"></a><span class="lineno">  649</span>    std::unique_lock&lt;std::mutex&gt; lock(txMtx_);</div>
 <div class="line"><a id="l00650" name="l00650"></a><span class="lineno">  650</span> </div>
-<div class="line"><a id="l00651" name="l00651"></a><span class="lineno">  651</span>    <a class="code hl_typedef" href="namespacerogue_1_1protocols_1_1rssi.html#a7c40e2fe0bc2c102751b8ba7d92e061e">rpr::HeaderPtr</a> head = txList_[id];</div>
+<div class="line"><a id="l00651" name="l00651"></a><span class="lineno">  651</span>    rpr::HeaderPtr head = txList_[id];</div>
 <div class="line"><a id="l00652" name="l00652"></a><span class="lineno">  652</span>    <span class="keywordflow">if</span> (head == NULL) <span class="keywordflow">return</span> 0;</div>
 <div class="line"><a id="l00653" name="l00653"></a><span class="lineno">  653</span> </div>
 <div class="line"><a id="l00654" name="l00654"></a><span class="lineno">  654</span>    <span class="comment">// retransmit timer has not expired</span></div>
@@ -898,7 +898,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00767" name="l00767"></a><span class="lineno">  767</span>}</div>
 <div class="line"><a id="l00768" name="l00768"></a><span class="lineno">  768</span> </div>
 <div class="line"><a id="l00770" name="l00770"></a><span class="lineno">  770</span><span class="keyword">struct </span>timeval&amp; rpr::Controller::stateClosedWait() {</div>
-<div class="line"><a id="l00771" name="l00771"></a><span class="lineno">  771</span>    <a class="code hl_typedef" href="namespacerogue_1_1protocols_1_1rssi.html#a7c40e2fe0bc2c102751b8ba7d92e061e">rpr::HeaderPtr</a> head;</div>
+<div class="line"><a id="l00771" name="l00771"></a><span class="lineno">  771</span>    rpr::HeaderPtr head;</div>
 <div class="line"><a id="l00772" name="l00772"></a><span class="lineno">  772</span> </div>
 <div class="line"><a id="l00773" name="l00773"></a><span class="lineno">  773</span>    <span class="comment">// got syn or reset</span></div>
 <div class="line"><a id="l00774" name="l00774"></a><span class="lineno">  774</span>    <span class="keywordflow">if</span> (!stQueue_.empty()) {</div>
@@ -978,7 +978,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00848" name="l00848"></a><span class="lineno">  848</span> </div>
 <div class="line"><a id="l00850" name="l00850"></a><span class="lineno">  850</span><span class="keyword">struct </span>timeval&amp; rpr::Controller::stateSendSynAck() {</div>
 <div class="line"><a id="l00851" name="l00851"></a><span class="lineno">  851</span>    <span class="comment">// Allocate frame</span></div>
-<div class="line"><a id="l00852" name="l00852"></a><span class="lineno">  852</span>    <a class="code hl_typedef" href="namespacerogue_1_1protocols_1_1rssi.html#a7c40e2fe0bc2c102751b8ba7d92e061e">rpr::HeaderPtr</a> head = rpr::Header::create(tran_-&gt;reqFrame(rpr::Header::SynSize, <span class="keyword">false</span>));</div>
+<div class="line"><a id="l00852" name="l00852"></a><span class="lineno">  852</span>    rpr::HeaderPtr head = rpr::Header::create(tran_-&gt;reqFrame(rpr::Header::SynSize, <span class="keyword">false</span>));</div>
 <div class="line"><a id="l00853" name="l00853"></a><span class="lineno">  853</span> </div>
 <div class="line"><a id="l00854" name="l00854"></a><span class="lineno">  854</span>    <span class="comment">// Set frame</span></div>
 <div class="line"><a id="l00855" name="l00855"></a><span class="lineno">  855</span>    head-&gt;syn                    = <span class="keyword">true</span>;</div>
@@ -1005,7 +1005,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00876" name="l00876"></a><span class="lineno">  876</span> </div>
 <div class="line"><a id="l00878" name="l00878"></a><span class="lineno">  878</span><span class="keyword">struct </span>timeval&amp; rpr::Controller::stateSendSeqAck() {</div>
 <div class="line"><a id="l00879" name="l00879"></a><span class="lineno">  879</span>    <span class="comment">// Allocate frame</span></div>
-<div class="line"><a id="l00880" name="l00880"></a><span class="lineno">  880</span>    <a class="code hl_typedef" href="namespacerogue_1_1protocols_1_1rssi.html#a7c40e2fe0bc2c102751b8ba7d92e061e">rpr::HeaderPtr</a> ack = rpr::Header::create(tran_-&gt;reqFrame(rpr::Header::HeaderSize, <span class="keyword">false</span>));</div>
+<div class="line"><a id="l00880" name="l00880"></a><span class="lineno">  880</span>    rpr::HeaderPtr ack = rpr::Header::create(tran_-&gt;reqFrame(rpr::Header::HeaderSize, <span class="keyword">false</span>));</div>
 <div class="line"><a id="l00881" name="l00881"></a><span class="lineno">  881</span> </div>
 <div class="line"><a id="l00882" name="l00882"></a><span class="lineno">  882</span>    <span class="comment">// Setup frame</span></div>
 <div class="line"><a id="l00883" name="l00883"></a><span class="lineno">  883</span>    ack-&gt;ack  = <span class="keyword">true</span>;</div>
@@ -1021,7 +1021,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00893" name="l00893"></a><span class="lineno">  893</span>}</div>
 <div class="line"><a id="l00894" name="l00894"></a><span class="lineno">  894</span> </div>
 <div class="line"><a id="l00896" name="l00896"></a><span class="lineno">  896</span><span class="keyword">struct </span>timeval&amp; rpr::Controller::stateOpen() {</div>
-<div class="line"><a id="l00897" name="l00897"></a><span class="lineno">  897</span>    <a class="code hl_typedef" href="namespacerogue_1_1protocols_1_1rssi.html#a7c40e2fe0bc2c102751b8ba7d92e061e">rpr::HeaderPtr</a> head;</div>
+<div class="line"><a id="l00897" name="l00897"></a><span class="lineno">  897</span>    rpr::HeaderPtr head;</div>
 <div class="line"><a id="l00898" name="l00898"></a><span class="lineno">  898</span>    uint8_t idx;</div>
 <div class="line"><a id="l00899" name="l00899"></a><span class="lineno">  899</span>    <span class="keywordtype">bool</span> doNull;</div>
 <div class="line"><a id="l00900" name="l00900"></a><span class="lineno">  900</span>    uint8_t ackPend;</div>
@@ -1075,7 +1075,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00948" name="l00948"></a><span class="lineno">  948</span>}</div>
 <div class="line"><a id="l00949" name="l00949"></a><span class="lineno">  949</span> </div>
 <div class="line"><a id="l00951" name="l00951"></a><span class="lineno">  951</span><span class="keyword">struct </span>timeval&amp; rpr::Controller::stateError() {</div>
-<div class="line"><a id="l00952" name="l00952"></a><span class="lineno">  952</span>    <a class="code hl_typedef" href="namespacerogue_1_1protocols_1_1rssi.html#a7c40e2fe0bc2c102751b8ba7d92e061e">rpr::HeaderPtr</a> rst;</div>
+<div class="line"><a id="l00952" name="l00952"></a><span class="lineno">  952</span>    rpr::HeaderPtr rst;</div>
 <div class="line"><a id="l00953" name="l00953"></a><span class="lineno">  953</span> </div>
 <div class="line"><a id="l00954" name="l00954"></a><span class="lineno">  954</span>    log_-&gt;warning(<span class="stringliteral">&quot;Entering reset state. Server=%d&quot;</span>, server_);</div>
 <div class="line"><a id="l00955" name="l00955"></a><span class="lineno">  955</span> </div>
@@ -1121,11 +1121,8 @@ $(document).ready(function() { init_codefold(0); });
 <div class="ttc" id="anamespacerogue_1_1interfaces_1_1stream_html_a824a61cf20fd9ff702587cafaeb7c15f"><div class="ttname"><a href="namespacerogue_1_1interfaces_1_1stream.html#a824a61cf20fd9ff702587cafaeb7c15f">rogue::interfaces::stream::BufferPtr</a></div><div class="ttdeci">std::shared_ptr&lt; rogue::interfaces::stream::Buffer &gt; BufferPtr</div><div class="ttdoc">Shared pointer alias for Buffer.</div><div class="ttdef"><b>Definition</b> <a href="Buffer_8h_source.html#l00270">Buffer.h:270</a></div></div>
 <div class="ttc" id="anamespacerogue_1_1interfaces_1_1stream_html_aabbfca1143d6d05a2bb0afc11e667778"><div class="ttname"><a href="namespacerogue_1_1interfaces_1_1stream.html#aabbfca1143d6d05a2bb0afc11e667778">rogue::interfaces::stream::FramePtr</a></div><div class="ttdeci">std::shared_ptr&lt; rogue::interfaces::stream::Frame &gt; FramePtr</div><div class="ttdoc">Shared pointer alias for Frame.</div><div class="ttdef"><b>Definition</b> <a href="Frame_8h_source.html#l00549">Frame.h:549</a></div></div>
 <div class="ttc" id="anamespacerogue_1_1interfaces_1_1stream_html_ad282a6c7aa64c4607580c16125f88308"><div class="ttname"><a href="namespacerogue_1_1interfaces_1_1stream.html#ad282a6c7aa64c4607580c16125f88308">rogue::interfaces::stream::FrameLockPtr</a></div><div class="ttdeci">std::shared_ptr&lt; rogue::interfaces::stream::FrameLock &gt; FrameLockPtr</div><div class="ttdoc">Shared pointer alias for FrameLock.</div><div class="ttdef"><b>Definition</b> <a href="FrameLock_8h_source.html#l00110">FrameLock.h:110</a></div></div>
+<div class="ttc" id="anamespacerogue_1_1protocols_1_1rocev2_html"><div class="ttname"><a href="namespacerogue_1_1protocols_1_1rocev2.html">rogue::protocols::rocev2</a></div><div class="ttdef"><b>Definition</b> <a href="rocev2_2Core_8h_source.html#l00031">Core.h:31</a></div></div>
 <div class="ttc" id="anamespacerogue_1_1protocols_1_1rssi_html"><div class="ttname"><a href="namespacerogue_1_1protocols_1_1rssi.html">rogue::protocols::rssi</a></div><div class="ttdef"><b>Definition</b> <a href="rssi_2Application_8h_source.html#l00031">Application.h:31</a></div></div>
-<div class="ttc" id="anamespacerogue_1_1protocols_1_1rssi_html_a12eea2c159254ef846e6d2ab740ceb02"><div class="ttname"><a href="namespacerogue_1_1protocols_1_1rssi.html#a12eea2c159254ef846e6d2ab740ceb02">rogue::protocols::rssi::TransportPtr</a></div><div class="ttdeci">std::shared_ptr&lt; rogue::protocols::rssi::Transport &gt; TransportPtr</div><div class="ttdef"><b>Definition</b> <a href="rssi_2Transport_8h_source.html#l00091">Transport.h:91</a></div></div>
-<div class="ttc" id="anamespacerogue_1_1protocols_1_1rssi_html_a3f35628c60465892f54a7653844e13ce"><div class="ttname"><a href="namespacerogue_1_1protocols_1_1rssi.html#a3f35628c60465892f54a7653844e13ce">rogue::protocols::rssi::ApplicationPtr</a></div><div class="ttdeci">std::shared_ptr&lt; rogue::protocols::rssi::Application &gt; ApplicationPtr</div><div class="ttdef"><b>Definition</b> <a href="rssi_2Application_8h_source.html#l00123">Application.h:123</a></div></div>
-<div class="ttc" id="anamespacerogue_1_1protocols_1_1rssi_html_a7c40e2fe0bc2c102751b8ba7d92e061e"><div class="ttname"><a href="namespacerogue_1_1protocols_1_1rssi.html#a7c40e2fe0bc2c102751b8ba7d92e061e">rogue::protocols::rssi::HeaderPtr</a></div><div class="ttdeci">std::shared_ptr&lt; rogue::protocols::rssi::Header &gt; HeaderPtr</div><div class="ttdef"><b>Definition</b> <a href="Header_8h_source.html#l00201">Header.h:201</a></div></div>
-<div class="ttc" id="anamespacerogue_1_1protocols_1_1rssi_html_ab9e572ed9e6f11586dbe0029d4c9aaae"><div class="ttname"><a href="namespacerogue_1_1protocols_1_1rssi.html#ab9e572ed9e6f11586dbe0029d4c9aaae">rogue::protocols::rssi::ControllerPtr</a></div><div class="ttdeci">std::shared_ptr&lt; rogue::protocols::rssi::Controller &gt; ControllerPtr</div><div class="ttdef"><b>Definition</b> <a href="rssi_2Controller_8h_source.html#l00452">Controller.h:452</a></div></div>
 <div class="ttc" id="anamespacerogue_html_ad9c9c8610f0fbf0677311aea1ee0b1b0"><div class="ttname"><a href="namespacerogue.html#ad9c9c8610f0fbf0677311aea1ee0b1b0">rogue::defaultTimeout</a></div><div class="ttdeci">void defaultTimeout(struct timeval &amp;tout)</div><div class="ttdoc">Returns Rogue default timeout as a timeval.</div><div class="ttdef"><b>Definition</b> <a href="Helpers_8h_source.html#l00049">Helpers.h:49</a></div></div>
 <div class="ttc" id="arssi_2Application_8h_html"><div class="ttname"><a href="rssi_2Application_8h.html">Application.h</a></div></div>
 <div class="ttc" id="arssi_2Controller_8h_html"><div class="ttname"><a href="rssi_2Controller_8h.html">Controller.h</a></div></div>

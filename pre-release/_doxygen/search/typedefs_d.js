@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['serverptr_0',['serverptr',['../namespacerogue_1_1protocols_1_1rssi.html#a1e90e7e7bf1116a5772f637df2c6be20',1,'rogue::protocols::rssi::ServerPtr'],['../namespacerogue_1_1protocols_1_1udp.html#a519f8e7ad05401733db44167e1fd0c87',1,'rogue::protocols::udp::ServerPtr']]],
+  ['serverptr_0',['serverptr',['../namespacerogue_1_1protocols_1_1rssi.html#a1e90e7e7bf1116a5772f637df2c6be20',1,'rogue::protocols::rssi::ServerPtr'],['../namespacerogue_1_1protocols_1_1udp.html#a519f8e7ad05401733db44167e1fd0c87',1,'rogue::protocols::udp::ServerPtr'],['../namespacerogue_1_1protocols_1_1rocev2.html#a1f3e7211c88c50c02e6e84a77fa0992e',1,'rogue::protocols::rocev2::ServerPtr']]],
   ['slaveptr_1',['slaveptr',['../namespacerogue_1_1interfaces_1_1memory.html#a0ae7d54d7f7d1fc7978fa98a10a80cad',1,'rogue::interfaces::memory::SlavePtr'],['../namespacerogue_1_1interfaces_1_1stream.html#a62f9a9320c2fd274e6b34855c70d0a9d',1,'rogue::interfaces::stream::SlavePtr']]],
   ['slavewrapptr_2',['slavewrapptr',['../namespacerogue_1_1interfaces_1_1memory.html#a649038a61d3e58d82e5bb19065a006e3',1,'rogue::interfaces::memory::SlaveWrapPtr'],['../namespacerogue_1_1interfaces_1_1stream.html#a14d97174fcbb15c281155ba76b7bd4de',1,'rogue::interfaces::stream::SlaveWrapPtr']]],
   ['splitterv1ptr_3',['SplitterV1Ptr',['../namespacerogue_1_1protocols_1_1batcher.html#adb5eff9a4e9e87b8898de499086a4f55',1,'rogue::protocols::batcher']]],

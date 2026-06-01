@@ -94,7 +94,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="preprocessor">#include &quot;<a class="code" href="rssi_2Controller_8h.html">rogue/protocols/rssi/Controller.h</a>&quot;</span></div>
 <div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="preprocessor">#include &quot;<a class="code" href="rssi_2Transport_8h.html">rogue/protocols/rssi/Transport.h</a>&quot;</span></div>
 <div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span> </div>
-<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacerogue_1_1protocols_1_1rssi.html">rpr</a> = <a class="code hl_namespace" href="namespacerogue_1_1protocols_1_1rssi.html">rogue::protocols::rssi</a>;</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacerogue_1_1protocols_1_1rocev2.html">rpr</a> = <a class="code hl_namespace" href="namespacerogue_1_1protocols_1_1rssi.html">rogue::protocols::rssi</a>;</div>
 <div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacerogue_1_1interfaces_1_1stream.html">ris</a> = <a class="code hl_namespace" href="namespacerogue_1_1interfaces_1_1stream.html">rogue::interfaces::stream</a>;</div>
 <div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span> </div>
 <div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span><span class="preprocessor">#ifndef NO_PYTHON</span></div>
@@ -103,8 +103,8 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span><span class="preprocessor">#endif</span></div>
 <div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span> </div>
 <div class="foldopen" id="foldopen00038" data-start="{" data-end="}">
-<div class="line"><a id="l00038" name="l00038"></a><span class="lineno"><a class="line" href="classrogue_1_1protocols_1_1rssi_1_1Server.html#a267854d7690c48c6c4a163ec0900b68c">   38</a></span><a class="code hl_typedef" href="namespacerogue_1_1protocols_1_1rssi.html#a1e90e7e7bf1116a5772f637df2c6be20">rpr::ServerPtr</a> rpr::Server::create(uint32_t segSize) {</div>
-<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>    <a class="code hl_typedef" href="namespacerogue_1_1protocols_1_1rssi.html#a1e90e7e7bf1116a5772f637df2c6be20">rpr::ServerPtr</a> r = std::make_shared&lt;rpr::Server&gt;(segSize);</div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno"><a class="line" href="classrogue_1_1protocols_1_1rssi_1_1Server.html#a267854d7690c48c6c4a163ec0900b68c">   38</a></span><a class="code hl_typedef" href="namespacerogue_1_1protocols_1_1rocev2.html#a1f3e7211c88c50c02e6e84a77fa0992e">rpr::ServerPtr</a> rpr::Server::create(uint32_t segSize) {</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>    <a class="code hl_typedef" href="namespacerogue_1_1protocols_1_1rocev2.html#a1f3e7211c88c50c02e6e84a77fa0992e">rpr::ServerPtr</a> r = std::make_shared&lt;rpr::Server&gt;(segSize);</div>
 <div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>    <span class="keywordflow">return</span> (r);</div>
 <div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>}</div>
 </div>
@@ -173,13 +173,13 @@ $(document).ready(function() { init_codefold(0); });
 </div>
 <div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span> </div>
 <div class="foldopen" id="foldopen00103" data-start="{" data-end="}">
-<div class="line"><a id="l00103" name="l00103"></a><span class="lineno"><a class="line" href="classrogue_1_1protocols_1_1rssi_1_1Server.html#a8b734ba3a6bcff05304bc84a9e6209ad">  103</a></span><a class="code hl_typedef" href="namespacerogue_1_1protocols_1_1rssi.html#a12eea2c159254ef846e6d2ab740ceb02">rpr::TransportPtr</a> rpr::Server::transport() {</div>
+<div class="line"><a id="l00103" name="l00103"></a><span class="lineno"><a class="line" href="classrogue_1_1protocols_1_1rssi_1_1Server.html#a8b734ba3a6bcff05304bc84a9e6209ad">  103</a></span>rpr::TransportPtr rpr::Server::transport() {</div>
 <div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span>    <span class="keywordflow">return</span> (tran_);</div>
 <div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span>}</div>
 </div>
 <div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span> </div>
 <div class="foldopen" id="foldopen00108" data-start="{" data-end="}">
-<div class="line"><a id="l00108" name="l00108"></a><span class="lineno"><a class="line" href="classrogue_1_1protocols_1_1rssi_1_1Server.html#a7a87834cccf82b9b2bfe42c9a43634bc">  108</a></span><a class="code hl_typedef" href="namespacerogue_1_1protocols_1_1rssi.html#a3f35628c60465892f54a7653844e13ce">rpr::ApplicationPtr</a> rpr::Server::application() {</div>
+<div class="line"><a id="l00108" name="l00108"></a><span class="lineno"><a class="line" href="classrogue_1_1protocols_1_1rssi_1_1Server.html#a7a87834cccf82b9b2bfe42c9a43634bc">  108</a></span>rpr::ApplicationPtr rpr::Server::application() {</div>
 <div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span>    <span class="keywordflow">return</span> (app_);</div>
 <div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span>}</div>
 </div>
@@ -397,10 +397,9 @@ $(document).ready(function() { init_codefold(0); });
 <div class="ttc" id="aGeneralError_8h_html"><div class="ttname"><a href="GeneralError_8h.html">GeneralError.h</a></div></div>
 <div class="ttc" id="aGilRelease_8h_html"><div class="ttname"><a href="GilRelease_8h.html">GilRelease.h</a></div></div>
 <div class="ttc" id="anamespacerogue_1_1interfaces_1_1stream_html"><div class="ttname"><a href="namespacerogue_1_1interfaces_1_1stream.html">rogue::interfaces::stream</a></div><div class="ttdef"><b>Definition</b> <a href="Buffer_8h_source.html#l00029">Buffer.h:29</a></div></div>
+<div class="ttc" id="anamespacerogue_1_1protocols_1_1rocev2_html"><div class="ttname"><a href="namespacerogue_1_1protocols_1_1rocev2.html">rogue::protocols::rocev2</a></div><div class="ttdef"><b>Definition</b> <a href="rocev2_2Core_8h_source.html#l00031">Core.h:31</a></div></div>
+<div class="ttc" id="anamespacerogue_1_1protocols_1_1rocev2_html_a1f3e7211c88c50c02e6e84a77fa0992e"><div class="ttname"><a href="namespacerogue_1_1protocols_1_1rocev2.html#a1f3e7211c88c50c02e6e84a77fa0992e">rogue::protocols::rocev2::ServerPtr</a></div><div class="ttdeci">std::shared_ptr&lt; rogue::protocols::rocev2::Server &gt; ServerPtr</div><div class="ttdef"><b>Definition</b> <a href="rocev2_2Server_8h_source.html#l00150">Server.h:150</a></div></div>
 <div class="ttc" id="anamespacerogue_1_1protocols_1_1rssi_html"><div class="ttname"><a href="namespacerogue_1_1protocols_1_1rssi.html">rogue::protocols::rssi</a></div><div class="ttdef"><b>Definition</b> <a href="rssi_2Application_8h_source.html#l00031">Application.h:31</a></div></div>
-<div class="ttc" id="anamespacerogue_1_1protocols_1_1rssi_html_a12eea2c159254ef846e6d2ab740ceb02"><div class="ttname"><a href="namespacerogue_1_1protocols_1_1rssi.html#a12eea2c159254ef846e6d2ab740ceb02">rogue::protocols::rssi::TransportPtr</a></div><div class="ttdeci">std::shared_ptr&lt; rogue::protocols::rssi::Transport &gt; TransportPtr</div><div class="ttdef"><b>Definition</b> <a href="rssi_2Transport_8h_source.html#l00091">Transport.h:91</a></div></div>
-<div class="ttc" id="anamespacerogue_1_1protocols_1_1rssi_html_a1e90e7e7bf1116a5772f637df2c6be20"><div class="ttname"><a href="namespacerogue_1_1protocols_1_1rssi.html#a1e90e7e7bf1116a5772f637df2c6be20">rogue::protocols::rssi::ServerPtr</a></div><div class="ttdeci">std::shared_ptr&lt; rogue::protocols::rssi::Server &gt; ServerPtr</div><div class="ttdef"><b>Definition</b> <a href="rssi_2Server_8h_source.html#l00220">Server.h:220</a></div></div>
-<div class="ttc" id="anamespacerogue_1_1protocols_1_1rssi_html_a3f35628c60465892f54a7653844e13ce"><div class="ttname"><a href="namespacerogue_1_1protocols_1_1rssi.html#a3f35628c60465892f54a7653844e13ce">rogue::protocols::rssi::ApplicationPtr</a></div><div class="ttdeci">std::shared_ptr&lt; rogue::protocols::rssi::Application &gt; ApplicationPtr</div><div class="ttdef"><b>Definition</b> <a href="rssi_2Application_8h_source.html#l00123">Application.h:123</a></div></div>
 <div class="ttc" id="arssi_2Application_8h_html"><div class="ttname"><a href="rssi_2Application_8h.html">Application.h</a></div></div>
 <div class="ttc" id="arssi_2Controller_8h_html"><div class="ttname"><a href="rssi_2Controller_8h.html">Controller.h</a></div></div>
 <div class="ttc" id="arssi_2Server_8h_html"><div class="ttname"><a href="rssi_2Server_8h.html">Server.h</a></div></div>

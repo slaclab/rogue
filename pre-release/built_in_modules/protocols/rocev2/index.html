@@ -1,0 +1,384 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RoCEv2 Protocol &mdash; Rogue v6.13.0-61-gbf6bec6bf documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=64e423ba" />
+
+  
+    <link rel="shortcut icon" href="../../../_static/slac-favicon-192.png"/>
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=fe15107f"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../_static/custom.js?v=51977998"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Packetizer Protocol" href="../packetizer/index.html" />
+    <link rel="prev" title="RSSI Protocol Server" href="../rssi/server.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <nav class="rogue-docs-links" aria-label="Rogue tools">
+    <a class="rogue-docs-links__item" data-rogue-perf-dashboard href="#">Performance dashboard</a>
+  </nav>
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Built-in Modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../interfaces/index.html">Interfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../simulation/index.html">Simulation Utilities</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">Protocols</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../udp/index.html">UDP Protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../rssi/index.html">RSSI Protocol</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">RoCEv2 Protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../packetizer/index.html">Packetizer Protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../network.html">Network Wrapper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../batcher/index.html">Batcher Protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../epicsV4/index.html">EPICS V4 Access</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../epicsV7/index.html">EPICS V7 Access</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../srp/index.html">SRP Protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../xilinx/index.html">Xilinx Protocols</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../uart.html">UART Memory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gpib.html">GPIB Control</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../hardware/index.html">Hardware</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utilities/index.html">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">API Reference</a></li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Built-in Modules</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Protocols</a></li>
+      <li class="breadcrumb-item active">RoCEv2 Protocol</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/built_in_modules/protocols/rocev2/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="rocev2-protocol">
+<span id="built-in-modules-protocols-rocev2"></span><span id="protocols-rocev2"></span><h1>RoCEv2 Protocol<a class="headerlink" href="#rocev2-protocol" title="Link to this heading"></a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">rogue.protocols.rocev2</span></code> is the C++/ibverbs-backed receive server for RDMA
+over Converged Ethernet v2 (RoCEv2). <code class="docutils literal notranslate"><span class="pre">Core</span></code> opens an ibverbs device and
+allocates a shared Protection Domain (PD); <code class="docutils literal notranslate"><span class="pre">Server</span></code> creates the Completion
+Queue, Queue Pair (type <code class="docutils literal notranslate"><span class="pre">IBV_QPT_RC</span></code>), and Memory Region, then polls for
+incoming RDMA WRITEs and forwards them as Rogue stream frames.</p>
+<p>The user-facing entry point is <code class="docutils literal notranslate"><span class="pre">pyrogue.protocols.RoCEv2Server</span></code> — a
+<code class="docutils literal notranslate"><span class="pre">pyrogue.Device</span></code> wrapper that owns the C++ server and the surf-side
+<code class="docutils literal notranslate"><span class="pre">RoceEngine</span></code> register block. It manages the QP handshake with the FPGA,
+exposes 15 <code class="docutils literal notranslate"><span class="pre">LocalVariable</span></code> status/configuration fields, and integrates
+cleanly into the standard PyRogue device tree via <code class="docutils literal notranslate"><span class="pre">Root.addInterface()</span></code>.</p>
+<section id="where-rocev2-fits-in-the-stack">
+<h2>Where RoCEv2 Fits In The Stack<a class="headerlink" href="#where-rocev2-fits-in-the-stack" title="Link to this heading"></a></h2>
+<p>Typical protocol stack:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>FPGA RoceEngine (surf) &lt;-&gt; RoCEv2 NIC &lt;-&gt; RoCEv2Server (C++ ibverbs + Python wrapper)
+                                                |
+                                        Rogue stream graph (channels via getChannel())
+</pre></div>
+</div>
+<p>The FPGA side runs a <code class="docutils literal notranslate"><span class="pre">surf.ethernet.roce._RoceEngine.RoceEngine</span></code> block that
+drives a metadata bus. <code class="docutils literal notranslate"><span class="pre">RoCEv2Server</span></code> reads QP parameters from that metadata
+bus during <code class="docutils literal notranslate"><span class="pre">_start()</span></code> to complete the RC connection setup. Once the QP
+reaches <code class="docutils literal notranslate"><span class="pre">IBV_QPS_RTS</span></code>, the FPGA issues RDMA WRITEs directly into the host
+Memory Region and the C++ completion-queue polling thread reassembles frames
+for the Rogue stream graph.</p>
+</section>
+<section id="key-classes">
+<h2>Key Classes<a class="headerlink" href="#key-classes" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">rogue.protocols.rocev2.Core</span></code>: opens the ibverbs device and allocates the
+shared Protection Domain (PD).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">rogue.protocols.rocev2.Server</span></code>: inherits <code class="docutils literal notranslate"><span class="pre">Core</span></code> plus stream <code class="docutils literal notranslate"><span class="pre">Master</span></code>
+and <code class="docutils literal notranslate"><span class="pre">Slave</span></code>. Owns the Completion Queue (CQ), Queue Pair (QP, type
+<code class="docutils literal notranslate"><span class="pre">IBV_QPT_RC</span></code>), and Memory Region (MR), runs the RX completion-queue
+polling thread, and re-posts receive work requests as frames are returned
+by downstream consumers (zero-copy slab).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pyrogue.protocols.RoCEv2Server</span></code>: the PyRogue <code class="docutils literal notranslate"><span class="pre">Device</span></code> wrapper. Adds the
+<code class="docutils literal notranslate"><span class="pre">RoceEngine</span></code> child device (from <code class="docutils literal notranslate"><span class="pre">surf.ethernet.roce._RoceEngine</span></code>) and 15
+<code class="docutils literal notranslate"><span class="pre">LocalVariable</span></code> fields for status and configuration.</p></li>
+</ul>
+</section>
+<section id="when-to-use">
+<h2>When To Use<a class="headerlink" href="#when-to-use" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>You are talking to a RoCEv2-capable FPGA (e.g. the
+Simple-10GbE-RUDP-KCU105-Example <code class="docutils literal notranslate"><span class="pre">RoceEngine</span></code> block).</p></li>
+<li><p>You need higher throughput than UDP+RSSI provides on a 10/25/100 GbE link.</p></li>
+<li><p>You have a host NIC that supports RoCEv2 (Mellanox/NVIDIA <code class="docutils literal notranslate"><span class="pre">mlx5_*</span></code>) or you
+are developing against SoftRoCE (<code class="docutils literal notranslate"><span class="pre">rxe0</span></code>).</p></li>
+</ul>
+</section>
+<section id="operational-requirements">
+<h2>Operational Requirements<a class="headerlink" href="#operational-requirements" title="Link to this heading"></a></h2>
+<section id="jumbo-frame-mtu-9000-bytes">
+<h3>Jumbo-frame MTU (9000 bytes)<a class="headerlink" href="#jumbo-frame-mtu-9000-bytes" title="Link to this heading"></a></h3>
+<p>The RoCEv2 server defaults to a 9000-byte maximum payload per RDMA WRITE
+(<code class="docutils literal notranslate"><span class="pre">DefaultMaxPayload</span></code> in <code class="docutils literal notranslate"><span class="pre">include/rogue/protocols/rocev2/Core.h</span></code>). The
+host NIC and every switch in the path MUST be configured for a 9000-byte
+(or larger) MTU — typically:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Host NIC (replace with your interface)</span>
+sudo<span class="w"> </span>ip<span class="w"> </span>link<span class="w"> </span><span class="nb">set</span><span class="w"> </span>dev<span class="w"> </span>enp1s0f0<span class="w"> </span>mtu<span class="w"> </span><span class="m">9000</span>
+</pre></div>
+</div>
+<p>If any hop along the path uses a 1500-byte MTU, the FPGA will see RDMA
+WRITEs silently dropped or NACK’d. There is no graceful auto-fallback.</p>
+</section>
+<section id="softroce-rxe-development-workflow">
+<h3>SoftRoCE (rxe) development workflow<a class="headerlink" href="#softroce-rxe-development-workflow" title="Link to this heading"></a></h3>
+<p>For development without a RoCEv2 NIC, use the in-kernel <code class="docutils literal notranslate"><span class="pre">rdma_rxe</span></code>
+SoftRoCE driver. On Debian/Ubuntu install <code class="docutils literal notranslate"><span class="pre">rdma-core</span></code> and load the
+module:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>rdma-core<span class="w"> </span>ibverbs-utils
+sudo<span class="w"> </span>modprobe<span class="w"> </span>rdma_rxe
+sudo<span class="w"> </span>rdma<span class="w"> </span>link<span class="w"> </span>add<span class="w"> </span>rxe0<span class="w"> </span><span class="nb">type</span><span class="w"> </span>rxe<span class="w"> </span>netdev<span class="w"> </span>&lt;ifname&gt;
+ibv_devices<span class="w">    </span><span class="c1"># confirm rxe0 appears</span>
+</pre></div>
+</div>
+<p>Then pass <code class="docutils literal notranslate"><span class="pre">deviceName='rxe0'</span></code> to <code class="docutils literal notranslate"><span class="pre">RoCEv2Server</span></code>. SoftRoCE works for
+functional bring-up and CI but does not deliver the throughput of a
+hardware RoCEv2 NIC.</p>
+</section>
+<section id="surf-roceengine-dependency">
+<h3>surf RoceEngine dependency<a class="headerlink" href="#surf-roceengine-dependency" title="Link to this heading"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">RoCEv2Server</span></code> constructs a child device of type
+<code class="docutils literal notranslate"><span class="pre">surf.ethernet.roce._RoceEngine.RoceEngine</span></code> to drive the FPGA-side
+metadata-bus handshake. The <code class="docutils literal notranslate"><span class="pre">surf</span></code> Python package MUST be on the
+Python path. Pass <code class="docutils literal notranslate"><span class="pre">roceEngine=&lt;existing</span> <span class="pre">instance&gt;</span></code> if your tree
+already instantiates the engine elsewhere; otherwise pass
+<code class="docutils literal notranslate"><span class="pre">roceEngineOffset</span></code> and <code class="docutils literal notranslate"><span class="pre">roceMemBase</span></code> so <code class="docutils literal notranslate"><span class="pre">RoCEv2Server</span></code> can build
+its own.</p>
+</section>
+</section>
+<section id="python-example">
+<h2>Python Example<a class="headerlink" href="#python-example" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue.protocols</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">rogue.protocols.srp</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyRoot</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;MyRoot&#39;</span><span class="p">)</span>
+
+        <span class="c1"># SRP memBase for the RoceEngine register block</span>
+        <span class="n">srp</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">srp</span><span class="o">.</span><span class="n">SrpV3</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">RoCEv2Server</span><span class="p">(</span>
+            <span class="n">name</span>             <span class="o">=</span> <span class="s1">&#39;RoCEv2&#39;</span><span class="p">,</span>
+            <span class="n">ip</span>               <span class="o">=</span> <span class="s1">&#39;10.0.0.1&#39;</span><span class="p">,</span>     <span class="c1"># FPGA IP</span>
+            <span class="n">deviceName</span>       <span class="o">=</span> <span class="s1">&#39;rxe0&#39;</span><span class="p">,</span>          <span class="c1"># SoftRoCE or &#39;mlx5_0&#39;</span>
+            <span class="n">ibPort</span>           <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="n">gidIndex</span>         <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="n">maxPayload</span>       <span class="o">=</span> <span class="mi">9000</span><span class="p">,</span>            <span class="c1"># jumbo-frame MTU</span>
+            <span class="n">rxQueueDepth</span>     <span class="o">=</span> <span class="mi">256</span><span class="p">,</span>
+            <span class="n">roceEngineOffset</span> <span class="o">=</span> <span class="mh">0x00000000</span><span class="p">,</span>
+            <span class="n">roceMemBase</span>      <span class="o">=</span> <span class="n">srp</span><span class="p">,</span>
+        <span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addInterface</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">RoCEv2</span><span class="p">)</span>
+
+        <span class="c1"># Channel-filtered view (channel id = immediate value bits [7:0])</span>
+        <span class="n">data_ch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">RoCEv2</span><span class="o">.</span><span class="n">getChannel</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="logging">
+<h2>Logging<a class="headerlink" href="#logging" title="Link to this heading"></a></h2>
+<p>RoCEv2 protocol-state logging is emitted by the C++ server and the PyRogue
+wrapper via Rogue logging.</p>
+<p>Logger names:</p>
+<ul>
+<li><p>C++ core/server loggers (created via <code class="docutils literal notranslate"><span class="pre">rogue::Logging::create</span></code>):</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">rocev2.Core</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">rocev2.Server</span></code></p></li>
+</ul>
+</li>
+<li><p>PyRogue wrapper loggers are created via <code class="docutils literal notranslate"><span class="pre">pyrogue.logInit</span></code> and follow
+the <code class="docutils literal notranslate"><span class="pre">pyrogue.&lt;family&gt;.&lt;ClassName&gt;.&lt;path&gt;</span></code> pattern. <code class="docutils literal notranslate"><span class="pre">RoCEv2Server</span></code>
+is a <code class="docutils literal notranslate"><span class="pre">pyrogue.Device</span></code>, so its logger is:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pyrogue.Device.RoCEv2Server.&lt;path&gt;</span></code></p></li>
+</ul>
+<p>For the example above (<code class="docutils literal notranslate"><span class="pre">name='RoCEv2'</span></code> inside <code class="docutils literal notranslate"><span class="pre">MyRoot</span></code>), the
+wrapper logger is <code class="docutils literal notranslate"><span class="pre">pyrogue.Device.RoCEv2Server.MyRoot.RoCEv2</span></code>.</p>
+</li>
+<li><p>Unified Logging API examples:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pyrogue.setLogLevel('rocev2.Server',</span> <span class="pre">'DEBUG')</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pyrogue.setLogLevel('pyrogue.Device.RoCEv2Server.MyRoot.RoCEv2',</span> <span class="pre">'DEBUG')</span></code></p></li>
+</ul>
+</li>
+<li><p>Legacy Logging API example:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">rogue.Logging.setFilter('rocev2.Server',</span> <span class="pre">rogue.Logging.Debug)</span></code></p></li>
+</ul>
+</li>
+</ul>
+<p>These loggers are most useful when debugging QP bring-up, metadata-bus
+handshake failures, and RC connection state transitions.</p>
+</section>
+<section id="troubleshooting">
+<h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading"></a></h2>
+<section id="stale-fpga-resources-after-a-crash">
+<h3>Stale FPGA resources after a crash<a class="headerlink" href="#stale-fpga-resources-after-a-crash" title="Link to this heading"></a></h3>
+<p>If a previous session crashed or was killed without a clean <code class="docutils literal notranslate"><span class="pre">Root.stop()</span></code>,
+the FPGA RoCEv2 engine may still hold a PD, MR, or QP from that session.
+The next <code class="docutils literal notranslate"><span class="pre">_start()</span></code> call will fail with a <code class="docutils literal notranslate"><span class="pre">rogue.GeneralError</span></code> whose
+message includes:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>FPGA PD allocation failed — the FPGA RoCEv2 engine likely has stale
+resources from a previous session that crashed without a clean teardown.
+Reprogram the FPGA bitfile to reset its state.
+</pre></div>
+</div>
+<p>The same guidance appears for MR and QP allocation failures. The firmware
+provides no way to enumerate existing resources without knowing the QPN in
+advance, so a reprogram is the only reliable recovery path.</p>
+</section>
+<section id="mr-length-exceeds-32-bit-metadata-bus-field">
+<h3>MR length exceeds 32-bit metadata-bus field<a class="headerlink" href="#mr-length-exceeds-32-bit-metadata-bus-field" title="Link to this heading"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">RoCEv2Server._start()</span></code> computes the FPGA-side Memory Region length as
+<code class="docutils literal notranslate"><span class="pre">maxPayload</span> <span class="pre">*</span> <span class="pre">rxQueueDepth</span></code>. If this product is &gt;= 2<sup>32</sup> (4 GiB),
+the value cannot be represented in the 32-bit <code class="docutils literal notranslate"><span class="pre">length</span></code> field of the
+metadata bus and <code class="docutils literal notranslate"><span class="pre">_start()</span></code> raises a <code class="docutils literal notranslate"><span class="pre">rogue.GeneralError</span></code>:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>FPGA MR length ... bytes (... GiB) exceeds the 32-bit field of the
+metadata bus. Reduce --roceMaxPay (...) or --roceQDepth (...).
+</pre></div>
+</div>
+<p>The default configuration (<code class="docutils literal notranslate"><span class="pre">maxPayload=9000</span></code>, <code class="docutils literal notranslate"><span class="pre">rxQueueDepth=256</span></code>,
+product ~2.3 MB) is four orders of magnitude below this limit. The guard
+protects against accidentally passing very large queue depths.</p>
+</section>
+<section id="qp-state-machine-enforcement">
+<h3>QP state-machine enforcement<a class="headerlink" href="#qp-state-machine-enforcement" title="Link to this heading"></a></h3>
+<p>The Python metadata-bus encoders (<code class="docutils literal notranslate"><span class="pre">_encode_modify_qp</span></code>,
+<code class="docutils literal notranslate"><span class="pre">_encode_err_qp</span></code>, <code class="docutils literal notranslate"><span class="pre">_encode_destroy_qp</span></code>) are stateless — they will
+encode and send any QP transition without checking whether it is valid.
+The <strong>FPGA state machine is the single source of truth</strong>: illegal
+transitions return <code class="docutils literal notranslate"><span class="pre">success=False</span></code>, which is raised as a
+<code class="docutils literal notranslate"><span class="pre">rogue.GeneralError</span></code> on the setup path and logged as a warning on the
+teardown path. No Python-side state mirror is maintained because it would
+become stale after a crash and block legitimate teardown attempts.</p>
+</section>
+</section>
+<section id="related-topics">
+<h2>Related Topics<a class="headerlink" href="#related-topics" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="../rssi/index.html"><span class="doc">RSSI Protocol</span></a></p></li>
+<li><p><a class="reference internal" href="../srp/index.html"><span class="doc">SRP Protocol</span></a></p></li>
+<li><p><a class="reference internal" href="../../../stream_interface/index.html"><span class="doc">Stream Interface</span></a></p></li>
+<li><p><a class="reference internal" href="../../../memory_interface/index.html"><span class="doc">Memory Interface</span></a></p></li>
+</ul>
+</section>
+<section id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>C++: <a class="reference internal" href="../../../api/cpp/protocols/rocev2/index.html"><span class="doc">rogue::protocols::rocev2</span></a></p></li>
+<li><p>Python (Boost.Python exports):
+<a class="reference internal" href="../../../api/python/rogue/protocols/rocev2/core.html"><span class="doc">Core</span></a>
+<a class="reference internal" href="../../../api/python/rogue/protocols/rocev2/server.html"><span class="doc">Server</span></a></p></li>
+<li><p>Python (PyRogue wrapper): <a class="reference internal" href="../../../api/python/pyrogue/protocols/rocev2.html"><span class="doc">RoCEv2Server</span></a></p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../rssi/server.html" class="btn btn-neutral float-left" title="RSSI Protocol Server" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../packetizer/index.html" class="btn btn-neutral float-right" title="Packetizer Protocol" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

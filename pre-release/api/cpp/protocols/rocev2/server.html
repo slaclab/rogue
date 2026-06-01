@@ -1,0 +1,393 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Server &mdash; Rogue v6.13.0-61-gbf6bec6bf documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom.css?v=64e423ba" />
+
+  
+    <link rel="shortcut icon" href="../../../../_static/slac-favicon-192.png"/>
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=fe15107f"></script>
+      <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../../_static/custom.js?v=51977998"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link rel="next" title="rogue::protocols::rssi" href="../rssi/index.html" />
+    <link rel="prev" title="Core" href="core.html" />
+   
+  <script>
+    window.ROGUE_DOCS = {
+      siteRoot: "/rogue"
+    };
+  </script>
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+  <nav class="rogue-docs-links" aria-label="Rogue tools">
+    <a class="rogue-docs-links__item" data-rogue-perf-dashboard href="#">Performance dashboard</a>
+  </nav>
+  <div class="rogue-docs-switcher" data-rogue-version-switcher hidden>
+    <label class="rogue-docs-switcher__label" for="rogue-docs-version-select">Docs version</label>
+    <select id="rogue-docs-version-select" class="rogue-docs-switcher__select" aria-label="Select documentation version"></select>
+    <a class="rogue-docs-switcher__all" data-rogue-all-versions href="#">All versions</a>
+  </div>
+      <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stream_interface/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../memory_interface/index.html">Memory Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../built_in_modules/index.html">Built-in Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pydm/index.html">Using The PyDM GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../cookbook/index.html">Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../migration/index.html">Migration Notes</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../../python/index.html">Python API</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../../index.html">C++ API</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../../rogue_index.html">rogue</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../interfaces_index.html">rogue::interfaces</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../../protocols_index.html">rogue::protocols</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../batcher/index.html">rogue::protocols::batcher</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../packetizer/index.html">rogue::protocols::packetizer</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="index.html">rogue::protocols::rocev2</a><ul class="current">
+<li class="toctree-l5"><a class="reference internal" href="core.html">Core</a></li>
+<li class="toctree-l5 current"><a class="current reference internal" href="#">Server</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../rssi/index.html">rogue::protocols::rssi</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../srp/index.html">rogue::protocols::srp</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../udp/index.html">rogue::protocols::udp</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../xilinx/index.html">rogue::protocols::xilinx</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../hardware_index.html">rogue::hardware</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../utilities_index.html">rogue::utilities</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+</div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">API Reference</a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">C++ API</a></li>
+          <li class="breadcrumb-item"><a href="../../protocols_index.html">rogue::protocols</a></li>
+          <li class="breadcrumb-item"><a href="index.html">rogue::protocols::rocev2</a></li>
+      <li class="breadcrumb-item active">Server</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../_sources/api/cpp/protocols/rocev2/server.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="server">
+<span id="protocols-rocev2-classes-server"></span><h1>Server<a class="headerlink" href="#server" title="Link to this heading"></a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">Server</span></code> is the RC QP receive server. It inherits <code class="docutils literal notranslate"><span class="pre">Core</span></code> for the
+ibverbs resources and inherits <code class="docutils literal notranslate"><span class="pre">rogue::interfaces::stream::Master</span></code> and
+<code class="docutils literal notranslate"><span class="pre">rogue::interfaces::stream::Slave</span></code> so it participates in the Rogue stream
+graph. A background thread polls the completion queue and re-posts receive
+work requests as downstream consumers release frames (zero-copy slab).</p>
+<p>For conceptual guidance, see <a class="reference internal" href="../../../../built_in_modules/protocols/rocev2/index.html"><span class="doc">RoCEv2 Protocol</span></a>.</p>
+<section id="threading-and-lifecycle">
+<h2>Threading and Lifecycle<a class="headerlink" href="#threading-and-lifecycle" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>The constructor allocates the slab, MR, CQ, and RC QP and transitions
+the QP to <code class="docutils literal notranslate"><span class="pre">INIT</span></code>. It does <strong>not</strong> spawn the background poll thread.</p></li>
+<li><p>The receive thread is started by <code class="docutils literal notranslate"><span class="pre">completeConnection()</span></code> once the
+FPGA QPN is known and the QP has been moved to <code class="docutils literal notranslate"><span class="pre">RTR</span></code> / <code class="docutils literal notranslate"><span class="pre">RTS</span></code>. It
+is stopped by <code class="docutils literal notranslate"><span class="pre">stop()</span></code> or the destructor.</p></li>
+<li><p>The poll thread holds <code class="docutils literal notranslate"><span class="pre">rogue::GilRelease</span></code> across blocking ibverbs
+calls.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">IBV_WC_WR_FLUSH_ERR</span></code> exits the thread cleanly instead of spin-looping.</p></li>
+<li><p>An ibverbs failure inside <code class="docutils literal notranslate"><span class="pre">postRecvWr()</span></code> is caught inside the poll
+thread; the thread logs the error and exits cleanly instead of
+escaping the thread entry point and triggering <code class="docutils literal notranslate"><span class="pre">std::terminate</span></code>.</p></li>
+</ul>
+</section>
+<section id="python-binding">
+<h2>Python binding<a class="headerlink" href="#python-binding" title="Link to this heading"></a></h2>
+<p>This C++ class is also exported into Python as
+<code class="docutils literal notranslate"><span class="pre">rogue.protocols.rocev2.Server</span></code>.</p>
+<p>Python API page:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../../../python/rogue/protocols/rocev2/server.html"><span class="doc">Server</span></a></p></li>
+</ul>
+</section>
+<section id="class-reference">
+<h2>Class Reference<a class="headerlink" href="#class-reference" title="Link to this heading"></a></h2>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols6rocev26ServerE">
+<span id="_CPPv3N5rogue9protocols6rocev26ServerE"></span><span id="_CPPv2N5rogue9protocols6rocev26ServerE"></span><span id="rogue::protocols::rocev2::Server"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">protocols</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">rocev2</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">Server</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">protocols</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">rocev2</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="core.html#_CPPv4N5rogue9protocols6rocev24CoreE" title="rogue::protocols::rocev2::Core"><span class="n"><span class="pre">Core</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="../../interfaces/stream/master.html#_CPPv4N5rogue10interfaces6stream6MasterE" title="rogue::interfaces::stream::Master"><span class="n"><span class="pre">Master</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="../../interfaces/stream/slave.html#_CPPv4N5rogue10interfaces6stream5SlaveE" title="rogue::interfaces::stream::Slave"><span class="n"><span class="pre">Slave</span></span></a><a class="headerlink" href="#_CPPv4N5rogue9protocols6rocev26ServerE" title="Link to this definition"></a><br /></dt>
+<dd><p>RC Queue Pair receive server. Owns the Completion Queue (CQ), Queue
+Pair (QP, type <code class="docutils literal notranslate"><span class="pre">IBV_QPT_RC</span></code>), and Memory Region (MR), runs the RX
+completion-queue polling thread, and re-posts receive work requests
+as frames are returned by downstream consumers (zero-copy slab).</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols6rocev26Server6createERKNSt6stringE7uint8_t7uint8_t8uint32_t8uint32_t">
+<span id="_CPPv3N5rogue9protocols6rocev26Server6createERKNSt6stringE7uint8_t7uint8_t8uint32_t8uint32_t"></span><span id="_CPPv2N5rogue9protocols6rocev26Server6createERKNSt6stringE7uint8_t7uint8_t8uint32_t8uint32_t"></span><span id="rogue::protocols::rocev2::Server::create__ssCR.uint8_t.uint8_t.uint32_t.uint32_t"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4N5rogue9protocols6rocev26ServerE" title="rogue::protocols::rocev2::Server"><span class="n"><span class="pre">Server</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">create</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">deviceName</span></span>, <span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">ibPort</span></span>, <span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">gidIndex</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">maxPayload</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">9000</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">rxQueueDepth</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">256</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols6rocev26Server6createERKNSt6stringE7uint8_t7uint8_t8uint32_t8uint32_t" title="Link to this definition"></a><br /></dt>
+<dd><p>Factory method. Returns a shared pointer to a new <code class="docutils literal notranslate"><span class="pre">Server</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>deviceName</strong> – ibverbs device name (e.g. <code class="docutils literal notranslate"><span class="pre">rxe0</span></code>, <code class="docutils literal notranslate"><span class="pre">mlx5_0</span></code>)</p></li>
+<li><p><strong>ibPort</strong> – ibverbs port number (almost always <code class="docutils literal notranslate"><span class="pre">1</span></code>)</p></li>
+<li><p><strong>gidIndex</strong> – GID table index for the host NIC’s RoCEv2 entry</p></li>
+<li><p><strong>maxPayload</strong> – maximum bytes per RDMA WRITE (default: 9000)</p></li>
+<li><p><strong>rxQueueDepth</strong> – number of pre-posted receive slots (default: 256)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">ServerPtr</span></code> (shared pointer to the new server)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols6rocev26Server6ServerERKNSt6stringE7uint8_t7uint8_t8uint32_t8uint32_t">
+<span id="_CPPv3N5rogue9protocols6rocev26Server6ServerERKNSt6stringE7uint8_t7uint8_t8uint32_t8uint32_t"></span><span id="_CPPv2N5rogue9protocols6rocev26Server6ServerERKNSt6stringE7uint8_t7uint8_t8uint32_t8uint32_t"></span><span id="rogue::protocols::rocev2::Server::Server__ssCR.uint8_t.uint8_t.uint32_t.uint32_t"></span><span class="sig-name descname"><span class="n"><span class="pre">Server</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">deviceName</span></span>, <span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">ibPort</span></span>, <span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">gidIndex</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">maxPayload</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">rxQueueDepth</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols6rocev26Server6ServerERKNSt6stringE7uint8_t7uint8_t8uint32_t8uint32_t" title="Link to this definition"></a><br /></dt>
+<dd><p>Constructor. Allocates the slab memory region, registers it with the
+HCA, creates the CQ and RC QP, and transitions the QP to <code class="docutils literal notranslate"><span class="pre">INIT</span></code>.
+The receive thread is <strong>not</strong> started here — it is spawned later by
+<code class="docutils literal notranslate"><span class="pre">completeConnection()</span></code> after the FPGA QPN is known. Throws
+<code class="docutils literal notranslate"><span class="pre">rogue::GeneralError</span></code> on ibverbs failures; partial-init resources
+are released before the throw propagates.</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols6rocev26ServerD0Ev">
+<span id="_CPPv3N5rogue9protocols6rocev26ServerD0Ev"></span><span id="_CPPv2N5rogue9protocols6rocev26ServerD0Ev"></span><span id="rogue::protocols::rocev2::Server::~Server"></span><span class="sig-name descname"><span class="n"><span class="pre">~Server</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols6rocev26ServerD0Ev" title="Link to this definition"></a><br /></dt>
+<dd><p>Calls <code class="docutils literal notranslate"><span class="pre">stop()</span></code>; <code class="docutils literal notranslate"><span class="pre">stop()</span></code> releases the slab MR and CQ/QP
+resources, and the inherited <code class="docutils literal notranslate"><span class="pre">Core</span></code> destructor releases the PD
+and ibverbs context.</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols6rocev26Server4stopEv">
+<span id="_CPPv3N5rogue9protocols6rocev26Server4stopEv"></span><span id="_CPPv2N5rogue9protocols6rocev26Server4stopEv"></span><span id="rogue::protocols::rocev2::Server::stop"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">stop</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols6rocev26Server4stopEv" title="Link to this definition"></a><br /></dt>
+<dd><p>Signals the receive thread to exit, joins and deletes it, then
+releases the ibverbs resources owned by <code class="docutils literal notranslate"><span class="pre">Server</span></code>: destroys the
+QP and CQ, deregisters the MR, and frees the slab. Idempotent —
+safe to call multiple times (also called by <code class="docutils literal notranslate"><span class="pre">~Server()</span></code>).</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols6rocev26Server10setFpgaGidERKNSt6stringE">
+<span id="_CPPv3N5rogue9protocols6rocev26Server10setFpgaGidERKNSt6stringE"></span><span id="_CPPv2N5rogue9protocols6rocev26Server10setFpgaGidERKNSt6stringE"></span><span id="rogue::protocols::rocev2::Server::setFpgaGid__ssCR"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setFpgaGid</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">gidBytes</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols6rocev26Server10setFpgaGidERKNSt6stringE" title="Link to this definition"></a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>gidBytes</strong> – 16-byte FPGA GID (IPv4-mapped IPv6) as a raw byte string</p>
+</dd>
+</dl>
+<p>MUST be called before <code class="docutils literal notranslate"><span class="pre">completeConnection()</span></code>.</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols6rocev26Server18completeConnectionE8uint32_t8uint32_t8uint32_t8uint32_t">
+<span id="_CPPv3N5rogue9protocols6rocev26Server18completeConnectionE8uint32_t8uint32_t8uint32_t8uint32_t"></span><span id="_CPPv2N5rogue9protocols6rocev26Server18completeConnectionE8uint32_t8uint32_t8uint32_t8uint32_t"></span><span id="rogue::protocols::rocev2::Server::completeConnection__uint32_t.uint32_t.uint32_t.uint32_t"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">completeConnection</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">fpgaQpn</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">fpgaRqPsn</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">pmtu</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">5</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">minRnrTimer</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols6rocev26Server18completeConnectionE8uint32_t8uint32_t8uint32_t8uint32_t" title="Link to this definition"></a><br /></dt>
+<dd><p>Transitions the QP from <code class="docutils literal notranslate"><span class="pre">INIT</span></code> to <code class="docutils literal notranslate"><span class="pre">RTR</span></code> and then <code class="docutils literal notranslate"><span class="pre">RTS</span></code> using
+the FPGA’s QPN and RQ PSN.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fpgaQpn</strong> – FPGA QP number (24-bit)</p></li>
+<li><p><strong>fpgaRqPsn</strong> – FPGA receive-queue starting PSN</p></li>
+<li><p><strong>pmtu</strong> – Path MTU enum (1=256, 2=512, 3=1024, 4=2048, 5=4096; default: 5)</p></li>
+<li><p><strong>minRnrTimer</strong> – IB-spec RNR timer code (1=0.01ms, 14=1ms, 18=4ms, 22=16ms, 31=491ms; default: 1)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK5rogue9protocols6rocev26Server6getQpnEv">
+<span id="_CPPv3NK5rogue9protocols6rocev26Server6getQpnEv"></span><span id="_CPPv2NK5rogue9protocols6rocev26Server6getQpnEv"></span><span id="rogue::protocols::rocev2::Server::getQpnC"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getQpn</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK5rogue9protocols6rocev26Server6getQpnEv" title="Link to this definition"></a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Host RC QP number (24-bit).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK5rogue9protocols6rocev26Server6getGidEv">
+<span id="_CPPv3NK5rogue9protocols6rocev26Server6getGidEv"></span><span id="_CPPv2NK5rogue9protocols6rocev26Server6getGidEv"></span><span id="rogue::protocols::rocev2::Server::getGidC"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getGid</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK5rogue9protocols6rocev26Server6getGidEv" title="Link to this definition"></a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Host GID as a colon-separated 8-group hex string (NIC RoCEv2 address).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK5rogue9protocols6rocev26Server8getRqPsnEv">
+<span id="_CPPv3NK5rogue9protocols6rocev26Server8getRqPsnEv"></span><span id="_CPPv2NK5rogue9protocols6rocev26Server8getRqPsnEv"></span><span id="rogue::protocols::rocev2::Server::getRqPsnC"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getRqPsn</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK5rogue9protocols6rocev26Server8getRqPsnEv" title="Link to this definition"></a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Host receive-queue starting PSN. The FPGA’s send-queue PSN must match this.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK5rogue9protocols6rocev26Server8getSqPsnEv">
+<span id="_CPPv3NK5rogue9protocols6rocev26Server8getSqPsnEv"></span><span id="_CPPv2NK5rogue9protocols6rocev26Server8getSqPsnEv"></span><span id="rogue::protocols::rocev2::Server::getSqPsnC"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getSqPsn</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK5rogue9protocols6rocev26Server8getSqPsnEv" title="Link to this definition"></a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Host send-queue starting PSN. The FPGA’s receive-queue PSN must match this.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK5rogue9protocols6rocev26Server9getMrAddrEv">
+<span id="_CPPv3NK5rogue9protocols6rocev26Server9getMrAddrEv"></span><span id="_CPPv2NK5rogue9protocols6rocev26Server9getMrAddrEv"></span><span id="rogue::protocols::rocev2::Server::getMrAddrC"></span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getMrAddr</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK5rogue9protocols6rocev26Server9getMrAddrEv" title="Link to this definition"></a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Host MR virtual base address. The FPGA RDMA-WRITEs at this address.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK5rogue9protocols6rocev26Server9getMrRkeyEv">
+<span id="_CPPv3NK5rogue9protocols6rocev26Server9getMrRkeyEv"></span><span id="_CPPv2NK5rogue9protocols6rocev26Server9getMrRkeyEv"></span><span id="rogue::protocols::rocev2::Server::getMrRkeyC"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getMrRkey</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK5rogue9protocols6rocev26Server9getMrRkeyEv" title="Link to this definition"></a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Host MR rkey. Hand this to the FPGA so it can target the host MR.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK5rogue9protocols6rocev26Server13getFrameCountEv">
+<span id="_CPPv3NK5rogue9protocols6rocev26Server13getFrameCountEv"></span><span id="_CPPv2NK5rogue9protocols6rocev26Server13getFrameCountEv"></span><span id="rogue::protocols::rocev2::Server::getFrameCountC"></span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getFrameCount</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK5rogue9protocols6rocev26Server13getFrameCountEv" title="Link to this definition"></a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Total frames received since construction.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK5rogue9protocols6rocev26Server12getByteCountEv">
+<span id="_CPPv3NK5rogue9protocols6rocev26Server12getByteCountEv"></span><span id="_CPPv2NK5rogue9protocols6rocev26Server12getByteCountEv"></span><span id="rogue::protocols::rocev2::Server::getByteCountC"></span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getByteCount</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK5rogue9protocols6rocev26Server12getByteCountEv" title="Link to this definition"></a><br /></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Total bytes received since construction.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols6rocev26Server11acceptFrameEN5rogue10interfaces6stream8FramePtrE">
+<span id="_CPPv3N5rogue9protocols6rocev26Server11acceptFrameEN5rogue10interfaces6stream8FramePtrE"></span><span id="_CPPv2N5rogue9protocols6rocev26Server11acceptFrameEN5rogue10interfaces6stream8FramePtrE"></span><span id="rogue::protocols::rocev2::Server::acceptFrame__rogue::interfaces::stream::FramePtr"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">acceptFrame</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="../../interfaces/stream/frame.html#_CPPv4N5rogue10interfaces6stream8FramePtrE" title="rogue::interfaces::stream::FramePtr"><span class="n"><span class="pre">FramePtr</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">frame</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">override</span></span><a class="headerlink" href="#_CPPv4N5rogue9protocols6rocev26Server11acceptFrameEN5rogue10interfaces6stream8FramePtrE" title="Link to this definition"></a><br /></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">stream::Slave</span></code> override. RoCEv2 RX is currently one-directional
+(FPGA-to-host); <code class="docutils literal notranslate"><span class="pre">acceptFrame()</span></code> is intentionally a no-op for v1
+(TX support is tracked in FUT-01).</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols6rocev26Server12setup_pythonEv">
+<span id="_CPPv3N5rogue9protocols6rocev26Server12setup_pythonEv"></span><span id="_CPPv2N5rogue9protocols6rocev26Server12setup_pythonEv"></span><span id="rogue::protocols::rocev2::Server::setup_python"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setup_python</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols6rocev26Server12setup_pythonEv" title="Link to this definition"></a><br /></dt>
+<dd><p>Registers the <code class="docutils literal notranslate"><span class="pre">rogue.protocols.rocev2.Server</span></code> Boost.Python class
+and inherited-base conversions to <code class="docutils literal notranslate"><span class="pre">CorePtr</span></code>, <code class="docutils literal notranslate"><span class="pre">MasterPtr</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">SlavePtr</span></code>. Called by <code class="docutils literal notranslate"><span class="pre">module.cpp</span></code>.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="type-aliases">
+<h2>Type Aliases<a class="headerlink" href="#type-aliases" title="Link to this heading"></a></h2>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv49ServerPtr">
+<span id="_CPPv39ServerPtr"></span><span id="_CPPv29ServerPtr"></span><span class="k"><span class="pre">using</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ServerPtr</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">protocols</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">rocev2</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue9protocols6rocev26ServerE" title="rogue::protocols::rocev2::Server"><span class="n"><span class="pre">Server</span></span></a><span class="p"><span class="pre">&gt;</span></span><a class="headerlink" href="#_CPPv49ServerPtr" title="Link to this definition"></a><br /></dt>
+<dd><p>Shared-pointer alias used throughout <code class="docutils literal notranslate"><span class="pre">rogue::protocols::rocev2</span></code>.</p>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="core.html" class="btn btn-neutral float-left" title="Core" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../rssi/index.html" class="btn btn-neutral float-right" title="rogue::protocols::rssi" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

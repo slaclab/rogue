@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Protocols &mdash; Rogue v6.13.0-48-gec07d69ba documentation</title>
+  <title>Protocols &mdash; Rogue v6.13.0-61-gbf6bec6bf documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../_static/slac-favicon-192.png"/>
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=e68b041a"></script>
+      <script src="../../_static/documentation_options.js?v=fe15107f"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -76,6 +76,7 @@
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Protocols</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="udp/index.html">UDP Protocol</a></li>
 <li class="toctree-l3"><a class="reference internal" href="rssi/index.html">RSSI Protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rocev2/index.html">RoCEv2 Protocol</a></li>
 <li class="toctree-l3"><a class="reference internal" href="packetizer/index.html">Packetizer Protocol</a></li>
 <li class="toctree-l3"><a class="reference internal" href="network.html">Network Wrapper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="batcher/index.html">Batcher Protocol</a></li>
@@ -140,6 +141,8 @@ topology.</p>
 <ul class="simple">
 <li><p>Use <a class="reference internal" href="udp/index.html"><span class="doc">UDP Protocol</span></a> for lightweight datagram transport endpoints.</p></li>
 <li><p>Use <a class="reference internal" href="rssi/index.html"><span class="doc">RSSI Protocol</span></a> for ordered, reliable delivery over packet links.</p></li>
+<li><p>Use <a class="reference internal" href="rocev2/index.html"><span class="doc">RoCEv2 Protocol</span></a> for RDMA-over-Converged-Ethernet v2 receive
+against a RoCEv2-capable FPGA endpoint.</p></li>
 <li><p>Use <a class="reference internal" href="network.html"><span class="doc">Network Wrapper</span></a> for the common <code class="docutils literal notranslate"><span class="pre">pyrogue.protocols.UdpRssiPack</span></code> wrapper
 that assembles a typical UDP/RSSI transport stack.</p></li>
 <li><p>Use <a class="reference internal" href="srp/index.html"><span class="doc">SRP Protocol</span></a> for register and memory transaction transport over
@@ -162,6 +165,7 @@ construction and transaction flow are covered end to end.</p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="udp/index.html">UDP Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="rssi/index.html">RSSI Protocol</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rocev2/index.html">RoCEv2 Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="packetizer/index.html">Packetizer Protocol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="network.html">Network Wrapper</a></li>
 <li class="toctree-l1"><a class="reference internal" href="batcher/index.html">Batcher Protocol</a></li>

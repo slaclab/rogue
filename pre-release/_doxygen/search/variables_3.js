@@ -11,9 +11,10 @@ var searchData=
   ['crc_5f_8',['crc_',['../classrogue_1_1protocols_1_1packetizer_1_1Controller.html#acc1fa41a4e810ae91c4c42f768fa8ff5',1,'rogue::protocols::packetizer::Controller']]],
   ['crctable_5f_9',['crcTable_',['../ControllerV2_8cpp.html#aa6760e1369cb0369065280965c64e3e3',1,'ControllerV2.cpp']]],
   ['critical_10',['Critical',['../classrogue_1_1Logging.html#aed16487e03a66834d8c4f0e46bdff015',1,'rogue::Logging']]],
-  ['cumulativeacktimeout_11',['cumulativeAckTimeout',['../classrogue_1_1protocols_1_1rssi_1_1Header.html#ac6900994b5de58bcaa2feb707972669e',1,'rogue::protocols::rssi::Header']]],
-  ['currbuffer_5f_12',['currBuffer_',['../classrogue_1_1utilities_1_1fileio_1_1StreamWriter.html#a1a3f5b9cfcc51bbd911d184870551846',1,'rogue::utilities::fileio::StreamWriter']]],
-  ['currsize_5f_13',['currSize_',['../classrogue_1_1utilities_1_1fileio_1_1StreamWriter.html#a4977c6704d7a481f5d77a3b84fb0e861',1,'rogue::utilities::fileio::StreamWriter']]],
-  ['custom_14',['Custom',['../namespacerogue_1_1interfaces_1_1memory.html#ac0bd49290e1989ef43ca2b4555bbdc8d',1,'rogue::interfaces::memory']]],
-  ['customdata_5f_15',['customData_',['../classrogue_1_1interfaces_1_1memory_1_1Variable.html#aa0c1709bbef0cf9f9698bd7382254892',1,'rogue::interfaces::memory::Variable']]]
+  ['ctx_5f_11',['ctx_',['../classrogue_1_1protocols_1_1rocev2_1_1Core.html#a9d715e0563f667d3a5afd9947260ad95',1,'rogue::protocols::rocev2::Core']]],
+  ['cumulativeacktimeout_12',['cumulativeAckTimeout',['../classrogue_1_1protocols_1_1rssi_1_1Header.html#ac6900994b5de58bcaa2feb707972669e',1,'rogue::protocols::rssi::Header']]],
+  ['currbuffer_5f_13',['currBuffer_',['../classrogue_1_1utilities_1_1fileio_1_1StreamWriter.html#a1a3f5b9cfcc51bbd911d184870551846',1,'rogue::utilities::fileio::StreamWriter']]],
+  ['currsize_5f_14',['currSize_',['../classrogue_1_1utilities_1_1fileio_1_1StreamWriter.html#a4977c6704d7a481f5d77a3b84fb0e861',1,'rogue::utilities::fileio::StreamWriter']]],
+  ['custom_15',['Custom',['../namespacerogue_1_1interfaces_1_1memory.html#ac0bd49290e1989ef43ca2b4555bbdc8d',1,'rogue::interfaces::memory']]],
+  ['customdata_5f_16',['customData_',['../classrogue_1_1interfaces_1_1memory_1_1Variable.html#aa0c1709bbef0cf9f9698bd7382254892',1,'rogue::interfaces::memory::Variable']]]
 ];

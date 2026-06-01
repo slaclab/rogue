@@ -15,5 +15,6 @@ var searchData=
   ['getint_5f_12',['getInt_',['../classrogue_1_1interfaces_1_1memory_1_1Variable.html#a28c1e6e212b120b68ce0dd73930c02c1',1,'rogue::interfaces::memory::Variable']]],
   ['getstring_5f_13',['getString_',['../classrogue_1_1interfaces_1_1memory_1_1Variable.html#a8a5f7894b26c45d8c1f9b6625afef853',1,'rogue::interfaces::memory::Variable']]],
   ['gettensorfloat32_5f_14',['getTensorFloat32_',['../classrogue_1_1interfaces_1_1memory_1_1Variable.html#a43cacfdcc63ec1aa6bf8dccf5ffe4bd4',1,'rogue::interfaces::memory::Variable']]],
-  ['getuint_5f_15',['getUInt_',['../classrogue_1_1interfaces_1_1memory_1_1Variable.html#af87f7376cdc154f51cc8b579c8d4f632',1,'rogue::interfaces::memory::Variable']]]
+  ['getuint_5f_15',['getUInt_',['../classrogue_1_1interfaces_1_1memory_1_1Variable.html#af87f7376cdc154f51cc8b579c8d4f632',1,'rogue::interfaces::memory::Variable']]],
+  ['gidindex_5f_16',['gidIndex_',['../classrogue_1_1protocols_1_1rocev2_1_1Core.html#afc136697c91985d08f5d0ed368e2c572',1,'rogue::protocols::rocev2::Core']]]
 ];
