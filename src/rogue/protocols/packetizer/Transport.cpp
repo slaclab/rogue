@@ -58,24 +58,31 @@ rpp::Transport::Transport() {}
 //! Destructor
 rpp::Transport::~Transport() {
     // No-op if setController() never ran.
-    if (thread_ != nullptr) {
+    if (thread_) {
         threadEn_ = false;
         // Release the GIL: worker may be mid-sendFrame to a Python slave.
         rogue::GilRelease noGil;
         cntl_->stopQueue();
         thread_->join();
-        delete thread_;
-        thread_ = nullptr;
     }
 }
 
 //! Setup links
 void rpp::Transport::setController(rpp::ControllerPtr cntl) {
-    cntl_ = cntl;
+    // One-shot: re-assigning a joinable std::thread triggers std::terminate.
+    if (thread_) return;
 
-    // Start read thread
+    // threadEn_ must precede thread ctor; rollback both on spawn failure.
+    rpp::ControllerPtr prevCntl = cntl_;
+    cntl_ = cntl;
     threadEn_ = true;
-    thread_   = new std::thread(&rpp::Transport::runThread, this);
+    try {
+        thread_ = std::make_unique<std::thread>(&rpp::Transport::runThread, this);
+    } catch (...) {
+        threadEn_ = false;
+        cntl_ = prevCntl;
+        throw;
+    }
 
     // Set a thread name
 #ifndef __MACH__

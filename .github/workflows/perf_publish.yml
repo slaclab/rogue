@@ -37,7 +37,7 @@ jobs:
       ROGUE_SITE_ROOT: /${{ github.event.repository.name }}
     steps:
       - name: Checkout source
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
           ref: ${{ github.event.workflow_run.head_sha }}

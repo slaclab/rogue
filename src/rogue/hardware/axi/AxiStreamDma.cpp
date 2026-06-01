@@ -19,6 +19,7 @@
 #include "rogue/hardware/axi/AxiStreamDma.h"
 
 #include <inttypes.h>
+#include <poll.h>
 
 #include <cstdio>
 #include <cstdlib>
@@ -241,22 +242,6 @@ rha::AxiStreamDma::AxiStreamDma(std::string path, uint32_t dest, bool ssiEnable)
             rogue::GeneralError::create("AxiStreamDma::AxiStreamDma", "Failed to open device file: %s", path.c_str()));
     }
 
-    // Reject fd_ >= FD_SETSIZE synchronously here, before the worker thread
-    // starts, so that an out-of-range fd surfaces as a clean ctor exception
-    // instead of throwing later from runThread()/acceptReq()/acceptFrame()
-    // (which would call std::terminate() because those throws are uncaught).
-    if (fd_ >= FD_SETSIZE) {
-        int badFd = fd_;
-        ::close(fd_);
-        fd_ = -1;
-        closeShared(desc_);
-        throw(rogue::GeneralError::create("AxiStreamDma::AxiStreamDma",
-                                          "fd %d for %s exceeds FD_SETSIZE (%d); too many open files in process",
-                                          badFd,
-                                          path.c_str(),
-                                          FD_SETSIZE));
-    }
-
     // desc_->bCount and desc_->bSize live in the shared AxiStreamDmaShared
     // instance returned by openShared(), which is also looked up under
     // sharedBuffersMtx by other concurrent constructions on the same path.
@@ -367,8 +352,7 @@ void rha::AxiStreamDma::dmaAck() {
 //! Generate a buffer. Called from master
 ris::FramePtr rha::AxiStreamDma::acceptReq(uint32_t size, bool zeroCopyEn) {
     int32_t res;
-    fd_set fds;
-    struct timeval tout;
+    struct pollfd pfd;
     uint32_t alloc;
     ris::BufferPtr buff;
     ris::FramePtr frame;
@@ -402,25 +386,31 @@ ris::FramePtr rha::AxiStreamDma::acceptReq(uint32_t size, bool zeroCopyEn) {
 
         // Request may be serviced with multiple buffers
         while (alloc < size) {
-            // Keep trying since select call can fire
+            // Keep trying since poll call can fire
             // but getIndex fails because we did not win the buffer lock
             do {
-                // Setup fds for select call
-                if (fd_ < 0 || fd_ >= FD_SETSIZE)
+                // Re-check fd validity: a concurrent stop() can toggle fd_ to -1.
+                // poll() imposes no FD_SETSIZE ceiling, so large fd values are fine.
+                if (fd_ < 0)
                     throw rogue::GeneralError::create(
                         "AxiStreamDma::acceptReq",
-                        "fd_=%d outside valid select() range [0, FD_SETSIZE=%d); "
-                        "likely causes: instance was stop()'d or never finished construction (fd_<0), "
-                        "or process fd table exhausted (fd_>=FD_SETSIZE)",
-                        fd_,
-                        FD_SETSIZE);
-                FD_ZERO(&fds);
-                FD_SET(fd_, &fds);
+                        "fd_=%d invalid; instance was stop()'d or never finished construction",
+                        fd_);
+                pfd.fd      = fd_;
+                pfd.events  = POLLOUT;
+                pfd.revents = 0;
 
-                // Setup select timeout
-                tout = timeout_;
-
-                if (select(fd_ + 1, NULL, &fds, NULL, &tout) <= 0) {
+                // Round up µs->ms so sub-ms timeouts do not collapse to a non-blocking poll().
+                int rc = poll(&pfd, 1, (timeout_.tv_sec * 1000) + ((timeout_.tv_usec + 999) / 1000));
+                // POLLERR/POLLHUP/POLLNVAL can be reported with POLLOUT also set on a fd in
+                // error state; surface that as a clear error instead of feeding a known-bad
+                // fd into dmaGetIndex() and looping on its return value.
+                if (rc > 0 && (pfd.revents & (POLLERR | POLLHUP | POLLNVAL)))
+                    throw rogue::GeneralError::create(
+                        "AxiStreamDma::acceptReq",
+                        "poll() reported fd error revents=0x%x; fd may be closed or in error state",
+                        pfd.revents);
+                if (rc <= 0 || !(pfd.revents & POLLOUT)) {
                     log_->critical("AxiStreamDma::acceptReq: Timeout waiting for outbound buffer after %" PRIuLEAST32
                                    ".%" PRIuLEAST32 " seconds! May be caused by outbound back pressure.",
                                    timeout_.tv_sec,
@@ -445,8 +435,7 @@ ris::FramePtr rha::AxiStreamDma::acceptReq(uint32_t size, bool zeroCopyEn) {
 //! Accept a frame from master
 void rha::AxiStreamDma::acceptFrame(ris::FramePtr frame) {
     int32_t res;
-    fd_set fds;
-    struct timeval tout;
+    struct pollfd pfd;
     uint32_t meta;
     uint32_t fuser;
     uint32_t luser;
@@ -454,10 +443,9 @@ void rha::AxiStreamDma::acceptFrame(ris::FramePtr frame) {
     bool emptyFrame;
 
     // Reject use after stop()/teardown.  stop() releases the shared descriptor
-    // and closes fd_, so the inner-loop FD_SETSIZE guard would still catch
-    // this, but that fires only after frame->lock() and buffer iteration
-    // have already run.  Fail-fast at entry for a cleaner error path,
-    // mirroring the guard in acceptReq().
+    // and closes fd_, so the inner-loop fd_ guard would still catch this, but
+    // that fires only after frame->lock() and buffer iteration have already
+    // run.  Fail-fast at entry for a cleaner error path, mirroring acceptReq().
     if (!desc_ || fd_ < 0)
         throw rogue::GeneralError("AxiStreamDma::acceptFrame",
                                   "instance has been stopped or did not finish construction");
@@ -521,25 +509,31 @@ void rha::AxiStreamDma::acceptFrame(ris::FramePtr frame) {
 
             // Write to pgp with (*it)er copy in driver
         } else {
-            // Keep trying since select call can fire
+            // Keep trying since poll call can fire
             // but write fails because we did not win the (*it)er lock
             do {
-                // Setup fds for select call
-                if (fd_ < 0 || fd_ >= FD_SETSIZE)
+                // Re-check fd validity: a concurrent stop() can toggle fd_ to -1.
+                // poll() imposes no FD_SETSIZE ceiling, so large fd values are fine.
+                if (fd_ < 0)
                     throw rogue::GeneralError::create(
                         "AxiStreamDma::acceptFrame",
-                        "fd_=%d outside valid select() range [0, FD_SETSIZE=%d); "
-                        "likely causes: instance was stop()'d or never finished construction (fd_<0), "
-                        "or process fd table exhausted (fd_>=FD_SETSIZE)",
-                        fd_,
-                        FD_SETSIZE);
-                FD_ZERO(&fds);
-                FD_SET(fd_, &fds);
+                        "fd_=%d invalid; instance was stop()'d or never finished construction",
+                        fd_);
+                pfd.fd      = fd_;
+                pfd.events  = POLLOUT;
+                pfd.revents = 0;
 
-                // Setup select timeout
-                tout = timeout_;
-
-                if (select(fd_ + 1, NULL, &fds, NULL, &tout) <= 0) {
+                // Round up µs->ms so sub-ms timeouts do not collapse to a non-blocking poll().
+                int rc = poll(&pfd, 1, (timeout_.tv_sec * 1000) + ((timeout_.tv_usec + 999) / 1000));
+                // POLLERR/POLLHUP/POLLNVAL can be reported with POLLOUT also set on a fd in
+                // error state; surface that as a clear error instead of feeding a known-bad
+                // fd into dmaWrite() and reporting a generic "AXIS Write Call Failed".
+                if (rc > 0 && (pfd.revents & (POLLERR | POLLHUP | POLLNVAL)))
+                    throw rogue::GeneralError::create(
+                        "AxiStreamDma::acceptFrame",
+                        "poll() reported fd error revents=0x%x; fd may be closed or in error state",
+                        pfd.revents);
+                if (rc <= 0 || !(pfd.revents & POLLOUT)) {
                     log_->critical("AxiStreamDma::acceptFrame: Timeout waiting for outbound write after %" PRIuLEAST32
                                    ".%" PRIuLEAST32 " seconds! May be caused by outbound back pressure.",
                                    timeout_.tv_sec,
@@ -593,12 +587,11 @@ void rha::AxiStreamDma::runThread(std::weak_ptr<int> lockPtr) {
     int32_t rxCount;
     int32_t x;
     ris::FramePtr frame;
-    fd_set fds;
+    struct pollfd pfd;
     uint8_t error;
     uint32_t fuser;
     uint32_t luser;
     uint32_t cont;
-    struct timeval tout;
 
     fuser = 0;
     luser = 0;
@@ -613,26 +606,32 @@ void rha::AxiStreamDma::runThread(std::weak_ptr<int> lockPtr) {
     frame = ris::Frame::create();
 
     while (threadEn_) {
-        // Setup fds for select call.  runThread() has no top-level catch,
-        // so a throw here would call std::terminate.  The ctor already
-        // guarantees fd_ < FD_SETSIZE; this in-loop check only fires if
-        // stop()/close() races with the worker and toggles fd_ to -1.
-        // Log and exit the worker cleanly in that case so stop() can
-        // complete instead of crashing the process.
-        if (fd_ < 0 || fd_ >= FD_SETSIZE) {
-            log_->error("AxiStreamDma::runThread: fd_ value %d out of FD_SETSIZE range; exiting worker", fd_);
+        // runThread() has no top-level catch, so a throw here would call
+        // std::terminate.  This in-loop check only fires if stop()/close()
+        // races with the worker and toggles fd_ to -1; log and exit the worker
+        // cleanly so stop() can complete instead of crashing the process.
+        // poll() imposes no FD_SETSIZE ceiling, so large fd values are fine.
+        if (fd_ < 0) {
+            log_->error("AxiStreamDma::runThread: fd_ value %d invalid; exiting worker", fd_);
             threadEn_ = false;
             break;
         }
-        FD_ZERO(&fds);
-        FD_SET(fd_, &fds);
+        pfd.fd      = fd_;
+        pfd.events  = POLLIN;
+        pfd.revents = 0;
 
-        // Setup select timeout
-        tout.tv_sec  = 0;
-        tout.tv_usec = 1000;
-
-        // Select returns with available buffer
-        if (select(fd_ + 1, &fds, NULL, NULL, &tout) > 0) {
+        // poll returns with available buffer (1 ms timeout)
+        if (poll(&pfd, 1, 1) > 0) {
+            // poll() can report POLLERR/POLLHUP/POLLNVAL with POLLIN unset (e.g. closed-fd race).
+            // runThread() has no top-level catch, so falling through to dmaRead on an invalid fd
+            // would throw and call std::terminate.  Log and exit the worker cleanly instead.
+            if (pfd.revents & (POLLERR | POLLHUP | POLLNVAL)) {
+                log_->error("AxiStreamDma::runThread: poll reported fd error revents=0x%x; exiting worker",
+                            pfd.revents);
+                threadEn_ = false;
+                break;
+            }
+            if (!(pfd.revents & POLLIN)) continue;
             // Zero copy buffers were not allocated
             if (desc_->rawBuff == NULL) {
                 // Allocate a buffer
