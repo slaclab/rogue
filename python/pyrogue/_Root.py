@@ -383,6 +383,8 @@ class Root(pr.Device):
         #self.add(pr.LocalCommand(name='Exit', function=self._exit,
         #                         description='Exit the server application'))
 
+        self.add(pr.LoadConfigProcess(name='LoadConfigProcess'))
+        self.add(pr.SaveConfigProcess(name='SaveConfigProcess'))
 
     def start(self) -> None:
         """Setup the tree and start background threads for pollQueue and updateQueue.
