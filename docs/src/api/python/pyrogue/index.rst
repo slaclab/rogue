@@ -21,6 +21,8 @@ Core objects
    device
    localblock
    process
+   loadconfig
+   saveconfig
    runcontrol
    datareceiver
    datawriter

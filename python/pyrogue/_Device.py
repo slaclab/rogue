@@ -230,7 +230,6 @@ class Device(pr.Node,rim.Hub):
         self._ifAndProto = []
 
         self.forceCheckEach = False
-        self._preWriteListeners = []
 
         # Connect to memory slave
         if memBase:
@@ -464,42 +463,6 @@ class Device(pr.Node,rim.Hub):
 
         #if value is True:
         #    self.writeAndVerifyBlocks(force=True, recurse=True, variable=None)
-
-    def addPreWriteListener(
-        self,
-        listener: Callable[[str, Any, dict[str, Any]], Any | None],
-        stateVars: list[pr.BaseVariable] | None = None,
-    ) -> None:
-        """Register a device-level pre-write listener.
-
-        Fires before any child variable write on this device.
-        See BaseVariable.addPreWriteListener for callback semantics.
-
-        Parameters
-        ----------
-        listener : callable
-            Callback: func(path, value, state) -> value | None
-        stateVars : list of BaseVariable, optional
-            Variables whose current values are captured into the state dict.
-        """
-        entry = (listener, stateVars or [])
-        if entry not in self._preWriteListeners:
-            self._preWriteListeners.append(entry)
-
-    def delPreWriteListener(
-        self,
-        listener: Callable[[str, Any, dict[str, Any]], Any | None],
-    ) -> None:
-        """Remove a device-level pre-write listener.
-
-        Parameters
-        ----------
-        listener : callable
-            The callback to remove.
-        """
-        self._preWriteListeners = [
-            (cb, sv) for (cb, sv) in self._preWriteListeners if cb is not listener
-        ]
 
     def writeBlocks(
         self,

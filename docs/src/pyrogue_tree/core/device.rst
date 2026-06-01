@@ -340,38 +340,6 @@ For deeper memory-stack behavior, see:
 * :doc:`/pyrogue_tree/core/block`
 * :doc:`/memory_interface/index`
 
-Pre-Write Listeners
-====================
-
-Devices can register pre-write listeners that fire before **any** child
-Variable write on the Device. This provides a single guard point for protecting
-hardware that must not receive register writes under certain conditions (for
-example, a camera that corrupts if written during acquisition).
-
-.. code-block:: python
-
-   import pyrogue as pr
-
-   class ProtectedCamera(pr.Device):
-       def __init__(self, **kwargs):
-           super().__init__(**kwargs)
-           self.add(pr.LocalVariable(name='Acquiring', value=False, mode='RW'))
-           self.add(pr.RemoteVariable(name='Config', offset=0x0, bitSize=32,
-                                      base=pr.UInt, mode='RW'))
-
-       def _start(self):
-           super()._start()
-           self.addPreWriteListener(self._guardWrites, stateVars=[self.Acquiring])
-
-       def _guardWrites(self, path, value, state):
-           if state.get(self.Acquiring.path) is True:
-               raise pr.WriteBlockedError(path, "camera is acquiring")
-           return None
-
-Device-level listeners execute before any variable-level listeners on the
-target Variable. See :py:meth:`~pyrogue.Device.addPreWriteListener` and
-:doc:`/pyrogue_tree/core/variable` for the full pre-write listener model.
-
 Operational Hooks And Decorators
 ================================
 

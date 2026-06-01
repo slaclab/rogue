@@ -285,6 +285,49 @@ Root:
 * ``GetYamlConfig``: Return configuration as YAML text.
 * ``GetYamlState``: Return state as YAML text.
 
+Built-in Processes
+------------------
+
+Every ``Root`` instance also creates two :py:class:`~pyrogue.Process` child
+Nodes that expose the configuration and state workflows with operator-visible
+progress and status reporting.  They appear in the tree alongside the commands
+listed above and can be driven from the GUI or from scripts via their
+``Start`` command.
+
+``LoadConfigProcess`` (:py:class:`~pyrogue.LoadConfigProcess`)
+   Loads configuration into the tree from a file or a YAML string.  The
+   ``LoadMode`` Variable selects the source:
+
+   * ``File``: reads from the path stored in ``ConfigFile``.  Equivalent to
+     the ``LoadConfig`` command.
+   * ``String``: applies the YAML text stored in ``YamlString``.  Equivalent
+     to the ``SetYamlConfig`` command.
+
+   Both modes apply only RW and WO Variables while excluding those tagged with
+   the ``NoConfig`` group.  If ``InitAfterConfig`` is enabled the root calls
+   ``initialize()`` after the configuration is applied, just as the commands
+   do.
+
+``SaveConfigProcess`` (:py:class:`~pyrogue.SaveConfigProcess`)
+   Saves configuration or state to a file or captures it in a YAML string
+   Variable.  Two Variables control the output:
+
+   ``DataType`` selects which Variables to include:
+
+   * ``Config``: RW and WO Variables, excluding ``NoConfig``.  Equivalent to
+     ``SaveConfig`` / ``GetYamlConfig``.
+   * ``Status``: RW, RO, and WO Variables, excluding ``NoState``.  Equivalent
+     to ``SaveState`` / ``GetYamlState``.
+
+   ``SaveMode`` selects the destination:
+
+   * ``File``: writes YAML to the path in ``ConfigFile``.  If ``ConfigFile``
+     is empty a timestamped filename is generated automatically.
+   * ``String``: stores the YAML text in the ``YamlString`` Variable.
+
+For generated API details see :doc:`/api/python/pyrogue/loadconfig` and
+:doc:`/api/python/pyrogue/saveconfig`.
+
 Built-in Variables
 ------------------
 
