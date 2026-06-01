@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Root &mdash; Rogue v6.13.0-33-gc6c084cb4 documentation</title>
+  <title>Root &mdash; Rogue v6.13.0-41-g8f537c4cd documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../_static/slac-favicon-192.png"/>
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=97c4fd01"></script>
+      <script src="../../_static/documentation_options.js?v=47c93a9e"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -378,6 +378,47 @@ Root:</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">GetYamlConfig</span></code>: Return configuration as YAML text.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">GetYamlState</span></code>: Return state as YAML text.</p></li>
 </ul>
+</section>
+<section id="built-in-processes">
+<h3>Built-in Processes<a class="headerlink" href="#built-in-processes" title="Link to this heading"></a></h3>
+<p>Every <code class="docutils literal notranslate"><span class="pre">Root</span></code> instance also creates two <a class="reference internal" href="../../api/python/pyrogue/process.html#pyrogue.Process" title="pyrogue.Process"><code class="xref py py-class docutils literal notranslate"><span class="pre">Process</span></code></a> child
+Nodes that expose the configuration and state workflows with operator-visible
+progress and status reporting.  They appear in the tree alongside the commands
+listed above and can be driven from the GUI or from scripts via their
+<code class="docutils literal notranslate"><span class="pre">Start</span></code> command.</p>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">LoadConfigProcess</span></code> (<a class="reference internal" href="../../api/python/pyrogue/loadconfig.html#pyrogue.LoadConfigProcess" title="pyrogue.LoadConfigProcess"><code class="xref py py-class docutils literal notranslate"><span class="pre">LoadConfigProcess</span></code></a>)</dt><dd><p>Loads configuration into the tree from a file or a YAML string.  The
+<code class="docutils literal notranslate"><span class="pre">LoadMode</span></code> Variable selects the source:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">File</span></code>: reads from the path stored in <code class="docutils literal notranslate"><span class="pre">ConfigFile</span></code>.  Equivalent to
+the <code class="docutils literal notranslate"><span class="pre">LoadConfig</span></code> command.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">String</span></code>: applies the YAML text stored in <code class="docutils literal notranslate"><span class="pre">YamlString</span></code>.  Equivalent
+to the <code class="docutils literal notranslate"><span class="pre">SetYamlConfig</span></code> command.</p></li>
+</ul>
+<p>Both modes apply only RW and WO Variables while excluding those tagged with
+the <code class="docutils literal notranslate"><span class="pre">NoConfig</span></code> group.  If <code class="docutils literal notranslate"><span class="pre">InitAfterConfig</span></code> is enabled the root calls
+<code class="docutils literal notranslate"><span class="pre">initialize()</span></code> after the configuration is applied, just as the commands
+do.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">SaveConfigProcess</span></code> (<a class="reference internal" href="../../api/python/pyrogue/saveconfig.html#pyrogue.SaveConfigProcess" title="pyrogue.SaveConfigProcess"><code class="xref py py-class docutils literal notranslate"><span class="pre">SaveConfigProcess</span></code></a>)</dt><dd><p>Saves configuration or state to a file or captures it in a YAML string
+Variable.  Two Variables control the output:</p>
+<p><code class="docutils literal notranslate"><span class="pre">DataType</span></code> selects which Variables to include:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Config</span></code>: RW and WO Variables, excluding <code class="docutils literal notranslate"><span class="pre">NoConfig</span></code>.  Equivalent to
+<code class="docutils literal notranslate"><span class="pre">SaveConfig</span></code> / <code class="docutils literal notranslate"><span class="pre">GetYamlConfig</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Status</span></code>: RW, RO, and WO Variables, excluding <code class="docutils literal notranslate"><span class="pre">NoState</span></code>.  Equivalent
+to <code class="docutils literal notranslate"><span class="pre">SaveState</span></code> / <code class="docutils literal notranslate"><span class="pre">GetYamlState</span></code>.</p></li>
+</ul>
+<p><code class="docutils literal notranslate"><span class="pre">SaveMode</span></code> selects the destination:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">File</span></code>: writes YAML to the path in <code class="docutils literal notranslate"><span class="pre">ConfigFile</span></code>.  If <code class="docutils literal notranslate"><span class="pre">ConfigFile</span></code>
+is empty a timestamped filename is generated automatically.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">String</span></code>: stores the YAML text in the <code class="docutils literal notranslate"><span class="pre">YamlString</span></code> Variable.</p></li>
+</ul>
+</dd>
+</dl>
+<p>For generated API details see <a class="reference internal" href="../../api/python/pyrogue/loadconfig.html"><span class="doc">LoadConfig</span></a> and
+<a class="reference internal" href="../../api/python/pyrogue/saveconfig.html"><span class="doc">SaveConfig</span></a>.</p>
 </section>
 <section id="built-in-variables">
 <h3>Built-in Variables<a class="headerlink" href="#built-in-variables" title="Link to this heading"></a></h3>
