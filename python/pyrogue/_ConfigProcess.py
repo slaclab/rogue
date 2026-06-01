@@ -14,6 +14,7 @@
 #-----------------------------------------------------------------------------
 from __future__ import annotations
 
+import threading
 from typing import Any
 
 import pyrogue as pr
@@ -36,6 +37,10 @@ class LoadConfigProcess(pr.Process):
     Both modes apply only RW and WO Variables while excluding those tagged
     with the ``NoConfig`` group.  If ``Root.InitAfterConfig`` is enabled the
     root will call ``initialize()`` after the configuration is applied.
+
+    The ``Stop`` command has no effect because the underlying YAML load
+    operations are not interruptible.  Any error during the operation is
+    captured in ``Message`` and ``Progress`` is set to 100 %.
 
     Parameters
     ----------
@@ -65,37 +70,49 @@ class LoadConfigProcess(pr.Process):
             value='',
             description='YAML configuration text to apply. Used when LoadMode is String.'))
 
+    def _stopProcess(self) -> None:
+        # loadYaml and setYaml are not interruptible; Stop is ignored.
+        self._log.warning('%s: Stop is not supported; operation will run to completion.', self.name)
+
+    def _stop(self) -> None:
+        # Wait for any in-flight operation to finish before device teardown.
+        thr = self._thread
+        if thr is not None and thr.is_alive() and threading.current_thread() is not thr:
+            thr.join()
+        pr.Device._stop(self)
+
     def _process(self) -> None:
         self.Message.setDisp('Running')
         self.setProgress(0.0)
 
-        if self.LoadMode.value() == 0:
-            cfg = str(self.ConfigFile.value()).strip()
-            if not cfg:
-                self.Message.setDisp('Error: ConfigFile is empty')
-                return
-            self.root.loadYaml(
-                name=cfg,
-                writeEach=False,
-                modes=['RW', 'WO'],
-                incGroups=None,
-                excGroups='NoConfig',
-            )
-        else:
-            yml = str(self.YamlString.value())
-            if not yml.strip():
-                self.Message.setDisp('Error: YamlString is empty')
-                return
-            self.root.setYaml(
-                yml=yml,
-                writeEach=False,
-                modes=['RW', 'WO'],
-                incGroups=None,
-                excGroups='NoConfig',
-            )
-
-        self.Message.setDisp('Done')
-        self.setProgress(1.0)
+        try:
+            if self.LoadMode.value() == 0:
+                cfg = str(self.ConfigFile.value()).strip()
+                if not cfg:
+                    raise ValueError('ConfigFile is empty')
+                self.root.loadYaml(
+                    name=cfg,
+                    writeEach=False,
+                    modes=['RW', 'WO'],
+                    incGroups=None,
+                    excGroups='NoConfig',
+                )
+            else:
+                yml = str(self.YamlString.value())
+                if not yml.strip():
+                    raise ValueError('YamlString is empty')
+                self.root.setYaml(
+                    yml=yml,
+                    writeEach=False,
+                    modes=['RW', 'WO'],
+                    incGroups=None,
+                    excGroups='NoConfig',
+                )
+            self.Message.setDisp('Done')
+            self.setProgress(1.0)
+        except Exception as e:
+            self.Message.setDisp(f'Error: {e}')
+            self.setProgress(1.0)
 
 
 class SaveConfigProcess(pr.Process):
@@ -121,6 +138,10 @@ class SaveConfigProcess(pr.Process):
       (``config_YYYYMMDD_HHMMSS.yml`` for Config, ``state_YYYYMMDD_HHMMSS.yml.zip``
       for Status).
     * ``String`` (1): stores the YAML text in the ``YamlString`` Variable.
+
+    The ``Stop`` command has no effect because the underlying YAML save
+    operations are not interruptible.  Any error during the operation is
+    captured in ``Message`` and ``Progress`` is set to 100 %.
 
     Parameters
     ----------
@@ -157,40 +178,55 @@ class SaveConfigProcess(pr.Process):
             value='',
             description='Captured YAML output. Populated when SaveMode is String.'))
 
+    def _stopProcess(self) -> None:
+        # saveYaml and getYaml are not interruptible; Stop is ignored.
+        self._log.warning('%s: Stop is not supported; operation will run to completion.', self.name)
+
+    def _stop(self) -> None:
+        # Wait for any in-flight operation to finish before device teardown.
+        thr = self._thread
+        if thr is not None and thr.is_alive() and threading.current_thread() is not thr:
+            thr.join()
+        pr.Device._stop(self)
+
     def _process(self) -> None:
         self.Message.setDisp('Running')
         self.setProgress(0.0)
 
-        if self.DataType.value() == 0:
-            modes = ['RW', 'WO']
-            excGroups: str | list[str] | None = 'NoConfig'
-            autoPrefix = 'config'
-            autoCompress = False
-        else:
-            modes = ['RW', 'RO', 'WO']
-            excGroups = 'NoState'
-            autoPrefix = 'state'
-            autoCompress = True
+        try:
+            if self.DataType.value() == 0:
+                modes = ['RW', 'WO']
+                excGroups: str | list[str] | None = 'NoConfig'
+                autoPrefix = 'config'
+                autoCompress = False
+            else:
+                modes = ['RW', 'RO', 'WO']
+                excGroups = 'NoState'
+                autoPrefix = 'state'
+                autoCompress = True
 
-        if self.SaveMode.value() == 0:
-            self.root.saveYaml(
-                name=self.ConfigFile.value(),
-                readFirst=True,
-                modes=modes,
-                incGroups=None,
-                excGroups=excGroups,
-                autoPrefix=autoPrefix,
-                autoCompress=autoCompress,
-            )
-        else:
-            yml = self.root.getYaml(
-                readFirst=True,
-                modes=modes,
-                incGroups=None,
-                excGroups=excGroups,
-                recurse=True,
-            )
-            self.YamlString.set(yml)
+            if self.SaveMode.value() == 0:
+                self.root.saveYaml(
+                    name=self.ConfigFile.value(),
+                    readFirst=True,
+                    modes=modes,
+                    incGroups=None,
+                    excGroups=excGroups,
+                    autoPrefix=autoPrefix,
+                    autoCompress=autoCompress,
+                )
+            else:
+                yml = self.root.getYaml(
+                    readFirst=True,
+                    modes=modes,
+                    incGroups=None,
+                    excGroups=excGroups,
+                    recurse=True,
+                )
+                self.YamlString.set(yml)
 
-        self.Message.setDisp('Done')
-        self.setProgress(1.0)
+            self.Message.setDisp('Done')
+            self.setProgress(1.0)
+        except Exception as e:
+            self.Message.setDisp(f'Error: {e}')
+            self.setProgress(1.0)

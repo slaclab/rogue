@@ -238,6 +238,89 @@ def test_save_config_autonames_file_when_config_file_is_empty(tmp_path, monkeypa
 # Round-trip: SaveConfig String → LoadConfig String
 # ---------------------------------------------------------------------------
 
+# ---------------------------------------------------------------------------
+# Error handling — bad inputs
+# ---------------------------------------------------------------------------
+
+def test_load_config_file_mode_empty_path_sets_error_message(wait_until):
+    with ConfigProcessRoot() as root:
+        root.LoadConfigProcess.LoadMode.setDisp('File')
+        root.LoadConfigProcess.ConfigFile.set('')
+        root.LoadConfigProcess.Start()
+
+        assert wait_until(lambda: root.LoadConfigProcess.Running.value() is False)
+        assert root.LoadConfigProcess.Message.value().startswith('Error:')
+        assert root.LoadConfigProcess.Progress.value() == 1.0
+
+
+def test_load_config_string_mode_empty_yaml_sets_error_message(wait_until):
+    with ConfigProcessRoot() as root:
+        root.LoadConfigProcess.LoadMode.setDisp('String')
+        root.LoadConfigProcess.YamlString.set('')
+        root.LoadConfigProcess.Start()
+
+        assert wait_until(lambda: root.LoadConfigProcess.Running.value() is False)
+        assert root.LoadConfigProcess.Message.value().startswith('Error:')
+        assert root.LoadConfigProcess.Progress.value() == 1.0
+
+
+def test_load_config_file_mode_missing_file_sets_error_message(wait_until):
+    with ConfigProcessRoot() as root:
+        root.LoadConfigProcess.LoadMode.setDisp('File')
+        root.LoadConfigProcess.ConfigFile.set('/nonexistent/path/config.yml')
+        root.LoadConfigProcess.Start()
+
+        assert wait_until(lambda: root.LoadConfigProcess.Running.value() is False)
+        assert root.LoadConfigProcess.Message.value().startswith('Error:')
+        assert root.LoadConfigProcess.Progress.value() == 1.0
+
+
+def test_save_config_file_mode_bad_path_sets_error_message(wait_until):
+    with ConfigProcessRoot() as root:
+        root.SaveConfigProcess.DataType.setDisp('Config')
+        root.SaveConfigProcess.SaveMode.setDisp('File')
+        root.SaveConfigProcess.ConfigFile.set('/nonexistent/dir/out.yml')
+        root.SaveConfigProcess.Start()
+
+        assert wait_until(lambda: root.SaveConfigProcess.Running.value() is False)
+        assert root.SaveConfigProcess.Message.value().startswith('Error:')
+        assert root.SaveConfigProcess.Progress.value() == 1.0
+
+
+# ---------------------------------------------------------------------------
+# Stop is ignored
+# ---------------------------------------------------------------------------
+
+def test_load_config_stop_is_ignored(wait_until):
+    with ConfigProcessRoot() as root:
+        yml = root.getYaml(
+            readFirst=False, modes=['RW', 'WO'],
+            incGroups=None, excGroups='NoConfig', recurse=True,
+        )
+        root.LoadConfigProcess.LoadMode.setDisp('String')
+        root.LoadConfigProcess.YamlString.set(yml)
+        root.LoadConfigProcess.Start()
+        root.LoadConfigProcess.Stop()  # should not crash or abort
+
+        assert wait_until(lambda: root.LoadConfigProcess.Running.value() is False)
+        assert root.LoadConfigProcess.Message.value() == 'Done'
+
+
+def test_save_config_stop_is_ignored(wait_until):
+    with ConfigProcessRoot() as root:
+        root.SaveConfigProcess.DataType.setDisp('Config')
+        root.SaveConfigProcess.SaveMode.setDisp('String')
+        root.SaveConfigProcess.Start()
+        root.SaveConfigProcess.Stop()  # should not crash or abort
+
+        assert wait_until(lambda: root.SaveConfigProcess.Running.value() is False)
+        assert root.SaveConfigProcess.Message.value() == 'Done'
+
+
+# ---------------------------------------------------------------------------
+# Round-trip
+# ---------------------------------------------------------------------------
+
 def test_save_then_load_config_round_trip(wait_until):
     with ConfigProcessRoot() as root:
         root.TestDev.TestValue.set(123)
