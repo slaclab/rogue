@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>VirtualClient &mdash; Rogue v6.13.0-30-g18de88f63 documentation</title>
+  <title>VirtualClient &mdash; Rogue v6.13.0-33-gc6c084cb4 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../../../_static/slac-favicon-192.png"/>
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=cb271556"></script>
+      <script src="../../../../_static/documentation_options.js?v=97c4fd01"></script>
       <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -270,29 +270,6 @@ finite upper bound for legitimate request duration.</p>
 <li><p><strong>linkTimeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em> | </em><em>None</em>)</p></li>
 <li><p><strong>requestStallTimeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em> | </em><em>None</em>)</p></li>
 </ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyrogue.interfaces.VirtualClient.stopMonitor">
-<span class="sig-name descname"><span class="pre">stopMonitor</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/pyrogue/interfaces/_Virtual.html#VirtualClient.stopMonitor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.VirtualClient.stopMonitor" title="Link to this definition"></a></dt>
-<dd><p>Stop the link-monitor thread without releasing ZMQ resources.</p>
-<p>Use this when a long-lived client must drop link-heartbeat polling
-but the ZMQ transport must remain open. The intended caller is a
-host script that hands a <code class="docutils literal notranslate"><span class="pre">VirtualClient</span></code> to an interactive
-wrapper (for example <code class="docutils literal notranslate"><span class="pre">pysmurf</span></code>) and wants to silence the monitor
-on shutdown without losing the connection. <code class="docutils literal notranslate"><span class="pre">stop()</span></code> is the
-wrong choice for that case because it also closes the C++
-<code class="docutils literal notranslate"><span class="pre">ZmqClient</span></code> sockets and removes the instance from
-<code class="docutils literal notranslate"><span class="pre">ClientCache</span></code>.</p>
-<p>After <code class="docutils literal notranslate"><span class="pre">stopMonitor()</span></code> returns the client still services
-<code class="docutils literal notranslate"><span class="pre">_remoteAttr</span></code> calls and SUB publish updates; only the periodic
-link-state heartbeat is disabled. Idempotent; safe to call from
-any thread other than <code class="docutils literal notranslate"><span class="pre">_monThread</span></code> itself.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></span></p>
 </dd>
 </dl>
 </dd></dl>

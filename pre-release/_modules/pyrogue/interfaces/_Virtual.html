@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue.interfaces._Virtual &mdash; Rogue v6.13.0-30-g18de88f63 documentation</title>
+  <title>pyrogue.interfaces._Virtual &mdash; Rogue v6.13.0-33-gc6c084cb4 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="../../../_static/slac-favicon-192.png"/>
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=cb271556"></script>
+      <script src="../../../_static/documentation_options.js?v=97c4fd01"></script>
       <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -612,12 +612,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_link</span>  <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_ltime</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_root</span><span class="o">.</span><span class="n">Time</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
 
-        <span class="c1"># Create monitoring thread. daemon=True so the interpreter can exit</span>
-        <span class="c1"># cleanly even when ClientCache still pins this instance (issue #1238);</span>
-        <span class="c1"># without it, an ipython/host script that forgot to call stop() hangs</span>
-        <span class="c1"># on quit().</span>
+        <span class="c1"># Create monitoring thread</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_monEnable</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_monThread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_monWorker</span><span class="p">,</span> <span class="n">daemon</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_monThread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_monWorker</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_monThread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_removeFromCache</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -863,24 +860,15 @@
             <span class="k">for</span> <span class="n">func</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_varListeners</span><span class="p">:</span>
                 <span class="n">func</span><span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="n">val</span><span class="p">)</span>
 
-<div class="viewcode-block" id="VirtualClient.stopMonitor">
-<a class="viewcode-back" href="../../../api/python/pyrogue/interfaces/virtualclient.html#pyrogue.interfaces.VirtualClient.stopMonitor">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">stopMonitor</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Stop the link-monitor thread without releasing ZMQ resources.</span>
+<div class="viewcode-block" id="VirtualClient.stop">
+<a class="viewcode-back" href="../../../api/python/pyrogue/interfaces/virtualclient.html#pyrogue.interfaces.VirtualClient.stop">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Stop the monitor thread and release the underlying ZMQ resources.</span>
 
-<span class="sd">        Use this when a long-lived client must drop link-heartbeat polling</span>
-<span class="sd">        but the ZMQ transport must remain open. The intended caller is a</span>
-<span class="sd">        host script that hands a ``VirtualClient`` to an interactive</span>
-<span class="sd">        wrapper (for example ``pysmurf``) and wants to silence the monitor</span>
-<span class="sd">        on shutdown without losing the connection. ``stop()`` is the</span>
-<span class="sd">        wrong choice for that case because it also closes the C++</span>
-<span class="sd">        ``ZmqClient`` sockets and removes the instance from</span>
-<span class="sd">        ``ClientCache``.</span>
-
-<span class="sd">        After ``stopMonitor()`` returns the client still services</span>
-<span class="sd">        ``_remoteAttr`` calls and SUB publish updates; only the periodic</span>
-<span class="sd">        link-state heartbeat is disabled. Idempotent; safe to call from</span>
-<span class="sd">        any thread other than ``_monThread`` itself.</span>
+<span class="sd">        After ``stop()`` returns the C++ sockets and ZMQ context are released</span>
+<span class="sd">        and this instance is removed from ``ClientCache``; a subsequent</span>
+<span class="sd">        ``VirtualClient(addr, port)`` therefore constructs a fresh, fully</span>
+<span class="sd">        connected instance instead of returning the torn-down one.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_monEnable</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="n">thr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_monThread</span>
@@ -892,20 +880,7 @@
                 <span class="ow">and</span> <span class="n">threading</span><span class="o">.</span><span class="n">current_thread</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">thr</span><span class="p">):</span>
             <span class="n">thr</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mf">3.0</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">thr</span><span class="o">.</span><span class="n">is_alive</span><span class="p">():</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Monitor thread did not stop within timeout&quot;</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="VirtualClient.stop">
-<a class="viewcode-back" href="../../../api/python/pyrogue/interfaces/virtualclient.html#pyrogue.interfaces.VirtualClient.stop">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Stop the monitor thread and release the underlying ZMQ resources.</span>
-
-<span class="sd">        After ``stop()`` returns the C++ sockets and ZMQ context are released</span>
-<span class="sd">        and this instance is removed from ``ClientCache``; a subsequent</span>
-<span class="sd">        ``VirtualClient(addr, port)`` therefore constructs a fresh, fully</span>
-<span class="sd">        connected instance instead of returning the torn-down one.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">stopMonitor</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Monitor thread did not stop within timeout&quot;</span><span class="p">)</span>
 
         <span class="c1"># ClientCache pins this instance, so the C++ stop() must run explicitly</span>
         <span class="c1"># to release SUB/REQ sockets and the ZMQ context. _stop() is idempotent.</span>
