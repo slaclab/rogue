@@ -1,0 +1,23 @@
+{
+  "ref_name": "zmq-settimeout-warn-fail",
+  "ref_slug": "zmq-settimeout-warn-fail",
+  "latest_url": "/rogue/perf/branches/zmq-settimeout-warn-fail/latest.json",
+  "history": [
+    {
+      "ref_name": "zmq-settimeout-warn-fail",
+      "sha": "4023086afd620ac4261f837106e50a8d285780c4",
+      "short_sha": "4023086",
+      "published_at": "2026-06-02T16:12:52Z",
+      "run_url": "https://github.com/slaclab/rogue/actions/runs/26832309126",
+      "summary_url": "/rogue/perf/branches/zmq-settimeout-warn-fail/history/4023086afd620ac4261f837106e50a8d285780c4.json"
+    }
+  ],
+  "latest": {
+    "ref_name": "zmq-settimeout-warn-fail",
+    "sha": "4023086afd620ac4261f837106e50a8d285780c4",
+    "short_sha": "4023086",
+    "published_at": "2026-06-02T16:12:52Z",
+    "run_url": "https://github.com/slaclab/rogue/actions/runs/26832309126",
+    "summary_url": "/rogue/perf/branches/zmq-settimeout-warn-fail/latest.json"
+  }
+}
