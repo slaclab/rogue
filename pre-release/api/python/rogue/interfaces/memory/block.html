@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Block &mdash; Rogue v6.13.0-71-g897e80252 documentation</title>
+  <title>Block &mdash; Rogue v6.13.0-81-gf4d1ccfcf documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../../../../_static/slac-favicon-192.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=2ee423b6"></script>
+      <script src="../../../../../_static/documentation_options.js?v=bea2c15c"></script>
       <script src="../../../../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -161,7 +161,7 @@
 <p>Bridges higher-level variable access to lower-level memory transactions. A <code class="docutils literal notranslate"><span class="pre">Block</span></code> owns staged byte storage for a register region and one or more <code class="docutils literal notranslate"><span class="pre">Variable</span></code> objects that map bit fields into that storage. Typed access methods (<code class="docutils literal notranslate"><span class="pre">setUInt</span></code>, <code class="docutils literal notranslate"><span class="pre">getString</span></code>, <code class="docutils literal notranslate"><span class="pre">setFloat</span></code>, etc.) are not selected directly by users of <code class="docutils literal notranslate"><span class="pre">Block</span></code>; instead, each <code class="docutils literal notranslate"><span class="pre">Variable</span></code> binds to the appropriate <code class="docutils literal notranslate"><span class="pre">Block</span></code> method pair according to its model (<code class="docutils literal notranslate"><span class="pre">UInt</span></code>, <code class="docutils literal notranslate"><span class="pre">Int</span></code>, <code class="docutils literal notranslate"><span class="pre">Bool</span></code>, <code class="docutils literal notranslate"><span class="pre">String</span></code>, <code class="docutils literal notranslate"><span class="pre">Float</span></code>, <code class="docutils literal notranslate"><span class="pre">Double</span></code>, <code class="docutils literal notranslate"><span class="pre">Fixed</span></code>, <code class="docutils literal notranslate"><span class="pre">Bytes</span></code>, <code class="docutils literal notranslate"><span class="pre">PyFunc</span></code>) and width constraints. Conversion and transport are separated:</p>
 <ul class="simple">
 <li><p>Conversion methods (<code class="docutils literal notranslate"><span class="pre">set*</span></code>/<code class="docutils literal notranslate"><span class="pre">get*</span></code>) pack/unpack values between native types and staged bytes using variable metadata (bit offsets, bit widths, byte order, list indexing/stride).</p></li>
-<li><p>Transaction methods (<code class="docutils literal notranslate"><span class="pre">write</span></code>, <code class="docutils literal notranslate"><span class="pre">read</span></code>, <code class="docutils literal notranslate"><span class="pre">startTransaction</span></code>, <code class="docutils literal notranslate"><span class="pre">checkTransaction</span></code>) move staged bytes to/from hardware and handle verify/retry/update behavior. Typical usage is through <code class="docutils literal notranslate"><span class="pre">Variable</span></code> APIs, which call the matching <code class="docutils literal notranslate"><span class="pre">Block</span></code> conversion method and then issue read/write transactions.</p></li>
+<li><p>Transaction methods (<code class="docutils literal notranslate"><span class="pre">write</span></code>, <code class="docutils literal notranslate"><span class="pre">read</span></code>, <code class="docutils literal notranslate"><span class="pre">startTransaction</span></code>, <code class="docutils literal notranslate"><span class="pre">checkTransaction</span></code>) move staged bytes to/from hardware, wait for completion where requested, and handle verify/retry/update behavior. Typical usage is through <code class="docutils literal notranslate"><span class="pre">Variable</span></code> APIs, which call the matching <code class="docutils literal notranslate"><span class="pre">Block</span></code> conversion method and then issue read/write transactions.</p></li>
 </ul>
 <dl class="py method">
 <dt class="sig sig-object py">

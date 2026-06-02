@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue._Root &mdash; Rogue v6.13.0-71-g897e80252 documentation</title>
+  <title>pyrogue._Root &mdash; Rogue v6.13.0-81-gf4d1ccfcf documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="../../_static/slac-favicon-192.png"/>
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=2ee423b6"></script>
+      <script src="../../_static/documentation_options.js?v=bea2c15c"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -970,25 +970,25 @@
             <span class="n">v</span><span class="o">.</span><span class="n">_finishInit</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_write</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Write and verify all blocks.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Write, verify, and wait for block transactions to complete.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Start root write (forceWrite=</span><span class="si">%s</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ForceWrite</span><span class="o">.</span><span class="n">value</span><span class="p">())</span>
         <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">pollBlock</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">updateGroup</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">writeBlocks</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ForceWrite</span><span class="o">.</span><span class="n">value</span><span class="p">(),</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Verify root write with readback&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">verifyBlocks</span><span class="p">(</span><span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Check verified root write transactions&quot;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">checkBlocks</span><span class="p">(</span><span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Wait for verified root write transactions&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">waitBlocks</span><span class="p">(</span><span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Done root write&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="kc">True</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_read</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read and check all blocks.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read blocks and wait for read transactions to complete.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Start root read&quot;</span><span class="p">)</span>
         <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">pollBlock</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">updateGroup</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">readBlocks</span><span class="p">(</span><span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Check root read transactions&quot;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">checkBlocks</span><span class="p">(</span><span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Wait for root read transactions&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">waitBlocks</span><span class="p">(</span><span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Done root read&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="kc">True</span>

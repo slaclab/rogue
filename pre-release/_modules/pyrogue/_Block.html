@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue._Block &mdash; Rogue v6.13.0-71-g897e80252 documentation</title>
+  <title>pyrogue._Block &mdash; Rogue v6.13.0-81-gf4d1ccfcf documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="../../_static/slac-favicon-192.png"/>
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=2ee423b6"></script>
+      <script src="../../_static/documentation_options.js?v=bea2c15c"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -122,8 +122,8 @@
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pyrogue._HelperFunctions</span><span class="w"> </span><span class="kn">import</span> <span class="n">_resolve_deprecated_bool</span><span class="p">,</span> <span class="n">_warn_deprecated</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">rogue.interfaces.memory</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">rim</span>
-
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">startTransaction</span><span class="p">(</span>
@@ -131,7 +131,8 @@
     <span class="o">*</span><span class="p">,</span>
     <span class="nb">type</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="n">forceWr</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="n">check</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">wait</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">check</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">variable</span><span class="p">:</span> <span class="n">pr</span><span class="o">.</span><span class="n">BaseVariable</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
@@ -139,7 +140,7 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Helper function for starting a transaction on a block.</span>
 
 <span class="sd">    This helper function ensures future changes to the API do not break custom</span>
-<span class="sd">    code in a Device&#39;s writeBlocks, readBlocks and checkBlocks functions.</span>
+<span class="sd">    code in a Device&#39;s writeBlocks, readBlocks and waitBlocks functions.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -149,8 +150,10 @@
 <span class="sd">        Transaction type</span>
 <span class="sd">    forceWr : bool, optional (default = False)</span>
 <span class="sd">        Force the write even if block values are unchanged.</span>
-<span class="sd">    check : bool, optional (default = False)</span>
+<span class="sd">    wait : bool, optional (default = False)</span>
 <span class="sd">        Wait for transaction to complete before returning</span>
+<span class="sd">    check : bool, optional (deprecated)</span>
+<span class="sd">        Deprecated alias for ``wait``.</span>
 <span class="sd">    variable : pr.BaseVariable, optional</span>
 <span class="sd">        Variable associated with the transaction, None for pure Block transactions.</span>
 <span class="sd">    index : int, optional (default = -1)</span>
@@ -158,15 +161,22 @@
 <span class="sd">    **kwargs : Any, optional</span>
 <span class="sd">        Unused, provided for future compatibility.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">block</span><span class="o">.</span><span class="n">_startTransaction</span><span class="p">(</span><span class="nb">type</span><span class="p">,</span> <span class="n">forceWr</span><span class="p">,</span> <span class="n">check</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
+    <span class="n">wait</span> <span class="o">=</span> <span class="n">_resolve_deprecated_bool</span><span class="p">(</span>
+        <span class="n">new_name</span><span class="o">=</span><span class="s2">&quot;wait&quot;</span><span class="p">,</span>
+        <span class="n">new_value</span><span class="o">=</span><span class="n">wait</span><span class="p">,</span>
+        <span class="n">old_name</span><span class="o">=</span><span class="s2">&quot;check&quot;</span><span class="p">,</span>
+        <span class="n">old_value</span><span class="o">=</span><span class="n">check</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">block</span><span class="o">.</span><span class="n">_startTransaction</span><span class="p">(</span><span class="nb">type</span><span class="p">,</span> <span class="n">forceWr</span><span class="p">,</span> <span class="n">wait</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">checkTransaction</span><span class="p">(</span><span class="n">block</span><span class="p">:</span> <span class="n">rim</span><span class="o">.</span><span class="n">Block</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">waitTransaction</span><span class="p">(</span><span class="n">block</span><span class="p">:</span> <span class="n">rim</span><span class="o">.</span><span class="n">Block</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Wait for completion of transaction on a block.</span>
 
-<span class="sd">    Helper function for calling the checkTransaction function in a block. This helper</span>
+<span class="sd">    Helper function for calling the transaction wait function in a block. This helper</span>
 <span class="sd">    function ensures future changes to the API do not break custom code in a Device&#39;s</span>
-<span class="sd">    writeBlocks, readBlocks and checkBlocks functions.</span>
+<span class="sd">    writeBlocks, readBlocks and waitBlocks functions.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -177,11 +187,21 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">block</span><span class="o">.</span><span class="n">_checkTransaction</span><span class="p">()</span>
 
+<span class="k">def</span><span class="w"> </span><span class="nf">checkTransaction</span><span class="p">(</span><span class="n">block</span><span class="p">:</span> <span class="n">rim</span><span class="o">.</span><span class="n">Block</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Deprecated alias for :func:`waitTransaction`.&quot;&quot;&quot;</span>
+    <span class="n">_warn_deprecated</span><span class="p">(</span>
+        <span class="s2">&quot;`checkTransaction()` is deprecated; use `waitTransaction()` instead.&quot;</span><span class="p">,</span>
+        <span class="n">stacklevel</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">waitTransaction</span><span class="p">(</span><span class="n">block</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
 <span class="k">def</span><span class="w"> </span><span class="nf">writeBlocks</span><span class="p">(</span>
     <span class="n">blocks</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">rim</span><span class="o">.</span><span class="n">Block</span><span class="p">],</span>
     <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="n">checkEach</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">checkEach</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">waitEach</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Write a list of blocks efficiently.</span>
@@ -195,19 +215,30 @@
 <span class="sd">        Blocks to write.</span>
 <span class="sd">    force : bool, optional (default = False)</span>
 <span class="sd">        Force the write even if values are unchanged.</span>
-<span class="sd">    checkEach : bool, optional (default = False)</span>
+<span class="sd">    waitEach : bool, optional (default = False)</span>
 <span class="sd">        Wait for completion of each block transaction before initiating the next one</span>
+<span class="sd">    checkEach : bool, optional (deprecated)</span>
+<span class="sd">        Deprecated alias for ``waitEach``.</span>
 <span class="sd">    index : int, optional (default = -1)</span>
 <span class="sd">        Optional index for array variables.</span>
 <span class="sd">    **kwargs : Any</span>
 <span class="sd">        Additional arguments passed through to startTransaction().</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">waitEach</span> <span class="o">=</span> <span class="n">_resolve_deprecated_bool</span><span class="p">(</span>
+        <span class="n">new_name</span><span class="o">=</span><span class="s2">&quot;waitEach&quot;</span><span class="p">,</span>
+        <span class="n">new_value</span><span class="o">=</span><span class="n">waitEach</span><span class="p">,</span>
+        <span class="n">old_name</span><span class="o">=</span><span class="s2">&quot;checkEach&quot;</span><span class="p">,</span>
+        <span class="n">old_value</span><span class="o">=</span><span class="n">checkEach</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span>
     <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">blocks</span><span class="p">:</span>
-        <span class="n">startTransaction</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">rim</span><span class="o">.</span><span class="n">Write</span><span class="p">,</span> <span class="n">forceWr</span><span class="o">=</span><span class="n">force</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="n">checkEach</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">startTransaction</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">rim</span><span class="o">.</span><span class="n">Write</span><span class="p">,</span> <span class="n">forceWr</span><span class="o">=</span><span class="n">force</span><span class="p">,</span> <span class="n">wait</span><span class="o">=</span><span class="n">waitEach</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 <span class="k">def</span><span class="w"> </span><span class="nf">verifyBlocks</span><span class="p">(</span>
     <span class="n">blocks</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">rim</span><span class="o">.</span><span class="n">Block</span><span class="p">],</span>
-    <span class="n">checkEach</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">checkEach</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">waitEach</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Verify a list of blocks efficiently.</span>
@@ -220,17 +251,28 @@
 <span class="sd">    ----------</span>
 <span class="sd">    blocks : iterable[rim.Block]</span>
 <span class="sd">        Blocks to verify.</span>
-<span class="sd">    checkEach : bool, optional (default = False)</span>
+<span class="sd">    waitEach : bool, optional (default = False)</span>
 <span class="sd">        Wait for completion of each block transation before initiating the next one</span>
+<span class="sd">    checkEach : bool, optional (deprecated)</span>
+<span class="sd">        Deprecated alias for ``waitEach``.</span>
 <span class="sd">    **kwargs : Any</span>
 <span class="sd">        Additional arguments passed through to startTransaction().</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">waitEach</span> <span class="o">=</span> <span class="n">_resolve_deprecated_bool</span><span class="p">(</span>
+        <span class="n">new_name</span><span class="o">=</span><span class="s2">&quot;waitEach&quot;</span><span class="p">,</span>
+        <span class="n">new_value</span><span class="o">=</span><span class="n">waitEach</span><span class="p">,</span>
+        <span class="n">old_name</span><span class="o">=</span><span class="s2">&quot;checkEach&quot;</span><span class="p">,</span>
+        <span class="n">old_value</span><span class="o">=</span><span class="n">checkEach</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span>
     <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">blocks</span><span class="p">:</span>
-        <span class="n">startTransaction</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">rim</span><span class="o">.</span><span class="n">Verify</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="n">checkEach</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">startTransaction</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">rim</span><span class="o">.</span><span class="n">Verify</span><span class="p">,</span> <span class="n">wait</span><span class="o">=</span><span class="n">waitEach</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 <span class="k">def</span><span class="w"> </span><span class="nf">readBlocks</span><span class="p">(</span>
     <span class="n">blocks</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">rim</span><span class="o">.</span><span class="n">Block</span><span class="p">],</span>
-    <span class="n">checkEach</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">checkEach</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">waitEach</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Read a list of blocks efficiently.</span>
@@ -243,39 +285,58 @@
 <span class="sd">    ----------</span>
 <span class="sd">    blocks : iterable[rim.Block]</span>
 <span class="sd">        Blocks to read.</span>
-<span class="sd">    checkEach : bool, optional (default = False)</span>
+<span class="sd">    waitEach : bool, optional (default = False)</span>
 <span class="sd">        Wait for completion of each block transation before initiating the next one</span>
+<span class="sd">    checkEach : bool, optional (deprecated)</span>
+<span class="sd">        Deprecated alias for ``waitEach``.</span>
 <span class="sd">    **kwargs : Any</span>
 <span class="sd">        Additional arguments passed through to startTransaction()</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">waitEach</span> <span class="o">=</span> <span class="n">_resolve_deprecated_bool</span><span class="p">(</span>
+        <span class="n">new_name</span><span class="o">=</span><span class="s2">&quot;waitEach&quot;</span><span class="p">,</span>
+        <span class="n">new_value</span><span class="o">=</span><span class="n">waitEach</span><span class="p">,</span>
+        <span class="n">old_name</span><span class="o">=</span><span class="s2">&quot;checkEach&quot;</span><span class="p">,</span>
+        <span class="n">old_value</span><span class="o">=</span><span class="n">checkEach</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span>
     <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">blocks</span><span class="p">:</span>
-        <span class="n">startTransaction</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">rim</span><span class="o">.</span><span class="n">Read</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="n">checkEach</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">startTransaction</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">rim</span><span class="o">.</span><span class="n">Read</span><span class="p">,</span> <span class="n">wait</span><span class="o">=</span><span class="n">waitEach</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-<span class="k">def</span><span class="w"> </span><span class="nf">checkBlocks</span><span class="p">(</span><span class="n">blocks</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">rim</span><span class="o">.</span><span class="n">Block</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">waitBlocks</span><span class="p">(</span><span class="n">blocks</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">rim</span><span class="o">.</span><span class="n">Block</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Wait on block transactions for a list of blocks.</span>
 
 <span class="sd">    Helper function for waiting on block transactions to complete.</span>
 <span class="sd">    Allows a custom list of blocks to be efficiently operated on</span>
-<span class="sd">    without blocking between each transaction, similar to ``Device.checkBlocks()``.</span>
+<span class="sd">    without blocking between each transaction, similar to ``Device.waitBlocks()``.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    blocks : iterable[rim.Block]</span>
-<span class="sd">        Blocks to check.</span>
+<span class="sd">        Blocks to wait on.</span>
 <span class="sd">    **kwargs : Any</span>
 <span class="sd">        Unused</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">blocks</span><span class="p">:</span>
-        <span class="n">checkTransaction</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+        <span class="n">waitTransaction</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">checkBlocks</span><span class="p">(</span><span class="n">blocks</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">rim</span><span class="o">.</span><span class="n">Block</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Deprecated alias for :func:`waitBlocks`.&quot;&quot;&quot;</span>
+    <span class="n">_warn_deprecated</span><span class="p">(</span>
+        <span class="s2">&quot;`checkBlocks()` is deprecated; use `waitBlocks()` instead.&quot;</span><span class="p">,</span>
+        <span class="n">stacklevel</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">waitBlocks</span><span class="p">(</span><span class="n">blocks</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 <span class="k">def</span><span class="w"> </span><span class="nf">writeAndVerifyBlocks</span><span class="p">(</span>
     <span class="n">blocks</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">rim</span><span class="o">.</span><span class="n">Block</span><span class="p">],</span>
     <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="n">checkEach</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">checkEach</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">waitEach</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Write and verify a list of blocks efficiently.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Write, verify, and wait for block transactions to complete.</span>
 
 <span class="sd">    Helper function for writing and verifying a list of blocks. Allows a custom</span>
 <span class="sd">    list of blocks to be efficiently written and verified similar to</span>
@@ -287,39 +348,73 @@
 <span class="sd">        Blocks to write and verify.</span>
 <span class="sd">    force : bool, optional (default = False)</span>
 <span class="sd">        Force the write even if values are unchanged.</span>
-<span class="sd">    checkEach : bool, optional (default = False)</span>
+<span class="sd">    waitEach : bool, optional (default = False)</span>
 <span class="sd">        Wait for each block transaction to complete before starting the next one</span>
+<span class="sd">    checkEach : bool, optional (deprecated)</span>
+<span class="sd">        Deprecated alias for ``waitEach``.</span>
 <span class="sd">    index : int, optional (default = -1)</span>
 <span class="sd">        Optional index for array variables.</span>
 <span class="sd">    **kwargs : Any</span>
 <span class="sd">        Additional arguments passed through to the block transaction.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">writeBlocks</span><span class="p">(</span><span class="n">blocks</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">,</span> <span class="n">checkEach</span><span class="o">=</span><span class="n">checkEach</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-    <span class="n">verifyBlocks</span><span class="p">(</span><span class="n">blocks</span><span class="p">,</span> <span class="n">checkEach</span><span class="o">=</span><span class="n">checkEach</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-    <span class="n">checkBlocks</span><span class="p">(</span><span class="n">blocks</span><span class="p">)</span>
+    <span class="n">waitEach</span> <span class="o">=</span> <span class="n">_resolve_deprecated_bool</span><span class="p">(</span>
+        <span class="n">new_name</span><span class="o">=</span><span class="s2">&quot;waitEach&quot;</span><span class="p">,</span>
+        <span class="n">new_value</span><span class="o">=</span><span class="n">waitEach</span><span class="p">,</span>
+        <span class="n">old_name</span><span class="o">=</span><span class="s2">&quot;checkEach&quot;</span><span class="p">,</span>
+        <span class="n">old_value</span><span class="o">=</span><span class="n">checkEach</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">writeBlocks</span><span class="p">(</span><span class="n">blocks</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">,</span> <span class="n">waitEach</span><span class="o">=</span><span class="n">waitEach</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="n">verifyBlocks</span><span class="p">(</span><span class="n">blocks</span><span class="p">,</span> <span class="n">waitEach</span><span class="o">=</span><span class="n">waitEach</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="n">waitBlocks</span><span class="p">(</span><span class="n">blocks</span><span class="p">)</span>
 
-<span class="k">def</span><span class="w"> </span><span class="nf">readAndCheckBlocks</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">readAndWaitBlocks</span><span class="p">(</span>
     <span class="n">blocks</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">rim</span><span class="o">.</span><span class="n">Block</span><span class="p">],</span>
-    <span class="n">checkEach</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">checkEach</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">waitEach</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Read blocks and wait for completion.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Read blocks and wait for read transactions to complete.</span>
 
 <span class="sd">    Helper function for reading a list of blocks. Allows a custom list of blocks</span>
 <span class="sd">    to be efficiently read without blocking between each read, similar to</span>
-<span class="sd">    ``Device.readAndCheckBlocks()``.</span>
+<span class="sd">    ``Device.readAndWaitBlocks()``.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    blocks : iterable[rim.Block]</span>
 <span class="sd">        Blocks to read.</span>
-<span class="sd">    checkEach : bool, optional (default = False)</span>
+<span class="sd">    waitEach : bool, optional (default = False)</span>
 <span class="sd">        Wait for each block transaction to complete before starting the next one</span>
+<span class="sd">    checkEach : bool, optional (deprecated)</span>
+<span class="sd">        Deprecated alias for ``waitEach``.</span>
 <span class="sd">    **kwargs : Any</span>
 <span class="sd">        Additional arguments passed through to the block transaction.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">readBlocks</span><span class="p">(</span><span class="n">blocks</span><span class="p">,</span> <span class="n">checkEach</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-    <span class="n">checkBlocks</span><span class="p">(</span><span class="n">blocks</span><span class="p">)</span>
+    <span class="n">waitEach</span> <span class="o">=</span> <span class="n">_resolve_deprecated_bool</span><span class="p">(</span>
+        <span class="n">new_name</span><span class="o">=</span><span class="s2">&quot;waitEach&quot;</span><span class="p">,</span>
+        <span class="n">new_value</span><span class="o">=</span><span class="n">waitEach</span><span class="p">,</span>
+        <span class="n">old_name</span><span class="o">=</span><span class="s2">&quot;checkEach&quot;</span><span class="p">,</span>
+        <span class="n">old_value</span><span class="o">=</span><span class="n">checkEach</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">readBlocks</span><span class="p">(</span><span class="n">blocks</span><span class="p">,</span> <span class="n">waitEach</span><span class="o">=</span><span class="n">waitEach</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="n">waitBlocks</span><span class="p">(</span><span class="n">blocks</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">readAndCheckBlocks</span><span class="p">(</span>
+    <span class="n">blocks</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">rim</span><span class="o">.</span><span class="n">Block</span><span class="p">],</span>
+    <span class="n">checkEach</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">waitEach</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Deprecated alias for :func:`readAndWaitBlocks`.&quot;&quot;&quot;</span>
+    <span class="n">_warn_deprecated</span><span class="p">(</span>
+        <span class="s2">&quot;`readAndCheckBlocks()` is deprecated; use `readAndWaitBlocks()` instead.&quot;</span><span class="p">,</span>
+        <span class="n">stacklevel</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">readAndWaitBlocks</span><span class="p">(</span><span class="n">blocks</span><span class="p">,</span> <span class="n">checkEach</span><span class="o">=</span><span class="n">checkEach</span><span class="p">,</span> <span class="n">waitEach</span><span class="o">=</span><span class="n">waitEach</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 
 

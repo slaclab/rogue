@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Blocks &mdash; Rogue v6.13.0-71-g897e80252 documentation</title>
+  <title>Blocks &mdash; Rogue v6.13.0-81-gf4d1ccfcf documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../_static/slac-favicon-192.png"/>
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=2ee423b6"></script>
+      <script src="../../_static/documentation_options.js?v=bea2c15c"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -135,7 +135,7 @@ level.</p>
 <p>Blocks separate two concerns:</p>
 <ol class="arabic simple">
 <li><p>Value staging and conversion (pack/unpack Variable values into bytes)</p></li>
-<li><p>Transport sequencing (initiate/check read/write/verify operations)</p></li>
+<li><p>Transport sequencing (initiate/wait for read/write/verify operations)</p></li>
 </ol>
 <p>This separation lets Variable APIs stay high-level while transaction handling
 stays efficient and ordered.</p>
@@ -202,7 +202,7 @@ Device’s current enable state.</p></li>
 </ul>
 <p>This is why the later bulk methods in <a class="reference internal" href="block_operations.html"><span class="doc">Device Block Operations</span></a>
 do not decide grouping on the fly. By the time reads, writes, verifies, and
-checks run, the Device has already built the Block structure they will
+completion waits run, the Device has already built the Block structure they will
 traverse.</p>
 </section>
 <section id="access-path-remotevariable">
@@ -212,7 +212,7 @@ traverse.</p>
 <li><p>User/API calls <code class="docutils literal notranslate"><span class="pre">set</span></code> or <code class="docutils literal notranslate"><span class="pre">get</span></code> on a Variable</p></li>
 <li><p>Device/Root APIs initiate Block transactions</p></li>
 <li><p>Block reads/writes memory through the Device’s memory interface</p></li>
-<li><p>Completion/check updates Variable state and notifications</p></li>
+<li><p>Completion/wait updates Variable state and notifications</p></li>
 </ul>
 <p>In bulk operations, many Variables can share one Block transaction, improving
 access efficiency versus isolated per-Variable transfers.</p>
@@ -226,13 +226,13 @@ access efficiency versus isolated per-Variable transfers.</p>
 <li><p>Conversion layer:
 <code class="docutils literal notranslate"><span class="pre">set*/get*</span></code> methods convert between native types and staged Block bytes.</p></li>
 <li><p>Transaction layer:
-<code class="docutils literal notranslate"><span class="pre">write/read/startTransaction/checkTransaction</span></code> moves staged bytes to and
+<code class="docutils literal notranslate"><span class="pre">write/read/startTransaction/waitTransaction</span></code> moves staged bytes to and
 from hardware.</p></li>
 </ul>
 <p>In the C++ <code class="docutils literal notranslate"><span class="pre">Variable</span></code> API, a typed set call performs both steps:</p>
 <ol class="arabic simple">
 <li><p>Conversion into staged bytes via a bound <code class="docutils literal notranslate"><span class="pre">Block</span></code> method</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">Block::write()</span></code> (write + verify/check sequence)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Block::write()</span></code> (write + verify/wait sequence)</p></li>
 </ol>
 <p>A typed get call similarly performs:</p>
 <ol class="arabic simple">
@@ -243,37 +243,39 @@ from hardware.</p></li>
 <ol class="arabic simple">
 <li><p>Variable <code class="docutils literal notranslate"><span class="pre">set</span></code> updates staged Block bytes using Model conversion</p></li>
 <li><p>Write (and optional verify) transactions are initiated</p></li>
-<li><p>Completion is checked</p></li>
+<li><p>Completion is waited on</p></li>
 </ol>
 <p>Typical read path:</p>
 <ol class="arabic simple">
 <li><p>Read transactions are initiated</p></li>
-<li><p>Completion is checked</p></li>
+<li><p>Completion is waited on</p></li>
 <li><p>Bytes are decoded back into Variable values</p></li>
 </ol>
-<p>In PyRogue terminology, waiting for operation responses is called <code class="docutils literal notranslate"><span class="pre">check</span></code>.</p>
+<p>In PyRogue terminology, waiting for operation responses is now called
+<code class="docutils literal notranslate"><span class="pre">wait</span></code>. Older <code class="docutils literal notranslate"><span class="pre">check</span></code> helper names remain as deprecated compatibility
+aliases.</p>
 </section>
 <section id="block-helper-functions">
 <h3>Block Helper Functions<a class="headerlink" href="#block-helper-functions" title="Link to this heading"></a></h3>
 <p>PyRogue exposes helper functions used by Variable/Device/Root flow:</p>
 <ul class="simple">
 <li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">startTransaction()</span></code></p></li>
-<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">checkTransaction()</span></code></p></li>
+<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">waitTransaction()</span></code></p></li>
 <li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">writeBlocks()</span></code></p></li>
 <li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">verifyBlocks()</span></code></p></li>
 <li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">readBlocks()</span></code></p></li>
-<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">checkBlocks()</span></code></p></li>
+<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">waitBlocks()</span></code></p></li>
 <li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">writeAndVerifyBlocks()</span></code></p></li>
-<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">readAndCheckBlocks()</span></code></p></li>
+<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">readAndWaitBlocks()</span></code></p></li>
 </ul>
 <p>Most users call these indirectly through <code class="docutils literal notranslate"><span class="pre">Device</span></code>/<code class="docutils literal notranslate"><span class="pre">Root</span></code> methods. Direct
 use is mainly for custom transaction sequencing.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Bulk read all Blocks attached to a Device</span>
 <span class="n">myDevice</span><span class="o">.</span><span class="n">readBlocks</span><span class="p">(</span><span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">myDevice</span><span class="o">.</span><span class="n">checkBlocks</span><span class="p">(</span><span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">myDevice</span><span class="o">.</span><span class="n">waitBlocks</span><span class="p">(</span><span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># Write only the Block backing one Variable</span>
-<span class="n">myDevice</span><span class="o">.</span><span class="n">writeBlocks</span><span class="p">(</span><span class="n">variable</span><span class="o">=</span><span class="n">myDevice</span><span class="o">.</span><span class="n">MyReg</span><span class="p">,</span> <span class="n">checkEach</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">myDevice</span><span class="o">.</span><span class="n">writeBlocks</span><span class="p">(</span><span class="n">variable</span><span class="o">=</span><span class="n">myDevice</span><span class="o">.</span><span class="n">MyReg</span><span class="p">,</span> <span class="n">waitEach</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -293,7 +295,7 @@ bound into it.</p>
 messages during:</p>
 <ul class="simple">
 <li><p>Variable-to-Block binding</p></li>
-<li><p>Transaction start/check flow</p></li>
+<li><p>Transaction start/wait flow</p></li>
 <li><p>Retry handling</p></li>
 <li><p>Verify/readback behavior</p></li>
 </ul>
@@ -588,7 +590,7 @@ transactions.</p>
 <h2>What To Explore Next<a class="headerlink" href="#what-to-explore-next" title="Link to this heading"></a></h2>
 <ul class="simple">
 <li><p>Model API and utility helpers: <a class="reference internal" href="model.html"><span class="doc">Model</span></a></p></li>
-<li><p>Root bulk write/read/check sequencing: <a class="reference internal" href="root.html"><span class="doc">Root</span></a></p></li>
+<li><p>Root bulk write/read/wait sequencing: <a class="reference internal" href="root.html"><span class="doc">Root</span></a></p></li>
 <li><p>C++ Block reference: <a class="reference internal" href="../../api/cpp/interfaces/memory/block.html"><span class="doc">Block</span></a></p></li>
 <li><p>Python LocalBlock reference: <a class="reference internal" href="../../api/python/pyrogue/localblock.html"><span class="doc">LocalBlock</span></a></p></li>
 </ul>

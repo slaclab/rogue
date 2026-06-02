@@ -263,7 +263,7 @@ $(document).ready(function() { init_codefold(0); });
 </div>
 <div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span> </div>
 <div class="line"><a id="l00174" name="l00174"></a><span class="lineno">  174</span><span class="comment">// Start a transaction for this block</span></div>
-<div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span><span class="keywordtype">void</span> rim::Block::intStartTransaction(uint32_t type, <span class="keywordtype">bool</span> forceWr, <span class="keywordtype">bool</span> check, <a class="code hl_class" href="classrogue_1_1interfaces_1_1memory_1_1Variable.html">rim::Variable</a>* var, int32_t index) {</div>
+<div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span><span class="keywordtype">void</span> rim::Block::intStartTransaction(uint32_t type, <span class="keywordtype">bool</span> forceWr, <a class="code hl_class" href="classrogue_1_1interfaces_1_1memory_1_1Variable.html">rim::Variable</a>* var, int32_t index) {</div>
 <div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span>    uint32_t x;</div>
 <div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span>    uint32_t tOff;</div>
 <div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span>    uint32_t tSize;</div>
@@ -384,7 +384,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00292" name="l00292"></a><span class="lineno">  292</span>    fWr   = forceWr;</div>
 <div class="line"><a id="l00293" name="l00293"></a><span class="lineno">  293</span> </div>
 <div class="line"><a id="l00294" name="l00294"></a><span class="lineno">  294</span>    <span class="keywordflow">do</span> {</div>
-<div class="line"><a id="l00295" name="l00295"></a><span class="lineno">  295</span>        intStartTransaction(type, fWr, check, var, index);</div>
+<div class="line"><a id="l00295" name="l00295"></a><span class="lineno">  295</span>        intStartTransaction(type, fWr, var, index);</div>
 <div class="line"><a id="l00296" name="l00296"></a><span class="lineno">  296</span> </div>
 <div class="line"><a id="l00297" name="l00297"></a><span class="lineno">  297</span>        <span class="keywordflow">try</span> {</div>
 <div class="line"><a id="l00298" name="l00298"></a><span class="lineno">  298</span>            <span class="keywordflow">if</span> (check || retryCount_ &gt; 0) checkTransaction();</div>
@@ -426,7 +426,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00332" name="l00332"></a><span class="lineno">  332</span>    fWr   = forceWr;</div>
 <div class="line"><a id="l00333" name="l00333"></a><span class="lineno">  333</span> </div>
 <div class="line"><a id="l00334" name="l00334"></a><span class="lineno">  334</span>    <span class="keywordflow">do</span> {</div>
-<div class="line"><a id="l00335" name="l00335"></a><span class="lineno">  335</span>        intStartTransaction(type, fWr, check, var.get(), index);</div>
+<div class="line"><a id="l00335" name="l00335"></a><span class="lineno">  335</span>        intStartTransaction(type, fWr, var.get(), index);</div>
 <div class="line"><a id="l00336" name="l00336"></a><span class="lineno">  336</span> </div>
 <div class="line"><a id="l00337" name="l00337"></a><span class="lineno">  337</span>        <span class="keywordflow">try</span> {</div>
 <div class="line"><a id="l00338" name="l00338"></a><span class="lineno">  338</span>            <span class="keywordflow">if</span> (check || retryCount_ &gt; 0) upd = checkTransaction();</div>
@@ -456,7 +456,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00361" name="l00361"></a><span class="lineno">  361</span> </div>
 <div class="line"><a id="l00362" name="l00362"></a><span class="lineno">  362</span><span class="preprocessor">#endif</span></div>
 <div class="line"><a id="l00363" name="l00363"></a><span class="lineno">  363</span> </div>
-<div class="line"><a id="l00364" name="l00364"></a><span class="lineno">  364</span><span class="comment">// Check transaction result</span></div>
+<div class="line"><a id="l00364" name="l00364"></a><span class="lineno">  364</span><span class="comment">// Wait for pending transaction completion and check the result</span></div>
 <div class="foldopen" id="foldopen00365" data-start="{" data-end="}">
 <div class="line"><a id="l00365" name="l00365"></a><span class="lineno"><a class="line" href="classrogue_1_1interfaces_1_1memory_1_1Block.html#a4a00c4cf979f668200bc9c97a756aa69">  365</a></span><span class="keywordtype">bool</span> rim::Block::checkTransaction() {</div>
 <div class="line"><a id="l00366" name="l00366"></a><span class="lineno">  366</span>    std::string err;</div>
@@ -514,7 +514,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00417" name="l00417"></a><span class="lineno">  417</span> </div>
 <div class="line"><a id="l00418" name="l00418"></a><span class="lineno">  418</span><span class="preprocessor">#ifndef NO_PYTHON</span></div>
 <div class="line"><a id="l00419" name="l00419"></a><span class="lineno">  419</span> </div>
-<div class="line"><a id="l00420" name="l00420"></a><span class="lineno">  420</span><span class="comment">// Check transaction result</span></div>
+<div class="line"><a id="l00420" name="l00420"></a><span class="lineno">  420</span><span class="comment">// Wait for pending transaction completion, check the result, and update variables</span></div>
 <div class="foldopen" id="foldopen00421" data-start="{" data-end="}">
 <div class="line"><a id="l00421" name="l00421"></a><span class="lineno"><a class="line" href="classrogue_1_1interfaces_1_1memory_1_1Block.html#ad37144d5f4b3cb60c0df60601e3358a5">  421</a></span><span class="keywordtype">void</span> rim::Block::checkTransactionPy() {</div>
 <div class="line"><a id="l00422" name="l00422"></a><span class="lineno">  422</span>    <span class="keywordflow">if</span> (blockPyTrans_) <span class="keywordflow">return</span>;</div>
@@ -525,7 +525,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00426" name="l00426"></a><span class="lineno">  426</span> </div>
 <div class="line"><a id="l00427" name="l00427"></a><span class="lineno">  427</span><span class="preprocessor">#endif</span></div>
 <div class="line"><a id="l00428" name="l00428"></a><span class="lineno">  428</span> </div>
-<div class="line"><a id="l00429" name="l00429"></a><span class="lineno">  429</span><span class="comment">// Write sequence</span></div>
+<div class="line"><a id="l00429" name="l00429"></a><span class="lineno">  429</span><span class="comment">// Write/verify/wait-and-check sequence</span></div>
 <div class="foldopen" id="foldopen00430" data-start="{" data-end="}">
 <div class="line"><a id="l00430" name="l00430"></a><span class="lineno"><a class="line" href="classrogue_1_1interfaces_1_1memory_1_1Block.html#a50badeae7759acbdeee458b6ed686ca5">  430</a></span><span class="keywordtype">void</span> rim::Block::write(<a class="code hl_class" href="classrogue_1_1interfaces_1_1memory_1_1Variable.html">rim::Variable</a>* var, int32_t index) {</div>
 <div class="line"><a id="l00431" name="l00431"></a><span class="lineno">  431</span>    startTransaction(<a class="code hl_variable" href="namespacerogue_1_1interfaces_1_1memory.html#a796fe0c4657923682a90289e6693c1c9">rim::Write</a>, <span class="keyword">true</span>, <span class="keyword">false</span>, var, index);</div>
@@ -534,7 +534,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00434" name="l00434"></a><span class="lineno">  434</span>}</div>
 </div>
 <div class="line"><a id="l00435" name="l00435"></a><span class="lineno">  435</span> </div>
-<div class="line"><a id="l00436" name="l00436"></a><span class="lineno">  436</span><span class="comment">// Read sequence</span></div>
+<div class="line"><a id="l00436" name="l00436"></a><span class="lineno">  436</span><span class="comment">// Read/wait-and-check sequence</span></div>
 <div class="foldopen" id="foldopen00437" data-start="{" data-end="}">
 <div class="line"><a id="l00437" name="l00437"></a><span class="lineno"><a class="line" href="classrogue_1_1interfaces_1_1memory_1_1Block.html#a980dee08e997ff9aff91e94760c5c591">  437</a></span><span class="keywordtype">void</span> rim::Block::read(<a class="code hl_class" href="classrogue_1_1interfaces_1_1memory_1_1Variable.html">rim::Variable</a>* var, int32_t index) {</div>
 <div class="line"><a id="l00438" name="l00438"></a><span class="lineno">  438</span>    startTransaction(<a class="code hl_variable" href="namespacerogue_1_1interfaces_1_1memory.html#a406ea981edc535342fc2a3a3a9ce3573">rim::Read</a>, <span class="keyword">false</span>, <span class="keyword">false</span>, var, index);</div>
@@ -3548,7 +3548,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="ttc" id="aclassrogue_1_1interfaces_1_1memory_1_1Variable_html_af2fe7c0b485d3e8899c9c9b2769055e1"><div class="ttname"><a href="classrogue_1_1interfaces_1_1memory_1_1Variable.html#af2fe7c0b485d3e8899c9c9b2769055e1">rogue::interfaces::memory::Variable::bitOffset_</a></div><div class="ttdeci">std::vector&lt; uint32_t &gt; bitOffset_</div><div class="ttdef"><b>Definition</b> <a href="Variable_8h_source.html#l00100">Variable.h:100</a></div></div>
 <div class="ttc" id="amemory_2Slave_8h_html"><div class="ttname"><a href="memory_2Slave_8h.html">Slave.h</a></div></div>
 <div class="ttc" id="anamespacerogue_1_1interfaces_1_1memory_html"><div class="ttname"><a href="namespacerogue_1_1interfaces_1_1memory.html">rogue::interfaces::memory</a></div><div class="ttdef"><b>Definition</b> <a href="Block_8h_source.html#l00036">Block.h:36</a></div></div>
-<div class="ttc" id="anamespacerogue_1_1interfaces_1_1memory_html_a38bd2f3dab2a37acd41790d82373c692"><div class="ttname"><a href="namespacerogue_1_1interfaces_1_1memory.html#a38bd2f3dab2a37acd41790d82373c692">rogue::interfaces::memory::BlockPtr</a></div><div class="ttdeci">std::shared_ptr&lt; rogue::interfaces::memory::Block &gt; BlockPtr</div><div class="ttdoc">Shared pointer alias for Block.</div><div class="ttdef"><b>Definition</b> <a href="Block_8h_source.html#l01189">Block.h:1189</a></div></div>
+<div class="ttc" id="anamespacerogue_1_1interfaces_1_1memory_html_a38bd2f3dab2a37acd41790d82373c692"><div class="ttname"><a href="namespacerogue_1_1interfaces_1_1memory.html#a38bd2f3dab2a37acd41790d82373c692">rogue::interfaces::memory::BlockPtr</a></div><div class="ttdeci">std::shared_ptr&lt; rogue::interfaces::memory::Block &gt; BlockPtr</div><div class="ttdoc">Shared pointer alias for Block.</div><div class="ttdef"><b>Definition</b> <a href="Block_8h_source.html#l01199">Block.h:1199</a></div></div>
 <div class="ttc" id="anamespacerogue_1_1interfaces_1_1memory_html_a406ea981edc535342fc2a3a3a9ce3573"><div class="ttname"><a href="namespacerogue_1_1interfaces_1_1memory.html#a406ea981edc535342fc2a3a3a9ce3573">rogue::interfaces::memory::Read</a></div><div class="ttdeci">static const uint32_t Read</div><div class="ttdoc">Memory read transaction type.</div><div class="ttdef"><b>Definition</b> <a href="Constants_8h_source.html#l00036">Constants.h:36</a></div></div>
 <div class="ttc" id="anamespacerogue_1_1interfaces_1_1memory_html_a796fe0c4657923682a90289e6693c1c9"><div class="ttname"><a href="namespacerogue_1_1interfaces_1_1memory.html#a796fe0c4657923682a90289e6693c1c9">rogue::interfaces::memory::Write</a></div><div class="ttdeci">static const uint32_t Write</div><div class="ttdoc">Memory write transaction type.</div><div class="ttdef"><b>Definition</b> <a href="Constants_8h_source.html#l00043">Constants.h:43</a></div></div>
 <div class="ttc" id="anamespacerogue_1_1interfaces_1_1memory_html_aa86de079c79f5b478b72cd482fe652e1"><div class="ttname"><a href="namespacerogue_1_1interfaces_1_1memory.html#aa86de079c79f5b478b72cd482fe652e1">rogue::interfaces::memory::Verify</a></div><div class="ttdeci">static const uint32_t Verify</div><div class="ttdoc">Memory verify readback transaction type.</div><div class="ttdef"><b>Definition</b> <a href="Constants_8h_source.html#l00057">Constants.h:57</a></div></div>

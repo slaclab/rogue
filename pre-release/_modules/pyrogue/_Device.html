@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue._Device &mdash; Rogue v6.13.0-71-g897e80252 documentation</title>
+  <title>pyrogue._Device &mdash; Rogue v6.13.0-81-gf4d1ccfcf documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="../../_static/slac-favicon-192.png"/>
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=2ee423b6"></script>
+      <script src="../../_static/documentation_options.js?v=bea2c15c"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -127,6 +127,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Literal</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pyrogue._HelperFunctions</span><span class="w"> </span><span class="kn">import</span> <span class="n">_resolve_deprecated_bool</span><span class="p">,</span> <span class="n">_warn_deprecated</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">rogue.interfaces.memory</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">rim</span>
 
 
@@ -334,7 +335,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_ifAndProto</span> <span class="o">=</span> <span class="p">[]</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">forceCheckEach</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_forceWaitEach</span> <span class="o">=</span> <span class="kc">False</span>
 
         <span class="c1"># Connect to memory slave</span>
         <span class="k">if</span> <span class="n">memBase</span><span class="p">:</span>
@@ -352,7 +353,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">EnableVariable</span><span class="p">(</span><span class="n">enabled</span><span class="o">=</span><span class="n">enabled</span><span class="p">,</span> <span class="n">deps</span><span class="o">=</span><span class="n">enableDeps</span><span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalCommand</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;ReadDevice&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">hidden</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                                 <span class="n">function</span><span class="o">=</span><span class="k">lambda</span> <span class="n">arg</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">readAndCheckBlocks</span><span class="p">(</span><span class="n">recurse</span><span class="o">=</span><span class="n">arg</span><span class="p">),</span>
+                                 <span class="n">function</span><span class="o">=</span><span class="k">lambda</span> <span class="n">arg</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">readAndWaitBlocks</span><span class="p">(</span><span class="n">recurse</span><span class="o">=</span><span class="n">arg</span><span class="p">),</span>
                                  <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Force read of device without recursion&#39;</span><span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalCommand</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;WriteDevice&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">hidden</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -450,6 +451,32 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">running</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return True if the device is running.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">running</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forceWaitEach</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Force block operations to wait after each transaction.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_forceWaitEach</span>
+
+    <span class="nd">@forceWaitEach</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forceWaitEach</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_forceWaitEach</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forceCheckEach</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated alias for :attr:`forceWaitEach`.&quot;&quot;&quot;</span>
+        <span class="n">_warn_deprecated</span><span class="p">(</span>
+            <span class="s2">&quot;`forceCheckEach` is deprecated; use `forceWaitEach` instead.&quot;</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_forceWaitEach</span>
+
+    <span class="nd">@forceCheckEach</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forceCheckEach</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">_warn_deprecated</span><span class="p">(</span>
+            <span class="s2">&quot;`forceCheckEach` is deprecated; use `forceWaitEach` instead.&quot;</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_forceWaitEach</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="Device.addRemoteVariables">
@@ -613,7 +640,8 @@
         <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">recurse</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">variable</span><span class="p">:</span> <span class="n">Any</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">checkEach</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">waitEach</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">checkEach</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -627,26 +655,34 @@
 <span class="sd">            If True, recurse into child devices.</span>
 <span class="sd">        variable : object, optional</span>
 <span class="sd">            Optional variable to write.</span>
-<span class="sd">        checkEach : bool, optional (default = False)</span>
-<span class="sd">            Perform per-variable verification checks.</span>
+<span class="sd">        waitEach : bool, optional (default = False)</span>
+<span class="sd">            Wait for each block transaction before starting the next one.</span>
+<span class="sd">        checkEach : bool, optional (deprecated)</span>
+<span class="sd">            Deprecated alias for ``waitEach``.</span>
 <span class="sd">        index : int, optional (default = -1)</span>
 <span class="sd">            Optional index for array variables.</span>
 <span class="sd">        **kwargs : Any</span>
 <span class="sd">            Additional arguments passed through to the transaction.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">checkEach</span> <span class="o">=</span> <span class="n">checkEach</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">forceCheckEach</span>
+        <span class="n">waitEach</span> <span class="o">=</span> <span class="n">_resolve_deprecated_bool</span><span class="p">(</span>
+            <span class="n">new_name</span><span class="o">=</span><span class="s2">&quot;waitEach&quot;</span><span class="p">,</span>
+            <span class="n">new_value</span><span class="o">=</span><span class="n">waitEach</span><span class="p">,</span>
+            <span class="n">old_name</span><span class="o">=</span><span class="s2">&quot;checkEach&quot;</span><span class="p">,</span>
+            <span class="n">old_value</span><span class="o">=</span><span class="n">checkEach</span><span class="p">,</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">forceWaitEach</span>
 
         <span class="k">if</span> <span class="n">variable</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">pr</span><span class="o">.</span><span class="n">startTransaction</span><span class="p">(</span><span class="n">variable</span><span class="o">.</span><span class="n">_block</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">rim</span><span class="o">.</span><span class="n">Write</span><span class="p">,</span> <span class="n">forceWr</span><span class="o">=</span><span class="n">force</span><span class="p">,</span> <span class="n">checkEach</span><span class="o">=</span><span class="n">checkEach</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="n">variable</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">pr</span><span class="o">.</span><span class="n">startTransaction</span><span class="p">(</span><span class="n">variable</span><span class="o">.</span><span class="n">_block</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">rim</span><span class="o">.</span><span class="n">Write</span><span class="p">,</span> <span class="n">forceWr</span><span class="o">=</span><span class="n">force</span><span class="p">,</span> <span class="n">wait</span><span class="o">=</span><span class="n">waitEach</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="n">variable</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="k">else</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">block</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_blocks</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">block</span><span class="o">.</span><span class="n">bulkOpEn</span><span class="p">:</span>
-                    <span class="n">pr</span><span class="o">.</span><span class="n">startTransaction</span><span class="p">(</span><span class="n">block</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">rim</span><span class="o">.</span><span class="n">Write</span><span class="p">,</span> <span class="n">forceWr</span><span class="o">=</span><span class="n">force</span><span class="p">,</span> <span class="n">checkEach</span><span class="o">=</span><span class="n">checkEach</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                    <span class="n">pr</span><span class="o">.</span><span class="n">startTransaction</span><span class="p">(</span><span class="n">block</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">rim</span><span class="o">.</span><span class="n">Write</span><span class="p">,</span> <span class="n">forceWr</span><span class="o">=</span><span class="n">force</span><span class="p">,</span> <span class="n">wait</span><span class="o">=</span><span class="n">waitEach</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">recurse</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">devices</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                    <span class="n">value</span><span class="o">.</span><span class="n">writeBlocks</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">checkEach</span><span class="o">=</span><span class="n">checkEach</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+                    <span class="n">value</span><span class="o">.</span><span class="n">writeBlocks</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">waitEach</span><span class="o">=</span><span class="n">waitEach</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Device.verifyBlocks">
@@ -656,7 +692,8 @@
         <span class="o">*</span><span class="p">,</span>
         <span class="n">recurse</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">variable</span><span class="p">:</span> <span class="n">Any</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">checkEach</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">waitEach</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">checkEach</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Verify blocks in the background.</span>
@@ -667,24 +704,32 @@
 <span class="sd">            If True, recurse into child devices.</span>
 <span class="sd">        variable : object, optional</span>
 <span class="sd">            Optional variable to verify.</span>
-<span class="sd">        checkEach : bool, optional (default = False)</span>
-<span class="sd">            Perform per-variable verification checks.</span>
+<span class="sd">        waitEach : bool, optional (default = False)</span>
+<span class="sd">            Wait for each block transaction before starting the next one.</span>
+<span class="sd">        checkEach : bool, optional (deprecated)</span>
+<span class="sd">            Deprecated alias for ``waitEach``.</span>
 <span class="sd">        **kwargs : Any</span>
 <span class="sd">            Additional arguments passed through to the transaction.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">checkEach</span> <span class="o">=</span> <span class="n">checkEach</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">forceCheckEach</span>
+        <span class="n">waitEach</span> <span class="o">=</span> <span class="n">_resolve_deprecated_bool</span><span class="p">(</span>
+            <span class="n">new_name</span><span class="o">=</span><span class="s2">&quot;waitEach&quot;</span><span class="p">,</span>
+            <span class="n">new_value</span><span class="o">=</span><span class="n">waitEach</span><span class="p">,</span>
+            <span class="n">old_name</span><span class="o">=</span><span class="s2">&quot;checkEach&quot;</span><span class="p">,</span>
+            <span class="n">old_value</span><span class="o">=</span><span class="n">checkEach</span><span class="p">,</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">forceWaitEach</span>
 
         <span class="k">if</span> <span class="n">variable</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">pr</span><span class="o">.</span><span class="n">startTransaction</span><span class="p">(</span><span class="n">variable</span><span class="o">.</span><span class="n">_block</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">rim</span><span class="o">.</span><span class="n">Verify</span><span class="p">,</span> <span class="n">checkEach</span><span class="o">=</span><span class="n">checkEach</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="c1"># Verify range is set by previous write</span>
+            <span class="n">pr</span><span class="o">.</span><span class="n">startTransaction</span><span class="p">(</span><span class="n">variable</span><span class="o">.</span><span class="n">_block</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">rim</span><span class="o">.</span><span class="n">Verify</span><span class="p">,</span> <span class="n">wait</span><span class="o">=</span><span class="n">waitEach</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="c1"># Verify range is set by previous write</span>
 
         <span class="k">else</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">block</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_blocks</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">block</span><span class="o">.</span><span class="n">bulkOpEn</span><span class="p">:</span>
-                    <span class="n">pr</span><span class="o">.</span><span class="n">startTransaction</span><span class="p">(</span><span class="n">block</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">rim</span><span class="o">.</span><span class="n">Verify</span><span class="p">,</span> <span class="n">checkEach</span><span class="o">=</span><span class="n">checkEach</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                    <span class="n">pr</span><span class="o">.</span><span class="n">startTransaction</span><span class="p">(</span><span class="n">block</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">rim</span><span class="o">.</span><span class="n">Verify</span><span class="p">,</span> <span class="n">wait</span><span class="o">=</span><span class="n">waitEach</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">recurse</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">devices</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                    <span class="n">value</span><span class="o">.</span><span class="n">verifyBlocks</span><span class="p">(</span><span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">checkEach</span><span class="o">=</span><span class="n">checkEach</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+                    <span class="n">value</span><span class="o">.</span><span class="n">verifyBlocks</span><span class="p">(</span><span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">waitEach</span><span class="o">=</span><span class="n">waitEach</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Device.readBlocks">
@@ -694,7 +739,8 @@
         <span class="o">*</span><span class="p">,</span>
         <span class="n">recurse</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">variable</span><span class="p">:</span> <span class="n">Any</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">checkEach</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">waitEach</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">checkEach</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -706,26 +752,66 @@
 <span class="sd">            If True, recurse into child devices.</span>
 <span class="sd">        variable : object, optional</span>
 <span class="sd">            Optional variable to read.</span>
-<span class="sd">        checkEach : bool, optional (default = False)</span>
-<span class="sd">            Perform per-variable verification checks.</span>
+<span class="sd">        waitEach : bool, optional (default = False)</span>
+<span class="sd">            Wait for each block transaction before starting the next one.</span>
+<span class="sd">        checkEach : bool, optional (deprecated)</span>
+<span class="sd">            Deprecated alias for ``waitEach``.</span>
 <span class="sd">        index : int, optional (default = -1)</span>
 <span class="sd">            Optional index for array variables.</span>
 <span class="sd">        **kwargs : Any</span>
 <span class="sd">            Additional arguments passed through to the transaction.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">checkEach</span> <span class="o">=</span> <span class="n">checkEach</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">forceCheckEach</span>
+        <span class="n">waitEach</span> <span class="o">=</span> <span class="n">_resolve_deprecated_bool</span><span class="p">(</span>
+            <span class="n">new_name</span><span class="o">=</span><span class="s2">&quot;waitEach&quot;</span><span class="p">,</span>
+            <span class="n">new_value</span><span class="o">=</span><span class="n">waitEach</span><span class="p">,</span>
+            <span class="n">old_name</span><span class="o">=</span><span class="s2">&quot;checkEach&quot;</span><span class="p">,</span>
+            <span class="n">old_value</span><span class="o">=</span><span class="n">checkEach</span><span class="p">,</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">forceWaitEach</span>
 
         <span class="k">if</span> <span class="n">variable</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">pr</span><span class="o">.</span><span class="n">startTransaction</span><span class="p">(</span><span class="n">variable</span><span class="o">.</span><span class="n">_block</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">rim</span><span class="o">.</span><span class="n">Read</span><span class="p">,</span> <span class="n">checkEach</span><span class="o">=</span><span class="n">checkEach</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="n">variable</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">pr</span><span class="o">.</span><span class="n">startTransaction</span><span class="p">(</span><span class="n">variable</span><span class="o">.</span><span class="n">_block</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">rim</span><span class="o">.</span><span class="n">Read</span><span class="p">,</span> <span class="n">wait</span><span class="o">=</span><span class="n">waitEach</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="n">variable</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="k">else</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">block</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_blocks</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">block</span><span class="o">.</span><span class="n">bulkOpEn</span><span class="p">:</span>
-                    <span class="n">pr</span><span class="o">.</span><span class="n">startTransaction</span><span class="p">(</span><span class="n">block</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">rim</span><span class="o">.</span><span class="n">Read</span><span class="p">,</span> <span class="n">checkEach</span><span class="o">=</span><span class="n">checkEach</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                    <span class="n">pr</span><span class="o">.</span><span class="n">startTransaction</span><span class="p">(</span><span class="n">block</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">rim</span><span class="o">.</span><span class="n">Read</span><span class="p">,</span> <span class="n">wait</span><span class="o">=</span><span class="n">waitEach</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">recurse</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">devices</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                    <span class="n">value</span><span class="o">.</span><span class="n">readBlocks</span><span class="p">(</span><span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">checkEach</span><span class="o">=</span><span class="n">checkEach</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+                    <span class="n">value</span><span class="o">.</span><span class="n">readBlocks</span><span class="p">(</span><span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">waitEach</span><span class="o">=</span><span class="n">waitEach</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Device.waitBlocks">
+<a class="viewcode-back" href="../../api/python/pyrogue/device.html#pyrogue.Device.waitBlocks">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">waitBlocks</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">recurse</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">variable</span><span class="p">:</span> <span class="n">Any</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Wait for block transactions and notify variable listeners.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        recurse : bool, optional (default = True)</span>
+<span class="sd">            If True, recurse into child devices.</span>
+<span class="sd">        variable : object, optional</span>
+<span class="sd">            Optional variable to wait on.</span>
+<span class="sd">        **kwargs : Any</span>
+<span class="sd">            Additional arguments passed through to the transaction.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">variable</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">pr</span><span class="o">.</span><span class="n">waitTransaction</span><span class="p">(</span><span class="n">variable</span><span class="o">.</span><span class="n">_block</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">block</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_blocks</span><span class="p">:</span>
+                <span class="n">pr</span><span class="o">.</span><span class="n">waitTransaction</span><span class="p">(</span><span class="n">block</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">recurse</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">devices</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="n">value</span><span class="o">.</span><span class="n">waitBlocks</span><span class="p">(</span><span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Device.checkBlocks">
@@ -737,27 +823,12 @@
         <span class="n">variable</span><span class="p">:</span> <span class="n">Any</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check block transactions and notify variable listeners.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        recurse : bool, optional (default = True)</span>
-<span class="sd">            If True, recurse into child devices.</span>
-<span class="sd">        variable : object, optional</span>
-<span class="sd">            Optional variable to check.</span>
-<span class="sd">        **kwargs : Any</span>
-<span class="sd">            Additional arguments passed through to the transaction.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">variable</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">pr</span><span class="o">.</span><span class="n">checkTransaction</span><span class="p">(</span><span class="n">variable</span><span class="o">.</span><span class="n">_block</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">block</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_blocks</span><span class="p">:</span>
-                <span class="n">pr</span><span class="o">.</span><span class="n">checkTransaction</span><span class="p">(</span><span class="n">block</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-
-            <span class="k">if</span> <span class="n">recurse</span><span class="p">:</span>
-                <span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">devices</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                    <span class="n">value</span><span class="o">.</span><span class="n">checkBlocks</span><span class="p">(</span><span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated alias for :meth:`waitBlocks`.&quot;&quot;&quot;</span>
+        <span class="n">_warn_deprecated</span><span class="p">(</span>
+            <span class="s2">&quot;`checkBlocks()` is deprecated; use `waitBlocks()` instead.&quot;</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">waitBlocks</span><span class="p">(</span><span class="n">recurse</span><span class="o">=</span><span class="n">recurse</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="n">variable</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Device.writeAndVerifyBlocks">
@@ -767,9 +838,11 @@
         <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">recurse</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">variable</span><span class="p">:</span> <span class="n">Any</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">checkEach</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">checkEach</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">waitEach</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Write, verify, and check all blocks.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Write, verify, and wait for block transactions to complete.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -779,12 +852,55 @@
 <span class="sd">            If True, recurse into child devices.</span>
 <span class="sd">        variable : object, optional</span>
 <span class="sd">            Optional variable to write/verify.</span>
-<span class="sd">        checkEach : bool, optional (default = False)</span>
-<span class="sd">            Perform per-variable verification checks.</span>
+<span class="sd">        waitEach : bool, optional (default = False)</span>
+<span class="sd">            Wait for each block transaction before starting the next one.</span>
+<span class="sd">        checkEach : bool, optional (deprecated)</span>
+<span class="sd">            Deprecated alias for ``waitEach``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">writeBlocks</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="n">recurse</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="n">variable</span><span class="p">,</span> <span class="n">checkEach</span><span class="o">=</span><span class="n">checkEach</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">verifyBlocks</span><span class="p">(</span><span class="n">recurse</span><span class="o">=</span><span class="n">recurse</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="n">variable</span><span class="p">,</span> <span class="n">checkEach</span><span class="o">=</span><span class="n">checkEach</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">checkBlocks</span><span class="p">(</span><span class="n">recurse</span><span class="o">=</span><span class="n">recurse</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="n">variable</span><span class="p">)</span></div>
+        <span class="n">waitEach</span> <span class="o">=</span> <span class="n">_resolve_deprecated_bool</span><span class="p">(</span>
+            <span class="n">new_name</span><span class="o">=</span><span class="s2">&quot;waitEach&quot;</span><span class="p">,</span>
+            <span class="n">new_value</span><span class="o">=</span><span class="n">waitEach</span><span class="p">,</span>
+            <span class="n">old_name</span><span class="o">=</span><span class="s2">&quot;checkEach&quot;</span><span class="p">,</span>
+            <span class="n">old_value</span><span class="o">=</span><span class="n">checkEach</span><span class="p">,</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">writeBlocks</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="n">recurse</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="n">variable</span><span class="p">,</span> <span class="n">waitEach</span><span class="o">=</span><span class="n">waitEach</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">verifyBlocks</span><span class="p">(</span><span class="n">recurse</span><span class="o">=</span><span class="n">recurse</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="n">variable</span><span class="p">,</span> <span class="n">waitEach</span><span class="o">=</span><span class="n">waitEach</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">waitBlocks</span><span class="p">(</span><span class="n">recurse</span><span class="o">=</span><span class="n">recurse</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="n">variable</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Device.readAndWaitBlocks">
+<a class="viewcode-back" href="../../api/python/pyrogue/device.html#pyrogue.Device.readAndWaitBlocks">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">readAndWaitBlocks</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">recurse</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">variable</span><span class="p">:</span> <span class="n">Any</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">waitEach</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">checkEach</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read blocks and wait for read transactions to complete.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        recurse : bool, optional (default = True)</span>
+<span class="sd">            If True, recurse into child devices.</span>
+<span class="sd">        variable : object, optional</span>
+<span class="sd">            Optional variable to read.</span>
+<span class="sd">        waitEach : bool, optional (default = False)</span>
+<span class="sd">            Wait for each block transaction before starting the next one.</span>
+<span class="sd">        checkEach : bool, optional (deprecated)</span>
+<span class="sd">            Deprecated alias for ``waitEach``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">waitEach</span> <span class="o">=</span> <span class="n">_resolve_deprecated_bool</span><span class="p">(</span>
+            <span class="n">new_name</span><span class="o">=</span><span class="s2">&quot;waitEach&quot;</span><span class="p">,</span>
+            <span class="n">new_value</span><span class="o">=</span><span class="n">waitEach</span><span class="p">,</span>
+            <span class="n">old_name</span><span class="o">=</span><span class="s2">&quot;checkEach&quot;</span><span class="p">,</span>
+            <span class="n">old_value</span><span class="o">=</span><span class="n">checkEach</span><span class="p">,</span>
+            <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">readBlocks</span><span class="p">(</span><span class="n">recurse</span><span class="o">=</span><span class="n">recurse</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="n">variable</span><span class="p">,</span> <span class="n">waitEach</span><span class="o">=</span><span class="n">waitEach</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">waitBlocks</span><span class="p">(</span><span class="n">recurse</span><span class="o">=</span><span class="n">recurse</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="n">variable</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Device.readAndCheckBlocks">
@@ -793,21 +909,16 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">recurse</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">variable</span><span class="p">:</span> <span class="n">Any</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">checkEach</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">checkEach</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">waitEach</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read and check all blocks.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        recurse : bool, optional (default = True)</span>
-<span class="sd">            If True, recurse into child devices.</span>
-<span class="sd">        variable : object, optional</span>
-<span class="sd">            Optional variable to read.</span>
-<span class="sd">        checkEach : bool, optional (default = False)</span>
-<span class="sd">            Perform per-variable verification checks.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">readBlocks</span><span class="p">(</span><span class="n">recurse</span><span class="o">=</span><span class="n">recurse</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="n">variable</span><span class="p">,</span> <span class="n">checkEach</span><span class="o">=</span><span class="n">checkEach</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">checkBlocks</span><span class="p">(</span><span class="n">recurse</span><span class="o">=</span><span class="n">recurse</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="n">variable</span><span class="p">)</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated alias for :meth:`readAndWaitBlocks`.&quot;&quot;&quot;</span>
+        <span class="n">_warn_deprecated</span><span class="p">(</span>
+            <span class="s2">&quot;`readAndCheckBlocks()` is deprecated; use `readAndWaitBlocks()` instead.&quot;</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">readAndWaitBlocks</span><span class="p">(</span><span class="n">recurse</span><span class="o">=</span><span class="n">recurse</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="n">variable</span><span class="p">,</span> <span class="n">checkEach</span><span class="o">=</span><span class="n">checkEach</span><span class="p">,</span> <span class="n">waitEach</span><span class="o">=</span><span class="n">waitEach</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Device.saveYaml">
@@ -1078,7 +1189,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Start device config write (forceWrite=</span><span class="si">%s</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">force</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">writeBlocks</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">verifyBlocks</span><span class="p">(</span><span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">checkBlocks</span><span class="p">(</span><span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">waitBlocks</span><span class="p">(</span><span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Done device config write&quot;</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_updateBlockEnable</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>

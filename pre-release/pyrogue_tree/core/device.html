@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Device &mdash; Rogue v6.13.0-71-g897e80252 documentation</title>
+  <title>Device &mdash; Rogue v6.13.0-81-gf4d1ccfcf documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../_static/slac-favicon-192.png"/>
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=2ee423b6"></script>
+      <script src="../../_static/documentation_options.js?v=bea2c15c"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -188,8 +188,8 @@ subsystems, or operator-facing units of control.</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">memBase</span></code> for the memory interface used by hardware-backed children.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">enable</span></code> for controlling whether the subtree participates in hardware
 access behavior.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">forceCheckEach</span></code> for forcing block reads, writes, and verifies to check
-each transaction immediately rather than deferring completion checks.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">forceWaitEach</span></code> for forcing block reads, writes, and verifies to wait
+for each transaction immediately rather than deferring completion waits.</p></li>
 </ul>
 <p>The built-in <code class="docutils literal notranslate"><span class="pre">enable</span></code> Variable is especially important because it lets a tree
 keep its full structure visible while disabling hardware interaction for one
@@ -327,14 +327,15 @@ operations come together. At this level, four ideas matter:</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">write</span></code> sends staged values from the tree toward hardware.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">verify</span></code> checks that hardware matches the expected value after a write.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">read</span></code> fetches current hardware state back into the tree.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">check</span></code> waits for initiated transactions to complete and surfaces errors.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">wait</span></code> waits for initiated memory transactions to complete and surfaces
+errors.</p></li>
 </ul>
 <p>Those operations are foundational because they are reused throughout the tree:
 bulk configuration, per-Variable access, YAML apply paths, and many custom
 hardware procedures all build on the same model.</p>
 <p>One PyRogue design choice is especially important here: transaction initiation
 is intentionally separated from completion. <code class="docutils literal notranslate"><span class="pre">write</span></code>, <code class="docutils literal notranslate"><span class="pre">verify</span></code>, and
-<code class="docutils literal notranslate"><span class="pre">read</span></code> start work, while <code class="docutils literal notranslate"><span class="pre">check</span></code> is the step that waits for the
+<code class="docutils literal notranslate"><span class="pre">read</span></code> start work, while <code class="docutils literal notranslate"><span class="pre">wait</span></code> is the step that waits for the
 responses. That separation lets a <code class="docutils literal notranslate"><span class="pre">Device</span></code> issue many operations first and
 then retire them as a group.</p>
 <p>Posted writes also exist in PyRogue, but they are usually exposed through
@@ -351,22 +352,27 @@ attached to that Device and, optionally, its children.</p>
 <li><p><a class="reference internal" href="../../api/python/pyrogue/device.html#pyrogue.Device.writeBlocks" title="pyrogue.Device.writeBlocks"><code class="xref py py-meth docutils literal notranslate"><span class="pre">writeBlocks()</span></code></a></p></li>
 <li><p><a class="reference internal" href="../../api/python/pyrogue/device.html#pyrogue.Device.verifyBlocks" title="pyrogue.Device.verifyBlocks"><code class="xref py py-meth docutils literal notranslate"><span class="pre">verifyBlocks()</span></code></a></p></li>
 <li><p><a class="reference internal" href="../../api/python/pyrogue/device.html#pyrogue.Device.readBlocks" title="pyrogue.Device.readBlocks"><code class="xref py py-meth docutils literal notranslate"><span class="pre">readBlocks()</span></code></a></p></li>
-<li><p><a class="reference internal" href="../../api/python/pyrogue/device.html#pyrogue.Device.checkBlocks" title="pyrogue.Device.checkBlocks"><code class="xref py py-meth docutils literal notranslate"><span class="pre">checkBlocks()</span></code></a></p></li>
+<li><p><a class="reference internal" href="../../api/python/pyrogue/device.html#pyrogue.Device.waitBlocks" title="pyrogue.Device.waitBlocks"><code class="xref py py-meth docutils literal notranslate"><span class="pre">waitBlocks()</span></code></a></p></li>
 </ul>
 <p>At a high level:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">writeBlocks</span></code> initiates write transactions.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">verifyBlocks</span></code> initiates verify transactions.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">readBlocks</span></code> initiates read transactions.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">checkBlocks</span></code> waits for previously initiated transactions to complete.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">waitBlocks</span></code> waits for the pending memory transaction on each selected
+<code class="docutils literal notranslate"><span class="pre">Block</span></code> to complete.</p></li>
 </ul>
 <p>All four methods can operate on the full Device subtree or on the Block backing
 one specific Variable, and they are the normal override points when hardware
 requires custom sequencing.</p>
 <p>If a Device should always use stricter transaction-by-transaction completion
-checking, set <code class="docutils literal notranslate"><span class="pre">self.forceCheckEach</span> <span class="pre">=</span> <span class="pre">True</span></code> in the subclass. That causes the
-Device-level block methods to behave as though <code class="docutils literal notranslate"><span class="pre">checkEach=True</span></code> had been
+waiting, set <code class="docutils literal notranslate"><span class="pre">self.forceWaitEach</span> <span class="pre">=</span> <span class="pre">True</span></code> in the subclass. That causes the
+Device-level block methods to behave as though <code class="docutils literal notranslate"><span class="pre">waitEach=True</span></code> had been
 requested on each call.</p>
+<p>Older names remain as deprecated aliases for compatibility: <code class="docutils literal notranslate"><span class="pre">checkBlocks</span></code>
+maps to <code class="docutils literal notranslate"><span class="pre">waitBlocks</span></code>, <code class="docutils literal notranslate"><span class="pre">readAndCheckBlocks</span></code> maps to <code class="docutils literal notranslate"><span class="pre">readAndWaitBlocks</span></code>,
+<code class="docutils literal notranslate"><span class="pre">checkEach</span></code> maps to <code class="docutils literal notranslate"><span class="pre">waitEach</span></code>, and <code class="docutils literal notranslate"><span class="pre">forceCheckEach</span></code> maps to
+<code class="docutils literal notranslate"><span class="pre">forceWaitEach</span></code>.</p>
 <p>For the detailed traversal model, ordering rules, and single-Variable versus
 full-subtree behavior, see <a class="reference internal" href="block_operations.html"><span class="doc">Device Block Operations</span></a>.</p>
 <section id="where-these-methods-fit">
@@ -395,13 +401,13 @@ tree traversal. Common reasons include:</p>
 <li><p>Custom ordering across child Devices.</p></li>
 </ul>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">SequencedDevice</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">writeBlocks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">checkEach</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">index</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">writeBlocks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">waitEach</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">index</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
         <span class="c1"># Pre-transaction behavior.</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">writeBlocks</span><span class="p">(</span>
             <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">,</span>
             <span class="n">recurse</span><span class="o">=</span><span class="n">recurse</span><span class="p">,</span>
             <span class="n">variable</span><span class="o">=</span><span class="n">variable</span><span class="p">,</span>
-            <span class="n">checkEach</span><span class="o">=</span><span class="n">checkEach</span><span class="p">,</span>
+            <span class="n">waitEach</span><span class="o">=</span><span class="n">waitEach</span><span class="p">,</span>
             <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="c1"># Post-transaction behavior.</span>

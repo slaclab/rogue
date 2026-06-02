@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>YAML Configuration &mdash; Rogue v6.13.0-71-g897e80252 documentation</title>
+  <title>YAML Configuration &mdash; Rogue v6.13.0-81-gf4d1ccfcf documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../_static/slac-favicon-192.png"/>
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=2ee423b6"></script>
+      <script src="../../_static/documentation_options.js?v=bea2c15c"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -225,7 +225,7 @@ the application workflow is:</p>
 <li><p>Traverse the tree and assign Variable display values with
 <code class="docutils literal notranslate"><span class="pre">setDisp(...,</span> <span class="pre">write=False)</span></code>.</p></li>
 <li><p>After the full YAML payload is staged in shadow state, commit through the
-device’s write path (<code class="docutils literal notranslate"><span class="pre">writeBlocks</span></code>, <code class="docutils literal notranslate"><span class="pre">verifyBlocks</span></code>, <code class="docutils literal notranslate"><span class="pre">checkBlocks</span></code>).</p></li>
+device’s write path (<code class="docutils literal notranslate"><span class="pre">writeBlocks</span></code>, <code class="docutils literal notranslate"><span class="pre">verifyBlocks</span></code>, <code class="docutils literal notranslate"><span class="pre">waitBlocks</span></code>).</p></li>
 </ol>
 <p>Implications:</p>
 <ul class="simple">
@@ -248,7 +248,7 @@ coalesced update batch.</p>
 directory are considered. Nested subdirectories are ignored, matching the
 normal directory behavior.</p>
 <p>The staged values are then committed using the normal tree transaction path.
-For the bulk write, verify, read, and check model behind that commit step, see
+For the bulk write, verify, read, and wait model behind that commit step, see
 <a class="reference internal" href="block_operations.html"><span class="doc">Device Block Operations</span></a>.</p>
 </section>
 <section id="device-level-yaml-operations">
@@ -279,7 +279,7 @@ keys (not absolute paths like <code class="docutils literal notranslate"><span c
 </pre></div>
 </div>
 <p><strong>Device-level writes are scoped</strong> to the device subtree. Only blocks belonging
-to the device and its descendants are written, verified, and checked. The
+to the device and its descendants are written, verified, and waited on. The
 <code class="docutils literal notranslate"><span class="pre">ForceWrite</span></code> setting on Root is still respected.</p>
 <p><strong>Round-trip example:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">root</span><span class="p">:</span>

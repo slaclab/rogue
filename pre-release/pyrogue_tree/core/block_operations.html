@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Device Block Operations &mdash; Rogue v6.13.0-71-g897e80252 documentation</title>
+  <title>Device Block Operations &mdash; Rogue v6.13.0-81-gf4d1ccfcf documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../_static/slac-favicon-192.png"/>
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=2ee423b6"></script>
+      <script src="../../_static/documentation_options.js?v=bea2c15c"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -127,16 +127,20 @@
              
   <section id="device-block-operations">
 <span id="pyrogue-tree-block-operations"></span><h1>Device Block Operations<a class="headerlink" href="#device-block-operations" title="Link to this heading"></a></h1>
-<p><code class="docutils literal notranslate"><span class="pre">Device</span></code> provides a family of methods that traverse a tree and initiate or
-check <code class="docutils literal notranslate"><span class="pre">Block</span></code> transactions:</p>
+<p><code class="docutils literal notranslate"><span class="pre">Device</span></code> provides a family of methods that traverse a tree, initiate memory
+transactions on <code class="docutils literal notranslate"><span class="pre">Block</span></code> objects, and wait for those transactions to complete:</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="../../api/python/pyrogue/device.html#pyrogue.Device.writeBlocks" title="pyrogue.Device.writeBlocks"><code class="xref py py-meth docutils literal notranslate"><span class="pre">writeBlocks()</span></code></a></p></li>
 <li><p><a class="reference internal" href="../../api/python/pyrogue/device.html#pyrogue.Device.verifyBlocks" title="pyrogue.Device.verifyBlocks"><code class="xref py py-meth docutils literal notranslate"><span class="pre">verifyBlocks()</span></code></a></p></li>
 <li><p><a class="reference internal" href="../../api/python/pyrogue/device.html#pyrogue.Device.readBlocks" title="pyrogue.Device.readBlocks"><code class="xref py py-meth docutils literal notranslate"><span class="pre">readBlocks()</span></code></a></p></li>
-<li><p><a class="reference internal" href="../../api/python/pyrogue/device.html#pyrogue.Device.checkBlocks" title="pyrogue.Device.checkBlocks"><code class="xref py py-meth docutils literal notranslate"><span class="pre">checkBlocks()</span></code></a></p></li>
+<li><p><a class="reference internal" href="../../api/python/pyrogue/device.html#pyrogue.Device.waitBlocks" title="pyrogue.Device.waitBlocks"><code class="xref py py-meth docutils literal notranslate"><span class="pre">waitBlocks()</span></code></a></p></li>
 <li><p><a class="reference internal" href="../../api/python/pyrogue/device.html#pyrogue.Device.writeAndVerifyBlocks" title="pyrogue.Device.writeAndVerifyBlocks"><code class="xref py py-meth docutils literal notranslate"><span class="pre">writeAndVerifyBlocks()</span></code></a></p></li>
-<li><p><a class="reference internal" href="../../api/python/pyrogue/device.html#pyrogue.Device.readAndCheckBlocks" title="pyrogue.Device.readAndCheckBlocks"><code class="xref py py-meth docutils literal notranslate"><span class="pre">readAndCheckBlocks()</span></code></a></p></li>
+<li><p><a class="reference internal" href="../../api/python/pyrogue/device.html#pyrogue.Device.readAndWaitBlocks" title="pyrogue.Device.readAndWaitBlocks"><code class="xref py py-meth docutils literal notranslate"><span class="pre">readAndWaitBlocks()</span></code></a></p></li>
 </ul>
+<p>Older <code class="docutils literal notranslate"><span class="pre">check</span></code>-named forms remain as deprecated compatibility aliases:
+<code class="docutils literal notranslate"><span class="pre">checkBlocks</span></code> for <code class="docutils literal notranslate"><span class="pre">waitBlocks</span></code>, <code class="docutils literal notranslate"><span class="pre">readAndCheckBlocks</span></code> for
+<code class="docutils literal notranslate"><span class="pre">readAndWaitBlocks</span></code>, <code class="docutils literal notranslate"><span class="pre">checkEach</span></code> for <code class="docutils literal notranslate"><span class="pre">waitEach</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">forceCheckEach</span></code> for <code class="docutils literal notranslate"><span class="pre">forceWaitEach</span></code>.</p>
 <p>These methods sit between the tree model and the lower-level <code class="docutils literal notranslate"><span class="pre">Block</span></code>
 transaction layer. They are used in three main ways:</p>
 <ul class="simple">
@@ -154,19 +158,20 @@ why these methods come in pairs and helper sequences rather than as one large
 <li><p><code class="docutils literal notranslate"><span class="pre">writeBlocks</span></code> initiates write transactions.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">verifyBlocks</span></code> initiates verify transactions.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">readBlocks</span></code> initiates read transactions.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">checkBlocks</span></code> waits for initiated transactions to complete.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">waitBlocks</span></code> waits for the pending memory transaction on each selected
+<code class="docutils literal notranslate"><span class="pre">Block</span></code> to complete.</p></li>
 </ul>
 <p>That split lets a <code class="docutils literal notranslate"><span class="pre">Device</span></code> issue many transactions first and then wait for
 completion afterward. The composed helpers:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">writeAndVerifyBlocks</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">readAndCheckBlocks</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">readAndWaitBlocks</span></code></p></li>
 </ul>
 <p>simply bundle the most common full flows on top of those same methods. In
 practice, most readers only need two ideas first:</p>
 <ul class="simple">
 <li><p>The default bulk path is “issue transactions across this <code class="docutils literal notranslate"><span class="pre">Device</span></code> or
-subtree, then check them.”</p></li>
+subtree, then wait for those block transactions to complete.”</p></li>
 <li><p>These same methods are also the normal place to override sequencing when the
 hardware needs something more specific.</p></li>
 </ul>
@@ -221,8 +226,9 @@ subtree, operate on one Variable’s backing <code class="docutils literal notra
 helper when the full flow is what you actually want.</p>
 <section id="read-one-subtree">
 <h3>Read One Subtree<a class="headerlink" href="#read-one-subtree" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Initiate reads across this Device subtree, then wait for completion.</span>
-<span class="n">my_dev</span><span class="o">.</span><span class="n">readAndCheckBlocks</span><span class="p">(</span><span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Initiate reads across this Device subtree, then wait for read</span>
+<span class="c1"># transactions to complete.</span>
+<span class="n">my_dev</span><span class="o">.</span><span class="n">readAndWaitBlocks</span><span class="p">(</span><span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>This is the normal manual pattern when you want a current hardware snapshot of
@@ -230,7 +236,7 @@ one part of the tree.</p>
 </section>
 <section id="write-and-verify-one-subtree">
 <h3>Write And Verify One Subtree<a class="headerlink" href="#write-and-verify-one-subtree" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Force a full write/verify/check pass across this Device subtree.</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Force a full write/verify/wait pass across this Device subtree.</span>
 <span class="n">my_dev</span><span class="o">.</span><span class="n">writeAndVerifyBlocks</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -241,8 +247,8 @@ step.</p>
 <section id="target-one-variable-s-block">
 <h3>Target One Variable’s <code class="docutils literal notranslate"><span class="pre">Block</span></code><a class="headerlink" href="#target-one-variable-s-block" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Only issue a write for the Block backing one Variable.</span>
-<span class="n">my_dev</span><span class="o">.</span><span class="n">writeBlocks</span><span class="p">(</span><span class="n">variable</span><span class="o">=</span><span class="n">my_dev</span><span class="o">.</span><span class="n">MyRegister</span><span class="p">,</span> <span class="n">checkEach</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">my_dev</span><span class="o">.</span><span class="n">checkBlocks</span><span class="p">(</span><span class="n">variable</span><span class="o">=</span><span class="n">my_dev</span><span class="o">.</span><span class="n">MyRegister</span><span class="p">)</span>
+<span class="n">my_dev</span><span class="o">.</span><span class="n">writeBlocks</span><span class="p">(</span><span class="n">variable</span><span class="o">=</span><span class="n">my_dev</span><span class="o">.</span><span class="n">MyRegister</span><span class="p">,</span> <span class="n">waitEach</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">my_dev</span><span class="o">.</span><span class="n">waitBlocks</span><span class="p">(</span><span class="n">variable</span><span class="o">=</span><span class="n">my_dev</span><span class="o">.</span><span class="n">MyRegister</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>This is the manual form of the narrower path that hardware-backed per-Variable
@@ -253,10 +259,10 @@ operations use internally.</p>
 <h2>Composed Helpers<a class="headerlink" href="#composed-helpers" title="Link to this heading"></a></h2>
 <p>Two helpers cover the most common complete flows:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">writeAndVerifyBlocks(...)</span></code> runs
-<code class="docutils literal notranslate"><span class="pre">writeBlocks</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">verifyBlocks</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">checkBlocks</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">readAndCheckBlocks(...)</span></code> runs
-<code class="docutils literal notranslate"><span class="pre">readBlocks</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">checkBlocks</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">writeAndVerifyBlocks(...)</span></code> initiates writes, initiates verifies, then
+waits for the resulting block transactions to complete.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">readAndWaitBlocks(...)</span></code> initiates reads, then waits for the resulting read
+transactions to complete.</p></li>
 </ul>
 <p>These helpers are often the clearest way to trigger a full operation from a
 script, a command callback, or a one-shot configuration step. They are also a
@@ -270,18 +276,19 @@ bulk block operations indirectly.</p>
 PyRogue first stages values into Variables with <code class="docutils literal notranslate"><span class="pre">setDisp(...,</span> <span class="pre">write=False)</span></code>.
 Only after that full YAML payload has been applied does the device commit the
 configuration through its bulk write path (<code class="docutils literal notranslate"><span class="pre">writeBlocks</span></code>, <code class="docutils literal notranslate"><span class="pre">verifyBlocks</span></code>,
-<code class="docutils literal notranslate"><span class="pre">checkBlocks</span></code>). When called on Root, this covers the entire tree; when called
+<code class="docutils literal notranslate"><span class="pre">waitBlocks</span></code>). When called on Root, this covers the entire tree; when called
 on a specific Device, only that device’s subtree is committed.</p>
 <p>In practice, that means YAML configuration uses the same transaction model
 described on this page:</p>
 <ul class="simple">
 <li><p>Values are staged first.</p></li>
 <li><p>The resulting Block writes are issued across the tree.</p></li>
-<li><p>Verification and completion checks run through the normal bulk helpers.</p></li>
+<li><p>Verification and transaction-completion waits run through the normal bulk
+helpers.</p></li>
 </ul>
 <p>So the YAML page should be read as “how the tree is described and matched,”
 while this page remains the right place for “how the resulting hardware
-transactions are issued and checked.”</p>
+transactions are issued and completed.”</p>
 <p>Two Root settings are especially relevant in that YAML-driven path:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">ForceWrite</span></code> can force writes of non-stale Blocks during config apply.</p></li>
@@ -293,12 +300,12 @@ been committed.</p></li>
 <h2>Method Parameters<a class="headerlink" href="#method-parameters" title="Link to this heading"></a></h2>
 <p>The methods share a common shape, but the meaning of the parameters is easiest
 to understand after the default traversal and common usage patterns are clear.
-The most important controls are <code class="docutils literal notranslate"><span class="pre">recurse</span></code>, <code class="docutils literal notranslate"><span class="pre">variable</span></code>, <code class="docutils literal notranslate"><span class="pre">checkEach</span></code>, and
+The most important controls are <code class="docutils literal notranslate"><span class="pre">recurse</span></code>, <code class="docutils literal notranslate"><span class="pre">variable</span></code>, <code class="docutils literal notranslate"><span class="pre">waitEach</span></code>, and
 for writes, <code class="docutils literal notranslate"><span class="pre">force</span></code>.</p>
 <section id="writeblocks">
 <h3><code class="docutils literal notranslate"><span class="pre">writeBlocks</span></code><a class="headerlink" href="#writeblocks" title="Link to this heading"></a></h3>
 <p>Signature:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">writeBlocks</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">checkEach</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">index</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">writeBlocks</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">waitEach</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">index</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Important parameters:</p>
@@ -309,8 +316,8 @@ Write even when the value is not marked stale.</p></li>
 Include child Devices when <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">variable</span></code>:
 Operate on one Variable’s Block instead of the full Device subtree.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">checkEach</span></code>:
-Request per-transaction checking behavior instead of deferring checks.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">waitEach</span></code>:
+Wait after each transaction instead of deferring completion waits.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">index</span></code>:
 Array index used for targeted Variable operations.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">**kwargs</span></code>:
@@ -320,7 +327,7 @@ Passed through to the underlying transaction helpers.</p></li>
 <section id="verifyblocks">
 <h3><code class="docutils literal notranslate"><span class="pre">verifyBlocks</span></code><a class="headerlink" href="#verifyblocks" title="Link to this heading"></a></h3>
 <p>Signature:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">verifyBlocks</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">checkEach</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">verifyBlocks</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">waitEach</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Important parameters:</p>
@@ -329,8 +336,8 @@ Passed through to the underlying transaction helpers.</p></li>
 Include child Devices when <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">variable</span></code>:
 Verify only one Variable’s Block.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">checkEach</span></code>:
-Request per-transaction checking behavior.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">waitEach</span></code>:
+Wait after each transaction.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">**kwargs</span></code>:
 Passed through to the transaction helper.</p></li>
 </ul>
@@ -338,7 +345,7 @@ Passed through to the transaction helper.</p></li>
 <section id="readblocks">
 <h3><code class="docutils literal notranslate"><span class="pre">readBlocks</span></code><a class="headerlink" href="#readblocks" title="Link to this heading"></a></h3>
 <p>Signature:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">readBlocks</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">checkEach</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">index</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">readBlocks</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">waitEach</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">index</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Important parameters:</p>
@@ -347,18 +354,18 @@ Passed through to the transaction helper.</p></li>
 Include child Devices when <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">variable</span></code>:
 Read only one Variable’s Block.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">checkEach</span></code>:
-Request per-transaction checking behavior.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">waitEach</span></code>:
+Wait after each transaction.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">index</span></code>:
 Array index used for targeted Variable reads.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">**kwargs</span></code>:
 Passed through to the transaction helper.</p></li>
 </ul>
 </section>
-<section id="checkblocks">
-<h3><code class="docutils literal notranslate"><span class="pre">checkBlocks</span></code><a class="headerlink" href="#checkblocks" title="Link to this heading"></a></h3>
+<section id="waitblocks">
+<h3><code class="docutils literal notranslate"><span class="pre">waitBlocks</span></code><a class="headerlink" href="#waitblocks" title="Link to this heading"></a></h3>
 <p>Signature:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">checkBlocks</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">waitBlocks</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Important parameters:</p>
@@ -366,41 +373,42 @@ Passed through to the transaction helper.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">recurse</span></code>:
 Include child Devices when <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">variable</span></code>:
-Check only one Variable’s Block.</p></li>
+Wait only on one Variable’s Block.
+This waits for the pending transaction on that Block to complete.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">**kwargs</span></code>:
 Passed through to the transaction helper.</p></li>
 </ul>
 </section>
-<section id="device-wide-checkeach-behavior">
-<h3>Device-Wide <code class="docutils literal notranslate"><span class="pre">checkEach</span></code> Behavior<a class="headerlink" href="#device-wide-checkeach-behavior" title="Link to this heading"></a></h3>
-<p>The <code class="docutils literal notranslate"><span class="pre">checkEach</span></code> control exists at two levels.</p>
+<section id="device-wide-waiteach-behavior">
+<h3>Device-Wide <code class="docutils literal notranslate"><span class="pre">waitEach</span></code> Behavior<a class="headerlink" href="#device-wide-waiteach-behavior" title="Link to this heading"></a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">waitEach</span></code> control exists at two levels.</p>
 <p>At call time, <code class="docutils literal notranslate"><span class="pre">writeBlocks</span></code>, <code class="docutils literal notranslate"><span class="pre">verifyBlocks</span></code>, <code class="docutils literal notranslate"><span class="pre">readBlocks</span></code>,
-<code class="docutils literal notranslate"><span class="pre">writeAndVerifyBlocks</span></code>, and <code class="docutils literal notranslate"><span class="pre">readAndCheckBlocks</span></code> all accept a
-<code class="docutils literal notranslate"><span class="pre">checkEach=...</span></code> argument. That requests transaction-by-transaction checking
+<code class="docutils literal notranslate"><span class="pre">writeAndVerifyBlocks</span></code>, and <code class="docutils literal notranslate"><span class="pre">readAndWaitBlocks</span></code> all accept a
+<code class="docutils literal notranslate"><span class="pre">waitEach=...</span></code> argument. That requests transaction-by-transaction waiting
 for that one operation.</p>
-<p>At Device scope, the persistent control is <code class="docutils literal notranslate"><span class="pre">forceCheckEach</span></code>. Each block
+<p>At Device scope, the persistent control is <code class="docutils literal notranslate"><span class="pre">forceWaitEach</span></code>. Each block
 method combines the caller’s argument with the Device setting:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">checkEach</span> <span class="o">=</span> <span class="n">checkEach</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">forceCheckEach</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">waitEach</span> <span class="o">=</span> <span class="n">waitEach</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">forceWaitEach</span>
 </pre></div>
 </div>
-<p>So a Device can force per-transaction checking for all reads, writes, and
+<p>So a Device can force per-transaction waits for all reads, writes, and
 verifies by setting:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">forceCheckEach</span> <span class="o">=</span> <span class="kc">True</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">forceWaitEach</span> <span class="o">=</span> <span class="kc">True</span>
 </pre></div>
 </div>
-<p>There is not a separate <code class="docutils literal notranslate"><span class="pre">Device(...,</span> <span class="pre">checkEach=...)</span></code> constructor argument in
+<p>There is not a separate <code class="docutils literal notranslate"><span class="pre">Device(...,</span> <span class="pre">waitEach=...)</span></code> constructor argument in
 this implementation. If a Device should always use this stricter behavior, set
-<code class="docutils literal notranslate"><span class="pre">forceCheckEach</span></code> in the subclass:</p>
+<code class="docutils literal notranslate"><span class="pre">forceWaitEach</span></code> in the subclass:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">MyDevice</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">forceCheckEach</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">forceWaitEach</span> <span class="o">=</span> <span class="kc">True</span>
 </pre></div>
 </div>
 <p>This is useful when the hardware benefits from immediate acknowledgement of
-each transaction instead of the default “issue many operations, then check
+each transaction instead of the default “issue many operations, then wait for
 them” flow. One example is a board or front-end path where tight sequencing or
-hardware-side backpressure makes deferred checking less desirable.</p>
+hardware-side backpressure makes deferred completion less desirable.</p>
 </section>
 </section>
 <section id="how-to-override-properly">
@@ -443,12 +451,12 @@ update strobe is written:</p>
             <span class="n">function</span><span class="o">=</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">BaseCommand</span><span class="o">.</span><span class="n">touchZero</span><span class="p">,</span>
         <span class="p">))</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">writeBlocks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">checkEach</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">index</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">writeBlocks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">waitEach</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">index</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">writeBlocks</span><span class="p">(</span>
             <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">,</span>
             <span class="n">recurse</span><span class="o">=</span><span class="n">recurse</span><span class="p">,</span>
             <span class="n">variable</span><span class="o">=</span><span class="n">variable</span><span class="p">,</span>
-            <span class="n">checkEach</span><span class="o">=</span><span class="n">checkEach</span><span class="p">,</span>
+            <span class="n">waitEach</span><span class="o">=</span><span class="n">waitEach</span><span class="p">,</span>
             <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span>
             <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
         <span class="p">)</span>
@@ -478,13 +486,13 @@ progress:</p>
             <span class="n">function</span><span class="o">=</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">RemoteCommand</span><span class="o">.</span><span class="n">touch</span><span class="p">,</span>
         <span class="p">))</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">readBlocks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">checkEach</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">index</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">readBlocks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">waitEach</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">index</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">FreezeDebug</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">readBlocks</span><span class="p">(</span>
                 <span class="n">recurse</span><span class="o">=</span><span class="n">recurse</span><span class="p">,</span>
                 <span class="n">variable</span><span class="o">=</span><span class="n">variable</span><span class="p">,</span>
-                <span class="n">checkEach</span><span class="o">=</span><span class="n">checkEach</span><span class="p">,</span>
+                <span class="n">waitEach</span><span class="o">=</span><span class="n">waitEach</span><span class="p">,</span>
                 <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span>
                 <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
             <span class="p">)</span>
@@ -508,25 +516,25 @@ generator must be configured first, some DAC setup must complete before a JESD
 initialization step runs, and the ADC devices should only be configured after
 that intermediate hardware procedure:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">MyCarrier</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">writeBlocks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">checkEach</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">index</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">writeBlocks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">waitEach</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">index</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">writeBlocks</span><span class="p">(</span>
             <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">,</span>
             <span class="n">recurse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
             <span class="n">variable</span><span class="o">=</span><span class="n">variable</span><span class="p">,</span>
-            <span class="n">checkEach</span><span class="o">=</span><span class="n">checkEach</span><span class="p">,</span>
+            <span class="n">waitEach</span><span class="o">=</span><span class="n">waitEach</span><span class="p">,</span>
             <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span>
             <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
         <span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">Clock</span><span class="o">.</span><span class="n">writeBlocks</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="n">variable</span><span class="p">,</span> <span class="n">checkEach</span><span class="o">=</span><span class="n">checkEach</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">DacA</span><span class="o">.</span><span class="n">writeBlocks</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="n">variable</span><span class="p">,</span> <span class="n">checkEach</span><span class="o">=</span><span class="n">checkEach</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">DacB</span><span class="o">.</span><span class="n">writeBlocks</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="n">variable</span><span class="p">,</span> <span class="n">checkEach</span><span class="o">=</span><span class="n">checkEach</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Clock</span><span class="o">.</span><span class="n">writeBlocks</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="n">variable</span><span class="p">,</span> <span class="n">waitEach</span><span class="o">=</span><span class="n">waitEach</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">DacA</span><span class="o">.</span><span class="n">writeBlocks</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="n">variable</span><span class="p">,</span> <span class="n">waitEach</span><span class="o">=</span><span class="n">waitEach</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">DacB</span><span class="o">.</span><span class="n">writeBlocks</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="n">variable</span><span class="p">,</span> <span class="n">waitEach</span><span class="o">=</span><span class="n">waitEach</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">InitJesdLinks</span><span class="p">()</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">AdcA</span><span class="o">.</span><span class="n">writeBlocks</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="n">variable</span><span class="p">,</span> <span class="n">checkEach</span><span class="o">=</span><span class="n">checkEach</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">AdcB</span><span class="o">.</span><span class="n">writeBlocks</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="n">variable</span><span class="p">,</span> <span class="n">checkEach</span><span class="o">=</span><span class="n">checkEach</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">checkBlocks</span><span class="p">(</span><span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">AdcA</span><span class="o">.</span><span class="n">writeBlocks</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="n">variable</span><span class="p">,</span> <span class="n">waitEach</span><span class="o">=</span><span class="n">waitEach</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">AdcB</span><span class="o">.</span><span class="n">writeBlocks</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="n">variable</span><span class="p">,</span> <span class="n">waitEach</span><span class="o">=</span><span class="n">waitEach</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">waitBlocks</span><span class="p">(</span><span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>In that pattern, the override is intentionally replacing the default child
@@ -541,7 +549,7 @@ system requires.</p>
 but instead to call a composed helper from a <code class="docutils literal notranslate"><span class="pre">Command</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@self</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">Configure</span><span class="p">():</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">writeAndVerifyBlocks</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">checkEach</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">writeAndVerifyBlocks</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">waitEach</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>This is a good fit when the special behavior is a named procedure rather than a

@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LinkVariable &mdash; Rogue v6.13.0-71-g897e80252 documentation</title>
+  <title>LinkVariable &mdash; Rogue v6.13.0-81-gf4d1ccfcf documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="../../_static/slac-favicon-192.png"/>
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=2ee423b6"></script>
+      <script src="../../_static/documentation_options.js?v=bea2c15c"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -188,12 +188,15 @@ linked behavior.</p>
 <p>In the current implementation, the callback wrappers support keyword arguments
 matching:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">linkedGet(dev=None,</span> <span class="pre">var=None,</span> <span class="pre">read=True,</span> <span class="pre">index=-1,</span> <span class="pre">check=True)</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">linkedSet(dev=None,</span> <span class="pre">var=None,</span> <span class="pre">value=...,</span> <span class="pre">write=True,</span> <span class="pre">index=-1,</span> <span class="pre">verify=True,</span> <span class="pre">check=True)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">linkedGet(dev=None,</span> <span class="pre">var=None,</span> <span class="pre">read=True,</span> <span class="pre">index=-1,</span> <span class="pre">wait=True,</span> <span class="pre">check=True)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">linkedSet(dev=None,</span> <span class="pre">var=None,</span> <span class="pre">value=...,</span> <span class="pre">write=True,</span> <span class="pre">index=-1,</span> <span class="pre">verify=True,</span> <span class="pre">wait=True,</span> <span class="pre">check=True)</span></code></p></li>
 </ul>
 <p>The callback may accept any subset of those parameters. This gives the linked logic
 access to the surrounding <code class="docutils literal notranslate"><span class="pre">Device</span></code>, the <code class="docutils literal notranslate"><span class="pre">LinkVariable</span></code> itself, and the
 normal read/write control flags when needed.</p>
+<p>The older <code class="docutils literal notranslate"><span class="pre">check</span></code> callback argument is still supplied for compatibility. New
+callbacks should prefer <code class="docutils literal notranslate"><span class="pre">wait</span></code> and avoid accepting both names unless they
+intentionally need to bridge old callback code.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">read</span></code> and <code class="docutils literal notranslate"><span class="pre">write</span></code> controls are especially important:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">read</span></code> tells <code class="docutils literal notranslate"><span class="pre">linkedGet</span></code> whether the caller wants fresh data from the
