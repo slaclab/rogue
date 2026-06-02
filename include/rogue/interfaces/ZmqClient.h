@@ -143,6 +143,13 @@ class ZmqClient {
      */
     void setTimeout(uint32_t warnTime, uint32_t failTime = 0);
 
+    // Reject legacy (msecs, waitRetry[, maxRetries]) calls at compile time: a
+    // bool argument would otherwise implicitly convert to uint32_t and silently
+    // set failTime = 1 ms. Stale C++ callers get a compile error instead. The
+    // Python binding rejects bools at runtime via the setTimeoutPy wrapper.
+    void setTimeout(uint32_t warnTime, bool failTime) = delete;
+    void setTimeout(uint32_t warnTime, bool waitRetry, uint32_t maxRetries) = delete;
+
     /**
      * @brief Sends a string-mode request.
      * @param path Rogue node path.
